@@ -17,7 +17,6 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.navigation.settings.other.ChangesFragment
 import com.elementary.tasks.navigation.settings.other.OssFragment
 import com.elementary.tasks.navigation.settings.other.PermissionsFragment
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_about_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_other.*
 import java.util.*
@@ -55,12 +54,12 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        aboutPrefs.onClick { showAboutDialog() }
-        ossPrefs.onClick { openOssScreen() }
-        permissionsPrefs.onClick { openPermissionsScreen() }
-        changesPrefs.onClick { openChangesScreen() }
-        ratePrefs.onClick { SuperUtil.launchMarket(context!!) }
-        tellFriendsPrefs.onClick { shareApplication() }
+        aboutPrefs.setOnClickListener { showAboutDialog() }
+        ossPrefs.setOnClickListener { openOssScreen() }
+        permissionsPrefs.setOnClickListener { openPermissionsScreen() }
+        changesPrefs.setOnClickListener { openChangesScreen() }
+        ratePrefs.setOnClickListener { SuperUtil.launchMarket(context!!) }
+        tellFriendsPrefs.setOnClickListener { shareApplication() }
         if (Module.isMarshmallow) {
             permissionsPrefs.visibility = View.VISIBLE
             addPermissionPrefs.visibility = View.VISIBLE
@@ -68,7 +67,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
             permissionsPrefs.visibility = View.GONE
             addPermissionPrefs.visibility = View.GONE
         }
-        addPermissionPrefs.onClick { showPermissionDialog() }
+        addPermissionPrefs.setOnClickListener { showPermissionDialog() }
     }
 
     override fun onResume() {

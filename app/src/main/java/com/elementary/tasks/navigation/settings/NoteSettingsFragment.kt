@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_notes.*
 import java.util.*
@@ -42,7 +41,7 @@ class NoteSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initNoteColorRememberPrefs() {
-        noteColorRememberPrefs.onClick { changeNoteColorRemembering() }
+        noteColorRememberPrefs.setOnClickListener { changeNoteColorRemembering() }
         noteColorRememberPrefs.isChecked = prefs.isNoteColorRememberingEnabled
     }
 
@@ -53,12 +52,12 @@ class NoteSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initColorOpacityPrefs() {
-        noteColorOpacity.onClick { showOpacityPickerDialog() }
+        noteColorOpacity.setOnClickListener { showOpacityPickerDialog() }
         showNoteColorSaturation()
     }
 
     private fun initTextSizePrefs() {
-        textSize.onClick { showTextSizePickerDialog() }
+        textSize.setOnClickListener { showTextSizePickerDialog() }
         showTextSize()
     }
 
@@ -67,12 +66,12 @@ class NoteSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initNoteReminderPrefs() {
-        noteReminderPrefs.onClick { changeNoteReminder() }
+        noteReminderPrefs.setOnClickListener { changeNoteReminder() }
         noteReminderPrefs.isChecked = prefs.isNoteReminderEnabled
     }
 
     private fun initNoteTime() {
-        noteReminderTime.onClick { showTimePickerDialog() }
+        noteReminderTime.setOnClickListener { showTimePickerDialog() }
         noteReminderTime.setDependentView(noteReminderPrefs)
         showNoteTime()
     }

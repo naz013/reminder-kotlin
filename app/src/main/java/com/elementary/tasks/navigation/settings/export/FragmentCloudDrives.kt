@@ -18,7 +18,6 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_cloud_drives.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
@@ -87,7 +86,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun initGoogleDriveButton() {
-        linkGDrive.onClick { googleDriveButtonClick() }
+        linkGDrive.setOnClickListener { googleDriveButtonClick() }
     }
 
     private fun googleDriveButtonClick() {
@@ -103,7 +102,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun initDropboxButton() {
-        linkDropbox.onClick { mDropbox.login() }
+        linkDropbox.setOnClickListener { mDropbox.login() }
     }
 
     private fun switchGoogleStatus() {

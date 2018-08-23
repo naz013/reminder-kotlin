@@ -12,7 +12,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.apps.ApplicationActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_reminder_application.*
 
 /**
@@ -129,7 +128,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pickApplication.onClick { activity!!.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION) }
+        pickApplication.setOnClickListener { activity!!.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION) }
         repeatView.enablePrediction(true)
         dateView.setEventListener(repeatView.eventListener)
         initScreenState()

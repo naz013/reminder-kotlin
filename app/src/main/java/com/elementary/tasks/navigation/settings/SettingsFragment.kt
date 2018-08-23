@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 /**
@@ -31,16 +30,16 @@ class SettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        generalSettings.onClick { replaceFragment(GeneralSettingsFragment(), getString(R.string.general)) }
-        otherSettings.onClick { replaceFragment(OtherSettingsFragment(), getString(R.string.other)) }
-        voiceSettings.onClick { replaceFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
-        notesSettings.onClick { replaceFragment(NoteSettingsFragment(), getString(R.string.notes)) }
-        locationSettings.onClick { replaceFragment(LocationSettingsFragment(), getString(R.string.location)) }
-        additionalSettings.onClick { replaceFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
-        notificationSettings.onClick { replaceFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
-        exportSettings.onClick { replaceFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
-        calendarSettings.onClick { replaceFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
-        birthdaysSettings.onClick { replaceFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
+        generalSettings.setOnClickListener { replaceFragment(GeneralSettingsFragment(), getString(R.string.general)) }
+        otherSettings.setOnClickListener { replaceFragment(OtherSettingsFragment(), getString(R.string.other)) }
+        voiceSettings.setOnClickListener { replaceFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
+        notesSettings.setOnClickListener { replaceFragment(NoteSettingsFragment(), getString(R.string.notes)) }
+        locationSettings.setOnClickListener { replaceFragment(LocationSettingsFragment(), getString(R.string.location)) }
+        additionalSettings.setOnClickListener { replaceFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
+        notificationSettings.setOnClickListener { replaceFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
+        exportSettings.setOnClickListener { replaceFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
+        calendarSettings.setOnClickListener { replaceFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
+        birthdaysSettings.setOnClickListener { replaceFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
     }
 
     override fun onResume() {

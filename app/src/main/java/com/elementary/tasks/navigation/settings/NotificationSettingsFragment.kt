@@ -10,7 +10,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_notification.*
 import java.io.File
@@ -44,7 +43,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        imagePrefs.onClick { showImageDialog() }
+        imagePrefs.setOnClickListener { showImageDialog() }
         initBlurPrefs()
         initManualPrefs()
         initSbPrefs()
@@ -84,7 +83,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initIgnoreWindowTypePrefs() {
-        ignore_window_type.onClick { changeIgnoreWindowTypePrefs() }
+        ignore_window_type.setOnClickListener { changeIgnoreWindowTypePrefs() }
         ignore_window_type.isChecked = prefs.isIgnoreWindowType
     }
 
@@ -123,7 +122,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun initRepeatTimePrefs() {
         repeatIntervalPrefs.setValue(prefs.notificationRepeatTime)
-        repeatIntervalPrefs.onClick { showRepeatTimeDialog() }
+        repeatIntervalPrefs.setOnClickListener { showRepeatTimeDialog() }
         repeatIntervalPrefs.setDependentView(repeatNotificationOptionPrefs)
         showRepeatTime()
     }
@@ -140,7 +139,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initRepeatPrefs() {
-        repeatNotificationOptionPrefs.onClick { changeRepeatPrefs() }
+        repeatNotificationOptionPrefs.setOnClickListener { changeRepeatPrefs() }
         repeatNotificationOptionPrefs.isChecked = prefs.isNotificationRepeatEnabled
     }
 
@@ -169,7 +168,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initLedColorPrefs() {
-        chooseLedColorPrefs.onClick { showLedColorDialog() }
+        chooseLedColorPrefs.setOnClickListener { showLedColorDialog() }
         chooseLedColorPrefs.setDependentView(ledPrefs)
         showLedColor()
     }
@@ -181,12 +180,12 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initLedPrefs() {
-        ledPrefs.onClick { changeLedPrefs() }
+        ledPrefs.setOnClickListener { changeLedPrefs() }
         ledPrefs.isChecked = prefs.isLedEnabled
     }
 
     private fun initSnoozeTimePrefs() {
-        delayForPrefs.onClick { showSnoozeDialog() }
+        delayForPrefs.setOnClickListener { showSnoozeDialog() }
         delayForPrefs.setValue(prefs.snoozeTime)
         showSnooze()
     }
@@ -236,7 +235,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initAutoCallPrefs() {
-        autoCallPrefs.onClick { changeAutoCallPrefs() }
+        autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
         autoCallPrefs.isChecked = prefs.isAutoCallEnabled
     }
 
@@ -247,7 +246,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initAutoLaunchPrefs() {
-        autoLaunchPrefs.onClick { changeAutoLaunchPrefs() }
+        autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
         autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
     }
 
@@ -258,7 +257,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initAutoSmsPrefs() {
-        silentSMSOptionPrefs.onClick { changeAutoSmsPrefs() }
+        silentSMSOptionPrefs.setOnClickListener { changeAutoSmsPrefs() }
         silentSMSOptionPrefs.isChecked = prefs.isAutoSmsEnabled
     }
 
@@ -269,7 +268,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initUnlockPrefs() {
-        unlockScreenPrefs.onClick { changeUnlockPrefs() }
+        unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
         unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
     }
 
@@ -280,7 +279,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initWakePrefs() {
-        wakeScreenOptionPrefs.onClick { changeWakePrefs() }
+        wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
         wakeScreenOptionPrefs.isChecked = prefs.isDeviceAwakeEnabled
     }
 
@@ -313,7 +312,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initTtsLocalePrefs() {
-        localePrefs.onClick { showTtsLocaleDialog() }
+        localePrefs.setOnClickListener { showTtsLocaleDialog() }
         localePrefs.setDependentView(ttsPrefs)
         showTtsLocale()
     }
@@ -325,7 +324,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initTtsPrefs() {
-        ttsPrefs.onClick { changeTtsPrefs() }
+        ttsPrefs.setOnClickListener { changeTtsPrefs() }
         ttsPrefs.isChecked = prefs.isTtsEnabled
     }
 
@@ -352,7 +351,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initIncreasingLoudnessPrefs() {
-        increasePrefs.onClick { changeIncreasePrefs() }
+        increasePrefs.setOnClickListener { changeIncreasePrefs() }
         increasePrefs.isChecked = prefs.isIncreasingLoudnessEnabled
     }
 
@@ -391,7 +390,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initLoudnessPrefs() {
-        volumePrefs.onClick { showLoudnessDialog() }
+        volumePrefs.setOnClickListener { showLoudnessDialog() }
         showLoudness()
     }
 
@@ -426,7 +425,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initReminderTypePrefs() {
-        typePrefs.onClick { showReminderTypeDialog() }
+        typePrefs.setOnClickListener { showReminderTypeDialog() }
         showReminderType()
     }
 
@@ -460,7 +459,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSoundStreamPrefs() {
-        streamPrefs.onClick { showStreamDialog() }
+        streamPrefs.setOnClickListener { showStreamDialog() }
         streamPrefs.setDependentView(systemPrefs)
         showStream()
     }
@@ -481,12 +480,12 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSystemLoudnessPrefs() {
-        systemPrefs.onClick { changeSystemLoudnessPrefs() }
+        systemPrefs.setOnClickListener { changeSystemLoudnessPrefs() }
         systemPrefs.isChecked = prefs.isSystemLoudnessEnabled
     }
 
     private fun initMelodyPrefs() {
-        chooseSoundPrefs.onClick { showSoundDialog() }
+        chooseSoundPrefs.setOnClickListener { showSoundDialog() }
         showMelody()
     }
 
@@ -541,7 +540,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initInfiniteSoundPrefs() {
-        infiniteSoundOptionPrefs.onClick { changeInfiniteSoundPrefs() }
+        infiniteSoundOptionPrefs.setOnClickListener { changeInfiniteSoundPrefs() }
         infiniteSoundOptionPrefs.isChecked = prefs.isInfiniteSoundEnabled
     }
 
@@ -557,7 +556,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSoundInSilentModePrefs() {
-        soundOptionPrefs.onClick { changeSoundPrefs() }
+        soundOptionPrefs.setOnClickListener { changeSoundPrefs() }
         soundOptionPrefs.isChecked = prefs.isSoundInSilentModeEnabled
     }
 
@@ -568,7 +567,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initInfiniteVibratePrefs() {
-        infiniteVibrateOptionPrefs.onClick { changeInfiniteVibratePrefs() }
+        infiniteVibrateOptionPrefs.setOnClickListener { changeInfiniteVibratePrefs() }
         infiniteVibrateOptionPrefs.isChecked = prefs.isInfiniteVibrateEnabled
         infiniteVibrateOptionPrefs.setDependentView(vibrationOptionPrefs)
     }
@@ -580,7 +579,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initVibratePrefs() {
-        vibrationOptionPrefs.onClick { changeVibratePrefs() }
+        vibrationOptionPrefs.setOnClickListener { changeVibratePrefs() }
         vibrationOptionPrefs.isChecked = prefs.isVibrateEnabled
     }
 
@@ -592,7 +591,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSbIconPrefs() {
-        statusIconPrefs.onClick { changeSbIconPrefs() }
+        statusIconPrefs.setOnClickListener { changeSbIconPrefs() }
         statusIconPrefs.isChecked = prefs.isSbIconEnabled
         statusIconPrefs.setDependentView(permanentNotificationPrefs)
     }
@@ -609,7 +608,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSbPrefs() {
-        permanentNotificationPrefs.onClick { changeSbPrefs() }
+        permanentNotificationPrefs.setOnClickListener { changeSbPrefs() }
         permanentNotificationPrefs.isChecked = prefs.isSbNotificationEnabled
     }
 
@@ -620,12 +619,12 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initManualPrefs() {
-        notificationDismissPrefs.onClick { changeManualPrefs() }
+        notificationDismissPrefs.setOnClickListener { changeManualPrefs() }
         notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
     }
 
     private fun initBlurPrefs() {
-        blurPrefs.onClick { changeBlurPrefs() }
+        blurPrefs.setOnClickListener { changeBlurPrefs() }
         blurPrefs.isChecked = prefs.isBlurEnabled
     }
 

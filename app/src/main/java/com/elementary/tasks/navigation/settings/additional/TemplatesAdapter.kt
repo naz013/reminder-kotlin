@@ -8,7 +8,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.list_item_message.view.*
 import java.util.*
 
@@ -62,7 +61,7 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
 
         init {
             itemView.setOnClickListener { view -> openTemplate(view, adapterPosition) }
-            itemView.onLongClick {
+            itemView.setOnLongClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }

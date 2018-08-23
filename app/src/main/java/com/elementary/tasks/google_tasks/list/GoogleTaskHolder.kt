@@ -13,7 +13,6 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_task.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,8 +45,8 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
     }
 
     init {
-        itemView.onClick { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
-        itemView.checkDone.onClick { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+        itemView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
+        itemView.checkDone.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
     }
 
     private fun loadMarker(view: View, listId: String) {

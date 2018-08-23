@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_application.view.*
 
 /**
@@ -70,7 +69,7 @@ class AppsRecyclerAdapter : RecyclerView.Adapter<AppsRecyclerAdapter.Application
         }
 
         init {
-            itemView.onClick {
+            itemView.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
         }

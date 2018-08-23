@@ -41,7 +41,7 @@ abstract class SharedPrefs(context: Context) {
             prefs.getInt(stringToLoad, 0)
         } catch (e: ClassCastException) {
             try {
-                Integer.parseInt(prefs.getString(stringToLoad, "0"))
+                Integer.parseInt(prefs.getString(stringToLoad, "0") ?: "0")
             } catch (e1: ClassCastException) {
                 0
             }
@@ -56,7 +56,7 @@ abstract class SharedPrefs(context: Context) {
         return try {
             prefs.getLong(stringToLoad, 1000)
         } catch (e: ClassCastException) {
-            java.lang.Long.parseLong(prefs.getString(stringToLoad, "1000"))
+            java.lang.Long.parseLong(prefs.getString(stringToLoad, "1000") ?: "1000")
         }
     }
 
@@ -65,7 +65,7 @@ abstract class SharedPrefs(context: Context) {
     }
 
     fun getString(stringToLoad: String): String {
-        return prefs.getString(stringToLoad, "")
+        return prefs.getString(stringToLoad, "") ?: ""
     }
 
     fun hasKey(checkString: String): Boolean {

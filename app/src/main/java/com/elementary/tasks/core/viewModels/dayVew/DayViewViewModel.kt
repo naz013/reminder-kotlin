@@ -3,9 +3,9 @@ package com.elementary.tasks.core.viewModels.dayVew
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataSingleton
@@ -20,7 +20,7 @@ import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import com.elementary.tasks.core.utils.temp.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
@@ -63,7 +63,7 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
                 liveData.update()
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to birthday.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
                     .addTag(birthday.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
@@ -83,7 +83,7 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
                 liveData.update()
             }
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to reminder.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
                     .addTag(reminder.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)

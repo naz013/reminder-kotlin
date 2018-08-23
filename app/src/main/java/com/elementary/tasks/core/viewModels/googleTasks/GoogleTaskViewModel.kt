@@ -12,9 +12,10 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import com.elementary.tasks.core.utils.temp.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
@@ -199,7 +200,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         launch(CommonPool) {
             appDb.googleTasksDao().insert(googleTask)
             google.tasks?.moveTask(googleTask, oldListId)
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }

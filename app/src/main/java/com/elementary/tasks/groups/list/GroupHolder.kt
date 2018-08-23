@@ -7,8 +7,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.SimpleListener
-import com.mcxiaoke.koi.ext.onClick
-import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.list_item_group.view.*
 
 /**
@@ -33,10 +31,10 @@ class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
 
     init {
-        itemView.onClick { view ->
+        itemView.setOnClickListener { view ->
             mEventListener?.onItemClicked(adapterPosition, view)
         }
-        itemView.onLongClick { view ->
+        itemView.setOnLongClickListener { view ->
             mEventListener?.onItemLongClicked(adapterPosition, view)
             true
         }

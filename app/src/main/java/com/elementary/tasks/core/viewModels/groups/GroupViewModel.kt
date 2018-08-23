@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
@@ -46,7 +46,7 @@ class GroupViewModel private constructor(application: Application, id: String) :
         launch(CommonPool) {
             appDb.reminderGroupDao().insert(reminderGroup)
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to reminderGroup.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.uuId).build())
                     .addTag(reminderGroup.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)

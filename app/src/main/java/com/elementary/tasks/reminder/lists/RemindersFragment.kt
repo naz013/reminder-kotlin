@@ -14,8 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GlobalButtonObservable
@@ -29,8 +29,6 @@ import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
-import com.mcxiaoke.koi.ext.onClick
-import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
 
@@ -106,8 +104,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.onClick { startActivity(Intent(activity!!, CreateReminderActivity::class.java)) }
-        fab.onLongClick {
+        fab.setOnClickListener { startActivity(Intent(activity!!, CreateReminderActivity::class.java)) }
+        fab.setOnLongClickListener {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }

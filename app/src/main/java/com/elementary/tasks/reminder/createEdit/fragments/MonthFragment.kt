@@ -13,7 +13,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.ActionView
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_reminder_month.*
 import java.util.*
 
@@ -162,8 +161,8 @@ class MonthFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        monthDayField.onClick { TimeUtil.showDatePicker(activity!!, prefs, mDateSelect, mYear, mMonth, mDay) }
-        timeField.onClick { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
+        monthDayField.setOnClickListener { TimeUtil.showDatePicker(activity!!, prefs, mDateSelect, mYear, mMonth, mDay) }
+        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
         actionView.setListener(mActionListener)

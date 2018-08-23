@@ -17,7 +17,6 @@ import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_export.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -94,11 +93,11 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initCloudDrivesPrefs() {
-        cloudsPrefs.onClick { replaceFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
+        cloudsPrefs.setOnClickListener { replaceFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
     }
 
     private fun initClearDataPrefs() {
-        cleanPrefs.onClick { showCleanDialog() }
+        cleanPrefs.setOnClickListener { showCleanDialog() }
     }
 
     private fun showCleanDialog() {
@@ -145,7 +144,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initAutoBackupIntervalPrefs() {
-        syncIntervalPrefs.onClick { showIntervalDialog() }
+        syncIntervalPrefs.setOnClickListener { showIntervalDialog() }
         syncIntervalPrefs.setDependentView(autoBackupPrefs)
         showBackupInterval()
     }
@@ -185,7 +184,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
 
     private fun initAutoBackupPrefs() {
         autoBackupPrefs.isChecked = prefs.isAutoBackupEnabled
-        autoBackupPrefs.onClick { changeAutoBackupPrefs() }
+        autoBackupPrefs.setOnClickListener { changeAutoBackupPrefs() }
     }
 
     private fun changeAutoBackupPrefs() {
@@ -201,7 +200,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
 
     private fun initSettingsBackupPrefs() {
         syncSettingsPrefs.isChecked = prefs.isSettingsBackupEnabled
-        syncSettingsPrefs.onClick { changeSettingsBackupPrefs() }
+        syncSettingsPrefs.setOnClickListener { changeSettingsBackupPrefs() }
     }
 
     private fun changeSettingsBackupPrefs() {
@@ -212,7 +211,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
 
     private fun initExportToStockPrefs() {
         exportToStockPrefs.isChecked = prefs.isStockCalendarEnabled
-        exportToStockPrefs.onClick { changeExportToStockPrefs() }
+        exportToStockPrefs.setOnClickListener { changeExportToStockPrefs() }
     }
 
     private fun changeExportToStockPrefs() {
@@ -222,12 +221,12 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSelectCalendarPrefs() {
-        selectCalendarPrefs.onClick { showSelectCalendarDialog() }
+        selectCalendarPrefs.setOnClickListener { showSelectCalendarDialog() }
         selectCalendarPrefs.setDependentView(exportToCalendarPrefs)
     }
 
     private fun initEventDurationPrefs() {
-        eventDurationPrefs.onClick { showEventDurationDialog() }
+        eventDurationPrefs.setOnClickListener { showEventDurationDialog() }
         eventDurationPrefs.setDependentView(exportToCalendarPrefs)
         showEventDuration()
     }
@@ -325,7 +324,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initExportToCalendarPrefs() {
-        exportToCalendarPrefs.onClick { changeExportToCalendarPrefs() }
+        exportToCalendarPrefs.setOnClickListener { changeExportToCalendarPrefs() }
         exportToCalendarPrefs.isChecked = prefs.isCalendarEnabled
     }
 

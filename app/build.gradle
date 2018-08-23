@@ -136,20 +136,21 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
 
     implementation "androidx.core:core-ktx:$support_version"
-    implementation 'com.mcxiaoke.koi:core:0.5.4'
-    implementation 'org.jetbrains.anko:anko-commons:0.10.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3'
+    implementation 'org.jetbrains.anko:anko-commons:0.10.5'
+    implementation 'org.jetbrains.anko:anko-coroutines:0.10.5'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.0'
 
-    implementation 'android.arch.work:work-runtime:1.0.0-alpha06'
-    implementation 'android.arch.work:work-firebase:1.0.0-alpha06'
-    implementation 'android.arch.work:work-runtime-ktx:1.0.0-alpha06'
+    implementation 'android.arch.work:work-runtime:1.0.0-alpha07'
+    implementation 'android.arch.work:work-firebase:1.0.0-alpha07'
+    implementation 'android.arch.work:work-runtime-ktx:1.0.0-alpha07'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
     implementation 'androidx.room:room-runtime:2.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0-rc01'
     kapt 'androidx.room:room-compiler:2.0.0-rc01'
 
-    implementation 'com.google.android.gms:play-services-auth-base:15.0.1'
+    implementation 'com.google.android.gms:play-services-auth-base:15.1.0'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-gcm:15.0.1'

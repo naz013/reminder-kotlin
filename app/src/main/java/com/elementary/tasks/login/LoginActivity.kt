@@ -33,7 +33,6 @@ import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
@@ -131,10 +130,10 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initButtons() {
-        google_button.onClick { googleLoginClick() }
-        local_button.onClick { restoreLocalData() }
-        dropbox_button.onClick { loginToDropbox() }
-        skip_button.onClick { askForBirthdays() }
+        google_button.setOnClickListener { googleLoginClick() }
+        local_button.setOnClickListener { restoreLocalData() }
+        dropbox_button.setOnClickListener { loginToDropbox() }
+        skip_button.setOnClickListener { askForBirthdays() }
     }
 
     private fun askForBirthdays() {

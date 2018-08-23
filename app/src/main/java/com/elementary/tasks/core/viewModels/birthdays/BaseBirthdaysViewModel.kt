@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.viewModels.birthdays
 
 import android.app.Application
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import com.elementary.tasks.core.utils.temp.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
@@ -40,7 +40,7 @@ abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewMode
         launch(CommonPool) {
             appDb.birthdaysDao().delete(birthday)
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to birthday.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
                     .addTag(birthday.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
@@ -56,7 +56,7 @@ abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewMode
         launch(CommonPool) {
             appDb.birthdaysDao().insert(birthday)
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to birthday.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
                     .addTag(birthday.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)

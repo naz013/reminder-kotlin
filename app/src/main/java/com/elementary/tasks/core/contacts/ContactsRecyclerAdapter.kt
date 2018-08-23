@@ -11,7 +11,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_contact.view.*
 import java.util.*
 import javax.inject.Inject
@@ -65,7 +64,7 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         }
 
         init {
-            itemView.onClick { clickListener?.invoke(adapterPosition) }
+            itemView.setOnClickListener { clickListener?.invoke(adapterPosition) }
         }
     }
 
