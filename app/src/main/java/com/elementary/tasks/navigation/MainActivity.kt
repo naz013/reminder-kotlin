@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
@@ -29,14 +28,11 @@ import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.notes.NotesViewModel
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
 import com.elementary.tasks.navigation.fragments.*
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment
-import com.elementary.tasks.navigation.settings.images.MainImageActivity
-import com.elementary.tasks.navigation.settings.images.SaveAsync
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
@@ -44,7 +40,6 @@ import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import java.io.File
 import javax.inject.Inject
 
 class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
@@ -167,7 +162,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (isRateDialogShowed) {
             showRateDialog()
         }
-        showMainImage()
         remotePrefs.addUpdateObserver(this)
         if (!Module.isPro) {
             remotePrefs.addSaleObserver(this)
@@ -219,34 +213,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
-
-    private fun showMainImage() {
-        val path = prefs.imagePath
-        val view = nav_view.getHeaderView(0)
-        if (!path.isEmpty() && !path.contains("{")) {
-            var fileName: String = path
-            if (path.contains("=")) {
-                val index = path.indexOf("=")
-                fileName = path.substring(index)
-            }
-            val file = File(MemoryUtil.imageCacheDir, "$fileName.jpg")
-            val readPerm = Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-            if (readPerm && file.exists()) {
-                Glide.with(this).load(file).into(view.headerImage)
-                view.headerImage.visibility = View.VISIBLE
-            } else {
-                Glide.with(this).load(path).into(view.headerImage)
-                view.headerImage.visibility = View.VISIBLE
-                if (readPerm) {
-                    SaveAsync(this).execute(path)
-                }
-            }
-        } else {
-            view.headerImage.visibility = View.GONE
-        }
-    }
-
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -318,23 +284,18 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun initNavigation() {
+        nav_view.isVerticalScrollBarEnabled = false
         nav_view.setNavigationItemSelectedListener(this)
         val view = nav_view.getHeaderView(0)
         view.sale_badge.visibility = View.INVISIBLE
         view.update_badge.visibility = View.INVISIBLE
-        view.headerImage.setOnClickListener { openImageScreen() }
-        view.findViewById<View>(R.id.headerItem).setOnClickListener { openImageScreen() }
-        val nameView = view.findViewById<TextView>(R.id.appNameBanner)
-        var appName = getString(R.string.app_name)
+        val nameView = view.findViewById<TextView>(R.id.appNameBannerPro)
         if (Module.isPro) {
-            appName = getString(R.string.app_name_pro)
+            nameView.visibility = View.VISIBLE
+        } else {
+            nameView.visibility = View.GONE
         }
-        nameView.text = appName.toUpperCase()
         setMenuVisible()
-    }
-
-    private fun openImageScreen() {
-        startActivity(Intent(this, MainImageActivity::class.java))
     }
 
     private fun setMenuVisible() {
@@ -466,7 +427,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
         val view = nav_view.getHeaderView(0)
         if (TextUtils.isEmpty(expiry)) {
-            view.sale_badge.visibility = View.INVISIBLE
+            view.sale_badge.visibility = View.GONE
         } else {
             view.sale_badge.visibility = View.VISIBLE
             view.sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
@@ -475,7 +436,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun noSale() {
         val view = nav_view.getHeaderView(0)
-        view.sale_badge.visibility = View.INVISIBLE
+        view.sale_badge.visibility = View.GONE
     }
 
     override fun onUpdate(version: String) {
@@ -487,7 +448,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun noUpdate() {
         val view = nav_view.getHeaderView(0)
-        view.update_badge.visibility = View.INVISIBLE
+        view.update_badge.visibility = View.GONE
     }
 
     companion object {
