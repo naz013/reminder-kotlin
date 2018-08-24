@@ -55,7 +55,7 @@
         android:label="@string/app_title"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/HomeDark.Cyan"
+        android:theme="@style/HomeDark"
         tools:replace="android:label">
         <activity android:name=".navigation.MainActivity" />
         <activity
@@ -481,18 +481,6 @@
 
         <service android:name=".core.appWidgets.calendar.CalendarUpdateMinusService" />
         <service android:name=".core.appWidgets.calendar.CalendarUpdateService" />
-
-        <receiver
-            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
-            </intent-filter>
-        </receiver>
-        <service
-            android:name="com.google.android.gms.analytics.AnalyticsService"
-            android:enabled="true"
-            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

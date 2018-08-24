@@ -52,90 +52,15 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     val style: Int
         @StyleRes
         get() {
-            val id: Int
-            val loadedColor = prefs.appThemeColor
-            if (isDark) {
+            return if (isDark) {
                 if (prefs.appTheme == THEME_AMOLED) {
-                    when (loadedColor) {
-                        Color.RED -> id = R.style.HomeBlack_Red
-                        Color.PURPLE -> id = R.style.HomeBlack_Purple
-                        Color.LIGHT_GREEN -> id = R.style.HomeBlack_LightGreen
-                        Color.GREEN -> id = R.style.HomeBlack_Green
-                        Color.LIGHT_BLUE -> id = R.style.HomeBlack_LightBlue
-                        Color.BLUE -> id = R.style.HomeBlack_Blue
-                        Color.YELLOW -> id = R.style.HomeBlack_Yellow
-                        Color.ORANGE -> id = R.style.HomeBlack_Orange
-                        Color.CYAN -> id = R.style.HomeBlack_Cyan
-                        Color.PINK -> id = R.style.HomeBlack_Pink
-                        Color.TEAL -> id = R.style.HomeBlack_Teal
-                        Color.AMBER -> id = R.style.HomeBlack_Amber
-                        else -> id = if (Module.isPro) {
-                            when (loadedColor) {
-                                Color.DEEP_PURPLE -> R.style.HomeBlack_DeepPurple
-                                Color.DEEP_ORANGE -> R.style.HomeBlack_DeepOrange
-                                Color.LIME -> R.style.HomeBlack_Lime
-                                Color.INDIGO -> R.style.HomeBlack_Indigo
-                                else -> R.style.HomeBlack_Blue
-                            }
-                        } else {
-                            R.style.HomeBlack_Blue
-                        }
-                    }
+                    R.style.HomeBlack
                 } else {
-                    when (loadedColor) {
-                        Color.RED -> id = R.style.HomeDark_Red
-                        Color.PURPLE -> id = R.style.HomeDark_Purple
-                        Color.LIGHT_GREEN -> id = R.style.HomeDark_LightGreen
-                        Color.GREEN -> id = R.style.HomeDark_Green
-                        Color.LIGHT_BLUE -> id = R.style.HomeDark_LightBlue
-                        Color.BLUE -> id = R.style.HomeDark_Blue
-                        Color.YELLOW -> id = R.style.HomeDark_Yellow
-                        Color.ORANGE -> id = R.style.HomeDark_Orange
-                        Color.CYAN -> id = R.style.HomeDark_Cyan
-                        Color.PINK -> id = R.style.HomeDark_Pink
-                        Color.TEAL -> id = R.style.HomeDark_Teal
-                        Color.AMBER -> id = R.style.HomeDark_Amber
-                        else -> id = if (Module.isPro) {
-                            when (loadedColor) {
-                                Color.DEEP_PURPLE -> R.style.HomeDark_DeepPurple
-                                Color.DEEP_ORANGE -> R.style.HomeDark_DeepOrange
-                                Color.LIME -> R.style.HomeDark_Lime
-                                Color.INDIGO -> R.style.HomeDark_Indigo
-                                else -> R.style.HomeDark_Blue
-                            }
-                        } else {
-                            R.style.HomeDark_Blue
-                        }
-                    }
+                    R.style.HomeDark
                 }
             } else {
-                when (loadedColor) {
-                    Color.RED -> id = R.style.HomeWhite_Red
-                    Color.PURPLE -> id = R.style.HomeWhite_Purple
-                    Color.LIGHT_GREEN -> id = R.style.HomeWhite_LightGreen
-                    Color.GREEN -> id = R.style.HomeWhite_Green
-                    Color.LIGHT_BLUE -> id = R.style.HomeWhite_LightBlue
-                    Color.BLUE -> id = R.style.HomeWhite_Blue
-                    Color.YELLOW -> id = R.style.HomeWhite_Yellow
-                    Color.ORANGE -> id = R.style.HomeWhite_Orange
-                    Color.CYAN -> id = R.style.HomeWhite_Cyan
-                    Color.PINK -> id = R.style.HomeWhite_Pink
-                    Color.TEAL -> id = R.style.HomeWhite_Teal
-                    Color.AMBER -> id = R.style.HomeWhite_Amber
-                    else -> id = if (Module.isPro) {
-                        when (loadedColor) {
-                            Color.DEEP_PURPLE -> R.style.HomeWhite_DeepPurple
-                            Color.DEEP_ORANGE -> R.style.HomeWhite_DeepOrange
-                            Color.LIME -> R.style.HomeWhite_Lime
-                            Color.INDIGO -> R.style.HomeWhite_Indigo
-                            else -> R.style.HomeWhite_Blue
-                        }
-                    } else {
-                        R.style.HomeWhite_Blue
-                    }
-                }
+                R.style.HomeWhite
             }
-            return id
         }
 
     val indicator: Int
@@ -160,90 +85,15 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     val dialogStyle: Int
         @StyleRes
         get() {
-            val id: Int
-            val loadedColor = prefs.appThemeColor
-            if (isDark) {
+            return if (isDark) {
                 if (prefs.appTheme == THEME_AMOLED) {
-                    when (loadedColor) {
-                        Color.RED -> id = R.style.HomeBlackDialog_Red
-                        Color.PURPLE -> id = R.style.HomeBlackDialog_Purple
-                        Color.LIGHT_GREEN -> id = R.style.HomeBlackDialog_LightGreen
-                        Color.GREEN -> id = R.style.HomeBlackDialog_Green
-                        Color.LIGHT_BLUE -> id = R.style.HomeBlackDialog_LightBlue
-                        Color.BLUE -> id = R.style.HomeBlackDialog_Blue
-                        Color.YELLOW -> id = R.style.HomeBlackDialog_Yellow
-                        Color.ORANGE -> id = R.style.HomeBlackDialog_Orange
-                        Color.CYAN -> id = R.style.HomeBlackDialog_Cyan
-                        Color.PINK -> id = R.style.HomeBlackDialog_Pink
-                        Color.TEAL -> id = R.style.HomeBlackDialog_Teal
-                        Color.AMBER -> id = R.style.HomeBlackDialog_Amber
-                        else -> id = if (Module.isPro) {
-                            when (loadedColor) {
-                                Color.DEEP_PURPLE -> R.style.HomeBlackDialog_DeepPurple
-                                Color.DEEP_ORANGE -> R.style.HomeBlackDialog_DeepOrange
-                                Color.LIME -> R.style.HomeBlackDialog_Lime
-                                Color.INDIGO -> R.style.HomeBlackDialog_Indigo
-                                else -> R.style.HomeBlackDialog_Blue
-                            }
-                        } else {
-                            R.style.HomeBlackDialog_Blue
-                        }
-                    }
+                    R.style.HomeBlackDialog
                 } else {
-                    when (loadedColor) {
-                        Color.RED -> id = R.style.HomeDarkDialog_Red
-                        Color.PURPLE -> id = R.style.HomeDarkDialog_Purple
-                        Color.LIGHT_GREEN -> id = R.style.HomeDarkDialog_LightGreen
-                        Color.GREEN -> id = R.style.HomeDarkDialog_Green
-                        Color.LIGHT_BLUE -> id = R.style.HomeDarkDialog_LightBlue
-                        Color.BLUE -> id = R.style.HomeDarkDialog_Blue
-                        Color.YELLOW -> id = R.style.HomeDarkDialog_Yellow
-                        Color.ORANGE -> id = R.style.HomeDarkDialog_Orange
-                        Color.CYAN -> id = R.style.HomeDarkDialog_Cyan
-                        Color.PINK -> id = R.style.HomeDarkDialog_Pink
-                        Color.TEAL -> id = R.style.HomeDarkDialog_Teal
-                        Color.AMBER -> id = R.style.HomeDarkDialog_Amber
-                        else -> id = if (Module.isPro) {
-                            when (loadedColor) {
-                                Color.DEEP_PURPLE -> R.style.HomeDarkDialog_DeepPurple
-                                Color.DEEP_ORANGE -> R.style.HomeDarkDialog_DeepOrange
-                                Color.LIME -> R.style.HomeDarkDialog_Lime
-                                Color.INDIGO -> R.style.HomeDarkDialog_Indigo
-                                else -> R.style.HomeDarkDialog_Blue
-                            }
-                        } else {
-                            R.style.HomeDarkDialog_Blue
-                        }
-                    }
+                    R.style.HomeDarkDialog
                 }
             } else {
-                when (loadedColor) {
-                    Color.RED -> id = R.style.HomeWhiteDialog_Red
-                    Color.PURPLE -> id = R.style.HomeWhiteDialog_Purple
-                    Color.LIGHT_GREEN -> id = R.style.HomeWhiteDialog_LightGreen
-                    Color.GREEN -> id = R.style.HomeWhiteDialog_Green
-                    Color.LIGHT_BLUE -> id = R.style.HomeWhiteDialog_LightBlue
-                    Color.BLUE -> id = R.style.HomeWhiteDialog_Blue
-                    Color.YELLOW -> id = R.style.HomeWhiteDialog_Yellow
-                    Color.ORANGE -> id = R.style.HomeWhiteDialog_Orange
-                    Color.CYAN -> id = R.style.HomeWhiteDialog_Cyan
-                    Color.PINK -> id = R.style.HomeWhiteDialog_Pink
-                    Color.TEAL -> id = R.style.HomeWhiteDialog_Teal
-                    Color.AMBER -> id = R.style.HomeWhiteDialog_Amber
-                    else -> id = if (Module.isPro) {
-                        when (loadedColor) {
-                            Color.DEEP_PURPLE -> R.style.HomeWhiteDialog_DeepPurple
-                            Color.DEEP_ORANGE -> R.style.HomeWhiteDialog_DeepOrange
-                            Color.LIME -> R.style.HomeWhiteDialog_Lime
-                            Color.INDIGO -> R.style.HomeWhiteDialog_Indigo
-                            else -> R.style.HomeWhiteDialog_Blue
-                        }
-                    } else {
-                        R.style.HomeWhiteDialog_Blue
-                    }
-                }
+                R.style.HomeWhiteDialog
             }
-            return id
         }
 
     val backgroundStyle: Int

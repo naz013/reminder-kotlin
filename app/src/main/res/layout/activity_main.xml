@@ -5,7 +5,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -73,11 +74,19 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:scrollbars="none"
         app:headerLayout="@layout/nav_header_main"
+        app:itemBackground="@drawable/nav_selector"
+        app:itemHorizontalPadding="8dp"
+        app:itemIconTint="@color/menu_selector"
+        app:itemTextAppearance="@style/Text.Body2"
+        app:itemTextColor="@color/menu_selector"
         app:menu="@menu/activity_main_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
