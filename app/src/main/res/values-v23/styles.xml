@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PureWhite" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/pureWhite</item>
+        <item name="colorPrimary">@color/pureWhite</item>
+        <item name="android:windowBackground">@color/pureWhite</item>
+        <item name="android:colorBackground">@color/pureWhite</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

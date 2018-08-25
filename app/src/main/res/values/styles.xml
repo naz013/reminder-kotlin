@@ -89,7 +89,7 @@
         <item name="colorSecondary">@color/secondary</item>
     </style>
 
-    <style name="Base.Dark" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Base.Dark" parent="Theme.MaterialComponents.NoActionBar">
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
         <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
         <item name="textAppearanceHeadline1">@style/Text.H1</item>
@@ -111,7 +111,7 @@
     </style>
 
     <style name="PureWhite" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/pureWhite</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
         <item name="colorPrimary">@color/pureWhite</item>
         <item name="android:windowBackground">@color/pureWhite</item>
         <item name="android:colorBackground">@color/pureWhite</item>

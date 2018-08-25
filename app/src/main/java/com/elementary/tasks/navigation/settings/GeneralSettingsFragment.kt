@@ -36,9 +36,17 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         get() {
             val theme = prefs.appTheme
             return when (theme) {
-                ThemeUtil.THEME_AUTO -> getString(R.string.auto)
-                ThemeUtil.THEME_PURE_WHITE -> getString(R.string.light)
                 ThemeUtil.THEME_PURE_BLACK -> getString(R.string.amoled)
+                ThemeUtil.THEME_PURE_WHITE -> getString(R.string.white)
+                ThemeUtil.THEME_LIGHT_1 -> getString(R.string.light) + " 1"
+                ThemeUtil.THEME_LIGHT_2 -> getString(R.string.light) + " 2"
+                ThemeUtil.THEME_LIGHT_3 -> getString(R.string.light) + " 3"
+                ThemeUtil.THEME_LIGHT_4 -> getString(R.string.light) + " 4"
+                ThemeUtil.THEME_DARK_1 -> getString(R.string.dark) + " 1"
+                ThemeUtil.THEME_DARK_2 -> getString(R.string.dark) + " 2"
+                ThemeUtil.THEME_DARK_3 -> getString(R.string.dark) + " 3"
+                ThemeUtil.THEME_DARK_4 -> getString(R.string.dark) + " 4"
+                ThemeUtil.THEME_AUTO -> getString(R.string.auto)
                 else -> getString(R.string.dark)
             }
         }
@@ -49,7 +57,6 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         super.onViewCreated(view, savedInstanceState)
         mainImagePrefs.setOnClickListener { selectMainImage() }
         initAppTheme()
-        initThemeColor()
         initSmartFold()
         initWearNotification()
         init24TimePrefs()
@@ -110,7 +117,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     private fun initAppTheme() {
         appThemePrefs.setDetailText(currentTheme)
-        appThemePrefs.setOnClickListener { showThemeDialog() }
+        appThemePrefs.setOnClickListener { selectTheme() }
     }
 
     override fun onResume() {
@@ -119,27 +126,6 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
             callback?.onTitleChange(getString(R.string.general))
             callback?.onFragmentSelect(this)
         }
-    }
-
-    private fun showThemeDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.theme))
-        val colors = arrayOf(getString(R.string.auto), getString(R.string.light), getString(R.string.dark), getString(R.string.amoled))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, colors)
-        val initTheme = prefs.appTheme
-        mItemSelect = initTheme
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.appTheme = mItemSelect
-            dialog.dismiss()
-            if (initTheme != mItemSelect) restartApp()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun restartApp() {
@@ -153,11 +139,6 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     private fun selectTheme() {
         startActivity(Intent(context, SelectThemeActivity::class.java))
-    }
-
-    private fun initThemeColor() {
-        themePrefs.setViewResource(themeUtil.getIndicator(prefs.appThemeColor))
-        themePrefs.setOnClickListener { selectTheme() }
     }
 
     private fun initSmartFold() {
