@@ -12,12 +12,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.ColorInt
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
@@ -243,16 +241,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
-    override fun onThemeChange(@ColorInt primary: Int, @ColorInt primaryDark: Int, @ColorInt accent: Int) {
-
-    }
-
     override fun refreshMenu() {
         setMenuVisible()
-    }
-
-    override fun onScrollChanged(recyclerView: RecyclerView?) {
-
     }
 
     override fun addFilters(filters: List<FilterView.Filter>, clear: Boolean) {
@@ -287,8 +277,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         nav_view.isVerticalScrollBarEnabled = false
         nav_view.setNavigationItemSelectedListener(this)
         val view = nav_view.getHeaderView(0)
-        view.sale_badge.visibility = View.INVISIBLE
-        view.update_badge.visibility = View.INVISIBLE
+        view.sale_badge.visibility = View.GONE
+        view.update_badge.visibility = View.GONE
         val nameView = view.findViewById<TextView>(R.id.appNameBannerPro)
         if (Module.isPro) {
             nameView.visibility = View.VISIBLE

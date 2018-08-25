@@ -37,8 +37,8 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
             val theme = prefs.appTheme
             return when (theme) {
                 ThemeUtil.THEME_AUTO -> getString(R.string.auto)
-                ThemeUtil.THEME_WHITE -> getString(R.string.light)
-                ThemeUtil.THEME_AMOLED -> getString(R.string.amoled)
+                ThemeUtil.THEME_PURE_WHITE -> getString(R.string.light)
+                ThemeUtil.THEME_PURE_BLACK -> getString(R.string.amoled)
                 else -> getString(R.string.dark)
             }
         }

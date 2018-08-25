@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textColor="@color/blackPrimary" />
+            android:textColor="@color/pureBlack" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -42,6 +42,6 @@
         android:gravity="center|center_vertical"
         android:minHeight="35dp"
         android:text="25"
-        android:textColor="@color/blackPrimary" />
+        android:textColor="@color/pureBlack" />
 
 </FrameLayout>

@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:background="@color/blackPrimary"
+            android:background="@color/pureBlack"
             android:orientation="horizontal">
 
             <TextView
@@ -127,7 +127,7 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="Some task"
-                            android:textColor="@color/blackPrimary" />
+                            android:textColor="@color/pureBlack" />
 
                         <TextView
                             android:id="@+id/taskNumber"
@@ -135,7 +135,7 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="123456789"
-                            android:textColor="@color/blackPrimary" />
+                            android:textColor="@color/pureBlack" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -154,7 +154,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:text="22.10.2015"
-                            android:textColor="@color/blackPrimary" />
+                            android:textColor="@color/pureBlack" />
 
                         <TextView
                             android:id="@+id/taskTime"
@@ -162,7 +162,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:text="20:30"
-                            android:textColor="@color/blackPrimary" />
+                            android:textColor="@color/pureBlack" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

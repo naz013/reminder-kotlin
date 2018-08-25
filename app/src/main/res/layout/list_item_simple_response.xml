@@ -15,7 +15,7 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/chat_their"
         android:textAppearance="?textAppearanceBody1"
-        android:textColor="@color/blackPrimary"
+        android:textColor="@color/pureBlack"
         tools:text="Helolo" />
 
 </RelativeLayout>

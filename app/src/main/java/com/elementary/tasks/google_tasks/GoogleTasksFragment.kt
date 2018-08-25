@@ -204,16 +204,9 @@ class GoogleTasksFragment : BaseNavigationFragment() {
         if (callback != null) {
             if (pos == 0) {
                 callback?.onTitleChange(getStr(R.string.all))
-                callback?.onThemeChange(themeUtil.getColor(themeUtil.colorPrimary()),
-                        themeUtil.getColor(themeUtil.colorPrimaryDark()),
-                        themeUtil.getColor(themeUtil.colorAccent()))
             } else {
                 val taskList = googleTaskLists[pos]
                 callback?.onTitleChange(taskList.title)
-                val tmp = taskList.color
-                callback?.onThemeChange(themeUtil.getColor(themeUtil.colorPrimary(tmp)),
-                        themeUtil.getColor(themeUtil.colorPrimaryDark(tmp)),
-                        themeUtil.getColor(themeUtil.colorAccent(tmp)))
             }
         }
     }

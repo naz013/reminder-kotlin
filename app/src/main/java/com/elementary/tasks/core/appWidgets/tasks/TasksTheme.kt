@@ -130,57 +130,57 @@ class TasksTheme : Parcelable {
             list.add(TasksTheme(R.color.indigoPrimary, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.indigo), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.tealPrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.teal), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.limePrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.lime), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.bluePrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.blue), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.material_grey, R.color.material_divider,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                    R.drawable.ic_settings_white, getResColor(context, R.color.blackPrimary), context.getString(R.string.grey), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    R.drawable.ic_settings_white, getResColor(context, R.color.pureBlack), context.getString(R.string.grey), R.color.whitePrimary,
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.greenPrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.green), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(TasksTheme(R.color.blackPrimary, R.color.blackPrimary,
+            list.add(TasksTheme(R.color.pureBlack, R.color.pureBlack,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.dark), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.whitePrimary, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary), R.drawable.ic_add_black_24dp,
-                    R.drawable.ic_settings, getResColor(context, R.color.blackPrimary), context.getString(R.string.white), R.color.material_grey,
+                    getResColor(context, R.color.pureBlack), R.drawable.ic_add_black_24dp,
+                    R.drawable.ic_settings, getResColor(context, R.color.pureBlack), context.getString(R.string.white), R.color.material_grey,
                     getResColor(context, R.color.whitePrimary)))
 
             list.add(TasksTheme(R.color.orangePrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.orange), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.redPrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.red), R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.material_grey_dialog, R.color.orangeAccent,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                    R.drawable.ic_settings_white, getResColor(context, R.color.blackPrimary), "Simple Orange", R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    R.drawable.ic_settings_white, getResColor(context, R.color.pureBlack), "Simple Orange", R.color.whitePrimary,
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.simple_transparent_header_color, R.color.simple_transparent_header_color,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
@@ -188,14 +188,14 @@ class TasksTheme : Parcelable {
                     getResColor(context, R.color.whitePrimary)))
 
             list.add(TasksTheme(R.color.simple_transparent_header_color, R.color.simple_transparent_header_color,
-                    getResColor(context, R.color.blackPrimary), R.drawable.ic_add_black_24dp,
-                    R.drawable.ic_settings, getResColor(context, R.color.blackPrimary), "Transparent Dark", R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack), R.drawable.ic_add_black_24dp,
+                    R.drawable.ic_settings, getResColor(context, R.color.pureBlack), "Transparent Dark", R.color.whitePrimary,
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(TasksTheme(R.color.pinkAccent, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                     R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Simple Pink", R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
             return list
         }
     }

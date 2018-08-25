@@ -87,9 +87,6 @@ class EventsListFragment : BaseFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
-        if (callback != null) {
-            callback!!.onScrollChanged(recyclerView)
-        }
 
         reloadView()
         initBirthdayViewModel()

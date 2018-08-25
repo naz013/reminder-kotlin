@@ -30,6 +30,7 @@
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:text="PRO"
+            android:textColor="?colorSecondary"
             app:fontFamily="@font/merriweathersans_italic" />
 
     </LinearLayout>
@@ -61,6 +62,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="8dp"
         android:background="#1E000000" />
 
 </LinearLayout>

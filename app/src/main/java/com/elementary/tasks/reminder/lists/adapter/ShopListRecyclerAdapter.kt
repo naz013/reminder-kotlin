@@ -89,7 +89,7 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
             if (listener == null) {
                 itemView.clearButton.visibility = View.GONE
                 itemView.itemCheck.isEnabled = false
-                itemView.shopText.setTextColor(ViewUtils.getColor(itemView.context, R.color.blackPrimary))
+                itemView.shopText.setTextColor(ViewUtils.getColor(itemView.context, R.color.pureBlack))
             } else {
                 itemView.itemCheck.visibility = View.VISIBLE
                 itemView.clearButton.visibility = View.VISIBLE

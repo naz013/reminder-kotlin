@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:singleLine="true"
-            android:textColor="@color/blackPrimary" />
+            android:textColor="@color/pureBlack" />
 
         <TextView
             android:id="@+id/taskDate"
@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:gravity="end"
             android:singleLine="true"
-            android:textColor="@color/blackPrimary" />
+            android:textColor="@color/pureBlack" />
 
     </LinearLayout>
 
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:singleLine="true"
-            android:textColor="@color/blackPrimary" />
+            android:textColor="@color/pureBlack" />
 
         <TextView
             android:id="@+id/taskTime"
@@ -57,7 +57,7 @@
             android:layout_weight="1"
             android:gravity="end"
             android:singleLine="true"
-            android:textColor="@color/blackPrimary" />
+            android:textColor="@color/pureBlack" />
     </LinearLayout>
 
     <TextView
@@ -66,5 +66,5 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:singleLine="true"
-        android:textColor="@color/blackPrimary" />
+        android:textColor="@color/pureBlack" />
 </LinearLayout>

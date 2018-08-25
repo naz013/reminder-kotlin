@@ -233,7 +233,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.notes))
             callback?.onFragmentSelect(this)
-            callback?.onScrollChanged(recyclerView)
         }
     }
 
