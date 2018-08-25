@@ -55,7 +55,7 @@
         android:label="@string/app_title"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/HomeDark"
+        android:theme="@style/Light1"
         tools:replace="android:label">
         <activity android:name=".navigation.MainActivity" />
         <activity
@@ -247,8 +247,7 @@
         <activity android:name=".notes.editor.ImageEditActivity" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
-            android:name=".core.SplashScreen"
-            android:theme="@style/SplashTheme">
+            android:name=".core.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

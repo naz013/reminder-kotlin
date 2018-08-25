@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.lists
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
@@ -63,6 +66,31 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val filterAllElement: FilterView.FilterElement
         get() = FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true)
 
+    private var mSearchView: SearchView? = null
+    private var mSearchMenu: MenuItem? = null
+
+    private val queryTextListener = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String): Boolean {
+            filterController.setSearchValue(query)
+            if (mSearchMenu != null) {
+                mSearchMenu?.collapseActionView()
+            }
+            return false
+        }
+
+        override fun onQueryTextChange(newText: String): Boolean {
+            filterController.setSearchValue(newText)
+            if (!callback!!.isFiltersVisible) {
+                showRemindersFilter()
+            }
+            return false
+        }
+    }
+    private val mSearchCloseListener = {
+        refreshFilters()
+        false
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
@@ -70,17 +98,47 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_active_menu, menu)
+        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_search_black_24dp)
         val micIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_microphone_black)
         val filterIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_filter_list_black_24dp)
         if (isDark) {
-            DrawableCompat.setTint(micIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
-            DrawableCompat.setTint(filterIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
+            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
+            DrawableCompat.setTint(searchIcon!!, white)
+            DrawableCompat.setTint(micIcon!!, white)
+            DrawableCompat.setTint(filterIcon!!, white)
         } else {
-            DrawableCompat.setTint(micIcon!!, ContextCompat.getColor(context!!, R.color.blackPrimary))
-            DrawableCompat.setTint(filterIcon!!, ContextCompat.getColor(context!!, R.color.blackPrimary))
+            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
+            DrawableCompat.setTint(micIcon!!, black)
+            DrawableCompat.setTint(filterIcon!!, black)
+            DrawableCompat.setTint(searchIcon!!, black)
         }
-        menu?.getItem(0)?.icon = micIcon
-        menu?.getItem(1)?.icon = filterIcon
+        menu?.getItem(0)?.icon = searchIcon
+        menu?.getItem(1)?.icon = micIcon
+        menu?.getItem(2)?.icon = filterIcon
+
+        mSearchMenu = menu?.findItem(R.id.action_search)
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        if (mSearchMenu != null) {
+            mSearchView = mSearchMenu?.actionView as SearchView?
+        }
+        if (mSearchView != null) {
+            if (searchManager != null) {
+                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+            }
+            mSearchView?.setOnQueryTextListener(queryTextListener)
+            mSearchView?.setOnCloseListener(mSearchCloseListener)
+            mSearchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    if (!callback!!.isFiltersVisible) {
+                        showRemindersFilter()
+                    }
+                }
+            }
+        }
+        val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
+        menu?.getItem(0)?.isVisible = isNotEmpty
+        menu?.getItem(2)?.isVisible = isNotEmpty
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -110,6 +168,10 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             true
         }
         initList()
+        initViewModel()
+    }
+
+    private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer{ reminders ->
             if (reminders != null) {
@@ -122,6 +184,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         filterController.original = result.toMutableList()
         reloadView()
         refreshFilters()
+        activity?.invalidateOptionsMenu()
     }
 
     private fun refreshFilters() {
@@ -176,7 +239,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.tasks))
             callback?.onFragmentSelect(this)
-            callback?.onScrollChanged(recyclerView)
         }
     }
 
@@ -329,10 +391,5 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         mAdapter.data = result
         recyclerView.smoothScrollToPosition(0)
         reloadView()
-    }
-
-    companion object {
-        const val MENU_VOICE = 1
-        const val MENU_FILTER = 1
     }
 }

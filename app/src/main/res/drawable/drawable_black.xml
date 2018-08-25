@@ -6,7 +6,7 @@
         android:width="0.5dp"
         android:color="@color/whitePrimary" />
 
-    <solid android:color="@color/blackPrimary" />
+    <solid android:color="@color/pureBlack" />
 
     <size
         android:width="24dp"

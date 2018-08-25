@@ -143,37 +143,37 @@ class CalendarTheme : Parcelable {
         fun getThemes(context: Context): List<CalendarTheme> {
             val list = ArrayList<CalendarTheme>()
             list.clear()
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.tealPrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.teal), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.indigoPrimary, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.indigo), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.limePrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.lime), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.bluePrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.blue), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(CalendarTheme(getResColor(context, R.color.whitePrimary), R.color.material_divider,
                     R.color.material_grey, R.color.material_divider,
@@ -181,55 +181,55 @@ class CalendarTheme : Parcelable {
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.grey), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.greenPrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.green), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.whitePrimary), R.color.blackPrimary,
-                    R.color.blackPrimary, R.color.blackPrimary,
-                    getResColor(context, R.color.whitePrimary), R.color.blackPrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.whitePrimary), R.color.pureBlack,
+                    R.color.pureBlack, R.color.pureBlack,
+                    getResColor(context, R.color.whitePrimary), R.color.pureBlack,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.dark), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.whitePrimary, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+                    getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.drawable.simple_left_arrow_black, R.drawable.simple_right_arrow_black,
                     R.drawable.simple_plus_button_black, R.drawable.simple_voice_button_black,
                     R.drawable.simple_settings_button_black, context.getString(R.string.white), 0, 0, 0, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.orangePrimaryDark, R.color.whitePrimary,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.orange), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.whitePrimary,
                     R.color.redPrimaryDark, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, context.getString(R.string.red), 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.orangeAccent,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.orangeAccent,
                     R.color.material_grey_dialog, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, "Simple Black", 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
             list.add(CalendarTheme(getResColor(context, R.color.whitePrimary), R.color.simple_transparent_widget_color,
                     R.color.simple_transparent_header_color, R.color.simple_transparent_border_color,
@@ -239,21 +239,21 @@ class CalendarTheme : Parcelable {
                     R.drawable.simple_settings_button, "Transparent Light", 0, 0, 0, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.simple_transparent_widget_color,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.simple_transparent_widget_color,
                     R.color.simple_transparent_header_color, R.color.simple_transparent_border_color,
-                    getResColor(context, R.color.blackPrimary), R.color.simple_transparent_row_color,
+                    getResColor(context, R.color.pureBlack), R.color.simple_transparent_row_color,
                     R.drawable.simple_left_arrow_black, R.drawable.simple_right_arrow_black,
                     R.drawable.simple_plus_button_black, R.drawable.simple_voice_button_black,
                     R.drawable.simple_settings_button_black, "Transparent Dark", 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
 
-            list.add(CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.orangeAccent,
+            list.add(CalendarTheme(getResColor(context, R.color.pureBlack), R.color.orangeAccent,
                     R.color.cyanPrimary, R.color.material_grey,
                     getResColor(context, R.color.whitePrimary), R.color.orangeAccent,
                     R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                     R.drawable.simple_plus_button, R.drawable.simple_voice_button,
                     R.drawable.simple_settings_button, "Simple Brown", 0, 0, 0, R.color.whitePrimary,
-                    getResColor(context, R.color.blackPrimary)))
+                    getResColor(context, R.color.pureBlack)))
             return list
         }
     }

@@ -72,16 +72,16 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
 
     private fun initButtons() {
         if (b1 != null) {
-            b1.id = Integer.valueOf(101)!!
-            b2.id = Integer.valueOf(102)!!
-            b3.id = Integer.valueOf(103)!!
-            b4.id = Integer.valueOf(104)!!
-            b5.id = Integer.valueOf(105)!!
-            b6.id = Integer.valueOf(106)!!
-            b7.id = Integer.valueOf(107)!!
-            b8.id = Integer.valueOf(108)!!
-            b9.id = Integer.valueOf(109)!!
-            b0.id = Integer.valueOf(100)!!
+            b1.id = Integer.valueOf(101)
+            b2.id = Integer.valueOf(102)
+            b3.id = Integer.valueOf(103)
+            b4.id = Integer.valueOf(104)
+            b5.id = Integer.valueOf(105)
+            b6.id = Integer.valueOf(106)
+            b7.id = Integer.valueOf(107)
+            b8.id = Integer.valueOf(108)
+            b9.id = Integer.valueOf(109)
+            b0.id = Integer.valueOf(100)
             b1.setOnClickListener(this)
             b2.setOnClickListener(this)
             b3.setOnClickListener(this)

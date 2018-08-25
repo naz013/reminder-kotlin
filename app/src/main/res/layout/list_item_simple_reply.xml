@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/chat_buble_my"
         android:textAppearance="?textAppearanceBody1"
-        android:textColor="@color/blackPrimary"
+        android:textColor="@color/pureBlack"
         tools:text="Helolo" />
 
 </RelativeLayout>

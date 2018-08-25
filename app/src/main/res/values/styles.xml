@@ -1,13 +1,11 @@
 <resources>
 
-    <style name="SplashTheme" parent="HomeDark" />
-
     <style name="ActionOverflowButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">@color/blackPrimary</item>
+        <item name="android:tint">@color/pureBlack</item>
     </style>
 
     <style name="BackButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:tint">@color/blackPrimary</item>
+        <item name="android:tint">@color/pureBlack</item>
     </style>
 
     <style name="ActionOverflowButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.Overflow">
@@ -70,10 +68,7 @@
         <item name="android:fontFamily">@font/merriweathersans_regular</item>
     </style>
 
-    <style name="HomeWhite" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/lightPrimaryDark</item>
-        <item name="colorPrimary">@color/lightPrimary</item>
-        <item name="colorSecondary">@color/secondary</item>
+    <style name="Base.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleLight</item>
         <item name="actionModeCloseButtonStyle">@style/BackButtonStyleLight</item>
         <item name="textAppearanceHeadline1">@style/Text.H1</item>
@@ -91,12 +86,10 @@
         <item name="textAppearanceOverline">@style/Text.Overline</item>
         <item name="android:spinnerItemStyle">@style/Text.Body1</item>
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
+        <item name="colorSecondary">@color/secondary</item>
     </style>
 
-    <style name="HomeDark" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimaryDark">@color/darkPrimaryDark</item>
-        <item name="colorPrimary">@color/darkPrimary</item>
-        <item name="colorSecondary">@color/secondary</item>
+    <style name="Base.Dark" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
         <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
         <item name="textAppearanceHeadline1">@style/Text.H1</item>
@@ -114,31 +107,79 @@
         <item name="textAppearanceOverline">@style/Text.Overline</item>
         <item name="android:spinnerItemStyle">@style/Text.Body1</item>
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
+        <item name="colorSecondary">@color/secondary</item>
     </style>
 
-    <style name="HomeBlack" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/blackPrimaryDark</item>
-        <item name="colorPrimary">@color/blackPrimary</item>
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="android:windowBackground">@color/blackPrimary</item>
-        <item name="android:colorBackground">@color/blackPrimary</item>
+    <style name="PureWhite" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/pureWhite</item>
+        <item name="colorPrimary">@color/pureWhite</item>
+        <item name="android:windowBackground">@color/pureWhite</item>
+        <item name="android:colorBackground">@color/pureWhite</item>
+    </style>
+
+    <style name="Light1" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
+        <item name="colorPrimary">@color/lightPrimary1</item>
+        <item name="android:windowBackground">@color/lightPrimary1</item>
+        <item name="android:colorBackground">@color/lightPrimary1</item>
+    </style>
+
+    <style name="Light2" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark2</item>
+        <item name="colorPrimary">@color/lightPrimary2</item>
+        <item name="android:windowBackground">@color/lightPrimary2</item>
+        <item name="android:colorBackground">@color/lightPrimary2</item>
+    </style>
+
+    <style name="Light3" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark3</item>
+        <item name="colorPrimary">@color/lightPrimary3</item>
+        <item name="android:windowBackground">@color/lightPrimary3</item>
+        <item name="android:colorBackground">@color/lightPrimary3</item>
+    </style>
+
+    <style name="Light4" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark4</item>
+        <item name="colorPrimary">@color/lightPrimary4</item>
+        <item name="android:windowBackground">@color/lightPrimary4</item>
+        <item name="android:colorBackground">@color/lightPrimary4</item>
+    </style>
+
+    <style name="Dark1" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimaryDark1</item>
+        <item name="colorPrimary">@color/darkPrimary1</item>
+        <item name="android:windowBackground">@color/darkPrimary1</item>
+        <item name="android:colorBackground">@color/darkPrimary1</item>
+    </style>
+
+    <style name="Dark2" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimaryDark2</item>
+        <item name="colorPrimary">@color/darkPrimary2</item>
+        <item name="android:windowBackground">@color/darkPrimary2</item>
+        <item name="android:colorBackground">@color/darkPrimary2</item>
+    </style>
+
+    <style name="Dark3" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimaryDark3</item>
+        <item name="colorPrimary">@color/darkPrimary3</item>
+        <item name="android:windowBackground">@color/darkPrimary3</item>
+        <item name="android:colorBackground">@color/darkPrimary3</item>
+    </style>
+
+    <style name="Dark4" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimaryDark4</item>
+        <item name="colorPrimary">@color/darkPrimary4</item>
+        <item name="android:windowBackground">@color/darkPrimary4</item>
+        <item name="android:colorBackground">@color/darkPrimary4</item>
+    </style>
+
+    <style name="PureBlack" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/pureBlackDark</item>
+        <item name="colorPrimary">@color/pureBlack</item>
+        <item name="android:windowBackground">@color/pureBlack</item>
+        <item name="android:colorBackground">@color/pureBlack</item>
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
         <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
-        <item name="textAppearanceHeadline1">@style/Text.H1</item>
-        <item name="textAppearanceHeadline2">@style/Text.H2</item>
-        <item name="textAppearanceHeadline3">@style/Text.H3</item>
-        <item name="textAppearanceHeadline4">@style/Text.H4</item>
-        <item name="textAppearanceHeadline5">@style/Text.H5</item>
-        <item name="textAppearanceHeadline6">@style/Text.H6</item>
-        <item name="textAppearanceSubtitle1">@style/Text.Sub1</item>
-        <item name="textAppearanceSubtitle2">@style/Text.Sub2</item>
-        <item name="textAppearanceBody1">@style/Text.Body1</item>
-        <item name="textAppearanceBody2">@style/Text.Body2</item>
-        <item name="textAppearanceCaption">@style/Text.Caption</item>
-        <item name="textAppearanceButton">@style/Text.Button</item>
-        <item name="textAppearanceOverline">@style/Text.Overline</item>
-        <item name="android:spinnerItemStyle">@style/Text.Body1</item>
-        <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
     </style>
 
     <style name="HomeWhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">
@@ -149,20 +190,20 @@
 
     <style name="HomeDarkDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorSecondary">@color/secondary</item>
-        <item name="colorBackgroundFloating">@color/darkPrimary</item>
-        <item name="scrimBackground">@color/darkPrimary</item>
-        <item name="android:colorBackground">@color/darkPrimary</item>
-        <item name="android:popupBackground">@color/darkPrimary</item>
-        <item name="android:windowBackground">@color/darkPrimary</item>
+        <item name="colorBackgroundFloating">@color/darkPrimary1</item>
+        <item name="scrimBackground">@color/darkPrimary1</item>
+        <item name="android:colorBackground">@color/darkPrimary1</item>
+        <item name="android:popupBackground">@color/darkPrimary1</item>
+        <item name="android:windowBackground">@color/darkPrimary1</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="HomeBlackDialog" parent="HomeDarkDialog">
         <item name="colorSecondary">@color/secondary</item>
-        <item name="android:colorBackground">@color/blackPrimary</item>
-        <item name="android:popupBackground">@color/blackPrimary</item>
-        <item name="android:windowBackground">@color/blackPrimary</item>
+        <item name="android:colorBackground">@color/pureBlack</item>
+        <item name="android:popupBackground">@color/pureBlack</item>
+        <item name="android:windowBackground">@color/pureBlack</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>

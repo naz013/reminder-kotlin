@@ -1,11 +1,7 @@
 package com.elementary.tasks.navigation
 
-import android.view.View
-
-import com.elementary.tasks.core.views.FilterView
-
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.core.views.FilterView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,13 +30,9 @@ interface FragmentCallback {
 
     fun onFragmentSelect(fragment: Fragment)
 
-    fun onThemeChange(primary: Int, primaryDark: Int, accent: Int)
-
     fun refreshMenu()
 
     fun onMenuSelect(menu: Int)
-
-    fun onScrollChanged(recyclerView: RecyclerView?)
 
     fun addFilters(filters: List<FilterView.Filter>, clear: Boolean)
 

@@ -108,7 +108,6 @@ class GroupsFragment : BaseNavigationFragment() {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.groups))
             callback?.onFragmentSelect(this)
-            callback?.onScrollChanged(recyclerView)
         }
     }
 

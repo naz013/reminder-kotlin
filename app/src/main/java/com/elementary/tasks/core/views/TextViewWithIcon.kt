@@ -89,7 +89,7 @@ class TextViewWithIcon : RoboTextView {
                     if (isDark) {
                         DrawableCompat.setTint(drawableLeft, ContextCompat.getColor(context, R.color.whitePrimary))
                     } else {
-                        DrawableCompat.setTint(drawableLeft, ContextCompat.getColor(context, R.color.blackPrimary))
+                        DrawableCompat.setTint(drawableLeft, ContextCompat.getColor(context, R.color.pureBlack))
                     }
                 }
                 setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)

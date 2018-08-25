@@ -65,7 +65,7 @@ class ThemedImageButton : AppCompatImageButton {
                 if (themeUtil.isDark) {
                     DrawableCompat.setTint(drawable, ContextCompat.getColor(context!!, R.color.whitePrimary))
                 } else {
-                    DrawableCompat.setTint(drawable, ContextCompat.getColor(context!!, R.color.blackPrimary))
+                    DrawableCompat.setTint(drawable, ContextCompat.getColor(context!!, R.color.pureBlack))
                 }
                 val message = a.getString(R.styleable.ThemedImageButton_tb_message)
                 if (message != null) {

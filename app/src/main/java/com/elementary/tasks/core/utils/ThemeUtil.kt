@@ -34,7 +34,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     val isDark: Boolean
         get() {
             val appTheme = prefs.appTheme
-            val isDark = appTheme == THEME_DARK || appTheme == THEME_AMOLED
+            val isDark = appTheme > THEME_LIGHT_4
             if (appTheme == THEME_AUTO) {
                 val calendar = Calendar.getInstance()
                 val mTime = System.currentTimeMillis()
@@ -51,17 +51,40 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
 
     val style: Int
         @StyleRes
-        get() {
-            return if (isDark) {
-                if (prefs.appTheme == THEME_AMOLED) {
-                    R.style.HomeBlack
-                } else {
-                    R.style.HomeDark
+        get() = if (Module.isPro) {
+                when (prefs.appTheme) {
+                    THEME_AUTO -> {
+                        if (isDark) {
+                            R.style.Dark1
+                        } else {
+                            R.style.Light1
+                        }
+                    }
+                    THEME_PURE_BLACK -> R.style.PureBlack
+                    THEME_PURE_WHITE -> R.style.PureWhite
+                    THEME_LIGHT_1 -> R.style.Light1
+                    THEME_LIGHT_2 -> R.style.Light2
+                    THEME_LIGHT_3 -> R.style.Light3
+                    THEME_LIGHT_4 -> R.style.Light4
+                    THEME_DARK_1 -> R.style.Dark1
+                    THEME_DARK_2 -> R.style.Dark2
+                    THEME_DARK_3 -> R.style.Dark3
+                    THEME_DARK_4 -> R.style.Dark4
+                    else -> {
+                        R.style.Light1
+                    }
                 }
             } else {
-                R.style.HomeWhite
+                if (isDark) {
+                    if (prefs.appTheme == THEME_PURE_BLACK) {
+                        R.style.PureBlack
+                    } else {
+                        R.style.Dark1
+                    }
+                } else {
+                    R.style.Light1
+                }
             }
-        }
 
     val indicator: Int
         @DrawableRes
@@ -71,8 +94,8 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         @ColorInt
         get() {
             val color: Int = if (isDark) {
-                if (prefs.appTheme == THEME_AMOLED) {
-                    R.color.blackPrimary
+                if (prefs.appTheme == THEME_PURE_BLACK) {
+                    R.color.pureBlack
                 } else {
                     R.color.material_grey
                 }
@@ -86,7 +109,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         @StyleRes
         get() {
             return if (isDark) {
-                if (prefs.appTheme == THEME_AMOLED) {
+                if (prefs.appTheme == THEME_PURE_BLACK) {
                     R.style.HomeBlackDialog
                 } else {
                     R.style.HomeDarkDialog
@@ -100,8 +123,8 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         @ColorInt
         get() {
             return if (isDark) {
-                if (prefs.appTheme == THEME_AMOLED) {
-                    getColor(R.color.blackPrimary)
+                if (prefs.appTheme == THEME_PURE_BLACK) {
+                    getColor(R.color.pureBlack)
                 } else {
                     getColor(R.color.material_grey)
                 }
@@ -114,8 +137,8 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         @ColorInt
         get() {
             return if (isDark) {
-                if (prefs.appTheme == THEME_AMOLED) {
-                    getColor(R.color.blackPrimary)
+                if (prefs.appTheme == THEME_PURE_BLACK) {
+                    getColor(R.color.pureBlack)
                 } else {
                     getColor(R.color.grey_x)
                 }
@@ -651,25 +674,23 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         }
     }
 
-    private interface Color {
-        companion object {
-            const val RED = 0
-            const val PURPLE = 1
-            const val LIGHT_GREEN = 2
-            const val GREEN = 3
-            const val LIGHT_BLUE = 4
-            const val BLUE = 5
-            const val YELLOW = 6
-            const val ORANGE = 7
-            const val CYAN = 8
-            const val PINK = 9
-            const val TEAL = 10
-            const val AMBER = 11
-            const val DEEP_PURPLE = 12
-            const val DEEP_ORANGE = 13
-            const val LIME = 14
-            const val INDIGO = 15
-        }
+    private object Color {
+        const val RED = 0
+        const val PURPLE = 1
+        const val LIGHT_GREEN = 2
+        const val GREEN = 3
+        const val LIGHT_BLUE = 4
+        const val BLUE = 5
+        const val YELLOW = 6
+        const val ORANGE = 7
+        const val CYAN = 8
+        const val PINK = 9
+        const val TEAL = 10
+        const val AMBER = 11
+        const val DEEP_PURPLE = 12
+        const val DEEP_ORANGE = 13
+        const val LIME = 14
+        const val INDIGO = 15
     }
 
     class Marker internal constructor(@param:ColorRes @field:ColorRes
@@ -680,9 +701,16 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
 
     companion object {
         const val THEME_AUTO = 0
-        const val THEME_WHITE = 1
-        private const val THEME_DARK = 2
-        const val THEME_AMOLED = 3
+        const val THEME_PURE_WHITE = 1
+        const val THEME_LIGHT_1 = 2
+        const val THEME_LIGHT_2 = 3
+        const val THEME_LIGHT_3 = 4
+        const val THEME_LIGHT_4 = 5
+        const val THEME_DARK_1 = 6
+        const val THEME_DARK_2 = 7
+        const val THEME_DARK_3 = 8
+        const val THEME_DARK_4 = 9
+        const val THEME_PURE_BLACK = 10
         const val NUM_OF_MARKERS = 16
     }
 }

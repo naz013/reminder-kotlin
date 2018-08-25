@@ -94,7 +94,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         if (isDark) {
             DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
         } else {
-            DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.blackPrimary))
+            DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.pureBlack))
         }
         menu?.getItem(0)?.icon = searchIcon
         mSearchMenu = menu?.findItem(R.id.action_search)
@@ -116,7 +116,11 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
                 }
             }
         }
-        menu?.findItem(R.id.action_delete_all)?.isVisible = viewModel.events.value?.size ?: 0 > 0
+
+        val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
+        menu?.getItem(0)?.isVisible = isNotEmpty
+        menu?.getItem(1)?.isVisible = isNotEmpty
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -136,6 +140,10 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initList()
+        initViewModel()
+    }
+
+    private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ArchiveRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer{ reminders ->
             if (reminders != null) {
@@ -147,8 +155,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.trash))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.trash))
+            callback?.onFragmentSelect(this)
         }
     }
 
@@ -161,6 +169,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         filterController.original = result.toMutableList()
         reloadView()
         refreshFilters()
+        activity?.invalidateOptionsMenu()
     }
 
     private fun showActionDialog(reminder: Reminder, view: View) {

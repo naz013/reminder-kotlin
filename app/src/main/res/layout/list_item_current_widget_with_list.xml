@@ -15,7 +15,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:singleLine="true"
-        android:textColor="@color/blackPrimary"
+        android:textColor="@color/pureBlack"
         app:font_style="roboto_medium" />
 
     <LinearLayout

@@ -121,7 +121,6 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.places))
             callback?.onFragmentSelect(this)
-            callback?.onScrollChanged(recyclerView)
         }
     }
 

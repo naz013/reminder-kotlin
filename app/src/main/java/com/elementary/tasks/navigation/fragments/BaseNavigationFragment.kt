@@ -23,8 +23,6 @@ abstract class BaseNavigationFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback?.onThemeChange(0, 0, 0)
-            callback?.onScrollChanged(null)
             callback?.addFilters(listOf(), true)
         }
     }

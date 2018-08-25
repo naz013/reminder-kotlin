@@ -53,8 +53,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="5dp"
                     android:hint="@string/note"
-                    android:textColor="@color/blackPrimary"
-                    android:textColorHint="@color/blackPrimary"
+                    android:textColor="@color/pureBlack"
+                    android:textColorHint="@color/pureBlack"
                     android:textSize="@dimen/create_note_text_size" />
 
                 <LinearLayout
@@ -72,7 +72,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="27/11/2014"
-                        android:textColor="@color/blackPrimary"
+                        android:textColor="@color/pureBlack"
                         android:textSize="@dimen/create_note_text_size_secondary"
                         app:font_style="roboto_medium" />
 
@@ -86,7 +86,7 @@
                         android:layout_marginStart="12dp"
                         android:gravity="center"
                         android:text="20:00"
-                        android:textColor="@color/blackPrimary"
+                        android:textColor="@color/pureBlack"
                         android:textSize="@dimen/create_note_text_size_secondary"
                         app:font_style="roboto_medium" />
 

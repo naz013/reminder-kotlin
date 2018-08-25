@@ -250,7 +250,7 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun initColorControls() {
-        setColor(R.color.blackPrimary)
+        setColor(R.color.pureBlack)
         setCurrentColor(colorBlackButton)
         isFillPicker = true
         setColor(R.color.whitePrimary)
@@ -263,7 +263,7 @@ class DrawFragment : BitmapFragment() {
                     setCurrentColor(colorAmberButton)
                 }
                 R.id.colorBlackButton -> {
-                    setColor(R.color.blackPrimary)
+                    setColor(R.color.pureBlack)
                     setCurrentColor(colorBlackButton)
                 }
                 R.id.colorBlueButton -> {
@@ -670,7 +670,7 @@ class DrawFragment : BitmapFragment() {
         var id = 0
         when (color) {
             R.color.amberPrimary -> id = R.id.colorAmberButton
-            R.color.blackPrimary -> id = R.id.colorBlackButton
+            R.color.pureBlack -> id = R.id.colorBlackButton
             R.color.bluePrimary -> id = R.id.colorBlueButton
             R.color.blueLightPrimary -> id = R.id.colorBlueLightButton
             R.color.cyanPrimary -> id = R.id.colorCyanButton
