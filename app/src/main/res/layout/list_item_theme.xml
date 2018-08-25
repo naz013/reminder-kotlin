@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/borderView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pureBlack"
+        android:visibility="visible" />
+
+    <View
+        android:id="@+id/selectionView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="1dp"
+        android:background="?colorSecondary"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:background="@color/whitePrimary"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/statusView"
+            android:layout_width="match_parent"
+            android:background="@color/darkPrimaryDark1"
+            android:layout_height="24dp" />
+
+        <View
+            android:id="@+id/barView"
+            android:layout_width="match_parent"
+            android:background="@color/darkPrimary1"
+            android:layout_height="56dp" />
+
+        <View
+            android:id="@+id/bgView"
+            android:background="@color/darkPrimary1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/lockView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:background="@color/secondary_12"
+        android:padding="96dp"
+        app:srcCompat="@drawable/ic_twotone_lock_24px"
+        app:tint="?colorSecondary" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:textAppearance="@style/Text.H3"
+        android:textColor="?colorSecondary"
+        tools:text="@string/auto" />
+
+</RelativeLayout>

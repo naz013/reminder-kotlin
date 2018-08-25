@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/windowBackground"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
@@ -19,25 +18,15 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/windowBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
 
-        <com.elementary.tasks.core.views.ColorPickerView
-            android:id="@+id/pickerView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/themes_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_palette_white_24dp" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
