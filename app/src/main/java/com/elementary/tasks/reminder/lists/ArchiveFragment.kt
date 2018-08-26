@@ -15,8 +15,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
@@ -90,13 +90,18 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_trash, menu)
-        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_search_black_24dp)
+        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
+        val deleteIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_delete_sweep_24px)
         if (isDark) {
             DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
+            DrawableCompat.setTint(deleteIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
         } else {
             DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.pureBlack))
+            DrawableCompat.setTint(deleteIcon!!, ContextCompat.getColor(context!!, R.color.pureBlack))
         }
         menu?.getItem(0)?.icon = searchIcon
+        menu?.getItem(1)?.icon = deleteIcon
+
         mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
