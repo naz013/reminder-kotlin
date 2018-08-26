@@ -98,9 +98,9 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_active_menu, menu)
-        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_search_black_24dp)
-        val micIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_microphone_black)
-        val filterIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_filter_list_black_24dp)
+        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
+        val micIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_mic_24px)
+        val filterIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_filter_list_24px)
         if (isDark) {
             val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
             DrawableCompat.setTint(searchIcon!!, white)

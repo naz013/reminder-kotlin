@@ -4,20 +4,20 @@
 
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black_24dp"
+        android:icon="@drawable/ic_twotone_search_24px"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/action_voice"
-        android:icon="@drawable/ic_microphone_black"
+        android:icon="@drawable/ic_twotone_mic_24px"
         android:title="@string/voice_control"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/ic_filter_list_black_24dp"
+        android:icon="@drawable/ic_twotone_filter_list_24px"
         android:title="@string/filter"
         app:showAsAction="ifRoom" />
 </menu>
