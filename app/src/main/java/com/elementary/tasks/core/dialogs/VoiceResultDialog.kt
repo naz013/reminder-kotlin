@@ -116,7 +116,7 @@ class VoiceResultDialog : BaseDialog() {
         } else {
             binding.endContainer.visibility = View.VISIBLE
         }
-        binding.reminder_type.text = reminderUtils.getTypeString(reminder.type)
+        binding.chipType.text = reminderUtils.getTypeString(reminder.type)
     }
 
     private fun loadContact(model: Reminder, itemView: View) {

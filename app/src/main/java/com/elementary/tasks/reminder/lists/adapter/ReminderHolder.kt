@@ -69,7 +69,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadType(type: Int) {
-        itemView.reminder_type.text = reminderUtils.getTypeString(type)
+        itemView.chipType.text = reminderUtils.getTypeString(type)
     }
 
     private fun loadLeft(item: Reminder) {

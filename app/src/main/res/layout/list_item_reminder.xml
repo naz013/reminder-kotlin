@@ -47,16 +47,47 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/reminder_type"
-                style="?textAppearanceBody2"
-                android:layout_width="0dp"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipType"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+
+                android:textColor="?android:textColorPrimary"
+                app:chipBackgroundColor="@android:color/transparent"
+                app:chipStrokeColor="@color/redPrimary"
+                app:chipStrokeWidth="1dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/timer" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Group"
+                android:textColor="?android:textColorPrimary"
+                app:chipBackgroundColor="@android:color/transparent"
+                app:chipIcon="@drawable/ic_twotone_local_offer_24px"
+                app:chipIconSize="16dp"
+                app:chipIconTint="?android:textColorPrimary"
+                app:chipStrokeColor="@color/redPrimary"
+                app:chipStrokeWidth="1dp"
+                app:layout_constraintStart_toEndOf="@+id/chipType"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="High"
+                android:textColor="?android:textColorPrimary"
+                app:chipBackgroundColor="@android:color/transparent"
+                app:chipStrokeColor="@color/redPrimary"
+                app:chipStrokeWidth="1dp"
+                app:layout_constraintStart_toEndOf="@+id/chipGroup"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/taskText"
@@ -68,7 +99,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                app:layout_constraintTop_toBottomOf="@+id/reminder_type"
+                app:layout_constraintTop_toBottomOf="@+id/chipType"
                 tools:text="Hello" />
 
             <TextView
@@ -132,8 +163,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/button_more"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:scaleType="centerInside"
                 app:layout_constraintRight_toRightOf="parent"
