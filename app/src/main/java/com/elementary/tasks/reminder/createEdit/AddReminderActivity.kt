@@ -167,7 +167,7 @@ class AddReminderActivity : ThemedActivity() {
         reminder.summary = summary
         val item = viewModel.defaultReminderGroup.value
         if (item != null) {
-            reminder.groupUuId = item.uuId
+            reminder.groupUuId = item.groupUuId
         }
         LogUtil.d(TAG, "prepare: $type")
         reminder.remindBefore = before

@@ -49,8 +49,8 @@ abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(a
                 result.postValue(Commands.DELETED)
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.uuId).build())
-                    .addTag(reminderGroup.uuId)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())
+                    .addTag(reminderGroup.groupUuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.google.gson.annotations.SerializedName
-
-import java.util.UUID
-
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.elementary.tasks.core.utils.TimeUtil
+import com.google.gson.annotations.SerializedName
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,37 +28,39 @@ import androidx.room.PrimaryKey
 @Entity
 class ReminderGroup {
 
-    @SerializedName("title")
-    var title: String = ""
-    @SerializedName("uuId")
+    @SerializedName("groupTitle")
+    var groupTitle: String = ""
+    @SerializedName("groupUuId")
     @PrimaryKey
-    var uuId: String = ""
+    var groupUuId: String = ""
     @SerializedName("color")
-    var color: Int = 0
-    @SerializedName("dateTime")
-    var dateTime: String = ""
+    var groupColor: Int = 0
+    @SerializedName("groupDateTime")
+    var groupDateTime: String = ""
+    @SerializedName("isDefaultGroup")
+    var isDefaultGroup: Boolean = false
 
     constructor() {
-        this.uuId = UUID.randomUUID().toString()
+        this.groupUuId = UUID.randomUUID().toString()
     }
 
     @Ignore
     constructor(title: String, color: Int) {
-        this.title = title
-        this.uuId = UUID.randomUUID().toString()
-        this.color = color
-        this.dateTime = TimeUtil.gmtDateTime
+        this.groupTitle = title
+        this.groupUuId = UUID.randomUUID().toString()
+        this.groupColor = color
+        this.groupDateTime = TimeUtil.gmtDateTime
     }
 
     @Ignore
     constructor(title: String, uuId: String, color: Int, dateTime: String) {
-        this.title = title
-        this.uuId = uuId
-        this.color = color
-        this.dateTime = dateTime
+        this.groupTitle = title
+        this.groupUuId = uuId
+        this.groupColor = color
+        this.groupDateTime = dateTime
     }
 
     override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, ReminderGroup::class.java)
+        return "ReminderGroup(groupTitle='$groupTitle', groupUuId='$groupUuId', groupColor=$groupColor, groupDateTime='$groupDateTime')"
     }
 }

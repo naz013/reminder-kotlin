@@ -274,7 +274,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
                             val group = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
                             var categoryId = ""
                             if (group != null) {
-                                categoryId = group.uuId
+                                categoryId = group.groupUuId
                             }
                             val calendar = Calendar.getInstance()
                             var dtStart = item.dtStart

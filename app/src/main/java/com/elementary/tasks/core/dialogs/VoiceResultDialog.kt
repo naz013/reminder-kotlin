@@ -80,11 +80,11 @@ class VoiceResultDialog : BaseDialog() {
     }
 
     private fun bind(binding: View, reminder: Reminder) {
-        if (reminder.reminderGroup != null) {
-            binding.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminder.reminderGroup!!.color)))
-        } else {
-            binding.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
-        }
+//        if (reminder.reminderGroup != null) {
+//            binding.itemCard.setCardBackgroundColor(themeUtil.getGroupColor(themeUtil.getCategoryColor(reminder.reminderGroup!!.groupColor)))
+//        } else {
+//            binding.itemCard.setCardBackgroundColor(themeUtil.getGroupColor(themeUtil.getCategoryColor(0)))
+//        }
         val is24 = prefs.is24HourFormatEnabled
         if (Reminder.isGpsType(reminder.type)) {
             val place = reminder.places[0]

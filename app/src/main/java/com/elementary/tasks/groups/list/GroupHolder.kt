@@ -41,8 +41,8 @@ class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?
     }
 
     fun setData(item: ReminderGroup) {
-        itemView.textView.text = item.title
-        loadIndicator(itemView.indicator, item.color)
+        itemView.textView.text = item.groupTitle
+        loadIndicator(itemView.indicator, item.groupColor)
     }
 
     private fun loadIndicator(view: View, color: Int) {

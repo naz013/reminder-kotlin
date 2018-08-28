@@ -256,41 +256,44 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         val res: String
         when {
             Reminder.isKind(type, Reminder.Kind.CALL) -> {
-                val init = context.getString(R.string.make_call)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.make_call)
             }
             Reminder.isKind(type, Reminder.Kind.SMS) -> {
-                val init = context.getString(R.string.message)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.message)
             }
             Reminder.isSame(type, Reminder.BY_SKYPE_CALL) -> {
-                val init = context.getString(R.string.skype_call)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.skype_call)
             }
             Reminder.isSame(type, Reminder.BY_SKYPE) -> {
-                val init = context.getString(R.string.skype_chat)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.skype_chat)
             }
             Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO) -> {
-                val init = context.getString(R.string.video_call)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.video_call)
             }
             Reminder.isSame(type, Reminder.BY_DATE_APP) -> {
-                val init = context.getString(R.string.application)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.application)
             }
             Reminder.isSame(type, Reminder.BY_DATE_LINK) -> {
-                val init = context.getString(R.string.open_link)
-                res = init + " (" + getType(type) + ")"
+                res = context.getString(R.string.open_link)
             }
             Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> res = context.getString(R.string.shopping_list)
             Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> res = context.getString(R.string.e_mail)
             else -> {
-                val init = context.getString(R.string.reminder)
-                res = init + " (" + getType(type) + ")"
+                res = getType(type)
             }
         }
         return res
+    }
+
+    fun getPriorityTitle(priority: Int): String {
+        return when (priority) {
+            0 -> "Lowest"
+            1 -> "Low"
+            2 -> context.getString(R.string.default_string)
+            3 -> "High"
+            4 -> "Highest"
+            else -> context.getString(R.string.default_string)
+        }
     }
 
     fun getType(type: Int): String {

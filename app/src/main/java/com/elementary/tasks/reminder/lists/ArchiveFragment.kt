@@ -265,8 +265,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
         for (i in reminderGroups.indices) {
             val item = reminderGroups[i]
-            filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.color), item.title, i + 1))
-            mGroupsIds.add(item.uuId)
+            filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.groupColor), item.groupTitle, i + 1))
+            mGroupsIds.add(item.groupUuId)
         }
         filters.add(filter)
     }

@@ -34,12 +34,12 @@ class GroupsViewModel(application: Application) : BaseGroupsViewModel(applicatio
     fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
         isInProgress.postValue(true)
         val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.uuId).build())
-                .addTag(reminderGroup.uuId)
+                .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())
+                .addTag(reminderGroup.groupUuId)
                 .build()
         WorkManager.getInstance().enqueue(work)
         launch(CommonPool) {
-            reminderGroup.color = color
+            reminderGroup.groupColor = color
             appDb.reminderGroupDao().insert(reminderGroup)
             withUIContext { isInProgress.postValue(false) }
         }

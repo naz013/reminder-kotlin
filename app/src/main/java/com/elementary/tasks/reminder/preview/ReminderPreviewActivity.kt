@@ -112,8 +112,8 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun showGroup(reminderGroup: ReminderGroup) {
-        val catColor = reminderGroup.color
-        group.text = reminderGroup.title
+        val catColor = reminderGroup.groupColor
+        group.text = reminderGroup.groupTitle
         val mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor))
         appBar.setBackgroundColor(mColor)
         if (Module.isLollipop) {

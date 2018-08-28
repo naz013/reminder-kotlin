@@ -33,6 +33,6 @@ object GroupsUtil {
         dao.insert(def)
         dao.insert(ReminderGroup(context.getString(R.string.work), random.nextInt(16)))
         dao.insert(ReminderGroup(context.getString(R.string.personal), random.nextInt(16)))
-        return def.uuId
+        return def.groupUuId
     }
 }

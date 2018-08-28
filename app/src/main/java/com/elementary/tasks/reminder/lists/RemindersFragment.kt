@@ -355,8 +355,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
         for (i in reminderGroups.indices) {
             val item = reminderGroups[i]
-            filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.color), item.title, i + 1))
-            mGroupsIds.add(item.uuId)
+            filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.groupColor), item.groupTitle, i + 1))
+            mGroupsIds.add(item.groupUuId)
         }
         filters.add(filter)
     }
@@ -368,8 +368,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         val groups = viewModel.allGroups.value
         if (groups != null) {
             for (item in groups) {
-                arrayAdapter.add(item.title)
-                mGroupsIds.add(item.uuId)
+                arrayAdapter.add(item.groupTitle)
+                mGroupsIds.add(item.groupUuId)
             }
         }
         val builder = dialogues.getDialog(context!!)

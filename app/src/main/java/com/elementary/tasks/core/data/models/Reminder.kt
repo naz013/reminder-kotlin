@@ -6,7 +6,6 @@ import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
 import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.reminder.createEdit.fragments.ReminderInterface
 import com.google.gson.annotations.SerializedName
@@ -48,7 +47,7 @@ class Reminder : RecyclerInterface {
     @SerializedName("groupUuId")
     var groupUuId: String = ""
     @PrimaryKey
-    @SerializedName("uuId")
+    @SerializedName("groupUuId")
     var uuId: String = ""
     @SerializedName("eventTime")
     var eventTime: String = ""
@@ -134,9 +133,10 @@ class Reminder : RecyclerInterface {
     var windowType = 0
     @SerializedName("priority")
     var priority = 0
-    @Ignore
-    @Relation(entity = ReminderGroup::class, parentColumn = "groupUuId", entityColumn = "uuId")
-    var reminderGroup: ReminderGroup? = null
+    @ColumnInfo(name = "groupTitle")
+    var groupTitle: String = ""
+    @ColumnInfo(name = "groupColor")
+    var groupColor: Int = 0
 
     val dateTime: Long
         get() = TimeUtil.getDateTimeFromGmt(eventTime)
@@ -234,7 +234,7 @@ class Reminder : RecyclerInterface {
 
     fun setClear(mInterface: ReminderInterface) {
         summary = mInterface.summary
-        groupUuId = mInterface.reminderGroup?.uuId ?: ""
+        groupUuId = mInterface.reminderGroup?.groupUuId ?: ""
         repeatLimit = mInterface.repeatLimit
         color = mInterface.ledColor
         melodyPath = mInterface.melodyPath
@@ -255,8 +255,22 @@ class Reminder : RecyclerInterface {
     }
 
     override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, Reminder::class.java)
+        return "Reminder(summary='$summary', noteId='$noteId', reminderType=$reminderType, " +
+                "groupUuId='$groupUuId', groupUuId='$uuId', eventTime='$eventTime', startTime='$startTime', " +
+                "eventCount=$eventCount, groupColor=$color, delay=$delay, vibrate=$vibrate, " +
+                "repeatNotification=$repeatNotification, notifyByVoice=$notifyByVoice, awake=$awake, " +
+                "unlock=$unlock, exportToTasks=$exportToTasks, exportToCalendar=$exportToCalendar, " +
+                "useGlobal=$useGlobal, from='$from', to='$to', hours=$hours, fileName='$fileName', " +
+                "melodyPath='$melodyPath', volume=$volume, dayOfMonth=$dayOfMonth, monthOfYear=$monthOfYear, " +
+                "repeatInterval=$repeatInterval, repeatLimit=$repeatLimit, after=$after, weekdays=$weekdays, " +
+                "type=$type, target='$target', subject='$subject', attachmentFile='$attachmentFile', " +
+                "attachmentFiles=$attachmentFiles, auto=$auto, places=$places, shoppings=$shoppings, " +
+                "uniqueId=$uniqueId, isActive=$isActive, isRemoved=$isRemoved, " +
+                "isNotificationShown=$isNotificationShown, isLocked=$isLocked, duration=$duration, " +
+                "groupTitle=$groupTitle, groupColor=$groupColor, " +
+                "remindBefore=$remindBefore, windowType=$windowType, priority=$priority"
     }
+
 
     object Kind {
         const val SMS = 2
