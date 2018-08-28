@@ -46,7 +46,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     fun setData(reminder: Reminder) {
         itemView.shoppingTitle.text = reminder.summary
         loadShoppingDate(reminder.eventTime)
-        loadCard(reminder.reminderGroup)
+//        loadCard(reminder.reminderGroup)
         loadItems(reminder.shoppings)
     }
 
@@ -102,7 +102,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     private fun loadCard(reminderGroup: ReminderGroup?) {
         if (reminderGroup != null) {
-            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminderGroup.color)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminderGroup.groupColor)))
         } else {
             itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
         }

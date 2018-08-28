@@ -273,7 +273,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         val item = defaultReminderGroup.value
         var categoryId = ""
         if (item != null) {
-            categoryId = item.uuId
+            categoryId = item.groupUuId
         }
         val isCal = prefs.getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
         val isStock = prefs.getBoolean(PrefsConstants.EXPORT_TO_STOCK)
@@ -324,7 +324,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         mReminder.summary = summary
         val def = defaultReminderGroup.value
         if (def != null) {
-            mReminder.groupUuId = def.uuId
+            mReminder.groupUuId = def.groupUuId
         }
         mReminder.startTime = TimeUtil.getGmtFromDateTime(due)
         mReminder.eventTime = TimeUtil.getGmtFromDateTime(due)

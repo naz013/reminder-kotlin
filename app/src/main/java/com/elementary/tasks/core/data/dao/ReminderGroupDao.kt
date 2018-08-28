@@ -51,9 +51,9 @@ interface ReminderGroupDao {
     @Delete
     fun delete(reminderGroup: ReminderGroup)
 
-    @Query("SELECT * FROM ReminderGroup WHERE uuId=:id")
+    @Query("SELECT * FROM ReminderGroup WHERE groupUuId=:id")
     fun loadById(id: String): LiveData<ReminderGroup>
 
-    @Query("SELECT * FROM ReminderGroup WHERE uuId=:id")
+    @Query("SELECT * FROM ReminderGroup WHERE groupUuId=:id")
     fun getById(id: String): ReminderGroup?
 }

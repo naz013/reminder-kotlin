@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.lists.adapter
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +11,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -57,8 +58,8 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     fun setData(reminder: Reminder) {
+        Timber.d("setData: $reminder")
         itemView.taskText.text = reminder.summary
-        loadCard(reminder.reminderGroup)
         loadDate(reminder)
         loadCheck(reminder)
         loadContact(reminder)
@@ -66,6 +67,20 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         loadRepeat(reminder)
         loadContainer(reminder.type)
         loadType(reminder.type)
+        loadPriority(reminder.type)
+        loadGroup(reminder)
+    }
+
+    private fun loadGroup(reminder: Reminder) {
+        val colorStateList = ColorStateList.valueOf(themeUtil.getColor(themeUtil.getCategoryColor(reminder.groupColor)))
+        itemView.chipPriority.chipStrokeColor = colorStateList
+        itemView.chipType.chipStrokeColor = colorStateList
+        itemView.chipGroup.chipStrokeColor = colorStateList
+        itemView.chipGroup.text = reminder.groupTitle
+    }
+
+    private fun loadPriority(type: Int) {
+        itemView.chipPriority.text = reminderUtils.getPriorityTitle(type)
     }
 
     private fun loadType(type: Int) {
@@ -95,10 +110,6 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         } else {
             itemView.endContainer.visibility = View.VISIBLE
         }
-    }
-
-    private fun loadCard(reminderGroup: ReminderGroup?) {
-
     }
 
     private fun loadDate(model: Reminder) {

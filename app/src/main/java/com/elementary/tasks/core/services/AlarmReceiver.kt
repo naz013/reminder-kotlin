@@ -201,7 +201,7 @@ class AlarmReceiver : BaseBroadcast() {
                         val def = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
                         var categoryId = ""
                         if (def != null) {
-                            categoryId = def.uuId
+                            categoryId = def.groupUuId
                         }
                         val calendar = Calendar.getInstance()
                         var dtStart = item.dtStart

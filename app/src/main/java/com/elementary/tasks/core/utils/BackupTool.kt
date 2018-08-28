@@ -239,7 +239,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.groupsDir
         if (dir != null) {
-            val exportFileName = item.uuId + FileConfig.FILE_NAME_GROUP
+            val exportFileName = item.groupUuId + FileConfig.FILE_NAME_GROUP
             val file = File(dir, exportFileName)
             LogUtil.d(TAG, "exportGroup: $file")
             try {
@@ -264,8 +264,8 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         val item = getGroup(file.toString(), null)
-                        if (item == null || TextUtils.isEmpty(item.uuId)) continue
-                        if (!TextUtils.isEmpty(item.title) && !hasGroup(groups, item.title)) {
+                        if (item == null || TextUtils.isEmpty(item.groupUuId)) continue
+                        if (!TextUtils.isEmpty(item.groupTitle) && !hasGroup(groups, item.groupTitle)) {
                             appDb.reminderGroupDao().insert(item)
                             groups.add(item)
                         }
@@ -278,7 +278,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     private fun hasGroup(list: List<ReminderGroup>, comparable: String?): Boolean {
         if (comparable == null) return true
         for (item in list) {
-            if (comparable == item.title) {
+            if (comparable == item.groupTitle) {
                 return true
             }
         }
@@ -329,7 +329,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
                             continue
                         }
                         if (AppDb.getAppDatabase(mContext).reminderGroupDao().getById(reminder.groupUuId) == null && defaultGroup != null) {
-                            reminder.groupUuId = defaultGroup.uuId
+                            reminder.groupUuId = defaultGroup.groupUuId
                         }
                         AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)
                         val control = EventControlFactory.getController(reminder)

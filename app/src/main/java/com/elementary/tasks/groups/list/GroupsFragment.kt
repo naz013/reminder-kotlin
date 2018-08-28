@@ -44,7 +44,7 @@ class GroupsFragment : BaseNavigationFragment() {
     private val mEventListener = object : SimpleListener {
         override fun onItemClicked(position: Int, view: View) {
             startActivity(Intent(context, CreateGroupActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).uuId))
+                    .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).groupUuId))
         }
 
         override fun onItemLongClicked(position: Int, view: View) {
@@ -56,7 +56,7 @@ class GroupsFragment : BaseNavigationFragment() {
                 when (item) {
                     0 -> changeColor(mAdapter.getItem(position))
                     1 -> startActivity(Intent(context, CreateGroupActivity::class.java)
-                            .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).uuId))
+                            .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).groupUuId))
                     2 -> viewModel.deleteGroup(mAdapter.getItem(position))
                 }
             }, *items)

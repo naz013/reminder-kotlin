@@ -542,7 +542,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             reminder.summary = ""
         val def = reminderViewModel.defaultReminderGroup.value
         if (def != null) {
-            reminder.groupUuId = def.uuId
+            reminder.groupUuId = def.groupUuId
         }
         val startTime = calendar.timeInMillis
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)

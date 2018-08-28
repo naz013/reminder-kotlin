@@ -69,8 +69,8 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private fun showGroup(reminderGroup: ReminderGroup) {
         this.mItem = reminderGroup
-        editField.setText(reminderGroup.title)
-        color = reminderGroup.color
+        editField.setText(reminderGroup.groupTitle)
+        color = reminderGroup.groupColor
         pickerView.setSelectedColor(color)
         setColor(color)
         invalidateOptionsMenu()
@@ -131,9 +131,9 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         if (item == null) {
             item = ReminderGroup(text, UUID.randomUUID().toString(), color, TimeUtil.gmtDateTime)
         } else {
-            item.color = color
-            item.dateTime = TimeUtil.gmtDateTime
-            item.title = text
+            item.groupColor = color
+            item.groupDateTime = TimeUtil.gmtDateTime
+            item.groupTitle = text
         }
         viewModel.saveGroup(item)
     }

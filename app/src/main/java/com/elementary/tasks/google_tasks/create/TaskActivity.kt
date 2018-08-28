@@ -395,7 +395,7 @@ open class TaskActivity : ThemedActivity() {
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
         reminder.summary = task
-        reminder.groupUuId = group.uuId
+        reminder.groupUuId = group.groupUuId
         reminder.startTime = TimeUtil.getGmtFromDateTime(due)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(due)
         return reminder

@@ -173,7 +173,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         reminder.summary = item.summary
         val def = reminderViewModel.defaultReminderGroup.value
         if (def != null) {
-            reminder.groupUuId = def.uuId
+            reminder.groupUuId = def.groupUuId
         }
         val prefsTime = prefs.noteReminderTime * TimeCount.MINUTE
         val startTime = System.currentTimeMillis() + prefsTime

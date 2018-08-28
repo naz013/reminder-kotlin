@@ -251,7 +251,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         this.reminder = reminder
         viewModel.pauseReminder(reminder)
         taskSummary.setText(reminder.summary)
-        showGroup(reminder.reminderGroup)
+//        showGroup(reminder.reminderGroup)
         attachment = reminder.attachmentFile
         if (!TextUtils.isEmpty(attachment)) {
             attachmentButton.visibility = View.VISIBLE
@@ -340,11 +340,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun changeGroup() {
         val groups = viewModel.allGroups.value
-        val names = groups?.map { it.title } ?: listOf()
+        val names = groups?.map { it.groupTitle } ?: listOf()
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
-                android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminderGroup?.title ?: "")) { dialog, which ->
+                android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminderGroup?.groupTitle ?: "")) { dialog, which ->
             dialog.dismiss()
             if (groups != null) {
                 showGroup(groups[which])
@@ -356,7 +356,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun showGroup(item: ReminderGroup?) {
         if (item == null) return
-        groupButton.text = item.title
+        groupButton.text = item.groupTitle
         reminderGroup = item
     }
 
@@ -666,9 +666,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
             prefs.setShowcase(SHOWCASE, true)
             //            ShowcaseConfig config = new ShowcaseConfig();
             //            config.setDelay(350);
-            //            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
-            //            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
-            //            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+            //            config.setMaskColor(getThemeUtil().getGroupColor(getThemeUtil().colorAccent()));
+            //            config.setContentTextColor(getThemeUtil().getGroupColor(R.groupColor.whitePrimary));
+            //            config.setDismissTextColor(getThemeUtil().getGroupColor(R.groupColor.whitePrimary));
             //            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
             //            sequence.setConfig(config);
             //            sequence.addSequenceItem(binding.navSpinner,

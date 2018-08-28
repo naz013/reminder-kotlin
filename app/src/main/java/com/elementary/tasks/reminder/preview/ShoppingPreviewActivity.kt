@@ -102,9 +102,9 @@ class ShoppingPreviewActivity : ThemedActivity() {
         type.text = reminderUtils.getTypeString(reminder.type)
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
         var catColor = 0
-        if (reminder.reminderGroup != null) {
-            catColor = reminder.reminderGroup!!.color
-        }
+//        if (reminder.reminderGroup != null) {
+//            catColor = reminder.reminderGroup!!.groupColor
+//        }
         val mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor))
         appBar.setBackgroundColor(mColor)
         if (Module.isLollipop) {

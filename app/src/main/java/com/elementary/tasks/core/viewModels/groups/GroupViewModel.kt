@@ -46,8 +46,8 @@ class GroupViewModel private constructor(application: Application, id: String) :
         launch(CommonPool) {
             appDb.reminderGroupDao().insert(reminderGroup)
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.uuId).build())
-                    .addTag(reminderGroup.uuId)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())
+                    .addTag(reminderGroup.groupUuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
             withUIContext {
