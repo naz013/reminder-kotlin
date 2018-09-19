@@ -5,21 +5,18 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.animation.*
+import android.widget.ScrollView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
-import android.view.animation.Transformation
-
 import com.elementary.tasks.R
+import timber.log.Timber
+
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,6 +38,26 @@ import com.elementary.tasks.R
  */
 
 object ViewUtils {
+
+    fun listenScrollView(scrollView: ScrollView, listener: ((x: Int) -> Unit)?) {
+        val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
+            listener?.invoke(scrollView.scrollY)
+        }
+        scrollView.setOnTouchListener(object : View.OnTouchListener {
+            private var observer: ViewTreeObserver? = null
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                if (observer == null) {
+                    observer = scrollView.viewTreeObserver
+                    observer?.addOnScrollChangedListener(onScrollChangedListener)
+                } else if (!observer!!.isAlive) {
+                    observer?.removeOnScrollChangedListener(onScrollChangedListener)
+                    observer = scrollView.viewTreeObserver
+                    observer?.addOnScrollChangedListener(onScrollChangedListener)
+                }
+                return false
+            }
+        })
+    }
 
     fun getFabState(context: Context, @ColorRes colorNormal: Int, @ColorRes colorPressed: Int): ColorStateList {
         val states = arrayOf(intArrayOf(android.R.attr.state_pressed), intArrayOf(android.R.attr.state_focused), intArrayOf())

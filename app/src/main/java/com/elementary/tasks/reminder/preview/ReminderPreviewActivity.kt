@@ -10,6 +10,8 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -19,7 +21,6 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.*
@@ -93,13 +94,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer{ reminder ->
             if (reminder != null) {
-                viewModel.loadGroup(reminder.groupUuId)
                 showInfo(reminder)
-            }
-        })
-        viewModel.reminderGroup.observe(this, Observer {
-            if (it != null) {
-                showGroup(it)
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -109,16 +104,6 @@ class ReminderPreviewActivity : ThemedActivity() {
                 }
             }
         })
-    }
-
-    private fun showGroup(reminderGroup: ReminderGroup) {
-        val catColor = reminderGroup.groupColor
-        group.text = reminderGroup.groupTitle
-        val mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor))
-        appBar.setBackgroundColor(mColor)
-        if (Module.isLollipop) {
-            window.statusBarColor = themeUtil.getNoteDarkColor(catColor)
-        }
     }
 
     private fun showTask() {
@@ -171,18 +156,34 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun showInfo(reminder: Reminder) {
         this.reminder = reminder
-        statusSwitch.isChecked = reminder.isActive
-        if (!reminder.isActive) {
-            statusText.setText(R.string.disabled)
-        } else {
-            statusText.setText(R.string.enabled4)
-        }
+
+        group.text = reminder.groupTitle
+        showStatus(reminder)
         window_type_view.text = getWindowType(reminder.windowType)
         taskText.text = reminder.summary
         type.text = reminderUtils.getTypeString(reminder.type)
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
+
+        showDueAndRepeat(reminder)
+        showPhoneContact(reminder)
+        showMelody(reminder)
+        showAttachment(reminder)
+        if (Reminder.isGpsType(reminder.type)) {
+            initMap()
+        } else {
+            locationView.visibility = View.GONE
+            mapContainer.visibility = View.GONE
+        }
+
+        dataContainer.removeAllViewsInLayout()
+        Thread(NoteThread(mReadyCallback, reminder.noteId)).start()
+        Thread(TaskThread(mReadyCallback, reminder.uuId)).start()
+    }
+
+    private fun showDueAndRepeat(reminder: Reminder) {
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
+            timeView.visibility = View.VISIBLE
             time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, false)
             var repeatStr: String? = IntervalUtil.getInterval(this, reminder.repeatInterval)
             if (Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
@@ -190,26 +191,28 @@ class ReminderPreviewActivity : ThemedActivity() {
             }
             if (repeatStr != null) {
                 repeat.text = repeatStr
+                repeatView.visibility = View.VISIBLE
             } else {
-                repeat.visibility = View.GONE
+                repeatView.visibility = View.GONE
             }
         } else {
-            time.visibility = View.GONE
-            repeat.visibility = View.GONE
+            timeView.visibility = View.GONE
+            repeatView.visibility = View.GONE
         }
-        if (Reminder.isGpsType(reminder.type)) {
-            initMap()
-        } else {
-            location.visibility = View.GONE
-            mapContainer.visibility = View.GONE
-        }
+    }
+
+    private fun showPhoneContact(reminder: Reminder) {
         val numberStr = reminder.target
         if (!TextUtils.isEmpty(numberStr)) {
             number.text = numberStr
+            numberView.visibility = View.VISIBLE
         } else {
             number.visibility = View.GONE
+            numberView.visibility = View.GONE
         }
+    }
 
+    private fun showMelody(reminder: Reminder) {
         var file: File? = null
         if (!TextUtils.isEmpty(reminder.melodyPath)) {
             file = File(reminder.melodyPath)
@@ -225,12 +228,15 @@ class ReminderPreviewActivity : ThemedActivity() {
             }
         }
         if (file != null) melody.text = file.name
+    }
 
-
-        dataContainer.removeAllViewsInLayout()
-        showAttachment(reminder)
-        Thread(NoteThread(mReadyCallback, reminder.noteId)).start()
-        Thread(TaskThread(mReadyCallback, reminder.uuId)).start()
+    private fun showStatus(reminder: Reminder) {
+        statusSwitch.isChecked = reminder.isActive
+        if (!reminder.isActive) {
+            statusText.setText(R.string.disabled)
+        } else {
+            statusText.setText(R.string.enabled4)
+        }
     }
 
     private fun getWindowType(reminderWType: Int): String {
@@ -246,18 +252,35 @@ class ReminderPreviewActivity : ThemedActivity() {
         if (reminder != null) {
             if (reminder.attachmentFile != "") {
                 val file = File(reminder.attachmentFile)
-                attachment_view.text = file.name
-                attachment_view.visibility = View.VISIBLE
+                attachment.text = file.name
+                attachmentView.visibility = View.VISIBLE
             } else {
-                attachment_view.visibility = View.GONE
+                attachmentView.visibility = View.GONE
             }
         } else {
-            attachment_view.visibility = View.GONE
+            attachmentView.visibility = View.GONE
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_reminder_preview, menu)
+        val editIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_edit_24px)
+        val copyIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_file_copy_24px)
+        val deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_delete_24px)
+        if (isDark) {
+            val white = ContextCompat.getColor(this, R.color.whitePrimary)
+            DrawableCompat.setTint(editIcon!!, white)
+            DrawableCompat.setTint(copyIcon!!, white)
+            DrawableCompat.setTint(deleteIcon!!, white)
+        } else {
+            val black = ContextCompat.getColor(this, R.color.pureBlack)
+            DrawableCompat.setTint(editIcon!!, black)
+            DrawableCompat.setTint(copyIcon!!, black)
+            DrawableCompat.setTint(deleteIcon!!, black)
+        }
+        menu.getItem(0)?.icon = editIcon
+        menu.getItem(1)?.icon = copyIcon
+        menu.getItem(2)?.icon = deleteIcon
         return true
     }
 
@@ -382,7 +405,15 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        ViewUtils.listenScrollView(scrollView) {
+            appBar.isSelected = it > 0
+        }
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+        }
     }
 
     override fun onBackPressed() {
