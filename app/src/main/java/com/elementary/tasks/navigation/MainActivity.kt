@@ -25,7 +25,6 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.notes.NotesViewModel
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
-import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
 import com.elementary.tasks.navigation.fragments.*
@@ -73,9 +72,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             prefs.rateCount = count
             return count == 10
         }
-
-    override val isFiltersVisible: Boolean
-        get() = filterView.visibility == View.VISIBLE
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -246,32 +242,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         setMenuVisible()
     }
 
-    override fun addFilters(filters: List<FilterView.Filter>, clear: Boolean) {
-        if (filters.isEmpty()) {
-            hideFilters()
-            if (clear) {
-                filterView.clear()
-            }
-        } else {
-            if (clear) {
-                filterView.clear()
-            }
-            for (filter in filters) {
-                filterView.addFilter(filter)
-            }
-            ViewUtils.expand(filterView)
-        }
-    }
-
-    override fun hideFilters() {
-        if (isFiltersVisible) {
-            ViewUtils.collapse(filterView)
-        }
-    }
-
     override fun onScrollUpdate(y: Int) {
         Timber.d("onScrollUpdate: %s", y)
-        toolbar.isSelected = y > 0
+        appBar.isSelected = y > 0
     }
 
     override fun onMenuSelect(menu: Int) {
@@ -303,8 +276,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else if (isFiltersVisible) {
-            addFilters(listOf(), true)
         } else if (mNoteView != null && mNoteView!!.isNoteVisible) {
             mNoteView?.hideNoteView()
         } else {

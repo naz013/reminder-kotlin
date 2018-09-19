@@ -43,7 +43,7 @@ interface ReminderDao {
     fun getById(id: String): Reminder?
 
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC")
     fun loadByRemoved(removed: Boolean): LiveData<List<Reminder>>
 
     @Transaction

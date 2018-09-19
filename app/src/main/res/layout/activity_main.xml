@@ -20,25 +20,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
-                app:elevation="0dp">
+                android:stateListAnimator="@animator/toolbar_animator"
+                tools:targetApi="lollipop">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:stateListAnimator="@animator/toolbar_animator"
-                    tools:title="Test"
-                    tools:targetApi="lollipop" />
-
-                <com.elementary.tasks.core.views.FilterView
-                    android:id="@+id/filterView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone" />
+                    tools:title="Test" />
 
             </com.google.android.material.appbar.AppBarLayout>
 

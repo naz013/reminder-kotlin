@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation
 
 import androidx.fragment.app.Fragment
-import com.elementary.tasks.core.views.FilterView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,7 +22,6 @@ import com.elementary.tasks.core.views.FilterView
  */
 interface FragmentCallback {
 
-    val isFiltersVisible: Boolean
     fun replaceFragment(fragment: Fragment, title: String)
 
     fun onTitleChange(title: String)
@@ -33,10 +31,6 @@ interface FragmentCallback {
     fun refreshMenu()
 
     fun onMenuSelect(menu: Int)
-
-    fun addFilters(filters: List<FilterView.Filter>, clear: Boolean)
-
-    fun hideFilters()
 
     fun onScrollUpdate(y: Int)
 }
