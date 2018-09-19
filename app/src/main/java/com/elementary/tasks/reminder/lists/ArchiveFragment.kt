@@ -72,9 +72,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
         override fun onQueryTextChange(newText: String): Boolean {
             filterController.setSearchValue(newText)
-            if (!callback!!.isFiltersVisible) {
-                showRemindersFilter()
-            }
             return false
         }
     }
@@ -113,13 +110,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
             mSearchView?.setOnQueryTextListener(queryTextListener)
             mSearchView?.setOnCloseListener(mSearchCloseListener)
-            mSearchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    if (!callback!!.isFiltersVisible) {
-                        showRemindersFilter()
-                    }
-                }
-            }
         }
 
         val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
@@ -195,9 +185,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             addGroupFilter(viewModel.groups.value!!)
             addTypeFilter(filters)
         }
-        if (callback!!.isFiltersVisible) {
-            showRemindersFilter()
-        }
     }
 
     private fun initList() {
@@ -212,10 +199,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
-    }
-
-    private fun showRemindersFilter() {
-        callback?.addFilters(filters, true)
     }
 
     private fun addTypeFilter(filters: MutableList<FilterView.Filter>) {

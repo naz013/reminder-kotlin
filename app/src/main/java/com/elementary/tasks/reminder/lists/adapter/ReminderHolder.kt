@@ -52,6 +52,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         } else {
             itemView.itemCheck.visibility = View.GONE
         }
+        itemView.todoList.visibility = View.GONE
         itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
         itemView.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }

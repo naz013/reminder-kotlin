@@ -18,12 +18,4 @@ package com.elementary.tasks.navigation.fragments
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseNavigationFragment : BaseFragment() {
-
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.addFilters(listOf(), true)
-        }
-    }
-}
+abstract class BaseNavigationFragment : BaseFragment()

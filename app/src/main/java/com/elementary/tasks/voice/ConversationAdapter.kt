@@ -75,7 +75,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Reply.GROUP -> GroupHolder(parent, null)
             Reply.SHOW_MORE -> ShowMoreHolder(parent)
             Reply.BIRTHDAY -> BirthdayHolder(parent, null)
-            Reply.SHOPPING -> ShoppingHolder(parent, null)
+            Reply.SHOPPING -> ShoppingHolder(parent, null, false)
             else -> AskHolder(parent)
         }
     }

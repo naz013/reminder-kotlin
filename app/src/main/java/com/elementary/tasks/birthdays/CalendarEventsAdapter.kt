@@ -46,9 +46,9 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             0 -> ReminderHolder(parent, { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }, false)
-            1 -> ShoppingHolder(parent) { view, i, listActions ->
+            1 -> ShoppingHolder(parent, { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
-            }
+            }, false)
             else -> BirthdayHolder(parent) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }

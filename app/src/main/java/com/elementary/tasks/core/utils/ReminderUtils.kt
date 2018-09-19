@@ -289,10 +289,10 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         return when (priority) {
             0 -> "Lowest"
             1 -> "Low"
-            2 -> context.getString(R.string.default_string)
+            2 -> "Normal"
             3 -> "High"
             4 -> "Highest"
-            else -> context.getString(R.string.default_string)
+            else -> "Normal"
         }
     }
 

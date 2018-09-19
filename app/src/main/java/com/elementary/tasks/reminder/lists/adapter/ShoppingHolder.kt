@@ -1,19 +1,23 @@
 package com.elementary.tasks.reminder.lists.adapter
 
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.list_item_shopping.view.*
+import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -33,25 +37,83 @@ import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
-        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shopping, parent, false)) {
+class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?, val editable: Boolean) :
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     val listHeader: TextView = itemView.listHeader
 
+    @Inject
+    lateinit var timeCount: TimeCount
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+
     init {
+        ReminderApp.appComponent.inject(this)
+        if (editable) {
+            itemView.itemCheck.visibility = View.VISIBLE
+        } else {
+            itemView.itemCheck.visibility = View.GONE
+        }
+        itemView.reminder_phone.visibility = View.GONE
         itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        itemView.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
     }
 
     fun setData(reminder: Reminder) {
-        itemView.shoppingTitle.text = reminder.summary
-        loadShoppingDate(reminder.eventTime)
-//        loadCard(reminder.reminderGroup)
+        itemView.taskText.text = reminder.summary
+        loadCheck(reminder)
+        loadContainer(reminder.type)
+        loadType(reminder.type)
+        loadPriority(reminder.type)
+        loadGroup(reminder)
+        loadShoppingDate(reminder)
         loadItems(reminder.shoppings)
+    }
+
+    private fun loadCheck(item: Reminder?) {
+        if (item == null || item.isRemoved) {
+            itemView.itemCheck.visibility = View.GONE
+            return
+        }
+        itemView.itemCheck.isChecked = item.isActive
+    }
+
+    private fun loadContainer(type: Int) {
+        if (Reminder.isBase(type, Reminder.BY_LOCATION) || Reminder.isBase(type, Reminder.BY_OUT) || Reminder.isBase(type, Reminder.BY_PLACES)) {
+            itemView.endContainer.visibility = View.GONE
+        } else {
+            itemView.endContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun loadGroup(reminder: Reminder) {
+        val colorStateList = ColorStateList.valueOf(themeUtil.getColor(themeUtil.getCategoryColor(reminder.groupColor)))
+        itemView.chipPriority.chipStrokeColor = colorStateList
+        itemView.chipType.chipStrokeColor = colorStateList
+        itemView.chipGroup.chipStrokeColor = colorStateList
+        itemView.chipGroup.text = reminder.groupTitle
+    }
+
+    private fun loadPriority(type: Int) {
+        itemView.chipPriority.text = reminderUtils.getPriorityTitle(type)
+    }
+
+    private fun loadType(type: Int) {
+        itemView.chipType.text = reminderUtils.getTypeString(type)
+    }
+
+    private fun loadLeft(item: Reminder) {
+        if (item.isActive && !item.isRemoved) {
+            itemView.remainingTime.text = timeCount.getRemaining(item.eventTime, item.delay)
+        } else {
+            itemView.remainingTime.text = ""
+        }
     }
 
     private fun loadItems(shoppings: List<ShopItem>) {
         val isDark = themeUtil.isDark
+        itemView.todoList.visibility = View.VISIBLE
         itemView.todoList.isFocusableInTouchMode = false
         itemView.todoList.isFocusable = false
         itemView.todoList.removeAllViewsInLayout()
@@ -89,22 +151,16 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         }
     }
 
-    private fun loadShoppingDate(eventTime: String?) {
+    private fun loadShoppingDate(reminder: Reminder) {
         val is24 = prefs.is24HourFormatEnabled
-        val due = TimeUtil.getDateTimeFromGmt(eventTime)
+        val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
-            itemView.shoppingTime.text = TimeUtil.getFullDateTime(due, is24, false)
-            itemView.shoppingTime.visibility = View.VISIBLE
+            itemView.taskDate.text = TimeUtil.getFullDateTime(due, is24, false)
+            itemView.taskDate.visibility = View.VISIBLE
+            loadLeft(reminder)
         } else {
-            itemView.shoppingTime.visibility = View.GONE
-        }
-    }
-
-    private fun loadCard(reminderGroup: ReminderGroup?) {
-        if (reminderGroup != null) {
-            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminderGroup.groupColor)))
-        } else {
-            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
+            itemView.taskDate.visibility = View.GONE
+            itemView.endContainer.visibility = View.GONE
         }
     }
 }

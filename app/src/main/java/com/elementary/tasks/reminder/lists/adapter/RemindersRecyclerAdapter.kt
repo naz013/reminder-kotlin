@@ -98,9 +98,9 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                 actionsListener?.onAction(view, i, getItem(i), listActions)
             }, isEditable)
         } else {
-            ShoppingHolder(parent) { view, i, listActions ->
+            ShoppingHolder(parent, { view, i, listActions ->
                 actionsListener?.onAction(view, i, getItem(i), listActions)
-            }
+            }, isEditable)
         }
     }
 

@@ -82,9 +82,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
         override fun onQueryTextChange(newText: String): Boolean {
             filterController.setSearchValue(newText)
-            if (!callback!!.isFiltersVisible) {
-                showRemindersFilter()
-            }
             return false
         }
     }
@@ -129,17 +126,10 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
             mSearchView?.setOnQueryTextListener(queryTextListener)
             mSearchView?.setOnCloseListener(mSearchCloseListener)
-            mSearchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    if (!callback!!.isFiltersVisible) {
-                        showRemindersFilter()
-                    }
-                }
-            }
         }
         val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
         menu?.getItem(0)?.isVisible = isNotEmpty
-        menu?.getItem(2)?.isVisible = isNotEmpty
+        menu?.getItem(2)?.isVisible = false
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -148,11 +138,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         when (item!!.itemId) {
             R.id.action_voice -> if (callback != null) {
                 buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
-            }
-            R.id.action_filter -> if (callback!!.isFiltersVisible) {
-                callback?.hideFilters()
-            } else {
-                showRemindersFilter()
             }
             else -> {
             }
@@ -197,9 +182,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
         addTypeFilter(filters)
         addStatusFilter(filters)
-        if (callback!!.isFiltersVisible) {
-            showRemindersFilter()
-        }
     }
 
     private fun showActionDialog(reminder: Reminder, view: View) {
@@ -278,7 +260,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun showRemindersFilter() {
-        callback?.addFilters(filters, true)
     }
 
     private fun addStatusFilter(filters: MutableList<FilterView.Filter>) {

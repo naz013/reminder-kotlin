@@ -134,8 +134,10 @@ class Reminder : RecyclerInterface {
     @SerializedName("priority")
     var priority = 0
     @ColumnInfo(name = "groupTitle")
+    @Transient
     var groupTitle: String = ""
     @ColumnInfo(name = "groupColor")
+    @Transient
     var groupColor: Int = 0
 
     val dateTime: Long
