@@ -38,6 +38,7 @@ import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
@@ -266,6 +267,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (isFiltersVisible) {
             ViewUtils.collapse(filterView)
         }
+    }
+
+    override fun onScrollUpdate(y: Int) {
+        Timber.d("onScrollUpdate: %s", y)
+        toolbar.isSelected = y > 0
     }
 
     override fun onMenuSelect(menu: Int) {

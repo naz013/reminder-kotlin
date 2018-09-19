@@ -2,12 +2,9 @@ package com.elementary.tasks.navigation.settings.theme
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.LinearLayout
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -112,24 +109,9 @@ class SelectThemeActivity : ThemedActivity() {
     }
 
     private fun initList() {
-        val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayout.HORIZONTAL
-        themes_list.layoutManager = linearLayoutManager
-
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(themes_list)
-
-        themes_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val selected = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                    onColorSelect(selected)
-                }
-            }
-        })
-
+        themes_list.layoutManager = GridLayoutManager(this, 3)
         adapter.selectedListener = {
+            onColorSelect(it)
             saveColor(it.id)
         }
         themes_list.adapter = adapter
@@ -161,13 +143,12 @@ class SelectThemeActivity : ThemedActivity() {
         }
     }
 
-    private fun onColorSelect(code: Int) {
-        val theme = adapter.getTheme(code)
+    private fun onColorSelect(theme: Theme) {
         toolbar.setBackgroundColor(theme.barColor)
         if (Module.isLollipop) {
-            window.statusBarColor = theme.statusColor
+            window.statusBarColor = theme.barColor
         }
-        windowBackground.setBackgroundColor(theme.bgColor)
+        windowBackground.setBackgroundColor(theme.barColor)
         if (theme.isDark) {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureWhite))

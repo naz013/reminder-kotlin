@@ -16,6 +16,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -23,6 +24,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -232,6 +234,18 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
+        if (Module.isMarshmallow) {
+            recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
+                callback?.onScrollUpdate(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+            }
+        } else {
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    callback?.onScrollUpdate(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+
+                }
+            })
+        }
     }
 
     override fun onResume() {
