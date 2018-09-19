@@ -47,7 +47,7 @@ class Reminder : RecyclerInterface {
     @SerializedName("groupUuId")
     var groupUuId: String = ""
     @PrimaryKey
-    @SerializedName("groupUuId")
+    @SerializedName("uuId")
     var uuId: String = ""
     @SerializedName("eventTime")
     var eventTime: String = ""
