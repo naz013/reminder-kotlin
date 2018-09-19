@@ -6,16 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-
+import androidx.annotation.DrawableRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.MeasureUtils
-
-import java.util.AbstractList
-import java.util.ArrayList
-import java.util.UUID
-
-import androidx.annotation.DrawableRes
+import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.view_chip.view.*
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -89,105 +85,50 @@ class FilterView : LinearLayout {
         val scrollView = HorizontalScrollView(mContext)
         scrollView.overScrollMode = View.OVER_SCROLL_NEVER
         scrollView.isHorizontalScrollBarEnabled = false
-        val layout = LinearLayout(mContext)
-        layout.orientation = LinearLayout.HORIZONTAL
+        val layout = ChipGroup(mContext)
+        layout.setChipSpacing(MeasureUtils.dp2px(context, 8))
+        layout.isSingleSelection = true
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(MeasureUtils.dp2px(mContext!!, 8), 0, 0, 0)
         for (element in filter) {
-            val view = createChip(element, filter)
+            val view = createChip(element)
             layout.addView(view, layoutParams)
         }
         layout.setPadding(0, 0, MeasureUtils.dp2px(mContext!!, 8), 0)
+        layout.setOnCheckedChangeListener { _, p1 ->
+            for (f in filter) {
+                if (f.id == p1 - 1000) {
+                    filter.elementClick.onClick(f.binding, p1 - 1000)
+                }
+            }
+        }
         scrollView.addView(layout)
         return scrollView
     }
 
-    private fun createChip(element: FilterElement, filter: Filter): View {
+    private fun createChip(element: FilterElement): View {
         val binding = LayoutInflater.from(mContext).inflate(R.layout.view_chip, null, false)
-        binding.chipTitle.text = element.title
+        binding.chipView.text = element.title
         if (element.iconId == 0) {
-            binding.iconView.visibility = View.GONE
+            binding.chipView.isChipIconVisible = false
         } else {
-            binding.iconView.setImageResource(element.iconId)
-            binding.iconView.visibility = View.VISIBLE
+            binding.chipView.setChipIconResource(element.iconId)
+            binding.chipView.isChipIconVisible = true
         }
-        setStatus(binding, element.isChecked)
+        binding.chipView.isChecked = element.isChecked
+        binding.chipView.id = element.id + 1000
         element.binding = binding
-        binding.setOnClickListener { updateFilter(binding, element.id, filter.uuId) }
         return binding
     }
 
-    private fun setStatus(binding: View?, checked: Boolean) {
-        if (checked)
-            binding!!.setBackgroundResource(R.drawable.chip_selected_bg)
-        else
-            binding!!.setBackgroundResource(R.drawable.chip_bg)
-    }
-
-    private fun getCurrent(id: String): Filter? {
-        if (mFilters.isEmpty()) return null
-        for (filter in mFilters) {
-            if (filter.uuId == id) return filter
-        }
-        return null
-    }
-
-    private fun updateFilter(v: View, id: Int, filterId: String) {
-        val filter = getCurrent(filterId)
-        if (filter != null) {
-            if (filter.choiceMode == ChoiceMode.SINGLE) {
-                for (element in filter) {
-                    setStatus(element.binding, false)
-                    element.isChecked = false
-                }
-                for (element in filter) {
-                    if (element.id == id) {
-                        element.isChecked = true
-                        setStatus(element.binding, element.isChecked)
-                        break
-                    }
-                }
-                filter.elementClick.onClick(v, id)
-            } else {
-                for (element in filter) {
-                    if (id == 0) {
-                        setStatus(element.binding, false)
-                        element.isChecked = false
-                    } else {
-                        if (element.id == 0) {
-                            setStatus(element.binding, false)
-                            element.isChecked = false
-                        }
-                    }
-                }
-                for (element in filter) {
-                    if (element.id == id) {
-                        element.isChecked = !element.isChecked
-                        setStatus(element.binding, element.isChecked)
-                        break
-                    }
-                }
-                filter.elementClick.onMultipleSelected(v, getSelected(filter))
-            }
-        }
-    }
-
-    private fun getSelected(filter: Filter): List<Int> {
-        val list = ArrayList<Int>()
-        for (element in filter) if (element.isChecked) list.add(element.id)
-        return list
-    }
-
     interface FilterElementClick {
-        fun onClick(view: View, id: Int)
-
-        fun onMultipleSelected(view: View, ids: List<Int>)
+        fun onClick(view: View?, id: Int)
     }
 
     class Filter(val elementClick: FilterElementClick) : AbstractList<FilterElement>() {
+
         private val elements = ArrayList<FilterElement>()
-        internal var choiceMode = ChoiceMode.SINGLE
         internal val uuId = UUID.randomUUID().toString()
 
         override fun get(index: Int): FilterElement {
@@ -214,39 +155,6 @@ class FilterView : LinearLayout {
         }
     }
 
-    class FilterElement {
-        @DrawableRes
-        @get:DrawableRes
-        internal val iconId: Int
-        var title: String? = null
-        var id: Int = 0
-        var isChecked: Boolean = false
-        var binding: View? = null
-
-        constructor(@DrawableRes iconId: Int, title: String, id: Int) {
-            this.iconId = iconId
-            this.title = title
-            this.id = id
-        }
-
-        constructor(@DrawableRes iconId: Int, title: String, id: Int, isChecked: Boolean) {
-            this.iconId = iconId
-            this.title = title
-            this.id = id
-            this.isChecked = isChecked
-        }
-
-        override fun toString(): String {
-            return "FilterElement{" +
-                    "title='" + title + '\''.toString() +
-                    ", id=" + id +
-                    ", isChecked=" + isChecked +
-                    '}'.toString()
-        }
-    }
-
-    enum class ChoiceMode {
-        SINGLE,
-        MULTI
-    }
+    data class FilterElement(@DrawableRes var iconId: Int, var title: String? = null, var id: Int = 0,
+                             var isChecked: Boolean = false, var binding: View? = null)
 }
