@@ -273,12 +273,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View, id: Int) {
+            override fun onClick(view: View?, id: Int) {
                 filterController.setStatusValue(id)
-            }
-
-            override fun onMultipleSelected(view: View, ids: List<Int>) {
-
             }
         })
         filter.add(filterAllElement)
@@ -293,12 +289,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View, id: Int) {
+            override fun onClick(view: View?, id: Int) {
                 filterController.setRangeValue(id)
-            }
-
-            override fun onMultipleSelected(view: View, ids: List<Int>) {
-
             }
         })
         filter.add(filterAllElement)
@@ -318,12 +310,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             types.add(reminder.type)
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View, id: Int) {
+            override fun onClick(view: View?, id: Int) {
                 filterController.setTypeValue(id)
-            }
-
-            override fun onMultipleSelected(view: View, ids: List<Int>) {
-
             }
         })
         filter.add(filterAllElement)
@@ -338,18 +326,12 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private fun addGroupFilter(reminderGroups: List<ReminderGroup>) {
         mGroupsIds = ArrayList()
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View, id: Int) {
+            override fun onClick(view: View?, id: Int) {
                 if (id == 0) {
                     filterController.setGroupValue(null)
                 } else {
                     filterController.setGroupValue(mGroupsIds[id - 1])
                 }
-            }
-
-            override fun onMultipleSelected(view: View, ids: List<Int>) {
-                val groupsList = ArrayList<String>()
-                for (i in ids) groupsList.add(mGroupsIds[i - 1])
-                filterController.setGroupValues(groupsList)
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
