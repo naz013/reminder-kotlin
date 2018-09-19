@@ -37,4 +37,6 @@ interface FragmentCallback {
     fun addFilters(filters: List<FilterView.Filter>, clear: Boolean)
 
     fun hideFilters()
+
+    fun onScrollUpdate(y: Int)
 }

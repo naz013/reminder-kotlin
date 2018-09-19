@@ -18,8 +18,6 @@ class ThemesAdapter : RecyclerView.Adapter<ThemesAdapter.ThemeHolder>() {
         notifyDataSetChanged()
     }
 
-    fun getTheme(position: Int) : Theme = themes[position]
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThemeHolder {
         return ThemeHolder(parent)
     }

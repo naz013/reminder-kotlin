@@ -123,99 +123,99 @@
     </style>
 
     <style name="Light1" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
+        <item name="colorPrimaryDark">@color/lightPrimary1</item>
         <item name="colorPrimary">@color/lightPrimary1</item>
-        <item name="android:windowBackground">@color/lightBg1</item>
-        <item name="android:colorBackground">@color/lightBg1</item>
+        <item name="android:windowBackground">@color/lightPrimary1</item>
+        <item name="android:colorBackground">@color/lightPrimary1</item>
         <item name="materialCardViewStyle">@style/Light1.Card</item>
     </style>
 
     <style name="Light1.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/lightCard1</item>
+        <item name="cardBackgroundColor">@color/lightBg1</item>
     </style>
 
     <style name="Light2" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimaryDark2</item>
+        <item name="colorPrimaryDark">@color/lightPrimary2</item>
         <item name="colorPrimary">@color/lightPrimary2</item>
-        <item name="android:windowBackground">@color/lightBg2</item>
-        <item name="android:colorBackground">@color/lightBg2</item>
+        <item name="android:windowBackground">@color/lightPrimary2</item>
+        <item name="android:colorBackground">@color/lightPrimary2</item>
         <item name="materialCardViewStyle">@style/Light2.Card</item>
     </style>
 
     <style name="Light2.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/lightCard2</item>
+        <item name="cardBackgroundColor">@color/lightBg2</item>
     </style>
 
     <style name="Light3" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimaryDark3</item>
+        <item name="colorPrimaryDark">@color/lightPrimary3</item>
         <item name="colorPrimary">@color/lightPrimary3</item>
-        <item name="android:windowBackground">@color/lightBg3</item>
-        <item name="android:colorBackground">@color/lightBg3</item>
+        <item name="android:windowBackground">@color/lightPrimary3</item>
+        <item name="android:colorBackground">@color/lightPrimary3</item>
         <item name="materialCardViewStyle">@style/Light3.Card</item>
     </style>
 
     <style name="Light3.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/lightCard3</item>
+        <item name="cardBackgroundColor">@color/lightBg3</item>
     </style>
 
     <style name="Light4" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimaryDark4</item>
+        <item name="colorPrimaryDark">@color/lightPrimary4</item>
         <item name="colorPrimary">@color/lightPrimary4</item>
-        <item name="android:windowBackground">@color/lightBg4</item>
-        <item name="android:colorBackground">@color/lightBg4</item>
+        <item name="android:windowBackground">@color/lightPrimary4</item>
+        <item name="android:colorBackground">@color/lightPrimary4</item>
         <item name="materialCardViewStyle">@style/Light4.Card</item>
     </style>
 
     <style name="Light4.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/lightCard4</item>
+        <item name="cardBackgroundColor">@color/lightBg4</item>
     </style>
 
     <style name="Dark1" parent="Base.Dark">
-        <item name="colorPrimaryDark">@color/darkPrimaryDark1</item>
+        <item name="colorPrimaryDark">@color/darkPrimary1</item>
         <item name="colorPrimary">@color/darkPrimary1</item>
-        <item name="android:windowBackground">@color/darkBg1</item>
-        <item name="android:colorBackground">@color/darkBg1</item>
+        <item name="android:windowBackground">@color/darkPrimary1</item>
+        <item name="android:colorBackground">@color/darkPrimary1</item>
         <item name="materialCardViewStyle">@style/Dark1.Card</item>
     </style>
 
     <style name="Dark1.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/darkCard1</item>
+        <item name="cardBackgroundColor">@color/darkBg1</item>
     </style>
 
     <style name="Dark2" parent="Base.Dark">
-        <item name="colorPrimaryDark">@color/darkPrimaryDark2</item>
+        <item name="colorPrimaryDark">@color/darkPrimary2</item>
         <item name="colorPrimary">@color/darkPrimary2</item>
-        <item name="android:windowBackground">@color/darkBg2</item>
-        <item name="android:colorBackground">@color/darkBg2</item>
+        <item name="android:windowBackground">@color/darkPrimary2</item>
+        <item name="android:colorBackground">@color/darkPrimary2</item>
         <item name="materialCardViewStyle">@style/Dark2.Card</item>
     </style>
 
     <style name="Dark2.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/darkCard2</item>
+        <item name="cardBackgroundColor">@color/darkBg2</item>
     </style>
 
     <style name="Dark3" parent="Base.Dark">
-        <item name="colorPrimaryDark">@color/darkPrimaryDark3</item>
+        <item name="colorPrimaryDark">@color/darkPrimary3</item>
         <item name="colorPrimary">@color/darkPrimary3</item>
-        <item name="android:windowBackground">@color/darkBg3</item>
-        <item name="android:colorBackground">@color/darkBg3</item>
+        <item name="android:windowBackground">@color/darkPrimary3</item>
+        <item name="android:colorBackground">@color/darkPrimary3</item>
         <item name="materialCardViewStyle">@style/Dark3.Card</item>
     </style>
 
     <style name="Dark3.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/darkCard3</item>
+        <item name="cardBackgroundColor">@color/darkBg3</item>
     </style>
 
     <style name="Dark4" parent="Base.Dark">
-        <item name="colorPrimaryDark">@color/darkPrimaryDark4</item>
+        <item name="colorPrimaryDark">@color/darkPrimary4</item>
         <item name="colorPrimary">@color/darkPrimary4</item>
-        <item name="android:windowBackground">@color/darkBg4</item>
-        <item name="android:colorBackground">@color/darkBg4</item>
+        <item name="android:windowBackground">@color/darkPrimary4</item>
+        <item name="android:colorBackground">@color/darkPrimary4</item>
         <item name="materialCardViewStyle">@style/Dark4.Card</item>
     </style>
 
     <style name="Dark4.Card" parent="Widget.MaterialComponents.CardView" >
-        <item name="cardBackgroundColor">@color/darkCard4</item>
+        <item name="cardBackgroundColor">@color/darkBg4</item>
     </style>
 
     <style name="PureBlack" parent="Base.Dark">
