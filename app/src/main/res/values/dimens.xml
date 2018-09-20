@@ -53,5 +53,6 @@
     <dimen name="grid_item_spacing">2dp</dimen>
     <dimen name="draw_tool_width">56dp</dimen>
     <dimen name="checkbox_padding">27dp</dimen>
+    <dimen name="empty_Image_size">128dp</dimen>
 
 </resources>

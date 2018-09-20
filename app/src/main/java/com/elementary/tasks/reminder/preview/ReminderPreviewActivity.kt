@@ -168,6 +168,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
 
         showDueAndRepeat(reminder)
+        showBefore(reminder)
         showPhoneContact(reminder)
         showMelody(reminder)
         showAttachment(reminder)
@@ -187,6 +188,16 @@ class ReminderPreviewActivity : ThemedActivity() {
         dataContainer.removeAllViewsInLayout()
         Thread(NoteThread(mReadyCallback, reminder.noteId)).start()
         Thread(TaskThread(mReadyCallback, reminder.uuId)).start()
+    }
+
+    private fun showBefore(reminder: Reminder) {
+        val beforeStr = IntervalUtil.getInterval(this, reminder.remindBefore)
+        if (beforeStr.isEmpty() || beforeStr == "0") {
+            beforeView.visibility = View.GONE
+        } else {
+            beforeView.visibility = View.VISIBLE
+            before.text = beforeStr
+        }
     }
 
     private fun loadData(reminder: Reminder) {
