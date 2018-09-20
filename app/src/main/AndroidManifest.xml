@@ -211,13 +211,13 @@
         <activity android:name=".birthdays.ShowBirthdayActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpDialog"
-            android:theme="@style/HomeWhiteDialog" />
+            android:theme="@style/Light1.Dialog" />
         <activity
             android:name=".core.dialogs.VoiceResultDialog"
-            android:theme="@style/HomeWhiteDialog" />
+            android:theme="@style/Light1.Dialog" />
         <activity
             android:name=".core.dialogs.VolumeDialog"
-            android:theme="@style/HomeWhiteDialog" />
+            android:theme="@style/Light1.Dialog" />
         <activity android:name=".birthdays.createEdit.AddBirthdayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -471,7 +471,7 @@
         <activity
             android:name=".core.appWidgets.voiceControl.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
-            android:theme="@style/HomeWhiteDialog">
+            android:theme="@style/Light1.Dialog">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
