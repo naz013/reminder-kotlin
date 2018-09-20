@@ -33,7 +33,6 @@ import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
-import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
 
@@ -188,7 +187,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         val items = arrayOf(getString(R.string.open), getString(R.string.edit), getString(R.string.change_group), getString(R.string.move_to_trash))
         dialogues.showPopup(context!!, view, { item ->
             when (item) {
-                0 -> previewReminder(reminder.uuId, reminder.type)
+                0 -> previewReminder(reminder.uuId)
                 1 -> editReminder(reminder.uuId)
                 2 -> changeGroup(reminder)
                 3 -> viewModel.moveToTrash(reminder)
@@ -209,7 +208,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 when (actions) {
                     ListActions.MORE -> if (t != null) showActionDialog(t, view)
-                    ListActions.OPEN -> if (t != null) previewReminder(t.uuId, t.type)
+                    ListActions.OPEN -> if (t != null) previewReminder(t.uuId)
                     ListActions.SWITCH -> if (t != null) switchReminder(t)
                 }
             }
@@ -238,14 +237,9 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    private fun previewReminder(id: String, type: Int) {
-        if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-            startActivity(Intent(context, ShoppingPreviewActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, id))
-        } else {
-            startActivity(Intent(context, ReminderPreviewActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, id))
-        }
+    private fun previewReminder(id: String) {
+        startActivity(Intent(context, ReminderPreviewActivity::class.java)
+                .putExtra(Constants.INTENT_ID, id))
     }
 
     private fun reloadView() {

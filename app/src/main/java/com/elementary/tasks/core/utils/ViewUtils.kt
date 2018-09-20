@@ -14,8 +14,8 @@ import android.widget.ScrollView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.widget.NestedScrollView
 import com.elementary.tasks.R
-import timber.log.Timber
 
 
 /**
@@ -40,6 +40,26 @@ import timber.log.Timber
 object ViewUtils {
 
     fun listenScrollView(scrollView: ScrollView, listener: ((x: Int) -> Unit)?) {
+        val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
+            listener?.invoke(scrollView.scrollY)
+        }
+        scrollView.setOnTouchListener(object : View.OnTouchListener {
+            private var observer: ViewTreeObserver? = null
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                if (observer == null) {
+                    observer = scrollView.viewTreeObserver
+                    observer?.addOnScrollChangedListener(onScrollChangedListener)
+                } else if (!observer!!.isAlive) {
+                    observer?.removeOnScrollChangedListener(onScrollChangedListener)
+                    observer = scrollView.viewTreeObserver
+                    observer?.addOnScrollChangedListener(onScrollChangedListener)
+                }
+                return false
+            }
+        })
+    }
+
+    fun listenScrollView(scrollView: NestedScrollView, listener: ((x: Int) -> Unit)?) {
         val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
             listener?.invoke(scrollView.scrollY)
         }

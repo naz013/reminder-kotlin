@@ -51,7 +51,6 @@ import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
-import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
 import com.elementary.tasks.voice.ConversationAdapter
 import dagger.Component
 import javax.inject.Singleton
@@ -142,5 +141,4 @@ interface AppComponent {
     fun inject(activity: CreateReminderActivity)
     fun inject(activity: BaseNotificationActivity)
     fun inject(activity: ReminderPreviewActivity)
-    fun inject(activity: ShoppingPreviewActivity)
 }

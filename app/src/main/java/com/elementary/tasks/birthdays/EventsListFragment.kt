@@ -19,7 +19,6 @@ import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
-import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
 import kotlinx.android.synthetic.main.fragment_events_list.*
 
 /**
@@ -128,14 +127,9 @@ class EventsListFragment : BaseFragment() {
                 .putExtra(Constants.INTENT_ID, item.uniqueId))
     }
 
-    private fun showReminder(`object`: Reminder) {
-        if (Reminder.isSame(`object`.type, Reminder.BY_DATE_SHOP)) {
-            startActivity(Intent(context, ShoppingPreviewActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, `object`.uniqueId))
-        } else {
-            startActivity(Intent(context, ReminderPreviewActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, `object`.uniqueId))
-        }
+    private fun showReminder(reminder: Reminder) {
+        startActivity(Intent(context, ReminderPreviewActivity::class.java)
+                .putExtra(Constants.INTENT_ID, reminder.uniqueId))
     }
 
     private fun editReminder(uuId: String?) {
