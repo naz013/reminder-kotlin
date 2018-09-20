@@ -83,9 +83,26 @@ object TimeUtil {
         return null
     }
 
+    fun showTimePicker(context: Context, theme: Int, is24: Boolean,
+                       hour: Int, minute: Int, listener: TimePickerDialog.OnTimeSetListener): TimePickerDialog {
+        val dialog = TimePickerDialog(context, theme, listener, hour, minute, is24)
+        dialog.show()
+        return dialog
+    }
+
     fun showTimePicker(context: Context, is24: Boolean, listener: TimePickerDialog.OnTimeSetListener,
                        hour: Int, minute: Int): TimePickerDialog {
         val dialog = TimePickerDialog(context, listener, hour, minute, is24)
+        dialog.show()
+        return dialog
+    }
+
+    fun showDatePicker(context: Context, theme: Int, prefs: Prefs,
+                       year: Int, month: Int, dayOfMonth: Int, listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
+        val dialog = DatePickerDialog(context, theme, listener, year, month, dayOfMonth)
+        if (Module.isLollipop) {
+            dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
+        }
         dialog.show()
         return dialog
     }

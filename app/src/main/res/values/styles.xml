@@ -234,8 +234,6 @@
 
     <style name="Base.Light.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorSecondary">@color/secondary</item>
-        <item name="android:windowMinWidthMajor">90%</item>
-        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="PureWhite.Dialog" parent="Base.Light.Dialog">
@@ -280,8 +278,6 @@
 
     <style name="Base.Dark.Dialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorSecondary">@color/secondary</item>
-        <item name="android:windowMinWidthMajor">90%</item>
-        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="Dark1.Dialog" parent="Base.Dark.Dialog">
@@ -321,7 +317,5 @@
         <item name="android:colorBackground">@color/pureBlack</item>
         <item name="android:popupBackground">@color/pureBlack</item>
         <item name="android:windowBackground">@color/pureBlack</item>
-        <item name="android:windowMinWidthMajor">90%</item>
-        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 </resources>

@@ -18,7 +18,7 @@
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/date_and_time"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_access_time_black_24dp"
+            app:srcCompat="@drawable/ic_twotone_access_time_24px"
             app:tint="?android:textColorPrimary" />
 
         <androidx.appcompat.widget.AppCompatTextView
