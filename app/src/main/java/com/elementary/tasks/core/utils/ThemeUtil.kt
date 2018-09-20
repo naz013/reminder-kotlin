@@ -75,47 +75,65 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                     }
                 }
             } else {
-                if (isDark) {
-                    if (prefs.appTheme == THEME_PURE_BLACK) {
-                        R.style.PureBlack
-                    } else {
+            when (prefs.appTheme) {
+                THEME_AUTO -> {
+                    if (isDark) {
                         R.style.Dark1
+                    } else {
+                        R.style.Light1
                     }
-                } else {
+                }
+                THEME_LIGHT_1 -> R.style.Light1
+                THEME_DARK_1 -> R.style.Dark1
+                else -> {
                     R.style.Light1
                 }
+            }
             }
 
     val indicator: Int
         @DrawableRes
         get() = getIndicator(prefs.appThemeColor)
 
-    val spinnerStyle: Int
-        @ColorInt
-        get() {
-            val color: Int = if (isDark) {
-                if (prefs.appTheme == THEME_PURE_BLACK) {
-                    R.color.pureBlack
-                } else {
-                    R.color.material_grey
-                }
-            } else {
-                R.color.whitePrimary
-            }
-            return getColor(color)
-        }
-
     val dialogStyle: Int
         @StyleRes
-        get() {
-            return if (isDark) {
-                if (prefs.appTheme == THEME_PURE_BLACK) {
-                    R.style.HomeBlackDialog
-                } else {
-                    R.style.HomeDarkDialog
+        get() = if (Module.isPro) {
+            when (prefs.appTheme) {
+                THEME_AUTO -> {
+                    if (isDark) {
+                        R.style.Dark1_Dialog
+                    } else {
+                        R.style.Light1_Dialog
+                    }
                 }
-            } else {
-                R.style.HomeWhiteDialog
+                THEME_PURE_BLACK -> R.style.PureBlack_Dialog
+                THEME_PURE_WHITE -> R.style.PureWhite_Dialog
+                THEME_LIGHT_1 -> R.style.Light1_Dialog
+                THEME_LIGHT_2 -> R.style.Light2_Dialog
+                THEME_LIGHT_3 -> R.style.Light3_Dialog
+                THEME_LIGHT_4 -> R.style.Light4_Dialog
+                THEME_DARK_1 -> R.style.Dark1_Dialog
+                THEME_DARK_2 -> R.style.Dark2_Dialog
+                THEME_DARK_3 -> R.style.Dark3_Dialog
+                THEME_DARK_4 -> R.style.Dark4_Dialog
+                else -> {
+                    R.style.Light1_Dialog
+                }
+            }
+        } else {
+            when (prefs.appTheme) {
+                THEME_AUTO -> {
+                    if (isDark) {
+                        R.style.Dark1_Dialog
+                    } else {
+                        R.style.Light1_Dialog
+                    }
+                }
+                THEME_LIGHT_1 -> R.style.Light1_Dialog
+                THEME_DARK_1 -> R.style.Dark1_Dialog
+                else -> {
+                    R.style.Light1_Dialog
+                }
             }
         }
 
