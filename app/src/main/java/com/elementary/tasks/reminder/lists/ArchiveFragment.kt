@@ -134,6 +134,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        reloadView()
         initList()
         initViewModel()
     }
@@ -246,10 +247,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
-            recyclerView.visibility = View.VISIBLE
             emptyItem.visibility = View.GONE
         } else {
-            recyclerView.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
         }
     }

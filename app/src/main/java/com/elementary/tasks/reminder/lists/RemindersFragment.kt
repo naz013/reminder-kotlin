@@ -153,6 +153,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }
+        reloadView()
         initList()
         initViewModel()
     }
@@ -244,11 +245,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
-            if (recyclerView.visibility == View.GONE)
-                recyclerView.visibility = View.VISIBLE
             emptyItem.visibility = View.GONE
         } else {
-            recyclerView.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
         }
     }
