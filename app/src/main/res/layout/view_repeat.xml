@@ -16,7 +16,7 @@
             android:layout_height="32dp"
             android:layout_marginTop="7dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_refresh"
+            app:srcCompat="@drawable/ic_twotone_repeat_24px"
             app:tint="?android:textColorPrimary" />
 
         <LinearLayout

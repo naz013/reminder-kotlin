@@ -12,6 +12,7 @@ import android.widget.TimePicker
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.view_date_time.view.*
 import java.text.DateFormat
@@ -51,6 +52,8 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
 
     @Inject
     lateinit var prefs: Prefs
+    @Inject
+    lateinit var themeUtil: ThemeUtil
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -157,11 +160,11 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     private fun selectDate() {
-        TimeUtil.showDatePicker(context, prefs, this, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(context, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, this)
     }
 
     private fun selectTime() {
-        TimeUtil.showTimePicker(context, prefs.is24HourFormatEnabled, this, mHour, mMinute)
+        TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, this)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
