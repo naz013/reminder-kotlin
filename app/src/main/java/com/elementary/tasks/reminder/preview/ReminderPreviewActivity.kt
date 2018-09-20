@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
@@ -32,6 +33,7 @@ import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_reminder_preview.*
@@ -67,6 +69,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     private var mGoogleTask: GoogleTask? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
     private var reminder: Reminder? = null
+    private var shoppingAdapter = ShopListRecyclerAdapter()
 
     @Inject
     lateinit var reminderUtils: ReminderUtils
@@ -174,10 +177,38 @@ class ReminderPreviewActivity : ThemedActivity() {
             locationView.visibility = View.GONE
             mapContainer.visibility = View.GONE
         }
+        if (reminder.shoppings.isNotEmpty()) {
+            todoList.visibility = View.VISIBLE
+            loadData(reminder)
+        } else {
+            todoList.visibility = View.GONE
+        }
 
         dataContainer.removeAllViewsInLayout()
         Thread(NoteThread(mReadyCallback, reminder.noteId)).start()
         Thread(TaskThread(mReadyCallback, reminder.uuId)).start()
+    }
+
+    private fun loadData(reminder: Reminder) {
+        shoppingAdapter.listener = object : ShopListRecyclerAdapter.ActionListener {
+            override fun onItemCheck(position: Int, isChecked: Boolean) {
+                val item = shoppingAdapter.getItem(position)
+                item.isChecked = !item.isChecked
+                shoppingAdapter.updateData()
+                reminder.shoppings = shoppingAdapter.data
+                viewModel.saveReminder(reminder)
+            }
+
+            override fun onItemDelete(position: Int) {
+                shoppingAdapter.delete(position)
+                reminder.shoppings = shoppingAdapter.data
+                viewModel.saveReminder(reminder)
+            }
+        }
+        shoppingAdapter.data = reminder.shoppings
+        todoList.layoutManager = LinearLayoutManager(this)
+        todoList.isNestedScrollingEnabled = false
+        todoList.adapter = shoppingAdapter
     }
 
     private fun showDueAndRepeat(reminder: Reminder) {

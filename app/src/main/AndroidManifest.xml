@@ -207,7 +207,6 @@
         <activity android:name=".reminder.preview.ReminderDialogActivity" />
         <activity android:name=".core.apps.ApplicationActivity" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
-        <activity android:name=".reminder.preview.ShoppingPreviewActivity" />
         <activity android:name=".missedCalls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
         <activity
