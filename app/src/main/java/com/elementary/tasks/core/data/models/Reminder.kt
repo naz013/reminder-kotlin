@@ -1,13 +1,15 @@
 package com.elementary.tasks.core.data.models
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
 import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.reminder.createEdit.fragments.ReminderInterface
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -125,6 +127,8 @@ class Reminder : RecyclerInterface {
     var isNotificationShown: Boolean = false
     @SerializedName("isLocked")
     var isLocked: Boolean = false
+    @SerializedName("hasReminder")
+    var hasReminder: Boolean = false
     @SerializedName("duration")
     var duration: Long = 0
     @SerializedName("remindBefore")
@@ -167,10 +171,12 @@ class Reminder : RecyclerInterface {
 
     constructor() {
         this.uuId = UUID.randomUUID().toString()
+        this.eventTime = TimeUtil.gmtDateTime
         this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
         this.isActive = true
         this.isRemoved = false
         this.useGlobal = true
+        this.hasReminder = false
     }
 
     constructor(item: Reminder, fullCopy: Boolean) {
@@ -216,6 +222,9 @@ class Reminder : RecyclerInterface {
         this.remindBefore = item.remindBefore
         this.windowType = item.windowType
         this.priority = item.priority
+        this.hasReminder = item.hasReminder
+        this.groupTitle = item.groupTitle
+        this.groupColor = item.groupColor
         if (fullCopy) {
             this.uuId = item.uuId
             this.uniqueId = item.uniqueId
@@ -232,28 +241,6 @@ class Reminder : RecyclerInterface {
         reminder.isActive = true
         reminder.isRemoved = false
         return reminder
-    }
-
-    fun setClear(mInterface: ReminderInterface) {
-        summary = mInterface.summary
-        groupUuId = mInterface.reminderGroup?.groupUuId ?: ""
-        repeatLimit = mInterface.repeatLimit
-        color = mInterface.ledColor
-        melodyPath = mInterface.melodyPath
-        volume = mInterface.volume
-        auto = mInterface.auto
-        attachmentFile = mInterface.attachment
-        isActive = true
-        isRemoved = false
-        delay = 0
-        eventCount = 0
-        vibrate = mInterface.vibration
-        notifyByVoice = mInterface.voice
-        repeatNotification = mInterface.notificationRepeat
-        useGlobal = mInterface.useGlobal
-        unlock = mInterface.unlock
-        awake = mInterface.wake
-        windowType = mInterface.windowType
     }
 
     override fun toString(): String {

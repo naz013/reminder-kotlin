@@ -1,9 +1,7 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
-import android.widget.SeekBar
 import android.widget.TextView
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,32 +23,6 @@ import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
  */
 abstract class RepeatableTypeFragment : TypeFragment() {
 
-    protected fun changeLimit() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.repeat_limit)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
-        b.seekBar.max = 366
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                setRepeatTitle(b.titleView, progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        b.seekBar.progress = if (reminderInterface!!.repeatLimit != -1) reminderInterface!!.repeatLimit else 0
-        setRepeatTitle(b.titleView, reminderInterface!!.repeatLimit)
-        builder.setView(b)
-        builder.setPositiveButton(R.string.ok) { _, _ -> saveLimit(b.seekBar.progress) }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
-    }
-
     private fun setRepeatTitle(textView: TextView, progress: Int) {
         when {
             progress <= 0 -> textView.text = getString(R.string.no_limits)
@@ -60,16 +32,10 @@ abstract class RepeatableTypeFragment : TypeFragment() {
     }
 
     protected fun getZeroedInt(v: Int): String {
-        return if (v < 9) {
+        return if (v <= 9) {
             "0$v"
         } else {
             v.toString()
         }
-    }
-
-    private fun saveLimit(progress: Int) {
-        var repeatLimit = progress
-        if (progress == 0) repeatLimit = -1
-        reminderInterface!!.repeatLimit = repeatLimit
     }
 }

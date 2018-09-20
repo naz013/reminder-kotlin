@@ -6,27 +6,6 @@
     <item
         android:id="@+id/action_add"
         android:title="@string/save"
-        app:showAsAction="ifRoom|withText" />
-
-    <item
-        android:id="@+id/action_custom_melody"
-        android:title="@string/melody"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_volume"
-        android:title="@string/loudness"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_custom_color"
-        android:title="@string/led_color"
-        android:visible="true"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_attach_file"
-        android:title="@string/attach_file"
-        android:visible="true"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_twotone_done_24px_secondary"
+        app:showAsAction="ifRoom" />
 </menu>

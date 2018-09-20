@@ -40,6 +40,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
     private val weeks = 4
 
     private var mImm: InputMethodManager? = null
+    var onBeforeChangedListener: OnBeforeChangedListener? = null
 
     private var mState = minutes
     private var mRepeatValue: Int = 0
@@ -121,6 +122,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
 
     private fun setState(state: Int) {
         this.mState = state
+        onBeforeChangedListener?.onChanged(beforeValue)
     }
 
     private fun updateEditField() {
@@ -174,12 +176,17 @@ class BeforePickerView : LinearLayout, TextWatcher {
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         try {
             mRepeatValue = Integer.parseInt(s.toString())
+            onBeforeChangedListener?.onChanged(beforeValue)
         } catch (e: NumberFormatException) {
             before_value_view.setText("0")
         }
     }
 
     override fun afterTextChanged(s: Editable) {
+    }
+
+    interface OnBeforeChangedListener {
+        fun onChanged(beforeMills: Long)
     }
 
     companion object {
