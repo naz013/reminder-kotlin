@@ -1,13 +1,10 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
-import android.app.Activity
 import android.content.Context
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Reminder
-
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -34,7 +31,7 @@ import javax.inject.Inject
  */
 abstract class TypeFragment : Fragment() {
 
-    var reminderInterface: ReminderInterface? = null
+    lateinit var reminderInterface: ReminderInterface
         private set
 
     @Inject
@@ -54,28 +51,30 @@ abstract class TypeFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (reminderInterface == null) {
-            reminderInterface = context as ReminderInterface?
-            setDefault()
-        }
-    }
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        if (reminderInterface == null) {
-            reminderInterface = activity as ReminderInterface?
-            setDefault()
-        }
-    }
-
-    private fun setDefault() {
-        reminderInterface?.setExclusionAction(null)
-        reminderInterface?.setRepeatAction(null)
-        reminderInterface?.setEventHint(getString(R.string.remind_me))
-        reminderInterface?.setHasAutoExtra(false, "")
+        reminderInterface = context as ReminderInterface
     }
 
     open fun onBackPressed(): Boolean {
         return true
+    }
+
+    open fun onMelodySelect(path: String) {
+
+    }
+
+    open fun onVoiceAction(text: String) {
+
+    }
+
+    open fun onAttachmentSelect(path: String) {
+
+    }
+
+    open fun onExtraUpdate() {
+
+    }
+
+    open fun onGroupUpdate(reminderGroup: ReminderGroup) {
+
     }
 }

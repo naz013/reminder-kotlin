@@ -347,9 +347,10 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun editReminder() {
+        val reminder = this.reminder
         if (reminder != null) {
             startActivity(Intent(this, CreateReminderActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, reminder!!.uniqueId))
+                    .putExtra(Constants.INTENT_ID, reminder.uuId))
         }
     }
 
@@ -413,7 +414,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     private fun saveCopy(which: Int) {
         LogUtil.d(TAG, "saveCopy: $which")
         if (reminder != null) {
-            viewModel.copyReminder(reminder!!, list[which], reminder!!.summary + " - cope")
+            viewModel.copyReminder(reminder!!, list[which], reminder!!.summary + " - copy")
         }
     }
 

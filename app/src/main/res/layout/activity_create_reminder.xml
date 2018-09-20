@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,7 +9,9 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:stateListAnimator="@animator/toolbar_animator"
+        app:elevation="0dp"
+        tools:targetApi="lollipop">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,134 +25,6 @@
                 android:layout_height="wrap_content" />
 
         </androidx.appcompat.widget.Toolbar>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.emoji.widget.EmojiAppCompatEditText
-                android:id="@+id/taskSummary"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                style="?textAppearanceHeadline5"
-                android:layout_marginEnd="16dp"
-                android:hint="@string/remind_me"
-                android:maxLines="3" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:overScrollMode="never"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/customButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="16dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_customize_reminder"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_tune_black_24dp"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/groupButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:drawablePadding="8dp"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
-                        android:maxLength="15"
-                        android:maxLines="1"
-                        android:text="@string/general"
-                        android:textAllCaps="true"
-                        android:textSize="18sp" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/voiceButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_type_by_voice"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_microphone_black"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/exclusionButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_customize_exclusions"
-                        android:scaleType="centerInside"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_lock_button"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/melodyButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/melody"
-                        android:scaleType="centerInside"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_music_note_black_24dp"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/attachmentButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/attach_file"
-                        android:scaleType="centerInside"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_attach_file_black_24dp"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/repeatButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/repeat_limit"
-                        android:scaleType="centerInside"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_refresh_black"
-                        app:tint="?android:textColorPrimary" />
-
-                    <ToggleButton
-                        android:id="@+id/window_type_switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textOff="@string/full_screen"
-                        android:textOn="@string/simple"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
-        </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

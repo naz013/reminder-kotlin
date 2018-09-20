@@ -23,55 +23,37 @@ import com.elementary.tasks.core.data.models.Reminder
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 interface ReminderInterface {
-    val reminder: Reminder?
 
-    val useGlobal: Boolean
+    val reminder: Reminder
 
-    val voice: Boolean
+    var canExportToTasks: Boolean
 
-    val vibration: Boolean
+    var canExportToCalendar: Boolean
 
-    val notificationRepeat: Boolean
+    var hasAutoExtra: Boolean
 
-    val wake: Boolean
+    var autoExtraHint: String
 
-    val unlock: Boolean
+    fun selectMelody()
 
-    val auto: Boolean
+    fun selectExtra()
 
-    val volume: Int
+    fun selectPriority()
 
-    val ledColor: Int
+    fun selectLed()
 
-    var repeatLimit: Int
+    fun attachFile()
 
-    val windowType: Int
+    fun selectLoudness()
 
-    val reminderGroup: ReminderGroup?
-
-    val isExportToCalendar: Boolean
-
-    val isExportToTasks: Boolean
-
-    val summary: String
-
-    val attachment: String
-
-    val melodyPath: String
-
-    fun setEventHint(hint: String)
+    fun selectGroup()
 
     fun showSnackbar(title: String)
 
     fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener)
 
-    fun setExclusionAction(listener: View.OnClickListener?)
-
-    fun setRepeatAction(listener: View.OnClickListener?)
-
     fun setFullScreenMode(b: Boolean)
 
-    fun setHasAutoExtra(b: Boolean, label: String)
+    fun updateScroll(x: Int)
 }

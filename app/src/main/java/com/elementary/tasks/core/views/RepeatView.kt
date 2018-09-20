@@ -45,6 +45,7 @@ class RepeatView : LinearLayout, TextWatcher {
     private val weeks = 4
 
     private var mRepeatListener: OnRepeatListener? = null
+    var onRepeatChangeListener: OnRepeatChangeListener? = null
     private var mImm: InputMethodManager? = null
 
     private var showPrediction = true
@@ -218,6 +219,7 @@ class RepeatView : LinearLayout, TextWatcher {
         } else {
             predictionView.visibility = View.INVISIBLE
         }
+        onRepeatChangeListener?.onChanged(repeat)
     }
 
     fun enablePrediction(enable: Boolean) {
@@ -257,6 +259,7 @@ class RepeatView : LinearLayout, TextWatcher {
         try {
             mRepeatValue = Integer.parseInt(s.toString())
             mRepeatListener?.onProgress(mRepeatValue)
+            onRepeatChangeListener?.onChanged(repeat)
         } catch (e: NumberFormatException) {
             repeatTitle.setText("0")
         }
@@ -267,6 +270,10 @@ class RepeatView : LinearLayout, TextWatcher {
 
     interface OnRepeatListener {
         fun onProgress(progress: Int)
+    }
+
+    interface OnRepeatChangeListener {
+        fun onChanged(repeat: Long)
     }
 
     companion object {

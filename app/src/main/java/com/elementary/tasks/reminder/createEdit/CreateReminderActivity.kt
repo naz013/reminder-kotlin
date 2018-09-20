@@ -6,12 +6,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
+import android.widget.SeekBar
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -40,46 +42,20 @@ import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
-class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongClickListener {
+class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private lateinit var viewModel: ReminderViewModel
     private lateinit var conversationViewModel: ConversationViewModel
 
     private var fragment: TypeFragment? = null
 
-    override var useGlobal = true
-        private set
-    override var vibration: Boolean = false
-        private set
-    override var voice: Boolean = false
-        private set
-    override var notificationRepeat: Boolean = false
-        private set
-    override var wake: Boolean = false
-        private set
-    override var unlock: Boolean = false
-        private set
-    override var auto: Boolean = false
-        private set
-    private var hasAutoExtra: Boolean = false
-    override var isExportToTasks: Boolean = false
-        private set
-    override var repeatLimit = -1
-    override var volume = -1
-        private set
-    override var reminderGroup: ReminderGroup? = null
-        private set
-    override var melodyPath: String = ""
-        private set
-    private var autoLabel: String? = null
-    override var ledColor = -1
-        private set
     private var isEditing: Boolean = false
-    override var attachment: String = ""
+    override var reminder: Reminder = Reminder()
         private set
-
-    override var reminder: Reminder? = null
-        private set
+    override var canExportToTasks: Boolean = false
+    override var canExportToCalendar: Boolean = false
+    override var hasAutoExtra: Boolean = false
+    override var autoExtraHint: String = ""
 
     @Inject
     lateinit var updatesHelper: UpdatesHelper
@@ -137,36 +113,27 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 binding.voiceCheck.isEnabled = !isChecked
                 binding.wakeCheck.isEnabled = !isChecked
             }
-            binding.voiceCheck.isChecked = voice
-            binding.vibrationCheck.isChecked = vibration
-            binding.unlockCheck.isChecked = unlock
-            binding.repeatCheck.isChecked = notificationRepeat
-            binding.autoCheck.isChecked = auto
-            binding.wakeCheck.isChecked = wake
-            binding.extraSwitch.isChecked = useGlobal
-            binding.autoCheck.isEnabled = !useGlobal
-            binding.repeatCheck.isEnabled = !useGlobal
-            binding.unlockCheck.isEnabled = !useGlobal
-            binding.vibrationCheck.isEnabled = !useGlobal
-            binding.voiceCheck.isEnabled = !useGlobal
-            binding.wakeCheck.isEnabled = !useGlobal
-            if (hasAutoExtra && autoLabel != null) {
+            binding.voiceCheck.isChecked = reminder.notifyByVoice
+            binding.vibrationCheck.isChecked = reminder.vibrate
+            binding.unlockCheck.isChecked = reminder.unlock
+            binding.repeatCheck.isChecked = reminder.repeatNotification
+            binding.autoCheck.isChecked = reminder.auto
+            binding.wakeCheck.isChecked = reminder.awake
+            binding.extraSwitch.isChecked = reminder.useGlobal
+            binding.autoCheck.isEnabled = !reminder.useGlobal
+            binding.repeatCheck.isEnabled = !reminder.useGlobal
+            binding.unlockCheck.isEnabled = !reminder.useGlobal
+            binding.vibrationCheck.isEnabled = !reminder.useGlobal
+            binding.voiceCheck.isEnabled = !reminder.useGlobal
+            binding.wakeCheck.isEnabled = !reminder.useGlobal
+            if (hasAutoExtra && autoExtraHint != "") {
                 binding.autoCheck.visibility = View.VISIBLE
-                binding.autoCheck.text = autoLabel
+                binding.autoCheck.text = autoExtraHint
             } else {
                 binding.autoCheck.visibility = View.GONE
             }
             return binding
         }
-
-    override val summary: String
-        get() = taskSummary.text.toString().trim { it <= ' ' }
-
-    override val windowType: Int
-        get() = if (window_type_switch.isChecked) 1 else 0
-
-    override val isExportToCalendar: Boolean
-        get() = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -183,10 +150,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_reminder)
-        isExportToTasks = Google.getInstance() != null
+        canExportToTasks = Google.getInstance() != null
         initActionBar()
         initNavigation()
-        initLongClick()
         loadReminder()
     }
 
@@ -214,15 +180,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         })
     }
 
-    private fun initLongClick() {
-        customButton.setOnLongClickListener(this)
-        groupButton.setOnLongClickListener(this)
-        voiceButton.setOnLongClickListener(this)
-        exclusionButton.setOnLongClickListener(this)
-        melodyButton.setOnLongClickListener(this)
-        repeatButton.setOnLongClickListener(this)
-    }
-
     private fun loadReminder() {
         val intent = intent
         val id = getIntent().getStringExtra(Constants.INTENT_ID) ?: ""
@@ -235,9 +192,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 val scheme = name!!.scheme
                 reminder = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    backupTool.getReminder(cr, name)
+                    backupTool.getReminder(cr, name) ?: Reminder()
                 } else {
-                    backupTool.getReminder(name.path, null)
+                    backupTool.getReminder(name.path, null) ?: Reminder()
                 }
             } catch (e: IOException) {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
@@ -250,14 +207,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     private fun editReminder(reminder: Reminder) {
         this.reminder = reminder
         viewModel.pauseReminder(reminder)
-        taskSummary.setText(reminder.summary)
-//        showGroup(reminder.reminderGroup)
-        attachment = reminder.attachmentFile
-        if (!TextUtils.isEmpty(attachment)) {
-            attachmentButton.visibility = View.VISIBLE
-        }
-        window_type_switch.isChecked = reminder.windowType == 1
-        initParams(reminder)
         when (reminder.type) {
             Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> navSpinner.setSelection(DATE)
             Reminder.BY_TIME -> navSpinner.setSelection(TIMER)
@@ -275,29 +224,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                     Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> navSpinner.setSelection(GPS_PLACE)
                 }
             }
-        }
-    }
-
-    private fun initParams(reminder: Reminder) {
-        useGlobal = reminder.useGlobal
-        auto = reminder.auto
-        wake = reminder.awake
-        unlock = reminder.unlock
-        notificationRepeat = reminder.repeatNotification
-        voice = reminder.notifyByVoice
-        vibration = reminder.vibrate
-        volume = reminder.volume
-        repeatLimit = reminder.repeatLimit
-        melodyPath = reminder.melodyPath
-        ledColor = reminder.color
-        updateMelodyIndicator()
-    }
-
-    private fun updateMelodyIndicator() {
-        if (melodyPath != "") {
-            melodyButton.visibility = View.VISIBLE
-        } else {
-            melodyButton.visibility = View.GONE
         }
     }
 
@@ -331,11 +257,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        voiceButton.setOnClickListener { openRecognizer() }
-        customButton.setOnClickListener { openCustomizationDialog() }
-        groupButton.setOnClickListener { changeGroup() }
-        melodyButton.setOnClickListener { showCurrentMelody() }
-        attachmentButton.setOnClickListener { showAttachmentSnack() }
     }
 
     private fun changeGroup() {
@@ -344,7 +265,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
-                android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminderGroup?.groupTitle ?: "")) { dialog, which ->
+                android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminder.groupTitle)) { dialog, which ->
             dialog.dismiss()
             if (groups != null) {
                 showGroup(groups[which])
@@ -356,8 +277,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun showGroup(item: ReminderGroup?) {
         if (item == null) return
-        groupButton.text = item.groupTitle
-        reminderGroup = item
+        fragment?.onGroupUpdate(item)
     }
 
     private fun openCustomizationDialog() {
@@ -370,13 +290,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun saveExtraResults(b: View) {
-        useGlobal = b.extraSwitch.isChecked
-        auto = b.autoCheck.isChecked
-        wake = b.wakeCheck.isChecked
-        unlock = b.unlockCheck.isChecked
-        notificationRepeat = b.repeatCheck.isChecked
-        voice = b.voiceCheck.isChecked
-        vibration = b.vibrationCheck.isChecked
+        reminder.useGlobal = b.extraSwitch.isChecked
+        reminder.auto = b.autoCheck.isChecked
+        reminder.awake = b.wakeCheck.isChecked
+        reminder.unlock = b.unlockCheck.isChecked
+        reminder.repeatNotification = b.repeatCheck.isChecked
+        reminder.notifyByVoice = b.voiceCheck.isChecked
+        reminder.vibrate = b.vibrationCheck.isChecked
+        fragment?.onExtraUpdate()
     }
 
     private fun openRecognizer() {
@@ -385,33 +306,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     fun replaceFragment(fragment: TypeFragment) {
         this.fragment = fragment
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.main_container, fragment, null)
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        ft.commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.main_container, fragment, null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commitAllowingStateLoss()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_add -> {
                 save()
-                return true
-            }
-            R.id.action_custom_melody -> {
-                if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
-                    startActivityForResult(Intent(this, FileExplorerActivity::class.java),
-                            Constants.REQUEST_CODE_SELECTED_MELODY)
-                } else {
-                    Permissions.requestPermission(this, 330, Permissions.READ_EXTERNAL)
-                }
-                return true
-            }
-            R.id.action_custom_color -> {
-                chooseLedColor()
-                return true
-            }
-            R.id.action_volume -> {
-                selectVolume()
                 return true
             }
             MENU_ITEM_DELETE -> {
@@ -422,15 +326,20 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 closeScreen()
                 return true
             }
-            R.id.action_attach_file -> {
-                attachFile()
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun attachFile() {
+    override fun selectMelody() {
+        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+            startActivityForResult(Intent(this, FileExplorerActivity::class.java),
+                    Constants.REQUEST_CODE_SELECTED_MELODY)
+        } else {
+            Permissions.requestPermission(this, 330, Permissions.READ_EXTERNAL)
+        }
+    }
+
+    override fun attachFile() {
         if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
             startActivityForResult(Intent(this, FileExplorerActivity::class.java)
                     .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST)
@@ -440,16 +349,15 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun closeScreen() {
-        val rem = reminder
-        if (rem != null && prefs.isAutoSaveEnabled) {
-            if (!rem.isActive) {
+        if (prefs.isAutoSaveEnabled) {
+            if (!reminder.isActive) {
                 askAboutEnabling()
             } else {
                 save()
             }
-        } else if (isEditing && rem != null) {
-            if (!rem.isActive) {
-                viewModel.resumeReminder(rem)
+        } else if (isEditing) {
+            if (!reminder.isActive) {
+                viewModel.resumeReminder(reminder)
             }
             finish()
         } else {
@@ -458,13 +366,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun deleteReminder() {
-        val rem = reminder
-        if (rem != null) {
-            if (rem.isRemoved) {
-                viewModel.deleteReminder(rem, true)
-            } else {
-                viewModel.moveToTrash(rem)
-            }
+        if (reminder.isRemoved) {
+            viewModel.deleteReminder(reminder, true)
+        } else {
+            viewModel.moveToTrash(reminder)
         }
     }
 
@@ -486,13 +391,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
             }
         })
-        b.seekBar.progress = volume + 1
+        b.seekBar.progress = reminder.volume + 1
         b.titleView.text = getVolumeTitle(b.seekBar.progress)
         builder.setView(b)
         builder.setPositiveButton(R.string.ok) { _, _ ->
-            volume = b.seekBar.progress - 1
+            reminder.volume = b.seekBar.progress - 1
             val str = String.format(getString(R.string.selected_loudness_x_for_reminder), getVolumeTitle(b.seekBar.progress))
-            showSnackbar(str, getString(R.string.cancel), View.OnClickListener { volume = -1 })
+            showSnackbar(str, getString(R.string.cancel), View.OnClickListener { reminder.volume = -1 })
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
@@ -516,18 +421,18 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
         val adapter = ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_single_choice, colors)
-        builder.setSingleChoiceItems(adapter, ledColor) { dialog, which ->
+        builder.setSingleChoiceItems(adapter, reminder.color) { dialog, which ->
             if (which != -1) {
-                ledColor = which
+                reminder.color = which
                 val selColor = LED.getTitle(this, which)
                 val str = String.format(getString(R.string.led_color_x), selColor)
-                showSnackbar(str, getString(R.string.cancel), View.OnClickListener { ledColor = -1 })
+                showSnackbar(str, getString(R.string.cancel), View.OnClickListener { reminder.color = -1 })
                 dialog.dismiss()
             }
         }
         builder.setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
         builder.setNegativeButton(R.string.disable) { dialog, _ ->
-            ledColor = -1
+            reminder.color = -1
             dialog.dismiss()
         }
         builder.create().show()
@@ -561,7 +466,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_create_reminder, menu)
-        if (reminder != null && isEditing) {
+        if (isEditing) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true
@@ -576,47 +481,41 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                     processModel(model)
                 } else {
                     val text = matches[0].toString()
-                    taskSummary.setText(StringUtils.capitalize(text))
+                    fragment?.onVoiceAction(StringUtils.capitalize(text))
                 }
             }
         }
         if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
-            melodyPath = data!!.getStringExtra(Constants.FILE_PICKED)
-            updateMelodyIndicator()
+            val melodyPath = data!!.getStringExtra(Constants.FILE_PICKED)
+            fragment?.onMelodySelect(melodyPath)
             showCurrentMelody()
         }
         if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            attachment = data!!.getStringExtra(Constants.FILE_PICKED)
+            val attachment = data!!.getStringExtra(Constants.FILE_PICKED)
             if (attachment != "") {
-                attachmentButton.visibility = View.VISIBLE
+                fragment?.onAttachmentSelect(attachment)
                 showAttachmentSnack()
             }
         }
-        if (fragment != null) {
-            fragment!!.onActivityResult(requestCode, resultCode, data)
-        }
+        fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showAttachmentSnack() {
-        val file = File(attachment)
+        val file = File(reminder.attachmentFile)
         showSnackbar(String.format(getString(R.string.file_x_attached), file.name),
                 getString(R.string.cancel), View.OnClickListener {
-            attachment = ""
-            attachmentButton.visibility = View.GONE
+            fragment?.onAttachmentSelect("")
         })
     }
 
     private fun showCurrentMelody() {
-        if (melodyPath != "") {
-            val musicFile = File(melodyPath)
-            showSnackbar(String.format(getString(R.string.melody_x), musicFile.name),
-                    getString(R.string.delete), View.OnClickListener { removeMelody() })
-        }
+        val musicFile = File(reminder.melodyPath)
+        showSnackbar(String.format(getString(R.string.melody_x), musicFile.name),
+                getString(R.string.delete), View.OnClickListener { removeMelody() })
     }
 
     private fun removeMelody() {
-        melodyPath = ""
-        updateMelodyIndicator()
+        fragment?.onMelodySelect("")
     }
 
     private fun processModel(model: Reminder) {
@@ -656,35 +555,24 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        showShowcase()
+    override fun selectPriority() {
+
     }
 
-    private fun showShowcase() {
-        if (!prefs.isShowcase(SHOWCASE)) {
-            prefs.setShowcase(SHOWCASE, true)
-            //            ShowcaseConfig config = new ShowcaseConfig();
-            //            config.setDelay(350);
-            //            config.setMaskColor(getThemeUtil().getGroupColor(getThemeUtil().colorAccent()));
-            //            config.setContentTextColor(getThemeUtil().getGroupColor(R.groupColor.whitePrimary));
-            //            config.setDismissTextColor(getThemeUtil().getGroupColor(R.groupColor.whitePrimary));
-            //            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
-            //            sequence.setConfig(config);
-            //            sequence.addSequenceItem(binding.navSpinner,
-            //                    getString(R.string.click_to_select_reminder_type),
-            //                    getString(R.string.got_it));
-            //            sequence.addSequenceItem(binding.voiceButton,
-            //                    getString(R.string.to_insert_task_by_voice),
-            //                    getString(R.string.got_it));
-            //            sequence.addSequenceItem(binding.customButton,
-            //                    getString(R.string.click_to_customize),
-            //                    getString(R.string.got_it));
-            //            sequence.addSequenceItem(binding.groupButton,
-            //                    getString(R.string.click_to_change_reminder_group),
-            //                    getString(R.string.got_it));
-            //            sequence.start();
-        }
+    override fun selectLoudness() {
+        selectVolume()
+    }
+
+    override fun selectLed() {
+        chooseLedColor()
+    }
+
+    override fun selectGroup() {
+        changeGroup()
+    }
+
+    override fun selectExtra() {
+        openCustomizationDialog()
     }
 
     override fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener) {
@@ -695,28 +583,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         Snackbar.make(main_container, title, Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun setEventHint(hint: String) {
-        taskSummary.hint = hint
-    }
-
-    override fun setExclusionAction(listener: View.OnClickListener?) {
-        if (listener == null) {
-            exclusionButton.visibility = View.GONE
-        } else {
-            exclusionButton.visibility = View.VISIBLE
-            exclusionButton.setOnClickListener(listener)
-        }
-    }
-
-    override fun setRepeatAction(listener: View.OnClickListener?) {
-        if (listener == null) {
-            repeatButton.visibility = View.GONE
-        } else {
-            repeatButton.visibility = View.VISIBLE
-            repeatButton.setOnClickListener(listener)
-        }
-    }
-
     override fun setFullScreenMode(b: Boolean) {
         if (b) {
             ViewUtils.collapse(toolbar)
@@ -725,9 +591,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
     }
 
-    override fun setHasAutoExtra(hasAutoExtra: Boolean, label: String) {
-        this.hasAutoExtra = hasAutoExtra
-        this.autoLabel = label
+    override fun updateScroll(x: Int) {
+        appBar.isSelected = x > 0
     }
 
     override fun onDestroy() {
@@ -740,18 +605,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         if (fragment != null && fragment!!.onBackPressed()) {
             closeScreen()
         }
-    }
-
-    override fun onLongClick(view: View): Boolean {
-        when (view.id) {
-            R.id.customButton -> Toast.makeText(this, getString(R.string.acc_customize_reminder), Toast.LENGTH_SHORT).show()
-            R.id.groupButton -> Toast.makeText(this, getString(R.string.change_group), Toast.LENGTH_SHORT).show()
-            R.id.voiceButton -> Toast.makeText(this, getString(R.string.acc_type_by_voice), Toast.LENGTH_SHORT).show()
-            R.id.exclusionButton -> Toast.makeText(this, getString(R.string.acc_customize_exclusions), Toast.LENGTH_SHORT).show()
-            R.id.melodyButton -> Toast.makeText(this, getString(R.string.acc_select_melody), Toast.LENGTH_SHORT).show()
-            R.id.repeatButton -> Toast.makeText(this, getString(R.string.repeat_limit), Toast.LENGTH_SHORT).show()
-        }
-        return true
     }
 
     private class SpinnerItem internal constructor(val title: String)
@@ -809,6 +662,5 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         private const val CONTACTS_REQUEST_E = 501
         private const val FILE_REQUEST = 323
         private const val TAG = "CreateReminderActivity"
-        private const val SHOWCASE = "reminder_showcase"
     }
 }
