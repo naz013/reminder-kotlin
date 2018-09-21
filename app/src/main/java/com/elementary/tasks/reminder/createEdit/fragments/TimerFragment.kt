@@ -109,7 +109,6 @@ class TimerFragment : RepeatableTypeFragment() {
         reminder.from = mFrom
         reminder.to = mTo
         reminder.hours = mHours
-        reminder.setClear(iFace)
         val startTime = timeCount.generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -133,7 +132,7 @@ class TimerFragment : RepeatableTypeFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_limit -> changeLimit()
+//            R.id.action_limit -> changeLimit()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -144,20 +143,17 @@ class TimerFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        timerPickerView.setListener(repeatView.timerListener)
         initScreenState()
         editReminder()
     }
 
     private fun initScreenState() {
-        val iFace = reminderInterface ?: return
-        iFace.setExclusionAction(View.OnClickListener { openExclusionDialog() })
-        if (iFace.isExportToCalendar) {
+        if (reminderInterface.canExportToCalendar) {
             exportToCalendar.visibility = View.VISIBLE
         } else {
             exportToCalendar.visibility = View.GONE
         }
-        if (iFace.isExportToTasks) {
+        if (reminderInterface.canExportToTasks) {
             exportToTasks.visibility = View.VISIBLE
         } else {
             exportToTasks.visibility = View.GONE
@@ -165,8 +161,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val iFace = reminderInterface ?: return
-        val reminder = iFace.reminder ?: return
+        val reminder = reminderInterface.reminder
         exportToCalendar.isChecked = reminder.exportToCalendar
         exportToTasks.isChecked = reminder.exportToTasks
         repeatView.repeat = reminder.repeatInterval

@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.fragment_reminder_application.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class ApplicationFragment : RepeatableTypeFragment() {
 
     private var selectedPackage: String? = null
@@ -91,9 +90,6 @@ class ApplicationFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = repeat
         reminder.exportToCalendar = exportToCalendar.isChecked
         reminder.exportToTasks = exportToTasks.isChecked
-        if (reminderInterface != null) {
-            reminder.setClear(reminderInterface!!)
-        }
         reminder.remindBefore = before
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -117,7 +113,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_limit -> changeLimit()
+//            R.id.action_limit -> changeLimit()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -128,9 +124,9 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pickApplication.setOnClickListener { activity!!.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION) }
-        repeatView.enablePrediction(true)
-        dateView.setEventListener(repeatView.eventListener)
+        pickApplication.setOnClickListener {
+            activity?.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
+        }
         initScreenState()
         phoneNumber.visibility = View.GONE
         application.setOnCheckedChangeListener { _, b ->
@@ -147,18 +143,18 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     private fun initScreenState() {
         val reminderIface = reminderInterface ?: return
-        reminderIface.setEventHint(getString(R.string.subject))
-        reminderIface.setHasAutoExtra(true, getString(R.string.enable_launching_application_automatically))
-        if (reminderIface.isExportToCalendar) {
-            exportToCalendar.visibility = View.VISIBLE
-        } else {
-            exportToCalendar.visibility = View.GONE
-        }
-        if (reminderIface.isExportToTasks) {
-            exportToTasks.visibility = View.VISIBLE
-        } else {
-            exportToTasks.visibility = View.GONE
-        }
+//        reminderIface.setEventHint(getString(R.string.subject))
+//        reminderIface.setHasAutoExtra(true, getString(R.string.enable_launching_application_automatically))
+//        if (reminderIface.isExportToCalendar) {
+//            exportToCalendar.visibility = View.VISIBLE
+//        } else {
+//            exportToCalendar.visibility = View.GONE
+//        }
+//        if (reminderIface.isExportToTasks) {
+//            exportToTasks.visibility = View.VISIBLE
+//        } else {
+//            exportToTasks.visibility = View.GONE
+//        }
     }
 
     private fun editReminder() {
@@ -166,7 +162,6 @@ class ApplicationFragment : RepeatableTypeFragment() {
         exportToCalendar.isChecked = reminder.exportToCalendar
         exportToTasks.isChecked = reminder.exportToTasks
         dateView.setDateTime(reminder.eventTime)
-        repeatView.setDateTime(reminder.eventTime)
         repeatView.repeat = reminder.repeatInterval
         before_view.setBefore(reminder.remindBefore)
         if (reminder.target != "") {

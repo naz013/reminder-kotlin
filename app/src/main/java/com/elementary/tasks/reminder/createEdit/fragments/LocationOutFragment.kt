@@ -43,25 +43,6 @@ class LocationOutFragment : RadiusTypeFragment() {
     private var mTracker: LocationTracker? = null
     private var lastPos: LatLng? = null
 
-    private val mActionListener = object : ActionView.OnActionListener {
-        override fun onActionChange(hasAction: Boolean) {
-            if (!hasAction) {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(false, "")
-            }
-        }
-
-        override fun onTypeChange(isMessageType: Boolean) {
-            if (isMessageType) {
-                reminderInterface?.setEventHint(getString(R.string.message))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically))
-            } else {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically))
-            }
-        }
-    }
-
     private val mListener = object : MapListener {
         override fun placeChanged(place: LatLng, address: String) {
             lastPos = place
@@ -113,10 +94,10 @@ class LocationOutFragment : RadiusTypeFragment() {
         val map = mAdvancedMapFragment ?: return null
         var type = Reminder.BY_OUT
         val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
-            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-            return null
-        }
+//        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
+//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
+//            return null
+//        }
         val pos = lastPos
         if (pos == null) {
             iFace.showSnackbar(getString(R.string.you_dont_select_place))
@@ -139,14 +120,13 @@ class LocationOutFragment : RadiusTypeFragment() {
         if (reminder == null) {
             reminder = Reminder()
         }
-        val place = Place(radius, map.markerStyle, pos.latitude, pos.longitude, iFace.summary, number, listOf())
-        val places = listOf(place)
-        reminder.places = places
+//        val place = Place(radius, map.markerStyle, pos.latitude, pos.longitude, iFace.summary, number, listOf())
+//        val places = listOf(place)
+//        reminder.places = places
         reminder.target = number
         reminder.type = type
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
-        reminder.setClear(iFace)
         if (attackDelay.isChecked) {
             val startTime = dateView.dateTime
             reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -194,7 +174,6 @@ class LocationOutFragment : RadiusTypeFragment() {
                 .replace(mapFrame.id, advancedMapFragment)
                 .addToBackStack(null)
                 .commit()
-        actionView.setListener(mActionListener)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
@@ -219,10 +198,10 @@ class LocationOutFragment : RadiusTypeFragment() {
                     mTracker = LocationTracker(context) { lat, lng ->
                         lastPos = LatLng(lat, lng)
                         val mLocation = SuperUtil.getAddress(lat, lng)
-                        var text = reminderInterface!!.summary
-                        if (TextUtils.isEmpty(text)) text = mLocation
-                        currentLocation.text = mLocation
-                        mAdvancedMapFragment?.addMarker(lastPos, text, true, true, radius)
+//                        var text = reminderInterface!!.summary
+//                        if (TextUtils.isEmpty(text)) text = mLocation
+//                        currentLocation.text = mLocation
+//                        mAdvancedMapFragment?.addMarker(lastPos, text, true, true, radius)
                     }
                 } else {
                     Permissions.requestPermission(activity!!, LOCATION, Permissions.ACCESS_FINE_LOCATION, Permissions.ACCESS_COARSE_LOCATION)

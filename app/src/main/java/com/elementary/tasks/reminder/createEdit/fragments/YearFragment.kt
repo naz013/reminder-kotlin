@@ -41,25 +41,6 @@ class YearFragment : RepeatableTypeFragment() {
     private var mMonth = 0
     private var mDay = 1
 
-    private val mActionListener = object : ActionView.OnActionListener {
-        override fun onActionChange(hasAction: Boolean) {
-            if (!hasAction) {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(false, "")
-            }
-        }
-
-        override fun onTypeChange(isMessageType: Boolean) {
-            if (isMessageType) {
-                reminderInterface?.setEventHint(getString(R.string.message))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically))
-            } else {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically))
-            }
-        }
-    }
-
     private val time: Long
         get() {
             val calendar = Calendar.getInstance()
@@ -75,10 +56,10 @@ class YearFragment : RepeatableTypeFragment() {
         val iFace = reminderInterface ?: return null
         var type = Reminder.BY_DAY_OF_YEAR
         val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
-            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-            return null
-        }
+//        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
+//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
+//            return null
+//        }
         var number = ""
         if (isAction) {
             number = actionView.number
@@ -104,7 +85,6 @@ class YearFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = 0
         reminder.exportToCalendar = exportToCalendar.isChecked
         reminder.exportToTasks = exportToTasks.isChecked
-        reminder.setClear(iFace)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         reminder.remindBefore = before_view.beforeValue
         val startTime = timeCount.getNextYearDayTime(reminder)
@@ -130,7 +110,7 @@ class YearFragment : RepeatableTypeFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_limit -> changeLimit()
+//            R.id.action_limit -> changeLimit()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -158,7 +138,6 @@ class YearFragment : RepeatableTypeFragment() {
                 mMinute = minute
             }
         })
-        actionView.setListener(mActionListener)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
         initScreenState()
@@ -174,13 +153,12 @@ class YearFragment : RepeatableTypeFragment() {
     }
 
     private fun initScreenState() {
-        val iFace = reminderInterface ?: return
-        if (iFace.isExportToCalendar) {
+        if (reminderInterface.canExportToCalendar) {
             exportToCalendar.visibility = View.VISIBLE
         } else {
             exportToCalendar.visibility = View.GONE
         }
-        if (iFace.isExportToTasks) {
+        if (reminderInterface.canExportToTasks) {
             exportToTasks.visibility = View.VISIBLE
         } else {
             exportToTasks.visibility = View.GONE
@@ -203,8 +181,7 @@ class YearFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val iFace = reminderInterface ?: return
-        val reminder = iFace.reminder ?: return
+        val reminder = reminderInterface.reminder
         exportToCalendar.isChecked = reminder.exportToCalendar
         exportToTasks.isChecked = reminder.exportToTasks
         before_view.setBefore(reminder.remindBefore)

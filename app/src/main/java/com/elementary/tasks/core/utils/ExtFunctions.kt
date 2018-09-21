@@ -4,10 +4,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.temp.UI
-import com.elementary.tasks.core.views.BeforePickerView
-import com.elementary.tasks.core.views.DateTimeView
-import com.elementary.tasks.core.views.RepeatView
+import com.elementary.tasks.core.views.*
 import kotlinx.coroutines.experimental.CoroutineStart
 import kotlinx.coroutines.experimental.withContext
 
@@ -27,7 +26,7 @@ import kotlinx.coroutines.experimental.withContext
  * limitations under the License.
  */
 suspend fun <T> withUIContext(start: CoroutineStart = CoroutineStart.DEFAULT,
-                                     block: suspend () -> T) : T = withContext(UI, start, block)
+                              block: suspend () -> T): T = withContext(UI, start, block)
 
 fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) {
     this.setText(value)
@@ -75,5 +74,42 @@ fun DateTimeView.bindProperty(value: String, listener: ((String) -> Unit)) {
         override fun onChanged(mills: Long) {
             listener.invoke(TimeUtil.getGmtFromDateTime(mills))
         }
+    }
+}
+
+fun PriorityPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
+    this.priority = value
+    this.onPriorityChaneListener = {
+        listener.invoke(it)
+    }
+}
+
+fun ActionView.bindProperty(value: String, listener: ((String) -> Unit)) {
+    this.number = value
+    this.setListener(object : ActionView.OnActionListener {
+        override fun onStateChanged(hasAction: Boolean, type: Int, phone: String) {
+            listener.invoke(phone)
+        }
+    })
+}
+
+fun MelodyView.bindProperty(value: String, listener: ((String) -> Unit)) {
+    this.file = value
+    this.onFileUpdateListener = {
+        listener.invoke(it)
+    }
+}
+
+fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
+    this.file = value
+    this.onFileUpdateListener = {
+        listener.invoke(it)
+    }
+}
+
+fun GroupView.bindProperty(value: ReminderGroup, listener: ((ReminderGroup) -> Unit)) {
+    this.reminderGroup = value
+    this.onGroupUpdateListener = {
+        listener.invoke(it)
     }
 }

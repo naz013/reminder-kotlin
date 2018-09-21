@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.widget.TextView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.IntervalUtil
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -29,6 +30,26 @@ abstract class RepeatableTypeFragment : TypeFragment() {
             progress == 1 -> textView.setText(R.string.once)
             else -> textView.text = progress.toString() + " " + getString(R.string.times)
         }
+    }
+
+    override fun getSummary(): String {
+        val reminder = reminderInterface.reminder
+
+        var summary = ""
+
+        val groupName = reminder.groupTitle
+        if (groupName != "") {
+           summary += "$groupName, "
+        }
+
+        summary += reminderUtils.getPriorityTitle(reminder.priority) + ", "
+
+        val before = reminder.remindBefore
+        if (before > 0) {
+            summary += IntervalUtil.getInterval(context!!, before) + ", "
+        }
+
+        return summary
     }
 
     protected fun getZeroedInt(v: Int): String {

@@ -38,24 +38,6 @@ class WeekFragment : RepeatableTypeFragment() {
     private var mHour = 0
     private var mMinute = 0
 
-    private val mActionListener = object : ActionView.OnActionListener {
-        override fun onActionChange(hasAction: Boolean) {
-            if (!hasAction) {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(false, "")
-            }
-        }
-
-        override fun onTypeChange(isMessageType: Boolean) {
-            if (isMessageType) {
-                reminderInterface?.setEventHint(getString(R.string.message))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically))
-            } else {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically))
-            }
-        }
-    }
     private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mHour = hourOfDay
         mMinute = minute
@@ -87,10 +69,10 @@ class WeekFragment : RepeatableTypeFragment() {
         val iFace = reminderInterface ?: return null
         var type = Reminder.BY_WEEK
         val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
-            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-            return null
-        }
+//        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
+//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
+//            return null
+//        }
         var number = ""
         if (isAction) {
             number = actionView.number
@@ -119,7 +101,6 @@ class WeekFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = 0
         reminder.exportToCalendar = exportToCalendar.isChecked
         reminder.exportToTasks = exportToTasks.isChecked
-        reminder.setClear(iFace)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         reminder.remindBefore = before_view.beforeValue
         val startTime = timeCount.getNextWeekdayTime(reminder)
@@ -145,7 +126,7 @@ class WeekFragment : RepeatableTypeFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_limit -> changeLimit()
+//            R.id.action_limit -> changeLimit()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -159,7 +140,6 @@ class WeekFragment : RepeatableTypeFragment() {
         timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
-        actionView.setListener(mActionListener)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
         setToggleTheme()
@@ -168,13 +148,12 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     private fun initScreenState() {
-        val iFace = reminderInterface ?: return
-        if (iFace.isExportToCalendar) {
+        if (reminderInterface.canExportToCalendar) {
             exportToCalendar.visibility = View.VISIBLE
         } else {
             exportToCalendar.visibility = View.GONE
         }
-        if (iFace.isExportToTasks) {
+        if (reminderInterface.canExportToTasks) {
             exportToTasks.visibility = View.VISIBLE
         } else {
             exportToTasks.visibility = View.GONE

@@ -69,7 +69,6 @@ class ShopFragment : TypeFragment() {
         reminder.target = ""
         reminder.type = type
         reminder.repeatInterval = 0
-        reminder.setClear(iFace)
         if (isReminder) {
             val startTime = dateViewShopping.dateTime
             val time = TimeUtil.getGmtFromDateTime(startTime)

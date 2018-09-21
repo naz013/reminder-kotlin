@@ -13,9 +13,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.view_repeat.view.*
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -48,34 +46,8 @@ class RepeatView : LinearLayout, TextWatcher {
     var onRepeatChangeListener: OnRepeatChangeListener? = null
     private var mImm: InputMethodManager? = null
 
-    private var showPrediction = true
     private var mState = days
-    private var mDay: Int = 0
-    private var mMonth: Int = 0
-    private var mYear: Int = 0
-    private var mHour: Int = 0
-    private var mMinute: Int = 0
     private var mRepeatValue: Int = 0
-
-    val eventListener: DateTimeView.OnSelectListener = object : DateTimeView.OnSelectListener {
-        override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
-            mYear = year
-            mMonth = month
-            mDay = day
-            updatePrediction(mRepeatValue)
-        }
-
-        override fun onTimeSelect(mills: Long, hour: Int, minute: Int) {
-            mHour = hour
-            mMinute = minute
-            updatePrediction(mRepeatValue)
-        }
-    }
-    val timerListener = object : TimerPickerView.TimerListener {
-        override fun onTimerChange(time: Long) {
-            initDateTime(System.currentTimeMillis() + time)
-        }
-    }
 
     @Inject
     lateinit var prefs: Prefs
@@ -152,7 +124,7 @@ class RepeatView : LinearLayout, TextWatcher {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         View.inflate(context, R.layout.view_repeat, this)
-        orientation = LinearLayout.VERTICAL
+        orientation = LinearLayout.HORIZONTAL
         mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
@@ -191,50 +163,12 @@ class RepeatView : LinearLayout, TextWatcher {
             }
         }
         repeatType.setSelection(mState)
-        initDateTime(System.currentTimeMillis())
-    }
-
-    fun initDateTime(time: Long) {
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = time
-        mYear = cal.get(Calendar.YEAR)
-        mMonth = cal.get(Calendar.MONTH)
-        mDay = cal.get(Calendar.DAY_OF_MONTH)
-        mHour = cal.get(Calendar.HOUR_OF_DAY)
-        mMinute = cal.get(Calendar.MINUTE)
-        updatePrediction(mRepeatValue)
-    }
-
-    fun setDateTime(dateTime: String?) {
-        initDateTime(TimeUtil.getDateTimeFromGmt(dateTime))
-    }
-
-    private fun updatePrediction(progress: Int) {
-        val calendar = Calendar.getInstance()
-        calendar.set(mYear, mMonth, mDay, mHour, mMinute, 0)
-        val is24 = prefs.is24HourFormatEnabled
-        if (showPrediction) {
-            predictionView.visibility = View.VISIBLE
-            eventView.text = TimeUtil.getFullDateTime(calendar.timeInMillis + progress * multiplier, is24, false)
-        } else {
-            predictionView.visibility = View.INVISIBLE
-        }
-        onRepeatChangeListener?.onChanged(repeat)
-    }
-
-    fun enablePrediction(enable: Boolean) {
-        if (enable) {
-            predictionView.visibility = View.VISIBLE
-        } else {
-            predictionView.visibility = View.INVISIBLE
-        }
-        this.showPrediction = enable
+        setState(mState)
     }
 
     private fun setState(state: Int) {
         if (mState == state) return
         this.mState = state
-        updatePrediction(mRepeatValue)
     }
 
     fun setListener(listener: OnRepeatListener?) {

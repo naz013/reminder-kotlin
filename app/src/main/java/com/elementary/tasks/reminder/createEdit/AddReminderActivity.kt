@@ -44,22 +44,6 @@ class AddReminderActivity : ThemedActivity() {
 
     private lateinit var viewModel: ReminderViewModel
 
-    private val mActionListener = object : ActionView.OnActionListener {
-        override fun onActionChange(hasAction: Boolean) {
-            if (!hasAction) {
-                task_text.setText(getString(R.string.remind_me))
-            }
-        }
-
-        override fun onTypeChange(isMessageType: Boolean) {
-            if (isMessageType) {
-                task_text.setText(getString(R.string.message))
-            } else {
-                task_text.setText(getString(R.string.remind_me))
-            }
-        }
-    }
-
     private val isExportToCalendar: Boolean
         get() = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
 
@@ -87,9 +71,6 @@ class AddReminderActivity : ThemedActivity() {
         setContentView(R.layout.activity_add_reminder)
         initActionBar()
         val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
-        repeatView.enablePrediction(true)
-        dateView.setEventListener(repeatView.eventListener)
-        actionView.setListener(mActionListener)
         actionView.setActivity(this)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
         if (isExportToCalendar) {

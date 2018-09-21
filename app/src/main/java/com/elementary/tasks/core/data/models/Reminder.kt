@@ -136,7 +136,7 @@ class Reminder : RecyclerInterface {
     @SerializedName("windowType")
     var windowType = 0
     @SerializedName("priority")
-    var priority = 0
+    var priority = 2
     @ColumnInfo(name = "groupTitle")
     @Transient
     var groupTitle: String = ""

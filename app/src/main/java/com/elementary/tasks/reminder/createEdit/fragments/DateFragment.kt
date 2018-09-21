@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_date.*
@@ -34,24 +35,6 @@ import kotlinx.android.synthetic.main.fragment_reminder_date.*
  * limitations under the License.
  */
 class DateFragment : RepeatableTypeFragment() {
-
-    private val mActionListener = object : ActionView.OnActionListener {
-        override fun onActionChange(hasAction: Boolean) {
-            reminderInterface.hasAutoExtra = hasAction
-            if (!hasAction) {
-                reminderInterface.autoExtraHint = ""
-            }
-        }
-
-        override fun onTypeChange(isMessageType: Boolean) {
-            reminderInterface.hasAutoExtra = true
-            if (isMessageType) {
-                reminderInterface.autoExtraHint = getString(R.string.enable_sending_sms_automatically)
-            } else {
-                reminderInterface.autoExtraHint = getString(R.string.enable_making_phone_calls_automatically)
-            }
-        }
-    }
 
     override fun prepare(): Reminder? {
         val iFace = reminderInterface
@@ -97,11 +80,23 @@ class DateFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        repeatView.enablePrediction(true)
-        dateView.setEventListener(repeatView.eventListener)
-        actionView.setListener(mActionListener)
+        ViewUtils.listenScrollView(scrollView) {
+            reminderInterface.updateScroll(it)
+        }
+
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
+
+        melodyView.onFileSelectListener = {
+            reminderInterface.selectMelody()
+        }
+        attachmentView.onFileSelectListener = {
+            reminderInterface.attachFile()
+        }
+        groupView.onGroupSelectListener = {
+            reminderInterface.selectGroup()
+        }
+
         initScreenState()
         initPropertyFields()
         editReminder()
@@ -111,8 +106,9 @@ class DateFragment : RepeatableTypeFragment() {
         taskSummary.bindProperty(reminderInterface.reminder.summary) {
             reminderInterface.reminder.summary = it.trim()
         }
-        before_view.bindProperty(reminderInterface.reminder.remindBefore) {
+        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
             reminderInterface.reminder.remindBefore = it
+            updateHeader()
         }
         repeatView.bindProperty(reminderInterface.reminder.repeatInterval) {
             reminderInterface.reminder.repeatInterval = it
@@ -126,6 +122,23 @@ class DateFragment : RepeatableTypeFragment() {
         dateView.bindProperty(reminderInterface.reminder.eventTime) {
             reminderInterface.reminder.eventTime = it
         }
+        priorityView.bindProperty(reminderInterface.reminder.priority) {
+            reminderInterface.reminder.priority = it
+            updateHeader()
+        }
+        actionView.bindProperty(reminderInterface.reminder.target) {
+            reminderInterface.reminder.target = it
+        }
+        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
+            reminderInterface.reminder.melodyPath = it
+        }
+        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
+            reminderInterface.reminder.attachmentFile = it
+        }
+    }
+
+    private fun updateHeader() {
+        cardSummary.text = getSummary()
     }
 
     private fun initScreenState() {
@@ -143,10 +156,13 @@ class DateFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        repeatView.setDateTime(reminder.eventTime)
+        groupView.reminderGroup = ReminderGroup().apply {
+            this.groupColor = reminder.groupColor
+            this.groupTitle = reminder.groupTitle
+            this.groupUuId = reminder.groupUuId
+        }
         if (reminder.target != "") {
             actionView.setAction(true)
-            actionView.number = reminder.target
             if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
                 actionView.type = ActionView.TYPE_CALL
             } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
@@ -179,6 +195,22 @@ class DateFragment : RepeatableTypeFragment() {
                 selectContact()
             }
         }
+    }
+
+    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
+        super.onGroupUpdate(reminderGroup)
+        groupView.reminderGroup = reminderGroup
+        updateHeader()
+    }
+
+    override fun onMelodySelect(path: String) {
+        super.onMelodySelect(path)
+        melodyView.file = path
+    }
+
+    override fun onAttachmentSelect(path: String) {
+        super.onAttachmentSelect(path)
+        attachmentView.file = path
     }
 
     companion object {

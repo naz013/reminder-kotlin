@@ -59,7 +59,7 @@ object ViewUtils {
         })
     }
 
-    fun listenScrollView(scrollView: NestedScrollView, listener: ((x: Int) -> Unit)?) {
+    fun listenScrollView(scrollView: NestedScrollView, listener: ((y: Int) -> Unit)?) {
         val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
             listener?.invoke(scrollView.scrollY)
         }
