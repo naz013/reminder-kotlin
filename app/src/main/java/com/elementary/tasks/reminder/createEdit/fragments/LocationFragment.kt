@@ -42,25 +42,6 @@ class LocationFragment : RadiusTypeFragment() {
 
     private var lastPos: LatLng? = null
 
-    private val mActionListener = object : ActionView.OnActionListener {
-        override fun onActionChange(hasAction: Boolean) {
-            if (!hasAction) {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(false, "")
-            }
-        }
-
-        override fun onTypeChange(isMessageType: Boolean) {
-            if (isMessageType) {
-                reminderInterface?.setEventHint(getString(R.string.message))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically))
-            } else {
-                reminderInterface?.setEventHint(getString(R.string.remind_me))
-                reminderInterface?.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically))
-            }
-        }
-    }
-
     private val mListener = object : MapListener {
         override fun placeChanged(place: LatLng, address: String) {
             lastPos = place
@@ -108,10 +89,10 @@ class LocationFragment : RadiusTypeFragment() {
         val map = mAdvancedMapFragment ?: return null
         var type = Reminder.BY_LOCATION
         val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
-            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-            return null
-        }
+//        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
+//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
+//            return null
+//        }
         val pos = lastPos
         if (pos == null) {
             iFace.showSnackbar(getString(R.string.you_dont_select_place))
@@ -135,13 +116,12 @@ class LocationFragment : RadiusTypeFragment() {
             reminder = Reminder()
         }
         val places = ArrayList<Place>()
-        places.add(Place(radius, map.markerStyle, pos.latitude, pos.longitude, iFace.summary, number, listOf()))
+//        places.add(Place(radius, map.markerStyle, pos.latitude, pos.longitude, iFace.summary, number, listOf()))
         reminder.places = places
         reminder.target = number
         reminder.type = type
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
-        reminder.setClear(iFace)
         if (attackDelay.isChecked) {
             val startTime = dateView.dateTime
             reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -192,7 +172,6 @@ class LocationFragment : RadiusTypeFragment() {
 
         this.mAdvancedMapFragment = advancedMapFragment
 
-        actionView.setListener(mActionListener)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
@@ -212,9 +191,9 @@ class LocationFragment : RadiusTypeFragment() {
             val lat = sel.latitude
             val lon = sel.longitude
             val pos = LatLng(lat, lon)
-            var title: String? = reminderInterface?.summary
-            if (title != null && title.matches("".toRegex())) title = pos.toString()
-            mAdvancedMapFragment?.addMarker(pos, title, true, true, radius)
+//            var title: String? = reminderInterface?.summary
+//            if (title != null && title.matches("".toRegex())) title = pos.toString()
+//            mAdvancedMapFragment?.addMarker(pos, title, true, true, radius)
         }
         editReminder()
     }

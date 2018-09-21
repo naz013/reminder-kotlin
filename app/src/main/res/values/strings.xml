@@ -643,5 +643,10 @@
     <string name="silver">Silver</string>
     <string name="aubergine">Aubergine</string>
     <string name="app_not_found">Application not found</string>
+    <string name="lowest">Lowest</string>
+    <string name="low">Low</string>
+    <string name="high">High</string>
+    <string name="highest">Highest</string>
+    <string name="not_selected">Not selected</string>
 
 </resources>

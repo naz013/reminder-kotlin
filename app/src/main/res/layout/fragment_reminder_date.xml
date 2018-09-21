@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             app:boxBackgroundColor="@color/secondary_12"
             app:boxCornerRadiusTopEnd="5dp"
@@ -57,10 +59,12 @@
                     android:layout_margin="16dp">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/cardSummary"
                         style="?textAppearanceSubtitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
                         android:layout_toStartOf="@+id/headerIndicator"
                         android:maxLines="1"
                         android:singleLine="true"
@@ -83,17 +87,49 @@
 
             <com.github.florent37.expansionpanel.ExpansionLayout
                 android:id="@+id/moreLayout"
-                app:expansion_expanded="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:expansion_expanded="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <com.elementary.tasks.core.views.GroupView
+                        android:id="@+id/groupView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp" />
+
+                    <com.elementary.tasks.core.views.PriorityPickerView
+                        android:id="@+id/priorityView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp" />
+
+                    <com.elementary.tasks.core.views.MelodyView
+                        android:id="@+id/melodyView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp" />
+
+                    <com.elementary.tasks.core.views.AttachmentView
+                        android:id="@+id/attachmentView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp" />
+
                     <com.elementary.tasks.core.views.BeforePickerView
-                        android:id="@+id/before_view"
+                        android:id="@+id/beforeView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
@@ -145,6 +181,10 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginRight="16dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp" />
 
                 </LinearLayout>
             </com.github.florent37.expansionpanel.ExpansionLayout>

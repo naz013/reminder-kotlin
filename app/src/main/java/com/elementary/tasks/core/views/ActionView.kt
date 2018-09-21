@@ -3,6 +3,8 @@ package com.elementary.tasks.core.views
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -30,8 +32,7 @@ import kotlinx.android.synthetic.main.view_action.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class ActionView : LinearLayout {
+class ActionView : LinearLayout, TextWatcher {
 
     private var mImm: InputMethodManager? = null
     private var mActivity: Activity? = null
@@ -90,6 +91,7 @@ class ActionView : LinearLayout {
                 mImm?.showSoftInput(numberView, 0)
             }
         }
+        numberView.addTextChangedListener(this)
 
         radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
 
@@ -106,9 +108,7 @@ class ActionView : LinearLayout {
             } else {
                 ViewUtils.hideOver(actionBlock)
             }
-            if (listener != null) {
-                listener?.onActionChange(b)
-            }
+            listener?.onStateChanged(hasAction(), type, number)
         }
         if (actionCheck!!.isChecked) {
             openAction()
@@ -126,12 +126,8 @@ class ActionView : LinearLayout {
 
     private fun buttonClick(i: Int) {
         when (i) {
-            R.id.callAction -> if (listener != null) {
-                listener?.onTypeChange(false)
-            }
-            R.id.messageAction -> if (listener != null) {
-                listener?.onTypeChange(true)
-            }
+            R.id.callAction -> listener?.onStateChanged(hasAction(), type, number)
+            R.id.messageAction -> listener?.onStateChanged(hasAction(), type, number)
         }
     }
 
@@ -164,9 +160,18 @@ class ActionView : LinearLayout {
         }
     }
 
+    override fun afterTextChanged(s: Editable?) {
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        listener?.onStateChanged(hasAction(), type, number)
+    }
+
     interface OnActionListener {
-        fun onActionChange(hasAction: Boolean)
-        fun onTypeChange(isMessageType: Boolean)
+        fun onStateChanged(hasAction: Boolean, type: Int, phone: String)
     }
 
     companion object {

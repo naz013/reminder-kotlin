@@ -54,8 +54,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         private set
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
-    override var hasAutoExtra: Boolean = false
-    override var autoExtraHint: String = ""
 
     @Inject
     lateinit var updatesHelper: UpdatesHelper
@@ -126,12 +124,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             binding.vibrationCheck.isEnabled = !reminder.useGlobal
             binding.voiceCheck.isEnabled = !reminder.useGlobal
             binding.wakeCheck.isEnabled = !reminder.useGlobal
-            if (hasAutoExtra && autoExtraHint != "") {
-                binding.autoCheck.visibility = View.VISIBLE
-                binding.autoCheck.text = autoExtraHint
-            } else {
-                binding.autoCheck.visibility = View.GONE
-            }
+//            if (hasAutoExtra && autoExtraHint != "") {
+//                binding.autoCheck.visibility = View.VISIBLE
+//                binding.autoCheck.text = autoExtraHint
+//            } else {
+//                binding.autoCheck.visibility = View.GONE
+//            }
             return binding
         }
 
@@ -555,24 +553,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
     }
 
-    override fun selectPriority() {
-
-    }
-
-    override fun selectLoudness() {
-        selectVolume()
-    }
-
-    override fun selectLed() {
-        chooseLedColor()
-    }
-
     override fun selectGroup() {
         changeGroup()
-    }
-
-    override fun selectExtra() {
-        openCustomizationDialog()
     }
 
     override fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener) {
@@ -591,8 +573,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
     }
 
-    override fun updateScroll(x: Int) {
-        appBar.isSelected = x > 0
+    override fun updateScroll(y: Int) {
+        appBar.isSelected = y > 0
     }
 
     override fun onDestroy() {

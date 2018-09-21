@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.*
 import javax.inject.Inject
 
 /**
@@ -42,6 +39,8 @@ abstract class TypeFragment : Fragment() {
     lateinit var themeUtil: ThemeUtil
     @Inject
     lateinit var timeCount: TimeCount
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -54,12 +53,16 @@ abstract class TypeFragment : Fragment() {
         reminderInterface = context as ReminderInterface
     }
 
+    open fun getSummary(): String {
+        return ""
+    }
+
     open fun onBackPressed(): Boolean {
         return true
     }
 
     open fun onMelodySelect(path: String) {
-
+        reminderInterface.reminder.melodyPath = path
     }
 
     open fun onVoiceAction(text: String) {
@@ -67,14 +70,16 @@ abstract class TypeFragment : Fragment() {
     }
 
     open fun onAttachmentSelect(path: String) {
-
+        reminderInterface.reminder.attachmentFile = path
     }
 
     open fun onExtraUpdate() {
-
     }
 
     open fun onGroupUpdate(reminderGroup: ReminderGroup) {
-
+        val reminder = reminderInterface.reminder
+        reminder.groupUuId = reminderGroup.groupUuId
+        reminder.groupColor = reminderGroup.groupColor
+        reminder.groupTitle = reminderGroup.groupTitle
     }
 }

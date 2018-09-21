@@ -55,14 +55,13 @@ class EmailFragment : RepeatableTypeFragment() {
             reminder = Reminder()
         }
         reminder.subject = subjectString
-        reminder.summary = reminderInterface!!.summary
+//        reminder.summary = reminderInterface!!.summary
         reminder.target = email
         reminder.type = type
         val repeat = repeatView.repeat
         reminder.repeatInterval = repeat
         reminder.exportToCalendar = exportToCalendar.isChecked
         reminder.exportToTasks = exportToTasks.isChecked
-        reminder.setClear(iFace)
         reminder.remindBefore = before
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -86,7 +85,7 @@ class EmailFragment : RepeatableTypeFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_limit -> changeLimit()
+//            R.id.action_limit -> changeLimit()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -97,22 +96,18 @@ class EmailFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        repeatView.enablePrediction(true)
-        dateView.setEventListener(repeatView.eventListener)
         initScreenState()
         editReminder()
     }
 
     private fun initScreenState() {
-        val iFace = reminderInterface ?: return
-        iFace.setEventHint(getString(R.string.message))
-        iFace.setHasAutoExtra(true, getString(R.string.enable_sending_email_automatically))
-        if (iFace.isExportToCalendar) {
+        val iFace = reminderInterface
+        if (iFace.canExportToCalendar) {
             exportToCalendar.visibility = View.VISIBLE
         } else {
             exportToCalendar.visibility = View.GONE
         }
-        if (iFace.isExportToTasks) {
+        if (iFace.canExportToTasks) {
             exportToTasks.visibility = View.VISIBLE
         } else {
             exportToTasks.visibility = View.GONE
@@ -120,12 +115,10 @@ class EmailFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val iFace = reminderInterface ?: return
-        val reminder = iFace.reminder ?: return
+        val reminder = reminderInterface.reminder
         exportToCalendar.isChecked = reminder.exportToCalendar
         exportToTasks.isChecked = reminder.exportToTasks
         dateView.setDateTime(reminder.eventTime)
-        repeatView.setDateTime(reminder.eventTime)
         repeatView.repeat = reminder.repeatInterval
         mail.setText(reminder.target)
         subject.setText(reminder.subject)

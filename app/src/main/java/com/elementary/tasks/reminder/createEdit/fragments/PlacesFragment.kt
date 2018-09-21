@@ -58,10 +58,10 @@ class PlacesFragment : RadiusTypeFragment() {
         if (super.prepare() == null || mPlacesMap == null) return null
         val iFace = reminderInterface ?: return null
         val type = Reminder.BY_PLACES
-        if (TextUtils.isEmpty(iFace.summary)) {
-            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-            return null
-        }
+//        if (TextUtils.isEmpty(iFace.summary)) {
+//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
+//            return null
+//        }
         val places = mPlacesMap!!.places
         if (places.isEmpty()) {
             iFace.showSnackbar(getString(R.string.you_dont_select_place))
@@ -76,7 +76,6 @@ class PlacesFragment : RadiusTypeFragment() {
         reminder.type = type
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
-        reminder.setClear(iFace)
         reminder.eventTime = ""
         reminder.startTime = ""
         LogUtil.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))

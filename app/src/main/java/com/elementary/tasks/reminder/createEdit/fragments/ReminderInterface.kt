@@ -1,8 +1,6 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.view.View
-import com.elementary.tasks.core.data.models.ReminderGroup
-
 import com.elementary.tasks.core.data.models.Reminder
 
 /**
@@ -31,21 +29,9 @@ interface ReminderInterface {
 
     var canExportToCalendar: Boolean
 
-    var hasAutoExtra: Boolean
-
-    var autoExtraHint: String
-
     fun selectMelody()
 
-    fun selectExtra()
-
-    fun selectPriority()
-
-    fun selectLed()
-
     fun attachFile()
-
-    fun selectLoudness()
 
     fun selectGroup()
 
@@ -55,5 +41,5 @@ interface ReminderInterface {
 
     fun setFullScreenMode(b: Boolean)
 
-    fun updateScroll(x: Int)
+    fun updateScroll(y: Int)
 }
