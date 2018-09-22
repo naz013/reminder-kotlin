@@ -110,7 +110,7 @@ class ActionView : LinearLayout, TextWatcher {
             }
             listener?.onStateChanged(hasAction(), type, number)
         }
-        if (actionCheck!!.isChecked) {
+        if (actionCheck.isChecked) {
             openAction()
         }
     }

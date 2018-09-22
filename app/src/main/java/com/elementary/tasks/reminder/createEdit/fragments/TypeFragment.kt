@@ -73,9 +73,6 @@ abstract class TypeFragment : Fragment() {
         reminderInterface.reminder.attachmentFile = path
     }
 
-    open fun onExtraUpdate() {
-    }
-
     open fun onGroupUpdate(reminderGroup: ReminderGroup) {
         val reminder = reminderInterface.reminder
         reminder.groupUuId = reminderGroup.groupUuId
