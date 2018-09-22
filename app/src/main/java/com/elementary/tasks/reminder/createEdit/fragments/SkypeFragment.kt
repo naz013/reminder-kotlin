@@ -2,12 +2,15 @@ package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.fragment_reminder_skype.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,43 +33,33 @@ import kotlinx.android.synthetic.main.fragment_reminder_skype.*
 class SkypeFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        val iFace = reminderInterface ?: return null
+        val reminder = reminderInterface.reminder
         if (!SuperUtil.isSkypeClientInstalled(context!!)) {
             showInstallSkypeDialog()
             return null
         }
-//        if (TextUtils.isEmpty(iFace.summary)) {
-//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-//            return null
-//        }
+        if (TextUtils.isEmpty(reminder.summary)) {
+            taskLayout.error = getString(R.string.task_summary_is_empty)
+            taskLayout.isErrorEnabled = true
+            return null
+        }
         val number = skypeContact.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(number)) {
-            iFace.showSnackbar(getString(R.string.you_dont_insert_number))
+            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
             return null
         }
-        var reminder = iFace.reminder
         val type = getType(skypeGroup.checkedRadioButtonId)
         val startTime = dateView.dateTime
-        val before = before_view.beforeValue
-        if (before > 0 && startTime - before < System.currentTimeMillis()) {
-            Toast.makeText(context, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show()
+        if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
-        }
-        if (reminder == null) {
-            reminder = Reminder()
         }
         reminder.target = number
         reminder.type = type
-        val repeat = repeatView.repeat
-        reminder.repeatInterval = repeat
-        reminder.exportToCalendar = exportToCalendar.isChecked
-        reminder.exportToTasks = exportToTasks.isChecked
-        reminder.remindBefore = before
-        reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
+        reminder.startTime = reminder.eventTime
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -83,38 +76,92 @@ class SkypeFragment : RepeatableTypeFragment() {
         builder.create().show()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_date_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-//            R.id.action_limit -> changeLimit()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_reminder_skype, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        skypeChat.setOnCheckedChangeListener { _, b ->
-//            if (b) {
-//                reminderInterface?.setEventHint(getString(R.string.message))
-//            } else {
-//                reminderInterface?.setEventHint(getString(R.string.remind_me))
-//            }
+        ViewUtils.listenScrollView(scrollView) {
+            reminderInterface.updateScroll(it)
         }
+        moreLayout.isNestedScrollingEnabled = false
+
+        if (Module.isPro) {
+            ledView.visibility = View.VISIBLE
+        } else {
+            ledView.visibility = View.GONE
+        }
+
+        tuneExtraView.dialogues = dialogues
+        tuneExtraView.hasAutoExtra = false
+
+        melodyView.onFileSelectListener = {
+            reminderInterface.selectMelody()
+        }
+        attachmentView.onFileSelectListener = {
+            reminderInterface.attachFile()
+        }
+        groupView.onGroupSelectListener = {
+            reminderInterface.selectGroup()
+        }
+
         initScreenState()
+        initPropertyFields()
         editReminder()
+    }
+
+    private fun initPropertyFields() {
+        taskSummary.bindProperty(reminderInterface.reminder.summary) {
+            reminderInterface.reminder.summary = it.trim()
+        }
+        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
+            reminderInterface.reminder.remindBefore = it
+            updateHeader()
+        }
+        repeatView.bindProperty(reminderInterface.reminder.repeatInterval) {
+            reminderInterface.reminder.repeatInterval = it
+        }
+        exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
+            reminderInterface.reminder.exportToCalendar = it
+        }
+        exportToTasks.bindProperty(reminderInterface.reminder.exportToTasks) {
+            reminderInterface.reminder.exportToTasks = it
+        }
+        dateView.bindProperty(reminderInterface.reminder.eventTime) {
+            reminderInterface.reminder.eventTime = it
+        }
+        priorityView.bindProperty(reminderInterface.reminder.priority) {
+            reminderInterface.reminder.priority = it
+            updateHeader()
+        }
+        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
+            reminderInterface.reminder.melodyPath = it
+        }
+        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
+            reminderInterface.reminder.attachmentFile = it
+        }
+        loudnessView.bindProperty(reminderInterface.reminder.volume) {
+            reminderInterface.reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
+            reminderInterface.reminder.repeatLimit = it
+        }
+        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
+            reminderInterface.reminder.windowType = it
+        }
+        tuneExtraView.bindProperty(reminderInterface.reminder) {
+            reminderInterface.reminder.copyExtra(it)
+        }
+        if (Module.isPro) {
+            ledView.bindProperty(reminderInterface.reminder.color) {
+                reminderInterface.reminder.color = it
+            }
+        }
+    }
+
+    private fun updateHeader() {
+        cardSummary.text = getSummary()
     }
 
     private fun initScreenState() {
@@ -142,13 +189,12 @@ class SkypeFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        exportToCalendar.isChecked = reminder.exportToCalendar
-        exportToTasks.isChecked = reminder.exportToTasks
-        dateView.setDateTime(reminder.eventTime)
-        repeatView.repeat = reminder.repeatInterval
-        before_view.setBefore(reminder.remindBefore)
-        val type = reminder.type
-        when (type) {
+        groupView.reminderGroup = ReminderGroup().apply {
+            this.groupColor = reminder.groupColor
+            this.groupTitle = reminder.groupTitle
+            this.groupUuId = reminder.groupUuId
+        }
+        when (reminder.type) {
             Reminder.BY_SKYPE_CALL -> skypeCall.isChecked = true
             Reminder.BY_SKYPE_VIDEO -> skypeVideo.isChecked = true
             Reminder.BY_SKYPE -> skypeChat.isChecked = true
@@ -156,10 +202,5 @@ class SkypeFragment : RepeatableTypeFragment() {
         if (reminder.target != "") {
             skypeContact.setText(reminder.target)
         }
-    }
-
-    companion object {
-
-        private const val TAG = "DateFragment"
     }
 }

@@ -14,6 +14,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_date.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,11 +37,10 @@ import kotlinx.android.synthetic.main.fragment_reminder_date.*
 class DateFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        val iFace = reminderInterface
-        val reminder = iFace.reminder
+        val reminder = reminderInterface.reminder
         var type = Reminder.BY_DATE
         val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(iFace.reminder.summary) && !isAction) {
+        if (TextUtils.isEmpty(reminder.summary) && !isAction) {
             taskLayout.error = getString(R.string.task_summary_is_empty)
             taskLayout.isErrorEnabled = true
             return null
@@ -49,7 +49,7 @@ class DateFragment : RepeatableTypeFragment() {
         if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
+                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -60,15 +60,15 @@ class DateFragment : RepeatableTypeFragment() {
         }
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
         reminder.target = number
         reminder.type = type
         reminder.startTime = reminder.eventTime
-        LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -256,7 +256,6 @@ class DateFragment : RepeatableTypeFragment() {
 
     companion object {
 
-        private const val TAG = "DateFragment"
         private const val CONTACTS = 112
     }
 }

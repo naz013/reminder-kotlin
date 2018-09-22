@@ -6,13 +6,16 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.apps.ApplicationActivity
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.fragment_reminder_application.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -56,66 +59,38 @@ class ApplicationFragment : RepeatableTypeFragment() {
         }
 
     override fun prepare(): Reminder? {
-        if (reminderInterface == null) return null
         val type = type
         var number: String
+        val reminder = reminderInterface.reminder
         if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
             number = selectedPackage ?: ""
             if (TextUtils.isEmpty(number)) {
-                reminderInterface!!.showSnackbar(getString(R.string.you_dont_select_application))
+                reminderInterface.showSnackbar(getString(R.string.you_dont_select_application))
                 return null
             }
         } else {
-            number = phoneNumber.text!!.toString().trim { it <= ' ' }
+            number = urlField.text.toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(number) || number.matches(".*https?://".toRegex())) {
-                reminderInterface!!.showSnackbar(getString(R.string.you_dont_insert_link))
+                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_link))
                 return null
             }
             if (!number.startsWith("http://") && !number.startsWith("https://"))
                 number = "http://$number"
         }
         val startTime = dateView.dateTime
-        val before = before_view.beforeValue
-        if (before > 0 && startTime - before < System.currentTimeMillis()) {
-            Toast.makeText(context, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show()
+        if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
-        }
-        var reminder = reminderInterface!!.reminder
-        if (reminder == null) {
-            reminder = Reminder()
         }
         reminder.target = number
         reminder.type = type
-        val repeat = repeatView.repeat
-        reminder.repeatInterval = repeat
-        reminder.exportToCalendar = exportToCalendar.isChecked
-        reminder.exportToTasks = exportToTasks.isChecked
-        reminder.remindBefore = before
-        reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
+        reminder.startTime = reminder.eventTime
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.fragment_date_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-//            R.id.action_limit -> changeLimit()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -124,46 +99,122 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollView(scrollView) {
+            reminderInterface.updateScroll(it)
+        }
+        moreLayout.isNestedScrollingEnabled = false
+
+        if (Module.isPro) {
+            ledView.visibility = View.VISIBLE
+        } else {
+            ledView.visibility = View.GONE
+        }
+
+        tuneExtraView.dialogues = dialogues
+        tuneExtraView.hasAutoExtra = true
+        tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
+
+        melodyView.onFileSelectListener = {
+            reminderInterface.selectMelody()
+        }
+        attachmentView.onFileSelectListener = {
+            reminderInterface.attachFile()
+        }
+        groupView.onGroupSelectListener = {
+            reminderInterface.selectGroup()
+        }
+
         pickApplication.setOnClickListener {
             activity?.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
         }
         initScreenState()
-        phoneNumber.visibility = View.GONE
+        urlLayout.visibility = View.GONE
         application.setOnCheckedChangeListener { _, b ->
             if (!b) {
                 ViewUtils.collapse(applicationLayout)
-                ViewUtils.expand(phoneNumber)
+                ViewUtils.expand(urlLayout)
             } else {
-                ViewUtils.collapse(phoneNumber)
+                ViewUtils.collapse(urlLayout)
                 ViewUtils.expand(applicationLayout)
             }
         }
+        initPropertyFields()
         editReminder()
     }
 
+    private fun initPropertyFields() {
+        taskSummary.bindProperty(reminderInterface.reminder.summary) {
+            reminderInterface.reminder.summary = it.trim()
+        }
+        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
+            reminderInterface.reminder.remindBefore = it
+            updateHeader()
+        }
+        repeatView.bindProperty(reminderInterface.reminder.repeatInterval) {
+            reminderInterface.reminder.repeatInterval = it
+        }
+        exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
+            reminderInterface.reminder.exportToCalendar = it
+        }
+        exportToTasks.bindProperty(reminderInterface.reminder.exportToTasks) {
+            reminderInterface.reminder.exportToTasks = it
+        }
+        dateView.bindProperty(reminderInterface.reminder.eventTime) {
+            reminderInterface.reminder.eventTime = it
+        }
+        priorityView.bindProperty(reminderInterface.reminder.priority) {
+            reminderInterface.reminder.priority = it
+            updateHeader()
+        }
+        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
+            reminderInterface.reminder.melodyPath = it
+        }
+        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
+            reminderInterface.reminder.attachmentFile = it
+        }
+        loudnessView.bindProperty(reminderInterface.reminder.volume) {
+            reminderInterface.reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
+            reminderInterface.reminder.repeatLimit = it
+        }
+        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
+            reminderInterface.reminder.windowType = it
+        }
+        tuneExtraView.bindProperty(reminderInterface.reminder) {
+            reminderInterface.reminder.copyExtra(it)
+        }
+        if (Module.isPro) {
+            ledView.bindProperty(reminderInterface.reminder.color) {
+                reminderInterface.reminder.color = it
+            }
+        }
+    }
+
+    private fun updateHeader() {
+        cardSummary.text = getSummary()
+    }
+
     private fun initScreenState() {
-        val reminderIface = reminderInterface ?: return
-//        reminderIface.setEventHint(getString(R.string.subject))
-//        reminderIface.setHasAutoExtra(true, getString(R.string.enable_launching_application_automatically))
-//        if (reminderIface.isExportToCalendar) {
-//            exportToCalendar.visibility = View.VISIBLE
-//        } else {
-//            exportToCalendar.visibility = View.GONE
-//        }
-//        if (reminderIface.isExportToTasks) {
-//            exportToTasks.visibility = View.VISIBLE
-//        } else {
-//            exportToTasks.visibility = View.GONE
-//        }
+        if (reminderInterface.canExportToCalendar) {
+            exportToCalendar.visibility = View.VISIBLE
+        } else {
+            exportToCalendar.visibility = View.GONE
+        }
+        if (reminderInterface.canExportToTasks) {
+            exportToTasks.visibility = View.VISIBLE
+        } else {
+            exportToTasks.visibility = View.GONE
+        }
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface?.reminder ?: return
-        exportToCalendar.isChecked = reminder.exportToCalendar
-        exportToTasks.isChecked = reminder.exportToTasks
-        dateView.setDateTime(reminder.eventTime)
-        repeatView.repeat = reminder.repeatInterval
-        before_view.setBefore(reminder.remindBefore)
+        val reminder = reminderInterface.reminder
+        groupView.reminderGroup = ReminderGroup().apply {
+            this.groupColor = reminder.groupColor
+            this.groupTitle = reminder.groupTitle
+            this.groupUuId = reminder.groupUuId
+        }
         if (reminder.target != "") {
             if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
                 application.isChecked = true
@@ -171,7 +222,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
                 applicationName.text = appName
             } else {
                 browser.isChecked = true
-                phoneNumber.setText(reminder.target)
+                urlField.setText(reminder.target)
             }
         }
     }
@@ -181,9 +232,5 @@ class ApplicationFragment : RepeatableTypeFragment() {
             selectedPackage = data?.getStringExtra(Constants.SELECTED_APPLICATION)
             applicationName.text = appName
         }
-    }
-
-    companion object {
-        private const val TAG = "DateFragment"
     }
 }
