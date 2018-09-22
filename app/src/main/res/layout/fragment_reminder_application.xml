@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -118,9 +118,9 @@
                 style="?textAppearanceSubtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="100"
                 android:hint="@string/url"
                 android:inputType="textEmailAddress"
+                android:maxLength="100"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -192,7 +192,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.PriorityPickerView
                         android:id="@+id/priorityView"
@@ -206,7 +207,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.WindowTypeView
                         android:id="@+id/windowTypeView"
@@ -220,7 +222,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.MelodyView
                         android:id="@+id/melodyView"
@@ -242,7 +245,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.AttachmentView
                         android:id="@+id/attachmentView"
@@ -256,7 +260,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.BeforePickerView
                         android:id="@+id/beforeView"
@@ -279,7 +284,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.RepeatView
                         android:id="@+id/repeatView"
@@ -302,7 +308,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToCalendar"

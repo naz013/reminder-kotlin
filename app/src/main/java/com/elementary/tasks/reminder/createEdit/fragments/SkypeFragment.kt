@@ -203,4 +203,20 @@ class SkypeFragment : RepeatableTypeFragment() {
             skypeContact.setText(reminder.target)
         }
     }
+
+    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
+        super.onGroupUpdate(reminderGroup)
+        groupView.reminderGroup = reminderGroup
+        updateHeader()
+    }
+
+    override fun onMelodySelect(path: String) {
+        super.onMelodySelect(path)
+        melodyView.file = path
+    }
+
+    override fun onAttachmentSelect(path: String) {
+        super.onAttachmentSelect(path)
+        attachmentView.file = path
+    }
 }

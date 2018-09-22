@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import androidx.annotation.*
 import androidx.annotation.IntRange
 import com.elementary.tasks.R
@@ -381,14 +380,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             }
         }
         return drawable
-    }
-
-    private fun getDrawable(@DrawableRes i: Int): Drawable {
-        return ViewUtils.getDrawable(context, i)
-    }
-
-    fun toggleDrawable(): Drawable {
-        return getDrawable(R.drawable.toggle_blue)
     }
 
     @ColorRes

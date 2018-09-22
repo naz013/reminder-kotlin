@@ -68,7 +68,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         loadRepeat(reminder)
         loadContainer(reminder.type)
         loadType(reminder.type)
-        loadPriority(reminder.type)
+        loadPriority(reminder.priority)
         loadGroup(reminder)
     }
 
