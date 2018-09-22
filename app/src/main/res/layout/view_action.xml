@@ -72,10 +72,10 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/acc_select_number_from_contacts"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_contacts"
+                    app:srcCompat="@drawable/ic_twotone_contacts_24px"
                     app:tint="?android:textColorPrimary" />
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.elementary.tasks.core.views.PhoneAutoCompleteView
                     android:id="@+id/numberView"
                     style="?textAppearanceHeadline6"
                     android:layout_width="match_parent"

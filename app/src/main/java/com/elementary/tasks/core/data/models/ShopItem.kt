@@ -3,6 +3,7 @@ package com.elementary.tasks.core.data.models
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 import java.util.UUID
 
@@ -25,7 +26,7 @@ import java.util.UUID
  * limitations under the License.
  */
 
-class ShopItem {
+class ShopItem : Serializable {
 
     @SerializedName("summary")
     var summary: String = ""

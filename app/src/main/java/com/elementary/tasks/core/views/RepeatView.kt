@@ -127,7 +127,7 @@ class RepeatView : LinearLayout, TextWatcher {
         orientation = LinearLayout.HORIZONTAL
         mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
                 setState(i)
             }
 

@@ -82,4 +82,12 @@ abstract class TypeFragment : Fragment() {
         reminder.groupColor = reminderGroup.groupColor
         reminder.groupTitle = reminderGroup.groupTitle
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (reminderInterface.reminder.groupUuId == "") {
+            val defGroup = reminderInterface.defGroup ?: return
+            onGroupUpdate(defGroup)
+        }
+    }
 }

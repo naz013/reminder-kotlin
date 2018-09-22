@@ -156,6 +156,7 @@ class ActionView : LinearLayout, TextWatcher {
         when (requestCode) {
             REQ_CONTACTS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 actionCheck.isChecked = true
+                numberView.reloadContacts()
             }
         }
     }

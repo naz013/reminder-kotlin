@@ -113,3 +113,24 @@ fun GroupView.bindProperty(value: ReminderGroup, listener: ((ReminderGroup) -> U
         listener.invoke(it)
     }
 }
+
+fun LoudnessPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
+    this.setVolume(value)
+    this.onLevelUpdateListener = {
+        listener.invoke(it)
+    }
+}
+
+fun RepeatLimitView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
+    this.setLimit(value)
+    this.onLevelUpdateListener = {
+        listener.invoke(it)
+    }
+}
+
+fun WindowTypeView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
+    this.windowType = value
+    this.onTypeChaneListener = {
+        listener.invoke(it)
+    }
+}

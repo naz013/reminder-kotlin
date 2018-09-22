@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.view.View
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,6 +25,8 @@ import com.elementary.tasks.core.data.models.Reminder
 interface ReminderInterface {
 
     val reminder: Reminder
+
+    var defGroup: ReminderGroup?
 
     var canExportToTasks: Boolean
 

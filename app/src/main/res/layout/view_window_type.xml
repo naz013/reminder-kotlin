@@ -7,13 +7,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_priority_high_24px"
+            app:srcCompat="@drawable/ic_twotone_mobile_screen_share_24px"
             app:tint="?android:textColorPrimary" />
 
         <com.google.android.material.chip.ChipGroup
@@ -25,44 +26,20 @@
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipLowest"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/lowest"
-                android:textAppearance="?textAppearanceBody2" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipLow"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/low"
-                android:textAppearance="?textAppearanceBody2" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipNormal"
+                android:id="@+id/chipFullscreen"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/normal"
+                android:text="@string/full_screen"
                 android:textAppearance="?textAppearanceBody2" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipHigh"
+                android:id="@+id/chipSimple"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/high"
-                android:textAppearance="?textAppearanceBody2" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipHighest"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/highest"
+                android:text="@string/simple"
                 android:textAppearance="?textAppearanceBody2" />
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>

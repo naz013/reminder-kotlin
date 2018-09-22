@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -38,7 +39,7 @@ import java.util.*
         ListStringTypeConverter::class,
         ListIntTypeConverter::class
 )
-class Reminder : RecyclerInterface {
+class Reminder : RecyclerInterface, Serializable {
 
     @SerializedName("summary")
     var summary: String = ""
@@ -88,7 +89,7 @@ class Reminder : RecyclerInterface {
     @SerializedName("melodyPath")
     var melodyPath: String = ""
     @SerializedName("volume")
-    var volume: Int = 0
+    var volume: Int = -1
     @SerializedName("dayOfMonth")
     var dayOfMonth: Int = 0
     @SerializedName("monthOfYear")
@@ -96,7 +97,7 @@ class Reminder : RecyclerInterface {
     @SerializedName("repeatInterval")
     var repeatInterval: Long = 0
     @SerializedName("repeatLimit")
-    var repeatLimit: Int = 0
+    var repeatLimit: Int = -1
     @SerializedName("after")
     var after: Long = 0
     @SerializedName("weekdays")

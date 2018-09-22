@@ -7,6 +7,7 @@ import androidx.room.TypeConverters
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.utils.SuperUtil
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -31,7 +32,7 @@ import java.util.*
 @TypeConverters(
         ListStringTypeConverter::class
 )
-class Place {
+class Place : Serializable {
 
     @SerializedName("radius")
     var radius: Int = 0
