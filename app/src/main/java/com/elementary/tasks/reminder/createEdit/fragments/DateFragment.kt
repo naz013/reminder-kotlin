@@ -83,6 +83,7 @@ class DateFragment : RepeatableTypeFragment() {
         ViewUtils.listenScrollView(scrollView) {
             reminderInterface.updateScroll(it)
         }
+        moreLayout.isNestedScrollingEnabled = false
 
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
@@ -134,6 +135,12 @@ class DateFragment : RepeatableTypeFragment() {
         }
         attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
             reminderInterface.reminder.attachmentFile = it
+        }
+        loudnessView.bindProperty(reminderInterface.reminder.volume) {
+            reminderInterface.reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
+            reminderInterface.reminder.repeatLimit = it
         }
     }
 

@@ -65,6 +65,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:enabled="false"
+                    android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
                     app:chipBackgroundColor="@android:color/transparent"
                     app:chipStrokeColor="@color/redPrimary"
@@ -79,13 +80,14 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:enabled="false"
-                    android:text="Group"
+                    android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
                     app:chipBackgroundColor="@android:color/transparent"
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
                     app:layout_constraintStart_toEndOf="@+id/chipType"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Group" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPriority"
@@ -93,13 +95,14 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:enabled="false"
-                    android:text="High"
+                    android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
                     app:chipBackgroundColor="@android:color/transparent"
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
                     app:layout_constraintStart_toEndOf="@+id/chipGroup"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="High" />
 
             </com.google.android.material.chip.ChipGroup>
 

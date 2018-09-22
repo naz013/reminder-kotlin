@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.speech.RecognizerIntent
 import android.view.Menu
 import android.view.MenuItem
@@ -52,6 +53,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private var isEditing: Boolean = false
     override var reminder: Reminder = Reminder()
         private set
+    override var defGroup: ReminderGroup? = null
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
 
@@ -61,8 +63,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     lateinit var backupTool: BackupTool
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            Timber.d("onItemSelected: $navSpinner")
             prefs.lastUsedReminder = position
+            Timber.d("onItemSelected: 1")
+            reminder.type = typeFromPosition(position)
+            Timber.d("onItemSelected: 2")
             when (position) {
                 DATE -> replaceFragment(DateFragment())
                 TIMER -> replaceFragment(TimerFragment())
@@ -84,6 +90,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
                     replaceFragment(EmailFragment())
                 } else {
+                    navSpinner.setSelection(DATE)
                     Permissions.requestPermission(this@CreateReminderActivity, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)
                 }
                 GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
@@ -152,6 +159,47 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         initActionBar()
         initNavigation()
         loadReminder()
+        if (savedInstanceState != null) {
+            editReminder(savedInstanceState.getSerializable(ARG_ITEM) as Reminder? ?: reminder)
+        } else {
+            var lastPos = prefs.lastUsedReminder
+            if (lastPos >= navSpinner.adapter.count) lastPos = 0
+            navSpinner.setSelection(lastPos)
+        }
+    }
+
+    private fun typeFromPosition(position: Int): Int {
+        return when (position) {
+            DATE -> Reminder.BY_DATE
+            TIMER -> Reminder.BY_TIME
+            WEEK -> Reminder.BY_WEEK
+            GPS -> if (hasGpsPermission(GPS)) {
+                Reminder.BY_LOCATION
+            } else {
+                Reminder.BY_DATE
+            }
+            SKYPE -> Reminder.BY_SKYPE
+            APP -> Reminder.BY_DATE_APP
+            MONTH -> Reminder.BY_MONTH
+            GPS_OUT -> if (hasGpsPermission(GPS_OUT)) {
+                Reminder.BY_OUT
+            } else {
+                Reminder.BY_DATE
+            }
+            SHOP -> Reminder.BY_DATE_SHOP
+            EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
+                Reminder.BY_DATE_EMAIL
+            } else {
+                Reminder.BY_DATE
+            }
+            GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
+                Reminder.BY_PLACES
+            } else {
+                Reminder.BY_DATE
+            }
+            YEAR -> Reminder.BY_DAY_OF_YEAR
+            else -> Reminder.BY_DATE
+        }
     }
 
     private fun initViewModel(id: String) {
@@ -173,6 +221,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         })
         viewModel.allGroups.observe(this, Observer {
             if (it != null && it.isNotEmpty()) {
+                defGroup = it[0]
                 showGroup(it[0])
             }
         })
@@ -203,6 +252,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun editReminder(reminder: Reminder) {
+        Timber.d("editReminder: ")
         this.reminder = reminder
         viewModel.pauseReminder(reminder)
         when (reminder.type) {
@@ -244,9 +294,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         val adapter = TitleNavigationAdapter(arrayAdapter)
         navSpinner.adapter = adapter
         navSpinner.onItemSelectedListener = mOnTypeSelectListener
-        var lastPos = prefs.lastUsedReminder
-        if (lastPos >= arrayAdapter.size) lastPos = 0
-        navSpinner.setSelection(lastPos)
+        Timber.d("initNavigation: ")
     }
 
     private fun initActionBar() {
@@ -303,11 +351,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     fun replaceFragment(fragment: TypeFragment) {
+        Timber.d("replaceFragment: ")
         this.fragment = fragment
         supportFragmentManager.beginTransaction()
                 .replace(R.id.main_container, fragment, null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commitAllowingStateLoss()
+                .commit()
+        Timber.d("replaceFragment: done")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -589,6 +639,15 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        var state = outState
+        if (state == null) {
+            state = Bundle()
+        }
+        state.putSerializable(ARG_ITEM, reminder)
+        super.onSaveInstanceState(state, outPersistentState)
+    }
+
     private class SpinnerItem internal constructor(val title: String)
 
     private inner class TitleNavigationAdapter(private val spinnerNavItem: ArrayList<SpinnerItem>) : BaseAdapter() {
@@ -644,5 +703,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         private const val CONTACTS_REQUEST_E = 501
         private const val FILE_REQUEST = 323
         private const val TAG = "CreateReminderActivity"
+        private const val ARG_ITEM = "arg_item"
     }
 }

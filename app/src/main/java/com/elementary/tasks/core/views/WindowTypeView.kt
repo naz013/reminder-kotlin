@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.view_priority.view.*
+import kotlinx.android.synthetic.main.view_window_type.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,16 +25,16 @@ import kotlinx.android.synthetic.main.view_priority.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PriorityPickerView : LinearLayout {
+class WindowTypeView : LinearLayout {
 
-    var onPriorityChaneListener: ((Int) -> Unit)? = null
-    var priority: Int = 2
+    var onTypeChaneListener: ((Int) -> Unit)? = null
+    var windowType: Int = 2
         set(value) {
             field = value
-            chipGroup.check(chipIdFromPriority(value))
+            chipGroup.check(chipIdFromType(value))
         }
         get() {
-            return priorityFromChip(chipGroup.checkedChipId)
+            return typeFromChip(chipGroup.checkedChipId)
         }
 
     constructor(context: Context) : super(context) {
@@ -49,38 +49,32 @@ class PriorityPickerView : LinearLayout {
         init(context, attrs)
     }
 
-    private fun chipIdFromPriority(id: Int): Int {
+    private fun chipIdFromType(id: Int): Int {
         return when (id) {
-            0 -> R.id.chipLowest
-            1 -> R.id.chipLow
-            2 -> R.id.chipNormal
-            3 -> R.id.chipHigh
-            4 -> R.id.chipHighest
-            else -> R.id.chipNormal
+            0 -> R.id.chipFullscreen
+            1 -> R.id.chipSimple
+            else -> R.id.chipFullscreen
         }
     }
 
-    private fun priorityFromChip(id: Int): Int {
+    private fun typeFromChip(id: Int): Int {
         return when (id) {
-            R.id.chipLowest -> 0
-            R.id.chipLow -> 1
-            R.id.chipNormal -> 2
-            R.id.chipHigh -> 3
-            R.id.chipHighest -> 4
-            else -> 2
+            R.id.chipFullscreen -> 0
+            R.id.chipSimple -> 1
+            else -> 0
         }
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        View.inflate(context, R.layout.view_priority, this)
+        View.inflate(context, R.layout.view_window_type, this)
         orientation = LinearLayout.VERTICAL
 
         chipGroup.setOnCheckedChangeListener { _, id ->
-            updateState(priorityFromChip(id))
+            updateState(typeFromChip(id))
         }
     }
 
-    private fun updateState(priority: Int) {
-        onPriorityChaneListener?.invoke(priority)
+    private fun updateState(type: Int) {
+        onTypeChaneListener?.invoke(type)
     }
 }
