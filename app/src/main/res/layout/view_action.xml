@@ -75,17 +75,28 @@
                     app:srcCompat="@drawable/ic_twotone_contacts_24px"
                     app:tint="?android:textColorPrimary" />
 
-                <com.elementary.tasks.core.views.PhoneAutoCompleteView
-                    android:id="@+id/numberView"
-                    style="?textAppearanceHeadline6"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/numberLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="12dp"
-                    android:ems="10"
-                    android:hint="@string/phone"
-                    android:inputType="text|phone"
-                    android:maxLines="1" />
+                    app:boxBackgroundColor="@color/secondary_12"
+                    app:boxCornerRadiusTopEnd="5dp"
+                    app:boxCornerRadiusTopStart="5dp">
+
+                    <com.elementary.tasks.core.views.PhoneAutoCompleteView
+                        android:id="@+id/numberView"
+                        style="?textAppearanceSubtitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/phone"
+                        android:inputType="text|phone"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

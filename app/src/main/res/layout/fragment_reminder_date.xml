@@ -25,7 +25,7 @@
 
             <androidx.emoji.widget.EmojiAppCompatEditText
                 android:id="@+id/taskSummary"
-                style="?textAppearanceHeadline5"
+                style="?textAppearanceSubtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/remind_me"
@@ -89,7 +89,7 @@
                 android:id="@+id/moreLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:expansion_expanded="true">
+                app:expansion_expanded="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"

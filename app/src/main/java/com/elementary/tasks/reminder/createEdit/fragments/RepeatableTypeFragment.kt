@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
-import android.widget.TextView
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.IntervalUtil
 
 /**
@@ -23,14 +21,6 @@ import com.elementary.tasks.core.utils.IntervalUtil
  * limitations under the License.
  */
 abstract class RepeatableTypeFragment : TypeFragment() {
-
-    private fun setRepeatTitle(textView: TextView, progress: Int) {
-        when {
-            progress <= 0 -> textView.text = getString(R.string.no_limits)
-            progress == 1 -> textView.setText(R.string.once)
-            else -> textView.text = progress.toString() + " " + getString(R.string.times)
-        }
-    }
 
     override fun getSummary(): String {
         val reminder = reminderInterface.reminder
