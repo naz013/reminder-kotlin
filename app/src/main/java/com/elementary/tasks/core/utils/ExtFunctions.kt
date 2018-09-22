@@ -134,3 +134,11 @@ fun WindowTypeView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
         listener.invoke(it)
     }
 }
+
+
+fun LedPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
+    this.led = value
+    this.onLedChangeListener = {
+        listener.invoke(it)
+    }
+}

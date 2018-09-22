@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_highlight_24px"
+            app:tint="?android:textColorPrimary" />
+
+        <RadioGroup
+            android:id="@+id/ledGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledRed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:button="@drawable/led_red_selector" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:button="@drawable/led_green_selector" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:button="@drawable/led_blue_selector" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledYellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:button="@drawable/led_yellow_selector" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledPink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:button="@drawable/led_pink_selector" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledOrange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:button="@drawable/led_orange_selector" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/ledTeal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:button="@drawable/led_teal_selector" />
+
+        </RadioGroup>
+    </LinearLayout>
+</merge>

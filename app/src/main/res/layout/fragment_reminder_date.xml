@@ -106,9 +106,9 @@
 
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <com.elementary.tasks.core.views.PriorityPickerView
                         android:id="@+id/priorityView"
@@ -120,9 +120,9 @@
 
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <com.elementary.tasks.core.views.WindowTypeView
                         android:id="@+id/windowTypeView"
@@ -134,9 +134,9 @@
 
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <com.elementary.tasks.core.views.MelodyView
                         android:id="@+id/melodyView"
@@ -149,16 +149,16 @@
                     <com.elementary.tasks.core.views.LoudnessPickerView
                         android:id="@+id/loudnessView"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_marginRight="16dp" />
 
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <com.elementary.tasks.core.views.AttachmentView
                         android:id="@+id/attachmentView"
@@ -170,9 +170,9 @@
 
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <com.elementary.tasks.core.views.BeforePickerView
                         android:id="@+id/beforeView"
@@ -183,11 +183,19 @@
                         android:layout_marginRight="16dp"
                         app:before_type="minutes" />
 
+                    <com.elementary.tasks.core.views.LedPickerView
+                        android:id="@+id/ledView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp" />
+
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <com.elementary.tasks.core.views.RepeatView
                         android:id="@+id/repeatView"
@@ -201,16 +209,16 @@
                     <com.elementary.tasks.core.views.RepeatLimitView
                         android:id="@+id/repeatLimitView"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_marginRight="16dp" />
 
                     <com.elementary.tasks.core.views.DividerView
                         android:layout_width="match_parent"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_height="1dp" />
+                        android:layout_marginTop="8dp" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToCalendar"
