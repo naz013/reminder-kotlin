@@ -21,9 +21,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
@@ -31,7 +31,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.reminder.createEdit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -203,7 +203,7 @@ class ConversationActivity : ThemedActivity() {
                     }
                     Action.REMINDER -> {
                         stopView()
-                        startActivity(Intent(this, AddReminderActivity::class.java))
+                        startActivity(Intent(this, CreateReminderActivity::class.java))
                     }
                     Action.VOLUME -> {
                         stopView()

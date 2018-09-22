@@ -12,20 +12,20 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.temp.UI
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
-import com.elementary.tasks.reminder.createEdit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.coroutines.experimental.CommonPool
-import com.elementary.tasks.core.utils.temp.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import java.util.*
@@ -170,7 +170,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                         Action.HELP -> getApplication<Application>().startActivity(Intent(getApplication(), VoiceHelpDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         Action.BIRTHDAY -> getApplication<Application>().startActivity(Intent(getApplication(), AddBirthdayActivity::class.java))
-                        Action.REMINDER -> getApplication<Application>().startActivity(Intent(getApplication(), AddReminderActivity::class.java))
+                        Action.REMINDER -> getApplication<Application>().startActivity(Intent(getApplication(), CreateReminderActivity::class.java))
                         Action.VOLUME -> getApplication<Application>().startActivity(Intent(getApplication(), VolumeDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         Action.TRASH -> emptyTrash(true)
