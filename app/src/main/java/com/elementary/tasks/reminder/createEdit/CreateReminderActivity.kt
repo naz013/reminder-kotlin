@@ -158,14 +158,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         canExportToTasks = Google.getInstance() != null
         initActionBar()
         initNavigation()
-        loadReminder()
-        if (savedInstanceState != null) {
-            editReminder(savedInstanceState.getSerializable(ARG_ITEM) as Reminder? ?: reminder)
-        } else {
-            var lastPos = prefs.lastUsedReminder
-            if (lastPos >= navSpinner.adapter.count) lastPos = 0
-            navSpinner.setSelection(lastPos)
-        }
+        loadReminder(savedInstanceState)
     }
 
     private fun typeFromPosition(position: Int): Int {
@@ -215,7 +208,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
-                    Commands.DELETED, Commands.SAVED -> finish()
+                    Commands.DELETED, Commands.SAVED -> {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }
                 }
             }
         })
@@ -227,14 +223,24 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         })
     }
 
-    private fun loadReminder() {
+    private fun loadReminder(savedInstanceState: Bundle?) {
         val intent = intent
         val id = getIntent().getStringExtra(Constants.INTENT_ID) ?: ""
+        val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
         initViewModel(id)
-        if (id != "") {
-            isEditing = true
-        } else if (intent.data != null) {
-            try {
+        when {
+            savedInstanceState != null -> {
+                editReminder(savedInstanceState.getSerializable(ARG_ITEM) as Reminder? ?: reminder)
+            }
+            id != "" -> {
+                isEditing = true
+            }
+            date != 0L -> {
+                reminder.type = Reminder.BY_DATE
+                reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
+                editReminder(reminder)
+            }
+            intent.data != null -> try {
                 val name = intent.data
                 val scheme = name!!.scheme
                 reminder = if (ContentResolver.SCHEME_CONTENT == scheme) {
@@ -247,6 +253,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
             } catch (e: IllegalStateException) {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
+            }
+            else -> {
+                var lastPos = prefs.lastUsedReminder
+                if (lastPos >= navSpinner.adapter.count) lastPos = 0
+                navSpinner.setSelection(lastPos)
             }
         }
     }
@@ -407,8 +418,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             if (!reminder.isActive) {
                 viewModel.resumeReminder(reminder)
             }
+            setResult(Activity.RESULT_OK)
             finish()
         } else {
+            setResult(Activity.RESULT_OK)
             finish()
         }
     }
@@ -496,6 +509,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
         builder.setNegativeButton(R.string.no) { dialog, _ ->
             dialog.dismiss()
+            setResult(Activity.RESULT_OK)
             finish()
         }
         builder.create().show()

@@ -7,15 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.RemoteViews
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
-import com.elementary.tasks.reminder.createEdit.AddReminderActivity
-
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import java.text.SimpleDateFormat
-import java.util.GregorianCalendar
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -87,7 +84,7 @@ class EventsWidget : AppWidgetProvider() {
             WidgetUtils.setIcon(context, rv, voiceIcon, R.id.voiceButton)
             WidgetUtils.setIcon(context, rv, settingsIcon, R.id.settingsButton)
 
-            var configIntent = Intent(context, AddReminderActivity::class.java)
+            var configIntent = Intent(context, CreateReminderActivity::class.java)
             var configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
             rv.setOnClickPendingIntent(R.id.tasksCount, configPendingIntent)
 

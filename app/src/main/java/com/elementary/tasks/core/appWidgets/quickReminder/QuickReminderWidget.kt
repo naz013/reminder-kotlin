@@ -7,10 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.RemoteViews
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
-import com.elementary.tasks.reminder.createEdit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -49,7 +48,7 @@ class QuickReminderWidget : AppWidgetProvider() {
             val rv = RemoteViews(context.packageName, R.layout.widget_quick_reminder)
             val widgetColor = sp.getInt(QuickReminderWidgetConfig.QUICK_REMINDER_WIDGET_COLOR + widgetID, 0)
             rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor)
-            val configIntent = Intent(context, AddReminderActivity::class.java)
+            val configIntent = Intent(context, CreateReminderActivity::class.java)
             val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
             rv.setOnClickPendingIntent(R.id.imageView, configPendingIntent)
             WidgetUtils.setIcon(context, rv, R.drawable.ic_access_time_white_24dp, R.id.imageView)

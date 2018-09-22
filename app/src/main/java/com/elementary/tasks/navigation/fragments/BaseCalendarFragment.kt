@@ -14,7 +14,7 @@ import com.elementary.tasks.birthdays.EventsItem
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.reminder.createEdit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*
 import java.util.*
 
@@ -127,7 +127,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
 
     private fun addReminder() {
         if (isAdded && activity != null) {
-            activity?.startActivityForResult(Intent(context, AddReminderActivity::class.java)
+            activity?.startActivityForResult(Intent(context, CreateReminderActivity::class.java)
                     .putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE)
         }
     }

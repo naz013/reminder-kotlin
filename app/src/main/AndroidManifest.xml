@@ -242,7 +242,6 @@
                 <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
-        <activity android:name=".reminder.createEdit.AddReminderActivity" />
         <activity android:name=".notes.editor.ImageEditActivity" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
