@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import android.widget.SeekBar
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -33,8 +32,6 @@ import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_reminder.*
-import kotlinx.android.synthetic.main.dialog_select_extra.view.*
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.list_item_navigation.view.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
@@ -106,39 +103,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
         }
     }
-
-    private val customizationView: View
-        get() {
-            val binding = layoutInflater.inflate(R.layout.dialog_select_extra, null)
-            binding.extraSwitch.setOnCheckedChangeListener { _, isChecked ->
-                binding.autoCheck.isEnabled = !isChecked
-                binding.repeatCheck.isEnabled = !isChecked
-                binding.unlockCheck.isEnabled = !isChecked
-                binding.vibrationCheck.isEnabled = !isChecked
-                binding.voiceCheck.isEnabled = !isChecked
-                binding.wakeCheck.isEnabled = !isChecked
-            }
-            binding.voiceCheck.isChecked = reminder.notifyByVoice
-            binding.vibrationCheck.isChecked = reminder.vibrate
-            binding.unlockCheck.isChecked = reminder.unlock
-            binding.repeatCheck.isChecked = reminder.repeatNotification
-            binding.autoCheck.isChecked = reminder.auto
-            binding.wakeCheck.isChecked = reminder.awake
-            binding.extraSwitch.isChecked = reminder.useGlobal
-            binding.autoCheck.isEnabled = !reminder.useGlobal
-            binding.repeatCheck.isEnabled = !reminder.useGlobal
-            binding.unlockCheck.isEnabled = !reminder.useGlobal
-            binding.vibrationCheck.isEnabled = !reminder.useGlobal
-            binding.voiceCheck.isEnabled = !reminder.useGlobal
-            binding.wakeCheck.isEnabled = !reminder.useGlobal
-//            if (hasAutoExtra && autoExtraHint != "") {
-//                binding.autoCheck.visibility = View.VISIBLE
-//                binding.autoCheck.text = autoExtraHint
-//            } else {
-//                binding.autoCheck.visibility = View.GONE
-//            }
-            return binding
-        }
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -337,26 +301,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         fragment?.onGroupUpdate(item)
     }
 
-    private fun openCustomizationDialog() {
-        val builder = dialogues.getDialog(this)
-        builder.setTitle(R.string.personalization)
-        val b = customizationView
-        builder.setView(b)
-        builder.setPositiveButton(R.string.ok) { _, _ -> saveExtraResults(b) }
-        builder.create().show()
-    }
-
-    private fun saveExtraResults(b: View) {
-        reminder.useGlobal = b.extraSwitch.isChecked
-        reminder.auto = b.autoCheck.isChecked
-        reminder.awake = b.wakeCheck.isChecked
-        reminder.unlock = b.unlockCheck.isChecked
-        reminder.repeatNotification = b.repeatCheck.isChecked
-        reminder.notifyByVoice = b.voiceCheck.isChecked
-        reminder.vibrate = b.vibrationCheck.isChecked
-        fragment?.onExtraUpdate()
-    }
-
     private fun openRecognizer() {
         SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true, prefs, language)
     }
@@ -432,71 +376,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         } else {
             viewModel.moveToTrash(reminder)
         }
-    }
-
-    private fun selectVolume() {
-        val builder = dialogues.getDialog(this)
-        builder.setTitle(R.string.loudness)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
-        b.seekBar.max = 26
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = getVolumeTitle(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        b.seekBar.progress = reminder.volume + 1
-        b.titleView.text = getVolumeTitle(b.seekBar.progress)
-        builder.setView(b)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            reminder.volume = b.seekBar.progress - 1
-            val str = String.format(getString(R.string.selected_loudness_x_for_reminder), getVolumeTitle(b.seekBar.progress))
-            showSnackbar(str, getString(R.string.cancel), View.OnClickListener { reminder.volume = -1 })
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
-    }
-
-    private fun getVolumeTitle(progress: Int): String {
-        return if (progress == 0) {
-            getString(R.string.default_string)
-        } else {
-            (progress - 1).toString()
-        }
-    }
-
-    private fun chooseLedColor() {
-        val builder = dialogues.getDialog(this)
-        builder.setCancelable(false)
-        builder.setTitle(getString(R.string.led_color))
-        val colors = arrayOfNulls<String>(LED.NUM_OF_LEDS)
-        for (i in 0 until LED.NUM_OF_LEDS) {
-            colors[i] = LED.getTitle(this, i)
-        }
-        val adapter = ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_single_choice, colors)
-        builder.setSingleChoiceItems(adapter, reminder.color) { dialog, which ->
-            if (which != -1) {
-                reminder.color = which
-                val selColor = LED.getTitle(this, which)
-                val str = String.format(getString(R.string.led_color_x), selColor)
-                showSnackbar(str, getString(R.string.cancel), View.OnClickListener { reminder.color = -1 })
-                dialog.dismiss()
-            }
-        }
-        builder.setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-        builder.setNegativeButton(R.string.disable) { dialog, _ ->
-            reminder.color = -1
-            dialog.dismiss()
-        }
-        builder.create().show()
     }
 
     private fun askAboutEnabling() {

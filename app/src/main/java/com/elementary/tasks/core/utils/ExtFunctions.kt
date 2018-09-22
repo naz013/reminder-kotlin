@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.temp.UI
 import com.elementary.tasks.core.views.*
@@ -27,6 +28,38 @@ import kotlinx.coroutines.experimental.withContext
  */
 suspend fun <T> withUIContext(start: CoroutineStart = CoroutineStart.DEFAULT,
                               block: suspend () -> T): T = withContext(UI, start, block)
+
+fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
+    this.useGlobal = reminder.useGlobal
+    this.vibrate = reminder.vibrate
+    this.repeatNotification = reminder.repeatNotification
+    this.notifyByVoice = reminder.notifyByVoice
+    this.awake = reminder.awake
+    this.unlock = reminder.unlock
+    this.auto = reminder.auto
+    return this
+}
+
+fun TuneExtraView.Extra.toReminder(reminder: Reminder): Reminder {
+    reminder.useGlobal = this.useGlobal
+    reminder.vibrate = this.vibrate
+    reminder.repeatNotification = this.repeatNotification
+    reminder.notifyByVoice = this.notifyByVoice
+    reminder.awake = this.awake
+    reminder.unlock = this.unlock
+    reminder.auto = this.auto
+    return reminder
+}
+
+fun Reminder.copyExtra(reminder: Reminder) {
+    this.useGlobal = reminder.useGlobal
+    this.vibrate = reminder.vibrate
+    this.repeatNotification = reminder.repeatNotification
+    this.notifyByVoice = reminder.notifyByVoice
+    this.awake = reminder.awake
+    this.unlock = reminder.unlock
+    this.auto = reminder.auto
+}
 
 fun AppCompatEditText.bindProperty(value: String, listener: ((String) -> Unit)) {
     this.setText(value)
@@ -140,5 +173,12 @@ fun LedPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
     this.led = value
     this.onLedChangeListener = {
         listener.invoke(it)
+    }
+}
+
+fun TuneExtraView.bindProperty(value: Reminder, listener: ((Reminder) -> Unit)) {
+    this.extra = TuneExtraView.Extra().fromReminder(value)
+    this.onExtraUpdateListener = {
+        listener.invoke(it.toReminder(value))
     }
 }

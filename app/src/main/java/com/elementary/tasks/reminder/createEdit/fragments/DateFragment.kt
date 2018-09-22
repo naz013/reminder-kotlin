@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -42,7 +41,8 @@ class DateFragment : RepeatableTypeFragment() {
         var type = Reminder.BY_DATE
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(iFace.reminder.summary) && !isAction) {
-            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
+            taskLayout.error = getString(R.string.task_summary_is_empty)
+            taskLayout.isErrorEnabled = true
             return null
         }
         var number = ""
@@ -60,7 +60,7 @@ class DateFragment : RepeatableTypeFragment() {
         }
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            Toast.makeText(context, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show()
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
         reminder.target = number
@@ -68,7 +68,7 @@ class DateFragment : RepeatableTypeFragment() {
         reminder.startTime = reminder.eventTime
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -90,6 +90,9 @@ class DateFragment : RepeatableTypeFragment() {
         } else {
             ledView.visibility = View.GONE
         }
+
+        tuneExtraView.dialogues = dialogues
+        tuneExtraView.hasAutoExtra
 
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
@@ -135,6 +138,7 @@ class DateFragment : RepeatableTypeFragment() {
         }
         actionView.bindProperty(reminderInterface.reminder.target) {
             reminderInterface.reminder.target = it
+            updateActions()
         }
         melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
             reminderInterface.reminder.melodyPath = it
@@ -148,10 +152,29 @@ class DateFragment : RepeatableTypeFragment() {
         repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
             reminderInterface.reminder.repeatLimit = it
         }
+        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
+            reminderInterface.reminder.windowType = it
+        }
+        tuneExtraView.bindProperty(reminderInterface.reminder) {
+            reminderInterface.reminder.copyExtra(it)
+        }
         if (Module.isPro) {
             ledView.bindProperty(reminderInterface.reminder.color) {
                 reminderInterface.reminder.color = it
             }
+        }
+    }
+
+    private fun updateActions() {
+        if (actionView.hasAction()) {
+            tuneExtraView.hasAutoExtra = true
+            if (actionView.type == ActionView.TYPE_MESSAGE) {
+                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+            } else {
+                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+            }
+        } else {
+            tuneExtraView.hasAutoExtra = false
         }
     }
 
