@@ -92,7 +92,7 @@ class DateFragment : RepeatableTypeFragment() {
         }
 
         tuneExtraView.dialogues = dialogues
-        tuneExtraView.hasAutoExtra
+        tuneExtraView.hasAutoExtra = false
 
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })

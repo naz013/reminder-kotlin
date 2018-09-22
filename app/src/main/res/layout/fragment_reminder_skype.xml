@@ -179,7 +179,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.PriorityPickerView
                         android:id="@+id/priorityView"
@@ -193,7 +194,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.WindowTypeView
                         android:id="@+id/windowTypeView"
@@ -207,7 +209,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.MelodyView
                         android:id="@+id/melodyView"
@@ -229,7 +232,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.AttachmentView
                         android:id="@+id/attachmentView"
@@ -243,7 +247,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.BeforePickerView
                         android:id="@+id/beforeView"
@@ -266,7 +271,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <com.elementary.tasks.core.views.RepeatView
                         android:id="@+id/repeatView"
@@ -289,7 +295,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToCalendar"

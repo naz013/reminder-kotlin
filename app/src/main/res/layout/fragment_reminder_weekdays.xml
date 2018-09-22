@@ -60,63 +60,100 @@
 
         </LinearLayout>
 
-        <RadioGroup
-            android:layout_width="match_parent"
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:orientation="horizontal">
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/dayCheck"
-                style="?textAppearanceCaption"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/select_day" />
+                android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/lastCheck"
-                style="?textAppearanceCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/last_day" />
+                <ToggleButton
+                    android:id="@+id/mondayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/toggle_blue"
+                    android:checked="true"
+                    android:maxLines="1"
+                    android:textOff="@string/mon"
+                    android:textOn="@string/mon" />
 
-        </RadioGroup>
+                <ToggleButton
+                    android:id="@+id/tuesdayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/toggle_blue"
+                    android:maxLines="1"
+                    android:textOff="@string/tue"
+                    android:textOn="@string/tue" />
 
-        <LinearLayout
-            android:id="@+id/day_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <ToggleButton
+                    android:id="@+id/wednesdayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/toggle_blue"
+                    android:maxLines="1"
+                    android:textOff="@string/wed"
+                    android:textOn="@string/wed" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_calendar"
-                app:tint="?android:textColorPrimary" />
+                <ToggleButton
+                    android:id="@+id/thursdayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/toggle_blue"
+                    android:maxLines="1"
+                    android:textOff="@string/thu"
+                    android:textOn="@string/thu" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/monthDayField"
-                style="?textAppearanceHeadline6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="?android:attr/selectableItemBackground"
-                tools:text="25" />
+                <ToggleButton
+                    android:id="@+id/fridayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/toggle_blue"
+                    android:maxLines="1"
+                    android:textOff="@string/fri"
+                    android:textOn="@string/fri" />
 
-        </LinearLayout>
+                <ToggleButton
+                    android:id="@+id/saturdayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/toggle_blue"
+                    android:maxLines="1"
+                    android:textOff="@string/sat"
+                    android:textOn="@string/sat" />
+
+                <ToggleButton
+                    android:id="@+id/sundayCheck"
+                    style="?textAppearanceOverline"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/toggle_blue"
+                    android:maxLines="1"
+                    android:textOff="@string/sun"
+                    android:textOn="@string/sun" />
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
             android:layout_width="match_parent"

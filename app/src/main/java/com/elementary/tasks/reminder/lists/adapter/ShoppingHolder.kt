@@ -65,7 +65,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         loadCheck(reminder)
         loadContainer(reminder.type)
         loadType(reminder.type)
-        loadPriority(reminder.type)
+        loadPriority(reminder.priority)
         loadGroup(reminder)
         loadShoppingDate(reminder)
         loadItems(reminder.shoppings)

@@ -11,9 +11,11 @@ import android.view.*
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_month.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -54,7 +56,7 @@ class MonthFragment : RepeatableTypeFragment() {
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         if (dayOfMonth > 28) {
-            reminderInterface?.showSnackbar(getString(R.string.max_day_supported))
+            reminderInterface.showSnackbar(getString(R.string.max_day_supported))
             return@OnDateSetListener
         }
         mDay = dayOfMonth
@@ -75,18 +77,19 @@ class MonthFragment : RepeatableTypeFragment() {
         }
 
     override fun prepare(): Reminder? {
-        val iFace = reminderInterface ?: return null
+        val reminder = reminderInterface.reminder
         var type = Reminder.BY_MONTH
         val isAction = actionView.hasAction()
-//        if (TextUtils.isEmpty(iFace.summary) && !isAction) {
-//            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
-//            return null
-//        }
+        if (TextUtils.isEmpty(reminder.summary) && !isAction) {
+            taskLayout.error = getString(R.string.task_summary_is_empty)
+            taskLayout.isErrorEnabled = true
+            return null
+        }
         var number = ""
         if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
+                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -95,45 +98,25 @@ class MonthFragment : RepeatableTypeFragment() {
                 Reminder.BY_MONTH_SMS
             }
         }
-        var reminder = iFace.reminder
-        if (reminder == null) {
-            reminder = Reminder()
-        }
         reminder.weekdays = listOf()
         reminder.target = number
         reminder.type = type
         reminder.dayOfMonth = mDay
         reminder.repeatInterval = 0
-        reminder.exportToCalendar = exportToCalendar.isChecked
-        reminder.exportToTasks = exportToTasks.isChecked
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
-        reminder.remindBefore = before_view.beforeValue
         val startTime = timeCount.getNextMonthDayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
+        if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            return null
+        }
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_date_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-//            R.id.action_limit -> changeLimit()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -146,10 +129,36 @@ class MonthFragment : RepeatableTypeFragment() {
         timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
+
+        ViewUtils.listenScrollView(scrollView) {
+            reminderInterface.updateScroll(it)
+        }
+        moreLayout.isNestedScrollingEnabled = false
+
+        if (Module.isPro) {
+            ledView.visibility = View.VISIBLE
+        } else {
+            ledView.visibility = View.GONE
+        }
+
+        tuneExtraView.dialogues = dialogues
+        tuneExtraView.hasAutoExtra = false
+
+        melodyView.onFileSelectListener = {
+            reminderInterface.selectMelody()
+        }
+        attachmentView.onFileSelectListener = {
+            reminderInterface.attachFile()
+        }
+        groupView.onGroupSelectListener = {
+            reminderInterface.selectGroup()
+        }
+
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
         lastCheck.setOnCheckedChangeListener { _, b -> changeUi(b) }
         initScreenState()
+        initPropertyFields()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
@@ -157,14 +166,77 @@ class MonthFragment : RepeatableTypeFragment() {
         showSelectedDay()
     }
 
+    private fun initPropertyFields() {
+        taskSummary.bindProperty(reminderInterface.reminder.summary) {
+            reminderInterface.reminder.summary = it.trim()
+        }
+        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
+            reminderInterface.reminder.remindBefore = it
+            updateHeader()
+        }
+        exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
+            reminderInterface.reminder.exportToCalendar = it
+        }
+        exportToTasks.bindProperty(reminderInterface.reminder.exportToTasks) {
+            reminderInterface.reminder.exportToTasks = it
+        }
+        priorityView.bindProperty(reminderInterface.reminder.priority) {
+            reminderInterface.reminder.priority = it
+            updateHeader()
+        }
+        actionView.bindProperty(reminderInterface.reminder.target) {
+            reminderInterface.reminder.target = it
+            updateActions()
+        }
+        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
+            reminderInterface.reminder.melodyPath = it
+        }
+        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
+            reminderInterface.reminder.attachmentFile = it
+        }
+        loudnessView.bindProperty(reminderInterface.reminder.volume) {
+            reminderInterface.reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
+            reminderInterface.reminder.repeatLimit = it
+        }
+        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
+            reminderInterface.reminder.windowType = it
+        }
+        tuneExtraView.bindProperty(reminderInterface.reminder) {
+            reminderInterface.reminder.copyExtra(it)
+        }
+        if (Module.isPro) {
+            ledView.bindProperty(reminderInterface.reminder.color) {
+                reminderInterface.reminder.color = it
+            }
+        }
+    }
+
+    private fun updateActions() {
+        if (actionView.hasAction()) {
+            tuneExtraView.hasAutoExtra = true
+            if (actionView.type == ActionView.TYPE_MESSAGE) {
+                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+            } else {
+                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+            }
+        } else {
+            tuneExtraView.hasAutoExtra = false
+        }
+    }
+
+    private fun updateHeader() {
+        cardSummary.text = getSummary()
+    }
+
     private fun initScreenState() {
-        val iFace = reminderInterface ?: return
-        if (iFace.canExportToCalendar) {
+        if (reminderInterface.canExportToCalendar) {
             exportToCalendar.visibility = View.VISIBLE
         } else {
             exportToCalendar.visibility = View.GONE
         }
-        if (iFace.canExportToTasks) {
+        if (reminderInterface.canExportToTasks) {
             exportToTasks.visibility = View.VISIBLE
         } else {
             exportToTasks.visibility = View.GONE
@@ -201,10 +273,12 @@ class MonthFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val iFace = reminderInterface ?: return
-        val reminder = iFace.reminder ?: return
-        exportToCalendar.isChecked = reminder.exportToCalendar
-        exportToTasks.isChecked = reminder.exportToTasks
+        val reminder = reminderInterface.reminder
+        groupView.reminderGroup = ReminderGroup().apply {
+            this.groupColor = reminder.groupColor
+            this.groupTitle = reminder.groupTitle
+            this.groupUuId = reminder.groupUuId
+        }
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormatEnabled)
         if (reminder.dayOfMonth == 0) {
@@ -213,7 +287,6 @@ class MonthFragment : RepeatableTypeFragment() {
             mDay = reminder.dayOfMonth
             dayCheck.isChecked = true
         }
-        before_view.setBefore(reminder.remindBefore)
         if (reminder.target != "") {
             actionView.setAction(true)
             actionView.number = reminder.target
@@ -251,9 +324,24 @@ class MonthFragment : RepeatableTypeFragment() {
         }
     }
 
+    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
+        super.onGroupUpdate(reminderGroup)
+        groupView.reminderGroup = reminderGroup
+        updateHeader()
+    }
+
+    override fun onMelodySelect(path: String) {
+        super.onMelodySelect(path)
+        melodyView.file = path
+    }
+
+    override fun onAttachmentSelect(path: String) {
+        super.onAttachmentSelect(path)
+        attachmentView.file = path
+    }
+
     companion object {
 
-        private const val TAG = "WeekFragment"
         private const val CONTACTS = 114
     }
 }

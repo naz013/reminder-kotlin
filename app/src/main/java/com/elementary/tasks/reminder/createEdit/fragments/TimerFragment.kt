@@ -14,7 +14,7 @@ import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
-import kotlinx.android.synthetic.main.fragment_timer.*
+import kotlinx.android.synthetic.main.fragment_reminder_timer.*
 import java.util.*
 
 /**
@@ -138,7 +138,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_timer, container, false)
+        return inflater.inflate(R.layout.fragment_reminder_timer, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -216,7 +216,7 @@ class TimerFragment : RepeatableTypeFragment() {
         val selected = ArrayList(mHours)
         for (button in buttons) {
             button.id = i
-            button.setBackgroundDrawable(themeUtil.toggleDrawable())
+            button.setBackgroundResource(R.drawable.toggle_blue)
             this.buttons.add(button)
             if (selected.contains(i - 100)) button.isChecked = true
             i++
