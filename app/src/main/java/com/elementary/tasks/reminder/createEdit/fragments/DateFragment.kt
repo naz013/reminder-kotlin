@@ -85,6 +85,12 @@ class DateFragment : RepeatableTypeFragment() {
         }
         moreLayout.isNestedScrollingEnabled = false
 
+        if (Module.isPro) {
+            ledView.visibility = View.VISIBLE
+        } else {
+            ledView.visibility = View.GONE
+        }
+
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
@@ -141,6 +147,11 @@ class DateFragment : RepeatableTypeFragment() {
         }
         repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
             reminderInterface.reminder.repeatLimit = it
+        }
+        if (Module.isPro) {
+            ledView.bindProperty(reminderInterface.reminder.color) {
+                reminderInterface.reminder.color = it
+            }
         }
     }
 

@@ -179,34 +179,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     val rectangle: Int
         @DrawableRes
         get() {
-            val code = prefs.appThemeColor
-            val color: Int
-            when (code) {
-                Color.RED -> color = R.drawable.rectangle_stroke_red
-                Color.PURPLE -> color = R.drawable.rectangle_stroke_purple
-                Color.LIGHT_GREEN -> color = R.drawable.rectangle_stroke_light_green
-                Color.GREEN -> color = R.drawable.rectangle_stroke_green
-                Color.LIGHT_BLUE -> color = R.drawable.rectangle_stroke_light_blue
-                Color.BLUE -> color = R.drawable.rectangle_stroke_blue
-                Color.YELLOW -> color = R.drawable.rectangle_stroke_yellow
-                Color.ORANGE -> color = R.drawable.rectangle_stroke_orange
-                Color.CYAN -> color = R.drawable.rectangle_stroke_cyan
-                Color.PINK -> color = R.drawable.rectangle_stroke
-                Color.TEAL -> color = R.drawable.rectangle_stroke_teal
-                Color.AMBER -> color = R.drawable.rectangle_stroke_amber
-                else -> color = if (Module.isPro) {
-                    when (code) {
-                        Color.DEEP_PURPLE -> R.drawable.rectangle_stroke_deep_purple
-                        Color.DEEP_ORANGE -> R.drawable.rectangle_stroke_deep_orange
-                        Color.LIME -> R.drawable.rectangle_stroke_lime
-                        Color.INDIGO -> R.drawable.rectangle_stroke_indigo
-                        else -> R.drawable.rectangle_stroke_blue
-                    }
-                } else {
-                    R.drawable.rectangle_stroke_blue
-                }
-            }
-            return color
+            return R.drawable.rectangle_stroke_blue
         }
 
     val styleName: Int
@@ -415,34 +388,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     }
 
     fun toggleDrawable(): Drawable {
-        val loadedColor = prefs.appThemeColor
-        val color: Int
-        when (loadedColor) {
-            Color.RED -> color = R.drawable.toggle_red
-            Color.PURPLE -> color = R.drawable.toggle_purple
-            Color.LIGHT_GREEN -> color = R.drawable.toggle_green_light
-            Color.GREEN -> color = R.drawable.toggle_green
-            Color.LIGHT_BLUE -> color = R.drawable.toggle_blue_light
-            Color.BLUE -> color = R.drawable.toggle_blue
-            Color.YELLOW -> color = R.drawable.toggle_yellow
-            Color.ORANGE -> color = R.drawable.toggle_orange
-            Color.CYAN -> color = R.drawable.toggle_cyan
-            Color.PINK -> color = R.drawable.toggle_pink
-            Color.TEAL -> color = R.drawable.toggle_teal
-            Color.AMBER -> color = R.drawable.toggle_amber
-            else -> color = if (Module.isPro) {
-                when (loadedColor) {
-                    Color.DEEP_PURPLE -> R.drawable.toggle_deep_purple
-                    Color.DEEP_ORANGE -> R.drawable.toggle_deep_orange
-                    Color.LIME -> R.drawable.toggle_lime
-                    Color.INDIGO -> R.drawable.toggle_indigo
-                    else -> R.drawable.toggle_cyan
-                }
-            } else {
-                R.drawable.toggle_cyan
-            }
-        }
-        return getDrawable(color)
+        return getDrawable(R.drawable.toggle_blue)
     }
 
     @ColorRes
@@ -474,12 +420,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             }
         }
         return color
-    }
-
-    @ColorRes
-    fun colorPrimaryDark(): Int {
-        val loadedColor = prefs.appThemeColor
-        return colorPrimaryDark(loadedColor)
     }
 
     fun getMarkerRadiusStyle(color: Int): Marker {

@@ -2,6 +2,7 @@ package com.elementary.tasks
 
 import android.content.Context
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.provider.FontRequest
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.FontRequestEmojiCompatConfig
@@ -43,6 +44,7 @@ class ReminderApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .dbModule(DbModule())

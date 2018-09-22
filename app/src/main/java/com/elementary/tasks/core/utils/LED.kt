@@ -22,54 +22,31 @@ import com.elementary.tasks.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object LED {
-    const val NUM_OF_LEDS = 17
+    const val NUM_OF_LEDS = 7
 
-    private const val WHITE = -0x1
     private const val RED = -0xbbcca
     private const val GREEN = -0xb350b0
     const val BLUE = -0xde690d
-    private const val ORANGE = -0x6800
     private const val YELLOW = -0x14c5
-    private const val AMBER = -0x3ef9
     private const val PINK = -0x16e19d
-    private const val GREEN_LIGHT = -0x743cb6
-    private const val BLUE_LIGHT = -0xfc560c
-    private const val CYAN = -0xff432c
-    private const val PURPLE = -0x63d850
-    private const val LIME = -0x3223c7
-    private const val INDIGO = -0xc0ae4b
-    private const val DEEP_PURPLE = -0x98c549
     private const val DEEP_ORANGE = -0xa8de
     private const val TEAL = -0xff6978
 
     fun getLED(code: Int): Int {
         if (!Module.isPro) {
-            return CYAN
+            return BLUE
         }
-        val color: Int
-        when (code) {
-            0 -> color = WHITE
-            1 -> color = RED
-            2 -> color = GREEN
-            3 -> color = BLUE
-            4 -> color = ORANGE
-            5 -> color = YELLOW
-            6 -> color = PINK
-            7 -> color = GREEN_LIGHT
-            8 -> color = BLUE_LIGHT
-            9 -> color = PURPLE
-            10 -> color = AMBER
-            11 -> color = CYAN
-            12 -> color = LIME
-            13 -> color = INDIGO
-            14 -> color = DEEP_ORANGE
-            15 -> color = DEEP_PURPLE
-            16 -> color = TEAL
-            else -> color = BLUE
+        return when (code) {
+            0 -> RED
+            1 -> GREEN
+            2 -> BLUE
+            3 -> YELLOW
+            4 -> PINK
+            5 -> DEEP_ORANGE
+            6 -> TEAL
+            else -> BLUE
         }
-        return color
     }
 
     fun getAllNames(context: Context): Array<String> {
@@ -81,27 +58,15 @@ object LED {
     }
 
     fun getTitle(context: Context, code: Int): String {
-        val color: String
-        when (code) {
-            0 -> color = context.getString(R.string.white)
-            1 -> color = context.getString(R.string.red)
-            2 -> color = context.getString(R.string.green)
-            3 -> color = context.getString(R.string.blue)
-            4 -> color = context.getString(R.string.orange)
-            5 -> color = context.getString(R.string.yellow)
-            6 -> color = context.getString(R.string.pink)
-            7 -> color = context.getString(R.string.green_light)
-            8 -> color = context.getString(R.string.blue_light)
-            9 -> color = context.getString(R.string.purple)
-            10 -> color = context.getString(R.string.amber)
-            11 -> color = context.getString(R.string.cyan)
-            12 -> color = context.getString(R.string.lime)
-            13 -> color = context.getString(R.string.indigo)
-            14 -> color = context.getString(R.string.dark_orange)
-            15 -> color = context.getString(R.string.dark_purple)
-            16 -> color = context.getString(R.string.teal)
-            else -> color = context.getString(R.string.blue)
+        return when (code) {
+            0 -> context.getString(R.string.red)
+            1 -> context.getString(R.string.green)
+            2 -> context.getString(R.string.blue)
+            3 -> context.getString(R.string.yellow)
+            4 -> context.getString(R.string.pink)
+            5 -> context.getString(R.string.dark_orange)
+            6 -> context.getString(R.string.teal)
+            else -> context.getString(R.string.blue)
         }
-        return color
     }
 }

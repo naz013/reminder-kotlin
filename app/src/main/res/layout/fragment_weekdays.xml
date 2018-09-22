@@ -61,6 +61,7 @@
                     android:layout_height="50dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
+                    android:checked="true"
                     android:textOff="@string/mon"
                     android:textOn="@string/mon" />
 
