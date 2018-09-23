@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.70'
-    ext.support_version = '1.0.0-rc02'
+    ext.support_version = '1.0.0'
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
