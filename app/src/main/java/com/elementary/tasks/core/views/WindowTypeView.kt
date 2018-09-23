@@ -38,6 +38,7 @@ class WindowTypeView : LinearLayout {
         get() {
             return typeFromChip(chipGroup.checkedChipId)
         }
+    private var mLastIdRes: Int = R.id.chipFullscreen
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -60,6 +61,7 @@ class WindowTypeView : LinearLayout {
     }
 
     private fun typeFromChip(id: Int): Int {
+        mLastIdRes = id
         return when (id) {
             R.id.chipFullscreen -> 0
             R.id.chipSimple -> 1
@@ -75,8 +77,8 @@ class WindowTypeView : LinearLayout {
             if (isAnyChecked()) {
                 updateState(typeFromChip(id))
             } else {
-                chipView(id).isChecked = true
-                updateState(typeFromChip(id))
+                chipView(mLastIdRes).isChecked = true
+                updateState(typeFromChip(mLastIdRes))
             }
         }
     }
