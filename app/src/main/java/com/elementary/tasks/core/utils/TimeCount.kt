@@ -301,10 +301,10 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
     companion object {
 
         const val SECOND: Long = 1000
-        const val MINUTE = 60 * SECOND
-        const val HOUR = MINUTE * 60
-        private const val HALF_DAY = HOUR * 12
-        const val DAY = HALF_DAY * 2
+        const val MINUTE: Long = 60 * SECOND
+        const val HOUR: Long = MINUTE * 60
+        private const val HALF_DAY: Long = HOUR * 12
+        const val DAY: Long = HALF_DAY * 2
 
         fun isCurrent(eventTime: String?): Boolean {
             return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis()

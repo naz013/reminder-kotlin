@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
 import kotlinx.android.synthetic.main.fragment_reminder_timer.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -112,7 +113,7 @@ class TimerFragment : RepeatableTypeFragment() {
         val startTime = timeCount.generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
             return null
@@ -245,10 +246,5 @@ class TimerFragment : RepeatableTypeFragment() {
             calendar.set(Calendar.MINUTE, minute)
             textView.text = getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true)
         }, toHour, toMinute)
-    }
-
-    companion object {
-
-        private const val TAG = "TimerFragment"
     }
 }
