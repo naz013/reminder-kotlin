@@ -44,12 +44,14 @@ class ContactsActivity : ThemedActivity(), NumberCallback {
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        }
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
         toolbar.title = ""
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
