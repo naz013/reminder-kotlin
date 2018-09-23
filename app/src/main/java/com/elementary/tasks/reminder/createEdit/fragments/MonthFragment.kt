@@ -7,8 +7,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -125,8 +126,8 @@ class MonthFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        monthDayField.setOnClickListener { TimeUtil.showDatePicker(activity!!, prefs, mDateSelect, mYear, mMonth, mDay) }
-        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
+        monthDayField.setOnClickListener { TimeUtil.showDatePicker(activity!!, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateSelect) }
+        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
 

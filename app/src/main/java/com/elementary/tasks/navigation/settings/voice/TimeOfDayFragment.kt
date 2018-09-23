@@ -139,7 +139,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
     }
 
     private fun morningDialog() {
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, morningHour, morningMinute, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             morningHour = hourOfDay
             morningMinute = minute
             val calendar = Calendar.getInstance()
@@ -148,11 +148,11 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             val time = format.format(calendar.time)
             prefs.morningTime = time
             morningTime.text = TimeUtil.getTime(calendar.time, is24)
-        }, morningHour, morningMinute)
+        })
     }
 
     private fun dayDialog() {
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, dayHour, dayMinute, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             dayHour = hourOfDay
             dayMinute = minute
             val calendar = Calendar.getInstance()
@@ -161,11 +161,11 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             val time = format.format(calendar.time)
             prefs.noonTime = time
             dayTime.text = TimeUtil.getTime(calendar.time, is24)
-        }, dayHour, dayMinute)
+        })
     }
 
     private fun nightDialog() {
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, nightHour, nightMinute, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             nightHour = hourOfDay
             nightMinute = minute
             val calendar = Calendar.getInstance()
@@ -174,11 +174,11 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             val time = format.format(calendar.time)
             prefs.nightTime = time
             nightTime.text = TimeUtil.getTime(calendar.time, is24)
-        }, nightHour, nightMinute)
+        })
     }
 
     private fun eveningDialog() {
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, eveningHour, eveningMinute, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             eveningHour = hourOfDay
             eveningMinute = minute
             val calendar = Calendar.getInstance()
@@ -187,7 +187,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             val time = format.format(calendar.time)
             prefs.eveningTime = time
             eveningTime.text = TimeUtil.getTime(calendar.time, is24)
-        }, eveningHour, eveningMinute)
+        })
     }
 
     override fun onClick(v: View) {

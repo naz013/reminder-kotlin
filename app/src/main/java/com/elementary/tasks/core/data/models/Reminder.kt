@@ -280,6 +280,8 @@ class Reminder : RecyclerInterface, Serializable {
         const val BY_DATE_SHOP = 15
         const val BY_DATE_EMAIL = 16
         const val BY_TIME = 20
+        const val BY_TIME_CALL = 21
+        const val BY_TIME_SMS = 22
         const val BY_WEEK = 30
         const val BY_WEEK_CALL = 31
         const val BY_WEEK_SMS = 32

@@ -54,6 +54,11 @@ class RepeatLimitView : LinearLayout {
         init(context, attrs)
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        sliderView.isEnabled = enabled
+    }
+
     fun setLimit(level: Int) {
         sliderView.progress = level + 1
         this.level = sliderView.progress

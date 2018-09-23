@@ -141,7 +141,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         val calendar = TimeUtil.getBirthdayCalendar(prefs.birthdayTime)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, this, hour, minute)
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, hour, minute, this)
     }
 
     private fun initDaysToPrefs() {
