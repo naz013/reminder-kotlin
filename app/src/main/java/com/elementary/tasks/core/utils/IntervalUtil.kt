@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.elementary.tasks.R
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -56,6 +57,7 @@ object IntervalUtil {
     }
 
     fun getInterval(mContext: Context, mills: Long): String {
+        Timber.d("getInterval: $mills")
         var code = mills
         val tmp = mills / TimeCount.MINUTE
         val interval: String
@@ -73,7 +75,7 @@ object IntervalUtil {
             }
             tmp > 100 -> return if (code % TimeCount.HOUR == 0L) {
                 code /= TimeCount.HOUR
-                String.format(mContext.getString(R.string.x_hours), mills.toString())
+                String.format(mContext.getString(R.string.x_hours), code.toString())
             } else {
                 String.format(mContext.getString(R.string.x_min), tmp.toString())
             }
