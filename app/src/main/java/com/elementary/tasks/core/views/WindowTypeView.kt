@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.IdRes
 import com.elementary.tasks.R
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.view_window_type.view.*
 
 /**
@@ -70,8 +72,25 @@ class WindowTypeView : LinearLayout {
         orientation = LinearLayout.VERTICAL
 
         chipGroup.setOnCheckedChangeListener { _, id ->
-            updateState(typeFromChip(id))
+            if (isAnyChecked()) {
+                updateState(typeFromChip(id))
+            } else {
+                chipView(id).isChecked = true
+                updateState(typeFromChip(id))
+            }
         }
+    }
+
+    private fun chipView(@IdRes id: Int): Chip {
+        return when (id) {
+            R.id.chipFullscreen -> chipFullscreen
+            R.id.chipSimple -> chipSimple
+            else -> chipFullscreen
+        }
+    }
+
+    private fun isAnyChecked(): Boolean {
+        return chipFullscreen.isChecked || chipSimple.isChecked
     }
 
     private fun updateState(type: Int) {

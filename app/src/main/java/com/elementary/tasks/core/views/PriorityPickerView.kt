@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.IdRes
 import com.elementary.tasks.R
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.view_priority.view.*
 
 /**
@@ -76,8 +78,29 @@ class PriorityPickerView : LinearLayout {
         orientation = LinearLayout.VERTICAL
 
         chipGroup.setOnCheckedChangeListener { _, id ->
-            updateState(priorityFromChip(id))
+            if (isAnyChecked()) {
+                updateState(priorityFromChip(id))
+            } else {
+                chipView(id).isChecked = true
+                updateState(priorityFromChip(id))
+            }
         }
+    }
+
+    private fun chipView(@IdRes id: Int): Chip {
+        return when (id) {
+            R.id.chipLowest -> chipLowest
+            R.id.chipLow -> chipLow
+            R.id.chipNormal -> chipNormal
+            R.id.chipHigh -> chipHigh
+            R.id.chipHighest -> chipHighest
+            else -> chipNormal
+        }
+    }
+
+    private fun isAnyChecked(): Boolean {
+        return chipLowest.isChecked || chipLow.isChecked || chipNormal.isChecked
+                || chipHigh.isChecked || chipHighest.isChecked
     }
 
     private fun updateState(priority: Int) {
