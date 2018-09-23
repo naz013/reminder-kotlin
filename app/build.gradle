@@ -17,7 +17,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 210
-        versionName '6.4.8'
+        versionName '7.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -168,7 +168,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
