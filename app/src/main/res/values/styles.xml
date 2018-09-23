@@ -123,7 +123,7 @@
     </style>
 
     <style name="Light1" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary1</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
         <item name="colorPrimary">@color/lightPrimary1</item>
         <item name="android:windowBackground">@color/lightPrimary1</item>
         <item name="android:colorBackground">@color/lightPrimary1</item>
@@ -135,7 +135,7 @@
     </style>
 
     <style name="Light2" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary2</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark2</item>
         <item name="colorPrimary">@color/lightPrimary2</item>
         <item name="android:windowBackground">@color/lightPrimary2</item>
         <item name="android:colorBackground">@color/lightPrimary2</item>
@@ -147,7 +147,7 @@
     </style>
 
     <style name="Light3" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary3</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark3</item>
         <item name="colorPrimary">@color/lightPrimary3</item>
         <item name="android:windowBackground">@color/lightPrimary3</item>
         <item name="android:colorBackground">@color/lightPrimary3</item>
@@ -159,7 +159,7 @@
     </style>
 
     <style name="Light4" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary4</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark4</item>
         <item name="colorPrimary">@color/lightPrimary4</item>
         <item name="android:windowBackground">@color/lightPrimary4</item>
         <item name="android:colorBackground">@color/lightPrimary4</item>
