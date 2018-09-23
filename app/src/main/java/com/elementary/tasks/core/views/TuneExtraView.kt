@@ -10,7 +10,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.fromReminder
 import kotlinx.android.synthetic.main.dialog_select_extra.view.*
-import kotlinx.android.synthetic.main.view_group.view.*
+import kotlinx.android.synthetic.main.view_tune_extra.view.*
 
 /**
  * Copyright 2018 Nazar Suhovich

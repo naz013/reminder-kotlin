@@ -1,22 +1,21 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.TimePickerDialog
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.*
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.ToggleButton
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
+import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_timer.*
 import timber.log.Timber
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,103 +38,45 @@ import java.util.*
 @SuppressLint("SetTextI18n")
 class TimerFragment : RepeatableTypeFragment() {
 
-    private var mHours: MutableList<Int> = mutableListOf()
-    private var mFrom: String = ""
-    private var mTo: String = ""
-    private var fromHour: Int = 0
-    private var fromMinute: Int = 0
-    private var toHour: Int = 0
-    private var toMinute: Int = 0
-    private var buttons: MutableList<ToggleButton> = mutableListOf()
-
-    private val selectedList: MutableList<Int>
-        @SuppressLint("ResourceType")
-        get() {
-            val ids = ArrayList<Int>()
-            for (button in buttons) {
-                if (button.isChecked) ids.add(button.id - 100)
-            }
-            return ids
-        }
-
-    private val customizationView: View
-        get() {
-            val binding = LayoutInflater.from(context).inflate(R.layout.dialog_exclusion_picker, null)
-            binding.selectInterval.isChecked = true
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
-            fromHour = calendar.get(Calendar.HOUR_OF_DAY)
-            fromMinute = calendar.get(Calendar.MINUTE)
-            binding.from.text = getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true)
-            calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_HOUR * 3
-            toHour = calendar.get(Calendar.HOUR_OF_DAY)
-            toMinute = calendar.get(Calendar.MINUTE)
-            binding.to.text = getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true)
-            binding.from.setOnClickListener { fromTime(binding.from) }
-            binding.to.setOnClickListener { toTime(binding.to) }
-            initButtons(binding)
-            if (mFrom != "" && mTo != "") {
-                calendar.time = TimeUtil.getDate(mFrom)
-                fromHour = calendar.get(Calendar.HOUR_OF_DAY)
-                fromMinute = calendar.get(Calendar.MINUTE)
-                calendar.time = TimeUtil.getDate(mTo)
-                toHour = calendar.get(Calendar.HOUR_OF_DAY)
-                toMinute = calendar.get(Calendar.MINUTE)
-                binding.selectInterval.isChecked = true
-            }
-            if (!mHours.isEmpty()) {
-                binding.selectHours.isChecked = true
-            }
-            return binding
-        }
-
     override fun prepare(): Reminder? {
-        val iFace = reminderInterface ?: return null
+        val reminder = reminderInterface.reminder
         val after = timerPickerView.timerValue
         if (after == 0L) {
-            Toast.makeText(context, getString(R.string.you_dont_insert_timer_time), Toast.LENGTH_SHORT).show()
+            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_timer_time))
             return null
         }
-        var reminder = iFace.reminder
-        if (reminder == null) {
-            reminder = Reminder()
+        var type = Reminder.BY_TIME
+        val isAction = actionView.hasAction()
+        if (TextUtils.isEmpty(reminder.summary) && !isAction) {
+            taskLayout.error = getString(R.string.task_summary_is_empty)
+            taskLayout.isErrorEnabled = true
+            return null
         }
-        val type = Reminder.BY_TIME
+        var number = ""
+        if (isAction) {
+            number = actionView.number
+            if (TextUtils.isEmpty(number)) {
+                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                return null
+            }
+            type = if (actionView.type == ActionView.TYPE_CALL) {
+                Reminder.BY_DATE_CALL
+            } else {
+                Reminder.BY_DATE_SMS
+            }
+        }
+        reminder.target = number
         reminder.type = type
         reminder.after = after
-        val repeat = repeatView.repeat
-        reminder.repeatInterval = repeat
-        reminder.exportToCalendar = exportToCalendar.isChecked
-        reminder.exportToTasks = exportToTasks.isChecked
-        reminder.from = mFrom
-        reminder.to = mTo
-        reminder.hours = mHours
         val startTime = timeCount.generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_date_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-//            R.id.action_limit -> changeLimit()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -144,8 +85,113 @@ class TimerFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollView(scrollView) {
+            reminderInterface.updateScroll(it)
+        }
+        moreLayout.isNestedScrollingEnabled = false
+
+        if (Module.isPro) {
+            ledView.visibility = View.VISIBLE
+        } else {
+            ledView.visibility = View.GONE
+        }
+
+        tuneExtraView.dialogues = dialogues
+        tuneExtraView.hasAutoExtra = false
+
+        exclusionView.dialogues = dialogues
+        exclusionView.prefs = prefs
+        exclusionView.themeUtil = themeUtil
+
+        actionView.setActivity(activity!!)
+        actionView.setContactClickListener(View.OnClickListener { selectContact() })
+
+        melodyView.onFileSelectListener = {
+            reminderInterface.selectMelody()
+        }
+        attachmentView.onFileSelectListener = {
+            reminderInterface.attachFile()
+        }
+        groupView.onGroupSelectListener = {
+            reminderInterface.selectGroup()
+        }
+
         initScreenState()
+        initPropertyFields()
         editReminder()
+    }
+
+    private fun initPropertyFields() {
+        val reminder = reminderInterface.reminder
+        taskSummary.bindProperty(reminder.summary) {
+            reminder.summary = it.trim()
+        }
+        beforeView.bindProperty(reminder.remindBefore) {
+            reminder.remindBefore = it
+            updateHeader()
+        }
+        repeatView.bindProperty(reminder.repeatInterval) {
+            reminder.repeatInterval = it
+        }
+        exportToCalendar.bindProperty(reminder.exportToCalendar) {
+            reminder.exportToCalendar = it
+        }
+        exportToTasks.bindProperty(reminder.exportToTasks) {
+            reminder.exportToTasks = it
+        }
+        priorityView.bindProperty(reminder.priority) {
+            reminder.priority = it
+            updateHeader()
+        }
+        actionView.bindProperty(reminder.target) {
+            reminder.target = it
+            updateActions()
+        }
+        melodyView.bindProperty(reminder.melodyPath) {
+            reminder.melodyPath = it
+        }
+        attachmentView.bindProperty(reminder.attachmentFile) {
+            reminder.attachmentFile = it
+        }
+        loudnessView.bindProperty(reminder.volume) {
+            reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminder.repeatLimit) {
+            reminder.repeatLimit = it
+        }
+        windowTypeView.bindProperty(reminder.windowType) {
+            reminder.windowType = it
+        }
+        tuneExtraView.bindProperty(reminder) {
+            reminder.copyExtra(it)
+        }
+        exclusionView.bindProperty(reminder.hours, reminder.from, reminder.to) { hours, from, to ->
+            reminder.hours = hours
+            reminder.from = from
+            reminder.to = to
+        }
+        if (Module.isPro) {
+            ledView.bindProperty(reminder.color) {
+                reminder.color = it
+            }
+        }
+    }
+
+    private fun updateActions() {
+        if (actionView.hasAction()) {
+            tuneExtraView.hasAutoExtra = true
+            if (actionView.type == ActionView.TYPE_MESSAGE) {
+                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+            } else {
+                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+            }
+        } else {
+            tuneExtraView.hasAutoExtra = false
+        }
+    }
+
+    private fun updateHeader() {
+        cardSummary.text = getSummary()
     }
 
     private fun initScreenState() {
@@ -163,88 +209,66 @@ class TimerFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        exportToCalendar.isChecked = reminder.exportToCalendar
-        exportToTasks.isChecked = reminder.exportToTasks
-        repeatView.repeat = reminder.repeatInterval
+        groupView.reminderGroup = ReminderGroup().apply {
+            this.groupColor = reminder.groupColor
+            this.groupTitle = reminder.groupTitle
+            this.groupUuId = reminder.groupUuId
+        }
         timerPickerView.timerValue = reminder.after
-        this.mFrom = reminder.from
-        this.mTo = reminder.to
-        this.mHours = reminder.hours.toMutableList()
-    }
-
-    private fun openExclusionDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.exclusion)
-        val b = customizationView
-        builder.setView(b)
-        builder.setPositiveButton(R.string.ok) { _, _ -> saveExclusion(b) }
-        builder.setNegativeButton(R.string.remove_exclusion) { _, _ -> clearExclusion() }
-        builder.create().show()
-    }
-
-    private fun clearExclusion() {
-        mHours.clear()
-        mFrom = ""
-        mTo = ""
-    }
-
-    private fun saveExclusion(b: View) {
-        clearExclusion()
-        if (b.selectHours.isChecked) {
-            mHours = selectedList
-            if (mHours.isEmpty()) {
-                Toast.makeText(context, getString(R.string.you_dont_select_any_hours), Toast.LENGTH_SHORT).show()
+        if (reminder.target != "") {
+            actionView.setAction(true)
+            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
+                actionView.type = ActionView.TYPE_CALL
+            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
+                actionView.type = ActionView.TYPE_MESSAGE
             }
-        } else if (b.selectInterval.isChecked) {
-            mFrom = getHour(fromHour, fromMinute)
-            mTo = getHour(toHour, toMinute)
         }
     }
 
-    private fun getHour(hour: Int, minute: Int): String {
-        return hour.toString() + ":" + minute
-    }
-
-    private fun initButtons(b: View) {
-        setId(b.zero, b.one, b.two, b.three, b.four, b.five, b.six, b.seven, b.eight, b.nine, b.ten,
-                b.eleven, b.twelve, b.thirteen, b.fourteen, b.fifteen, b.sixteen, b.seventeen,
-                b.eighteen, b.nineteen, b.twenty, b.twentyOne, b.twentyThree, b.twentyTwo)
-    }
-
-    private fun setId(vararg buttons: ToggleButton) {
-        var i = 100
-        this.buttons = mutableListOf()
-        val selected = ArrayList(mHours)
-        for (button in buttons) {
-            button.id = i
-            button.setBackgroundResource(R.drawable.toggle_blue)
-            this.buttons.add(button)
-            if (selected.contains(i - 100)) button.isChecked = true
-            i++
+    private fun selectContact() {
+        if (Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS, Permissions.READ_CALLS)) {
+            SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
+        } else {
+            Permissions.requestPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS, Permissions.READ_CALLS)
         }
     }
 
-    private fun fromTime(textView: TextView) {
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            fromHour = hourOfDay
-            fromMinute = minute
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
-            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            calendar.set(Calendar.MINUTE, minute)
-            textView.text = getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true)
-        }, fromHour, fromMinute)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
+            val number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
+            actionView.number = number
+        }
     }
 
-    private fun toTime(textView: TextView) {
-        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            toHour = hourOfDay
-            toMinute = minute
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
-            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            calendar.set(Calendar.MINUTE, minute)
-            textView.text = getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true)
-        }, toHour, toMinute)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isEmpty()) return
+        when (requestCode) {
+            CONTACTS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                selectContact()
+            }
+        }
+    }
+
+    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
+        super.onGroupUpdate(reminderGroup)
+        groupView.reminderGroup = reminderGroup
+        updateHeader()
+    }
+
+    override fun onMelodySelect(path: String) {
+        super.onMelodySelect(path)
+        melodyView.file = path
+    }
+
+    override fun onAttachmentSelect(path: String) {
+        super.onAttachmentSelect(path)
+        attachmentView.file = path
+    }
+
+    companion object {
+
+        private const val CONTACTS = 112
     }
 }

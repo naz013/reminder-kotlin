@@ -117,7 +117,7 @@ class WeekFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
+        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
         actionView.setActivity(activity!!)

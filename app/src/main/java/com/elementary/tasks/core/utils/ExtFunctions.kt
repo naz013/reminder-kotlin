@@ -182,3 +182,11 @@ fun TuneExtraView.bindProperty(value: Reminder, listener: ((Reminder) -> Unit)) 
         listener.invoke(it.toReminder(value))
     }
 }
+
+fun ExclusionPickerView.bindProperty(v1: List<Int>, v2: String, v3: String, listener: ((List<Int>, String, String) -> Unit)) {
+    this.setHours(v1)
+    this.setRangeHours(v2, v3)
+    this.onExclusionUpdateListener = { a1, a2, a3 ->
+        listener.invoke(a1, a2, a3)
+    }
+}
