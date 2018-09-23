@@ -38,6 +38,7 @@ class PriorityPickerView : LinearLayout {
         get() {
             return priorityFromChip(chipGroup.checkedChipId)
         }
+    private var mLastIdRes: Int = R.id.chipNormal
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -63,6 +64,7 @@ class PriorityPickerView : LinearLayout {
     }
 
     private fun priorityFromChip(id: Int): Int {
+        mLastIdRes = id
         return when (id) {
             R.id.chipLowest -> 0
             R.id.chipLow -> 1
@@ -81,8 +83,8 @@ class PriorityPickerView : LinearLayout {
             if (isAnyChecked()) {
                 updateState(priorityFromChip(id))
             } else {
-                chipView(id).isChecked = true
-                updateState(priorityFromChip(id))
+                chipView(mLastIdRes).isChecked = true
+                updateState(priorityFromChip(mLastIdRes))
             }
         }
     }
