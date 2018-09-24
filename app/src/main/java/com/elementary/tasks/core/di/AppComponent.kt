@@ -20,9 +20,7 @@ import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.async.SyncTask
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
-import com.elementary.tasks.core.contacts.ContactsFragment
 import com.elementary.tasks.core.contacts.ContactsRecyclerAdapter
-import com.elementary.tasks.core.contacts.calls.CallsRecyclerAdapter
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.dialogs.BaseDialog
 import com.elementary.tasks.core.fileExplorer.FileRecyclerAdapter
@@ -112,8 +110,6 @@ interface AppComponent {
     fun inject(tasksFactory: TasksFactory)
     fun inject(dropbox: Dropbox)
     fun inject(contactsRecyclerAdapter: ContactsRecyclerAdapter)
-    fun inject(callsRecyclerAdapter: CallsRecyclerAdapter)
-    fun inject(contactsFragment: ContactsFragment)
     fun inject(locationTracker: LocationTracker)
     fun inject(baseMapFragment: BaseMapFragment)
     fun inject(fileRecyclerAdapter: FileRecyclerAdapter)
