@@ -1,18 +1,13 @@
 package com.elementary.tasks.core.contacts
 
-import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-import kotlinx.android.synthetic.main.list_item_contact.view.*
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -33,146 +28,116 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.ContactViewHolder>() {
+class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val mDataList: MutableList<ContactItem> = mutableListOf()
-    var filterCallback: ((Int) -> Unit)? = null
-    var clickListener: ((Int) -> Unit)? = null
+    val data: MutableList<Any> = mutableListOf()
+    var clickListener: ((name: String, number: String) -> Unit)? = null
+    var type = ContactsActivity.CONTACT
 
-    @Inject lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false))
+    fun setData(type: Int, data: List<Any>) {
+        if (this.type == type) {
+            this.type = type
+            val diffResult = if (type == ContactsActivity.CALL) {
+                DiffUtil.calculateDiff(CallDiffCallback(this.data as List<CallsItem>, data as List<CallsItem>))
+            } else {
+                DiffUtil.calculateDiff(ContactDiffCallback(this.data as List<ContactItem>, data as List<ContactItem>))
+            }
+            this.data.clear()
+            this.data.addAll(data)
+            diffResult.dispatchUpdatesTo(this)
+        } else {
+            this.type = type
+            this.data.clear()
+            this.data.addAll(data)
+            notifyDataSetChanged()
+        }
     }
 
-    override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        holder.bind(mDataList[position])
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == ContactsActivity.CONTACT) {
+            ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false), themeUtil.isDark) {
+                performClick(it)
+            }
+        } else {
+            CallHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_call, parent, false),
+                    themeUtil.isDark, prefs.is24HourFormatEnabled) {
+                performClick(it)
+            }
+        }
+    }
+
+    private fun performClick(it: Int) {
+        val item = data[it]
+        if (item is ContactItem) {
+            clickListener?.invoke(item.name, "")
+        } else if (item is CallsItem) {
+            clickListener?.invoke(item.name, item.number)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is ContactHolder -> {
+                holder.bind(data[position] as ContactItem)
+            }
+            is CallHolder -> {
+                holder.bind(data[position] as CallsItem)
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (data[position] is CallsItem) ContactsActivity.CALL else ContactsActivity.CONTACT
     }
 
     override fun getItemCount(): Int {
-        return mDataList.size
+        return data.size
     }
 
-    inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(contactItem: ContactItem) {
-            itemView.itemName.text = contactItem.name
-            loadImage(itemView.itemImage, contactItem.uri)
+    internal class ContactDiffCallback(private var oldList: List<ContactItem>, private var newList: List<ContactItem>) : DiffUtil.Callback() {
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val p1 = oldList[oldItemPosition]
+            val p2 = newList[newItemPosition]
+            return p1.id == p2.id
         }
 
-        init {
-            itemView.setOnClickListener { clickListener?.invoke(adapterPosition) }
-        }
-    }
+        override fun getOldListSize(): Int = oldList.size
 
-    fun filter(q: String, list: List<ContactItem>) {
-        val res = filter(list, q)
-        animateTo(res)
-        filterCallback?.invoke(res.size)
-    }
+        override fun getNewListSize(): Int = newList.size
 
-    private fun filter(mData: List<ContactItem>?, q: String): List<ContactItem> {
-        var mData = mData
-        var q = q
-        q = q.toLowerCase()
-        var filteredModelList: MutableList<ContactItem> = ArrayList()
-        if (mData == null) mData = ArrayList()
-        if (q.matches("".toRegex())) {
-            filteredModelList = ArrayList(mData)
-        } else {
-            filteredModelList.addAll(getFiltered(mData, q))
-        }
-        return filteredModelList
-    }
-
-    private fun getFiltered(models: List<ContactItem>, query: String): List<ContactItem> {
-        val list = ArrayList<ContactItem>()
-        for (model in models) {
-            val text = model.name.toLowerCase()
-            if (text.contains(query)) {
-                list.add(model)
-            }
-        }
-        return list
-    }
-
-    private fun removeItem(position: Int): ContactItem {
-        val model = mDataList.removeAt(position)
-        notifyItemRemoved(position)
-        return model
-    }
-
-    private fun addItem(position: Int, model: ContactItem) {
-        mDataList.add(position, model)
-        notifyItemInserted(position)
-    }
-
-    private fun moveItem(fromPosition: Int, toPosition: Int) {
-        val model = mDataList.removeAt(fromPosition)
-        mDataList.add(toPosition, model)
-        notifyItemMoved(fromPosition, toPosition)
-    }
-
-    private fun animateTo(models: List<ContactItem>) {
-        applyAndAnimateRemovals(models)
-        applyAndAnimateAdditions(models)
-        applyAndAnimateMovedItems(models)
-    }
-
-    private fun applyAndAnimateRemovals(newModels: List<ContactItem>) {
-        for (i in mDataList.indices.reversed()) {
-            val model = mDataList[i]
-            if (!newModels.contains(model)) {
-                removeItem(i)
-            }
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val p1 = oldList[oldItemPosition]
+            val p2 = newList[newItemPosition]
+            return p1 == p2
         }
     }
 
-    private fun applyAndAnimateAdditions(newModels: List<ContactItem>) {
-        var i = 0
-        val count = newModels.size
-        while (i < count) {
-            val model = newModels[i]
-            if (!mDataList.contains(model)) {
-                addItem(i, model)
-            }
-            i++
+    internal class CallDiffCallback(private var oldList: List<CallsItem>, private var newList: List<CallsItem>) : DiffUtil.Callback() {
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val p1 = oldList[oldItemPosition]
+            val p2 = newList[newItemPosition]
+            return p1.id == p2.id
         }
-    }
 
-    private fun applyAndAnimateMovedItems(newModels: List<ContactItem>) {
-        for (toPosition in newModels.indices.reversed()) {
-            val model = newModels[toPosition]
-            val fromPosition = mDataList.indexOf(model)
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition)
-            }
+        override fun getOldListSize(): Int = oldList.size
+
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val p1 = oldList[oldItemPosition]
+            val p2 = newList[newItemPosition]
+            return p1 == p2
         }
-    }
-
-    fun getItem(position: Int): ContactItem {
-        return mDataList[position]
-    }
-
-    fun setData(it: List<ContactItem>) {
-        this.mDataList.clear()
-        this.mDataList.addAll(it)
-        notifyDataSetChanged()
-    }
-
-    fun loadImage(imageView: ImageView, v: String?) {
-        val isDark = themeUtil.isDark
-        if (v == null) {
-            imageView.setImageResource(if (isDark) R.drawable.ic_perm_identity_white_24dp else R.drawable.ic_perm_identity_black_24dp)
-            return
-        }
-        Glide.with(imageView)
-                .load(Uri.parse(v))
-                .apply(RequestOptions.centerCropTransform())
-                .apply(RequestOptions.overrideOf(100, 100))
-                .into(imageView)
     }
 }
