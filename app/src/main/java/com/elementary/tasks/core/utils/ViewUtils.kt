@@ -15,6 +15,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 
 
@@ -39,7 +40,7 @@ import com.elementary.tasks.R
 
 object ViewUtils {
 
-    fun listenScrollView(scrollView: ScrollView, listener: ((x: Int) -> Unit)?) {
+    fun listenScrollableView(scrollView: ScrollView, listener: ((x: Int) -> Unit)?) {
         val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
             listener?.invoke(scrollView.scrollY)
         }
@@ -59,7 +60,7 @@ object ViewUtils {
         })
     }
 
-    fun listenScrollView(scrollView: NestedScrollView, listener: ((y: Int) -> Unit)?) {
+    fun listenScrollableView(scrollView: NestedScrollView, listener: ((y: Int) -> Unit)?) {
         val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
             listener?.invoke(scrollView.scrollY)
         }
@@ -77,6 +78,20 @@ object ViewUtils {
                 return false
             }
         })
+    }
+
+    fun listenScrollableView(recyclerView: RecyclerView, listener: ((y: Int) -> Unit)?) {
+        if (Module.isMarshmallow) {
+            recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
+                listener?.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+            }
+        } else {
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    listener?.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+                }
+            })
+        }
     }
 
     fun getFabState(context: Context, @ColorRes colorNormal: Int, @ColorRes colorPressed: Int): ColorStateList {

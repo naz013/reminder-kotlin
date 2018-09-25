@@ -80,7 +80,7 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         if (item is ContactItem) {
             clickListener?.invoke(item.name, "")
         } else if (item is CallsItem) {
-            clickListener?.invoke(item.name, item.number)
+            clickListener?.invoke(if (item.name != null) item.name!! else "", item.number)
         }
     }
 

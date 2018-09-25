@@ -66,7 +66,7 @@ class EmailFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollView(scrollView) {
+        ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
         moreLayout.isNestedScrollingEnabled = false

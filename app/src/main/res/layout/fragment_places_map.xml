@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/zoomCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -39,9 +39,9 @@
                     android:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_arrow_upward_black_24dp" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/backCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,9 +55,9 @@
                     android:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_keyboard_arrow_left_black_24dp" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/layersCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,9 +71,9 @@
                     android:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_layers_black_24dp" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/markersCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,9 +87,9 @@
                     android:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_palette_black_24dp" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/placesCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,11 +103,11 @@
                     android:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_directions_black_24dp" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -146,9 +146,9 @@
                 app:srcCompat="@drawable/ic_search_black_24dp" />
 
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/layersContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -205,9 +205,9 @@
 
             </LinearLayout>
         </ScrollView>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/styleCard"
         android:layout_width="match_parent"
         android:layout_height="175dp"
@@ -242,9 +242,9 @@
                 android:orientation="horizontal" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/placesListCard"
         android:layout_width="match_parent"
         android:layout_height="175dp"
@@ -285,5 +285,5 @@
                 android:text="@string/no_places" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>
