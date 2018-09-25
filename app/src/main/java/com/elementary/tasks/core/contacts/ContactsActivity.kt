@@ -12,10 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_contacts_list.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
@@ -38,7 +35,6 @@ import kotlinx.coroutines.experimental.launch
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class ContactsActivity : ThemedActivity() {
 
     private var type = CONTACT
@@ -64,12 +60,14 @@ class ContactsActivity : ThemedActivity() {
         }
         contactsList.layoutManager = LinearLayoutManager(this)
         contactsList.adapter = adapter
+        ViewUtils.listenScrollableView(scroller) {
+            toolbarView.isSelected = it > 0
+        }
     }
 
     private fun initSearchView() {
         searchField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -77,7 +75,6 @@ class ContactsActivity : ThemedActivity() {
             }
 
             override fun afterTextChanged(s: Editable) {
-
             }
         })
     }
@@ -317,9 +314,9 @@ class ContactsActivity : ThemedActivity() {
     private fun refreshView() {
         if (adapter.itemCount > 0) {
             emptyItem.visibility = View.GONE
-            contactsList.visibility = View.VISIBLE
+            scroller.visibility = View.VISIBLE
         } else {
-            contactsList.visibility = View.GONE
+            scroller.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
         }
     }

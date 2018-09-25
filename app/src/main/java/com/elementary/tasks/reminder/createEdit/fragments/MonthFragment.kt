@@ -131,7 +131,7 @@ class MonthFragment : RepeatableTypeFragment() {
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
 
-        ViewUtils.listenScrollView(scrollView) {
+        ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
         moreLayout.isNestedScrollingEnabled = false

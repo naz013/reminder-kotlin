@@ -123,7 +123,7 @@ class WeekFragment : RepeatableTypeFragment() {
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
-        ViewUtils.listenScrollView(scrollView) {
+        ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
         moreLayout.isNestedScrollingEnabled = false

@@ -648,5 +648,6 @@
     <string name="high">High</string>
     <string name="highest">Highest</string>
     <string name="not_selected">Not selected</string>
+    <string name="select_phone_number">Select phone number</string>
 
 </resources>

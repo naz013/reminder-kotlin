@@ -28,7 +28,7 @@
             android:orientation="vertical"
             android:padding="@dimen/follow_margin">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,9 +49,9 @@
                     android:textSize="@dimen/follow_text_size_primary"
                     app:font_style="roboto_regular" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -113,9 +113,9 @@
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,9 +132,9 @@
                     android:hint="@string/message"
                     app:edit_font_style="roboto_light" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -320,9 +320,9 @@
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -361,7 +361,7 @@
                         app:check_font_style="roboto_light" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

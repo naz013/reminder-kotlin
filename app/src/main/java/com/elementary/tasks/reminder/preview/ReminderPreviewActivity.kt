@@ -449,7 +449,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     private fun initActionBar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        ViewUtils.listenScrollView(scrollView) {
+        ViewUtils.listenScrollableView(scrollView) {
             appBar.isSelected = it > 0
         }
         if (isDark) {

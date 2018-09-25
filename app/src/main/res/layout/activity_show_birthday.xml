@@ -31,7 +31,7 @@
             app:civ_border_color="@color/material_grey_dialog"
             app:civ_border_width="5dp" />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     app:font_style="roboto_bold" />
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <LinearLayout
