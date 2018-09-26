@@ -61,7 +61,7 @@ class AppsRecyclerAdapter : RecyclerView.Adapter<AppsRecyclerAdapter.Application
         }
 
         init {
-            itemView.setOnClickListener {
+            itemView.clickView.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
         }
