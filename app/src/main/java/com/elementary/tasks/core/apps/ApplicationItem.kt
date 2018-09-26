@@ -20,5 +20,4 @@ import android.graphics.drawable.Drawable
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class ApplicationItem(var name: String?, var packageName: String?, var drawable: Drawable?)
+data class ApplicationItem(var name: String?, var packageName: String?, var drawable: Drawable?)

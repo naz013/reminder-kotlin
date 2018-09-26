@@ -2,10 +2,10 @@ package com.elementary.tasks.core.apps
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,8 +14,12 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.activity_application_list.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,23 +41,72 @@ import kotlinx.android.synthetic.main.activity_application_list.*
  */
 class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
 
-    private var mAdapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
-
+    private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
     private val filterController = AppFilterController(this)
+    private var mLoader: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_application_list)
+        loaderView.visibility = View.GONE
         initActionBar()
         initSearchView()
         initRecyclerView()
-        AppsAsync(this) {
-            filterController.original = it
-        }.execute()
+        loadApps()
+    }
+
+    private fun hideProgress() {
+        loaderView.visibility = View.GONE
+    }
+
+    private fun showProgress() {
+        loaderView.visibility = View.VISIBLE
+    }
+
+    private fun loadApps() {
+        showProgress()
+        mLoader?.cancel()
+        mLoader = launch(CommonPool) {
+            val mList: MutableList<ApplicationItem> = mutableListOf()
+            val pm = packageManager
+            val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            for (packageInfo in packages) {
+                val name = packageInfo.loadLabel(pm).toString()
+                val packageName = packageInfo.packageName
+                val drawable = packageInfo.loadIcon(pm)
+                val data = ApplicationItem(name, packageName, drawable)
+                val pos = getPosition(name, mList)
+                if (pos == -1) {
+                    mList.add(data)
+                } else {
+                    mList.add(getPosition(name, mList), data)
+                }
+            }
+            withUIContext {
+                hideProgress()
+                filterController.original = mList
+                refreshView()
+            }
+        }
+    }
+
+    private fun getPosition(name: String, mList: MutableList<ApplicationItem>): Int {
+        if (mList.size == 0) {
+            return 0
+        }
+        var position = -1
+        for (data in mList) {
+            val comp = name.compareTo(data.name!!)
+            if (comp <= 0) {
+                position = mList.indexOf(data)
+                break
+            }
+        }
+        return position
     }
 
     private fun initRecyclerView() {
-        mAdapter.actionsListener = object : ActionsListener<ApplicationItem> {
+        adapter.actionsListener = object : ActionsListener<ApplicationItem> {
             override fun onAction(view: View, position: Int, t: ApplicationItem?, actions: ListActions) {
                 if (t != null) {
                     val intent = Intent()
@@ -64,7 +117,7 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
             }
         }
         contactsList.layoutManager = LinearLayoutManager(this)
-        contactsList.adapter = mAdapter
+        contactsList.adapter = adapter
     }
 
     private fun initSearchView() {
@@ -82,11 +135,7 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        toolbar.title = getString(R.string.choose_application)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        backButton.setOnClickListener { onBackPressed() }
     }
 
     override fun onPause() {
@@ -95,17 +144,30 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
         imm?.hideSoftInputFromWindow(searchField.windowToken, 0)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            val intent = Intent()
-            setResult(RESULT_CANCELED, intent)
-            finish()
+    private fun refreshView() {
+        if (adapter.itemCount > 0) {
+            emptyItem.visibility = View.GONE
+            scroller.visibility = View.VISIBLE
+        } else {
+            scroller.visibility = View.GONE
+            emptyItem.visibility = View.VISIBLE
         }
-        return true
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent()
+        setResult(RESULT_CANCELED, intent)
+        finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mLoader?.cancel()
     }
 
     override fun onChanged(result: List<ApplicationItem>) {
-        mAdapter.data = result.toMutableList()
+        adapter.data = result.toMutableList()
         contactsList.smoothScrollToPosition(0)
+        refreshView()
     }
 }

@@ -46,14 +46,6 @@ class AppsRecyclerAdapter : RecyclerView.Adapter<AppsRecyclerAdapter.Application
         return data[position]
     }
 
-    fun removeItem(position: Int) {
-        if (position < data.size) {
-            data.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(0, data.size)
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder {
         return ApplicationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_application, parent, false))
     }
