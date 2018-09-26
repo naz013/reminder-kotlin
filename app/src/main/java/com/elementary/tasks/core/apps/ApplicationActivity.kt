@@ -14,6 +14,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.activity_application_list.*
@@ -118,6 +119,10 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
         }
         contactsList.layoutManager = LinearLayoutManager(this)
         contactsList.adapter = adapter
+        contactsList.isNestedScrollingEnabled = false
+        ViewUtils.listenScrollableView(scroller) {
+            toolbarView.isSelected = it > 0
+        }
     }
 
     private fun initSearchView() {
