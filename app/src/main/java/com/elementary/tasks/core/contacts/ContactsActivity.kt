@@ -69,6 +69,7 @@ class ContactsActivity : ThemedActivity() {
         }
         contactsList.layoutManager = LinearLayoutManager(this)
         contactsList.adapter = adapter
+        contactsList.isNestedScrollingEnabled = false
         ViewUtils.listenScrollableView(scroller) {
             toolbarView.isSelected = it > 0
         }
@@ -256,6 +257,7 @@ class ContactsActivity : ThemedActivity() {
         this.fullData.clear()
         this.fullData.addAll(list)
         adapter.setData(type, list)
+        contactsList.smoothScrollToPosition(0)
         refreshView()
     }
 
@@ -310,6 +312,7 @@ class ContactsActivity : ThemedActivity() {
         this.fullData.clear()
         this.fullData.addAll(list)
         adapter.setData(type, list)
+        contactsList.smoothScrollToPosition(0)
         refreshView()
     }
 
