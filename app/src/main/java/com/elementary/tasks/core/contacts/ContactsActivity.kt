@@ -244,10 +244,12 @@ class ContactsActivity : ThemedActivity() {
 
     private fun hideProgress() {
         loaderView.visibility = View.GONE
+        typeIcon.isEnabled = true
     }
 
     private fun showProgress() {
         loaderView.visibility = View.VISIBLE
+        typeIcon.isEnabled = false
     }
 
     private fun showContacts(list: MutableList<ContactItem>) {
