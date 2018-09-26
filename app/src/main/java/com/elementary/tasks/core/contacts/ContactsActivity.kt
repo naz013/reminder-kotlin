@@ -15,6 +15,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_contacts_list.*
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -40,14 +41,22 @@ class ContactsActivity : ThemedActivity() {
     private var type = CONTACT
     private val adapter: ContactsRecyclerAdapter = ContactsRecyclerAdapter()
     private val fullData: MutableList<Any> = mutableListOf()
+    private var mLoader: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts_list)
+        loaderView.visibility = View.GONE
+
         initActionBar()
         initSearchView()
         initRecyclerView()
         loadContacts()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mLoader?.cancel()
     }
 
     private fun initRecyclerView() {
@@ -111,11 +120,17 @@ class ContactsActivity : ThemedActivity() {
     }
 
     private fun selectNumber(name: String) {
-        launch(CommonPool) {
+        showProgress()
+        mLoader?.cancel()
+        mLoader = launch(CommonPool) {
             val c = contentResolver.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                     ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?",
-                    arrayOf(name), null) ?: return@launch
+                    arrayOf(name), null)
+            if (c  == null) {
+                hideProgress()
+                return@launch
+            }
             val phoneIdx = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val phoneType = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)
             if (c.count > 1) {
@@ -130,6 +145,7 @@ class ContactsActivity : ThemedActivity() {
                         c.moveToNext()
                     }
                     withUIContext {
+                        hideProgress()
                         val builder = dialogues.getDialog(this@ContactsActivity)
                         builder.setItems(numbers) { dialog, which ->
                             dialog.dismiss()
@@ -145,13 +161,18 @@ class ContactsActivity : ThemedActivity() {
             } else if (c.count == 1) {
                 if (c.moveToFirst()) {
                     withUIContext {
+                        hideProgress()
                         onContactSelected(c.getString(phoneIdx), name)
                     }
                 }
             } else if (c.count == 0) {
                 withUIContext {
+                    hideProgress()
                     onContactSelected("", name)
                 }
+            }
+            withUIContext {
+                hideProgress()
             }
             c.close()
         }
@@ -171,17 +192,17 @@ class ContactsActivity : ThemedActivity() {
     private fun toggleList() {
         if (type == CONTACT) {
             type = CALL
-            typeIcon.setImageResource(R.drawable.ic_twotone_call_24px)
             loadCalls()
         } else {
             type = CONTACT
-            typeIcon.setImageResource(R.drawable.ic_twotone_perm_contact_calendar_24px)
             loadContacts()
         }
     }
 
     private fun loadContacts() {
-        launch(CommonPool) {
+        showProgress()
+        mLoader?.cancel()
+        mLoader = launch(CommonPool) {
             val mList = mutableListOf<ContactItem>()
             val cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null,
                     null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC")
@@ -213,8 +234,20 @@ class ContactsActivity : ThemedActivity() {
                 }
                 cursor.close()
             }
-            withUIContext { showContacts(mList) }
+            withUIContext {
+                hideProgress()
+                typeIcon.setImageResource(R.drawable.ic_twotone_call_24px)
+                showContacts(mList)
+            }
         }
+    }
+
+    private fun hideProgress() {
+        loaderView.visibility = View.GONE
+    }
+
+    private fun showProgress() {
+        loaderView.visibility = View.VISIBLE
     }
 
     private fun showContacts(list: MutableList<ContactItem>) {
@@ -225,7 +258,9 @@ class ContactsActivity : ThemedActivity() {
     }
 
     private fun loadCalls() {
-        launch(CommonPool) {
+        showProgress()
+        mLoader?.cancel()
+        mLoader = launch(CommonPool) {
             val mList = mutableListOf<CallsItem>()
             if (Permissions.checkPermission(this@ContactsActivity, Permissions.READ_CALLS)) {
                 val c = contentResolver.query(CallLog.Calls.CONTENT_URI, null, null,
@@ -260,7 +295,11 @@ class ContactsActivity : ThemedActivity() {
                     }
                     c.close()
                 }
-                withUIContext { showCalls(mList) }
+            }
+            withUIContext {
+                hideProgress()
+                typeIcon.setImageResource(R.drawable.ic_twotone_perm_contact_calendar_24px)
+                showCalls(mList)
             }
         }
     }
