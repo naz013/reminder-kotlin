@@ -28,6 +28,21 @@ abstract class RadiusTypeFragment : TypeFragment() {
 
     protected var radius = prefs.radius
 
+    override fun getSummary(): String {
+        val reminder = reminderInterface.reminder
+
+        var summary = ""
+
+        val groupName = reminder.groupTitle
+        if (groupName != "") {
+            summary += "$groupName, "
+        }
+
+        summary += reminderUtils.getPriorityTitle(reminder.priority) + ", "
+
+        return summary
+    }
+
     protected fun showRadiusPickerDialog() {
         dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
             override fun onSelected(t: Int) {
@@ -53,9 +68,9 @@ abstract class RadiusTypeFragment : TypeFragment() {
 
     override fun prepare(): Reminder? {
         if (!SuperUtil.checkLocationEnable(context!!)) {
-            SuperUtil.showLocationAlert(context!!, reminderInterface!!)
+            SuperUtil.showLocationAlert(context!!, reminderInterface)
             return null
         }
-        return Reminder()
+        return reminderInterface.reminder
     }
 }

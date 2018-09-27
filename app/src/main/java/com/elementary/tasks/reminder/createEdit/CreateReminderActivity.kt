@@ -510,9 +510,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun setFullScreenMode(b: Boolean) {
         if (b) {
-            ViewUtils.collapse(toolbar)
+            ViewUtils.collapse(appBar)
         } else {
-            ViewUtils.expand(toolbar)
+            ViewUtils.expand(appBar)
         }
     }
 

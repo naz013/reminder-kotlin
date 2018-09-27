@@ -50,7 +50,7 @@ import kotlinx.android.synthetic.main.fragment_map.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
+class AdvancedMapFragment : BaseMapFragment() {
 
     private var mMap: GoogleMap? = null
 
@@ -327,9 +327,13 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initArgs()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        initArgs()
         return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
@@ -435,18 +439,32 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         markersCard.setCardBackgroundColor(style)
         backCard.setCardBackgroundColor(style)
 
-        cardClear.setOnClickListener(this)
-        mapZoom.setOnClickListener(this)
-        layers.setOnClickListener(this)
-        myLocation.setOnClickListener(this)
-        markers.setOnClickListener(this)
-        places.setOnClickListener(this)
-        backButton.setOnClickListener(this)
+        cardClear.setOnClickListener{ cardSearch?.setText("") }
+        mapZoom.setOnClickListener{ zoomClick() }
+        layers.setOnClickListener{ toggleLayers() }
+        myLocation.setOnClickListener{
+            hideLayers()
+            moveToMyLocation()
+        }
+        markers.setOnClickListener{ toggleMarkers() }
+        places.setOnClickListener{ togglePlaces() }
+        backButton.setOnClickListener{
+            restoreScaleButton()
+            mListener?.onBackClick()
+        }
 
-        typeNormal.setOnClickListener(this)
-        typeSatellite.setOnClickListener(this)
-        typeHybrid.setOnClickListener(this)
-        typeTerrain.setOnClickListener(this)
+        typeNormal.setOnClickListener{
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
+        }
+        typeSatellite.setOnClickListener{
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
+        }
+        typeHybrid.setOnClickListener{
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
+        }
+        typeTerrain.setOnClickListener{
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
+        }
 
         if (!isPlaces) {
             placesCard.visibility = View.GONE
@@ -475,7 +493,10 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             ib.setBackgroundResource(android.R.color.transparent)
             ib.setImageResource(themeUtil.getMarkerStyle(i))
             ib.id = i + ThemeUtil.NUM_OF_MARKERS
-            ib.setOnClickListener(this)
+            ib.setOnClickListener{
+                recreateStyle(ib.id - ThemeUtil.NUM_OF_MARKERS)
+                hideStyles()
+            }
             val params = LinearLayout.LayoutParams(
                     MeasureUtils.dp2px(context!!, 35),
                     MeasureUtils.dp2px(context!!, 35))
@@ -597,7 +618,7 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     private fun zoomClick() {
         isFullscreen = !isFullscreen
         if (mListener != null) {
-            mListener!!.onZoomClick(isFullscreen)
+            mListener?.onZoomClick(isFullscreen)
         }
         if (isFullscreen) {
             if (isDark) mapZoom.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
@@ -643,33 +664,6 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
                 setMyLocation()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    override fun onClick(v: View) {
-        val id = v.id
-        if (id >= ThemeUtil.NUM_OF_MARKERS && id < ThemeUtil.NUM_OF_MARKERS * 2) {
-            recreateStyle(v.id - ThemeUtil.NUM_OF_MARKERS)
-            hideStyles()
-        }
-        when (id) {
-            R.id.cardClear -> cardSearch!!.setText("")
-            R.id.mapZoom -> zoomClick()
-            R.id.layers -> toggleLayers()
-            R.id.myLocation -> {
-                hideLayers()
-                moveToMyLocation()
-            }
-            R.id.typeNormal -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
-            R.id.typeHybrid -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
-            R.id.typeSatellite -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
-            R.id.typeTerrain -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
-            R.id.places -> togglePlaces()
-            R.id.markers -> toggleMarkers()
-            R.id.backButton -> {
-                restoreScaleButton()
-                mListener?.onBackClick()
             }
         }
     }
