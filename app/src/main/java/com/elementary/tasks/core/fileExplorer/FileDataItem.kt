@@ -18,9 +18,4 @@ package com.elementary.tasks.core.fileExplorer
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FileDataItem(val fileName: String, var icon: Int?, val filePath: String) {
-
-    override fun toString(): String {
-        return fileName
-    }
-}
+data class FileDataItem(val fileName: String, var icon: Int?, val filePath: String)

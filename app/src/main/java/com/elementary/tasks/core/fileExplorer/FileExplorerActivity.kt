@@ -63,16 +63,6 @@ class FileExplorerActivity : ThemedActivity() {
     private val undoIcon: Int
         get() = if (isDark) R.drawable.ic_undo_white_24dp else R.drawable.ic_undo_black_24dp
 
-    private val mListener = View.OnClickListener { v ->
-        when (v.id) {
-            R.id.fab -> saveChoice()
-            R.id.playButton -> play()
-            R.id.stopButton -> stop()
-            R.id.pauseButton -> pause()
-            R.id.clearButton -> searchField.setText("")
-        }
-    }
-
     private fun selectFile(position: Int) {
         val item = mAdapter.getItem(position)
         mFileName = item.fileName
@@ -149,7 +139,7 @@ class FileExplorerActivity : ThemedActivity() {
         setContentView(R.layout.activity_file_explorer)
         filType = intent.getStringExtra(Constants.FILE_TYPE) ?: ""
         if (filType == "") filType = TYPE_MUSIC
-        initActionBar()
+
         initRecyclerView()
         initPlayer()
         initSearch()
@@ -167,17 +157,18 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun initRecyclerView() {
-        mAdapter.filterCallback = { recyclerView.scrollToPosition(0) }
+        mAdapter.filterCallback = {
+            recyclerView.scrollToPosition(0)
+            refreshView()
+        }
         mAdapter.clickListener = { this.selectFile(it) }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = mAdapter
-    }
-
-    private fun initActionBar() {
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        recyclerView.isNestedScrollingEnabled = false
+        ViewUtils.listenScrollableView(scroller) {
+            toolbarView.isSelected = it > 0
+        }
     }
 
     private fun initSearch() {
@@ -197,11 +188,11 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun initButtons() {
-        fab.setOnClickListener(mListener)
-        pauseButton.setOnClickListener(mListener)
-        stopButton.setOnClickListener(mListener)
-        playButton.setOnClickListener(mListener)
-        clearButton.setOnClickListener(mListener)
+        backButton.setOnClickListener { onBackPressed() }
+        saveButton.setOnClickListener{ saveChoice() }
+        pauseButton.setOnClickListener{ pause() }
+        stopButton.setOnClickListener{ stop() }
+        playButton.setOnClickListener{ play() }
     }
 
     private fun loadList() {
@@ -210,6 +201,8 @@ class FileExplorerActivity : ThemedActivity() {
             finish()
         }
         recyclerView.adapter = mAdapter
+        recyclerView.smoothScrollToPosition(0)
+        refreshView()
     }
 
     private fun play() {
@@ -218,29 +211,29 @@ class FileExplorerActivity : ThemedActivity() {
                 ViewUtils.expand(playerLayout)
             }
             if (mSound!!.isPaused && mSound!!.isSameFile(mFilePath)) {
-                mSound!!.resume()
+                mSound?.resume()
             } else {
-                mSound!!.play(mFilePath)
+                mSound?.play(mFilePath)
                 currentMelody.text = mFileName
             }
         } else {
             if (mSound!!.isSameFile(mFilePath)) {
                 return
             }
-            mSound!!.play(mFilePath)
+            mSound?.play(mFilePath)
             currentMelody.text = mFileName
         }
     }
 
     private fun pause() {
         if (mSound!!.isPlaying) {
-            mSound!!.pause()
+            mSound?.pause()
         }
     }
 
     private fun stop() {
         if (mSound!!.isPlaying) {
-            mSound!!.stop(true)
+            mSound?.stop(true)
         }
         ViewUtils.collapse(playerLayout)
     }
@@ -259,6 +252,8 @@ class FileExplorerActivity : ThemedActivity() {
             createFilteredFileList()
         }
         mAdapter.setData(mDataList)
+        recyclerView.smoothScrollToPosition(0)
+        refreshView()
     }
 
     private fun createFilteredFileList() {
@@ -339,6 +334,16 @@ class FileExplorerActivity : ThemedActivity() {
             sendFile()
         } else {
             Toast.makeText(this, getString(R.string.not_music_file), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun refreshView() {
+        if (mAdapter.itemCount > 0) {
+            emptyItem.visibility = View.GONE
+            scroller.visibility = View.VISIBLE
+        } else {
+            scroller.visibility = View.GONE
+            emptyItem.visibility = View.VISIBLE
         }
     }
 

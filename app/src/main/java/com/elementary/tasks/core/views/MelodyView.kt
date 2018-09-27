@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.view_melody.view.*
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -32,10 +33,10 @@ class MelodyView : LinearLayout {
     var onFileSelectListener: (() -> Unit)? = null
     var file: String = ""
         set(value) {
+            field = value
             if (value != "") {
                 val file = File(value)
                 if (file.exists()) {
-                    field = value
                     text.text = file.name
                     removeButton.visibility = View.VISIBLE
                     onFileUpdateListener?.invoke(value)
@@ -72,6 +73,7 @@ class MelodyView : LinearLayout {
             file = ""
         }
         text.setOnClickListener {
+            Timber.d("init: $file")
             if (file == "") {
                 onFileSelectListener?.invoke()
             }
