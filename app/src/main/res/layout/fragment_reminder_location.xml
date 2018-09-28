@@ -117,6 +117,35 @@
 
             </RelativeLayout>
 
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/leaveCheck"
+                    style="?textAppearanceCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/checkbox_padding"
+                    android:paddingEnd="@dimen/checkbox_padding"
+                    android:text="@string/leaving_place" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/enterCheck"
+                    style="?textAppearanceCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:paddingStart="@dimen/checkbox_padding"
+                    android:paddingEnd="@dimen/checkbox_padding"
+                    android:text="@string/entering_place" />
+
+            </RadioGroup>
+
             <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -178,6 +207,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="16dp"
+                            android:layout_marginRight="16dp" />
+
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
+
+                        <com.elementary.tasks.core.views.RadiusPickerView
+                            android:id="@+id/radiusView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
 
                         <com.elementary.tasks.core.views.DividerView

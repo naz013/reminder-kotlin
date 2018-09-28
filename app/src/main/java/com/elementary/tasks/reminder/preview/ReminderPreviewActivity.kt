@@ -37,6 +37,7 @@ import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_reminder_preview.*
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -159,6 +160,8 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun showInfo(reminder: Reminder) {
         this.reminder = reminder
+
+        Timber.d("showInfo: %s", reminder.toString())
 
         group.text = reminder.groupTitle
         showStatus(reminder)

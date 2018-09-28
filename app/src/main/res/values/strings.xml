@@ -650,5 +650,12 @@
     <string name="not_selected">Not selected</string>
     <string name="select_phone_number">Select phone number</string>
     <string name="applications_not_found">Applications not found</string>
+    <string name="leaving_place">Leaving place</string>
+    <string name="entering_place">Entering place</string>
+    <string name="priority_lowest">Lowest</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_normal">Normal</string>
+    <string name="priority_high">High</string>
+    <string name="priority_highest">Highest</string>
 
 </resources>

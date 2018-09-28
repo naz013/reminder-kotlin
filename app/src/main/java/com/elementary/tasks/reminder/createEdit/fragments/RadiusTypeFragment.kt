@@ -1,10 +1,7 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
-import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.SuperUtil
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,8 +23,6 @@ import java.util.*
  */
 abstract class RadiusTypeFragment : TypeFragment() {
 
-    protected var radius = prefs.radius
-
     override fun getSummary(): String {
         val reminder = reminderInterface.reminder
 
@@ -41,27 +36,6 @@ abstract class RadiusTypeFragment : TypeFragment() {
         summary += reminderUtils.getPriorityTitle(reminder.priority) + ", "
 
         return summary
-    }
-
-    protected fun showRadiusPickerDialog() {
-        dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
-            override fun onSelected(t: Int) {
-                radius = t - 1
-                recreateMarker()
-            }
-
-            override fun getTitle(t: Int): String {
-                return getTitleString(t)
-            }
-        })
-    }
-
-    private fun getTitleString(progress: Int): String {
-        return if (progress == 0) {
-            getString(R.string.default_string)
-        } else {
-            String.format(Locale.getDefault(), getString(R.string.radius_x_meters), (progress - 1).toString())
-        }
     }
 
     protected abstract fun recreateMarker()

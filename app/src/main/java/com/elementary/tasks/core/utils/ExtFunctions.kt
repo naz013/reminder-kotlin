@@ -190,3 +190,10 @@ fun ExclusionPickerView.bindProperty(v1: List<Int>, v2: String, v3: String, list
         listener.invoke(a1, a2, a3)
     }
 }
+
+fun RadiusPickerView.bindProperty(value: Int, listener: ((Int) -> Unit)) {
+    this.setRadiusValue(value)
+    this.onLevelUpdateListener = {
+        listener.invoke(it)
+    }
+}
