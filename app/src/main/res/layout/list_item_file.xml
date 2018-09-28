@@ -8,29 +8,37 @@
     android:stateListAnimator="@animator/card_animator"
     tools:targetApi="lollipop">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/itemImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:tint="?android:textColorPrimary" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemPhoto"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/itemName"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="72dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textAppearance="?textAppearanceSubtitle1"
             tools:text="Name" />
 
-    </RelativeLayout>
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
