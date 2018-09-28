@@ -23,7 +23,6 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.contacts.ContactsRecyclerAdapter
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.dialogs.BaseDialog
-import com.elementary.tasks.core.fileExplorer.FileRecyclerAdapter
 import com.elementary.tasks.core.fragments.BaseMapFragment
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.*
@@ -112,7 +111,6 @@ interface AppComponent {
     fun inject(contactsRecyclerAdapter: ContactsRecyclerAdapter)
     fun inject(locationTracker: LocationTracker)
     fun inject(baseMapFragment: BaseMapFragment)
-    fun inject(fileRecyclerAdapter: FileRecyclerAdapter)
     fun inject(baseBroadcast: BaseBroadcast)
     fun inject(geolocationService: GeolocationService)
     fun inject(eventJobService: EventJobService)
