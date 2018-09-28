@@ -74,24 +74,24 @@ class LocationFragment : RadiusTypeFragment() {
             val jPlace = reminder.places[0]
             val latitude = jPlace.latitude
             val longitude = jPlace.longitude
-            radius = jPlace.radius
+            radiusView.setRadiusValue(jPlace.radius)
             if (mAdvancedMapFragment != null) {
-                mAdvancedMapFragment?.setMarkerRadius(radius)
+                mAdvancedMapFragment?.setMarkerRadius(radiusView.radius)
                 lastPos = LatLng(latitude, longitude)
-                mAdvancedMapFragment?.addMarker(lastPos, text, true, true, radius)
+                mAdvancedMapFragment?.addMarker(lastPos, text, true, true, radiusView.radius)
                 toggleMap()
             }
         }
     }
 
     override fun recreateMarker() {
-        mAdvancedMapFragment?.recreateMarker(radius)
+        mAdvancedMapFragment?.recreateMarker(radiusView.radius)
     }
 
     override fun prepare(): Reminder? {
         val reminder = super.prepare() ?: return null
         val map = mAdvancedMapFragment ?: return null
-        var type = Reminder.BY_LOCATION
+        var type = if (enterCheck.isChecked) Reminder.BY_LOCATION else Reminder.BY_OUT
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
             taskLayout.error = getString(R.string.task_summary_is_empty)
@@ -106,9 +106,9 @@ class LocationFragment : RadiusTypeFragment() {
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
-                Reminder.BY_LOCATION_CALL
+                if (enterCheck.isChecked) Reminder.BY_LOCATION_CALL else Reminder.BY_OUT_CALL
             } else {
-                Reminder.BY_LOCATION_SMS
+                if (enterCheck.isChecked) Reminder.BY_LOCATION_SMS else Reminder.BY_OUT_SMS
             }
         }
         val pos = lastPos
@@ -117,7 +117,7 @@ class LocationFragment : RadiusTypeFragment() {
             return null
         }
         val places = ArrayList<Place>()
-        places.add(Place(radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
+        places.add(Place(radiusView.radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
         reminder.places = places
         reminder.target = number
         reminder.type = type
@@ -193,6 +193,8 @@ class LocationFragment : RadiusTypeFragment() {
             reminderInterface.selectGroup()
         }
 
+        radiusView.setRadiusValue(prefs.radius)
+
         clearButton.setOnClickListener { addressField.setText("") }
         mapButton.setOnClickListener { toggleMap() }
         addressField.setOnItemClickListener { _, _, position, _ ->
@@ -202,7 +204,7 @@ class LocationFragment : RadiusTypeFragment() {
             val pos = LatLng(lat, lon)
             var title: String? = taskSummary.text.toString().trim()
             if (title != null && title.matches("".toRegex())) title = pos.toString()
-            mAdvancedMapFragment?.addMarker(pos, title, true, true, radius)
+            mAdvancedMapFragment?.addMarker(pos, title, true, true, radiusView.radius)
         }
 
         initPropertyFields()
@@ -280,6 +282,7 @@ class LocationFragment : RadiusTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
+        Timber.d("editReminder: %s", reminder.toString())
         groupView.reminderGroup = ReminderGroup().apply {
             this.groupColor = reminder.groupColor
             this.groupTitle = reminder.groupTitle
@@ -298,6 +301,12 @@ class LocationFragment : RadiusTypeFragment() {
                 actionView.type = ActionView.TYPE_MESSAGE
             }
         }
+        if (Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
+            leaveCheck.isChecked = true
+        } else {
+            enterCheck.isChecked = true
+        }
+        updateHeader()
     }
 
     private fun selectContact() {

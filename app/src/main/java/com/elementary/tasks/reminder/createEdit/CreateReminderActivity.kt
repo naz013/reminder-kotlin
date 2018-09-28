@@ -61,11 +61,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            Timber.d("onItemSelected: $navSpinner")
             prefs.lastUsedReminder = position
-            Timber.d("onItemSelected: 1")
-            reminder.type = typeFromPosition(position)
-            Timber.d("onItemSelected: 2")
+//            reminder.type = typeFromPosition(position)
             when (position) {
                 DATE -> replaceFragment(DateFragment())
                 TIMER -> replaceFragment(TimerFragment())
@@ -78,11 +75,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 SKYPE -> replaceFragment(SkypeFragment())
                 APP -> replaceFragment(ApplicationFragment())
                 MONTH -> replaceFragment(MonthFragment())
-                GPS_OUT -> if (hasGpsPermission(GPS_OUT)) {
-                    replaceFragment(LocationOutFragment())
-                } else {
-                    navSpinner.setSelection(DATE)
-                }
                 SHOP -> replaceFragment(ShopFragment())
                 EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
                     replaceFragment(EmailFragment())
@@ -138,11 +130,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             SKYPE -> Reminder.BY_SKYPE
             APP -> Reminder.BY_DATE_APP
             MONTH -> Reminder.BY_MONTH
-            GPS_OUT -> if (hasGpsPermission(GPS_OUT)) {
-                Reminder.BY_OUT
-            } else {
-                Reminder.BY_DATE
-            }
             SHOP -> Reminder.BY_DATE_SHOP
             EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
                 Reminder.BY_DATE_EMAIL
@@ -234,11 +221,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> navSpinner.setSelection(DATE)
             Reminder.BY_TIME -> navSpinner.setSelection(TIMER)
             Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> navSpinner.setSelection(WEEK)
-            Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS -> navSpinner.setSelection(GPS)
+            Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
+            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT-> navSpinner.setSelection(GPS)
             Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> navSpinner.setSelection(SKYPE)
             Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> navSpinner.setSelection(APP)
             Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> navSpinner.setSelection(MONTH)
-            Reminder.BY_OUT, Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL -> navSpinner.setSelection(GPS_OUT)
             Reminder.BY_DATE_SHOP -> navSpinner.setSelection(SHOP)
             Reminder.BY_DATE_EMAIL -> navSpinner.setSelection(EMAIL)
             Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> navSpinner.setSelection(YEAR)
@@ -260,7 +247,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         arrayAdapter.add(SpinnerItem(getString(R.string.launch_application)))
         arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month)))
         arrayAdapter.add(SpinnerItem(getString(R.string.yearly)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.place_out)))
         arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list)))
         arrayAdapter.add(SpinnerItem(getString(R.string.e_mail)))
         if (Module.isPro) {
@@ -479,11 +465,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             } else {
                 navSpinner.setSelection(DATE)
             }
-            GPS_OUT -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                navSpinner.setSelection(GPS_OUT)
-            } else {
-                navSpinner.setSelection(DATE)
-            }
             GPS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 navSpinner.setSelection(GPS)
             } else {
@@ -586,10 +567,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         private const val APP = 5
         private const val MONTH = 6
         private const val YEAR = 7
-        private const val GPS_OUT = 8
-        private const val SHOP = 9
-        private const val EMAIL = 10
-        private const val GPS_PLACE = 11
+        private const val SHOP = 8
+        private const val EMAIL = 9
+        private const val GPS_PLACE = 10
 
         private const val VOICE_RECOGNITION_REQUEST_CODE = 109
         private const val MENU_ITEM_DELETE = 12

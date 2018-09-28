@@ -11,7 +11,7 @@ repositories {
 
 android {
     compileSdkVersion 28
-    flavorDimensions "level"
+    flavorDimensions "radius"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 19
@@ -45,12 +45,12 @@ android {
     }
     productFlavors {
         free {
-            dimension "level"
+            dimension "radius"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
         }
         pro {
-            dimension "level"
+            dimension "radius"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
             versionCode 181

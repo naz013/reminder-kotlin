@@ -287,12 +287,12 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
 
     fun getPriorityTitle(priority: Int): String {
         return when (priority) {
-            0 -> "Lowest"
-            1 -> "Low"
-            2 -> "Normal"
-            3 -> "High"
-            4 -> "Highest"
-            else -> "Normal"
+            0 -> context.getString(R.string.priority_lowest)
+            1 -> context.getString(R.string.priority_low)
+            2 -> context.getString(R.string.priority_normal)
+            3 -> context.getString(R.string.priority_high)
+            4 -> context.getString(R.string.priority_highest)
+            else -> context.getString(R.string.priority_normal)
         }
     }
 
@@ -300,8 +300,8 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         return when {
             Reminder.isBase(type, Reminder.BY_MONTH) -> context.getString(R.string.day_of_month)
             Reminder.isBase(type, Reminder.BY_WEEK) -> context.getString(R.string.alarm)
-            Reminder.isBase(type, Reminder.BY_LOCATION) -> context.getString(R.string.location)
-            Reminder.isBase(type, Reminder.BY_OUT) -> context.getString(R.string.place_out)
+            Reminder.isBase(type, Reminder.BY_LOCATION) -> context.getString(R.string.entering_place)
+            Reminder.isBase(type, Reminder.BY_OUT) -> context.getString(R.string.leaving_place)
             Reminder.isSame(type, Reminder.BY_TIME) -> context.getString(R.string.timer)
             Reminder.isBase(type, Reminder.BY_PLACES) -> context.getString(R.string.places)
             Reminder.isBase(type, Reminder.BY_SKYPE) -> context.getString(R.string.skype)

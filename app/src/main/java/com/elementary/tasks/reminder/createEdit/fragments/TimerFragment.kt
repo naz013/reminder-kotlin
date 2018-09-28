@@ -60,9 +60,9 @@ class TimerFragment : RepeatableTypeFragment() {
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
-                Reminder.BY_DATE_CALL
+                Reminder.BY_TIME_CALL
             } else {
-                Reminder.BY_DATE_SMS
+                Reminder.BY_TIME_SMS
             }
         }
         reminder.target = number

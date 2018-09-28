@@ -1,8 +1,9 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.PlacesMapFragment
@@ -40,17 +41,17 @@ class PlacesFragment : RadiusTypeFragment() {
         }
 
         override fun onZoomClick(isFull: Boolean) {
-            reminderInterface?.setFullScreenMode(isFull)
+            reminderInterface.setFullScreenMode(isFull)
         }
 
         override fun onBackClick() {
-            reminderInterface?.setFullScreenMode(false)
+            reminderInterface.setFullScreenMode(false)
         }
     }
 
     override fun recreateMarker() {
         if (mPlacesMap != null) {
-            mPlacesMap?.recreateMarker(radius)
+            mPlacesMap?.recreateMarker(0)
         }
     }
 
@@ -80,23 +81,6 @@ class PlacesFragment : RadiusTypeFragment() {
         reminder.startTime = ""
         LogUtil.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
         return reminder
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_location_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.action_custom_radius -> showRadiusPickerDialog()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
