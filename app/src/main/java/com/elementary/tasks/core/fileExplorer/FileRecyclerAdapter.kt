@@ -3,12 +3,12 @@ package com.elementary.tasks.core.fileExplorer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.UriUtil
 import kotlinx.android.synthetic.main.list_item_file.view.*
 import timber.log.Timber
 import java.io.File
@@ -58,11 +58,30 @@ class FileRecyclerAdapter : RecyclerView.Adapter<FileRecyclerAdapter.ContactView
     inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(fileDataItem: FileDataItem) {
             itemView.itemName.text = fileDataItem.fileName
-            loadImage(itemView.itemImage, fileDataItem)
+            loadImage(fileDataItem)
         }
 
         init {
             itemView.clickView.setOnClickListener { clickListener?.invoke(adapterPosition) }
+        }
+
+        fun loadImage(item: FileDataItem) {
+            itemView.itemImage.visibility = View.VISIBLE
+            itemView.itemPhoto.visibility = View.GONE
+            if (item.filePath != "") {
+                itemView.itemImage.setImageResource(getFileIcon(File(item.filePath)))
+            } else {
+                itemView.itemImage.setImageResource(item.icon)
+            }
+            if (item.filePath != "" && isPicture(item.filePath)) {
+                itemView.itemImage.visibility = View.GONE
+                itemView.itemPhoto.visibility = View.VISIBLE
+                Glide.with(itemView.itemPhoto.context)
+                        .load(UriUtil.getUri(itemView.itemPhoto.context, item.filePath))
+                        .apply(RequestOptions.centerCropTransform())
+                        .apply(RequestOptions.overrideOf(100, 100))
+                        .into(itemView.itemPhoto)
+            }
         }
     }
 
@@ -99,21 +118,6 @@ class FileRecyclerAdapter : RecyclerView.Adapter<FileRecyclerAdapter.ContactView
 
     fun getItem(position: Int): FileDataItem {
         return data[position]
-    }
-
-    fun loadImage(imageView: ImageView, item: FileDataItem) {
-        if (item.filePath != "") {
-            imageView.setImageResource(getFileIcon(File(item.filePath)))
-        } else {
-            imageView.setImageResource(item.icon)
-        }
-        if (item.filePath != "" && isPicture(item.filePath)) {
-            Glide.with(imageView.context)
-                    .load(File(item.filePath))
-                    .apply(RequestOptions.centerCropTransform())
-                    .apply(RequestOptions.overrideOf(100, 100))
-                    .into(imageView)
-        }
     }
 
     private fun getFileIcon(file: File): Int {
