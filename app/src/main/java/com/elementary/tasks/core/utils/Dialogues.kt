@@ -1,15 +1,20 @@
 package com.elementary.tasks.core.utils
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Point
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -71,11 +76,25 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         builder.setView(b)
         builder.setPositiveButton(R.string.ok) { _, _ -> listener.onSelected(b.seekBar.progress) }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        setFullWidthDialog(dialog)
     }
 
     fun getDialog(context: Context): AlertDialog.Builder {
         return AlertDialog.Builder(context, themeUtil.dialogStyle)
+    }
+
+    fun setFullWidthDialog(dialog: AlertDialog) {
+        val window = dialog.window
+        window?.setGravity(Gravity.CENTER)
+        window?.setLayout((getScreenWidth(dialog.ownerActivity!!) * .9).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    private fun getScreenWidth(activity: Activity): Int {
+        val size = Point()
+        activity.windowManager.defaultDisplay.getSize(size)
+        return size.x
     }
 
     fun showLCAM(context: Context, listener: ((Int) -> Unit)?, vararg actions: String) {
