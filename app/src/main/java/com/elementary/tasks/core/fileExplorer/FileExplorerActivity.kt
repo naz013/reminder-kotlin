@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_file_explorer.*
 import java.io.File
 import java.io.FilenameFilter
 import java.util.*
+import kotlin.Comparator
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -57,11 +58,8 @@ class FileExplorerActivity : ThemedActivity() {
     private val mAdapter: FileRecyclerAdapter = FileRecyclerAdapter()
     private var mSound: Sound? = null
 
-    private val directoryIcon: Int
-        get() = if (isDark) R.drawable.ic_folder_white_24dp else R.drawable.ic_folder_black_24dp
-
-    private val undoIcon: Int
-        get() = if (isDark) R.drawable.ic_undo_white_24dp else R.drawable.ic_undo_black_24dp
+    private val directoryIcon: Int = R.drawable.ic_twotone_folder_24px
+    private val undoIcon: Int = R.drawable.ic_twotone_subdirectory_arrow_left_24px
 
     private fun selectFile(position: Int) {
         val item = mAdapter.getItem(position)
@@ -189,10 +187,10 @@ class FileExplorerActivity : ThemedActivity() {
 
     private fun initButtons() {
         backButton.setOnClickListener { onBackPressed() }
-        saveButton.setOnClickListener{ saveChoice() }
-        pauseButton.setOnClickListener{ pause() }
-        stopButton.setOnClickListener{ stop() }
-        playButton.setOnClickListener{ play() }
+        saveButton.setOnClickListener { saveChoice() }
+        pauseButton.setOnClickListener { pause() }
+        stopButton.setOnClickListener { stop() }
+        playButton.setOnClickListener { play() }
     }
 
     private fun loadList() {
@@ -268,17 +266,19 @@ class FileExplorerActivity : ThemedActivity() {
             arrayListOf<String>()
         }
 
-        list.sort()
-        mDataList = ArrayList(list.size)
-        for (i in list.indices) {
-            val fileName = list[i]
-            val sel = File(path, fileName)
-            mDataList.add(i, FileDataItem(fileName, 0, sel.toString()))
-
-            if (sel.isDirectory) {
-                mDataList[i].icon = directoryIcon
-            }
-        }
+        mDataList = list.asSequence().map { File(path, it) }
+                .sortedWith(Comparator { o1, o2 ->
+                    if (o1 == null) return@Comparator -1
+                    if (o2 == null) return@Comparator 1
+                    when {
+                        o1.isDirectory == o2.isDirectory -> o1.name.compareTo(o2.name)
+                        o1.isDirectory -> -1
+                        o1.isDirectory -> 1
+                        else -> 0
+                    }
+                })
+                .map { FileDataItem(it.name, if (it.isDirectory) directoryIcon else 0, it.toString()) }
+                .toMutableList()
 
         if ((!firstLvl)) {
             addUpItem()
