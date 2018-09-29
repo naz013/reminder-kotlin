@@ -19,6 +19,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_file_explorer.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.FilenameFilter
 import java.util.*
@@ -72,7 +74,6 @@ class FileExplorerActivity : ThemedActivity() {
             mDataList.clear()
             path = File(sel.toString() + "")
             loadFileList()
-            loadList()
         } else if (mFileName.equals(getString(R.string.up), ignoreCase = true) && !sel.exists()) {
             moveUp()
         } else {
@@ -121,7 +122,6 @@ class FileExplorerActivity : ThemedActivity() {
             firstLvl = true
         }
         loadFileList()
-        loadList()
     }
 
     private fun sendFile() {
@@ -138,13 +138,14 @@ class FileExplorerActivity : ThemedActivity() {
         filType = intent.getStringExtra(Constants.FILE_TYPE) ?: ""
         if (filType == "") filType = TYPE_MUSIC
 
+        loaderView.visibility = View.GONE
+
         initRecyclerView()
         initPlayer()
         initSearch()
         initButtons()
         if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
             loadFileList()
-            loadList()
         } else {
             Permissions.requestPermission(this, SD_CARD, Permissions.READ_EXTERNAL)
         }
@@ -196,9 +197,7 @@ class FileExplorerActivity : ThemedActivity() {
     private fun loadList() {
         if (mDataList.isEmpty()) {
             Toast.makeText(this, getString(R.string.no_files), Toast.LENGTH_SHORT).show()
-            finish()
         }
-        recyclerView.adapter = mAdapter
         recyclerView.smoothScrollToPosition(0)
         refreshView()
     }
@@ -237,21 +236,25 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun loadFileList() {
-        try {
-            path.mkdirs()
-        } catch (e: SecurityException) {
-            e.printStackTrace()
-        }
-
+        loaderView.visibility = View.VISIBLE
         mFilter = false
         searchField.setText("")
         mFilter = true
-        if (path.exists()) {
-            createFilteredFileList()
+        launch(CommonPool) {
+            try {
+                path.mkdirs()
+            } catch (e: SecurityException) {
+            }
+
+            if (path.exists()) {
+                createFilteredFileList()
+            }
+            withUIContext {
+                mAdapter.setData(mDataList)
+                loaderView.visibility = View.GONE
+                loadList()
+            }
         }
-        mAdapter.setData(mDataList)
-        recyclerView.smoothScrollToPosition(0)
-        refreshView()
     }
 
     private fun createFilteredFileList() {
@@ -353,7 +356,6 @@ class FileExplorerActivity : ThemedActivity() {
         when (requestCode) {
             SD_CARD -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadFileList()
-                loadList()
             } else {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
