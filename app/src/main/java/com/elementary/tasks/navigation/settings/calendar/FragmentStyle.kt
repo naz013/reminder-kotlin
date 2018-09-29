@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.views.ColorPickerView
-import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.fragment_calendar_style.*
 
 /**
@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_calendar_style.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class FragmentStyle : BaseSettingsFragment(), ColorPickerView.OnColorListener {
+abstract class FragmentStyle : BaseCalendarFragment(), ColorPickerView.OnColorListener {
 
     protected abstract val selectedColor: Int
 

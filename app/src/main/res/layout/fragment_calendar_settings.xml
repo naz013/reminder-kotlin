@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none">
@@ -65,16 +65,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/feature_events"
-            app:prefs_secondary_text="@string/show_calculated_feature_events"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/bgImagePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/background"
-            app:prefs_secondary_text="@string/need_to_download_additional_images"
+            app:prefs_secondary_text_off="@string/hide_future_events"
+            app:prefs_secondary_text_on="@string/show_calculated_feature_events"
             app:prefs_type="check_switch" />
 
     </LinearLayout>

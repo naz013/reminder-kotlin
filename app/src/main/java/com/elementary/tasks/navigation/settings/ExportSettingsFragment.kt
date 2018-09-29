@@ -12,10 +12,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.services.AlarmReceiver
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_export.*
@@ -43,7 +40,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ExportSettingsFragment : BaseSettingsFragment() {
+class ExportSettingsFragment : BaseCalendarFragment() {
 
     private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
     private var mItemSelect: Int = 0
@@ -81,6 +78,10 @@ class ExportSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initExportToCalendarPrefs()
         initEventDurationPrefs()
         initSelectCalendarPrefs()
@@ -343,10 +344,8 @@ class ExportSettingsFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.export_and_sync))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.export_and_sync))
+        callback?.onFragmentSelect(this)
     }
 
     companion object {

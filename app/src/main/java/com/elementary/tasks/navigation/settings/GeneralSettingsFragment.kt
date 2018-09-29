@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.navigation.settings.images.MainImageActivity
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity
 import kotlinx.android.synthetic.main.fragment_settings_general.*
 
@@ -55,10 +55,11 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainImagePrefs.setOnClickListener { selectMainImage() }
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initAppTheme()
-        initSmartFold()
-        initWearNotification()
         init24TimePrefs()
         initSavePrefs()
         initLanguagePrefs()
@@ -122,44 +123,16 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.general))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.general))
+        callback?.onFragmentSelect(this)
     }
 
     private fun restartApp() {
         startActivity(Intent(context, SplashScreen::class.java))
-        activity!!.finishAffinity()
-    }
-
-    private fun selectMainImage() {
-        startActivity(Intent(context, MainImageActivity::class.java))
+        activity?.finishAffinity()
     }
 
     private fun selectTheme() {
         startActivity(Intent(context, SelectThemeActivity::class.java))
-    }
-
-    private fun initSmartFold() {
-        smartFoldPrefs.isChecked = prefs.isFoldingEnabled
-        smartFoldPrefs.setOnClickListener { changeSmartFoldMode() }
-    }
-
-    private fun initWearNotification() {
-        wearPrefs.isChecked = prefs.isWearEnabled
-        wearPrefs.setOnClickListener { changeWearNotification() }
-    }
-
-    private fun changeWearNotification() {
-        val isChecked = wearPrefs.isChecked
-        prefs.isWearEnabled = !isChecked
-        wearPrefs.isChecked = !isChecked
-    }
-
-    private fun changeSmartFoldMode() {
-        val isChecked = smartFoldPrefs.isChecked
-        prefs.isFoldingEnabled = !isChecked
-        smartFoldPrefs.isChecked = !isChecked
     }
 }

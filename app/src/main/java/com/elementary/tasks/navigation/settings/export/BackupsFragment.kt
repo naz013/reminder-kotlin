@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.fragments
+package com.elementary.tasks.navigation.settings.export
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -12,6 +12,7 @@ import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import kotlinx.android.synthetic.main.fragment_backups.*
 import java.io.File
 import java.util.*

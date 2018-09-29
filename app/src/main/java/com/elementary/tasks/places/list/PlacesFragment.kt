@@ -19,7 +19,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.places.PlacesViewModel
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_places.*
@@ -42,7 +42,7 @@ import kotlinx.android.synthetic.main.fragment_places.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
+class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
 
     private lateinit var viewModel: PlacesViewModel
 
@@ -56,7 +56,7 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
             if (mSearchMenu != null) {
-                mSearchMenu!!.collapseActionView()
+                mSearchMenu?.collapseActionView()
             }
             return false
         }
@@ -169,5 +169,12 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
         mAdapter.data = result
         recyclerView.smoothScrollToPosition(0)
         refreshView()
+    }
+
+    companion object {
+
+        fun newInstance(): PlacesFragment {
+            return PlacesFragment()
+        }
     }
 }

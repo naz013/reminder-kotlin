@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none">
@@ -17,6 +17,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/global_settings"
+            app:prefs_secondary_text_off="@string/specify_own_configuration"
+            app:prefs_secondary_text_on="@string/use_settings_for_reminders"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -25,6 +27,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/vibrate"
+            app:prefs_icon="@drawable/ic_twotone_vibration_24px"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -41,6 +44,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/sound_in_silent_mode"
+            app:prefs_secondary_text_off="@string/do_not_play_melody_in_silent_mode"
+            app:prefs_secondary_text_on="@string/play_melody_in_silent_mode"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -49,6 +54,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/infinite_sound"
+            app:prefs_secondary_text_off="@string/do_not_repeat_melody"
+            app:prefs_secondary_text_on="@string/repeat_melody_when_it_ends"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -56,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_brightness_high_24px"
             app:prefs_primary_text="@string/turn_on_screen"
             app:prefs_type="check_switch" />
 
@@ -64,6 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_music_note_24px"
             app:prefs_primary_text="@string/melody"
             app:prefs_type="none" />
 
@@ -73,6 +82,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/voice_notification"
+            app:prefs_secondary_text_off="@string/play_melody"
+            app:prefs_secondary_text_on="@string/spell_event_summary"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -80,6 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_language_24px"
             app:prefs_primary_text="@string/language"
             app:prefs_type="none" />
 
@@ -89,6 +101,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/led_notification"
+            app:prefs_secondary_text_off="@string/do_not_show_led_indication"
+            app:prefs_secondary_text_on="@string/show_led_indication"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView

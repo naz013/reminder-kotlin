@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_divider_top="true"
+            app:prefs_icon="@drawable/ic_twotone_language_24px"
             app:prefs_primary_text="@string/application_language"
             app:prefs_type="none" />
 
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_style_24px"
             app:prefs_primary_text="@string/theme"
             app:prefs_secondary_text="@string/auto"
             app:prefs_type="none" />
@@ -33,23 +35,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/_24_hour_time_format"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/mainImagePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/main_image"
-            app:prefs_type="none" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/smartFoldPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/smart_fold"
-            app:prefs_secondary_text="@string/enable_folding_reminder_window"
+            app:prefs_secondary_text_off="@string/use_12_hour_format"
+            app:prefs_secondary_text_on="@string/use_24_hour_format"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -57,16 +44,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_save_24px"
             app:prefs_primary_text="@string/save_on_exit"
-            app:prefs_secondary_text="@string/enable_saving_item_automatically"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/wearPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/android_wear_notification"
+            app:prefs_secondary_text_off="@string/save_on_exit_off_text"
+            app:prefs_secondary_text_on="@string/save_on_exit_on_text"
             app:prefs_type="check_switch" />
 
     </LinearLayout>

@@ -43,8 +43,10 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        imagePrefs.setOnClickListener { showImageDialog() }
-        initBlurPrefs()
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initManualPrefs()
         initSbPrefs()
         initSbIconPrefs()
@@ -71,9 +73,33 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         initAutoCallPrefs()
         initReminderTypePrefs()
         initIgnoreWindowTypePrefs()
+        initSmartFold()
+        initWearNotification()
         if (!Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
             Permissions.requestPermission(activity!!, PERM_SD, Permissions.READ_EXTERNAL)
         }
+    }
+
+    private fun initSmartFold() {
+        smartFoldPrefs.isChecked = prefs.isFoldingEnabled
+        smartFoldPrefs.setOnClickListener { changeSmartFoldMode() }
+    }
+
+    private fun initWearNotification() {
+        wearPrefs.isChecked = prefs.isWearEnabled
+        wearPrefs.setOnClickListener { changeWearNotification() }
+    }
+
+    private fun changeWearNotification() {
+        val isChecked = wearPrefs.isChecked
+        prefs.isWearEnabled = !isChecked
+        wearPrefs.isChecked = !isChecked
+    }
+
+    private fun changeSmartFoldMode() {
+        val isChecked = smartFoldPrefs.isChecked
+        prefs.isFoldingEnabled = !isChecked
+        smartFoldPrefs.isChecked = !isChecked
     }
 
     private fun changeIgnoreWindowTypePrefs() {
@@ -623,56 +649,10 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
     }
 
-    private fun initBlurPrefs() {
-        blurPrefs.setOnClickListener { changeBlurPrefs() }
-        blurPrefs.isChecked = prefs.isBlurEnabled
-    }
-
-    private fun changeBlurPrefs() {
-        val isChecked = blurPrefs.isChecked
-        blurPrefs.isChecked = !isChecked
-        prefs.isBlurEnabled = !isChecked
-    }
-
-    private fun showImageDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.background))
-        val types = arrayOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, types)
-        val image = prefs.reminderImage
-        mItemSelect = when {
-            image.matches(Constants.NONE.toRegex()) -> 0
-            image.matches(Constants.DEFAULT.toRegex()) -> 1
-            else -> 2
-        }
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            saveImagePrefs(mItemSelect)
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
-    }
-
-    private fun saveImagePrefs(which: Int) {
-        when (which) {
-            0 -> prefs.reminderImage = Constants.NONE
-            1 -> prefs.reminderImage = Constants.DEFAULT
-            2 -> startActivityForResult(Intent(context, FileExplorerActivity::class.java)
-                    .putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO), Constants.ACTION_REQUEST_GALLERY)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.notification))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.notification))
+        callback?.onFragmentSelect(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

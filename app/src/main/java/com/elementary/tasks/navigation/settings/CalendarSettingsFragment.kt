@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport
 import com.elementary.tasks.navigation.settings.calendar.FragmentRemindersColor
@@ -37,7 +38,10 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initBackgroundPrefs()
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initFuturePrefs()
         initRemindersPrefs()
         initFirstDayPrefs()
@@ -102,26 +106,14 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         prefs.isFutureEventEnabled = !isChecked
     }
 
-    private fun initBackgroundPrefs() {
-        bgImagePrefs.isChecked = prefs.isCalendarImagesEnabled
-        bgImagePrefs.setOnClickListener { changeBackgroundPrefs() }
-    }
-
-    private fun changeBackgroundPrefs() {
-        val isChecked = bgImagePrefs.isChecked
-        bgImagePrefs.isChecked = !isChecked
-        prefs.isCalendarImagesEnabled = !isChecked
-    }
-
     override fun onResume() {
         super.onResume()
         initRemindersColorPrefs()
         initTodayColorPrefs()
         initBirthdaysColorPrefs()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.calendar))
-            callback?.onFragmentSelect(this)
-        }
+
+        callback?.onTitleChange(getString(R.string.calendar))
+        callback?.onFragmentSelect(this)
     }
 
     private fun initBirthdaysColorPrefs() {

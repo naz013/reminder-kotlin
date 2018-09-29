@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/general"
+            app:prefs_icon="@drawable/ic_twotone_looks_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/export_and_sync"
+            app:prefs_icon="@drawable/ic_twotone_backup_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -32,6 +34,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/calendar"
+            app:prefs_icon="@drawable/ic_twotone_today_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -40,6 +43,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/birthdays"
+            app:prefs_icon="@drawable/ic_twotone_cake_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -47,7 +51,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
             app:prefs_primary_text="@string/notification"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/securitySettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_lock_24px"
+            app:prefs_primary_text="@string/security"
+            app:prefs_pro="true"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -64,6 +79,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/location"
+            app:prefs_icon="@drawable/ic_twotone_navigation_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -72,6 +88,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/notes"
+            app:prefs_icon="@drawable/ic_twotone_note_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -80,6 +97,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/voice_control"
+            app:prefs_icon="@drawable/ic_twotone_mic_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

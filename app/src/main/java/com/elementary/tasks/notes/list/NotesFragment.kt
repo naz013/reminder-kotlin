@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -27,6 +28,7 @@ import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.io.File
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -49,6 +51,8 @@ import java.io.File
 class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     private lateinit var viewModel: NotesViewModel
+    @Inject
+    lateinit var backupTool: BackupTool
 
     private var mAdapter: NotesRecyclerAdapter = NotesRecyclerAdapter()
     private var enableGrid = false
@@ -77,6 +81,10 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
     private val mCloseListener = {
         filterController.setSearchValue("")
         true
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -7,8 +7,10 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.location.MapStyleFragment
 import com.elementary.tasks.navigation.settings.location.MarkerStyleFragment
+import com.elementary.tasks.places.list.PlacesFragment
 import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_location.*
 import java.util.*
@@ -39,12 +41,20 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
         initMapTypePrefs()
         initMarkerStylePrefs()
         trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }
         notificationOptionPrefs.setOnClickListener { changeNotificationPrefs() }
+        placesPrefs.setOnClickListener { openPlacesScreen() }
         notificationOptionPrefs.isChecked = prefs.isDistanceNotificationEnabled
         initRadiusPrefs()
+    }
+
+    private fun openPlacesScreen() {
+        replaceFragment(PlacesFragment.newInstance(), getString(R.string.places))
     }
 
     private fun initMapStylePrefs() {
@@ -55,9 +65,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun openMapStylesFragment() {
-        if (callback != null) {
-            callback?.replaceFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
-        }
+        replaceFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
     }
 
     private fun initMarkerStylePrefs() {
@@ -88,10 +96,8 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         super.onResume()
         showMarkerStyle()
         initMapStylePrefs()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.location))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.location))
+        callback?.onFragmentSelect(this)
     }
 
     private fun showTrackerOptionsDialog() {
@@ -136,7 +142,9 @@ class LocationSettingsFragment : BaseSettingsFragment() {
             prefs.trackTime = b.timeBar.progress + 1
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        dialogues.setFullWidthDialog(dialog)
     }
 
     private fun showMapTypeDialog() {
@@ -183,14 +191,14 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     private fun showRadiusPickerDialog() {
         val radius = prefs.radius
         dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
-            override fun onSelected(integer: Int) {
-                prefs.radius = integer
+            override fun onSelected(t: Int) {
+                prefs.radius = t
                 showRadius()
             }
 
-            override fun getTitle(integer: Int): String {
+            override fun getTitle(t: Int): String {
                 return String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
-                        integer.toString())
+                        t.toString())
             }
         })
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none">
@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/export"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?colorSecondary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/exportToCalendarPrefs"
@@ -43,28 +52,30 @@
             app:prefs_primary_text="@string/export_to_stock_calendar"
             app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/autoBackupPrefs"
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/automatically_backup"
-            app:prefs_type="check_switch" />
-
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/syncIntervalPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/interval"
-            app:prefs_type="none" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/backup"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?colorSecondary" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/cloudsPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_cloud_24px"
             app:prefs_primary_text="@string/cloud_services"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/backupsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/backup_files"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -82,6 +93,22 @@
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/backup_settings"
             app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/autoBackupPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/automatically_backup"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/syncIntervalPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/interval"
+            app:prefs_type="none" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

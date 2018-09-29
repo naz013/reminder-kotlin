@@ -37,13 +37,17 @@ import com.elementary.tasks.login.RestoreGoogleTask
 import com.elementary.tasks.login.RestoreLocalTask
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import com.elementary.tasks.navigation.settings.images.ImagesRecyclerAdapter
 import com.elementary.tasks.notes.list.ImagesGridAdapter
+import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.createEdit.fragments.TypeFragment
+import com.elementary.tasks.reminder.lists.ArchiveFragment
+import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
@@ -96,6 +100,10 @@ interface AppComponent {
     fun inject(reminderUtils: ReminderUtils)
     fun inject(birthdayHolder: BirthdayHolder)
     fun inject(baseFragment: BaseFragment)
+    fun inject(baseFragment: BaseCalendarFragment)
+    fun inject(fragment: ArchiveFragment)
+    fun inject(fragment: RemindersFragment)
+    fun inject(fragment: NotesFragment)
     fun inject(calendarMonthFactory: CalendarMonthFactory)
     fun inject(eventsDataProvider: EventsDataProvider)
     fun inject(widgetDataProvider: WidgetDataProvider)

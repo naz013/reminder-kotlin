@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none">
@@ -16,7 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_phone_missed_24px"
             app:prefs_primary_text="@string/missed_call_reminder"
+            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/create_reminders_for_missed_calls"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -24,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
             app:prefs_primary_text="@string/time"
             app:prefs_type="none" />
 
@@ -32,8 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_reply_24px"
             app:prefs_primary_text="@string/quick_sms"
-            app:prefs_secondary_text="@string/show_quick_answer_window"
+            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/show_quick_answer_window"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -41,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_message_24px"
             app:prefs_primary_text="@string/messages"
             app:prefs_type="none" />
 
@@ -50,6 +57,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/after_call_reminder"
+            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/show_event_screen_after_phone_call"
             app:prefs_type="check_switch" />
 
     </LinearLayout>

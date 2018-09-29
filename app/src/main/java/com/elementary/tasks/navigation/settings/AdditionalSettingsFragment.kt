@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.additional.TemplatesFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_additional.*
@@ -37,6 +38,10 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initMissedPrefs()
         initMissedTimePrefs()
         initQuickSmsPrefs()
@@ -135,10 +140,8 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.additional))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.additional))
+        callback?.onFragmentSelect(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
