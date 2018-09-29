@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/import_events"
+            app:prefs_icon="@drawable/ic_twotone_import_export_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

@@ -10,7 +10,7 @@ import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.fragment_birthday_notifications.*
+import kotlinx.android.synthetic.main.fragment_settings_birthday_notifications.*
 import java.io.File
 
 /**
@@ -39,7 +39,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
         get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice,
                 language.getLocaleNames(context!!))
 
-    override fun layoutRes(): Int = R.layout.fragment_birthday_notifications
+    override fun layoutRes(): Int = R.layout.fragment_settings_birthday_notifications
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

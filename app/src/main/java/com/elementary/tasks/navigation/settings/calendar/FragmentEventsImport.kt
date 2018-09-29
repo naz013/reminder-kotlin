@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
-import kotlinx.android.synthetic.main.fragment_events_import.*
+import kotlinx.android.synthetic.main.fragment_settings_events_import.*
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -67,7 +67,7 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
             return position
         }
 
-    override fun layoutRes(): Int = R.layout.fragment_events_import
+    override fun layoutRes(): Int = R.layout.fragment_settings_events_import
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

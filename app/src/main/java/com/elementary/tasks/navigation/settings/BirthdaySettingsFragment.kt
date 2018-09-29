@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.fragment_birthdays_settings.*
+import kotlinx.android.synthetic.main.fragment_settings_birthdays_settings.*
 import java.util.*
 
 /**
@@ -47,7 +47,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
 
     private lateinit var viewModel: BirthdaysViewModel
 
-    override fun layoutRes(): Int = R.layout.fragment_birthdays_settings
+    override fun layoutRes(): Int = R.layout.fragment_settings_birthdays_settings
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

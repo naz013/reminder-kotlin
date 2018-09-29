@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_cloud_drives.*
+import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
@@ -73,7 +73,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_cloud_drives, container, false)
+        return inflater.inflate(R.layout.fragment_settings_cloud_drives, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

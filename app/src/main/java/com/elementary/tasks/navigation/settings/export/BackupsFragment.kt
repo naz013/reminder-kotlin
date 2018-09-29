@@ -13,7 +13,7 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import kotlinx.android.synthetic.main.fragment_backups.*
+import kotlinx.android.synthetic.main.fragment_settings_backups.*
 import java.io.File
 import java.util.*
 
@@ -108,7 +108,7 @@ class BackupsFragment : BaseNavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_backups, container, false)
+        return inflater.inflate(R.layout.fragment_settings_backups, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

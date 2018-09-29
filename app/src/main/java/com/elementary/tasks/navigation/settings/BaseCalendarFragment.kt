@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import javax.inject.Inject
 
 /**
@@ -24,7 +23,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseCalendarFragment : BaseNavigationFragment() {
+abstract class BaseCalendarFragment : BaseSettingsFragment() {
 
     @Inject
     lateinit var updatesHelper: UpdatesHelper

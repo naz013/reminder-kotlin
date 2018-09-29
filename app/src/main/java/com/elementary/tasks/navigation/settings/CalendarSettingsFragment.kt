@@ -9,7 +9,7 @@ import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport
 import com.elementary.tasks.navigation.settings.calendar.FragmentRemindersColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentTodayColor
-import kotlinx.android.synthetic.main.fragment_calendar_settings.*
+import kotlinx.android.synthetic.main.fragment_settings_calendar.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,7 +34,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private var mItemSelect: Int = 0
 
-    override fun layoutRes(): Int = R.layout.fragment_calendar_settings
+    override fun layoutRes(): Int = R.layout.fragment_settings_calendar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
