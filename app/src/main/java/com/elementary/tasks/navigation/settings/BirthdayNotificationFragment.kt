@@ -9,6 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_birthday_notifications.*
 import java.io.File
 
@@ -42,6 +43,10 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initGlobalPrefs()
         initVibratePrefs()
         initInfiniteVibratePrefs()
@@ -267,10 +272,8 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.birthday_notification))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.birthday_notification))
+        callback?.onFragmentSelect(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

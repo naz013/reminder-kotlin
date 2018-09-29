@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.voice.HelpFragment
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment
 import kotlinx.android.synthetic.main.fragment_settings_voice.*
@@ -33,6 +34,9 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
         initLanguagePrefs()
         timePrefs.setOnClickListener { replaceFragment(TimeOfDayFragment(), getString(R.string.time)) }
         helpPrefs.setOnClickListener { replaceFragment(HelpFragment(), getString(R.string.help)) }
@@ -61,10 +65,8 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.voice_control))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.voice_control))
+        callback?.onFragmentSelect(this)
     }
 
     private fun showLanguageDialog() {

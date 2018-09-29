@@ -14,6 +14,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.other.ChangesFragment
 import com.elementary.tasks.navigation.settings.other.OssFragment
 import com.elementary.tasks.navigation.settings.other.PermissionsFragment
@@ -54,6 +55,10 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         aboutPrefs.setOnClickListener { showAboutDialog() }
         ossPrefs.setOnClickListener { openOssScreen() }
         permissionsPrefs.setOnClickListener { openPermissionsScreen() }
@@ -72,10 +77,8 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.other))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.other))
+        callback?.onFragmentSelect(this)
     }
 
     private fun requestPermission(position: Int) {
@@ -132,7 +135,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + context!!.packageName)
-        context!!.startActivity(Intent.createChooser(shareIntent, "Share..."))
+        context?.startActivity(Intent.createChooser(shareIntent, "Share..."))
     }
 
     private fun openChangesScreen() {

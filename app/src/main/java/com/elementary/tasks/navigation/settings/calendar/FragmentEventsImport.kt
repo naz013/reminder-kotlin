@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.fragment_events_import.*
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
@@ -46,7 +46,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()

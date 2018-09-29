@@ -17,13 +17,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -34,6 +32,7 @@ import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -56,6 +55,8 @@ import java.util.*
 class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private lateinit var viewModel: ActiveRemindersViewModel
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
 
     private val mAdapter = RemindersRecyclerAdapter()
 
@@ -86,6 +87,10 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val mSearchCloseListener = {
         refreshFilters()
         false
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

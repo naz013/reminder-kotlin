@@ -3,6 +3,9 @@
 
     <declare-styleable name="PrefsView">
         <attr name="prefs_primary_text" format="string" />
+        <attr name="prefs_primary_text_color" format="color" />
+        <attr name="prefs_secondary_text_on" format="string" />
+        <attr name="prefs_secondary_text_off" format="string" />
         <attr name="prefs_secondary_text" format="string" />
         <attr name="prefs_value_text" format="string" />
         <attr name="prefs_divider_top" format="boolean" />
@@ -10,6 +13,7 @@
         <attr name="prefs_checked" format="boolean" />
         <attr name="prefs_pro" format="boolean" />
         <attr name="prefs_view_resource" format="reference" />
+        <attr name="prefs_icon" format="reference" />
         <attr name="prefs_type" format="enum">
             <enum name="check" value="0" />
             <enum name="check_switch" value="1" />

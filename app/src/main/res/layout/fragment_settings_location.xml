@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none">
@@ -16,7 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
             app:prefs_primary_text="@string/distance_notification"
+            app:prefs_secondary_text_off="@string/do_not_show_notification"
+            app:prefs_secondary_text_on="@string/show_notification_about_left_distance"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -25,6 +28,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/radius"
+            app:prefs_icon="@drawable/ic_twotone_track_changes_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -33,6 +37,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/map_type"
+            app:prefs_icon="@drawable/ic_twotone_map_24px"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -40,9 +45,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_style_24px"
             app:prefs_primary_text="@string/map_style"
-            app:prefs_view_resource="@drawable/preview_map_dark"
-            app:prefs_type="view" />
+            app:prefs_type="view"
+            app:prefs_view_resource="@drawable/preview_map_dark" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/markerStylePrefs"
@@ -59,6 +65,15 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/tracking_settings"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/placesPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/places"
+            app:prefs_icon="@drawable/ic_twotone_place_24px"
             app:prefs_type="none" />
 
     </LinearLayout>

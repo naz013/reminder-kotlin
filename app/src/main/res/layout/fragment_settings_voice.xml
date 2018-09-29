@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_language_24px"
             app:prefs_primary_text="@string/language"
             app:prefs_type="none" />
 
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
             app:prefs_primary_text="@string/time"
             app:prefs_type="none" />
 
@@ -31,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_help_24px"
             app:prefs_primary_text="@string/help"
             app:prefs_type="none" />
 
@@ -39,8 +42,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_mic_24px"
             app:prefs_primary_text="@string/live_conversation"
-            app:prefs_secondary_text="@string/enable_an_experimental_voice_control"
+            app:prefs_secondary_text_off="@string/show_simple_voice_popup"
+            app:prefs_secondary_text_on="@string/show_voice_control_screen"
             app:prefs_type="check_switch" />
 
     </LinearLayout>

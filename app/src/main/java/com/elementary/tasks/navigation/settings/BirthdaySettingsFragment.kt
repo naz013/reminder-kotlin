@@ -18,6 +18,7 @@ import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
@@ -42,8 +43,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTimeSetListener {
+class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var viewModel: BirthdaysViewModel
 
@@ -51,6 +51,10 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         initBirthdayReminderPrefs()
         initBirthdaysWidgetPrefs()
         initPermanentPrefs()
@@ -194,10 +198,10 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         birthdayPermanentPrefs.isChecked = !isChecked
         prefs.isBirthdayPermanentEnabled = !isChecked
         if (!isChecked) {
-            context!!.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
+            context?.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
             AlarmReceiver().enableBirthdayPermanentAlarm(context!!)
         } else {
-            context!!.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_HIDE))
+            context?.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_HIDE))
             AlarmReceiver().cancelBirthdayPermanentAlarm(context!!)
         }
     }
@@ -239,10 +243,8 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.birthdays))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.birthdays))
+        callback?.onFragmentSelect(this)
     }
 
     override fun onTimeSet(timePicker: TimePicker, i: Int, i1: Int) {

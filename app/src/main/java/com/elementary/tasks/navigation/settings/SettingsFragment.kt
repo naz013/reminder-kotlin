@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 /**
@@ -30,6 +31,10 @@ class SettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ViewUtils.listenScrollableView(scrollView) {
+            callback?.onScrollUpdate(it)
+        }
+
         generalSettings.setOnClickListener { replaceFragment(GeneralSettingsFragment(), getString(R.string.general)) }
         otherSettings.setOnClickListener { replaceFragment(OtherSettingsFragment(), getString(R.string.other)) }
         voiceSettings.setOnClickListener { replaceFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
@@ -44,9 +49,7 @@ class SettingsFragment : BaseSettingsFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.action_settings))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.action_settings))
+        callback?.onFragmentSelect(this)
     }
 }

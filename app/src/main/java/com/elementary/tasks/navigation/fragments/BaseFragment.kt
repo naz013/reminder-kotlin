@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import javax.inject.Inject
@@ -45,19 +43,11 @@ abstract class BaseFragment : Fragment() {
     @Inject
     lateinit var themeUtil: ThemeUtil
     @Inject
-    lateinit var reminderUtils: ReminderUtils
-    @Inject
     lateinit var buttonObservable: GlobalButtonObservable
     @Inject
     lateinit var language: Language
     @Inject
     lateinit var notifier: Notifier
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
-    @Inject
-    lateinit var backupTool: BackupTool
 
     var isDark = false
         private set
@@ -76,16 +66,6 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        if (callback == null) {
-            try {
-                callback = activity as FragmentCallback?
-            } catch (e: ClassCastException) {
-            }
-        }
-    }
-
     protected fun replaceFragment(fragment: Fragment, title: String) {
         val ft = fragmentManager!!.beginTransaction()
         ft.replace(R.id.main_container, fragment, title)
@@ -95,6 +75,7 @@ abstract class BaseFragment : Fragment() {
         if (callback != null) {
             callback?.onTitleChange(title)
             callback?.onFragmentSelect(fragment)
+            callback?.onScrollUpdate(0)
         }
     }
 
