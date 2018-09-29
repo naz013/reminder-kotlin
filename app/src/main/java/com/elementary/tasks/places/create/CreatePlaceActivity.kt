@@ -60,8 +60,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_place)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        initActionBar()
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
                 prefs.markerStyle, themeUtil.isDark)
@@ -73,6 +72,12 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
                 .addToBackStack(null)
                 .commit()
         loadPlace()
+    }
+
+    private fun initActionBar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        backButton.setOnClickListener { finish() }
     }
 
     private fun initViewModel(id: String) {
@@ -153,10 +158,6 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
             R.id.action_add -> {
                 addPlace()
                 true
