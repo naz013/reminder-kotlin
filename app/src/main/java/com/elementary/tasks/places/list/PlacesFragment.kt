@@ -9,6 +9,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.places.PlacesViewModel
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -75,8 +78,19 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_trash, menu)
-        menu!!.findItem(R.id.action_delete_all).isVisible = false
-        mSearchMenu = menu.findItem(R.id.action_search)
+        menu?.findItem(R.id.action_delete_all)?.isVisible = false
+
+        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
+        if (isDark) {
+            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
+            DrawableCompat.setTint(searchIcon!!, white)
+        } else {
+            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
+            DrawableCompat.setTint(searchIcon!!, black)
+        }
+        menu?.getItem(0)?.icon = searchIcon
+
+        mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?
@@ -95,8 +109,13 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.setOnClickListener { addPlace() }
         initList()
         initViewModel()
+    }
+
+    private fun addPlace() {
+        startActivity(Intent(context, CreatePlaceActivity::class.java))
     }
 
     private fun initViewModel() {
@@ -118,14 +137,11 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.places))
-            callback?.onFragmentSelect(this)
-        }
+        callback?.onTitleChange(getString(R.string.places))
+        callback?.onFragmentSelect(this)
     }
 
     private fun initList() {
-        recyclerView.setHasFixedSize(false)
         recyclerView.layoutManager = LinearLayoutManager(context)
         mAdapter.actionsListener = object : ActionsListener<Place> {
             override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
@@ -136,6 +152,9 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
             }
         }
         recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(recyclerView) {
+            callback?.onScrollUpdate(it)
+        }
         refreshView()
     }
 
@@ -158,10 +177,8 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
     private fun refreshView() {
         if (mAdapter.itemCount == 0) {
             emptyItem.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
         } else {
             emptyItem.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
         }
     }
 
