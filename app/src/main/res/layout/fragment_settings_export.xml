@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_today_24px"
             app:prefs_primary_text="@string/export_to_google_calendar"
             app:prefs_type="check_switch" />
 

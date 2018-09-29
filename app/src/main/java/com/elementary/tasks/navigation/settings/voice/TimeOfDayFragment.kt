@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_time_of_day.*
+import kotlinx.android.synthetic.main.fragment_settings_time_of_day.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,7 +45,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
     private val format = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_time_of_day, container, false)
+        return inflater.inflate(R.layout.fragment_settings_time_of_day, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

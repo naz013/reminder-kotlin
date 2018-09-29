@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
-import kotlinx.android.synthetic.main.fragment_templates_list.*
+import kotlinx.android.synthetic.main.fragment_settings_templates_list.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -88,7 +88,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_templates_list, container, false)
+        return inflater.inflate(R.layout.fragment_settings_templates_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

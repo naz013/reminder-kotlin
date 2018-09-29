@@ -16,9 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
             app:prefs_primary_text="@string/birthday_reminder"
-            app:prefs_secondary_text_on="@string/show_reminder_about_birthdays"
             app:prefs_secondary_text_off="@string/do_not_remind_about_birthdays"
+            app:prefs_secondary_text_on="@string/show_reminder_about_birthdays"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -27,8 +28,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/birthdays_in_home_screen_widget"
-            app:prefs_secondary_text_on="@string/show_in_home_screen"
             app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/show_in_home_screen"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -37,8 +38,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/permanent_status_bar_notification"
-            app:prefs_secondary_text_on="@string/show_when_available_birthdays"
             app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_on="@string/show_when_available_birthdays"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -54,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
             app:prefs_primary_text="@string/remind_at"
             app:prefs_type="text" />
 
@@ -62,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_settings_24px"
             app:prefs_primary_text="@string/action_settings"
             app:prefs_pro="true"
             app:prefs_type="none" />
@@ -71,9 +74,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_contacts_24px"
             app:prefs_primary_text="@string/contacts"
-            app:prefs_secondary_text_on="@string/retrieve_birthdays_from_contacts"
             app:prefs_secondary_text_off="@string/use_only_my_birthdays"
+            app:prefs_secondary_text_on="@string/retrieve_birthdays_from_contacts"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -82,8 +86,8 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/check_automatically"
-            app:prefs_secondary_text_on="@string/automatically_check_for_new_birthdays"
             app:prefs_secondary_text_off="@string/do_not_scan_contacts"
+            app:prefs_secondary_text_on="@string/automatically_check_for_new_birthdays"
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.views.roboto.RoboRadioButton
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_setting_map_style.*
+import kotlinx.android.synthetic.main.fragment_settings_map_style.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -44,7 +44,7 @@ class MapStyleFragment : BaseSettingsFragment() {
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_setting_map_style, container, false)
+        return inflater.inflate(R.layout.fragment_settings_map_style, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

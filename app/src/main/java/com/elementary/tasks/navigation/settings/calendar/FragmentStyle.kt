@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.views.ColorPickerView
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
-import kotlinx.android.synthetic.main.fragment_calendar_style.*
+import kotlinx.android.synthetic.main.fragment_settings_calendar_style.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,7 +32,7 @@ abstract class FragmentStyle : BaseCalendarFragment(), ColorPickerView.OnColorLi
     protected abstract val selectedColor: Int
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_calendar_style, container, false)
+        return inflater.inflate(R.layout.fragment_settings_calendar_style, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

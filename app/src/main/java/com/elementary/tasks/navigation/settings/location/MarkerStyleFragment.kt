@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_marker_style.*
+import kotlinx.android.synthetic.main.fragment_settings_marker_style.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -87,7 +87,7 @@ class MarkerStyleFragment : BaseSettingsFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_marker_style, container, false)
+        return inflater.inflate(R.layout.fragment_settings_marker_style, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
