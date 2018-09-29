@@ -61,8 +61,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_place)
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
                 prefs.markerStyle, themeUtil.isDark)
@@ -118,6 +117,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     private fun showPlace(place: Place?) {
         this.mItem = place
         if (place != null) {
+            titleView.text = getString(R.string.edit_place)
             mGoogleMap?.addMarker(LatLng(place.latitude, place.longitude), place.name, true, true, -1)
             placeName.setText(place.name)
         }
@@ -131,7 +131,8 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
                 name = placeTitle
             }
             if (name == "" || name.matches("".toRegex())) {
-                placeName.error = getString(R.string.must_be_not_empty)
+                placeLayout.error = getString(R.string.must_be_not_empty)
+                placeLayout.isErrorEnabled = true
                 return
             }
             val latitude = pl.latitude

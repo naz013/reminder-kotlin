@@ -56,22 +56,18 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
         return mData.size
     }
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Place) {
             itemView.textView.text = item.name
             loadMarker(itemView.markerImage, item.marker)
         }
 
         init {
-            v.setOnClickListener { view ->
-                if (actionsListener != null) {
-                    actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
-                }
+            itemView.itemCard.setOnClickListener { view ->
+                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            v.setOnLongClickListener { view ->
-                if (actionsListener != null) {
-                    actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-                }
+            itemView.itemCard.setOnLongClickListener { view ->
+                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }
         }
