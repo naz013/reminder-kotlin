@@ -38,8 +38,22 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="@string/select_phone_number"
+                    android:text="@string/choose_file"
                     android:textAppearance="?textAppearanceHeadline6" />
+
+                <RelativeLayout
+                    android:layout_width="?actionBarSize"
+                    android:layout_height="?actionBarSize">
+
+                    <com.tuyenmonkey.mkloader.MKLoader
+                        android:id="@+id/loaderView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        app:mk_color="?colorSecondary"
+                        app:mk_type="ClassicSpinner" />
+
+                </RelativeLayout>
 
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
