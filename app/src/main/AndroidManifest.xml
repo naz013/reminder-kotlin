@@ -57,6 +57,11 @@
         android:supportsRtl="true"
         android:theme="@style/Light1"
         tools:replace="android:label">
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity android:name=".navigation.MainActivity" />
         <activity
             android:name=".reminder.createEdit.CreateReminderActivity"
