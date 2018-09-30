@@ -25,8 +25,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iconView"
                 android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:scaleType="centerInside"
+                android:layout_height="24dp"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_twotone_track_changes_24px"
                 app:tint="?android:textColorPrimary" />
@@ -35,8 +34,8 @@
                 android:id="@+id/itemsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="56dp"
                 android:layout_toStartOf="@+id/viewContainer"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
@@ -55,7 +54,7 @@
                     style="?textAppearanceCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     tools:text="SubTitle" />
 
             </LinearLayout>
