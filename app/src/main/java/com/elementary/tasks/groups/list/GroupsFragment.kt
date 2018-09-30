@@ -103,13 +103,7 @@ class GroupsFragment : BaseNavigationFragment() {
         refreshView()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.groups))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.groups)
 
     private fun refreshView() {
         if (mAdapter.itemCount == 0) {

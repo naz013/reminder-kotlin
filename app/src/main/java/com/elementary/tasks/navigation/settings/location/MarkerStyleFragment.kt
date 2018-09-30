@@ -1,9 +1,7 @@
 package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.RadioGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -86,9 +84,7 @@ class MarkerStyleFragment : BaseSettingsFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_marker_style, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_marker_style
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -155,11 +151,5 @@ class MarkerStyleFragment : BaseSettingsFragment() {
         prefs.markerStyle = style
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.style_of_marker))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.style_of_marker)
 }

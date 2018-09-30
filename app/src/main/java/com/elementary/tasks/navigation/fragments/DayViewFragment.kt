@@ -79,12 +79,12 @@ class DayViewFragment : BaseCalendarFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback?.onTitleChange(getString(R.string.calendar))
-            callback?.onFragmentSelect(this)
             callback?.onMenuSelect(R.id.nav_day_view)
         }
         loadData()
     }
+
+    override fun getTitle(): String = getString(R.string.calendar)
 
     private fun loadData() {
         initProvider()

@@ -80,7 +80,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initNotificationPrefs() {
-        birthdayNotificationPrefs.setOnClickListener { replaceFragment(BirthdayNotificationFragment(), getString(R.string.birthday_notification)) }
+        birthdayNotificationPrefs.setOnClickListener { callback?.openFragment(BirthdayNotificationFragment(), getString(R.string.birthday_notification)) }
         birthdayNotificationPrefs.setDependentView(birthReminderPrefs)
     }
 
@@ -241,11 +241,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         viewModel.deleteAllBirthdays()
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.birthdays))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.birthdays)
 
     override fun onTimeSet(timePicker: TimePicker, i: Int, i1: Int) {
         prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)

@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import com.elementary.tasks.navigation.settings.images.MainImageActivity
-import com.elementary.tasks.navigation.settings.images.MonthImage
-import com.google.gson.Gson
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -141,26 +138,6 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
     var isSbNotificationEnabled: Boolean
         get() = getBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION)
         set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)
-
-    var imageId: Int
-        get() = getInt(PrefsConstants.MAIN_IMAGE_ID)
-        set(value) = putInt(PrefsConstants.MAIN_IMAGE_ID, value)
-
-    var imagePath: String
-        get() = getString(PrefsConstants.MAIN_IMAGE_PATH)
-        set(value) = putString(PrefsConstants.MAIN_IMAGE_PATH, value)
-
-    var calendarImages: MonthImage
-        get() {
-            return try {
-                val json = getString(PrefsConstants.CALENDAR_IMAGES)
-                Gson().fromJson<MonthImage>(json, MonthImage::class.java)
-            } catch (e: ClassCastException) {
-                MonthImage()
-            }
-
-        }
-        set(value) = putObject(PrefsConstants.MAIN_IMAGE_PATH, value)
 
     var isCalendarImagesEnabled: Boolean
         get() = getBoolean(PrefsConstants.CALENDAR_IMAGE)
@@ -528,8 +505,6 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
             uiEd.putString(PrefsConstants.TIME_EVENING, "19:0")
             uiEd.putString(PrefsConstants.TIME_NIGHT, "23:0")
             uiEd.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
-            uiEd.putString(PrefsConstants.MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO)
-            uiEd.putString(PrefsConstants.CALENDAR_IMAGES, Gson().toJson(MonthImage()))
             uiEd.putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
             uiEd.putInt(PrefsConstants.APP_LANGUAGE, 0)
             uiEd.putInt(PrefsConstants.START_DAY, 1)
@@ -542,7 +517,6 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
             uiEd.putInt(PrefsConstants.AUTO_BACKUP_INTERVAL, 6)
             uiEd.putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
             uiEd.putInt(PrefsConstants.SOUND_STREAM, 5)
-            uiEd.putInt(PrefsConstants.MAIN_IMAGE_ID, -1)
             uiEd.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
             uiEd.putInt(PrefsConstants.MAP_STYLE, 6)
             uiEd.putBoolean(PrefsConstants.TRACKING_NOTIFICATION, true)
@@ -782,14 +756,8 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
         if (!hasKey(PrefsConstants.IGNORE_WINDOW_TYPE)) {
             putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, true)
         }
-        if (!hasKey(PrefsConstants.MAIN_IMAGE_ID)) {
-            putInt(PrefsConstants.MAIN_IMAGE_ID, -1)
-        }
         if (!hasKey(PrefsConstants.NOTE_COLOR_OPACITY)) {
             putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
-        }
-        if (!hasKey(PrefsConstants.MAIN_IMAGE_PATH)) {
-            putString(PrefsConstants.MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO)
         }
         if (!hasKey(PrefsConstants.CUSTOM_SOUND)) {
             putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
@@ -799,9 +767,6 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
         }
         if (!hasKey(PrefsConstants.MAP_STYLE)) {
             putInt(PrefsConstants.MAP_STYLE, 6)
-        }
-        if (!hasKey(PrefsConstants.CALENDAR_IMAGES)) {
-            putObject(PrefsConstants.CALENDAR_IMAGES, MonthImage())
         }
         if (Module.isPro) {
             if (!hasKey(PrefsConstants.LED_STATUS)) {

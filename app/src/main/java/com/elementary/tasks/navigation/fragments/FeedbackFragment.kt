@@ -55,13 +55,7 @@ class FeedbackFragment : BaseWebViewFragment() {
         webView.webChromeClient = WebChromeClient()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.feedback))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.feedback)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

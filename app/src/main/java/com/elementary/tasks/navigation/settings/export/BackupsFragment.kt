@@ -2,7 +2,7 @@ package com.elementary.tasks.navigation.settings.export
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.*
+import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.backups.DeleteAsync
@@ -87,29 +87,7 @@ class BackupsFragment : BaseNavigationFragment() {
         DeleteAsync(context!!, { this.loadUserInfo() }, info).execute(*getFolders(info))
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.backup_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.action_scan -> {
-                loadUserInfo()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_backups, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_backups
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -118,14 +96,7 @@ class BackupsFragment : BaseNavigationFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadUserInfo()
-        if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.backup_files))
-            callback!!.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.backup_files)
 
     private fun getFolders(info: UserInfoAsync.Info): Array<File?> {
         return when (info) {

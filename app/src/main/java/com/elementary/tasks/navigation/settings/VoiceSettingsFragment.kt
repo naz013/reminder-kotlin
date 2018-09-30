@@ -38,8 +38,8 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
             callback?.onScrollUpdate(it)
         }
         initLanguagePrefs()
-        timePrefs.setOnClickListener { replaceFragment(TimeOfDayFragment(), getString(R.string.time)) }
-        helpPrefs.setOnClickListener { replaceFragment(HelpFragment(), getString(R.string.help)) }
+        timePrefs.setOnClickListener { callback?.openFragment(TimeOfDayFragment(), getString(R.string.time)) }
+        helpPrefs.setOnClickListener { callback?.openFragment(HelpFragment(), getString(R.string.help)) }
         initConversationPrefs()
     }
 
@@ -63,11 +63,7 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
         conversationPrefs.isChecked = !isChecked
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.voice_control))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.voice_control)
 
     private fun showLanguageDialog() {
         val builder = dialogues.getDialog(context!!)

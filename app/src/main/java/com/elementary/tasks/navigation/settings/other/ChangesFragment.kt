@@ -3,9 +3,7 @@ package com.elementary.tasks.navigation.settings.other
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
@@ -30,12 +28,9 @@ import kotlinx.android.synthetic.main.fragment_settings_web_view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class ChangesFragment : BaseSettingsFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_web_view, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_web_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,11 +47,5 @@ class ChangesFragment : BaseSettingsFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.changes))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.changes)
 }

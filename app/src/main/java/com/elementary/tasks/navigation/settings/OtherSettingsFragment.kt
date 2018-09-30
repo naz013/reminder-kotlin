@@ -75,11 +75,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
         addPermissionPrefs.setOnClickListener { showPermissionDialog() }
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.other))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.other)
 
     private fun requestPermission(position: Int) {
         Permissions.requestPermission(activity!!, position, mDataList[position].permission)
@@ -139,15 +135,15 @@ class OtherSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun openChangesScreen() {
-        replaceFragment(ChangesFragment(), getString(R.string.changes))
+        callback?.openFragment(ChangesFragment(), getString(R.string.changes))
     }
 
     private fun openPermissionsScreen() {
-        replaceFragment(PermissionsFragment(), getString(R.string.permissions))
+        callback?.openFragment(PermissionsFragment(), getString(R.string.permissions))
     }
 
     private fun openOssScreen() {
-        replaceFragment(OssFragment(), getString(R.string.open_source_licenses))
+        callback?.openFragment(OssFragment(), getString(R.string.open_source_licenses))
     }
 
     private fun showPermissionDialog() {

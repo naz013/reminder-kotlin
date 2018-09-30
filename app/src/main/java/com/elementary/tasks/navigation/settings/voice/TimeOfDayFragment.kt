@@ -2,9 +2,7 @@ package com.elementary.tasks.navigation.settings.voice
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -44,9 +42,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
     private var is24: Boolean = false
     private val format = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_time_of_day, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_time_of_day
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -130,13 +126,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         morningTime.text = TimeUtil.getTime(calendar.time, is24)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.time))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.time)
 
     private fun morningDialog() {
         TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, morningHour, morningMinute, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->

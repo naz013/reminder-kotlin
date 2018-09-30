@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.fragment_settings_calendar.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private var mItemSelect: Int = 0
@@ -45,7 +44,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         initFuturePrefs()
         initRemindersPrefs()
         initFirstDayPrefs()
-        eventsImportPrefs.setOnClickListener { replaceFragment(FragmentEventsImport(), getString(R.string.import_events)) }
+        eventsImportPrefs.setOnClickListener { callback?.openFragment(FragmentEventsImport(), getString(R.string.import_events)) }
     }
 
     private fun initFirstDayPrefs() {
@@ -80,7 +79,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private fun initRemindersColorPrefs() {
         reminderColorPrefs.setDependentView(reminderInCalendarPrefs)
-        reminderColorPrefs.setOnClickListener { replaceFragment(FragmentRemindersColor(), getString(R.string.reminders_color)) }
+        reminderColorPrefs.setOnClickListener { callback?.openFragment(FragmentRemindersColor(), getString(R.string.reminders_color)) }
         reminderColorPrefs.setViewResource(themeUtil.getIndicator(prefs.reminderColor))
     }
 
@@ -106,23 +105,22 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         prefs.isFutureEventEnabled = !isChecked
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onBackStackResume() {
+        super.onBackStackResume()
         initRemindersColorPrefs()
         initTodayColorPrefs()
         initBirthdaysColorPrefs()
-
-        callback?.onTitleChange(getString(R.string.calendar))
-        callback?.onFragmentSelect(this)
     }
 
+    override fun getTitle(): String = getString(R.string.calendar)
+
     private fun initBirthdaysColorPrefs() {
-        selectedColorPrefs.setOnClickListener { replaceFragment(FragmentBirthdaysColor(), getString(R.string.birthdays_color)) }
+        selectedColorPrefs.setOnClickListener { callback?.openFragment(FragmentBirthdaysColor(), getString(R.string.birthdays_color)) }
         selectedColorPrefs.setViewResource(themeUtil.getIndicator(prefs.birthdayColor))
     }
 
     private fun initTodayColorPrefs() {
-        themeColorPrefs.setOnClickListener { replaceFragment(FragmentTodayColor(), getString(R.string.today_color)) }
+        themeColorPrefs.setOnClickListener { callback?.openFragment(FragmentTodayColor(), getString(R.string.today_color)) }
         themeColorPrefs.setViewResource(themeUtil.getIndicator(prefs.todayColor))
     }
 }

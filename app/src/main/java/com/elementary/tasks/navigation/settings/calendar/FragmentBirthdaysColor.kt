@@ -20,8 +20,8 @@ import com.elementary.tasks.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class FragmentBirthdaysColor : FragmentStyle() {
+
     override val selectedColor: Int
         get() = prefs.birthdayColor
 
@@ -29,11 +29,5 @@ class FragmentBirthdaysColor : FragmentStyle() {
         prefs.birthdayColor = code
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.birthdays_color))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.birthdays_color)
 }

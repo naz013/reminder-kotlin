@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.fragment_settings.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class SettingsFragment : BaseSettingsFragment() {
 
     override fun layoutRes(): Int = R.layout.fragment_settings
@@ -35,21 +34,17 @@ class SettingsFragment : BaseSettingsFragment() {
             callback?.onScrollUpdate(it)
         }
 
-        generalSettings.setOnClickListener { replaceFragment(GeneralSettingsFragment(), getString(R.string.general)) }
-        otherSettings.setOnClickListener { replaceFragment(OtherSettingsFragment(), getString(R.string.other)) }
-        voiceSettings.setOnClickListener { replaceFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
-        notesSettings.setOnClickListener { replaceFragment(NoteSettingsFragment(), getString(R.string.notes)) }
-        locationSettings.setOnClickListener { replaceFragment(LocationSettingsFragment(), getString(R.string.location)) }
-        additionalSettings.setOnClickListener { replaceFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
-        notificationSettings.setOnClickListener { replaceFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
-        exportSettings.setOnClickListener { replaceFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
-        calendarSettings.setOnClickListener { replaceFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
-        birthdaysSettings.setOnClickListener { replaceFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
+        generalSettings.setOnClickListener { callback?.openFragment(GeneralSettingsFragment(), getString(R.string.general)) }
+        otherSettings.setOnClickListener { callback?.openFragment(OtherSettingsFragment(), getString(R.string.other)) }
+        voiceSettings.setOnClickListener { callback?.openFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
+        notesSettings.setOnClickListener { callback?.openFragment(NoteSettingsFragment(), getString(R.string.notes)) }
+        locationSettings.setOnClickListener { callback?.openFragment(LocationSettingsFragment(), getString(R.string.location)) }
+        additionalSettings.setOnClickListener { callback?.openFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
+        notificationSettings.setOnClickListener { callback?.openFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
+        exportSettings.setOnClickListener { callback?.openFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
+        calendarSettings.setOnClickListener { callback?.openFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
+        birthdaysSettings.setOnClickListener { callback?.openFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.action_settings))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.action_settings)
 }

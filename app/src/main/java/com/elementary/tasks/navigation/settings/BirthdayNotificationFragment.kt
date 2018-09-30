@@ -270,11 +270,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
         prefs.isBirthdayGlobalEnabled = !isChecked
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.birthday_notification))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.birthday_notification)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {

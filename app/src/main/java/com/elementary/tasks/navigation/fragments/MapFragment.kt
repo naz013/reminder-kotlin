@@ -122,13 +122,7 @@ class MapFragment : BaseNavigationFragment() {
         sheetLayout.setBackgroundColor(themeUtil.cardStyle)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.map))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.map)
 
     private fun showData() {
         val data = viewModel.events.value

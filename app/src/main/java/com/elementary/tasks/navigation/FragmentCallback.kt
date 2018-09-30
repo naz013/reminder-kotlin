@@ -1,6 +1,6 @@
 package com.elementary.tasks.navigation
 
-import androidx.fragment.app.Fragment
+import com.elementary.tasks.navigation.fragments.BaseFragment
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,11 +22,11 @@ import androidx.fragment.app.Fragment
  */
 interface FragmentCallback {
 
-    fun replaceFragment(fragment: Fragment, title: String)
+    fun openFragment(fragment: BaseFragment, tag: String)
 
     fun onTitleChange(title: String)
 
-    fun onFragmentSelect(fragment: Fragment)
+    fun onFragmentSelect(fragment: BaseFragment)
 
     fun refreshMenu()
 

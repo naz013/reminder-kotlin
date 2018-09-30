@@ -236,13 +236,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         alert.show()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.notes))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.notes)
 
     private fun deleteDialog() {
         val builder = dialogues.getDialog(context!!)

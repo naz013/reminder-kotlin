@@ -1,9 +1,7 @@
 package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.views.roboto.RoboRadioButton
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -43,9 +41,7 @@ class MapStyleFragment : BaseSettingsFragment() {
             }
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_map_style, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_map_style
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -97,13 +93,7 @@ class MapStyleFragment : BaseSettingsFragment() {
         prefs.mapStyle = selection
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.map_style))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.map_style)
 
     companion object {
 

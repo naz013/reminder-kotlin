@@ -649,11 +649,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.notification))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.notification)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {

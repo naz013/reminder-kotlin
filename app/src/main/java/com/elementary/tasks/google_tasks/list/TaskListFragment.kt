@@ -13,8 +13,8 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
-import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.google_tasks.create.TaskActivity
+import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import kotlinx.android.synthetic.main.fragment_google_list.*
 
@@ -46,7 +46,7 @@ class TaskListFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            mId = arguments!!.getString(ARG_ID)
+            mId = arguments!!.getString(ARG_ID) ?: ""
         }
     }
 
@@ -109,6 +109,8 @@ class TaskListFragment : BaseFragment() {
             emptyItem.visibility = View.VISIBLE
         }
     }
+
+    override fun getTitle(): String = ""
 
     companion object {
 

@@ -50,11 +50,5 @@ class HelpFragment : BaseWebViewFragment() {
             return url
         }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.help))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.help)
 }

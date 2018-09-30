@@ -143,14 +143,12 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
         eventCalendar.adapter = spinnerArrayAdapter
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onBackStackResume() {
+        super.onBackStackResume()
         loadCalendars()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.import_events))
-            callback?.onFragmentSelect(this)
-        }
     }
+
+    override fun getTitle(): String = getString(R.string.import_events)
 
     private fun checkCalendarPerm(): Boolean {
         return if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {

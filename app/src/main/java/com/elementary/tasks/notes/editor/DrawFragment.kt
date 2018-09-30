@@ -124,6 +124,7 @@ class DrawFragment : BitmapFragment() {
             return binding
         }
 
+    override fun getTitle(): String = ""
 
     private val imagePanel: View
         get() {
