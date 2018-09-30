@@ -74,9 +74,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
 
     private fun loadNoteCard(cardView: CardView, color: Int) {
         cardView.setCardBackgroundColor(themeUtil.getNoteLightColor(color))
-        if (Module.isLollipop) {
-            cardView.cardElevation = Configs.CARD_ELEVATION
-        }
+
     }
 
     private fun setImage(imageView: ImageView, image: ByteArray?) {

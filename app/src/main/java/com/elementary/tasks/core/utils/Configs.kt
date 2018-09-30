@@ -20,7 +20,6 @@ package com.elementary.tasks.core.utils
  */
 object Configs {
 
-    const val CARD_ELEVATION = 5f
     const val MAX_VOLUME = 25f
     const val MAX_DAYS_COUNT: Long = 120
 }

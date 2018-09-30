@@ -110,11 +110,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         val binding = LayoutInflater.from(mContext).inflate(R.layout.view_note_card, noteList, false)
         binding.buttonSave.setOnClickListener { saveNote(binding) }
         binding.noteCard.visibility = View.GONE
-        if (Module.isLollipop) {
-            binding.noteCard.elevation = Configs.CARD_ELEVATION
-        }
-        binding.noteCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()))
-        binding.bgView.setBackgroundColor(themeUtil.backgroundStyle)
+
         noteList.addView(binding)
         ViewUtils.slideInUp(mContext, binding.noteCard)
     }
@@ -141,9 +137,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
 
     private fun addReminderCard(item: Note) {
         val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_reminder_card, noteList, false)
-        if (Module.isLollipop) {
-            cardBinding.noteReminderCard.elevation = Configs.CARD_ELEVATION
-        }
+
         cardBinding.buttonYes.setOnClickListener {
             cardBinding.buttonNo.isEnabled = false
             cardBinding.buttonYes.isEnabled = false
@@ -155,8 +149,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
             addNotificationCard(item)
         }
         cardBinding.noteReminderCard.visibility = View.GONE
-        cardBinding.noteReminderCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()))
-        cardBinding.bgViewReminder.setBackgroundColor(themeUtil.backgroundStyle)
+
         noteList.addView(cardBinding)
         Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteReminderCard) }, 250)
     }
@@ -184,9 +177,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
 
     private fun addNotificationCard(item: Note) {
         val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_status_card, noteList, false)
-        if (Module.isLollipop) {
-            cardBinding.noteStatusCard.elevation = Configs.CARD_ELEVATION
-        }
+
         cardBinding.buttonYesStatus.setOnClickListener {
             cardBinding.buttonNoStatus.isEnabled = false
             cardBinding.buttonYesStatus.isEnabled = false
@@ -194,8 +185,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         }
         cardBinding.buttonNoStatus.setOnClickListener { hideNoteView() }
         cardBinding.noteStatusCard.visibility = View.GONE
-        cardBinding.noteStatusCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()))
-        cardBinding.bgViewStatus.setBackgroundColor(themeUtil.backgroundStyle)
+
         noteList.addView(cardBinding)
         Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard) }, 250)
     }

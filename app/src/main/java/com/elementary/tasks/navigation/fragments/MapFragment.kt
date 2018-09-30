@@ -119,7 +119,6 @@ class MapFragment : BaseNavigationFragment() {
 
         }
         bottomSheet.recyclerView.adapter = mAdapter
-        sheetLayout.setBackgroundColor(themeUtil.cardStyle)
     }
 
     override fun getTitle(): String = getString(R.string.map)

@@ -56,10 +56,7 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
     }
 
     private fun loadTaskCard(cardView: CardView, i: Int) {
-        cardView.setCardBackgroundColor(themeUtil.cardStyle)
-        if (Module.isLollipop) {
-            cardView.cardElevation = Configs.CARD_ELEVATION
-        }
+
     }
 
     private fun loadCheck(checkBox: CheckBox, item: GoogleTask) {

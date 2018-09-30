@@ -127,19 +127,19 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
-        var title = title
+        var t = title
         if (mMap != null && pos != null) {
             markerRadius = radius
             if (markerRadius == -1)
                 markerRadius = prefs.radius
             if (clear) mMap?.clear()
-            if (title == null || title.matches("".toRegex())) title = pos.toString()
+            if (t == null || t.matches("".toRegex())) t = pos.toString()
             if (!Module.isPro) markerStyle = 5
             lastPos = pos
-            mListener?.placeChanged(pos, title)
+            mListener?.placeChanged(pos, t)
             mMap?.addMarker(MarkerOptions()
                     .position(pos)
-                    .title(title)
+                    .title(t)
                     .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
@@ -154,25 +154,25 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     fun addMarker(pos: LatLng, title: String?, clear: Boolean, markerStyle: Int, animate: Boolean, radius: Int): Boolean {
-        var title = title
-        var markerStyle = markerStyle
+        var t = title
+        var mStyle = markerStyle
         if (mMap != null) {
             markerRadius = radius
             if (markerRadius == -1) {
                 markerRadius = prefs.radius
             }
-            if (!Module.isPro) markerStyle = 5
-            this.markerStyle = markerStyle
+            if (!Module.isPro) mStyle = 5
+            this.markerStyle = mStyle
             if (clear) mMap?.clear()
-            if (title == null || title.matches("".toRegex())) title = pos.toString()
+            if (t == null || t.matches("".toRegex())) t = pos.toString()
             lastPos = pos
-            mListener?.placeChanged(pos, title)
+            mListener?.placeChanged(pos, t)
             mMap?.addMarker(MarkerOptions()
                     .position(pos)
-                    .title(title)
-                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
+                    .title(t)
+                    .icon(getDescriptor(themeUtil.getMarkerStyle(mStyle)))
                     .draggable(clear))
-            val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
+            val marker = themeUtil.getMarkerRadiusStyle(mStyle)
             mMap?.addCircle(CircleOptions()
                     .center(pos)
                     .radius(markerRadius.toDouble())
@@ -371,7 +371,7 @@ class AdvancedMapFragment : BaseMapFragment() {
 
     private fun initPlacesViewModel() {
         val viewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
-        viewModel.places.observe(this, Observer{ places ->
+        viewModel.places.observe(this, Observer { places ->
             if (places != null && isPlaces) {
                 showPlaces(places)
             }
@@ -401,68 +401,31 @@ class AdvancedMapFragment : BaseMapFragment() {
 
         placesListCard.visibility = View.GONE
         styleCard.visibility = View.GONE
-        zoomCard.setCardBackgroundColor(themeUtil.cardStyle)
-        searchCard.setCardBackgroundColor(themeUtil.cardStyle)
-        myCard.setCardBackgroundColor(themeUtil.cardStyle)
-        layersCard.setCardBackgroundColor(themeUtil.cardStyle)
-        placesCard.setCardBackgroundColor(themeUtil.cardStyle)
-        styleCard.setCardBackgroundColor(themeUtil.cardStyle)
-        placesListCard.setCardBackgroundColor(themeUtil.cardStyle)
-        markersCard.setCardBackgroundColor(themeUtil.cardStyle)
-        backCard.setCardBackgroundColor(themeUtil.cardStyle)
-
         layersContainer.visibility = View.GONE
-        layersContainer.setCardBackgroundColor(themeUtil.cardStyle)
 
-        if (Module.isLollipop) {
-            zoomCard.cardElevation = Configs.CARD_ELEVATION
-            searchCard.cardElevation = Configs.CARD_ELEVATION
-            myCard.cardElevation = Configs.CARD_ELEVATION
-            layersContainer.cardElevation = Configs.CARD_ELEVATION
-            layersCard.cardElevation = Configs.CARD_ELEVATION
-            placesCard.cardElevation = Configs.CARD_ELEVATION
-            styleCard.cardElevation = Configs.CARD_ELEVATION
-            placesListCard.cardElevation = Configs.CARD_ELEVATION
-            markersCard.cardElevation = Configs.CARD_ELEVATION
-            backCard.cardElevation = Configs.CARD_ELEVATION
-        }
-
-        val style = themeUtil.cardStyle
-        zoomCard.setCardBackgroundColor(style)
-        searchCard.setCardBackgroundColor(style)
-        myCard.setCardBackgroundColor(style)
-        layersContainer.setCardBackgroundColor(style)
-        layersCard.setCardBackgroundColor(style)
-        placesCard.setCardBackgroundColor(style)
-        styleCard.setCardBackgroundColor(style)
-        placesListCard.setCardBackgroundColor(style)
-        markersCard.setCardBackgroundColor(style)
-        backCard.setCardBackgroundColor(style)
-
-        cardClear.setOnClickListener{ cardSearch?.setText("") }
-        mapZoom.setOnClickListener{ zoomClick() }
-        layers.setOnClickListener{ toggleLayers() }
-        myLocation.setOnClickListener{
+        zoomCard.setOnClickListener { zoomClick() }
+        layersCard.setOnClickListener { toggleLayers() }
+        myCard.setOnClickListener {
             hideLayers()
             moveToMyLocation()
         }
-        markers.setOnClickListener{ toggleMarkers() }
-        places.setOnClickListener{ togglePlaces() }
-        backButton.setOnClickListener{
+        markersCard.setOnClickListener { toggleMarkers() }
+        placesCard.setOnClickListener { togglePlaces() }
+        backCard.setOnClickListener {
             restoreScaleButton()
             mListener?.onBackClick()
         }
 
-        typeNormal.setOnClickListener{
+        typeNormal.setOnClickListener {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
         }
-        typeSatellite.setOnClickListener{
+        typeSatellite.setOnClickListener {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
         }
-        typeHybrid.setOnClickListener{
+        typeHybrid.setOnClickListener {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
         }
-        typeTerrain.setOnClickListener{
+        typeTerrain.setOnClickListener {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
         }
 
@@ -493,7 +456,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             ib.setBackgroundResource(android.R.color.transparent)
             ib.setImageResource(themeUtil.getMarkerStyle(i))
             ib.id = i + ThemeUtil.NUM_OF_MARKERS
-            ib.setOnClickListener{
+            ib.setOnClickListener {
                 recreateStyle(ib.id - ThemeUtil.NUM_OF_MARKERS)
                 hideStyles()
             }
@@ -542,7 +505,6 @@ class AdvancedMapFragment : BaseMapFragment() {
             emptyItem?.visibility = View.GONE
             placesCard.visibility = View.VISIBLE
             placesList.visibility = View.VISIBLE
-            addMarkers(places)
         }
     }
 
@@ -556,56 +518,45 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun toggleMarkers() {
-        if (isLayersVisible) {
-            hideLayers()
-        }
-        if (isPlacesVisible) {
-            hidePlaces()
-        }
+        if (isLayersVisible) hideLayers()
+        if (isPlacesVisible) hidePlaces()
         if (isMarkersVisible) {
             hideStyles()
         } else {
-            ViewUtils.slideInUp(context!!, styleCard!!)
+            ViewUtils.slideInUp(context!!, styleCard)
         }
     }
 
     private fun hideStyles() {
         if (isMarkersVisible) {
-            ViewUtils.slideOutDown(context!!, styleCard!!)
+            ViewUtils.slideOutDown(context!!, styleCard)
         }
     }
 
     private fun togglePlaces() {
-        if (isMarkersVisible) {
-            hideStyles()
-        }
-        if (isLayersVisible) {
-            hideLayers()
-        }
+        if (isMarkersVisible) hideStyles()
+        if (isLayersVisible) hideLayers()
+
         if (isPlacesVisible) {
             hidePlaces()
         } else {
-            ViewUtils.slideInUp(context!!, placesListCard!!)
+            ViewUtils.slideInUp(context!!, placesListCard)
         }
     }
 
     private fun hidePlaces() {
         if (isPlacesVisible) {
-            ViewUtils.slideOutDown(context!!, placesListCard!!)
+            ViewUtils.slideOutDown(context!!, placesListCard)
         }
     }
 
     private fun toggleLayers() {
-        if (isMarkersVisible) {
-            hideStyles()
-        }
-        if (isPlacesVisible) {
-            hidePlaces()
-        }
+        if (isMarkersVisible) hideStyles()
+        if (isPlacesVisible) hidePlaces()
         if (isLayersVisible) {
             hideLayers()
         } else {
-            ViewUtils.showOver(layersContainer!!)
+            ViewUtils.showOver(layersContainer)
         }
     }
 
@@ -621,8 +572,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             mListener?.onZoomClick(isFullscreen)
         }
         if (isFullscreen) {
-            if (isDark) mapZoom.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
-            else mapZoom.setImageResource(R.drawable.ic_arrow_downward_black_24dp)
+            zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
         } else {
             restoreScaleButton()
         }
@@ -669,8 +619,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun restoreScaleButton() {
-        if (isDark) mapZoom.setImageResource(R.drawable.ic_arrow_upward_white_24dp)
-        else mapZoom.setImageResource(R.drawable.ic_arrow_upward_black_24dp)
+        zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
     }
 
     companion object {

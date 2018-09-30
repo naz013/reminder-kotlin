@@ -150,20 +150,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             }
         }
 
-    val cardStyle: Int
-        @ColorInt
-        get() {
-            return if (isDark) {
-                if (prefs.appTheme == THEME_PURE_BLACK) {
-                    getColor(R.color.pureBlack)
-                } else {
-                    getColor(R.color.grey_x)
-                }
-            } else {
-                getColor(R.color.whitePrimary)
-            }
-        }
-
     val markerStyle: Int
         @DrawableRes
         get() {
