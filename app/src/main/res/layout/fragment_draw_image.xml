@@ -466,8 +466,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     app:ir_checkable="false"
-                    app:ir_icon="@drawable/ic_layers_black_24dp"
-                    app:ir_icon_light="@drawable/ic_layers_white_24dp"
+                    app:ir_icon="@drawable/ic_twotone_layers_24px"
                     app:ir_text="@string/layers"
                     app:ir_text_size="6sp" />
 

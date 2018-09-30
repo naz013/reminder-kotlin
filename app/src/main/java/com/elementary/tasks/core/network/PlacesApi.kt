@@ -30,7 +30,7 @@ interface PlacesApi {
     @GET("nearbysearch/json?")
     fun getNearbyPlaces(@QueryMap params: Map<String, String>): Call<PlacesResponse>
 
-    @GET("textsearch/json?")
+    @GET("findplacefromtext/json?")
     fun getPlaces(@QueryMap params: Map<String, String>): Call<PlacesResponse>
 
     companion object {

@@ -5,11 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.interfaces.SimpleListener
-import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_simple_text_advanced.view.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,18 +30,9 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
 
     private val array = mutableListOf<GooglePlaceItem>()
     private var mEventListener: SimpleListener? = null
-    private val isDark: Boolean
 
     private val last: Int
         get() = itemCount - 1
-
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-        isDark = themeUtil.isDark
-    }
 
     fun setPlaces(list: List<GooglePlaceItem>) {
         this.array.clear()
@@ -104,176 +92,75 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
 
     private fun getIcon(tags: List<String>?): Int {
         if (tags == null) {
-            return if (isDark)
-                R.drawable.ic_map_marker_white
-            else
-                R.drawable.ic_map_marker
+            return R.drawable.ic_twotone_place_24px
         }
         val sb = StringBuilder()
         for (t in tags) sb.append(t).append(",")
         val tag = sb.toString()
         return if (tag.contains("florist")) {
-            if (isDark)
-                R.drawable.ic_local_florist_white_24dp
-            else
-                R.drawable.ic_local_florist_black_24dp
+            R.drawable.ic_twotone_local_florist_24px
         } else if (tag.contains("school")) {
-            if (isDark)
-                R.drawable.ic_school_white_24dp
-            else
-                R.drawable.ic_school_black_24dp
+            R.drawable.ic_twotone_school_24px
         } else if (tag.contains("cafe")) {
-            if (isDark)
-                R.drawable.ic_local_cafe_white_24dp
-            else
-                R.drawable.ic_local_cafe_black_24dp
+            R.drawable.ic_twotone_local_cafe_24px
         } else if (tag.contains("restaurant")) {
-            if (isDark)
-                R.drawable.ic_restaurant_menu_white_24dp
-            else
-                R.drawable.ic_restaurant_menu_black_24dp
+            R.drawable.ic_twotone_restaurant_24px
         } else if (tag.contains("bus_station")) {
-            if (isDark)
-                R.drawable.ic_directions_bus_white_24dp
-            else
-                R.drawable.ic_directions_bus_black_24dp
-        } else if (tag.contains("subway_station")) {
-            if (isDark)
-                R.drawable.ic_directions_subway_white_24dp
-            else
-                R.drawable.ic_directions_subway_black_24dp
-        } else if (tag.contains("train_station")) {
-            if (isDark)
-                R.drawable.ic_directions_subway_white_24dp
-            else
-                R.drawable.ic_directions_subway_black_24dp
+            R.drawable.ic_twotone_directions_bus_24px
+        } else if (tag.contains("subway_station") || tag.contains("train_station")) {
+            R.drawable.ic_twotone_directions_subway_24px
         } else if (tag.contains("bicycle_store")) {
-            if (isDark)
-                R.drawable.ic_directions_bike_white_24dp
-            else
-                R.drawable.ic_directions_bike_black_24dp
+            R.drawable.ic_twotone_directions_bike_24px
         } else if (tag.contains("car_repair") || tag.contains("car_rental") || tag.contains("car_dealer")) {
-            if (isDark)
-                R.drawable.ic_directions_car_white_24dp
-            else
-                R.drawable.ic_directions_car_black_24dp
+            R.drawable.ic_twotone_directions_car_24px
         } else if (tag.contains("taxi") || tag.contains("taxi_stand")) {
-            if (isDark)
-                R.drawable.ic_local_taxi_white_24dp
-            else
-                R.drawable.ic_local_taxi_black_24dp
+            R.drawable.ic_twotone_local_taxi_24px
         } else if (tag.contains("atm")) {
-            if (isDark)
-                R.drawable.ic_local_atm_white_24dp
-            else
-                R.drawable.ic_local_atm_black_24dp
+            R.drawable.ic_twotone_local_atm_24px
         } else if (tag.contains("bar")) {
-            if (isDark)
-                R.drawable.ic_local_bar_white_24dp
-            else
-                R.drawable.ic_local_bar_black_24dp
+            R.drawable.ic_twotone_local_bar_24px
         } else if (tag.contains("airport")) {
-            if (isDark)
-                R.drawable.ic_local_airport_white_24dp
-            else
-                R.drawable.ic_local_airport_black_24dp
+            R.drawable.ic_twotone_local_airport_24px
         } else if (tag.contains("car_wash")) {
-            if (isDark)
-                R.drawable.ic_local_car_wash_white_24dp
-            else
-                R.drawable.ic_local_car_wash_black_24dp
+            R.drawable.ic_twotone_local_car_wash_24px
         } else if (tag.contains("convenience_store")) {
-            if (isDark)
-                R.drawable.ic_local_convenience_store_white_24dp
-            else
-                R.drawable.ic_local_convenience_store_black_24dp
+            R.drawable.ic_twotone_local_convenience_store_24px
         } else if (tag.contains("gas_station")) {
-            if (isDark)
-                R.drawable.ic_local_gas_station_white_24dp
-            else
-                R.drawable.ic_local_gas_station_black_24dp
+            R.drawable.ic_twotone_local_gas_station_24px
         } else if (tag.contains("hospital") || tag.contains("doctor") ||
                 tag.contains("physiotherapist") || tag.contains("health")) {
-            if (isDark)
-                R.drawable.ic_local_hospital_white_24dp
-            else
-                R.drawable.ic_local_hospital_black_24dp
+            R.drawable.ic_twotone_local_hospital_24px
         } else if (tag.contains("grocery_or_supermarket")) {
-            if (isDark)
-                R.drawable.ic_local_grocery_store_white_24dp
-            else
-                R.drawable.ic_local_grocery_store_black_24dp
+            R.drawable.ic_twotone_local_grocery_store_24px
         } else if (tag.contains("night_club") || tag.contains("liquor_store")) {
-            if (isDark)
-                R.drawable.ic_local_drink_white_24dp
-            else
-                R.drawable.ic_local_drink_black_24dp
+            R.drawable.ic_twotone_local_drink_24px
         } else if (tag.contains("meal_takeaway")) {
-            if (isDark)
-                R.drawable.ic_local_pizza_white_24dp
-            else
-                R.drawable.ic_local_pizza_black_24dp
+            R.drawable.ic_twotone_local_pizza_24px
         } else if (tag.contains("pharmacy")) {
-            if (isDark)
-                R.drawable.ic_local_pharmacy_white_24dp
-            else
-                R.drawable.ic_local_pharmacy_black_24dp
+            R.drawable.ic_twotone_local_pharmacy_24px
         } else if (tag.contains("meal_delivery") || tag.contains("moving_company")) {
-            if (isDark)
-                R.drawable.ic_local_shipping_white_24dp
-            else
-                R.drawable.ic_local_shipping_black_24dp
+            R.drawable.ic_twotone_local_shipping_24px
         } else if (tag.contains("parking")) {
-            if (isDark)
-                R.drawable.ic_local_parking_white_24dp
-            else
-                R.drawable.ic_local_parking_black_24dp
+            R.drawable.ic_twotone_local_parking_24px
         } else if (tag.contains("electronics_store")) {
-            if (isDark)
-                R.drawable.ic_local_printshop_white_24dp
-            else
-                R.drawable.ic_local_printshop_black_24dp
+            R.drawable.ic_twotone_local_printshop_24px
         } else if (tag.contains("laundry")) {
-            if (isDark)
-                R.drawable.ic_local_laundry_service_white_24dp
-            else
-                R.drawable.ic_local_laundry_service_black_24dp
+            R.drawable.ic_twotone_local_laundry_service_24px
         } else if (tag.contains("book_store") || tag.contains("library")) {
-            if (isDark)
-                R.drawable.ic_local_library_white_24dp
-            else
-                R.drawable.ic_local_library_black_24dp
+            R.drawable.ic_twotone_local_library_24px
         } else if (tag.contains("post_office")) {
-            if (isDark)
-                R.drawable.ic_local_post_office_white_24dp
-            else
-                R.drawable.ic_local_post_office_black_24dp
+            R.drawable.ic_twotone_local_post_office_24px
         } else if (tag.contains("movie_rental") || tag.contains("movie_theater")) {
-            if (isDark)
-                R.drawable.ic_local_movies_white_24dp
-            else
-                R.drawable.ic_local_movies_black_24dp
+            R.drawable.ic_twotone_local_movies_24px
         } else if (tag.contains("real_estate_agency") || tag.contains("establishment")) {
-            if (isDark)
-                R.drawable.ic_local_hotel_white_24dp
-            else
-                R.drawable.ic_local_hotel_black_24dp
+            R.drawable.ic_twotone_local_hotel_24px
         } else if (tag.contains("clothing_store") || tag.contains("home_goods_store")
                 || tag.contains("shopping_mall") || tag.contains("shoe_store")) {
-            if (isDark)
-                R.drawable.ic_local_mall_white_24dp
-            else
-                R.drawable.ic_local_mall_black_24dp
+            R.drawable.ic_twotone_local_mall_24px
         } else if (tag.contains("food")) {
-            if (isDark)
-                R.drawable.ic_restaurant_menu_white_24dp
-            else
-                R.drawable.ic_restaurant_menu_black_24dp
+            R.drawable.ic_twotone_restaurant_24px
         } else {
-            if (isDark)
-                R.drawable.ic_map_marker_white
-            else
-                R.drawable.ic_map_marker
+            R.drawable.ic_twotone_place_24px
         }
     }
 

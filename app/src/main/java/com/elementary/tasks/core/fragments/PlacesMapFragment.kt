@@ -317,7 +317,7 @@ class PlacesMapFragment : BaseMapFragment() {
 
     private fun hideKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.hideSoftInputFromWindow(cardSearch!!.windowToken, 0)
+        imm?.hideSoftInputFromWindow(cardSearch.windowToken, 0)
     }
 
     private fun loadMarkers() {
@@ -351,12 +351,12 @@ class PlacesMapFragment : BaseMapFragment() {
         if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             Permissions.requestPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
         } else {
-            mMap!!.isMyLocationEnabled = true
+            mMap?.isMyLocationEnabled = true
         }
     }
 
     private fun loadPlaces() {
-        val req = cardSearch!!.text!!.toString().trim { it <= ' ' }.toLowerCase()
+        val req = cardSearch.text.toString().trim { it <= ' ' }.toLowerCase()
         if (req.matches("".toRegex())) return
         cancelSearchTask()
         call = RequestBuilder.getSearch(req)
@@ -391,7 +391,7 @@ class PlacesMapFragment : BaseMapFragment() {
             placesList.visibility = View.VISIBLE
             placesList.adapter = placesAdapter
             addMarkers()
-            if (!isPlacesVisible && show) ViewUtils.slideInUp(context!!, placesListCard!!)
+            if (!isPlacesVisible && show) ViewUtils.slideInUp(context!!, placesListCard)
         } else {
             placesList.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
@@ -482,31 +482,31 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     override fun onResume() {
-        mapView.onResume()
+        mapView?.onResume()
         super.onResume()
         startTracking()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        mapView?.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        mapView?.onDestroy()
         cancelTracking()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        mapView?.onPause()
         cancelTracking()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
+        mapView?.onStop()
         cancelTracking()
     }
 

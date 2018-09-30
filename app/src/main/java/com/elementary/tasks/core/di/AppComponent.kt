@@ -40,7 +40,6 @@ import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.NotesFragment
-import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
@@ -92,7 +91,6 @@ interface AppComponent {
     fun inject(backupTool: BackupTool)
     fun inject(adapter: SelectableTemplatesAdapter)
     fun inject(baseDialog: BaseDialog)
-    fun inject(googlePlacesAdapter: GooglePlacesAdapter)
     fun inject(themedActivity: ThemedActivity)
     fun inject(repeatNotificationReceiver: RepeatNotificationReceiver)
     fun inject(reminderUtils: ReminderUtils)

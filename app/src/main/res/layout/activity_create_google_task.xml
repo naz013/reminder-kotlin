@@ -90,7 +90,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@null"
                         android:scaleType="center"
-                        app:srcCompat="@drawable/ic_access_time_black_24dp" />
+                        app:srcCompat="@drawable/ic_twotone_access_time_24px" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:id="@+id/dateField"

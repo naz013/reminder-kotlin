@@ -87,7 +87,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/acc_select_application"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_launch_black_24dp"
+                app:srcCompat="@drawable/ic_twotone_launch_24px"
                 app:tint="?android:textColorPrimary" />
 
             <androidx.appcompat.widget.AppCompatTextView
