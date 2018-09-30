@@ -37,9 +37,6 @@ class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     init {
         ReminderApp.appComponent.inject(this)
-        if (Module.isLollipop) {
-            itemView.itemCard.cardElevation = Configs.CARD_ELEVATION
-        }
         itemView.itemCard.setOnLongClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.MORE)
             true

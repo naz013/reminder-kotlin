@@ -194,8 +194,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         setContentView(R.layout.activity_reminder_dialog)
 
-        card.setCardBackgroundColor(themeUtil.cardStyle)
-        if (Module.isLollipop) card.cardElevation = Configs.CARD_ELEVATION
         container.visibility = View.GONE
         subjectContainer.visibility = View.GONE
         loadImage(bgImage)

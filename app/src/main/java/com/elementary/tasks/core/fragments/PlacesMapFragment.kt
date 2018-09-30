@@ -284,40 +284,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         placesListCard.visibility = View.GONE
         styleCard.visibility = View.GONE
 
-        zoomCard.setCardBackgroundColor(themeUtil.cardStyle)
-        searchCard.setCardBackgroundColor(themeUtil.cardStyle)
-        layersCard.setCardBackgroundColor(themeUtil.cardStyle)
-        placesCard.setCardBackgroundColor(themeUtil.cardStyle)
-        styleCard.setCardBackgroundColor(themeUtil.cardStyle)
-        placesListCard.setCardBackgroundColor(themeUtil.cardStyle)
-        markersCard.setCardBackgroundColor(themeUtil.cardStyle)
-        backCard.setCardBackgroundColor(themeUtil.cardStyle)
-
         layersContainer.visibility = View.GONE
-        layersContainer.setCardBackgroundColor(themeUtil.cardStyle)
-
-        if (Module.isLollipop) {
-            zoomCard.cardElevation = Configs.CARD_ELEVATION
-            searchCard.cardElevation = Configs.CARD_ELEVATION
-            layersContainer.cardElevation = Configs.CARD_ELEVATION
-            layersCard.cardElevation = Configs.CARD_ELEVATION
-            placesCard.cardElevation = Configs.CARD_ELEVATION
-            styleCard.cardElevation = Configs.CARD_ELEVATION
-            placesListCard.cardElevation = Configs.CARD_ELEVATION
-            markersCard.cardElevation = Configs.CARD_ELEVATION
-            backCard.cardElevation = Configs.CARD_ELEVATION
-        }
-
-        val style = themeUtil.cardStyle
-        zoomCard.setCardBackgroundColor(style)
-        searchCard.setCardBackgroundColor(style)
-        layersContainer.setCardBackgroundColor(style)
-        layersCard.setCardBackgroundColor(style)
-        placesCard.setCardBackgroundColor(style)
-        styleCard.setCardBackgroundColor(style)
-        placesListCard.setCardBackgroundColor(style)
-        markersCard.setCardBackgroundColor(style)
-        backCard.setCardBackgroundColor(style)
 
         cardClear.setOnClickListener(this)
         mapZoom.setOnClickListener(this)
@@ -584,7 +551,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
             R.id.typeHybrid -> setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
             R.id.typeSatellite -> setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
             R.id.typeTerrain -> setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
-            R.id.places -> togglePlaces()
+            R.id.placesCard -> togglePlaces()
             R.id.markers -> toggleMarkers()
         }
     }

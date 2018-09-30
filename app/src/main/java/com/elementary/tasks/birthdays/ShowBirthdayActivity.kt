@@ -153,10 +153,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         setContentView(R.layout.activity_show_birthday)
-        card.setCardBackgroundColor(themeUtil.cardStyle)
-        if (Module.isLollipop) {
-            card.cardElevation = Configs.CARD_ELEVATION
-        }
+
         loadImage(bgImage)
         colorify(buttonOk, buttonCall, buttonSend)
 

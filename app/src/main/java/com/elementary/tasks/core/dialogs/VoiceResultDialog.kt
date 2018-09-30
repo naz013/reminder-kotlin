@@ -60,7 +60,6 @@ class VoiceResultDialog : BaseDialog() {
         binding.taskText.text = reminder.summary
         bind(binding, reminder)
         binding.itemCheck.visibility = View.GONE
-        binding.reminderContainer.setBackgroundColor(themeUtil.cardStyle)
         alert.setView(binding)
         alert.setCancelable(true)
         alert.setNegativeButton(R.string.edit) { dialogInterface, _ ->

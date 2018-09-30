@@ -64,9 +64,9 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
         fun bind(item: SmsTemplate) {
             itemView.messageView.text = item.title
             if (item.isSelected) {
-                itemView.cardView.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorAccent()))
+//                itemView.cardView.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorAccent()))
             } else {
-                itemView.cardView.setCardBackgroundColor(themeUtil.cardStyle)
+//                itemView.cardView.setCardBackgroundColor(themeUtil.cardStyle)
             }
         }
 
