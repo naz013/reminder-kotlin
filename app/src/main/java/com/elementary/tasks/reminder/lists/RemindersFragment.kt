@@ -225,13 +225,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.tasks))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.tasks)
 
     private fun previewReminder(id: String) {
         startActivity(Intent(context, ReminderPreviewActivity::class.java)

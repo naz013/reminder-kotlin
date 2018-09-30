@@ -157,13 +157,7 @@ class ArchiveFragment() : BaseNavigationFragment(), FilterCallback<Reminder> {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.trash))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.trash)
 
     private fun editReminder(reminder: Reminder) {
         startActivity(Intent(context, CreateReminderActivity::class.java)

@@ -74,6 +74,8 @@ class CropFragment : BitmapFragment() {
         return false
     }
 
+    override fun getTitle(): String = ""
+
     private fun loadImage() {
         val item = ImageSingleton.getInstance().item
         if (item != null) {

@@ -135,11 +135,7 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.places))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.places)
 
     private fun initList() {
         recyclerView.layoutManager = LinearLayoutManager(context)

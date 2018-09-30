@@ -53,9 +53,9 @@ class CalendarThemeFragment : BaseNavigationFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_calendar_widget_preview, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_calendar_widget_preview
+
+    override fun getTitle(): String = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

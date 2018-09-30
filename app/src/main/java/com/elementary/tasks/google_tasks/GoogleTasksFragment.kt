@@ -150,13 +150,7 @@ class GoogleTasksFragment : BaseNavigationFragment() {
         updateScreen(if (pos < googleTaskLists.size) pos else 0)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getStr(R.string.google_tasks))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getStr(R.string.google_tasks)
 
     private fun addNewTask() {
         startActivity(Intent(context, TaskActivity::class.java)

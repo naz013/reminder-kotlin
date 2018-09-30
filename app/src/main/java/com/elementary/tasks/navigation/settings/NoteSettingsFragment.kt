@@ -90,11 +90,7 @@ class NoteSettingsFragment : BaseSettingsFragment() {
         noteColorOpacity.setDetailText(String.format(Locale.getDefault(), "%d%%", prefs.noteColorOpacity))
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.notes))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.notes)
 
     private fun changeNoteReminder() {
         val isChecked = noteReminderPrefs.isChecked

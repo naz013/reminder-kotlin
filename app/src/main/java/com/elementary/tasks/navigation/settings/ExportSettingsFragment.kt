@@ -94,7 +94,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun initCloudDrivesPrefs() {
-        cloudsPrefs.setOnClickListener { replaceFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
+        cloudsPrefs.setOnClickListener { callback?.openFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
     }
 
     private fun initClearDataPrefs() {
@@ -342,11 +342,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.export_and_sync))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.export_and_sync)
 
     companion object {
 

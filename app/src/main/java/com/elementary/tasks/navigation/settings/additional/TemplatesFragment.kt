@@ -4,7 +4,10 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -87,9 +90,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_templates_list, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_templates_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -148,13 +149,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
         viewModel.deleteSmsTemplate(smsTemplate)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.messages))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.messages)
 
     private fun showTemplates(smsTemplates: List<SmsTemplate>) {
         filterController.original = smsTemplates

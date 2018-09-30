@@ -1,9 +1,7 @@
 package com.elementary.tasks.navigation.settings.calendar
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.views.ColorPickerView
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
@@ -31,9 +29,7 @@ abstract class FragmentStyle : BaseCalendarFragment(), ColorPickerView.OnColorLi
 
     protected abstract val selectedColor: Int
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_calendar_style, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_calendar_style
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

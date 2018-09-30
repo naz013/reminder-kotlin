@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
@@ -66,19 +64,6 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    protected fun replaceFragment(fragment: Fragment, title: String) {
-        val ft = fragmentManager!!.beginTransaction()
-        ft.replace(R.id.main_container, fragment, title)
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        ft.addToBackStack(title)
-        ft.commit()
-        if (callback != null) {
-            callback?.onTitleChange(title)
-            callback?.onFragmentSelect(fragment)
-            callback?.onScrollUpdate(0)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         isDark = themeUtil.isDark
         val res = layoutRes()
@@ -88,6 +73,25 @@ abstract class BaseFragment : Fragment() {
             super.onCreateView(inflater, container, savedInstanceState)
         }
     }
+
+    protected fun moveBack() {
+        activity?.onBackPressed()
+    }
+
+    open fun canGoBack(): Boolean = true
+
+    open fun onBackStackResume() {
+        callback?.onFragmentSelect(this)
+        callback?.onTitleChange(getTitle())
+        callback?.onScrollUpdate(0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onBackStackResume()
+    }
+
+    abstract fun getTitle(): String
 
     @LayoutRes
     open fun layoutRes(): Int = 0

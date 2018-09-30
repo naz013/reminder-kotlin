@@ -28,11 +28,5 @@ class FragmentTodayColor : FragmentStyle() {
         prefs.todayColor = code
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.today_color))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.today_color)
 }

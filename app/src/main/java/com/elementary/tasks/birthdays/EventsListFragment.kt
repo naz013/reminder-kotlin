@@ -147,6 +147,8 @@ class EventsListFragment : BaseFragment() {
         }, *items)
     }
 
+    override fun getTitle(): String = ""
+
     companion object {
         private const val ARGUMENT_PAGE_NUMBER = "arg_page"
         fun newInstance(item: EventsPagerItem): EventsListFragment {

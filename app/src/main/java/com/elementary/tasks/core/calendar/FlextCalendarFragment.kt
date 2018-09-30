@@ -391,6 +391,8 @@ open class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.
         }
     }
 
+    override fun getTitle(): String = ""
+
     companion object {
 
         private const val TAG = "FlextCalendarFragment"

@@ -121,11 +121,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         appThemePrefs.setOnClickListener { selectTheme() }
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.general))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.general)
 
     private fun restartApp() {
         startActivity(Intent(context, SplashScreen::class.java))

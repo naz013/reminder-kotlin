@@ -13,7 +13,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -55,7 +54,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     @Inject
     lateinit var buttonObservable: GlobalButtonObservable
 
-    private var fragment: Fragment? = null
+    private var fragment: BaseFragment? = null
     private var mNoteView: QuickNoteCoordinator? = null
 
     private lateinit var viewModel: ConversationViewModel
@@ -80,10 +79,18 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportFragmentManager.addOnBackStackChangedListener { onStackChanged() }
         initActionBar()
         initNavigation()
         initViewModel()
         initQuickNote(savedInstanceState)
+    }
+
+    private fun onStackChanged() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            val f = supportFragmentManager.findFragmentById(R.id.main_container)
+            if (f != null && f is BaseFragment && f.isResumed) f.onBackStackResume()
+        }
     }
 
     private fun initQuickNote(savedInstanceState: Bundle?) {
@@ -133,14 +140,14 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
-    override fun replaceFragment(fragment: Fragment, title: String) {
+    private fun replaceFragment(fragment: BaseFragment, title: String) {
+        clearBackStack()
         this.fragment = fragment
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.main_container, fragment, title)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         ft.addToBackStack(title)
         ft.commit()
-        toolbar.title = title
     }
 
     override fun onResume() {
@@ -221,7 +228,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         toolbar.title = title
     }
 
-    override fun onFragmentSelect(fragment: Fragment) {
+    override fun onFragmentSelect(fragment: BaseFragment) {
         this.fragment = fragment
         if (this.fragment is BaseSettingsFragment) {
             if (isDark) {
@@ -236,6 +243,21 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                 toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
             }
         }
+    }
+
+    private fun clearBackStack() {
+        val fm = supportFragmentManager
+        for (i in 0 until fm.backStackEntryCount) {
+            fm.popBackStack()
+        }
+    }
+
+    override fun openFragment(fragment: BaseFragment, tag: String) {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.add(R.id.main_container, fragment, tag)
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        ft.addToBackStack(tag)
+        ft.commit()
     }
 
     override fun refreshMenu() {
@@ -279,14 +301,12 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         } else if (mNoteView != null && mNoteView!!.isNoteVisible) {
             mNoteView?.hideNoteView()
         } else {
-            if (isBackPressed) {
-                if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
-                    finish()
-                } else {
-                    isBackPressed = false
-                    onBackPressed()
-                }
-            }
+            moveBack()
+        }
+    }
+
+    private fun moveBack() {
+        if (fragment != null) {
             if (fragment is SettingsFragment) {
                 if (beforeSettings != 0) {
                     prevItem = beforeSettings
@@ -295,11 +315,23 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                 } else {
                     initStartFragment()
                 }
-            } else if (fragment is BaseSettingsFragment) {
+                return
+            } else if (fragment is BaseSettingsFragment && fragment?.canGoBack()!!) {
                 super.onBackPressed()
-            } else if (!isBackPressed) {
-                firstBackPress()
+                return
             }
+        }
+        if (isBackPressed) {
+            if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
+                finish()
+            } else {
+                isBackPressed = false
+                onBackPressed()
+            }
+        } else {
+            isBackPressed = true
+            pressedTime = System.currentTimeMillis()
+            Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
         }
     }
 

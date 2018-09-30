@@ -54,7 +54,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun openPlacesScreen() {
-        replaceFragment(PlacesFragment.newInstance(), getString(R.string.places))
+        callback?.openFragment(PlacesFragment.newInstance(), getString(R.string.places))
     }
 
     private fun initMapStylePrefs() {
@@ -65,11 +65,11 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun openMapStylesFragment() {
-        replaceFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
+        callback?.openFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
     }
 
     private fun initMarkerStylePrefs() {
-        markerStylePrefs.setOnClickListener { replaceFragment(MarkerStyleFragment(), getString(R.string.style_of_marker)) }
+        markerStylePrefs.setOnClickListener { callback?.openFragment(MarkerStyleFragment(), getString(R.string.style_of_marker)) }
         showMarkerStyle()
     }
 
@@ -92,13 +92,13 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         showRadius()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onBackStackResume() {
+        super.onBackStackResume()
         showMarkerStyle()
         initMapStylePrefs()
-        callback?.onTitleChange(getString(R.string.location))
-        callback?.onFragmentSelect(this)
     }
+
+    override fun getTitle(): String = getString(R.string.location)
 
     private fun showTrackerOptionsDialog() {
         val builder = dialogues.getDialog(context!!)

@@ -4,9 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -72,9 +70,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         builder.create().show()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_settings_cloud_drives, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_settings_cloud_drives
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -144,15 +140,13 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.cloud_services))
-            callback?.onFragmentSelect(this)
-        }
+    override fun onBackStackResume() {
+        super.onBackStackResume()
         mDropbox.checkDropboxStatus()
         checkGoogleStatus()
     }
+
+    override fun getTitle(): String = getString(R.string.cloud_services)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

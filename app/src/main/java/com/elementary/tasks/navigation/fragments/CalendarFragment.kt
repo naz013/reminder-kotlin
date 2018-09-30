@@ -39,7 +39,7 @@ class CalendarFragment : BaseCalendarFragment() {
         override fun onClickDate(date: Date) {
             LogUtil.d(TAG, "onClick: $date")
             saveTime(date)
-            replaceFragment(DayViewFragment.newInstance(dateMills, 0), "")
+//            replaceFragment(DayViewFragment.newInstance(dateMills, 0), "")
         }
 
         override fun onLongClickDate(date: Date) {
@@ -78,8 +78,6 @@ class CalendarFragment : BaseCalendarFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback?.onTitleChange(getString(R.string.calendar))
-            callback?.onFragmentSelect(this)
             CalendarSingleton.getInstance().fabClick = View.OnClickListener {
                 dateMills = System.currentTimeMillis()
                 showActionDialog(false)
@@ -88,6 +86,8 @@ class CalendarFragment : BaseCalendarFragment() {
         showCalendar()
         LogUtil.d(TAG, "onResume: ")
     }
+
+    override fun getTitle(): String = getString(R.string.calendar)
 
     private fun showCalendar() {
         val calendarView = FlextCalendarFragment()
@@ -103,12 +103,10 @@ class CalendarFragment : BaseCalendarFragment() {
         }
         args.putBoolean(FlextCalendarFragment.DARK_THEME, themeUtil.isDark)
         args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, prefs.isCalendarImagesEnabled)
-        val monthImage = prefs.calendarImages
-        args.putLongArray(FlextCalendarFragment.MONTH_IMAGES, monthImage.photos)
         calendarView.arguments = args
         calendarView.setListener(listener)
         calendarView.refreshView()
-        replaceFragment(calendarView, getString(R.string.calendar))
+//        replaceFragment(calendarView, getString(R.string.calendar))
         val isReminder = prefs.isRemindersInCalendarEnabled
         val isFeature = prefs.isFutureEventEnabled
         CalendarSingleton.getInstance().provider = EventsDataProvider(context!!, isReminder, isFeature)

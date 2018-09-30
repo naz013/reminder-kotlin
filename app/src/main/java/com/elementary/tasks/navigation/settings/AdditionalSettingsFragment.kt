@@ -52,7 +52,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
     private fun initMessagesPrefs() {
         val mMessagesPrefs = templatesPrefs
-        mMessagesPrefs.setOnClickListener { replaceFragment(TemplatesFragment(), getString(R.string.messages)) }
+        mMessagesPrefs.setOnClickListener { callback?.openFragment(TemplatesFragment(), getString(R.string.messages)) }
         mMessagesPrefs.setDependentView(quickSMSPrefs)
     }
 
@@ -138,11 +138,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         builder.create().show()
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onTitleChange(getString(R.string.additional))
-        callback?.onFragmentSelect(this)
-    }
+    override fun getTitle(): String = getString(R.string.additional)
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

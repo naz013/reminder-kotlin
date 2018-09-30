@@ -90,7 +90,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
-        <activity android:name=".navigation.settings.images.MainImageActivity" />
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden">

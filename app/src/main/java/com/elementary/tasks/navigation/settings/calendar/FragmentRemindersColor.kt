@@ -28,11 +28,5 @@ class FragmentRemindersColor : FragmentStyle() {
         prefs.reminderColor = code
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (callback != null) {
-            callback?.onTitleChange(getString(R.string.reminders_color))
-            callback?.onFragmentSelect(this)
-        }
-    }
+    override fun getTitle(): String = getString(R.string.reminders_color)
 }
