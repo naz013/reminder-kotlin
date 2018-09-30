@@ -1,13 +1,11 @@
 package com.elementary.tasks.places.google
 
+import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.RetrofitBuilder
 import com.elementary.tasks.core.network.places.PlacesResponse
 import com.elementary.tasks.core.utils.Module
-
-import java.util.LinkedHashMap
-import java.util.Locale
-
 import retrofit2.Call
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -58,11 +56,11 @@ object RequestBuilder {
 
     fun getSearch(name: String): Call<PlacesResponse> {
         val req = name.replace("\\s+".toRegex(), "+")
-        val params = LinkedHashMap<String, String>()
-        params["input"] = req
-        params["inputtype"] = "textquery"
-        params["language"] = language
-        params["key"] = key
-        return RetrofitBuilder.placesApi.getPlaces(params)
+        var url = PlacesApi.BASE_URL + "textsearch/json?"
+        url += "query=$req"
+        url += "&inputtype=textquery"
+        url += "&language=$language"
+        url += "&key=$key"
+        return RetrofitBuilder.placesApi.getPlaces(url)
     }
 }
