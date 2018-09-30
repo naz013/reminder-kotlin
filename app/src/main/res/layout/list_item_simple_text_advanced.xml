@@ -1,51 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/listItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?attr/selectableItemBackground"
-    android:orientation="vertical">
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/placeIcon"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:padding="3dp"
-        android:scaleType="fitCenter" />
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/placeCheck"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:gravity="center" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerInside"
+        app:tint="?android:textColorPrimary" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/placeCheck"
-        android:layout_toEndOf="@+id/placeIcon"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text1"
-            style="?textAppearanceBody1"
+            style="?textAppearanceSubtitle1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             tools:text="Title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text2"
-            style="?textAppearanceBody2"
+            style="?textAppearanceSubtitle2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             tools:text="Title" />
 
     </LinearLayout>
-</RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/placeCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" />
+</LinearLayout>

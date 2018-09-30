@@ -38,11 +38,11 @@ object RequestBuilder {
 
     val key: String
         get() {
-            var key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q"
-            if (Module.isPro) {
-                key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw"
+            return if (Module.isPro) {
+                "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw"
+            } else {
+                "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q"
             }
-            return key
         }
 
     fun getNearby(lat: Double, lng: Double, name: String): Call<PlacesResponse> {
@@ -59,7 +59,8 @@ object RequestBuilder {
     fun getSearch(name: String): Call<PlacesResponse> {
         val req = name.replace("\\s+".toRegex(), "+")
         val params = LinkedHashMap<String, String>()
-        params["query"] = req
+        params["input"] = req
+        params["inputtype"] = "textquery"
         params["language"] = language
         params["key"] = key
         return RetrofitBuilder.placesApi.getPlaces(params)
