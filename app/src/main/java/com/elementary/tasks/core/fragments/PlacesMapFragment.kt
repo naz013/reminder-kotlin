@@ -56,7 +56,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
+class PlacesMapFragment : BaseMapFragment() {
 
     private var mMap: GoogleMap? = null
 
@@ -83,35 +83,33 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         mMap!!.uiSettings.isCompassEnabled = true
         setStyle(mMap!!)
         setMyLocation()
-        mMap!!.setOnMapClickListener {
+        mMap?.setOnMapClickListener {
             hideLayers()
             hidePlaces()
             hideStyles()
         }
-        if (mCallback != null) {
-            mCallback!!.onMapReady()
-        }
+        mCallback?.onMapReady()
     }
     private val mSearchCallback = object : Callback<PlacesResponse> {
         override fun onResponse(call: Call<PlacesResponse>, response: Response<PlacesResponse>) {
             if (response.code() == Api.OK) {
                 val places = ArrayList<GooglePlaceItem>()
-                for (place in response.body()!!.results!!) {
+                for (place in response.body()?.results!!) {
                     places.add(PlaceParser.getDetails(place))
                 }
                 spinnerArray = places
                 if (spinnerArray.size == 0) {
-                    Toast.makeText(context, SuperUtil.getString(this@PlacesMapFragment, R.string.no_places_found), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
                 }
                 addSelectAllItem()
                 refreshAdapter(true)
             } else {
-                Toast.makeText(context, SuperUtil.getString(this@PlacesMapFragment, R.string.no_places_found), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onFailure(call: Call<PlacesResponse>, t: Throwable) {
-            Toast.makeText(context, SuperUtil.getString(this@PlacesMapFragment, R.string.no_places_found), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -157,7 +155,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
-        var title = title
+        var t = title
         if (mMap != null && pos != null) {
             if (pos.latitude == 0.0 && pos.longitude == 0.0) return
             mRadius = radius
@@ -165,19 +163,19 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
                 mRadius = prefs.radius
             }
             if (clear) {
-                mMap!!.clear()
+                mMap?.clear()
             }
-            if (title == null || title.matches("".toRegex())) {
-                title = pos.toString()
+            if (t == null || t.matches("".toRegex())) {
+                t = pos.toString()
             }
-            mMap!!.addMarker(MarkerOptions()
+            mMap?.addMarker(MarkerOptions()
                     .position(pos)
-                    .title(title)
+                    .title(t)
                     .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             val strokeWidth = 3f
-            mMap!!.addCircle(CircleOptions()
+            mMap?.addCircle(CircleOptions()
                     .center(pos)
                     .radius(mRadius.toDouble())
                     .strokeWidth(strokeWidth)
@@ -208,12 +206,12 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
 
     private fun addSelectAllItem() {
         if (spinnerArray.size > 1) {
-            spinnerArray.add(GooglePlaceItem(SuperUtil.getString(this@PlacesMapFragment, R.string.add_all), "", "", "", null, listOf(), false))
+            spinnerArray.add(GooglePlaceItem(getString(R.string.add_all), "", "", "", null, listOf(), false))
         }
     }
 
     fun selectMarkers(list: List<Place>) {
-        mMap!!.clear()
+        mMap?.clear()
         toModels(list, true)
         refreshAdapter(false)
     }
@@ -221,7 +219,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     fun animate(latLng: LatLng?) {
         val update = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
         if (mMap != null) {
-            mMap!!.animateCamera(update)
+            mMap?.animateCamera(update)
         }
     }
 
@@ -267,7 +265,6 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         mapView.getMapAsync(mMapCallback)
 
         initViews()
-        cardSearch.setHint(R.string.search_place)
         cardSearch.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
                 hideKeyboard()
@@ -286,16 +283,27 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
 
         layersContainer.visibility = View.GONE
 
-        cardClear.setOnClickListener(this)
-        mapZoom.setOnClickListener(this)
-        layers.setOnClickListener(this)
-        markers.setOnClickListener(this)
-        placesButton.setOnClickListener(this)
+        zoomCard.setOnClickListener { zoomClick() }
+        layersCard.setOnClickListener { toggleLayers() }
+        markersCard.setOnClickListener { toggleMarkers() }
+        placesCard.setOnClickListener { togglePlaces() }
+        cardClear.setOnClickListener { loadPlaces() }
+        backCard.setOnClickListener {
 
-        typeNormal.setOnClickListener(this)
-        typeSatellite.setOnClickListener(this)
-        typeHybrid.setOnClickListener(this)
-        typeTerrain.setOnClickListener(this)
+        }
+
+        typeNormal.setOnClickListener {
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
+        }
+        typeSatellite.setOnClickListener {
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
+        }
+        typeHybrid.setOnClickListener {
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
+        }
+        typeTerrain.setOnClickListener {
+            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
+        }
 
         backCard.visibility = View.GONE
         if (!Module.isPro) {
@@ -321,7 +329,10 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
             ib.setBackgroundResource(android.R.color.transparent)
             ib.setImageResource(themeUtil.getMarkerStyle(i))
             ib.id = i + ThemeUtil.NUM_OF_MARKERS
-            ib.setOnClickListener(this)
+            ib.setOnClickListener{
+                recreateStyle(ib.id - ThemeUtil.NUM_OF_MARKERS)
+                hideStyles()
+            }
             val params = LinearLayout.LayoutParams(
                     MeasureUtils.dp2px(context!!, 35),
                     MeasureUtils.dp2px(context!!, 35))
@@ -352,12 +363,12 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         if (mLat != 0.0 && mLng != 0.0) {
             call = RequestBuilder.getNearby(mLat, mLng, req)
         }
-        call!!.enqueue(mSearchCallback)
+        call?.enqueue(mSearchCallback)
     }
 
     private fun cancelSearchTask() {
         if (call != null && !call!!.isExecuted) {
-            call!!.cancel()
+            call?.cancel()
         }
     }
 
@@ -407,52 +418,40 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun toggleMarkers() {
-        if (isLayersVisible) {
-            hideLayers()
-        }
-        if (isPlacesVisible) {
-            hidePlaces()
-        }
+        if (isLayersVisible) hideLayers()
+        if (isPlacesVisible) hidePlaces()
         if (isMarkersVisible) {
             hideStyles()
         } else {
-            ViewUtils.slideInUp(context!!, styleCard!!)
+            ViewUtils.slideInUp(context!!, styleCard)
         }
     }
 
     private fun hideStyles() {
         if (isMarkersVisible) {
-            ViewUtils.slideOutDown(context!!, styleCard!!)
+            ViewUtils.slideOutDown(context!!, styleCard)
         }
     }
 
     private fun togglePlaces() {
-        if (isMarkersVisible) {
-            hideStyles()
-        }
-        if (isLayersVisible) {
-            hideLayers()
-        }
+        if (isMarkersVisible) hideStyles()
+        if (isLayersVisible) hideLayers()
         if (isPlacesVisible) {
             hidePlaces()
         } else {
-            ViewUtils.slideInUp(context!!, placesListCard!!)
+            ViewUtils.slideInUp(context!!, placesListCard)
         }
     }
 
     private fun hidePlaces() {
         if (isPlacesVisible) {
-            ViewUtils.slideOutDown(context!!, placesListCard!!)
+            ViewUtils.slideOutDown(context!!, placesListCard)
         }
     }
 
     private fun toggleLayers() {
-        if (isMarkersVisible) {
-            hideStyles()
-        }
-        if (isPlacesVisible) {
-            hidePlaces()
-        }
+        if (isMarkersVisible) hideStyles()
+        if (isPlacesVisible) hidePlaces()
         if (isLayersVisible) {
             hideLayers()
         } else {
@@ -469,19 +468,17 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     private fun zoomClick() {
         isFullscreen = !isFullscreen
         if (mMapListener != null) {
-            mMapListener!!.onZoomClick(isFullscreen)
+            mMapListener?.onZoomClick(isFullscreen)
         }
         if (isFullscreen) {
-            if (isDark)
-                mapZoom.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
-            else
-                mapZoom.setImageResource(R.drawable.ic_arrow_downward_black_24dp)
+            zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
         } else {
-            if (isDark)
-                mapZoom.setImageResource(R.drawable.ic_arrow_upward_white_24dp)
-            else
-                mapZoom.setImageResource(R.drawable.ic_arrow_upward_black_24dp)
+            restoreScaleButton()
         }
+    }
+
+    private fun restoreScaleButton() {
+        zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
     }
 
     override fun onResume() {
@@ -537,28 +534,9 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View) {
-        val id = v.id
-        if (id >= ThemeUtil.NUM_OF_MARKERS && id < ThemeUtil.NUM_OF_MARKERS * 2) {
-            recreateStyle(v.id - ThemeUtil.NUM_OF_MARKERS)
-            hideStyles()
-        }
-        when (id) {
-            R.id.cardClear -> loadPlaces()
-            R.id.mapZoom -> zoomClick()
-            R.id.layers -> toggleLayers()
-            R.id.typeNormal -> setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
-            R.id.typeHybrid -> setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
-            R.id.typeSatellite -> setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
-            R.id.typeTerrain -> setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
-            R.id.placesCard -> togglePlaces()
-            R.id.markers -> toggleMarkers()
-        }
-    }
-
     private fun cancelTracking() {
         if (mLocList != null) {
-            mLocList!!.removeUpdates()
+            mLocList?.removeUpdates()
         }
     }
 
