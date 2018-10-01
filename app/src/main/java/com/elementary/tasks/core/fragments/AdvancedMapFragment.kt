@@ -304,15 +304,6 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
     }
 
-    fun showShowcase() {
-        if (context == null) {
-            return
-        }
-        if (!prefs.isShowcase(SHOWCASE) && isBack) {
-            prefs.setShowcase(SHOWCASE, true)
-        }
-    }
-
     private fun initArgs() {
         val args = arguments
         if (args != null) {
