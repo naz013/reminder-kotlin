@@ -272,7 +272,6 @@ class LocationFragment : RadiusTypeFragment() {
         } else {
             ViewUtils.fadeOutAnimation(scrollView)
             ViewUtils.fadeInAnimation(mapContainer)
-            mAdvancedMapFragment?.showShowcase()
         }
     }
 

@@ -63,7 +63,7 @@ class PlacesMapFragment : BaseMapFragment() {
     private var spinnerArray: MutableList<GooglePlaceItem> = mutableListOf()
 
     private var isZoom = true
-    private var isFullscreen = false
+    var isFullscreen = false
     private var isDark = false
     private var mRadius = -1
     private var markerStyle = -1
@@ -79,11 +79,11 @@ class PlacesMapFragment : BaseMapFragment() {
 
     private val mMapCallback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
-        mMap!!.uiSettings.isMyLocationButtonEnabled = false
-        mMap!!.uiSettings.isCompassEnabled = true
-        setStyle(mMap!!)
+        googleMap.uiSettings.isMyLocationButtonEnabled = false
+        googleMap.uiSettings.isCompassEnabled = true
+        setStyle(googleMap)
         setMyLocation()
-        mMap?.setOnMapClickListener {
+        googleMap.setOnMapClickListener {
             hideLayers()
             hidePlaces()
             hideStyles()
@@ -289,7 +289,8 @@ class PlacesMapFragment : BaseMapFragment() {
         placesCard.setOnClickListener { togglePlaces() }
         cardClear.setOnClickListener { loadPlaces() }
         backCard.setOnClickListener {
-
+            restoreScaleButton()
+            mMapListener?.onBackClick()
         }
 
         typeNormal.setOnClickListener {
@@ -305,7 +306,6 @@ class PlacesMapFragment : BaseMapFragment() {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
         }
 
-        backCard.visibility = View.GONE
         if (!Module.isPro) {
             markersCard.visibility = View.GONE
         }
@@ -409,7 +409,7 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun addMarkers() {
-        mMap!!.clear()
+        mMap?.clear()
         if (spinnerArray.size > 0) {
             for (model in spinnerArray) {
                 addMarker(model.position, model.name, false, false, mRadius)
