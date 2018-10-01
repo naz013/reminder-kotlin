@@ -7,17 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_reminder_shop.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,11 +36,9 @@ import kotlinx.android.synthetic.main.fragment_reminder_shop.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShopFragment : TypeFragment() {
+class ShopFragment : RepeatableTypeFragment() {
 
     private val mAdapter = ShopListRecyclerAdapter()
-    private var isReminder = false
-    private var mSelectedPosition: Int = 0
     private val mActionListener = object : ShopListRecyclerAdapter.ActionListener {
         override fun onItemCheck(position: Int, isChecked: Boolean) {
             val item = mAdapter.getItem(position)
@@ -55,24 +52,22 @@ class ShopFragment : TypeFragment() {
     }
 
     override fun prepare(): Reminder? {
-        val iFace = reminderInterface ?: return null
         if (mAdapter.itemCount == 0) {
-            iFace.showSnackbar(getString(R.string.shopping_list_is_empty))
+            reminderInterface.showSnackbar(getString(R.string.shopping_list_is_empty))
             return null
         }
-        var reminder = iFace.reminder
-        val type = Reminder.BY_DATE_SHOP
-        if (reminder == null) {
-            reminder = Reminder()
-        }
+        val reminder = reminderInterface.reminder
         reminder.shoppings = mAdapter.data
         reminder.target = ""
-        reminder.type = type
+        reminder.type = Reminder.BY_DATE_SHOP
         reminder.repeatInterval = 0
-        if (isReminder) {
-            val startTime = dateViewShopping.dateTime
+        reminder.exportToCalendar = false
+        reminder.exportToTasks = false
+        reminder.hasReminder = attackDelay.isChecked
+        if (attackDelay.isChecked) {
+            val startTime = dateView.dateTime
             val time = TimeUtil.getGmtFromDateTime(startTime)
-            LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
+            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
             if (!TimeCount.isCurrent(time)) {
                 Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
                 return null
@@ -92,10 +87,20 @@ class ShopFragment : TypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dateViewShopping.setOnLongClickListener {
-            selectDateDialog()
-            true
+        ViewUtils.listenScrollableView(scrollView) {
+            reminderInterface.updateScroll(it)
         }
+        moreLayout.isNestedScrollingEnabled = false
+
+        if (Module.isPro) {
+            ledView.visibility = View.VISIBLE
+        } else {
+            ledView.visibility = View.GONE
+        }
+
+        tuneExtraView.dialogues = dialogues
+        tuneExtraView.hasAutoExtra = false
+
         todoList.layoutManager = LinearLayoutManager(context)
         mAdapter.listener = mActionListener
         todoList.adapter = mAdapter
@@ -107,8 +112,64 @@ class ShopFragment : TypeFragment() {
             false
         }
         addButton.setOnClickListener { addNewItem() }
-        switchDate()
+        attackDelay.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                delayLayout.visibility = View.VISIBLE
+            else
+                delayLayout.visibility = View.GONE
+        }
+
+        delayLayout.visibility = View.GONE
+
+        melodyView.onFileSelectListener = {
+            reminderInterface.selectMelody()
+        }
+        attachmentView.onFileSelectListener = {
+            reminderInterface.attachFile()
+        }
+        groupView.onGroupSelectListener = {
+            reminderInterface.selectGroup()
+        }
+
+        initPropertyFields()
         editReminder()
+    }
+
+    private fun initPropertyFields() {
+        taskSummary.bindProperty(reminderInterface.reminder.summary) {
+            reminderInterface.reminder.summary = it.trim()
+        }
+        dateView.bindProperty(reminderInterface.reminder.eventTime) {
+            reminderInterface.reminder.eventTime = it
+        }
+        priorityView.bindProperty(reminderInterface.reminder.priority) {
+            reminderInterface.reminder.priority = it
+            updateHeader()
+        }
+        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
+            reminderInterface.reminder.melodyPath = it
+        }
+        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
+            reminderInterface.reminder.attachmentFile = it
+        }
+        loudnessView.bindProperty(reminderInterface.reminder.volume) {
+            reminderInterface.reminder.volume = it
+        }
+        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
+            reminderInterface.reminder.windowType = it
+        }
+        tuneExtraView.bindProperty(reminderInterface.reminder) {
+            reminderInterface.reminder.copyExtra(it)
+        }
+        if (Module.isPro) {
+            ledView.bindProperty(reminderInterface.reminder.color) {
+                reminderInterface.reminder.color = it
+            }
+        }
+    }
+
+    private fun updateHeader() {
+        cardSummary.text = getSummary()
     }
 
     private fun addNewItem() {
@@ -122,55 +183,30 @@ class ShopFragment : TypeFragment() {
     }
 
     private fun editReminder() {
-        val iFace = reminderInterface ?: return
-        val reminder = iFace.reminder ?: return
-        dateViewShopping.setDateTime(reminder.eventTime)
+        val reminder = reminderInterface.reminder
+        groupView.reminderGroup = ReminderGroup().apply {
+            this.groupColor = reminder.groupColor
+            this.groupTitle = reminder.groupTitle
+            this.groupUuId = reminder.groupUuId
+        }
         mAdapter.data = reminder.shoppings
-        if (!TextUtils.isEmpty(reminder.eventTime)) {
-            isReminder = true
-            dateViewShopping.setDateTime(reminder.eventTime)
-        } else {
-            isReminder = false
-        }
-        switchDate()
+        attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
+        updateHeader()
     }
 
-    private fun selectDateDialog() {
-        val builder = dialogues.getDialog(context!!)
-        val types = arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
-        var selection = 0
-        if (isReminder) selection = 1
-        builder.setSingleChoiceItems(adapter, selection) { _, which -> mSelectedPosition = which }
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            makeAction()
-            dialogInterface.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mSelectedPosition = 0 }
-        dialog.setOnDismissListener { mSelectedPosition = 0 }
-        dialog.show()
+    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
+        super.onGroupUpdate(reminderGroup)
+        groupView.reminderGroup = reminderGroup
+        updateHeader()
     }
 
-    private fun makeAction() {
-        when (mSelectedPosition) {
-            0 -> isReminder = false
-            1 -> isReminder = true
-        }
-        switchDate()
+    override fun onMelodySelect(path: String) {
+        super.onMelodySelect(path)
+        melodyView.file = path
     }
 
-    private fun switchDate() {
-        if (isReminder) {
-            dateViewShopping.setSingleText(null)
-        } else {
-            dateViewShopping.setSingleText(getString(R.string.no_reminder))
-        }
-        dateViewShopping.setOnClickListener { if (!isReminder) selectDateDialog() }
-    }
-
-    companion object {
-
-        private const val TAG = "ShopFragment"
+    override fun onAttachmentSelect(path: String) {
+        super.onAttachmentSelect(path)
+        attachmentView.file = path
     }
 }

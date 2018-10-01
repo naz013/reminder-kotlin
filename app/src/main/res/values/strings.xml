@@ -717,5 +717,6 @@
     <string name="use_settings_for_reminders">Use settings for reminders</string>
     <string name="new_place">New place</string>
     <string name="edit_place">Edit place</string>
+    <string name="with_reminder">With reminder</string>
 
 </resources>
