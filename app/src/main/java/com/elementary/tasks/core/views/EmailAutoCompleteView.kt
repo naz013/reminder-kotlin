@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views
 
 import android.content.Context
 import android.graphics.Typeface
-import android.os.AsyncTask
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +15,10 @@ import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.AssetsUtil
+import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.android.synthetic.main.list_item_email.view.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -45,13 +47,6 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     private var mData: List<EmailItem> = ArrayList()
     private var adapter: EmailAdapter? = null
 
-    private val mLoadCallback = object : EmailCallback {
-        override fun onLoadFinish(list: List<EmailItem>) {
-            mData = list
-            setAdapter(EmailAdapter(mData))
-        }
-    }
-
     constructor(context: Context) : super(context) {
         init(context, null)
     }
@@ -78,12 +73,14 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
             }
         })
-        setOnItemClickListener { _, _, i, _ -> setText((adapter!!.getItem(i) as EmailItem).email) }
-        LoadAsync(mLoadCallback).execute()
+        loadContacts {
+            mData = it
+            setAdapter(EmailAdapter(it))
+        }
     }
 
     private fun performTypeValue(s: String) {
-        if (adapter != null) adapter!!.filter.filter(s)
+        adapter?.filter?.filter(s)
     }
 
     override fun onAttachedToWindow() {
@@ -111,8 +108,8 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
             return items.size
         }
 
-        override fun getItem(i: Int): Any {
-            return items[i]
+        override fun getItem(i: Int): String {
+            return items[i].email
         }
 
         override fun getItemId(i: Int): Long {
@@ -132,11 +129,11 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
             return v
         }
 
-        override fun getFilter(): Filter {
+        override fun getFilter(): Filter? {
             if (filter == null) {
                 filter = ValueFilter()
             }
-            return filter!!
+            return filter
         }
 
         internal inner class ValueFilter : Filter() {
@@ -159,53 +156,40 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
                 return results
             }
 
-            override fun publishResults(constraint: CharSequence, results: Filter.FilterResults) {
-                if (adapter != null) {
-                    adapter!!.setItems(results.values as List<EmailItem>)
-                    adapter!!.notifyDataSetChanged()
+            override fun publishResults(constraint: CharSequence?, results: Filter.FilterResults?) {
+                if (adapter != null && results != null) {
+                    adapter?.setItems(results.values as List<EmailItem>)
+                    adapter?.notifyDataSetChanged()
                 }
             }
         }
     }
 
-    private inner class LoadAsync(private val mCallback: EmailCallback?) : AsyncTask<Void, Void, List<EmailItem>>() {
-
-        override fun doInBackground(vararg voids: Void): List<EmailItem> {
+    private fun loadContacts(callback: ((List<EmailItem>) -> Unit)?) {
+        launch(CommonPool) {
             val list = ArrayList<EmailItem>()
-            val emlRecsHS = HashSet<String>()
-            val cr = mContext!!.contentResolver
-            val PROJECTION = arrayOf(ContactsContract.RawContacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.PHOTO_ID, ContactsContract.CommonDataKinds.Email.DATA, ContactsContract.CommonDataKinds.Photo.CONTACT_ID)
-            val order = ("CASE WHEN "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + ", "
-                    + ContactsContract.CommonDataKinds.Email.DATA
-                    + " COLLATE NOCASE")
-            val filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''"
-            val cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION, filter, null, order)
-            if (cur != null && cur.moveToFirst()) {
+            val uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI
+            val projection = arrayOf(
+                    ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Email.DATA
+            )
+
+            val cursor = context.contentResolver.query(uri, projection, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    val name = cur.getString(1)
-                    val emlAddr = cur.getString(3)
-                    if (emlRecsHS.add(emlAddr.toLowerCase())) {
+                    val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                    val emlAddr = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA))
+                    if (emlAddr != null && name != null) {
                         list.add(EmailItem(name, emlAddr))
                     }
-                } while (cur.moveToNext())
-                cur.close()
+                } while (cursor.moveToNext())
+                cursor.close()
             }
-            return list
-        }
-
-        override fun onPostExecute(list: List<EmailItem>) {
-            super.onPostExecute(list)
-            mCallback?.onLoadFinish(list)
+            withUIContext {
+                callback?.invoke(list)
+            }
         }
     }
 
-    class EmailItem(val name: String, val email: String)
-
-    interface EmailCallback {
-        fun onLoadFinish(list: List<EmailItem>)
-    }
+    data class EmailItem(val name: String, val email: String)
 }
