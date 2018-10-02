@@ -29,14 +29,9 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 class ReminderViewModel private constructor(application: Application, id: String) : BaseRemindersViewModel(application) {
 
     var reminder: LiveData<Reminder>
-    val reminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
 
     init {
         reminder = appDb.reminderDao().loadById(id)
-    }
-
-    fun loadGroup(uuId: String) {
-        reminderGroup.postValue(appDb.reminderGroupDao().getById(uuId))
     }
 
     class Factory(private val application: Application, private val id: String) : ViewModelProvider.NewInstanceFactory() {

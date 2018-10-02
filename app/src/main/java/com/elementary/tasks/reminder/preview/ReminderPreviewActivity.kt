@@ -1,15 +1,20 @@
 package com.elementary.tasks.reminder.preview
 
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.telephony.SmsManager
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
@@ -24,6 +29,7 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
+import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
@@ -75,6 +81,14 @@ class ReminderPreviewActivity : ThemedActivity() {
     @Inject
     lateinit var reminderUtils: ReminderUtils
 
+    private var mSendListener = { isSent: Boolean ->
+        if (isSent) {
+            finish()
+        } else {
+            showSendingError()
+        }
+    }
+
     init {
         ReminderApp.appComponent.inject(this)
     }
@@ -93,15 +107,57 @@ class ReminderPreviewActivity : ThemedActivity() {
         initViewModel(id)
     }
 
+    private fun showSendingError() {
+        Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun sendSMS(reminder: Reminder) {
+        if (TextUtils.isEmpty(reminder.summary)) return
+        if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
+            Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS)
+            return
+        }
+        val action = "SMS_SENT"
+        val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
+        registerReceiver(SendReceiver(mSendListener), IntentFilter(action))
+        val sms = SmsManager.getDefault()
+        try {
+            sms.sendTextMessage(reminder.target, null, reminder.summary, sentPI, null)
+        } catch (e: SecurityException) {
+            Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun makeCall(reminder: Reminder) {
+        if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
+            TelephonyUtil.makeCall(reminder.target, this)
+        } else {
+            Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE)
+        }
+    }
+
+    private fun openApp(reminder: Reminder) {
+        if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
+            TelephonyUtil.openApp(reminder.target, this)
+        } else {
+            TelephonyUtil.openLink(reminder.target, this)
+        }
+    }
+
+    private fun sendEmail(reminder: Reminder) {
+        TelephonyUtil.sendMail(this, reminder.target,
+                reminder.subject, reminder.summary, reminder.attachmentFile)
+    }
+
     private fun initViewModel(id: String) {
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
-        viewModel.reminder.observe(this, Observer{ reminder ->
+        viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showInfo(reminder)
             }
         })
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
@@ -111,12 +167,13 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun showTask() {
-        if (mGoogleTask != null) {
+        val task = mGoogleTask
+        if (task != null) {
             val binding = GoogleTaskHolder(dataContainer, null)
-            binding.bind(mGoogleTask!!)
+            binding.bind(task)
             binding.itemView.setOnClickListener {
                 startActivity(Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
-                        .putExtra(Constants.INTENT_ID, mGoogleTask!!.taskId)
+                        .putExtra(Constants.INTENT_ID, task.taskId)
                         .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
             }
             this.dataContainer.addView(binding.itemView)
@@ -124,12 +181,13 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun showNote() {
-        if (mNote != null) {
+        val note = mNote
+        if (note != null) {
             val binding = NoteHolder(dataContainer, null)
-            binding.setData(mNote!!)
+            binding.setData(note)
             binding.itemView.setOnClickListener {
                 startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
-                        .putExtra(Constants.INTENT_ID, mNote!!.key))
+                        .putExtra(Constants.INTENT_ID, note.key))
             }
             this.dataContainer.addView(binding.itemView)
         }
@@ -146,13 +204,13 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private val mReadyCallback = object : ReadyListener {
-        override fun onReady(it: Any?) {
-            if (it == null) return
-            if (it is Note) {
-                mNote = it
+        override fun onReady(`object`: Any?) {
+            if (`object` == null) return
+            if (`object` is Note) {
+                mNote = `object`
                 showNote()
-            } else if (it is GoogleTask) {
-                mGoogleTask = it
+            } else if (`object` is GoogleTask) {
+                mGoogleTask = `object`
                 showTask()
             }
         }
@@ -186,6 +244,38 @@ class ReminderPreviewActivity : ThemedActivity() {
             loadData(reminder)
         } else {
             todoList.visibility = View.GONE
+        }
+        if (reminder.isActive && !reminder.isRemoved) {
+            when {
+                Reminder.isKind(reminder.type, Reminder.Kind.SMS) -> {
+                    fab.setIconResource(R.drawable.ic_twotone_send_24px)
+                    fab.text = getString(R.string.send_sms)
+                    fab.visibility = View.VISIBLE
+                }
+                Reminder.isKind(reminder.type, Reminder.Kind.CALL) -> {
+                    fab.setIconResource(R.drawable.ic_twotone_call_24px)
+                    fab.text = getString(R.string.make_call)
+                    fab.visibility = View.VISIBLE
+                }
+                Reminder.isSame(reminder.type, Reminder.BY_DATE_APP) -> {
+                    fab.setIconResource(R.drawable.ic_twotone_open_in_new_24px)
+                    fab.text = getString(R.string.open_app)
+                    fab.visibility = View.VISIBLE
+                }
+                Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) -> {
+                    fab.setIconResource(R.drawable.ic_twotone_open_in_browser_24px)
+                    fab.text = getString(R.string.open_link)
+                    fab.visibility = View.VISIBLE
+                }
+                Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
+                    fab.setIconResource(R.drawable.ic_twotone_local_post_office_24px)
+                    fab.text = getString(R.string.send)
+                    fab.visibility = View.VISIBLE
+                }
+                else -> fab.visibility = View.GONE
+            }
+        } else {
+            fab.visibility = View.GONE
         }
 
         dataContainer.removeAllViewsInLayout()
@@ -423,12 +513,29 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun initViews() {
         switchWrapper.setOnClickListener { switchClick() }
+        fab.setOnClickListener { fabClick() }
         mapContainer.visibility = View.GONE
     }
 
-    private fun switchClick() {
+    private fun fabClick() {
+        val reminder = this.reminder
         if (reminder != null) {
-            viewModel.toggleReminder(reminder!!)
+            if (reminder.isActive && !reminder.isRemoved) {
+                when {
+                    Reminder.isKind(reminder.type, Reminder.Kind.SMS) -> sendSMS(reminder)
+                    Reminder.isKind(reminder.type, Reminder.Kind.CALL) -> makeCall(reminder)
+                    Reminder.isSame(reminder.type, Reminder.BY_DATE_APP) -> openApp(reminder)
+                    Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) -> openApp(reminder)
+                    Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> sendEmail(reminder)
+                }
+            }
+        }
+    }
+
+    private fun switchClick() {
+        val reminder = this.reminder
+        if (reminder != null) {
+            viewModel.toggleReminder(reminder)
         }
     }
 
@@ -486,7 +593,22 @@ class ReminderPreviewActivity : ThemedActivity() {
         fun onReady(`object`: Any?)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isEmpty()) return
+        when (requestCode) {
+            CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                fabClick()
+            }
+            SMS_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                fabClick()
+            }
+        }
+    }
+
     companion object {
+        private const val CALL_PERM = 612
+        private const val SMS_PERM = 613
         private const val TAG = "ReminderPreviewActivity"
     }
 }
