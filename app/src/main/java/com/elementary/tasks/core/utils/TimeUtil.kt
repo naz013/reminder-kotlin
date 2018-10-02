@@ -472,6 +472,34 @@ object TimeUtil {
         return hourStr + minuteStr + secondStr
     }
 
+    fun generateViewAfterString(time: Long): String {
+        val s: Long = 1000
+        val m = s * 60
+        val h = m * 60
+        val hours = time / h
+        val minutes = (time - hours * h) / m
+        val seconds = (time - hours * h - minutes * m) / s
+        val hourStr: String
+        hourStr = if (hours < 10) {
+            "0$hours"
+        } else {
+            hours.toString()
+        }
+        val minuteStr: String
+        minuteStr = if (minutes < 10) {
+            "0$minutes"
+        } else {
+            minutes.toString()
+        }
+        val secondStr: String
+        secondStr = if (seconds < 10) {
+            "0$seconds"
+        } else {
+            seconds.toString()
+        }
+        return "$hourStr:$minuteStr:$secondStr"
+    }
+
     fun getAgeFormatted(mContext: Context, date: String?): String {
         val years = getAge(date)
         val result = StringBuilder()

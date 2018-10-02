@@ -25,23 +25,9 @@ import retrofit2.converter.gson.GsonConverterFactory
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object RetrofitBuilder {
 
-    private var retrofit: Retrofit? = null
     private var retrofitPlaces: Retrofit? = null
-
-    private val retrofitBuilder: Retrofit
-        get() {
-            if (retrofit == null) {
-                retrofit = Retrofit.Builder()
-                        .baseUrl(UnsplashApi.BASE_URL)
-                        .client(client)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-            }
-            return retrofit!!
-        }
 
     private val placesBuilder: Retrofit
         get() {
@@ -55,8 +41,6 @@ object RetrofitBuilder {
             return retrofitPlaces!!
         }
 
-    val unsplashApi: UnsplashApi = retrofitBuilder.create(UnsplashApi::class.java)
-
     val placesApi: PlacesApi = placesBuilder.create(PlacesApi::class.java)
 
     private val client: OkHttpClient
@@ -69,12 +53,4 @@ object RetrofitBuilder {
             return OkHttpClient.Builder()
                     .addInterceptor(interceptor).build()
         }
-
-    fun getImageLink(id: Long): String {
-        return UnsplashApi.BASE_URL + "/1280/768?image=" + id
-    }
-
-    fun getImageLink(id: Long, width: Int, height: Int): String {
-        return UnsplashApi.BASE_URL + "/" + width + "/" + height + "?image=" + id
-    }
 }

@@ -34,7 +34,7 @@ import com.elementary.tasks.core.data.models.*
     Place::class,
     GoogleTaskList::class,
     GoogleTask::class,
-    MainImage::class,
+    UsedTime::class,
     Birthday::class,
     SmsTemplate::class
 ], version = 1, exportSchema = false)
@@ -50,7 +50,7 @@ abstract class AppDb : RoomDatabase() {
     abstract fun birthdaysDao(): BirthdaysDao
     abstract fun googleTaskListsDao(): GoogleTaskListsDao
     abstract fun googleTasksDao(): GoogleTasksDao
-    abstract fun mainImagesDao(): MainImagesDao
+    abstract fun usedTimeDao(): UsedTimeDao
 
     companion object {
 
