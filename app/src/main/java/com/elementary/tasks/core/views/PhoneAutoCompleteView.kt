@@ -20,7 +20,6 @@ import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.android.synthetic.main.list_item_email.view.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
-import timber.log.Timber
 import java.util.*
 
 
@@ -73,12 +72,6 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
             }
         })
-//        setOnItemClickListener { _, _, i, _ ->
-//            run {
-//                val item = adapter?.getItem(i) as PhoneItem? ?: return@run
-//                setText(item.phone)
-//            }
-//        }
         reloadContacts()
     }
 
@@ -169,11 +162,8 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
             override fun publishResults(constraint: CharSequence?, results: Filter.FilterResults?) {
                 if (results != null) {
-                    Timber.d("publishResults: 1")
                     adapter?.setItems(results.values as List<PhoneItem>)
-                    Timber.d("publishResults: 2")
                     adapter?.notifyDataSetChanged()
-                    Timber.d("publishResults: 3")
                 }
             }
         }
