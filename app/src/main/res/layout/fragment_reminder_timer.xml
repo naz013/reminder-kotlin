@@ -33,6 +33,14 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mostUserTimes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
+
         <com.elementary.tasks.core.views.TimerPickerView
             android:id="@+id/timerPickerView"
             android:layout_width="match_parent"

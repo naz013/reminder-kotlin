@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,12 +8,19 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.models.UsedTime
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.usedTime.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_timer.*
+import kotlinx.android.synthetic.main.list_item_used_time.view.*
 import timber.log.Timber
 
 /**
@@ -35,8 +41,10 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@SuppressLint("SetTextI18n")
 class TimerFragment : RepeatableTypeFragment() {
+
+    private val timesAdapter = TimesAdapter()
+    lateinit var viewModel: UsedTimeViewModel
 
     override fun prepare(): Reminder? {
         val reminder = reminderInterface.reminder
@@ -65,6 +73,9 @@ class TimerFragment : RepeatableTypeFragment() {
                 Reminder.BY_TIME_SMS
             }
         }
+
+        viewModel.saveTime(after)
+
         reminder.target = number
         reminder.type = type
         reminder.after = after
@@ -85,6 +96,8 @@ class TimerFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initMostUsedList()
+
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
@@ -119,6 +132,33 @@ class TimerFragment : RepeatableTypeFragment() {
         initScreenState()
         initPropertyFields()
         editReminder()
+
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(UsedTimeViewModel::class.java)
+        viewModel.usedTimeList.observe(this, Observer {
+            if (it != null) {
+                timesAdapter.updateData(it)
+                if (it.isEmpty()) {
+                    mostUserTimes.visibility = View.GONE
+                } else {
+                    mostUserTimes.visibility = View.VISIBLE
+                }
+            } else {
+                mostUserTimes.visibility = View.GONE
+            }
+        })
+    }
+
+    private fun initMostUsedList() {
+        mostUserTimes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        timesAdapter.listener = {
+            timerPickerView.timerValue = it.timeMills
+        }
+        mostUserTimes.adapter = timesAdapter
     }
 
     private fun initPropertyFields() {
@@ -265,6 +305,44 @@ class TimerFragment : RepeatableTypeFragment() {
     override fun onAttachmentSelect(path: String) {
         super.onAttachmentSelect(path)
         attachmentView.file = path
+    }
+
+    inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {
+
+        private val data: MutableList<UsedTime> = mutableListOf()
+        var listener: ((UsedTime) -> Unit)? = null
+
+        fun updateData(list: List<UsedTime>) {
+            this.data.clear()
+            this.data.addAll(list)
+            notifyDataSetChanged()
+        }
+
+        override fun onBindViewHolder(holder: TimeHolder, position: Int) {
+            holder.bind(data[position])
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeHolder {
+            return TimeHolder(parent)
+        }
+
+        override fun getItemCount(): Int {
+            return data.size
+        }
+
+        inner class TimeHolder(viewGroup: ViewGroup) :
+                RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.list_item_used_time, viewGroup, false)) {
+
+            init {
+                itemView.chipItem.setOnClickListener {
+                    listener?.invoke(data[adapterPosition])
+                }
+            }
+
+            fun bind(usedTime: UsedTime) {
+                itemView.chipItem.text = usedTime.timeString
+            }
+        }
     }
 
     companion object {

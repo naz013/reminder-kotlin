@@ -1,14 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.MainImage
-
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.Query
-
 import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.elementary.tasks.core.data.models.UsedTime
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -29,17 +27,29 @@ import androidx.room.OnConflictStrategy.REPLACE
  * limitations under the License.
  */
 @Dao
-interface MainImagesDao {
+interface UsedTimeDao {
 
-    @Query("SELECT * FROM MainImage")
-    fun loadAll(): LiveData<List<MainImage>>
+    @Query("SELECT * FROM UsedTime ORDER BY useCount DESC")
+    fun loadAll(): LiveData<List<UsedTime>>
+
+    @Query("SELECT * FROM UsedTime WHERE useCount > 1 ORDER BY useCount DESC LIMIT 5")
+    fun loadFirst5(): LiveData<List<UsedTime>>
+
+    @Query("SELECT * FROM UsedTime WHERE timeString=:timeString")
+    fun getByTimeString(timeString: String): UsedTime?
+
+    @Query("SELECT * FROM UsedTime WHERE timeMills=:timeMills")
+    fun getByTimeMills(timeMills: Long): UsedTime?
 
     @Insert(onConflict = REPLACE)
-    fun insert(mainImage: MainImage)
+    fun insert(usedTime: UsedTime)
 
     @Insert(onConflict = REPLACE)
-    fun insertAll(mainImages: List<MainImage>)
+    fun insertAll(vararg usedTimes: UsedTime)
 
     @Delete
-    fun delete(mainImage: MainImage)
+    fun delete(usedTime: UsedTime)
+
+    @Query("DELETE FROM UsedTime")
+    fun deleteAll()
 }
