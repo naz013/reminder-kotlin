@@ -161,6 +161,39 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp" />
 
+                    <com.elementary.tasks.core.views.BeforePickerView
+                        android:id="@+id/beforeView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="16dp"
+                        app:before_type="minutes" />
+
+                    <com.elementary.tasks.core.views.RepeatView
+                        android:id="@+id/repeatView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="16dp"
+                        app:repeat_type="days" />
+
+                    <com.elementary.tasks.core.views.RepeatLimitView
+                        android:id="@+id/repeatLimitView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp" />
+
+                    <com.elementary.tasks.core.views.DividerView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="60dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp" />
+
                     <com.elementary.tasks.core.views.PriorityPickerView
                         android:id="@+id/priorityView"
                         android:layout_width="match_parent"
@@ -229,41 +262,8 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp" />
 
-                    <com.elementary.tasks.core.views.BeforePickerView
-                        android:id="@+id/beforeView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp"
-                        app:before_type="minutes" />
-
                     <com.elementary.tasks.core.views.LedPickerView
                         android:id="@+id/ledView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp" />
-
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
-
-                    <com.elementary.tasks.core.views.RepeatView
-                        android:id="@+id/repeatView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp"
-                        app:repeat_type="days" />
-
-                    <com.elementary.tasks.core.views.RepeatLimitView
-                        android:id="@+id/repeatLimitView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
