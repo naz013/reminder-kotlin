@@ -718,5 +718,6 @@
     <string name="new_place">New place</string>
     <string name="edit_place">Edit place</string>
     <string name="with_reminder">With reminder</string>
+    <string name="select_place">Select place</string>
 
 </resources>
