@@ -63,10 +63,10 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
         }
 
         init {
-            itemView.setOnClickListener { view ->
+            itemView.itemCard.setOnClickListener { view ->
                 actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            itemView.setOnLongClickListener { view ->
+            itemView.itemCard.setOnLongClickListener { view ->
                 actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }

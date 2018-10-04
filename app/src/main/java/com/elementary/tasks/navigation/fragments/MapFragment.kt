@@ -18,7 +18,6 @@ import com.elementary.tasks.core.viewModels.reminders.ActiveGpsRemindersViewMode
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.bottom_sheet_layout.view.*
 import kotlinx.android.synthetic.main.fragment_events_map.*
 
 /**
@@ -53,7 +52,8 @@ class MapFragment : BaseNavigationFragment() {
     private val mReadyCallback = object : MapCallback {
         override fun onMapReady() {
             mGoogleMap?.setSearchEnabled(false)
-            showData()
+            val data = viewModel.events.value
+            if (data != null) showData(data)
         }
     }
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
@@ -92,24 +92,25 @@ class MapFragment : BaseNavigationFragment() {
         viewModel = ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer{ reminders ->
             if (reminders != null && mGoogleMap != null) {
-                showData()
+                showData(reminders)
             }
         })
     }
 
     private fun initMap() {
-        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false,
+        val map = AdvancedMapFragment.newInstance(false, false, false,
                 false, false, false, themeUtil.isDark)
-        mGoogleMap?.setCallback(mReadyCallback)
-        mGoogleMap?.setOnMarkerClick(mOnMarkerClick)
+        map.setCallback(mReadyCallback)
+        map.setOnMarkerClick(mOnMarkerClick)
         fragmentManager!!.beginTransaction()
-                .replace(R.id.fragment_container, mGoogleMap!!)
+                .replace(R.id.fragment_container, map)
                 .addToBackStack(null)
                 .commit()
+        mGoogleMap = map
     }
 
     private fun initViews() {
-        bottomSheet.recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(context)
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 when (actions) {
@@ -118,21 +119,22 @@ class MapFragment : BaseNavigationFragment() {
             }
 
         }
-        bottomSheet.recyclerView.adapter = mAdapter
+        recyclerView.adapter = mAdapter
+        reloadView()
     }
 
     override fun getTitle(): String = getString(R.string.map)
 
-    private fun showData() {
-        val data = viewModel.events.value
-        if (isDataShowed || data == null) {
+    private fun showData(data: List<Reminder>) {
+        val map = mGoogleMap
+        if (isDataShowed || map == null) {
             return
         }
         mAdapter.setData(data)
         var mapReady = false
         for (reminder in data) {
             for (place in reminder.places) {
-                mapReady = mGoogleMap!!.addMarker(LatLng(place.latitude, place.longitude),
+                mapReady = map.addMarker(LatLng(place.latitude, place.longitude),
                         place.name, false, place.marker, false, place.radius)
                 if (!mapReady) {
                     break
@@ -148,11 +150,11 @@ class MapFragment : BaseNavigationFragment() {
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
-            bottomSheet.recyclerView.visibility = View.VISIBLE
-            bottomSheet.emptyItem.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+            emptyItem.visibility = View.GONE
         } else {
-            bottomSheet.recyclerView.visibility = View.GONE
-            bottomSheet.emptyItem.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            emptyItem.visibility = View.VISIBLE
         }
     }
 }
