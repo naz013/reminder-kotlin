@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,16 +10,51 @@
         android:layout_height="match_parent"
         android:orientation="vertical" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/sheetLayout"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/placesListCard"
         android:layout_width="match_parent"
-        android:layout_height="192dp"
-        android:clipToPadding="true">
+        android:layout_height="190dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="-15dp"
+        android:paddingBottom="15dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="?colorPrimary"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp">
 
-        <include
-            android:id="@+id/bottomSheet"
-            layout="@layout/bottom_sheet_layout" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp" />
 
-    </androidx.core.widget.NestedScrollView>
+        <LinearLayout
+            android:id="@+id/emptyItem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/emptyImage"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="24dp"
+                app:srcCompat="@drawable/ic_empty_places" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/emptyText"
+                style="?textAppearanceHeadline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center|top"
+                android:text="@string/no_events" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>
