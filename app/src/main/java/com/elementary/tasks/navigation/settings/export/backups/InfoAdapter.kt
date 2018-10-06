@@ -1,4 +1,4 @@
-package com.elementary.tasks.backups
+package com.elementary.tasks.navigation.settings.export.backups
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,6 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.chart.PieSlice
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.navigation.settings.export.BackupsFragment
 import kotlinx.android.synthetic.main.list_item_backup_info.view.*
 import java.io.File
 import java.io.FileOutputStream
@@ -37,7 +38,7 @@ import java.util.concurrent.ExecutionException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((UserInfoAsync.Info?) -> Unit)?) {
+class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((BackupsFragment.Info?) -> Unit)?) {
 
     private val view: View
         get() = LayoutInflater.from(layout.context).inflate(R.layout.list_item_backup_info, layout, false)
@@ -58,14 +59,14 @@ class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((Use
     private fun fillInfo(binding: View, model: UserItem?) {
         if (model != null) {
             binding.moreButton.setOnClickListener { view -> showPopup(model.kind, view) }
-            if (model.kind == UserInfoAsync.Info.Local) {
+            if (model.kind == BackupsFragment.Info.Local) {
                 binding.userContainer.visibility = View.GONE
                 binding.sourceName.text = binding.context.getString(R.string.local)
             } else {
                 binding.userContainer.visibility = View.VISIBLE
-                if (model.kind == UserInfoAsync.Info.Google) {
+                if (model.kind == BackupsFragment.Info.Google) {
                     binding.sourceName.text = binding.context.getString(R.string.google_drive)
-                } else if (model.kind == UserInfoAsync.Info.Dropbox) {
+                } else if (model.kind == BackupsFragment.Info.Dropbox) {
                     binding.sourceName.text = binding.context.getString(R.string.dropbox)
                 }
             }
@@ -82,7 +83,7 @@ class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((Use
         }
     }
 
-    private fun showPopup(kind: UserInfoAsync.Info?, view: View) {
+    private fun showPopup(kind: BackupsFragment.Info?, view: View) {
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.inflate(R.menu.popup_menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->

@@ -13,6 +13,7 @@ import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.navigation.settings.export.BackupsFragment
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_export.*
@@ -80,6 +81,10 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(scrollView) {
             callback?.onScrollUpdate(it)
+        }
+
+        backupsPrefs.setOnClickListener {
+            callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
         }
 
         initExportToCalendarPrefs()
