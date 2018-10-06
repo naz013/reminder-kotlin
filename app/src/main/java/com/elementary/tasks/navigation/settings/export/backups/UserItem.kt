@@ -1,4 +1,6 @@
-package com.elementary.tasks.backups
+package com.elementary.tasks.navigation.settings.export.backups
+
+import com.elementary.tasks.navigation.settings.export.BackupsFragment
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,23 +20,11 @@ package com.elementary.tasks.backups
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class UserItem {
-
-    var name: String = ""
-    var photo: String = ""
-    var quota: Long = 0
-    var used: Long = 0
-    var count: Int = 0
-    var kind: UserInfoAsync.Info? = null
-
-    constructor()
-
-    constructor(name: String, quota: Long, used: Long, count: Int, photo: String) {
-        this.name = name
-        this.quota = quota
-        this.used = used
-        this.count = count
-        this.photo = photo
-    }
-}
+data class UserItem(
+        var name: String = "",
+        var photo: String = "",
+        var quota: Long = 0,
+        var used: Long = 0,
+        var count: Int = 0,
+        var kind: BackupsFragment.Info? = null
+)

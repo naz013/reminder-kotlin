@@ -3,7 +3,6 @@ package com.elementary.tasks.core.cloud
 import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.backups.UserItem
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -12,6 +11,7 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
@@ -158,26 +158,26 @@ private constructor() {
         @Throws(IOException::class)
         fun updateTask(item: GoogleTask) {
             if (tasksService == null) return
-            val task = tasksService!!.tasks().get(item.listId, item.taskId).execute()
+            val task = tasksService?.tasks()?.get(item.listId, item.taskId)?.execute() ?: return
             task.status = TASKS_NEED_ACTION
             task.title = item.title
             task.completed = Data.NULL_DATE_TIME
             if (item.dueDate != 0L) task.due = DateTime(item.dueDate)
             if (item.notes != "") task.notes = item.notes
             task.updated = DateTime(System.currentTimeMillis())
-            tasksService!!.tasks().update(item.listId, task.id, task).execute()
+            tasksService?.tasks()?.update(item.listId, task.id, task)?.execute()
         }
 
         fun getTasks(listId: String): List<Task> {
             var taskLists: List<Task> = ArrayList()
             if (tasksService == null) return taskLists
             try {
-                taskLists = tasksService!!.tasks().list(listId).execute().items
+                taskLists = tasksService?.tasks()?.list(listId)?.execute()?.items ?: arrayListOf()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
 
-            return taskLists ?: ArrayList()
+            return taskLists
         }
 
         fun insertTasksList(listTitle: String, color: Int) {
@@ -263,14 +263,13 @@ private constructor() {
             get() {
                 if (driveService == null) return null
                 try {
-                    val about = driveService!!.about().get().setFields("user, storageQuota").execute()
-                    val quota = about.storageQuota
-                    return UserItem(about.user.displayName, quota.limit!!,
-                            quota.usage!!, countFiles(), about.user.photoLink)
-                } catch (e: IOException) {
+                    val about = driveService?.about()?.get()?.setFields("user, storageQuota")?.execute() ?: return null
+                    val quota = about.storageQuota ?: return null
+                    return UserItem(name = about.user.displayName, quota = quota.limit,
+                            used = quota.usage, count = countFiles(), photo = about.user.photoLink)
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
                 return null
             }
 
@@ -283,8 +282,8 @@ private constructor() {
             @Throws(IOException::class, IllegalArgumentException::class)
             get() {
                 if (driveService == null) return null
-                val request = driveService!!.files().list()
-                        .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '$FOLDER_NAME'")
+                val request = driveService?.files()?.list()
+                        ?.setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '$FOLDER_NAME'")
                         ?: return null
                 do {
                     val files = request.execute() ?: return null
@@ -311,7 +310,7 @@ private constructor() {
         private fun countFiles(): Int {
             var count = 0
             if (driveService == null) return 0
-            val request = driveService!!.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files")
+            val request = driveService?.files()?.list()?.setQ("mimeType = 'text/plain'")?.setFields("nextPageToken, files") ?: return 0
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
