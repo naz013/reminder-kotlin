@@ -1,50 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?actionBarSize"
+        android:background="?colorPrimary"
+        android:stateListAnimator="@animator/toolbar_animator"
+        tools:targetApi="lollipop">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
-
-        <com.elementary.tasks.core.views.roboto.RoboEditText
-            android:id="@+id/messageInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="36dp"
-            android:background="@android:color/transparent"
-            android:hint="@string/message"
-            android:maxLength="120"
-            android:maxLines="3"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            android:textColorHint="@color/whitePrimary"
-            android:textSize="18sp"
-            app:edit_font_style="roboto_light" />
+            android:layout_height="match_parent"
+            app:title="@string/create_template" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
-        android:id="@+id/leftCharacters"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/messageLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:gravity="end"
-        android:textSize="18sp"
-        app:font_style="roboto_light" />
+        android:layout_marginEnd="16dp"
+        app:boxBackgroundColor="@color/secondary_12"
+        app:boxCornerRadiusTopEnd="5dp"
+        app:boxCornerRadiusTopStart="5dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="120">
+
+        <androidx.emoji.widget.EmojiAppCompatEditText
+            android:id="@+id/messageInput"
+            style="?textAppearanceSubtitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/message"
+            android:maxLength="120"
+            android:maxLines="3" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

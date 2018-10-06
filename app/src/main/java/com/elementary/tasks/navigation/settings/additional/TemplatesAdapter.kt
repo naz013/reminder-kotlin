@@ -60,8 +60,8 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
         }
 
         init {
-            itemView.setOnClickListener { view -> openTemplate(view, adapterPosition) }
-            itemView.setOnLongClickListener {
+            itemView.clickView.setOnClickListener { view -> openTemplate(view, adapterPosition) }
+            itemView.clickView.setOnLongClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }

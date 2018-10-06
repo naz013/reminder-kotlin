@@ -719,5 +719,7 @@
     <string name="edit_place">Edit place</string>
     <string name="with_reminder">With reminder</string>
     <string name="select_place">Select place</string>
+    <string name="create_template">Create template</string>
+    <string name="edit_template">Edit template</string>
 
 </resources>

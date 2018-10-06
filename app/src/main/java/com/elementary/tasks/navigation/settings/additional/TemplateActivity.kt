@@ -2,8 +2,6 @@ package com.elementary.tasks.navigation.settings.additional
 
 import android.content.ContentResolver
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
@@ -55,13 +53,12 @@ class TemplateActivity : ThemedActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_template)
         initActionBar()
-        initMessageField()
         loadTemplate()
     }
 
     private fun loadTemplate() {
         val intent = intent
-        val id = intent.getStringExtra(Constants.INTENT_ID)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
             try {
@@ -73,12 +70,15 @@ class TemplateActivity : ThemedActivity() {
                 } else {
                     backupTool.getTemplate(name.path, null)
                 }
+                val item = mItem
+                if (item != null) {
+                    showTemplate(item)
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -99,42 +99,23 @@ class TemplateActivity : ThemedActivity() {
         })
     }
 
-    private fun initMessageField() {
-        messageInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                updateLeftView(s.length)
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-    }
-
-    private fun updateLeftView(count: Int) {
-        leftCharacters.text = String.format(getString(R.string.left_characters_x), (120 - count).toString() + "")
-    }
-
     private fun showTemplate(smsTemplate: SmsTemplate) {
         this.mItem = smsTemplate
         messageInput.setText(smsTemplate.title)
-        val title = smsTemplate.title
-        if (title != "") {
-            updateLeftView(title.length)
-        }
+        toolbar.title = getString(R.string.edit_template)
     }
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
         }
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -156,13 +137,14 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun deleteItem() {
-        if (mItem != null) {
-            viewModel.deleteSmsTemplate(mItem!!)
+        val item = mItem
+        if (item != null) {
+            viewModel.deleteSmsTemplate(item)
         }
     }
 
     private fun saveTemplate() {
-        val text = messageInput.text!!.toString().trim { it <= ' ' }
+        val text = messageInput.text.toString().trim { it <= ' ' }
         if (text.isEmpty()) {
             messageInput.error = getString(R.string.must_be_not_empty)
             return

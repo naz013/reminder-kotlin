@@ -17,6 +17,7 @@ import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
@@ -75,7 +76,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.templates_menu, menu)
-        mSearchMenu = menu!!.findItem(R.id.action_search)
+        mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?
@@ -94,6 +95,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.setOnClickListener { openCreateScreen() }
         initTemplateList()
         initViewModel()
     }
@@ -112,13 +114,12 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     }
 
     private fun initTemplateList() {
-        templatesList.setHasFixedSize(false)
         templatesList.layoutManager = LinearLayoutManager(context)
         adapter.actionsListener = object : ActionsListener<SmsTemplate> {
             override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
                 when (actions) {
                     ListActions.MORE -> if (t != null) {
-                        showMenu(position, t)
+                        showMenu(t)
                     }
                     ListActions.OPEN -> if (t != null) {
                         openTemplate(t)
@@ -127,10 +128,13 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
             }
         }
         templatesList.adapter = adapter
+        ViewUtils.listenScrollableView(templatesList) {
+            callback?.onScrollUpdate(it)
+        }
         refreshView()
     }
 
-    private fun showMenu(position: Int, smsTemplate: SmsTemplate) {
+    private fun showMenu(smsTemplate: SmsTemplate) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
         dialogues.showLCAM(context!!, {
             when (it) {
