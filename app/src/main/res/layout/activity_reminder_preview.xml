@@ -414,6 +414,7 @@
         android:textAppearance="?textAppearanceButton"
         android:textColor="@android:color/white"
         android:textSize="14sp"
+        android:visibility="gone"
         app:backgroundTint="?colorSecondary"
         app:cornerRadius="32dp"
         app:icon="@drawable/ic_twotone_call_24px"

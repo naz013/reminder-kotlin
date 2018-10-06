@@ -721,5 +721,6 @@
     <string name="select_place">Select place</string>
     <string name="create_template">Create template</string>
     <string name="edit_template">Edit template</string>
+    <string name="move_to_place">Move to place</string>
 
 </resources>

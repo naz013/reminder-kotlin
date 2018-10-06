@@ -93,8 +93,8 @@ class ReminderPreviewActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
-    private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
-        mGoogleMap?.moveCamera(marker.position, 0, 0, 0, 0)
+    private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
+        openFullMap()
         false
     }
 
@@ -540,20 +540,31 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun initMap() {
-        val googleMap = AdvancedMapFragment.newInstance(false, false, false,
-                false, prefs.markerStyle, themeUtil.isDark)
+        val googleMap = AdvancedMapFragment.newInstance(false, false, false, false,
+                false, false, themeUtil.isDark)
         googleMap.setCallback(object : MapCallback {
             override fun onMapReady() {
                 googleMap.setSearchEnabled(false)
+                googleMap.setOnMapClickListener(GoogleMap.OnMapClickListener {
+                    openFullMap()
+                })
+                googleMap.setOnMarkerClick(mOnMarkerClick)
                 if (reminder != null) showMapData(reminder!!)
             }
         })
-        googleMap.setOnMarkerClick(mOnMarkerClick)
         supportFragmentManager.beginTransaction()
                 .replace(mapContainer.id, googleMap)
                 .addToBackStack(null)
                 .commit()
         this.mGoogleMap = googleMap
+    }
+
+    private fun openFullMap() {
+        val reminder = this.reminder
+        if (reminder != null) {
+            startActivity(Intent(this, FullscreenMapActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, reminder.uuId))
+        }
     }
 
     private fun initActionBar() {
