@@ -76,6 +76,6 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
     }
 
     override fun setDelay(delay: Int) {
-        EventJobService.enableDelay(delay, reminder.uniqueId)
+        EventJobService.enableDelay(delay, reminder.uuId)
     }
 }

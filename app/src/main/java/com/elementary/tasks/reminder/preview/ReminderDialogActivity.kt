@@ -196,18 +196,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         container.visibility = View.GONE
         subjectContainer.visibility = View.GONE
-        loadImage(bgImage)
-        colorify(buttonOk, buttonCall, buttonCancel, buttonDelay,
-                buttonDelayFor, buttonNotification, buttonEdit)
-        setTextDrawable(buttonDelay, prefs.snoozeTime.toString())
-        setTextDrawable(buttonDelayFor, "...")
-        buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
-        buttonEdit.setImageResource(R.drawable.ic_create_black_24dp)
-        buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp)
-        button_refresh.hide()
-        buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
-        buttonNotification.setImageResource(R.drawable.ic_favorite_black_24dp)
+        contactBlock.visibility = View.INVISIBLE
 
+        buttonRefresh.hide()
         initViewModel(id)
     }
 
@@ -259,18 +250,28 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             if (!Reminder.isBase(reminder.type, Reminder.BY_SKYPE)) {
                 contactPhoto.visibility = View.VISIBLE
                 val conID = Contacts.getIdFromNumber(reminder.target, this).toLong()
-                val photo = Contacts.getPhoto(conID)
-                if (photo != null)
-                    contactPhoto.setImageURI(photo)
-                else
-                    contactPhoto.visibility = View.GONE
+
                 val name = Contacts.getNameFromNumber(reminder.target, this)
                 remText.setText(R.string.make_call)
                 val userTitle = (name ?: "") + "\n" + reminder.target
+
+                val photo = Contacts.getPhoto(conID)
+                if (photo != null) {
+                    contactPhoto.setImageURI(photo)
+                } else {
+                    contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: reminder.target))
+                }
+
                 contactInfo.text = userTitle
                 contactInfo.contentDescription = userTitle
                 messageView.text = summary
                 messageView.contentDescription = summary
+
+                contactName.text = name
+                contactNumber.text = reminder.target
+
+                contactBlock.visibility = View.VISIBLE
+                buttonCall.text = getString(R.string.make_call)
             } else {
                 if (Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
                     remText.setText(R.string.video_call)
@@ -281,6 +282,13 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 contactInfo.contentDescription = reminder.target
                 messageView.text = summary
                 messageView.contentDescription = summary
+
+                contactName.text = reminder.target
+                contactNumber.text = reminder.target
+
+                contactBlock.visibility = View.VISIBLE
+                buttonCall.text = getString(R.string.make_call)
+
                 if (TextUtils.isEmpty(summary)) {
                     messageView.visibility = View.GONE
                     someView.visibility = View.GONE
@@ -291,11 +299,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             if (!Reminder.isSame(reminder.type, Reminder.BY_SKYPE)) {
                 contactPhoto.visibility = View.VISIBLE
                 val conID = Contacts.getIdFromNumber(reminder.target, this).toLong()
-                val photo = Contacts.getPhoto(conID)
-                if (photo != null)
-                    contactPhoto.setImageURI(photo)
-                else
-                    contactPhoto.visibility = View.GONE
                 val name = Contacts.getNameFromNumber(reminder.target, this)
                 remText.setText(R.string.send_sms)
                 val userInfo = (name ?: "") + "\n" + reminder.target
@@ -303,26 +306,37 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 contactInfo.contentDescription = userInfo
                 messageView.text = summary
                 messageView.contentDescription = summary
+
+                val photo = Contacts.getPhoto(conID)
+                if (photo != null) {
+                    contactPhoto.setImageURI(photo)
+                } else {
+                    contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: reminder.target))
+                }
+
+                contactName.text = name
+                contactNumber.text = reminder.target
             } else {
                 remText.setText(R.string.skype_chat)
                 contactInfo.text = reminder.target
                 contactInfo.contentDescription = reminder.target
                 messageView.text = summary
                 messageView.contentDescription = summary
+
+                contactName.text = reminder.target
+                contactNumber.text = reminder.target
             }
             if (!prefs.isAutoSmsEnabled) {
-                buttonCall.show()
-                buttonCall.setImageResource(R.drawable.ic_send_black_24dp)
+                contactBlock.visibility = View.VISIBLE
+                buttonCall.text = getString(R.string.send)
                 buttonCall.contentDescription = getString(R.string.acc_button_send_message)
             } else {
-                buttonCall.hide()
+                contactBlock.visibility = View.INVISIBLE
                 buttonDelay.hide()
                 buttonDelayFor.hide()
             }
             container.visibility = View.VISIBLE
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
-            buttonCall.show()
-            buttonCall.setImageResource(R.drawable.ic_send_black_24dp)
             buttonCall.contentDescription = getString(R.string.acc_button_send_message)
             remText.setText(R.string.e_mail)
             val conID = Contacts.getIdFromMail(reminder.target, this)
@@ -336,9 +350,15 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 val userInfo = (name ?: "") + "\n" + reminder.target
                 contactInfo.text = userInfo
                 contactInfo.contentDescription = userInfo
+
+                contactName.text = name
+                contactNumber.text = reminder.target
             } else {
                 contactInfo.text = reminder.target
                 contactInfo.contentDescription = reminder.target
+
+                contactName.text = reminder.target
+                contactNumber.text = reminder.target
             }
             messageView.text = summary
             messageView.contentDescription = summary
@@ -346,6 +366,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             subjectView.contentDescription = reminder.subject
             container.visibility = View.VISIBLE
             subjectContainer.visibility = View.VISIBLE
+
+            contactBlock.visibility = View.VISIBLE
+            buttonCall.text = getString(R.string.send)
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
             val packageManager = packageManager
             var applicationInfo: ApplicationInfo? = null
@@ -356,34 +379,40 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
             val nameA = (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
             val label = summary + "\n\n" + nameA + "\n" + reminder.target
-            remText.text = label
+            remText.text = summary
             remText.contentDescription = label
-            buttonCall.show()
-            buttonCall.setImageResource(R.drawable.ic_open_in_browser_black_24dp)
+
+            contactName.text = nameA
+            contactNumber.text = reminder.target
+            contactBlock.visibility = View.VISIBLE
+            buttonCall.text = getString(R.string.open)
             buttonCall.contentDescription = getString(R.string.acc_button_open_application)
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)) {
             val label = summary + "\n\n" + reminder.target
-            remText.text = label
+            remText.text = summary
             remText.contentDescription = label
-            buttonCall.show()
-            buttonCall.setImageResource(R.drawable.ic_open_in_browser_black_24dp)
+
+            contactName.text = reminder.target
+            contactNumber.text = reminder.target
+            contactBlock.visibility = View.VISIBLE
+            buttonCall.text = getString(R.string.open)
             buttonCall.contentDescription = getString(R.string.acc_button_open_link_in_browser)
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP)) {
             remText.text = summary
             remText.contentDescription = summary
-            buttonCall.hide()
+            contactBlock.visibility = View.INVISIBLE
             loadData()
         } else {
             remText.text = summary
             remText.contentDescription = summary
-            buttonCall.hide()
+            contactBlock.visibility = View.INVISIBLE
         }
 
         if (Reminder.isBase(reminder.type, Reminder.BY_TIME)) {
-            button_refresh.show()
-            button_refresh.setOnClickListener { startAgain() }
+            buttonRefresh.show()
+            buttonRefresh.setOnClickListener { startAgain() }
         } else {
-            button_refresh.hide()
+            buttonRefresh.hide()
         }
 
         if (Reminder.isGpsType(reminder.type)) {
@@ -444,7 +473,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun showFile() {
         val reminder = mReminder ?: return
-        val path = reminder.attachmentFile ?: return
+        val path = reminder.attachmentFile
         val mime = MimeTypeMap.getSingleton()
         val intent = Intent(Intent.ACTION_VIEW)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -702,10 +731,10 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         showReminder()
         remText.text = getString(R.string.error_sending)
         remText.contentDescription = getString(R.string.error_sending)
-        buttonCall.setImageResource(R.drawable.ic_refresh)
+        buttonCall.text = getString(R.string.retry)
         buttonCall.contentDescription = getString(R.string.acc_button_retry_to_send_message)
         if (buttonCall.visibility == View.GONE) {
-            buttonCall.show()
+            buttonCall.visibility = View.VISIBLE
         }
     }
 

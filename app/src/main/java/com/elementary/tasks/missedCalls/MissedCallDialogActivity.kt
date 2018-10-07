@@ -81,17 +81,16 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
         container.visibility = View.GONE
         subjectContainer.visibility = View.GONE
-        loadImage(bgImage)
-        colorify(buttonOk, buttonCancel, buttonCall, buttonDelay,
-                buttonDelayFor, buttonNotification, buttonEdit)
+        contactBlock.visibility = View.INVISIBLE
+        delayContainer.visibility = View.GONE
+
         buttonDelay.hide()
         buttonDelayFor.hide()
         buttonNotification.hide()
         buttonEdit.hide()
-
-        buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
-        buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp)
-        buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
+        buttonAttachment.hide()
+        buttonCancel.hide()
+        buttonRefresh.hide()
 
         contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
         contactPhoto.visibility = View.GONE
@@ -131,11 +130,12 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         val wearMessage = (name ?: "") + "\n" + missedCall.number
         if (missedCall.number != "") {
             val conID = Contacts.getIdFromNumber(missedCall.number, this).toLong()
+
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
                 contactPhoto.setImageURI(photo)
             } else {
-                contactPhoto.visibility = View.GONE
+                contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: missedCall.number))
             }
             remText.setText(R.string.missed_call)
             contactInfo.text = wearMessage
@@ -143,10 +143,21 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             someView.setText(R.string.last_called)
             messageView.text = formattedTime
             container.visibility = View.VISIBLE
+        } else {
+            contactPhoto.visibility = View.INVISIBLE
         }
-        buttonCancel.setOnClickListener { sendSMS() }
+
+        contactName.text = name
+        contactNumber.text = missedCall.number
+
+        contactBlock.visibility = View.VISIBLE
+        buttonCall.text = getString(R.string.make_call)
+        buttonSms.visibility = View.VISIBLE
+
+        buttonSms.setOnClickListener { sendSMS() }
         buttonOk.setOnClickListener { ok() }
         buttonCall.setOnClickListener { call() }
+
         showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
         init()
     }
@@ -208,16 +219,17 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun removeMissed() {
-        if (mMissedCall != null) {
-            viewModel.deleteMissedCall(mMissedCall!!)
+        val missedCall = mMissedCall
+        if (missedCall != null) {
+            viewModel.deleteMissedCall(missedCall)
         }
     }
 
     override fun showSendingError() {
         remText.text = getString(R.string.error_sending)
-        buttonCall.setImageResource(R.drawable.ic_refresh)
-        if (buttonCall.visibility == View.GONE) {
-            buttonCall.show()
+        buttonSms.text = getString(R.string.retry)
+        if (buttonSms.visibility == View.GONE) {
+            buttonSms.visibility = View.VISIBLE
         }
     }
 

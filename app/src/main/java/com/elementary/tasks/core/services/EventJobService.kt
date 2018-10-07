@@ -60,10 +60,7 @@ class EventJobService : Job() {
                         enableMissedCall(prefs, params.tag)
                     }
                     bundle.getBoolean(ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
-                    else -> try {
-                        start(context, Integer.parseInt(params.tag))
-                    } catch (ignored: NumberFormatException) {
-                    }
+                    else -> start(context, params.tag)
                 }
             }
         }
@@ -113,7 +110,7 @@ class EventJobService : Job() {
         context.startActivity(resultIntent)
     }
 
-    private fun start(context: Context, id: Int) {
+    private fun start(context: Context, id: String) {
         val intent = Intent(context, ReminderActionService::class.java)
         intent.action = ReminderActionService.ACTION_RUN
         intent.putExtra(Constants.INTENT_ID, id)
@@ -168,14 +165,14 @@ class EventJobService : Job() {
             cancelReminder(number)
         }
 
-        fun enableDelay(time: Int, id: Int) {
+        fun enableDelay(time: Int, id: String) {
             val min = TimeCount.MINUTE
             val due = System.currentTimeMillis() + min * time
             val mills = due - System.currentTimeMillis()
             if (due == 0L || mills <= 0) {
                 return
             }
-            JobRequest.Builder(id.toString())
+            JobRequest.Builder(id)
                     .setExact(mills)
                     .setRequiresCharging(false)
                     .setRequiresDeviceIdle(false)
@@ -195,7 +192,7 @@ class EventJobService : Job() {
             }
             val bundle = PersistableBundleCompat()
             bundle.putBoolean(ARG_LOCATION, true)
-            JobRequest.Builder(item.uniqueId.toString())
+            JobRequest.Builder(item.uuId)
                     .setExact(mills)
                     .setRequiresCharging(false)
                     .setRequiresDeviceIdle(false)
@@ -209,15 +206,13 @@ class EventJobService : Job() {
         }
 
         fun enableReminder(reminder: Reminder?) {
-            var due: Long = 0
-            if (reminder != null) {
-                due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            }
+            if (reminder == null) return
+            var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
             LogUtil.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true))
             if (due == 0L) {
                 return
             }
-            if (reminder!!.remindBefore != 0L) {
+            if (reminder.remindBefore != 0L) {
                 due -= reminder.remindBefore
             }
             if (!Reminder.isBase(reminder.type, Reminder.BY_TIME)) {
@@ -231,7 +226,7 @@ class EventJobService : Job() {
             if (mills <= 0) {
                 return
             }
-            JobRequest.Builder(reminder.uniqueId.toString())
+            JobRequest.Builder(reminder.uuId)
                     .setExact(mills)
                     .setRequiresCharging(false)
                     .setRequiresDeviceIdle(false)
@@ -242,8 +237,8 @@ class EventJobService : Job() {
                     .schedule()
         }
 
-        fun isEnabledReminder(id: Int): Boolean {
-            return !JobManager.instance().getAllJobsForTag(id.toString()).isEmpty()
+        fun isEnabledReminder(id: String): Boolean {
+            return !JobManager.instance().getAllJobsForTag(id).isEmpty()
         }
 
         fun cancelReminder(tag: String) {
