@@ -50,6 +50,7 @@
     <color name="pureBlackDark">#000000</color>
 
     <color name="secondary">#3F51B5</color>
+    <color name="secondary_90">#e63F51B5</color>
     <color name="secondary_12">#1E3F51B5</color>
 
     <color name="whitePrimary">#FFFFFF</color>
