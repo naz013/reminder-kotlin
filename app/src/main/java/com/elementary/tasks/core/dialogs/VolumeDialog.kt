@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.Dialogues
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 
 /**
@@ -51,9 +52,10 @@ class VolumeDialog : BaseDialog() {
         builder.setView(b)
         builder.setPositiveButton(R.string.ok) { _, _ -> prefs.loudness = b.seekBar.progress }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val alertDialog = builder.create()
-        alertDialog.setOnCancelListener { finish() }
-        alertDialog.setOnDismissListener { finish() }
-        alertDialog.show()
+        val dialog = builder.create()
+        dialog.setOnCancelListener { finish() }
+        dialog.setOnDismissListener { finish() }
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, this)
     }
 }

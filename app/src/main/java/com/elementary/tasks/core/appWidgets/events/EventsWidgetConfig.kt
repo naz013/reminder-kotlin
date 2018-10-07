@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.utils.Dialogues
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.widget_current_tasks_config.*
 
@@ -126,7 +127,9 @@ class EventsWidgetConfig : ThemedActivity() {
             updateWidget()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, this)
     }
 
     private fun updateWidget() {

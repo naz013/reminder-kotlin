@@ -37,10 +37,10 @@ import javax.inject.Singleton
 @Singleton
 class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
 
-    fun showRadiusDialog(context: Context, current: Int, listener: OnValueSelectedListener<Int>) {
-        val builder = getDialog(context)
+    fun showRadiusDialog(activity: Activity, current: Int, listener: OnValueSelectedListener<Int>) {
+        val builder = getDialog(activity)
         builder.setTitle(R.string.radius)
-        val b = LayoutInflater.from(context).inflate(R.layout.dialog_with_seek_and_title, null, false)
+        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = MAX_DEF_RADIUS
         while (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
             b.seekBar.max = b.seekBar.max + 1000
@@ -78,23 +78,11 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
-        setFullWidthDialog(dialog)
+        Dialogues.setFullWidthDialog(dialog, activity)
     }
 
     fun getDialog(context: Context): AlertDialog.Builder {
         return AlertDialog.Builder(context, themeUtil.dialogStyle)
-    }
-
-    fun setFullWidthDialog(dialog: AlertDialog) {
-        val window = dialog.window
-        window?.setGravity(Gravity.CENTER)
-        window?.setLayout((getScreenWidth(dialog.ownerActivity!!) * .9).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-    }
-
-    private fun getScreenWidth(activity: Activity): Int {
-        val size = Point()
-        activity.windowManager.defaultDisplay.getSize(size)
-        return size.x
     }
 
     fun showLCAM(context: Context, listener: ((Int) -> Unit)?, vararg actions: String) {
@@ -128,5 +116,17 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
     companion object {
         private const val MAX_RADIUS = 100000
         private const val MAX_DEF_RADIUS = 5000
+
+        fun setFullWidthDialog(dialog: AlertDialog, activity: Activity) {
+            val window = dialog.window
+            window?.setGravity(Gravity.CENTER)
+            window?.setLayout((getScreenWidth(activity) * .9).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+
+        private fun getScreenWidth(activity: Activity): Int {
+            val size = Point()
+            activity.windowManager.defaultDisplay.getSize(size)
+            return size.x
+        }
     }
 }

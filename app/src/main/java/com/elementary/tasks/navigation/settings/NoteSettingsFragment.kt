@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_notes.*
@@ -126,7 +127,9 @@ class NoteSettingsFragment : BaseSettingsFragment() {
             dialogInterface.dismiss()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showTimePickerDialog() {
@@ -159,7 +162,9 @@ class NoteSettingsFragment : BaseSettingsFragment() {
             dialogInterface.dismiss()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showOpacityPickerDialog() {
@@ -190,6 +195,8 @@ class NoteSettingsFragment : BaseSettingsFragment() {
             dialogInterface.dismiss()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 }
