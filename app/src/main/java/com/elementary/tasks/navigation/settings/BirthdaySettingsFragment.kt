@@ -16,6 +16,7 @@ import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -178,7 +179,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         builder.setView(b)
         builder.setPositiveButton(R.string.ok) { _, _ -> saveDays(b.seekBar.progress) }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun saveDays(progress: Int) {

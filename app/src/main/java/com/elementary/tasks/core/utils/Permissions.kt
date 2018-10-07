@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 /**
@@ -46,6 +47,18 @@ object Permissions {
     const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
     const val BLUETOOTH = Manifest.permission.BLUETOOTH
     const val CAMERA = Manifest.permission.CAMERA
+    @RequiresApi(Build.VERSION_CODES.P)
+    const val FOREGROUND = Manifest.permission.FOREGROUND_SERVICE
+
+    fun checkForeground(context: Context): Boolean {
+        if (Module.isP) {
+            if (ContextCompat.checkSelfPermission(context, FOREGROUND) != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+            return true
+        }
+        return true
+    }
 
     fun checkPermission(a: Context, vararg permissions: String): Boolean {
         if (!Module.isMarshmallow) {

@@ -28,6 +28,9 @@ object Module {
     val isPro: Boolean
         get() = BuildConfig.IS_PRO
 
+    val isP: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+
     val isO: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 

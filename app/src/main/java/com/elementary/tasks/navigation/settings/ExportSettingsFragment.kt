@@ -269,7 +269,9 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             showEventDuration()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun changeExportToCalendarPrefs() {

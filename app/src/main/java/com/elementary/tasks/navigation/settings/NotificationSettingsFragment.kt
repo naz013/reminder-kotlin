@@ -143,7 +143,9 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
             initRepeatTimePrefs()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun initRepeatTimePrefs() {
@@ -251,7 +253,9 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
             initSnoozeTimePrefs()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun changeAutoCallPrefs() {
@@ -412,7 +416,9 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
             showLoudness()
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun initLoudnessPrefs() {

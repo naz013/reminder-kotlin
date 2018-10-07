@@ -144,7 +144,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
-        dialogues.setFullWidthDialog(dialog)
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showMapTypeDialog() {
@@ -190,7 +190,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     private fun showRadiusPickerDialog() {
         val radius = prefs.radius
-        dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
+        dialogues.showRadiusDialog(activity!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
             override fun onSelected(t: Int) {
                 prefs.radius = t
                 showRadius()
