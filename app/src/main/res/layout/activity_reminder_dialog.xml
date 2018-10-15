@@ -30,8 +30,7 @@
                 android:contentDescription="@string/acc_contact_photo"
                 android:scaleType="centerCrop"
                 android:visibility="visible"
-                app:civ_border_color="@color/material_grey_dialog"
-                app:civ_border_width="5dp" />
+                app:civ_border_width="0dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
