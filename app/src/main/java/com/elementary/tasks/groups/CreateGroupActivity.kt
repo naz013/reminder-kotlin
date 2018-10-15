@@ -1,7 +1,6 @@
 package com.elementary.tasks.groups
 
 import android.content.ContentResolver
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -57,46 +56,63 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_group)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+
+        initActionBar()
+
         pickerView.setListener(this)
         pickerView.setSelectedColor(color)
-        setColor(color)
 
         loadGroup()
     }
 
+    private fun initActionBar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
+        }
+        toolbar.setTitle(R.string.create_group)
+    }
+
     private fun showGroup(reminderGroup: ReminderGroup) {
         this.mItem = reminderGroup
-        editField.setText(reminderGroup.groupTitle)
+        nameInput.setText(reminderGroup.groupTitle)
         color = reminderGroup.groupColor
         pickerView.setSelectedColor(color)
-        setColor(color)
+        defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
+        defaultCheck.isChecked = reminderGroup.isDefaultGroup
+
+        toolbar.setTitle(R.string.change_group)
+
         invalidateOptionsMenu()
     }
 
     private fun loadGroup() {
         val intent = intent
-        val id = intent.getStringExtra(Constants.INTENT_ID)
-        if (id != null) {
-            initViewModel(id)
-        } else if (intent.data != null) {
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        initViewModel(id)
+        if (intent.data != null) {
             try {
                 val name = intent.data
                 val scheme = name?.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
+                val item = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
                     backupTool.getGroup(cr, name)
                 } else {
                     backupTool.getGroup(name.path, null)
+                }
+                if (item != null) {
+                    showGroup(item)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -122,9 +138,10 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     }
 
     private fun saveGroup() {
-        val text = editField.text.toString().trim { it <= ' ' }
+        val text = nameInput.text.toString().trim { it <= ' ' }
         if (text.isEmpty()) {
-            editField.error = getString(R.string.must_be_not_empty)
+            nameLayout.error = getString(R.string.must_be_not_empty)
+            nameLayout.isErrorEnabled = true
             return
         }
         var item = mItem
@@ -135,6 +152,7 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
             item.groupDateTime = TimeUtil.gmtDateTime
             item.groupTitle = text
         }
+        item.isDefaultGroup = defaultCheck.isChecked
         viewModel.saveGroup(item)
     }
 
@@ -173,22 +191,14 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     }
 
     private fun deleteItem() {
-        if (mItem != null) {
-            viewModel.deleteGroup(mItem!!)
-        }
-        finish()
-    }
-
-    private fun setColor(i: Int) {
-        color = i
-        appBar.setBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(i)))
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = themeUtil.getNoteDarkColor(i)
+        val item = mItem
+        if (item != null) {
+            viewModel.deleteGroup(item)
         }
     }
 
     override fun onColorSelect(code: Int) {
-        setColor(code)
+        this.color = code
     }
 
     companion object {

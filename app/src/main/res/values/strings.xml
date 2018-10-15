@@ -723,5 +723,7 @@
     <string name="edit_template">Edit template</string>
     <string name="move_to_place">Move to place</string>
     <string name="retry">Retry</string>
+    <string name="create_group">Create group</string>
+    <string name="make_default">Make default</string>
 
 </resources>

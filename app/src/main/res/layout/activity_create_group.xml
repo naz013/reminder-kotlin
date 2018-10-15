@@ -1,40 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?actionBarSize"
+        android:background="?colorPrimary"
+        android:stateListAnimator="@animator/toolbar_animator"
+        tools:targetApi="lollipop">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
-
-        <com.elementary.tasks.core.views.roboto.RoboEditText
-            android:id="@+id/editField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@android:color/transparent"
-            android:hint="@string/title"
-            android:textColorHint="@color/whitePrimary"
-            android:textSize="@dimen/create_text_size_secondary"
-            app:edit_font_style="roboto_light" />
+            android:layout_height="match_parent"
+            app:title="@string/create_group" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -43,26 +32,53 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="16dp"
-                android:clickable="false"
-                android:gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:boxBackgroundColor="@color/secondary_12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
+
+                <androidx.emoji.widget.EmojiAppCompatEditText
+                    android:id="@+id/nameInput"
+                    style="?textAppearanceSubtitle1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:maxLength="120"
+                    android:maxLines="3" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/defaultCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/make_default" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/color"
-                android:textAllCaps="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="@dimen/create_text_size_normal"
-                android:textStyle="bold"
-                app:font_style="roboto_medium" />
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary" />
 
             <com.elementary.tasks.core.views.ColorPickerView
                 android:id="@+id/pickerView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
