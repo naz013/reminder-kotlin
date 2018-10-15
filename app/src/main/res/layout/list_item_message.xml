@@ -20,9 +20,5 @@
             android:textAppearance="?textAppearanceSubtitle1"
             tools:text="Title" />
 
-        <com.elementary.tasks.core.views.DividerView
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
