@@ -41,9 +41,14 @@ class GroupViewModel private constructor(application: Application, id: String) :
         reminderGroup = appDb.reminderGroupDao().loadById(id)
     }
 
-    fun saveGroup(reminderGroup: ReminderGroup) {
+    fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
         isInProgress.postValue(true)
         launch(CommonPool) {
+            if (!wasDefault && reminderGroup.isDefaultGroup) {
+                val groups = appDb.reminderGroupDao().all()
+                for (g in groups) g.isDefaultGroup = false
+                appDb.reminderGroupDao().insertAll(groups)
+            }
             appDb.reminderGroupDao().insert(reminderGroup)
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
                     .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())

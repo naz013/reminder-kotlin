@@ -47,7 +47,8 @@ class ColorPickerView : LinearLayout {
     private var indigo: ImageButton? = null
     private var lime: ImageButton? = null
     private var prevId: Int = 0
-    private var selectedCode: Int = 0
+    var selectedCode: Int = 0
+        private set
     private var mColorListener: OnColorListener? = null
 
     private val listener = View.OnClickListener{ v -> themeColorSwitch(v.id) }
@@ -97,25 +98,25 @@ class ColorPickerView : LinearLayout {
 
     fun setSelectedColor(code: Int) {
         when (code) {
-            0 -> red!!.isSelected = true
-            1 -> purple!!.isSelected = true
-            2 -> greenLight!!.isSelected = true
-            3 -> green!!.isSelected = true
-            4 -> blueLight!!.isSelected = true
-            5 -> blue!!.isSelected = true
-            6 -> yellow!!.isSelected = true
-            7 -> orange!!.isSelected = true
-            8 -> cyan!!.isSelected = true
-            9 -> pink!!.isSelected = true
-            10 -> teal!!.isSelected = true
-            11 -> amber!!.isSelected = true
+            0 -> red?.isSelected = true
+            1 -> purple?.isSelected = true
+            2 -> greenLight?.isSelected = true
+            3 -> green?.isSelected = true
+            4 -> blueLight?.isSelected = true
+            5 -> blue?.isSelected = true
+            6 -> yellow?.isSelected = true
+            7 -> orange?.isSelected = true
+            8 -> cyan?.isSelected = true
+            9 -> pink?.isSelected = true
+            10 -> teal?.isSelected = true
+            11 -> amber?.isSelected = true
             else -> if (Module.isPro) {
                 when (code) {
-                    12 -> deepPurple!!.isSelected = true
-                    13 -> deepOrange!!.isSelected = true
-                    14 -> lime!!.isSelected = true
-                    15 -> indigo!!.isSelected = true
-                    else -> blue!!.isSelected = true
+                    12 -> deepPurple?.isSelected = true
+                    13 -> deepOrange?.isSelected = true
+                    14 -> lime?.isSelected = true
+                    15 -> indigo?.isSelected = true
+                    else -> blue?.isSelected = true
                 }
             }
         }

@@ -33,20 +33,20 @@ interface ReminderGroupDao {
     @Query("SELECT * FROM ReminderGroup LIMIT 1")
     fun defaultGroup(): ReminderGroup?
 
-    @Query("SELECT * FROM ReminderGroup")
+    @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
     fun all(): List<ReminderGroup>
 
-    @Query("SELECT * FROM ReminderGroup")
+    @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
     fun loadAll(): LiveData<List<ReminderGroup>>
 
-    @Query("SELECT * FROM ReminderGroup LIMIT 1")
+    @Query("SELECT * FROM ReminderGroup WHERE isDefaultGroup='true' ORDER BY isDefaultGroup LIMIT 1")
     fun loadDefault(): LiveData<ReminderGroup>
 
     @Insert(onConflict = REPLACE)
     fun insert(reminderGroup: ReminderGroup)
 
     @Insert(onConflict = REPLACE)
-    fun insertAll(vararg reminderGroups: ReminderGroup)
+    fun insertAll(reminderGroups: List<ReminderGroup>)
 
     @Delete
     fun delete(reminderGroup: ReminderGroup)
