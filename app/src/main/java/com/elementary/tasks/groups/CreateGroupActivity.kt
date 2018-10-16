@@ -15,7 +15,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.groups.GroupViewModel
-import com.elementary.tasks.core.views.ColorPickerView
 import kotlinx.android.synthetic.main.activity_create_group.*
 import java.io.IOException
 import java.util.*
@@ -39,7 +38,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
+class CreateGroupActivity : ThemedActivity() {
 
     private lateinit var viewModel: GroupViewModel
 
@@ -58,9 +57,6 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         setContentView(R.layout.activity_create_group)
 
         initActionBar()
-
-        pickerView.setListener(this)
-        pickerView.setSelectedColor(color)
 
         loadGroup()
     }
@@ -147,13 +143,15 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         var item = mItem
         if (item == null) {
             item = ReminderGroup(text, UUID.randomUUID().toString(), color, TimeUtil.gmtDateTime)
-        } else {
-            item.groupColor = color
-            item.groupDateTime = TimeUtil.gmtDateTime
-            item.groupTitle = text
         }
+        val wasDefault = item.isDefaultGroup
+
+        item.groupColor = pickerView.selectedCode
         item.isDefaultGroup = defaultCheck.isChecked
-        viewModel.saveGroup(item)
+        item.groupTitle = text
+        item.groupDateTime = TimeUtil.gmtDateTime
+
+        viewModel.saveGroup(item, wasDefault)
     }
 
     override fun onStop() {
@@ -195,10 +193,6 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         if (item != null) {
             viewModel.deleteGroup(item)
         }
-    }
-
-    override fun onColorSelect(code: Int) {
-        this.color = code
     }
 
     companion object {

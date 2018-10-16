@@ -31,10 +31,10 @@ class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
 
     init {
-        itemView.setOnClickListener { view ->
+        itemView.clickView.setOnClickListener { view ->
             mEventListener?.onItemClicked(adapterPosition, view)
         }
-        itemView.setOnLongClickListener { view ->
+        itemView.clickView.setOnLongClickListener { view ->
             mEventListener?.onItemLongClicked(adapterPosition, view)
             true
         }
