@@ -2,11 +2,15 @@ package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.preview.NotePreviewActivity.Companion.PREVIEW_IMAGES
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -29,7 +33,7 @@ import com.elementary.tasks.notes.preview.NotePreviewActivity.Companion.PREVIEW_
 class NoteViewModel private constructor(application: Application, key: String) : BaseNotesViewModel(application) {
 
     var note: LiveData<Note>
-    lateinit var editedPicture: LiveData<Note>
+    val editedPicture: MutableLiveData<Note> = MutableLiveData()
     var reminder: LiveData<Reminder>
 
     init {
@@ -38,7 +42,10 @@ class NoteViewModel private constructor(application: Application, key: String) :
     }
 
     fun loadEditedPicture() {
-        editedPicture = appDb.notesDao().loadById(PREVIEW_IMAGES)
+        launch(CommonPool) {
+            val note = appDb.notesDao().getById(PREVIEW_IMAGES)
+            withUIContext {  editedPicture.postValue(note) }
+        }
     }
 
     class Factory(private val application: Application, private val key: String) : ViewModelProvider.NewInstanceFactory() {
