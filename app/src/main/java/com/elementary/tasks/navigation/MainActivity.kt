@@ -64,14 +64,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private var isBackPressed: Boolean = false
     private var pressedTime: Long = 0
 
-    private val isRateDialogShowed: Boolean
-        get() {
-            var count = prefs.rateCount
-            count++
-            prefs.rateCount = count
-            return count == 10
-        }
-
     init {
         ReminderApp.appComponent.inject(this)
     }
@@ -161,9 +153,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (!prefs.isBetaWarmingShowed) {
             showBetaDialog()
         }
-        if (isRateDialogShowed) {
-            showRateDialog()
-        }
         remotePrefs.addUpdateObserver(this)
         if (!Module.isPro) {
             remotePrefs.addSaleObserver(this)
@@ -178,22 +167,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             remotePrefs.removeSaleObserver(this)
         }
         remotePrefs.removeUpdateObserver(this)
-    }
-
-    private fun showRateDialog() {
-        val builder = dialogues.getDialog(this)
-        builder.setTitle(R.string.rate)
-        builder.setMessage(R.string.can_you_rate_this_application)
-        builder.setPositiveButton(R.string.rate) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-            SuperUtil.launchMarket(this@MainActivity)
-        }
-        builder.setNegativeButton(R.string.never) { dialogInterface, _ -> dialogInterface.dismiss() }
-        builder.setNeutralButton(R.string.later) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-            prefs.rateCount = 0
-        }
-        builder.create().show()
     }
 
     private fun showBetaDialog() {
