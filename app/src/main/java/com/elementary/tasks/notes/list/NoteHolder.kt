@@ -1,8 +1,6 @@
 package com.elementary.tasks.notes.list
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +9,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.AssetsUtil
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import kotlinx.android.synthetic.main.list_item_note.view.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
 
 /**
@@ -43,15 +44,15 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
 
     init {
-        itemView.noteClick.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.noteClick.setOnLongClickListener { view ->
+        itemView.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.clickView.setOnLongClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.MORE)
             true
         }
     }
 
     fun setData(item: Note) {
-        loadNoteCard(itemView.noteCard, item.color)
+        loadNoteCard(itemView.clickView, item.color)
         loadImage(itemView.imagesView, item)
         loadNote(itemView.noteTv, item)
     }
@@ -62,6 +63,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
             textView.visibility = View.GONE
             return
         }
+        textView.visibility = View.VISIBLE
         val context = textView.context
         if (title.length > 500) {
             val substring = title.substring(0, 500)
@@ -74,18 +76,14 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
 
     private fun loadNoteCard(cardView: CardView, color: Int) {
         cardView.setCardBackgroundColor(themeUtil.getNoteLightColor(color))
-
     }
 
     private fun setImage(imageView: ImageView, image: ByteArray?) {
         if (image == null) return
-        launch(CommonPool) {
-            val bmp = BitmapFactory.decodeByteArray(image, 0, image.size)
-            withUIContext {
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,
-                        imageView.width, imageView.height, false))
-            }
-        }
+        Glide.with(imageView)
+                .load(image)
+                .apply(RequestOptions.centerCropTransform())
+                .into(imageView)
     }
 
     private fun setClick(imageView: ImageView, position: Int, key: String?) {

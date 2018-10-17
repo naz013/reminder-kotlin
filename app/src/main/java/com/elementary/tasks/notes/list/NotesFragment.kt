@@ -6,10 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -94,11 +99,27 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.notes_menu, menu)
-        val item = menu?.findItem(R.id.action_list)
-        if (item != null) {
-            item.setIcon(if (!enableGrid) R.drawable.ic_view_quilt_black_24dp else R.drawable.ic_view_list_white_24dp)
-            item.title = if (!enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
+
+        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
+        val listIcon = ContextCompat.getDrawable(context!!, if (!enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px)
+        val sortIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_filter_list_24px)
+        if (isDark) {
+            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
+            DrawableCompat.setTint(searchIcon!!, white)
+            DrawableCompat.setTint(listIcon!!, white)
+            DrawableCompat.setTint(sortIcon!!, white)
+        } else {
+            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
+            DrawableCompat.setTint(listIcon!!, black)
+            DrawableCompat.setTint(sortIcon!!, black)
+            DrawableCompat.setTint(searchIcon!!, black)
         }
+
+        menu?.getItem(0)?.icon = searchIcon
+        menu?.getItem(1)?.icon = listIcon
+        menu?.getItem(1)?.title = if (!enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
+        menu?.getItem(2)?.icon = sortIcon
+
         if (viewModel.notes.value != null && viewModel.notes.value!!.isNotEmpty()) {
             menu?.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete_all))
         }
@@ -159,12 +180,16 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_notes, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_notes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.setOnClickListener { startActivity(Intent(activity!!, CreateNoteActivity::class.java)) }
+        fab.setOnLongClickListener {
+            buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
+            true
+        }
+
         initList()
         initViewModel()
     }

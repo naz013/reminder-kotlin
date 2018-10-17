@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.Note
@@ -181,6 +182,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         remindTime.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
     }
 
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     private fun setText(text: String?) {
         task_message.setText(text)
         task_message.setSelection(task_message.text.toString().length)
@@ -317,7 +322,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun loadNote() {
         val intent = intent
-        val id = intent.getStringExtra(Constants.INTENT_ID)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
             val filePath = intent.getStringExtra(Constants.FILE_PICKED)
