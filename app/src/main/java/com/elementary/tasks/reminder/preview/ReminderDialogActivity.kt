@@ -186,6 +186,13 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             else
                 prefs.loudness
         }
+    private val isRateDialogShowed: Boolean
+        get() {
+            var count = prefs.rateCount
+            count++
+            prefs.rateCount = count
+            return count == 10
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -200,6 +207,29 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         buttonRefresh.hide()
         initViewModel(id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isRateDialogShowed) {
+            showRateDialog()
+        }
+    }
+
+    private fun showRateDialog() {
+        val builder = dialogues.getDialog(this)
+        builder.setTitle(R.string.rate)
+        builder.setMessage(R.string.can_you_rate_this_application)
+        builder.setPositiveButton(R.string.rate) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            SuperUtil.launchMarket(this)
+        }
+        builder.setNegativeButton(R.string.never) { dialogInterface, _ -> dialogInterface.dismiss() }
+        builder.setNeutralButton(R.string.later) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            prefs.rateCount = 0
+        }
+        builder.create().show()
     }
 
     private fun initViewModel(id: String) {
