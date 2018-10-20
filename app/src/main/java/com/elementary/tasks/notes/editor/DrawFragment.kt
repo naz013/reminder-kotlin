@@ -18,6 +18,8 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
+import androidx.annotation.IdRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.drawing.DrawView
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.views.IconRadioButton
 import com.elementary.tasks.core.views.ThemedImageButton
 import com.elementary.tasks.core.views.roboto.RoboEditText
 import com.elementary.tasks.notes.create.NoteImage
@@ -96,23 +97,23 @@ class DrawFragment : BitmapFragment() {
                             mItemTouchHelper?.startDrag(viewHolder)
                         }
                     }, object : LayersRecyclerAdapter.AdapterCallback {
-                        override fun onChanged() {
-                            draw_view.invalidate()
-                        }
+                override fun onChanged() {
+                    draw_view.invalidate()
+                }
 
-                        override fun onItemSelect(position: Int) {
-                            if (mAdapter != null) mAdapter!!.setIndex(position)
-                            draw_view.setHistoryPointer(position + 1)
-                        }
+                override fun onItemSelect(position: Int) {
+                    if (mAdapter != null) mAdapter!!.setIndex(position)
+                    draw_view.setHistoryPointer(position + 1)
+                }
 
-                        override fun onItemRemoved(position: Int) {
-                            draw_view.setHistoryPointer(draw_view.getHistoryPointer() - 1)
-                        }
+                override fun onItemRemoved(position: Int) {
+                    draw_view.setHistoryPointer(draw_view.getHistoryPointer() - 1)
+                }
 
-                        override fun onItemAdded() {
-                            binding.layersList.scrollToPosition(mAdapter!!.itemCount - 1)
-                        }
-                    })
+                override fun onItemAdded() {
+                    binding.layersList.scrollToPosition(mAdapter!!.itemCount - 1)
+                }
+            })
             mAdapter.setIndex(draw_view.getHistoryPointer() - 1)
             val callback = SimpleItemTouchHelperCallback(mAdapter)
             mItemTouchHelper = ItemTouchHelper(callback)
@@ -240,7 +241,7 @@ class DrawFragment : BitmapFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUiTheme()
+
         draw_view.setCallback(mDrawCallback)
         initDrawControl()
         initControls()
@@ -256,86 +257,34 @@ class DrawFragment : BitmapFragment() {
         isFillPicker = true
         setColor(R.color.whitePrimary)
         setCurrentColor(colorWhiteButton)
-        colorGroup.setOnCheckedChangeListener { _, i ->
-            hideColorPanel()
-            when (i) {
-                R.id.colorAmberButton -> {
-                    setColor(R.color.amberPrimary)
-                    setCurrentColor(colorAmberButton)
-                }
-                R.id.colorBlackButton -> {
-                    setColor(R.color.pureBlack)
-                    setCurrentColor(colorBlackButton)
-                }
-                R.id.colorBlueButton -> {
-                    setColor(R.color.bluePrimary)
-                    setCurrentColor(colorBlueButton)
-                }
-                R.id.colorBlueLightButton -> {
-                    setColor(R.color.blueLightPrimary)
-                    setCurrentColor(colorBlueLightButton)
-                }
-                R.id.colorCyanButton -> {
-                    setColor(R.color.cyanPrimary)
-                    setCurrentColor(colorCyanButton)
-                }
-                R.id.colorDeepOrangeButton -> {
-                    setColor(R.color.orangeDeepPrimary)
-                    setCurrentColor(colorDeepOrangeButton)
-                }
-                R.id.colorDeepPurpleButton -> {
-                    setColor(R.color.purpleDeepPrimary)
-                    setCurrentColor(colorDeepPurpleButton)
-                }
-                R.id.colorGreenButton -> {
-                    setColor(R.color.greenPrimary)
-                    setCurrentColor(colorGreenButton)
-                }
-                R.id.colorGreenLightButton -> {
-                    setColor(R.color.greenLightPrimary)
-                    setCurrentColor(colorGreenLightButton)
-                }
-                R.id.colorGreyButton -> {
-                    setColor(R.color.material_divider)
-                    setCurrentColor(colorGreyButton)
-                }
-                R.id.colorIndigoButton -> {
-                    setColor(R.color.indigoPrimary)
-                    setCurrentColor(colorIndigoButton)
-                }
-                R.id.colorLimeButton -> {
-                    setColor(R.color.limePrimary)
-                    setCurrentColor(colorLimeButton)
-                }
-                R.id.colorOrangeButton -> {
-                    setColor(R.color.orangePrimary)
-                    setCurrentColor(colorOrangeButton)
-                }
-                R.id.colorPinkButton -> {
-                    setColor(R.color.pinkPrimary)
-                    setCurrentColor(colorPinkButton)
-                }
-                R.id.colorPurpleButton -> {
-                    setColor(R.color.purplePrimary)
-                    setCurrentColor(colorPurpleButton)
-                }
-                R.id.colorRedButton -> {
-                    setColor(R.color.redPrimary)
-                    setCurrentColor(colorRedButton)
-                }
-                R.id.colorTealButton -> {
-                    setColor(R.color.tealPrimary)
-                    setCurrentColor(colorTealButton)
-                }
-                R.id.colorWhiteButton -> {
-                    setColor(R.color.whitePrimary)
-                    setCurrentColor(colorWhiteButton)
-                }
-                R.id.colorYellowButton -> {
-                    setColor(R.color.yellowPrimary)
-                    setCurrentColor(colorYellowButton)
-                }
-            }
+
+        colorAmberButton.setOnClickListener { colorClick(it) }
+        colorBlackButton.setOnClickListener { colorClick(it) }
+        colorBlueButton.setOnClickListener { colorClick(it) }
+        colorBlueLightButton.setOnClickListener { colorClick(it) }
+        colorCyanButton.setOnClickListener { colorClick(it) }
+        colorDeepOrangeButton.setOnClickListener { colorClick(it) }
+        colorDeepPurpleButton.setOnClickListener { colorClick(it) }
+        colorGreenButton.setOnClickListener { colorClick(it) }
+        colorGreenLightButton.setOnClickListener { colorClick(it) }
+        colorGreyButton.setOnClickListener { colorClick(it) }
+        colorIndigoButton.setOnClickListener { colorClick(it) }
+        colorLimeButton.setOnClickListener { colorClick(it) }
+        colorOrangeButton.setOnClickListener { colorClick(it) }
+        colorPinkButton.setOnClickListener { colorClick(it) }
+        colorPurpleButton.setOnClickListener { colorClick(it) }
+        colorRedButton.setOnClickListener { colorClick(it) }
+        colorTealButton.setOnClickListener { colorClick(it) }
+        colorWhiteButton.setOnClickListener { colorClick(it) }
+    }
+
+    private fun colorClick(view: View) {
+        hideColorPanel()
+        deselectAll(colorButtons())
+        view.isSelected = true
+        setColor(getColor(view.id))
+        if (view is AppCompatImageView) {
+            setCurrentColor(view)
         }
     }
 
@@ -348,15 +297,6 @@ class DrawFragment : BitmapFragment() {
             strokeColor = color
             draw_view.paintStrokeColor = ContextCompat.getColor(context!!, color)
         }
-    }
-
-    private fun setUiTheme() {
-        val bgColor = themeUtil.backgroundStyle
-        background.setBackgroundColor(bgColor)
-        draw_tools.setBackgroundColor(bgColor)
-        colorView.setBackgroundColor(bgColor)
-        controlBox.setBackgroundColor(bgColor)
-        prefsView.setBackgroundColor(bgColor)
     }
 
     private fun initControls() {
@@ -402,10 +342,11 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun showColorPanel() {
+        deselectAll(colorButtons())
         if (isFillPicker) {
-            colorGroup.check(getId(fillColor))
+            view?.findViewById<AppCompatImageView>(getId(fillColor))?.isSelected = true
         } else {
-            colorGroup.check(getId(strokeColor))
+            view?.findViewById<AppCompatImageView>(getId(strokeColor))?.isSelected = true
         }
         ViewUtils.slideInDown(context!!, colorView)
     }
@@ -457,46 +398,71 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun initDrawControl() {
-        tools_group.setOnCheckedChangeListener { _, i ->
-            hideToolPanel()
-            when (i) {
-                R.id.penButton -> {
-                    setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.PEN)
-                    setCurrentTool(penButton)
-                }
-                R.id.lineButton -> {
-                    setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.LINE)
-                    setCurrentTool(lineButton)
-                }
-                R.id.cubicBezierButton -> {
-                    setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.QUADRATIC_BEZIER)
-                    setCurrentTool(cubicBezierButton)
-                }
-                R.id.textButton -> {
-                    setDrawMode(DrawView.Mode.TEXT, null)
-                    setCurrentTool(textButton)
-                }
-                R.id.rectangleButton -> {
-                    setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.RECTANGLE)
-                    setCurrentTool(rectangleButton)
-                }
-                R.id.ellipseButton -> {
-                    setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.ELLIPSE)
-                    setCurrentTool(ellipseButton)
-                }
-                R.id.circleButton -> {
-                    setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.CIRCLE)
-                    setCurrentTool(circleButton)
-                }
-                R.id.imageButton -> {
-                    setDrawMode(DrawView.Mode.IMAGE, null)
-                    setCurrentTool(imageButton)
-                }
+        penButton.setOnClickListener { toolClick(it) }
+        lineButton.setOnClickListener { toolClick(it) }
+        cubicBezierButton.setOnClickListener { toolClick(it) }
+        textButton.setOnClickListener { toolClick(it) }
+        rectangleButton.setOnClickListener { toolClick(it) }
+        ellipseButton.setOnClickListener { toolClick(it) }
+        circleButton.setOnClickListener { toolClick(it) }
+        imageButton.setOnClickListener { toolClick(it) }
+        currentFillColorButton.setImageDrawable(colorWhiteButton.drawable)
+        currentStrokeColorButton.setImageDrawable(colorBlackButton.drawable)
+        switchPrefsPanel(draw_view.mode)
+    }
+
+    private fun toolClick(view: View) {
+        hideToolPanel()
+        deselectAll(toolButtons())
+        view.isSelected = true
+        when (view.id) {
+            R.id.penButton -> {
+                setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.PEN)
+                setCurrentTool(penButton)
+            }
+            R.id.lineButton -> {
+                setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.LINE)
+                setCurrentTool(lineButton)
+            }
+            R.id.cubicBezierButton -> {
+                setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.QUADRATIC_BEZIER)
+                setCurrentTool(cubicBezierButton)
+            }
+            R.id.textButton -> {
+                setDrawMode(DrawView.Mode.TEXT, null)
+                setCurrentTool(textButton)
+            }
+            R.id.rectangleButton -> {
+                setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.RECTANGLE)
+                setCurrentTool(rectangleButton)
+            }
+            R.id.ellipseButton -> {
+                setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.ELLIPSE)
+                setCurrentTool(ellipseButton)
+            }
+            R.id.circleButton -> {
+                setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.CIRCLE)
+                setCurrentTool(circleButton)
+            }
+            R.id.imageButton -> {
+                setDrawMode(DrawView.Mode.IMAGE, null)
+                setCurrentTool(imageButton)
             }
         }
-        currentFillColorButton.setIcon(colorWhiteButton.getIcon())
-        currentStrokeColorButton.setIcon(colorBlackButton.getIcon())
-        switchPrefsPanel(draw_view.mode)
+    }
+
+    @IdRes
+    private fun toolButtons(): IntArray {
+        return intArrayOf(
+                R.id.penButton,
+                R.id.lineButton,
+                R.id.cubicBezierButton,
+                R.id.textButton,
+                R.id.rectangleButton,
+                R.id.ellipseButton,
+                R.id.circleButton,
+                R.id.imageButton
+        )
     }
 
     private fun switchPrefsPanel(mode: DrawView.Mode) {
@@ -599,11 +565,7 @@ class DrawFragment : BitmapFragment() {
         if (mPrefsControl == null) {
             return
         }
-        if (themeUtil.isDark) {
-            mPrefsControl?.setImageResource(R.drawable.ic_expand_more_white_24dp)
-        } else {
-            mPrefsControl?.setImageResource(R.drawable.ic_expand_more_black_24dp)
-        }
+        mPrefsControl?.setImageResource(R.drawable.ic_expand_more_black_24dp)
     }
 
     private fun hidePrefsPanel() {
@@ -611,24 +573,20 @@ class DrawFragment : BitmapFragment() {
         if (mPrefsControl == null) {
             return
         }
-        if (themeUtil.isDark) {
-            mPrefsControl?.setImageResource(R.drawable.ic_expand_less_white_24dp)
-        } else {
-            mPrefsControl?.setImageResource(R.drawable.ic_expand_less_black_24dp)
-        }
+        mPrefsControl?.setImageResource(R.drawable.ic_expand_less_black_24dp)
     }
 
-    private fun setCurrentColor(button: IconRadioButton) {
+    private fun setCurrentColor(button: AppCompatImageView) {
         if (isFillPicker) {
-            currentFillColorButton.setIcon(button.getIcon())
+            currentFillColorButton.setImageDrawable(button.drawable)
         } else {
-            currentStrokeColorButton.setIcon(button.getIcon())
+            currentStrokeColorButton.setImageDrawable(button.drawable)
         }
     }
 
-    private fun setCurrentTool(button: IconRadioButton) {
-        currentToolButton.setIcon(button.getIcon())
-        currentToolButton.text = button.text
+    private fun setCurrentTool(button: AppCompatImageView) {
+        currentToolButton.setImageDrawable(button.drawable)
+        currentToolButton.contentDescription = button.contentDescription
     }
 
     private fun setDrawMode(mode: DrawView.Mode, drawer: DrawView.Drawer?) {
@@ -664,9 +622,41 @@ class DrawFragment : BitmapFragment() {
         if (image != null) {
             draw_view.addBitmap(image)
         }
-        imageButton.isChecked = true
+        imageButton.callOnClick()
     }
 
+    private fun deselectAll(ids: IntArray) {
+        for (id in ids) {
+            view?.findViewById<AppCompatImageView>(id)?.isSelected = false
+        }
+    }
+
+    @IdRes
+    private fun colorButtons(): IntArray {
+        return intArrayOf(
+                R.id.colorAmberButton,
+                R.id.colorBlackButton,
+                R.id.colorBlueButton,
+                R.id.colorBlueLightButton,
+                R.id.colorCyanButton,
+                R.id.colorDeepOrangeButton,
+                R.id.colorDeepPurpleButton,
+                R.id.colorGreenButton,
+                R.id.colorGreenLightButton,
+                R.id.colorGreyButton,
+                R.id.colorIndigoButton,
+                R.id.colorLimeButton,
+                R.id.colorOrangeButton,
+                R.id.colorPinkButton,
+                R.id.colorPurpleButton,
+                R.id.colorRedButton,
+                R.id.colorYellowButton,
+                R.id.colorWhiteButton,
+                R.id.colorTealButton
+        )
+    }
+
+    @IdRes
     private fun getId(@ColorRes color: Int): Int {
         var id = 0
         when (color) {
@@ -691,6 +681,32 @@ class DrawFragment : BitmapFragment() {
             R.color.tealPrimary -> id = R.id.colorTealButton
         }
         return id
+    }
+
+    @ColorRes
+    private fun getColor(@IdRes id: Int): Int {
+        return when (id) {
+            R.id.colorAmberButton -> R.color.amberPrimary
+            R.id.colorBlackButton -> R.color.pureBlack
+            R.id.colorBlueButton -> R.color.bluePrimary
+            R.id.colorBlueLightButton -> R.color.blueLightPrimary
+            R.id.colorCyanButton -> R.color.cyanPrimary
+            R.id.colorDeepOrangeButton -> R.color.orangeDeepPrimary
+            R.id.colorDeepPurpleButton -> R.color.purpleDeepPrimary
+            R.id.colorGreenButton -> R.color.greenPrimary
+            R.id.colorGreenLightButton -> R.color.greenLightPrimary
+            R.id.colorGreyButton -> R.color.material_divider
+            R.id.colorIndigoButton -> R.color.indigoPrimary
+            R.id.colorLimeButton -> R.color.limePrimary
+            R.id.colorOrangeButton -> R.color.orangePrimary
+            R.id.colorPinkButton -> R.color.pinkPrimary
+            R.id.colorPurpleButton -> R.color.purplePrimary
+            R.id.colorRedButton -> R.color.redPrimary
+            R.id.colorYellowButton -> R.color.yellowPrimary
+            R.id.colorWhiteButton -> R.color.whitePrimary
+            R.id.colorTealButton -> R.color.tealPrimary
+            else -> R.color.amberPrimary
+        }
     }
 
     private fun getRealPathFromURI(contentUri: Uri?): String {
