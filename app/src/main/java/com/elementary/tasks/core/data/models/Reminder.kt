@@ -246,7 +246,7 @@ class Reminder : RecyclerInterface, Serializable {
 
     override fun toString(): String {
         return "Reminder(summary='$summary', noteId='$noteId', reminderType=$reminderType, " +
-                "groupUuId='$groupUuId', groupUuId='$uuId', eventTime='$eventTime', startTime='$startTime', " +
+                "groupUuId='$groupUuId', uuId='$uuId', eventTime='$eventTime', startTime='$startTime', " +
                 "eventCount=$eventCount, groupColor=$color, delay=$delay, vibrate=$vibrate, " +
                 "repeatNotification=$repeatNotification, notifyByVoice=$notifyByVoice, awake=$awake, " +
                 "unlock=$unlock, exportToTasks=$exportToTasks, exportToCalendar=$exportToCalendar, " +

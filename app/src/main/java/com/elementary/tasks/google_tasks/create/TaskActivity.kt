@@ -421,9 +421,6 @@ open class TaskActivity : ThemedActivity() {
 
     private fun setColor(i: Int) {
         appBar.setBackgroundColor(themeUtil.getNoteColor(i))
-        if (Module.isLollipop) {
-            window.statusBarColor = themeUtil.getNoteDarkColor(i)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

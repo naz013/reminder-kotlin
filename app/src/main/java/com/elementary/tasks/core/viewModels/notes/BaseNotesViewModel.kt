@@ -16,6 +16,7 @@ import com.elementary.tasks.notes.work.SingleBackupWorker
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
+import timber.log.Timber
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -57,6 +58,32 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
         isInProgress.postValue(true)
         launch(CommonPool) {
             appDb.notesDao().insert(note)
+            withUIContext {
+                isInProgress.postValue(false)
+                result.postValue(Commands.SAVED)
+            }
+            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, note.key).build())
+                    .addTag(note.key)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
+        }
+    }
+
+    fun saveNote(note: Note, reminder: Reminder?) {
+        isInProgress.postValue(true)
+        launch(CommonPool) {
+            appDb.notesDao().insert(note)
+            if (reminder != null) {
+                Timber.d("saveNote: $reminder")
+                appDb.reminderDao().insert(reminder)
+                EventControlFactory.getController(reminder).start()
+                val work = OneTimeWorkRequest.Builder(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java)
+                        .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
+                        .addTag(reminder.uuId)
+                        .build()
+                WorkManager.getInstance().enqueue(work)
+            }
             withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)

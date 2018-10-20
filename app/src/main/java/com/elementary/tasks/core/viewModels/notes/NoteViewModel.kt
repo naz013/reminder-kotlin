@@ -38,7 +38,7 @@ class NoteViewModel private constructor(application: Application, key: String) :
 
     init {
         note = appDb.notesDao().loadById(key)
-        reminder = appDb.reminderDao().loadByNoteKey(key)
+        reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)
     }
 
     fun loadEditedPicture() {

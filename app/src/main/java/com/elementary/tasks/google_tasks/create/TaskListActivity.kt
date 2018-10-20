@@ -203,9 +203,6 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     private fun setColor(i: Int) {
         color = i
         appBar.setBackgroundColor(themeUtil.getNoteColor(i))
-        if (Module.isLollipop) {
-            window.statusBarColor = themeUtil.getNoteDarkColor(i)
-        }
     }
 
     override fun onDestroy() {
