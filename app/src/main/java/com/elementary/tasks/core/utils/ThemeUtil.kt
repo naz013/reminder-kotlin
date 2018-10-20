@@ -541,11 +541,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return getColor(colorPrimary(code))
     }
 
-    @ColorInt
-    fun getNoteDarkColor(code: Int): Int {
-        return getColor(colorPrimaryDark(code))
-    }
-
     private fun adjustAlpha(color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
         val alpha = 255f * (factor.toFloat() / 100f)
         val red = android.graphics.Color.red(color)
@@ -584,6 +579,45 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         }
         val alpha = prefs.noteColorOpacity
         return adjustAlpha(getColor(color), alpha)
+    }
+
+    @ColorInt
+    fun colorsForSlider(): IntArray {
+        return if (Module.isPro) {
+            intArrayOf(
+                    getColor(R.color.redAccent),
+                    getColor(R.color.purpleAccent),
+                    getColor(R.color.greenAccent),
+                    getColor(R.color.greenLightAccent),
+                    getColor(R.color.blueAccent),
+                    getColor(R.color.blueLightAccent),
+                    getColor(R.color.yellowAccent),
+                    getColor(R.color.orangeAccent),
+                    getColor(R.color.cyanAccent),
+                    getColor(R.color.pinkAccent),
+                    getColor(R.color.tealAccent),
+                    getColor(R.color.amberAccent),
+                    getColor(R.color.purpleDeepAccent),
+                    getColor(R.color.orangeDeepAccent),
+                    getColor(R.color.limeAccent),
+                    getColor(R.color.indigoAccent)
+            )
+        } else {
+            intArrayOf(
+                    getColor(R.color.redAccent),
+                    getColor(R.color.purpleAccent),
+                    getColor(R.color.greenAccent),
+                    getColor(R.color.greenLightAccent),
+                    getColor(R.color.blueAccent),
+                    getColor(R.color.blueLightAccent),
+                    getColor(R.color.yellowAccent),
+                    getColor(R.color.orangeAccent),
+                    getColor(R.color.cyanAccent),
+                    getColor(R.color.pinkAccent),
+                    getColor(R.color.tealAccent),
+                    getColor(R.color.amberAccent)
+            )
+        }
     }
 
     @DrawableRes

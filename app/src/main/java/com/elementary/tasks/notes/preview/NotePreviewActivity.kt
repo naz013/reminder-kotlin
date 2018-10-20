@@ -189,7 +189,7 @@ class NotePreviewActivity : ThemedActivity() {
             noteText.text = note.summary
             noteText.typeface = AssetsUtil.getTypeface(this, note.style)
             if (Module.isLollipop) {
-                window.statusBarColor = themeUtil.getNoteDarkColor(note.color)
+                window.statusBarColor = themeUtil.getNoteLightColor(note.color)
             }
             scrollContent.setBackgroundColor(themeUtil.getNoteLightColor(note.color))
             showImages(note.images)
