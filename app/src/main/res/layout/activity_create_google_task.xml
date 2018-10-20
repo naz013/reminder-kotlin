@@ -148,7 +148,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@null"
                         android:scaleType="center"
-                        app:srcCompat="@drawable/ic_view_list_black_24dp" />
+                        app:srcCompat="@drawable/ic_twotone_view_list_24px" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:id="@+id/listText"
