@@ -32,10 +32,11 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LayersRecyclerAdapter(private val mContext: Context, private val mDataList: MutableList<Drawing>,
-                            private val onStartDragListener: OnStartDragListener,
-                            private val mCallback: AdapterCallback?) :
-        RecyclerView.Adapter<LayersRecyclerAdapter.ViewHolder>(), Observer {
+class LayersRecyclerAdapter : RecyclerView.Adapter<LayersRecyclerAdapter.ViewHolder>(), Observer {
+
+    private val mDataList: MutableList<Drawing> = mutableListOf()
+    var onStartDragListener: OnStartDragListener? = null
+    var mCallback: AdapterCallback? = null
 
     private var index: Int = 0
 
@@ -72,7 +73,7 @@ class LayersRecyclerAdapter(private val mContext: Context, private val mDataList
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(drawing: Drawing) {
-            itemView.layerName.text = getName(drawing)
+            itemView.layerName.text = getName(itemView.context, drawing)
             itemView.layerView.drawing = drawing
             if (adapterPosition == index) {
                 itemView.selectionView.setBackgroundResource(R.color.redPrimary)
@@ -86,7 +87,7 @@ class LayersRecyclerAdapter(private val mContext: Context, private val mDataList
                 mCallback?.onItemSelect(adapterPosition)
             }
             itemView.setOnLongClickListener {
-                onStartDragListener.onStartDrag(this)
+                onStartDragListener?.onStartDrag(this)
                 true
             }
         }
@@ -100,17 +101,23 @@ class LayersRecyclerAdapter(private val mContext: Context, private val mDataList
         holder.bind(mDataList[position])
     }
 
-    private fun getName(drawing: Drawing): String {
+    private fun getName(context: Context, drawing: Drawing): String {
         return when (drawing) {
-            is Background -> mContext.getString(R.string.background)
-            is Image -> mContext.getString(R.string.image)
+            is Background -> context.getString(R.string.background)
+            is Image -> context.getString(R.string.image)
             is Text -> drawing.text
-            else -> mContext.getString(R.string.figure)
+            else -> context.getString(R.string.figure)
         }
     }
 
     override fun getItemCount(): Int {
         return mDataList.size
+    }
+
+    fun setData(elements: ArrayList<Drawing>) {
+        this.mDataList.clear()
+        this.mDataList.addAll(elements)
+        notifyDataSetChanged()
     }
 
     interface AdapterCallback {

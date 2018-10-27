@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.TmpNote
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.notes.preview.NotePreviewActivity.Companion.PREVIEW_IMAGES
+import com.elementary.tasks.core.viewModels.Commands
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
@@ -33,7 +34,7 @@ import kotlinx.coroutines.experimental.launch
 class NoteViewModel private constructor(application: Application, key: String) : BaseNotesViewModel(application) {
 
     var note: LiveData<Note>
-    val editedPicture: MutableLiveData<Note> = MutableLiveData()
+    val editedPicture: MutableLiveData<TmpNote> = MutableLiveData()
     var reminder: LiveData<Reminder>
 
     init {
@@ -41,9 +42,30 @@ class NoteViewModel private constructor(application: Application, key: String) :
         reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)
     }
 
+    fun saveTmpNote(byteArray: ByteArray?) {
+        isInProgress.postValue(true)
+        launch(CommonPool) {
+            appDb.notesDao().insert(TmpNote(byteArray))
+            withUIContext {
+                isInProgress.postValue(false)
+                result.postValue(Commands.IMAGE_SAVED)
+            }
+        }
+    }
+
+    fun deleteTmpNote(tmpNote: TmpNote) {
+        isInProgress.postValue(true)
+        launch(CommonPool) {
+            appDb.notesDao().delete(tmpNote)
+            withUIContext {
+                isInProgress.postValue(false)
+            }
+        }
+    }
+
     fun loadEditedPicture() {
         launch(CommonPool) {
-            val note = appDb.notesDao().getById(PREVIEW_IMAGES)
+            val note = appDb.notesDao().getEditedImage()
             withUIContext {  editedPicture.postValue(note) }
         }
     }

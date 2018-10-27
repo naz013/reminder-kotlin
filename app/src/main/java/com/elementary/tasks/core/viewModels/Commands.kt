@@ -25,5 +25,6 @@ enum class Commands {
     UPDATED,
     TRASH_CLEARED,
     FAILED,
+    IMAGE_SAVED,
     DELETED
 }
