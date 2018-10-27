@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.Query
 
 import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.TmpNote
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -53,4 +54,13 @@ interface NotesDao {
 
     @Query("SELECT * FROM Note WHERE `key`=:id")
     fun getById(id: String): Note?
+
+    @Insert(onConflict = REPLACE)
+    fun insert(tmpNote: TmpNote)
+
+    @Delete
+    fun delete(tmpNote: TmpNote)
+
+    @Query("SELECT * FROM TmpNote LIMIT 1")
+    fun getEditedImage(): TmpNote?
 }

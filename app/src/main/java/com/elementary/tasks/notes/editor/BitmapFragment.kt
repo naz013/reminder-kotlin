@@ -1,7 +1,7 @@
 package com.elementary.tasks.notes.editor
 
+import android.content.Context
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import com.elementary.tasks.notes.create.NoteImage
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -22,9 +22,20 @@ import com.elementary.tasks.notes.create.NoteImage
  * limitations under the License.
  */
 abstract class BitmapFragment : BaseNavigationFragment() {
-    abstract val image: NoteImage?
 
-    abstract val originalImage: NoteImage?
+    protected var editInterface: EditInterface? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val ei = editInterface
+        if (ei == null) {
+            editInterface = context as EditInterface?
+        }
+    }
+
+    abstract val image: ByteArray?
+
+    abstract val originalImage: ByteArray?
 
     abstract fun onBackPressed(): Boolean
 }

@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
-import com.elementary.tasks.notes.create.NoteImage
 import kotlinx.android.synthetic.main.fragment_crop_image.*
 import java.io.ByteArrayOutputStream
 
@@ -33,22 +32,21 @@ import java.io.ByteArrayOutputStream
  */
 class CropFragment : BitmapFragment() {
 
-    override val image: NoteImage?
+    override val image: ByteArray?
         get() {
             val cropped = cropImageView.croppedImage
             val outputStream = ByteArrayOutputStream()
-            val item = ImageSingleton.getInstance().item
+            var img: ByteArray? = null
             if (cropped != null) {
                 cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                if (item != null) {
-                    item.image = outputStream.toByteArray()
-                }
+                img = outputStream.toByteArray()
+                editInterface?.saveCurrent(img)
             }
-            return item
+            return img
         }
 
-    override val originalImage: NoteImage?
-        get() = ImageSingleton.getInstance().item
+    override val originalImage: ByteArray?
+        get() = editInterface?.getOriginal()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_crop_image, container, false)
@@ -77,11 +75,11 @@ class CropFragment : BitmapFragment() {
     override fun getTitle(): String = ""
 
     private fun loadImage() {
-        val item = ImageSingleton.getInstance().item
-        if (item != null) {
+        val image = editInterface?.getCurrent()
+        if (image != null) {
             Glide.with(context!!)
                     .asBitmap()
-                    .load(item.image)
+                    .load(image)
                     .into(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             cropImageView.setImageBitmap(resource)

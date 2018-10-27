@@ -344,8 +344,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, id)).get(NoteViewModel::class.java)
         viewModel.note.observe(this, Observer { this.showNote(it) })
         viewModel.editedPicture.observe(this, Observer { note ->
-            if (note != null && !note.images.isEmpty()) {
-                mAdapter.setImage(note.images[0], mEditPosition)
+            if (note != null) {
+                val image = note.image ?: return@Observer
+                mAdapter.setImage(NoteImage(image), mEditPosition)
+                viewModel.deleteTmpNote(note)
             }
         })
         viewModel.reminder.observe(this, Observer<Reminder> { this.showReminder(it) })
@@ -434,10 +436,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun editImage(position: Int) {
-        val note = Note()
-        note.key = PREVIEW_IMAGES
-        note.images = listOf(mAdapter.getItem(position))
-        viewModel.saveNote(note)
+        viewModel.saveTmpNote(mAdapter.getItem(position).image)
         this.mEditPosition = position
         startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }

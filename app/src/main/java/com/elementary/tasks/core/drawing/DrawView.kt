@@ -11,6 +11,7 @@ import com.elementary.tasks.core.interfaces.Observable
 import com.elementary.tasks.core.interfaces.Observer
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.LogUtil
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -273,6 +274,7 @@ class DrawView : View, Observable {
         RECTANGLE,
         CIRCLE,
         ELLIPSE,
+        FILL,
         QUADRATIC_BEZIER
     }
 
@@ -401,7 +403,7 @@ class DrawView : View, Observable {
      */
     private fun onActionDown(event: MotionEvent) {
         when (this.mode) {
-            DrawView.Mode.DRAW, DrawView.Mode.ERASER -> if (this.drawer != Drawer.QUADRATIC_BEZIER) {
+            Mode.DRAW, Mode.ERASER -> if (this.drawer != Drawer.QUADRATIC_BEZIER) {
                 this.updateHistory(this.createPath(event))
                 this.isDown = true
             } else {
@@ -413,7 +415,7 @@ class DrawView : View, Observable {
                     this.isDown = true
                 }
             }
-            DrawView.Mode.TEXT, DrawView.Mode.IMAGE -> {
+            Mode.TEXT, Mode.IMAGE -> {
                 this.startX = event.x
                 this.startY = event.y
                 this.bmpStartX = currentItem!!.x
@@ -433,20 +435,23 @@ class DrawView : View, Observable {
         val x = event.x
         val y = event.y
         when (this.mode) {
-            DrawView.Mode.IMAGE -> moveBitmap(x, y)
-            DrawView.Mode.DRAW, DrawView.Mode.ERASER -> if (this.drawer != Drawer.QUADRATIC_BEZIER) {
+            Mode.IMAGE -> moveBitmap(x, y)
+            Mode.DRAW, Mode.ERASER -> if (this.drawer != Drawer.QUADRATIC_BEZIER) {
                 if (!isDown) {
                     return
                 }
                 val path = this.currentPath ?: return
                 when (this.drawer) {
-                    DrawView.Drawer.PEN -> path.lineTo(x, y)
-                    DrawView.Drawer.LINE -> {
+                    Drawer.PEN -> path.lineTo(x, y)
+                    Drawer.FILL -> {
+                        baseColor = this.paintFillColor
+                    }
+                    Drawer.LINE -> {
                         path.reset()
                         path.moveTo(this.startX, this.startY)
                         path.lineTo(x, y)
                     }
-                    DrawView.Drawer.RECTANGLE -> {
+                    Drawer.RECTANGLE -> {
                         path.reset()
                         val left = Math.min(this.startX, x)
                         val right = Math.max(this.startX, x)
@@ -454,14 +459,14 @@ class DrawView : View, Observable {
                         val bottom = Math.max(this.startY, y)
                         path.addRect(left, top, right, bottom, Path.Direction.CCW)
                     }
-                    DrawView.Drawer.CIRCLE -> {
+                    Drawer.CIRCLE -> {
                         val distanceX = Math.abs((this.startX - x).toDouble())
                         val distanceY = Math.abs((this.startY - y).toDouble())
                         val radius = Math.sqrt(Math.pow(distanceX, 2.0) + Math.pow(distanceY, 2.0))
                         path.reset()
                         path.addCircle(this.startX, this.startY, radius.toFloat(), Path.Direction.CCW)
                     }
-                    DrawView.Drawer.ELLIPSE -> {
+                    Drawer.ELLIPSE -> {
                         val rect = RectF(this.startX, this.startY, x, y)
                         path.reset()
                         path.addOval(rect, Path.Direction.CCW)
@@ -478,7 +483,7 @@ class DrawView : View, Observable {
                 path.moveTo(this.startX, this.startY)
                 path.quadTo(this.controlX, this.controlY, x, y)
             }
-            DrawView.Mode.TEXT -> moveText(x, y)
+            Mode.TEXT -> moveText(x, y)
             else -> {
             }
         }
@@ -615,6 +620,7 @@ class DrawView : View, Observable {
      * @return
      */
     fun clear() {
+        Timber.d("clear: ")
         this.setup()
         this.invalidate()
         sendCallback()
@@ -627,8 +633,8 @@ class DrawView : View, Observable {
      */
     fun addText(text: String) {
         this.currentItem = Text(text, fontSize, createPaint())
-        this.currentItem!!.x = startX
-        this.currentItem!!.y = startY
+        this.currentItem?.x = startX
+        this.currentItem?.y = startY
         if (this.historyPointer == this.elements.size) {
             this.elements.add(currentItem!!)
         } else {

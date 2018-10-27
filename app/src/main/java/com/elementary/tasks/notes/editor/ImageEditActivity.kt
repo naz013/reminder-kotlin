@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.TmpNote
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.Commands
@@ -18,6 +18,7 @@ import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_image_edit.*
+import timber.log.Timber
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -37,11 +38,13 @@ import kotlinx.android.synthetic.main.activity_image_edit.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ImageEditActivity : ThemedActivity() {
+class ImageEditActivity : ThemedActivity(), EditInterface {
 
     private var fragment: BitmapFragment? = null
     private lateinit var viewModel: NoteViewModel
-    private var mNote: Note? = null
+    private var tmpNote: TmpNote? = null
+
+    private var currentImage: ByteArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +57,7 @@ class ImageEditActivity : ThemedActivity() {
         viewModel = ViewModelProviders.of(this,
                 NoteViewModel.Factory(application, NotePreviewActivity.PREVIEW_IMAGES))
                 .get(NoteViewModel::class.java)
-        viewModel.note.observe(this, Observer{ note ->
+        viewModel.editedPicture.observe(this, Observer{ note ->
             if (note != null) {
                 showImage(note)
             }
@@ -62,21 +65,22 @@ class ImageEditActivity : ThemedActivity() {
         viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
-                    Commands.SAVED -> closeOk()
+                    Commands.IMAGE_SAVED -> closeOk()
                 }
             }
         })
+        viewModel.loadEditedPicture()
     }
 
     private fun closeOk() {
-        ImageSingleton.getInstance().item = null
         setResult(RESULT_OK)
         finish()
     }
 
-    private fun showImage(note: Note) {
-        mNote = note
-        ImageSingleton.getInstance().item = note.images[0]
+    private fun showImage(note: TmpNote) {
+        Timber.d("showImage: ")
+        currentImage = note.image
+        tmpNote = note
         initTabControl()
     }
 
@@ -115,12 +119,12 @@ class ImageEditActivity : ThemedActivity() {
         builder.setMessage(R.string.which_image_you_want_to_use)
         builder.setPositiveButton(R.string.edited) { dialogInterface, _ ->
             dialogInterface.dismiss()
-            ImageSingleton.getInstance().item = fragment!!.image
+            tmpNote?.image = fragment?.image
             switchTab(position)
         }
         builder.setNegativeButton(R.string.original) { dialogInterface, _ ->
             dialogInterface.dismiss()
-            ImageSingleton.getInstance().item = fragment!!.originalImage
+            tmpNote?.image = fragment?.originalImage
             switchTab(position)
         }
         builder.create().show()
@@ -131,12 +135,12 @@ class ImageEditActivity : ThemedActivity() {
         builder.setMessage(R.string.which_image_you_want_to_use)
         builder.setPositiveButton(R.string.cropped) { dialogInterface, _ ->
             dialogInterface.dismiss()
-            ImageSingleton.getInstance().item = fragment!!.image
+            tmpNote?.image = fragment?.image
             switchTab(position)
         }
         builder.setNegativeButton(R.string.original) { dialogInterface, _ ->
             dialogInterface.dismiss()
-            ImageSingleton.getInstance().item = fragment!!.originalImage
+            tmpNote?.image = fragment?.originalImage
             switchTab(position)
         }
         builder.create().show()
@@ -159,7 +163,7 @@ class ImageEditActivity : ThemedActivity() {
         replaceFragment(CropFragment.newInstance())
     }
 
-    fun replaceFragment(fragment: BitmapFragment) {
+    private fun replaceFragment(fragment: BitmapFragment) {
         this.fragment = fragment
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.container, fragment, null)
@@ -170,8 +174,12 @@ class ImageEditActivity : ThemedActivity() {
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
+        }
         toolbar.title = getString(R.string.edit)
     }
 
@@ -221,11 +229,21 @@ class ImageEditActivity : ThemedActivity() {
 
     private fun saveImage() {
         val image = fragment?.image
-        val note = mNote
-        if (image != null && note != null) {
-            note.images = listOf(image)
-            viewModel.saveNote(note)
+        if (image != null) {
+            viewModel.saveTmpNote(image)
         }
+    }
+
+    override fun getCurrent(): ByteArray? {
+        return currentImage
+    }
+
+    override fun saveCurrent(byteArray: ByteArray?) {
+        this.currentImage = byteArray
+    }
+
+    override fun getOriginal(): ByteArray? {
+        return tmpNote?.image
     }
 
     companion object {

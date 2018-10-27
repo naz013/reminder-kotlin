@@ -1,136 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/colorAccent" />
-
-    <com.elementary.tasks.core.views.ThemedImageButton
-        android:id="@+id/prefsControlText"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:background="?attr/selectableItemBackground"
-        app:srcCompat="@drawable/ic_expand_less_white_24dp" />
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.IconRadioButton
+        <LinearLayout
             android:id="@+id/addButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:ir_checkable="false"
-            app:ir_icon="@drawable/ic_add_black_24dp"
-            app:ir_icon_light="@drawable/ic_add_white_24dp"
-            app:ir_text="@string/add_text"
-            app:ir_text_size="6sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:background="?selectableItemBackground"
+            android:gravity="center_horizontal">
 
-        <com.elementary.tasks.core.views.IconRadioButton
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                app:srcCompat="@drawable/ic_add_black_24dp"
+                app:tint="?android:textColorPrimary"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_text"
+                android:textAppearance="?textAppearanceBody1" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/fontButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            app:ir_checkable="false"
-            app:ir_icon="@drawable/ic_text_format_black_24dp"
-            app:ir_icon_light="@drawable/ic_text_format_white_24dp"
-            app:ir_text="@string/font_style"
-            app:ir_text_size="6sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:background="?selectableItemBackground"
+            android:gravity="center_horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                app:srcCompat="@drawable/ic_twotone_text_fields_24px"
+                app:tint="?android:textColorPrimary"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/font_style"
+                android:textAppearance="?textAppearanceBody1" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/text_size"
+        android:textAppearance="?textAppearanceCaption"
         android:textColor="?attr/colorAccent" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/labelLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="1px" />
-
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/labelRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="70px" />
+            android:text="1px"
+            android:textAppearance="?textAppearanceCaption" />
 
         <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/widthSeek"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/labelLeft"
-            android:layout_toLeftOf="@+id/labelRight"
-            android:layout_toRightOf="@+id/labelLeft"
-            android:layout_toStartOf="@+id/labelRight"
+            android:layout_weight="1"
             android:max="70" />
 
-    </RelativeLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/labelRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="70px"
+            android:textAppearance="?textAppearanceCaption" />
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/opacity"
+        android:textAppearance="?textAppearanceCaption"
         android:textColor="?attr/colorAccent" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/labelLeftOpacity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="0%" />
-
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/labelRightOpacity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="100%" />
+            android:text="0%"
+            android:textAppearance="?textAppearanceCaption" />
 
         <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/opacitySeekText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/labelLeftOpacity"
-            android:layout_toLeftOf="@+id/labelRightOpacity"
-            android:layout_toRightOf="@+id/labelLeftOpacity"
-            android:layout_toStartOf="@+id/labelRightOpacity"
+            android:layout_weight="1"
             android:max="255" />
 
-    </RelativeLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/labelRightOpacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100%"
+            android:textAppearance="?textAppearanceCaption" />
+
+    </LinearLayout>
 </LinearLayout>
