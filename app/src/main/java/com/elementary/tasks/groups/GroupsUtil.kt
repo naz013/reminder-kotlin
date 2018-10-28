@@ -29,6 +29,7 @@ object GroupsUtil {
     fun initDefault(context: Context): String {
         val random = Random()
         val def = ReminderGroup(context.getString(R.string.general), random.nextInt(16))
+        def.isDefaultGroup = true
         val dao = AppDb.getAppDatabase(context).reminderGroupDao()
         dao.insert(def)
         dao.insert(ReminderGroup(context.getString(R.string.work), random.nextInt(16)))

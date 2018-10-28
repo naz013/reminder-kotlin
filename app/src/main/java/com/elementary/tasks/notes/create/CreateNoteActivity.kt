@@ -34,15 +34,12 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration
 import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity.Companion.PREVIEW_IMAGES
-import com.tapadoo.alerter.Alert
-import com.tapadoo.alerter.Alerter
 import kotlinx.android.synthetic.main.activity_create_note.*
 import org.apache.commons.lang3.StringUtils
 import java.io.ByteArrayOutputStream
@@ -82,13 +79,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private var mEditPosition = -1
 
     private lateinit var viewModel: NoteViewModel
-    private lateinit var reminderViewModel: ReminderViewModel
     private val mAdapter = ImagesGridAdapter()
     private var mProgress: ProgressDialog? = null
 
     private var mItem: Note? = null
     private var mReminder: Reminder? = null
-    private var mAlerter: Alert? = null
 
     private var speech: SpeechRecognizer? = null
     private lateinit var photoSelectionUtil: PhotoSelectionUtil
@@ -208,11 +203,15 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
         updateBackground()
         updateTextStyle()
-        showSaturationAlert()
     }
 
     private fun initColor() {
-        colorSlider.setSelection(Random().nextInt(16))
+        mColor = if (prefs.isNoteColorRememberingEnabled) {
+            prefs.lastNoteColor
+        } else {
+            Random().nextInt(16)
+        }
+        colorSlider.setSelection(mColor)
     }
 
     private fun setText(text: String?) {
@@ -265,22 +264,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         initRecognizer()
     }
 
-    private fun showSaturationAlert() {
-        if (prefs.isNoteHintShowed) {
-            return
-        }
-        prefs.isNoteHintShowed = true
-        mAlerter = Alerter.create(this)
-                .setTitle(R.string.swipe_left_or_right_to_adjust_saturation)
-                .setText(R.string.click_to_hide)
-                .enableInfiniteDuration(true)
-                .setBackgroundColorRes(themeUtil.colorPrimaryDark(mColor))
-                .setOnClickListener {
-                    mAlerter?.hide()
-                }
-                .show()
-    }
-
     private fun initMenu() {
         bottomBarView.setBackgroundColor(themeUtil.backgroundStyle)
         colorButton.setOnClickListener { toggleColorView() }
@@ -289,7 +272,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         fontButton.setOnClickListener { showStyleDialog() }
 
         colorSlider.setColors(themeUtil.colorsForSlider())
-        colorSlider.setListener { position, color ->
+        colorSlider.setListener { position, _ ->
             mColor = position
             if (prefs.isNoteColorRememberingEnabled) {
                 prefs.lastNoteColor = mColor
@@ -362,8 +345,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 }
             }
         })
-
-        reminderViewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, "")).get(ReminderViewModel::class.java)
     }
 
     private fun initActionBar() {
@@ -530,6 +511,9 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             calendar.set(mYear, mMonth, mDay, mHour, mMinute)
             reminder = createReminder(note, calendar) ?: return
         }
+        if (prefs.isNoteColorRememberingEnabled) {
+            prefs.lastNoteColor = mColor
+        }
         viewModel.saveNote(note, reminder)
     }
 
@@ -546,10 +530,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         reminder.isActive = true
         reminder.isRemoved = false
         reminder.summary = note.summary
-        val def = reminderViewModel.defaultReminderGroup.value
-        if (def != null) {
-            reminder.groupUuId = def.groupUuId
-        }
+
         val startTime = calendar.timeInMillis
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)

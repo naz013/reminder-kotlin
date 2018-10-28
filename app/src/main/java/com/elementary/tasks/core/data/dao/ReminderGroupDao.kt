@@ -2,10 +2,7 @@ package com.elementary.tasks.core.data.dao
 
 import com.elementary.tasks.core.data.models.ReminderGroup
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 import androidx.room.OnConflictStrategy.REPLACE
 
@@ -30,8 +27,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface ReminderGroupDao {
 
-    @Query("SELECT * FROM ReminderGroup LIMIT 1")
-    fun defaultGroup(): ReminderGroup?
+    @Query("SELECT * FROM ReminderGroup WHERE isDefaultGroup=:isDef LIMIT 1")
+    fun defaultGroup(isDef: Boolean = true): ReminderGroup?
 
     @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
     fun all(): List<ReminderGroup>
