@@ -85,15 +85,15 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
                 itemView.removeButton.visibility = View.VISIBLE
                 itemView.removeButton.setBackgroundResource(themeUtil.indicator)
                 itemView.removeButton.setOnClickListener { removeImage(adapterPosition) }
-                if (actionsListener != null && Module.isPro) {
-                    itemView.editButton.visibility = View.VISIBLE
-                    itemView.editButton.setBackgroundResource(themeUtil.indicator)
-                    itemView.editButton.setOnClickListener { view ->
-                        actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
-                    }
-                } else {
+//                if (actionsListener != null && Module.isPro) {
+//                    itemView.editButton.visibility = View.VISIBLE
+//                    itemView.editButton.setBackgroundResource(themeUtil.indicator)
+//                    itemView.editButton.setOnClickListener { view ->
+//                        actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
+//                    }
+//                } else {
                     itemView.editButton.visibility = View.GONE
-                }
+//                }
             } else {
                 itemView.removeButton.visibility = View.GONE
                 itemView.editButton.visibility = View.GONE
