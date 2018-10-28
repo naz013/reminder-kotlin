@@ -101,7 +101,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         inflater?.inflate(R.menu.notes_menu, menu)
 
         val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
-        val listIcon = ContextCompat.getDrawable(context!!, if (!enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px)
+        val listIcon = ContextCompat.getDrawable(context!!, if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px)
         val sortIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_filter_list_24px)
         if (isDark) {
             val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
@@ -117,7 +117,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
         menu?.getItem(0)?.icon = searchIcon
         menu?.getItem(1)?.icon = listIcon
-        menu?.getItem(1)?.title = if (!enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
+        menu?.getItem(1)?.title = if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
         menu?.getItem(2)?.icon = sortIcon
 
         if (viewModel.notes.value != null && viewModel.notes.value!!.isNotEmpty()) {
@@ -173,6 +173,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
             R.id.action_list -> {
                 enableGrid = !enableGrid
                 prefs.isNotesGridEnabled = enableGrid
+                recyclerView.layoutManager = layoutManager()
                 mAdapter.notifyDataSetChanged()
                 activity?.invalidateOptionsMenu()
             }
@@ -203,13 +204,17 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         })
     }
 
-    private fun initList() {
-        var layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-        enableGrid = prefs.isNotesGridEnabled
-        if (enableGrid) {
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    private fun layoutManager(): RecyclerView.LayoutManager {
+        return if (enableGrid) {
+            LinearLayoutManager(context)
+        } else {
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
-        recyclerView.layoutManager = layoutManager
+    }
+
+    private fun initList() {
+        enableGrid = prefs.isNotesGridEnabled
+        recyclerView.layoutManager = layoutManager()
         mAdapter = NotesRecyclerAdapter()
         mAdapter.actionsListener = object : ActionsListener<Note> {
             override fun onAction(view: View, position: Int, t: Note?, actions: ListActions) {
