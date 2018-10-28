@@ -28,6 +28,15 @@
         android:background="?android:colorBackground"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/showPrefsButton"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_expand_less_black_24dp"
+            app:tint="?android:textColorPrimary" />
+
         <LinearLayout
             android:id="@+id/prefsContent"
             android:layout_width="match_parent"
