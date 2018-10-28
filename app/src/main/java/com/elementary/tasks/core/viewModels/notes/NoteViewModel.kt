@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.TmpNote
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands

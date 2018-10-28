@@ -246,19 +246,17 @@ class Reminder : RecyclerInterface, Serializable {
 
     override fun toString(): String {
         return "Reminder(summary='$summary', noteId='$noteId', reminderType=$reminderType, " +
-                "groupUuId='$groupUuId', uuId='$uuId', eventTime='$eventTime', startTime='$startTime', " +
-                "eventCount=$eventCount, groupColor=$color, delay=$delay, vibrate=$vibrate, " +
-                "repeatNotification=$repeatNotification, notifyByVoice=$notifyByVoice, awake=$awake, " +
-                "unlock=$unlock, exportToTasks=$exportToTasks, exportToCalendar=$exportToCalendar, " +
+                "groupUuId='$groupUuId', uuId='$uuId', eventTime='$eventTime', " +
+                "eventCount=$eventCount, delay=$delay, " +
                 "useGlobal=$useGlobal, from='$from', to='$to', hours=$hours, fileName='$fileName', " +
                 "melodyPath='$melodyPath', volume=$volume, dayOfMonth=$dayOfMonth, monthOfYear=$monthOfYear, " +
                 "repeatInterval=$repeatInterval, repeatLimit=$repeatLimit, after=$after, weekdays=$weekdays, " +
                 "type=$type, target='$target', subject='$subject', attachmentFile='$attachmentFile', " +
                 "attachmentFiles=$attachmentFiles, auto=$auto, places=$places, shoppings=$shoppings, " +
                 "uniqueId=$uniqueId, isActive=$isActive, isRemoved=$isRemoved, " +
-                "isNotificationShown=$isNotificationShown, isLocked=$isLocked, duration=$duration, " +
-                "groupTitle=$groupTitle, groupColor=$groupColor, " +
-                "remindBefore=$remindBefore, windowType=$windowType, priority=$priority"
+                "isNotificationShown=$isNotificationShown, isLocked=$isLocked, " +
+                "groupTitle=$groupTitle, " +
+                "remindBefore=$remindBefore, windowType=$windowType, priority=$priority" + "]"
     }
 
 

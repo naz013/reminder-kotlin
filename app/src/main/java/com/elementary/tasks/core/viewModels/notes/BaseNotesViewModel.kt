@@ -74,17 +74,10 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
         isInProgress.postValue(true)
         launch(CommonPool) {
             appDb.notesDao().insert(note)
-            if (reminder != null) {
-                Timber.d("saveNote: $reminder")
-                appDb.reminderDao().insert(reminder)
-                EventControlFactory.getController(reminder).start()
-                val work = OneTimeWorkRequest.Builder(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java)
-                        .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
-                        .addTag(reminder.uuId)
-                        .build()
-                WorkManager.getInstance().enqueue(work)
-            }
             withUIContext {
+                if (reminder != null) {
+                    saveReminder(reminder)
+                }
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
@@ -93,6 +86,28 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                     .addTag(note.key)
                     .build()
             WorkManager.getInstance().enqueue(work)
+        }
+    }
+
+    private fun saveReminder(reminder: Reminder) {
+        launch(CommonPool) {
+            Timber.d("saveReminder: %s", appDb.isOpen)
+            val group = appDb.reminderGroupDao().defaultGroup()
+            Timber.d("saveReminder: group -> %s", group)
+            if (group != null) {
+                reminder.groupColor = group.groupColor
+                reminder.groupTitle = group.groupTitle
+                reminder.groupUuId = group.groupUuId
+            }
+
+            appDb.reminderDao().insert(reminder)
+            EventControlFactory.getController(reminder).start()
+            val work = OneTimeWorkRequest.Builder(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
+                    .addTag(reminder.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
+            Timber.d("saveReminder: %s", appDb.reminderDao().getById(reminder.uuId))
         }
     }
 
