@@ -65,6 +65,8 @@ class NotePreviewActivity : ThemedActivity() {
 
     @Inject
     lateinit var backupTool: BackupTool
+    @Inject
+    lateinit var imagesSingleton: ImagesSingleton
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -129,12 +131,8 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun openImagePreview(position: Int) {
-        val note = Note()
-        note.key = PREVIEW_IMAGES
-        note.images = mAdapter.data
-        viewModel.saveNote(note)
+        imagesSingleton.setCurrent(mAdapter.data)
         startActivity(Intent(this, ImagePreviewActivity::class.java)
-                .putExtra(Constants.INTENT_ID, note.key)
                 .putExtra(Constants.INTENT_POSITION, position))
     }
 

@@ -2,16 +2,15 @@ package com.elementary.tasks.notes.preview
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.notes.create.NoteImage
 import kotlinx.android.synthetic.main.activity_image_preview.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,25 +32,26 @@ import java.util.*
  */
 class ImagePreviewActivity : ThemedActivity() {
 
-    private lateinit var viewModel: NoteViewModel
-    private var mNote: Note? = null
+    @Inject
+    lateinit var imagesSingleton: ImagesSingleton
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_preview)
         initActionBar()
-        initViewModel()
+
+        showImages()
     }
 
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this,
-                NoteViewModel.Factory(application, intent.getStringExtra(Constants.INTENT_ID)))
-                .get(NoteViewModel::class.java)
-        viewModel.note.observe(this, Observer{ note ->
-            if (note != null) {
-                initViewPager(note)
-            }
-        })
+    private fun showImages() {
+        val images = imagesSingleton.getCurrent()
+        if (images.isNotEmpty()) {
+            initViewPager(images)
+        }
     }
 
     private fun setPhotoPosition() {
@@ -60,17 +60,8 @@ class ImagePreviewActivity : ThemedActivity() {
             photo_pager.currentItem = position
     }
 
-    private fun getAdapter(note: Note?): PhotoPagerAdapter {
-        return if (note == null) {
-            PhotoPagerAdapter(listOf())
-        } else {
-            PhotoPagerAdapter(note.images)
-        }
-    }
-
-    private fun initViewPager(note: Note?) {
-        this.mNote = note
-        photo_pager.adapter = getAdapter(note)
+    private fun initViewPager(images: List<NoteImage>) {
+        photo_pager.adapter = PhotoPagerAdapter(images)
         photo_pager.pageMargin = 5
         photo_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -85,20 +76,22 @@ class ImagePreviewActivity : ThemedActivity() {
 
             }
         })
-        if (note != null) {
-            setToolbarTitle(photo_pager.currentItem)
-        }
+        setToolbarTitle(photo_pager.currentItem)
         setPhotoPosition()
     }
 
     private fun setToolbarTitle(position: Int) {
-        toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x), position + 1, mNote!!.images.size)
+        toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x), position + 1, imagesSingleton.getCurrent().size)
     }
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
+        }
         toolbar.title = ""
     }
 
@@ -113,7 +106,7 @@ class ImagePreviewActivity : ThemedActivity() {
     }
 
     override fun onDestroy() {
+        imagesSingleton.clear()
         super.onDestroy()
-        if (mNote != null) viewModel.deleteNote(mNote!!)
     }
 }

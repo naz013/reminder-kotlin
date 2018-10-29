@@ -39,7 +39,7 @@ import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
-import com.elementary.tasks.notes.preview.NotePreviewActivity.Companion.PREVIEW_IMAGES
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.activity_create_note.*
 import org.apache.commons.lang3.StringUtils
 import java.io.ByteArrayOutputStream
@@ -91,6 +91,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     lateinit var backupTool: BackupTool
     @Inject
     lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var imagesSingleton: ImagesSingleton
 
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle) {
@@ -407,12 +409,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun openImagePreview(position: Int) {
-        val note = Note()
-        note.key = PREVIEW_IMAGES
-        note.images = mAdapter.data
-        viewModel.saveNote(note)
+        imagesSingleton.setCurrent(mAdapter.data)
         startActivity(Intent(this, ImagePreviewActivity::class.java)
-                .putExtra(Constants.INTENT_ID, note.key)
                 .putExtra(Constants.INTENT_POSITION, position))
     }
 

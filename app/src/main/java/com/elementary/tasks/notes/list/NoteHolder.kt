@@ -12,15 +12,19 @@ import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.notes.create.NoteImage
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.list_item_note.view.*
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -43,7 +47,11 @@ import java.lang.ref.WeakReference
 class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
 
+    @Inject
+    lateinit var imagesSingleton: ImagesSingleton
+
     init {
+        ReminderApp.appComponent.inject(this)
         itemView.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.clickView.setOnLongClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.MORE)
@@ -86,9 +94,10 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
                 .into(imageView)
     }
 
-    private fun setClick(imageView: ImageView, position: Int, key: String?) {
+    private fun setClick(imageView: ImageView, position: Int, key: String?, images: List<NoteImage>) {
         val context = imageView.context.applicationContext
         imageView.setOnClickListener {
+            imagesSingleton.setCurrent(images)
             context.startActivity(Intent(context, ImagePreviewActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .putExtra(Constants.INTENT_ID, key)
@@ -112,7 +121,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
                 val params = LinearLayout.LayoutParams(MeasureUtils.dp2px(container.context, 128),
                         MeasureUtils.dp2px(container.context, 72))
                 imV.layoutParams = params
-                setClick(imV, index, item.key)
+                setClick(imV, index, item.key, images)
                 imV.scaleType = ImageView.ScaleType.CENTER_CROP
                 horView.addView(imV)
                 val im = WeakReference(images[index])
