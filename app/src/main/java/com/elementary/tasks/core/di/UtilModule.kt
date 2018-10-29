@@ -5,6 +5,7 @@ import com.backdoor.engine.Recognizer
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -34,6 +35,12 @@ class UtilModule {
     @Singleton
     fun providesButtonObservable(): GlobalButtonObservable {
         return GlobalButtonObservable()
+    }
+
+    @Provides
+    @Singleton
+    fun providesImagesSingleton(): ImagesSingleton {
+        return ImagesSingleton()
     }
 
     @Provides

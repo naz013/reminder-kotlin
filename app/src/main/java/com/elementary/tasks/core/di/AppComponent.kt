@@ -40,7 +40,9 @@ import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
+import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.notes.list.NotesFragment
+import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
@@ -128,6 +130,7 @@ interface AppComponent {
     fun inject(dateTimeView: DateTimeView)
     fun inject(getTaskListAsync: GetTaskListAsync)
     fun inject(baseHolder: BaseHolder)
+    fun inject(holder: NoteHolder)
     fun inject(restoreDropboxTask: RestoreDropboxTask)
     fun inject(restoreGoogleTask: RestoreGoogleTask)
     fun inject(restoreLocalTask: RestoreLocalTask)
@@ -141,4 +144,5 @@ interface AppComponent {
     fun inject(activity: CreateReminderActivity)
     fun inject(activity: BaseNotificationActivity)
     fun inject(activity: ReminderPreviewActivity)
+    fun inject(activity: ImagePreviewActivity)
 }
