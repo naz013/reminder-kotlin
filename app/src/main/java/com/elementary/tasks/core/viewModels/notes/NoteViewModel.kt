@@ -2,17 +2,10 @@ package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.TmpNote
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -34,41 +27,12 @@ import kotlinx.coroutines.experimental.launch
  */
 class NoteViewModel private constructor(application: Application, key: String) : BaseNotesViewModel(application) {
 
-    var note: LiveData<Note>
-    val editedPicture: MutableLiveData<TmpNote> = MutableLiveData()
+    var note: LiveData<NoteWithImages>
     var reminder: LiveData<Reminder>
 
     init {
         note = appDb.notesDao().loadById(key)
         reminder = appDb.reminderDao().loadByNoteKey(if (key == "") "1" else key)
-    }
-
-    fun saveTmpNote(byteArray: ByteArray?) {
-        isInProgress.postValue(true)
-        launch(CommonPool) {
-            appDb.notesDao().insert(TmpNote(byteArray))
-            withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.IMAGE_SAVED)
-            }
-        }
-    }
-
-    fun deleteTmpNote(tmpNote: TmpNote) {
-        isInProgress.postValue(true)
-        launch(CommonPool) {
-            appDb.notesDao().delete(tmpNote)
-            withUIContext {
-                isInProgress.postValue(false)
-            }
-        }
-    }
-
-    fun loadEditedPicture() {
-        launch(CommonPool) {
-            val note = appDb.notesDao().getEditedImage()
-            withUIContext {  editedPicture.postValue(note) }
-        }
     }
 
     class Factory(private val application: Application, private val key: String) : ViewModelProvider.NewInstanceFactory() {

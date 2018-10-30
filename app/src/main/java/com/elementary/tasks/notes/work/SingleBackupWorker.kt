@@ -5,6 +5,7 @@ import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.SuperUtil
@@ -20,7 +21,7 @@ class SingleBackupWorker : Worker() {
             val db = AppDb.getAppDatabase(applicationContext)
             val note = db.notesDao().getById(uuId)
             if (note != null) {
-                cacheFiles(uuId + FileConfig.FILE_NAME_NOTE, Gson().toJson(note))
+                cacheFiles(uuId + FileConfig.FILE_NAME_NOTE, Gson().toJson(OldNote(note)))
             }
         }
         return Result.SUCCESS

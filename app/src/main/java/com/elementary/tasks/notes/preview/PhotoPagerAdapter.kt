@@ -7,12 +7,12 @@ import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
-import com.elementary.tasks.notes.create.NoteImage
+import com.elementary.tasks.core.data.models.ImageFile
 import kotlinx.android.synthetic.main.fragment_image.view.*
 import uk.co.senab.photoview.PhotoView
 import uk.co.senab.photoview.PhotoViewAttacher
 
-class PhotoPagerAdapter(private val mPhotosUrl: List<NoteImage>) : PagerAdapter() {
+class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter() {
 
     override fun getCount(): Int {
         return mPhotosUrl.size
@@ -38,7 +38,7 @@ class PhotoPagerAdapter(private val mPhotosUrl: List<NoteImage>) : PagerAdapter(
 
     private fun loadPhoto(imageView: ImageView, position: Int) {
         val image = mPhotosUrl[position]
-        Glide.with(imageView.context.applicationContext)
+        Glide.with(imageView.context)
                 .load(image.image)
                 .into(imageView)
     }

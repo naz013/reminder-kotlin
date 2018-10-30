@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.Note
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-
+import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
-import com.elementary.tasks.core.data.models.TmpNote
+import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.models.ImageFile
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,36 +28,40 @@ import com.elementary.tasks.core.data.models.TmpNote
 @Dao
 interface NotesDao {
 
+    @Transaction
     @Query("SELECT * FROM Note")
-    fun all(): List<Note>
+    fun all(): List<NoteWithImages>
 
+    @Transaction
     @Query("SELECT * FROM Note")
-    fun loadAll(): LiveData<List<Note>>
+    fun loadAll(): LiveData<List<NoteWithImages>>
 
     @Insert(onConflict = REPLACE)
     fun insert(note: Note)
 
-    @Insert(onConflict = REPLACE)
-    fun insertAll(vararg notes: Note)
-
     @Delete
     fun delete(note: Note)
 
-    @Delete
-    fun delete(list: List<Note>)
-
+    @Transaction
     @Query("SELECT * FROM Note WHERE `key`=:id")
-    fun loadById(id: String): LiveData<Note>
+    fun loadById(id: String): LiveData<NoteWithImages>
 
+    @Transaction
     @Query("SELECT * FROM Note WHERE `key`=:id")
-    fun getById(id: String): Note?
+    fun getById(id: String): NoteWithImages?
 
     @Insert(onConflict = REPLACE)
-    fun insert(tmpNote: TmpNote)
+    fun insert(imageFile: ImageFile)
+
+    @Insert(onConflict = REPLACE)
+    fun insertAll(notes: List<ImageFile>)
 
     @Delete
-    fun delete(tmpNote: TmpNote)
+    fun delete(imageFile: ImageFile)
 
-    @Query("SELECT * FROM TmpNote LIMIT 1")
-    fun getEditedImage(): TmpNote?
+    @Query("SELECT * FROM ImageFile WHERE id=:id")
+    fun getEditedImage(id: Int): ImageFile?
+
+    @Query("DELETE FROM ImageFile WHERE noteId=:noteId")
+    fun deleteAllImages(noteId: String)
 }

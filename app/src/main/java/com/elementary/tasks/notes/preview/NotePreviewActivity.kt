@@ -16,7 +16,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -24,7 +25,6 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.notes.create.NoteImage
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
@@ -50,10 +50,9 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class NotePreviewActivity : ThemedActivity() {
 
-    private var mNote: Note? = null
+    private var mNote: NoteWithImages? = null
     private var mReminder: Reminder? = null
     private var mId: String = ""
 
@@ -118,8 +117,8 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun initImagesList() {
-        mAdapter.actionsListener = object : ActionsListener<NoteImage> {
-            override fun onAction(view: View, position: Int, t: NoteImage?, actions: ListActions) {
+        mAdapter.actionsListener = object : ActionsListener<ImageFile> {
+            override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
                     ListActions.OPEN -> openImagePreview(position)
                 }
@@ -167,13 +166,17 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun editNote() {
-        startActivity(Intent(this, CreateNoteActivity::class.java)
-                .putExtra(Constants.INTENT_ID, mNote?.key))
+        val noteWithImages = mNote
+        if (noteWithImages != null) {
+            startActivity(Intent(this, CreateNoteActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, noteWithImages.note?.key))
+        }
     }
 
     private fun moveToStatus() {
-        if (mNote != null) {
-            notifier.showNoteNotification(mNote!!)
+        val noteWithImages = mNote
+        if (noteWithImages != null) {
+            notifier.showNoteNotification(noteWithImages)
         }
     }
 
@@ -181,16 +184,17 @@ class NotePreviewActivity : ThemedActivity() {
         closeWindow()
     }
 
-    private fun showNote(note: Note?) {
-        this.mNote = note
-        if (note != null) {
+    private fun showNote(noteWithImages: NoteWithImages?) {
+        this.mNote = noteWithImages
+        if (noteWithImages != null) {
+            showImages(noteWithImages.images)
+            val note = noteWithImages.note ?: return
             noteText.text = note.summary
             noteText.typeface = AssetsUtil.getTypeface(this, note.style)
             if (Module.isLollipop) {
                 window.statusBarColor = themeUtil.getNoteLightColor(note.color)
             }
             scrollContent.setBackgroundColor(themeUtil.getNoteLightColor(note.color))
-            showImages(note.images)
         }
     }
 
@@ -203,20 +207,15 @@ class NotePreviewActivity : ThemedActivity() {
         }
     }
 
-    private fun showImages(images: List<NoteImage>) {
+    private fun showImages(images: List<ImageFile>) {
         if (!images.isEmpty()) {
             mAdapter.setImages(images)
-            appBar.setBackgroundColor(themeUtil.getNoteColor(mNote!!.color))
-            appBar.background.alpha = 0
-        } else {
-            appBar.setBackgroundColor(themeUtil.getNoteColor(mNote!!.color))
-            appBar.background.alpha = 255
         }
     }
 
     private fun hideProgress() {
         if (mProgress != null && mProgress!!.isShowing) {
-            mProgress!!.dismiss()
+            mProgress?.dismiss()
         }
     }
 
@@ -244,8 +243,11 @@ class NotePreviewActivity : ThemedActivity() {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
             return
         }
-        TelephonyUtil.sendNote(file, this, mNote!!.summary)
-        closeWindow()
+        val noteWithImages = mNote
+        if (noteWithImages != null) {
+            TelephonyUtil.sendNote(file, this, noteWithImages.note?.summary)
+            closeWindow()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

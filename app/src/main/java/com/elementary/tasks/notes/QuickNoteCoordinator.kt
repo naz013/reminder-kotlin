@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
@@ -42,11 +43,10 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
                            private val noteList: ViewGroup,
                            private var reminderViewModel: ActiveRemindersViewModel,
                            private var noteViewModel: NotesViewModel,
-                           private val themeUtil: ThemeUtil,
                            private val prefs: Prefs,
                            private val notifier: Notifier) {
 
-    private var mNote: Note? = null
+    private var mNote: NoteWithImages? = null
     val isNoteVisible: Boolean
         get() = parent.visibility == View.VISIBLE
 
@@ -71,9 +71,13 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> if (prefs.isNoteReminderEnabled) {
-                        if (mNote != null) addReminderCard(mNote!!)
+                        if (mNote != null) {
+                            addReminderCard(mNote!!)
+                        }
                     } else {
-                        if (mNote != null) addNotificationCard(mNote!!)
+                        if (mNote != null) {
+                            addNotificationCard(mNote!!)
+                        }
                     }
                 }
             }
@@ -131,11 +135,13 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         } else {
             item.color = Random().nextInt(16)
         }
-        mNote = item
-        noteViewModel.saveNote(item)
+        val noteWithImages = NoteWithImages()
+        noteWithImages.note = item
+        mNote = noteWithImages
+        noteViewModel.saveNote(noteWithImages)
     }
 
-    private fun addReminderCard(item: Note) {
+    private fun addReminderCard(item: NoteWithImages) {
         val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_reminder_card, noteList, false)
 
         cardBinding.buttonYes.setOnClickListener {
@@ -154,16 +160,18 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteReminderCard) }, 250)
     }
 
-    private fun addReminderToNote(item: Note) {
+    private fun addReminderToNote(item: NoteWithImages) {
+        val note = item.note ?: return
+
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
         reminder.delay = 0
         reminder.eventCount = 0
         reminder.useGlobal = true
-        reminder.noteId = item.key
+        reminder.noteId = note.key
         reminder.isActive = true
         reminder.isRemoved = false
-        reminder.summary = item.summary
+        reminder.summary = note.summary
         val def = reminderViewModel.defaultReminderGroup.value
         if (def != null) {
             reminder.groupUuId = def.groupUuId
@@ -175,7 +183,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         reminderViewModel.saveAndStartReminder(reminder)
     }
 
-    private fun addNotificationCard(item: Note) {
+    private fun addNotificationCard(item: NoteWithImages) {
         val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_status_card, noteList, false)
 
         cardBinding.buttonYesStatus.setOnClickListener {
@@ -190,7 +198,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard) }, 250)
     }
 
-    private fun showInStatusBar(item: Note) {
+    private fun showInStatusBar(item: NoteWithImages) {
         notifier.showNoteNotification(item)
         hideNoteView()
     }

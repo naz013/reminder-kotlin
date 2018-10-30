@@ -39,6 +39,7 @@ import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.notes.list.NotesFragment
@@ -145,4 +146,5 @@ interface AppComponent {
     fun inject(activity: BaseNotificationActivity)
     fun inject(activity: ReminderPreviewActivity)
     fun inject(activity: ImagePreviewActivity)
+    fun inject(activity: ImageEditActivity)
 }

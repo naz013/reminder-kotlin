@@ -20,10 +20,7 @@ import com.backdoor.engine.Model
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
@@ -306,7 +303,7 @@ class ConversationActivity : ThemedActivity() {
         }
     }
 
-    private fun showNotes(notes: List<Note>?) {
+    private fun showNotes(notes: List<NoteWithImages>?) {
         val items = Container(notes)
         if (items.isEmpty) {
             addResponse(getLocalized(R.string.no_notes_found))

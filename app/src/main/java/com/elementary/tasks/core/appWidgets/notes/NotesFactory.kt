@@ -9,7 +9,7 @@ import android.widget.RemoteViewsService
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
 import java.util.*
@@ -35,7 +35,7 @@ import javax.inject.Inject
  */
 class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
 
-    private val notes = ArrayList<Note>()
+    private val notes = ArrayList<NoteWithImages>()
     @Inject lateinit var themeUtil: ThemeUtil
 
     init {
@@ -59,7 +59,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
         return notes.size
     }
 
-    private fun getItem(position: Int): Note? {
+    private fun getItem(position: Int): NoteWithImages? {
         return try {
             notes[position]
         } catch (e: IndexOutOfBoundsException) {
@@ -75,7 +75,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
             rView.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load))
             return rView
         }
-        rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.color))
+        rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.getColor()))
 
         if (note.images.isNotEmpty()) {
             val image = note.images[0]
@@ -89,9 +89,9 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
         } else {
             rView.setViewVisibility(R.id.noteImage, View.GONE)
         }
-        rView.setTextViewText(R.id.note, note.summary)
+        rView.setTextViewText(R.id.note, note.getSummary())
         val fillInIntent = Intent()
-        fillInIntent.putExtra(Constants.INTENT_ID, note.key)
+        fillInIntent.putExtra(Constants.INTENT_ID, note.getKey())
         rView.setOnClickFillInIntent(R.id.note, fillInIntent)
         rView.setOnClickFillInIntent(R.id.noteImage, fillInIntent)
         rView.setOnClickFillInIntent(R.id.noteBackground, fillInIntent)

@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
@@ -184,12 +183,12 @@ class ReminderPreviewActivity : ThemedActivity() {
         val note = mNote
         if (note != null) {
             val binding = NoteHolder(dataContainer, null)
-            binding.setData(note)
-            binding.itemView.setOnClickListener {
-                startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
-                        .putExtra(Constants.INTENT_ID, note.key))
-            }
-            this.dataContainer.addView(binding.itemView)
+//            binding.setData(note)
+//            binding.itemView.setOnClickListener {
+//                startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
+//                        .putExtra(Constants.INTENT_ID, note.key))
+//            }
+//            this.dataContainer.addView(binding.itemView)
         }
     }
 
@@ -203,18 +202,18 @@ class ReminderPreviewActivity : ThemedActivity() {
         mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, true, true, place.radius)
     }
 
-    private val mReadyCallback = object : ReadyListener {
-        override fun onReady(`object`: Any?) {
-            if (`object` == null) return
-            if (`object` is Note) {
-                mNote = `object`
-                showNote()
-            } else if (`object` is GoogleTask) {
-                mGoogleTask = `object`
-                showTask()
-            }
-        }
-    }
+//    private val mReadyCallback = object : ReadyListener {
+//        override fun onReady(`object`: Any?) {
+//            if (`object` == null) return
+//            if (`object` is Note) {
+//                mNote = `object`
+//                showNote()
+//            } else if (`object` is GoogleTask) {
+//                mGoogleTask = `object`
+//                showTask()
+//            }
+//        }
+//    }
 
     private fun showInfo(reminder: Reminder) {
         this.reminder = reminder
@@ -279,8 +278,6 @@ class ReminderPreviewActivity : ThemedActivity() {
         }
 
         dataContainer.removeAllViewsInLayout()
-        Thread(NoteThread(mReadyCallback, reminder.noteId)).start()
-        Thread(TaskThread(mReadyCallback, reminder.uuId)).start()
     }
 
     private fun showBefore(reminder: Reminder) {
@@ -582,26 +579,6 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     override fun onBackPressed() {
         finish()
-    }
-
-    private inner class NoteThread internal constructor(private val listener: ReadyListener?, private val uuId: String) : Runnable {
-
-        override fun run() {
-            val item = AppDb.getAppDatabase(this@ReminderPreviewActivity).notesDao().getById(uuId)
-            runOnUiThread { if (listener != null && item != null) listener.onReady(item) }
-        }
-    }
-
-    private inner class TaskThread internal constructor(private val listener: ReadyListener?, private val uuId: String) : Runnable {
-
-        override fun run() {
-            val item = AppDb.getAppDatabase(this@ReminderPreviewActivity).googleTasksDao().getByReminderId(uuId)
-            runOnUiThread { if (listener != null && item != null) listener.onReady(item) }
-        }
-    }
-
-    internal interface ReadyListener {
-        fun onReady(`object`: Any?)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

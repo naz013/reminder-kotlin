@@ -36,7 +36,7 @@ import com.elementary.tasks.core.data.models.*
     GoogleTask::class,
     UsedTime::class,
     Birthday::class,
-    TmpNote::class,
+    ImageFile::class,
     SmsTemplate::class
 ], version = 1, exportSchema = false)
 abstract class AppDb : RoomDatabase() {

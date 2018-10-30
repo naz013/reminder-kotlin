@@ -6,8 +6,8 @@ import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.notes.create.NoteImage
 import kotlinx.android.synthetic.main.activity_image_preview.*
 import java.util.*
 import javax.inject.Inject
@@ -60,7 +60,7 @@ class ImagePreviewActivity : ThemedActivity() {
             photo_pager.currentItem = position
     }
 
-    private fun initViewPager(images: List<NoteImage>) {
+    private fun initViewPager(images: List<ImageFile>) {
         photo_pager.adapter = PhotoPagerAdapter(images)
         photo_pager.pageMargin = 5
         photo_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {

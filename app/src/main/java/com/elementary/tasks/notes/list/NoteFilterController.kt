@@ -1,12 +1,11 @@
 package com.elementary.tasks.notes.list
 
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.reminder.lists.filters.AbstractFilter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.FilterValue
 import com.elementary.tasks.reminder.lists.filters.ObjectFilter
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -26,27 +25,27 @@ import java.util.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NoteFilterController(private val mCallback: FilterCallback<Note>?) {
+class NoteFilterController(private val mCallback: FilterCallback<NoteWithImages>?) {
 
     private val searchValue = FilterValue<String>()
 
-    var original: List<Note> = ArrayList()
+    var original: List<NoteWithImages> = ArrayList()
         set(original) {
             field = original
             onChanged()
         }
-    private var mFilter: ObjectFilter<Note>? = null
+    private var mFilter: ObjectFilter<NoteWithImages>? = null
 
     init {
         initFilters()
     }
 
     private fun initFilters() {
-        val filter = object : AbstractFilter<String, Note>(null) {
+        val filter = object : AbstractFilter<String, NoteWithImages>(null) {
             private var query: String? = null
 
-            override fun filter(item: Note): Boolean {
-                return query == null || query!!.isEmpty() || item.summary.toLowerCase().contains(query!!.toLowerCase())
+            override fun filter(item: NoteWithImages): Boolean {
+                return query == null || query!!.isEmpty() || item.getSummary().toLowerCase().contains(query!!.toLowerCase())
             }
 
             @Throws(Exception::class)
@@ -68,7 +67,7 @@ class NoteFilterController(private val mCallback: FilterCallback<Note>?) {
     }
 
     private fun onChanged() {
-        val list = ArrayList<Note>()
+        val list = ArrayList<NoteWithImages>()
         for (item in this.original) {
             if (mFilter != null) {
                 if (mFilter!!.filter(item)) list.add(item)

@@ -712,7 +712,11 @@ private constructor() {
                 override fun onSave(file: java.io.File) {
                     try {
                         val item = backupTool.getNote(file.toString(), null)
-                        if (item != null) AppDb.getAppDatabase(mContext).notesDao().insert(item)
+                        val note = item?.note
+                        if (item != null && note != null) {
+                            AppDb.getAppDatabase(mContext).notesDao().insert(note)
+                            AppDb.getAppDatabase(mContext).notesDao().insertAll(item.images)
+                        }
                     } catch (e: IOException) {
                         LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
                     } catch (e: IllegalStateException) {

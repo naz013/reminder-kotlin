@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.data.models
 
-import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.elementary.tasks.core.utils.SuperUtil
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,8 +22,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Entity
-class Note() {
+class OldNote() {
 
     @SerializedName("summary")
     var summary: String = ""
@@ -38,24 +35,24 @@ class Note() {
     var color: Int = 0
     @SerializedName("style")
     var style: Int = 0
+    @SerializedName("images")
+    var images: List<ImageFile> = ArrayList()
     @SerializedName("uniqueId")
     var uniqueId: Int = 0
 
-    @Ignore
-    constructor(oldNote: OldNote): this() {
-        this.color = oldNote.color
-        this.key = oldNote.key
-        this.date = oldNote.date
-        this.style = oldNote.style
-        this.uniqueId = oldNote.uniqueId
-    }
+    constructor(noteWithImages: NoteWithImages): this() {
+        this.images = noteWithImages.images
+        val note = noteWithImages.note ?: return
 
-    init {
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-        key = UUID.randomUUID().toString()
+        this.uniqueId = note.uniqueId
+        this.style = note.style
+        this.color = note.color
+        this.date = note.date
+        this.key = note.key
+        this.summary = note.summary
     }
 
     override fun toString(): String {
-        return "Note(summary='$summary', key='$key', color=$color, style=$style, uniqueId=$uniqueId)"
+        return SuperUtil.getObjectPrint(this, Note::class.java)
     }
 }
