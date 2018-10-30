@@ -11,10 +11,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
@@ -54,7 +51,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     var shoppingLists = MutableLiveData<List<Reminder>>()
     var enabledReminders = MutableLiveData<List<Reminder>>()
     var activeReminders = MutableLiveData<List<Reminder>>()
-    var notes = MutableLiveData<List<Note>>()
+    var notes = MutableLiveData<List<NoteWithImages>>()
     var birthdays = MutableLiveData<List<Birthday>>()
 
     @Inject

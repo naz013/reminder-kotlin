@@ -7,10 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.BirthdayHolder
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.groups.list.GroupHolder
@@ -85,7 +82,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is VoiceHolder -> holder.bind(mData[position].`object` as String)
             is VoiceResponseHolder -> holder.bind(mData[position].`object` as String)
             is ReminderHolder -> holder.setData(mData[position].`object` as Reminder)
-            is NoteHolder -> holder.setData(mData[position].`object` as Note)
+            is NoteHolder -> holder.setData(mData[position].`object` as NoteWithImages)
             is GroupHolder -> holder.setData(mData[position].`object` as ReminderGroup)
             is BirthdayHolder -> {
                 holder.setData(mData[position].`object` as Birthday)

@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.AsyncTask
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.BitmapUtils
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
@@ -31,8 +32,8 @@ import java.util.*
  * limitations under the License.
  */
 class DecodeImagesAsync internal constructor(private val mContext: Context,
-                                             private val mCallback: ((List<NoteImage>) -> Unit)?,
-                                             private val max: Int) : AsyncTask<ClipData, Int, List<NoteImage>>() {
+                                             private val mCallback: ((List<ImageFile>) -> Unit)?,
+                                             private val max: Int) : AsyncTask<ClipData, Int, List<ImageFile>>() {
     private var mDialog: ProgressDialog? = null
 
     override fun onPreExecute() {
@@ -60,8 +61,8 @@ class DecodeImagesAsync internal constructor(private val mContext: Context,
         }
     }
 
-    override fun doInBackground(vararg clipDatas: ClipData): List<NoteImage> {
-        val list = ArrayList<NoteImage>()
+    override fun doInBackground(vararg clipDatas: ClipData): List<ImageFile> {
+        val list = ArrayList<ImageFile>()
         val mClipData = clipDatas[0]
         for (i in 0 until mClipData.itemCount) {
             publishProgress(i + 1)
@@ -71,7 +72,7 @@ class DecodeImagesAsync internal constructor(private val mContext: Context,
         return list
     }
 
-    private fun addImageFromUri(images: MutableList<NoteImage>, uri: Uri?) {
+    private fun addImageFromUri(images: MutableList<ImageFile>, uri: Uri?) {
         if (uri == null) {
             return
         }
@@ -85,15 +86,15 @@ class DecodeImagesAsync internal constructor(private val mContext: Context,
         if (bitmapImage != null) {
             val outputStream = ByteArrayOutputStream()
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            images.add(NoteImage(outputStream.toByteArray()))
+            images.add(ImageFile(outputStream.toByteArray()))
         }
     }
 
-    override fun onPostExecute(noteImages: List<NoteImage>) {
+    override fun onPostExecute(noteImages: List<ImageFile>) {
         super.onPostExecute(noteImages)
         try {
             if (mDialog != null && mDialog!!.isShowing) {
-                mDialog!!.dismiss()
+                mDialog?.dismiss()
             }
         } catch (ignored: IllegalArgumentException) {
         }

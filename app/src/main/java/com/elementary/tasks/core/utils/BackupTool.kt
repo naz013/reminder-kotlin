@@ -392,26 +392,37 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    fun getNote(cr: ContentResolver, name: Uri): Note? {
-        return try {
-            val note = WeakReference(Gson().fromJson(readFileToJson(cr, name), Note::class.java))
-            note.get()
+    fun getNote(cr: ContentResolver, name: Uri): NoteWithImages? {
+        try {
+            val weakNote = WeakReference(Gson().fromJson(readFileToJson(cr, name), OldNote::class.java))
+            val note = weakNote.get() ?: return null
+            val noteWithImages = NoteWithImages()
+            noteWithImages.note = Note(note)
+            noteWithImages.images = note.images
+            return noteWithImages
         } catch (e: Exception) {
-            null
+            return null
         }
-
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    fun getNote(filePath: String?, json: String?): Note? {
-        return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Note::class.java))
-            item.get()
+    fun getNote(filePath: String?, json: String?): NoteWithImages? {
+        if (filePath != null && MemoryUtil.isSdPresent) {
+            val weakNote = WeakReference(Gson().fromJson(readFileToJson(filePath), OldNote::class.java))
+            val note = weakNote.get() ?: return null
+            val noteWithImages = NoteWithImages()
+            noteWithImages.note = Note(note)
+            noteWithImages.images = note.images
+            return noteWithImages
         } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, Note::class.java))
-            item.get()
+            val weakNote = WeakReference(Gson().fromJson(json, OldNote::class.java))
+            val note = weakNote.get() ?: return null
+            val noteWithImages = NoteWithImages()
+            noteWithImages.note = Note(note)
+            noteWithImages.images = note.images
+            return noteWithImages
         } else {
-            null
+            return null
         }
     }
 
@@ -429,51 +440,54 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             if (files != null) {
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) {
-                        val item = getNote(file.toString(), null)
-                        if (item == null || TextUtils.isEmpty(item.key)) {
+                        val item = getNote(file.toString(), null) ?: continue
+                        val note = item.note ?: continue
+                        if (TextUtils.isEmpty(note.key)) {
                             continue
                         }
-                        appDb.notesDao().insert(item)
+
+                        appDb.notesDao().insertAll(item.images)
+                        appDb.notesDao().insert(note)
                     }
                 }
             }
         }
     }
 
-    private fun exportNote(item: Note) {
-        val jsonData = WeakReference(Gson().toJson(item))
+    private fun exportNote(item: NoteWithImages) {
+        val note = item.note ?: return
+        val jsonData = WeakReference(Gson().toJson(OldNote(item)))
         val dir = MemoryUtil.notesDir
         if (dir != null) {
-            val exportFileName = item.key + FileConfig.FILE_NAME_NOTE
+            val exportFileName = note.key + FileConfig.FILE_NAME_NOTE
             try {
                 writeFile(File(dir, exportFileName), jsonData.get())
                 jsonData.clear()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         } else {
             LogUtil.i(TAG, "Couldn't find external storage!")
         }
     }
 
-    fun createNote(item: Note?, callback: CreateCallback?) {
-        if (item == null) return
-        val jsonData = WeakReference(Gson().toJson(item))
+    fun createNote(item: NoteWithImages?, callback: CreateCallback?) {
+        val note = item?.note ?: return
+        val jsonData = WeakReference(Gson().toJson(OldNote(item)))
         val file: File
         val dir = MemoryUtil.mailDir
         if (dir != null) {
-            val exportFileName = item.key + FileConfig.FILE_NAME_NOTE
+            val exportFileName = note.key + FileConfig.FILE_NAME_NOTE
             file = File(dir, exportFileName)
             try {
                 writeFile(file, jsonData.get())
                 jsonData.clear()
                 callback?.onReady(file)
             } catch (e: Exception) {
-                e.printStackTrace()
+                callback?.onReady(null)
             }
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            callback?.onReady(null)
         }
     }
 

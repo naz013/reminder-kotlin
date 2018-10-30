@@ -14,12 +14,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.notes.create.NoteImage
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.list_item_note.view.*
@@ -59,14 +59,14 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         }
     }
 
-    fun setData(item: Note) {
-        loadNoteCard(itemView.clickView, item.color)
+    fun setData(item: NoteWithImages) {
+        loadNoteCard(itemView.clickView, item.getColor())
         loadImage(itemView.imagesView, item)
         loadNote(itemView.noteTv, item)
     }
 
-    private fun loadNote(textView: TextView, note: Note) {
-        var title = note.summary
+    private fun loadNote(textView: TextView, note: NoteWithImages) {
+        var title = note.getSummary()
         if (TextUtils.isEmpty(title)) {
             textView.visibility = View.GONE
             return
@@ -78,7 +78,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
             title = "$substring..."
         }
         textView.text = title
-        textView.typeface = AssetsUtil.getTypeface(context, note.style)
+        textView.typeface = AssetsUtil.getTypeface(context, note.getStyle())
         textView.textSize = (prefs.noteTextSize + 12).toFloat()
     }
 
@@ -94,7 +94,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
                 .into(imageView)
     }
 
-    private fun setClick(imageView: ImageView, position: Int, key: String?, images: List<NoteImage>) {
+    private fun setClick(imageView: ImageView, position: Int, key: String?, images: List<ImageFile>) {
         val context = imageView.context.applicationContext
         imageView.setOnClickListener {
             imagesSingleton.setCurrent(images)
@@ -106,7 +106,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         }
     }
 
-    fun loadImage(container: LinearLayout, item: Note) {
+    fun loadImage(container: LinearLayout, item: NoteWithImages) {
         val images = item.images
         val imageView = container.findViewById<ImageView>(R.id.noteImage)
         if (!images.isEmpty()) {
@@ -121,7 +121,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
                 val params = LinearLayout.LayoutParams(MeasureUtils.dp2px(container.context, 128),
                         MeasureUtils.dp2px(container.context, 72))
                 imV.layoutParams = params
-                setClick(imV, index, item.key, images)
+                setClick(imV, index, item.getKey(), images)
                 imV.scaleType = ImageView.ScaleType.CENTER_CROP
                 horView.addView(imV)
                 val im = WeakReference(images[index])

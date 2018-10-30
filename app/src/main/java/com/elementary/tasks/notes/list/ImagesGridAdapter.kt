@@ -1,22 +1,18 @@
 package com.elementary.tasks.notes.list
 
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.notes.create.NoteImage
 import kotlinx.android.synthetic.main.list_item_note_image.view.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -40,11 +36,11 @@ import javax.inject.Inject
  */
 class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder>() {
 
-    private val mDataList = ArrayList<NoteImage>()
+    private val mDataList = ArrayList<ImageFile>()
     private var isEditable: Boolean = false
-    var actionsListener: ActionsListener<NoteImage>? = null
+    var actionsListener: ActionsListener<ImageFile>? = null
 
-    val data: List<NoteImage>
+    val data: List<ImageFile>
         get() = mDataList
 
     @Inject
@@ -58,7 +54,7 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
         isEditable = editable
     }
 
-    fun getItem(position: Int): NoteImage {
+    fun getItem(position: Int): ImageFile {
         return mDataList[position]
     }
 
@@ -75,7 +71,7 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
     }
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(noteImage: NoteImage) {
+        fun bind(noteImage: ImageFile) {
             loadImage(itemView.photoView, noteImage)
         }
 
@@ -83,7 +79,6 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
             itemView.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
             if (isEditable) {
                 itemView.removeButton.visibility = View.VISIBLE
-                itemView.removeButton.setBackgroundResource(themeUtil.indicator)
                 itemView.removeButton.setOnClickListener { removeImage(adapterPosition) }
 //                if (actionsListener != null && Module.isPro) {
 //                    itemView.editButton.visibility = View.VISIBLE
@@ -107,38 +102,34 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
         notifyItemRangeChanged(0, mDataList.size)
     }
 
-    fun setImages(list: List<NoteImage>) {
+    fun setImages(list: List<ImageFile>) {
         mDataList.clear()
         mDataList.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun addNextImages(list: List<NoteImage>) {
+    fun addNextImages(list: List<ImageFile>) {
         mDataList.addAll(list)
         notifyItemRangeChanged(0, mDataList.size)
     }
 
-    fun setImage(image: NoteImage, position: Int) {
+    fun setImage(image: ImageFile, position: Int) {
         mDataList[position] = image
         notifyItemChanged(position)
     }
 
-    fun addImage(image: NoteImage) {
+    fun addImage(image: ImageFile) {
         mDataList.add(image)
         notifyDataSetChanged()
     }
 
     private fun performClick(view: View, position: Int) {
         if (actionsListener != null) {
-            actionsListener!!.onAction(view, position, null, ListActions.OPEN)
+            actionsListener?.onAction(view, position, null, ListActions.OPEN)
         }
     }
 
-    fun loadImage(imageView: ImageView, image: NoteImage) {
-        val imageData = image.image ?: return
-        launch(CommonPool) {
-            val bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-            withUIContext { imageView.setImageBitmap(bmp) }
-        }
+    fun loadImage(imageView: ImageView, image: ImageFile) {
+        Glide.with(imageView).load(image.image).into(imageView)
     }
 }

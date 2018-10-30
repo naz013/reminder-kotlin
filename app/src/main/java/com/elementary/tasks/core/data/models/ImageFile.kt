@@ -1,13 +1,9 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.data.converters.NoteImagesTypeConverter
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.notes.create.NoteImage
-import com.google.gson.annotations.SerializedName
-
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
 /**
@@ -29,27 +25,34 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-@TypeConverters(NoteImagesTypeConverter::class)
-data class TmpNote(var image: ByteArray? = null) {
+data class ImageFile(
+        @SerializedName("image")
+        @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+        var image: ByteArray? = null,
+        var noteId: String = "") {
 
-    @PrimaryKey
-    var key: String = "111"
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as TmpNote
+        other as ImageFile
 
         if (!Arrays.equals(image, other.image)) return false
-        if (key != other.key) return false
+        if (id != other.id) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = image?.let { Arrays.hashCode(it) } ?: 0
-        result = 31 * result + key.hashCode()
+        result = 31 * result + id.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "ImageFile(noteId='$noteId')"
     }
 }

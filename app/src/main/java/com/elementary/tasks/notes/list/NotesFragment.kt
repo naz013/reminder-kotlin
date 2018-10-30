@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.notes.NotesViewModel
@@ -32,6 +32,7 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -53,7 +54,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
+class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
 
     private lateinit var viewModel: NotesViewModel
     @Inject
@@ -120,9 +121,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         menu?.getItem(1)?.title = if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
         menu?.getItem(2)?.icon = sortIcon
 
-        if (viewModel.notes.value != null && viewModel.notes.value!!.isNotEmpty()) {
-            menu?.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete_all))
-        }
         mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
@@ -138,7 +136,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun shareNote(note: Note) {
+    private fun shareNote(note: NoteWithImages) {
         showProgress()
         Thread { backupTool.createNote(note, object : BackupTool.CreateCallback {
             override fun onReady(file: File?) {
@@ -147,13 +145,13 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         }) }.start()
     }
 
-    private fun sendNote(note: Note, file: File) {
+    private fun sendNote(note: NoteWithImages, file: File) {
         hideProgress()
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(context, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
             return
         }
-        TelephonyUtil.sendNote(file, context!!, note.summary)
+        TelephonyUtil.sendNote(file, context!!, note.note?.summary)
     }
 
     private fun hideProgress() {
@@ -169,7 +167,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_order -> showDialog()
-            MENU_ITEM_DELETE -> deleteDialog()
             R.id.action_list -> {
                 enableGrid = !enableGrid
                 prefs.isNotesGridEnabled = enableGrid
@@ -199,6 +196,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         viewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         viewModel.notes.observe(this, Observer{ list ->
             if (list != null) {
+                Timber.d("initViewModel: $list")
                 filterController.original = list
             }
         })
@@ -216,10 +214,10 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         enableGrid = prefs.isNotesGridEnabled
         recyclerView.layoutManager = layoutManager()
         mAdapter = NotesRecyclerAdapter()
-        mAdapter.actionsListener = object : ActionsListener<Note> {
-            override fun onAction(view: View, position: Int, t: Note?, actions: ListActions) {
+        mAdapter.actionsListener = object : ActionsListener<NoteWithImages> {
+            override fun onAction(view: View, position: Int, t: NoteWithImages?, actions: ListActions) {
                 when (actions) {
-                    ListActions.OPEN -> if (t != null) previewNote(t.key, view)
+                    ListActions.OPEN -> if (t != null) previewNote(t.getKey(), view)
                     ListActions.MORE -> if (t != null) showMore(view, t)
                 }
             }
@@ -229,18 +227,18 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         refreshView()
     }
 
-    private fun showMore(view: View, note: Note) {
+    private fun showMore(view: View, note: NoteWithImages) {
         var showIn = getString(R.string.show_in_status_bar)
         showIn = showIn.substring(0, showIn.length - 1)
         val items = arrayOf(getString(R.string.open), getString(R.string.share), showIn, getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
         dialogues.showLCAM(context!!, { item ->
             when (item) {
-                0 -> previewNote(note.key, view)
+                0 -> previewNote(note.getKey(), view)
                 1 -> shareNote(note)
                 2 -> showInStatusBar(note)
                 3 -> selectColor(note)
                 4 -> context!!.startActivity(Intent(context, CreateNoteActivity::class.java)
-                        .putExtra(Constants.INTENT_ID, note.key))
+                        .putExtra(Constants.INTENT_ID, note.getKey()))
                 5 -> viewModel.deleteNote(note)
             }
         }, *items)
@@ -268,26 +266,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     override fun getTitle(): String = getString(R.string.notes)
 
-    private fun deleteDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setMessage(R.string.delete_all_notes)
-        builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-        builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-            dialog.dismiss()
-            deleteAll()
-        }
-        val dialog = builder.create()
-        dialog.show()
-    }
-
-    private fun deleteAll() {
-        val notes = viewModel.notes.value
-        if (notes != null) {
-            viewModel.deleteAll(notes)
-        }
-    }
-
     private fun previewNote(id: String?, view: View) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val intent = Intent(context, NotePreviewActivity::class.java)
@@ -301,19 +279,19 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         }
     }
 
-    private fun showInStatusBar(note: Note?) {
+    private fun showInStatusBar(note: NoteWithImages?) {
         if (note != null) {
             notifier.showNoteNotification(note)
         }
     }
 
-    private fun selectColor(note: Note) {
+    private fun selectColor(note: NoteWithImages) {
         var items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber))
         if (Module.isPro) {
             items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
         }
         dialogues.showLCAM(context!!, { item ->
-            note.color = item
+            note.note?.color = item
             viewModel.saveNote(note)
         }, *items)
     }
@@ -328,13 +306,9 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         }
     }
 
-    override fun onChanged(result: List<Note>) {
+    override fun onChanged(result: List<NoteWithImages>) {
         mAdapter.data = result
         recyclerView.smoothScrollToPosition(0)
         refreshView()
-    }
-
-    companion object {
-        const val MENU_ITEM_DELETE = 12
     }
 }

@@ -2,7 +2,7 @@ package com.elementary.tasks.notes.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import java.util.*
 
@@ -26,10 +26,10 @@ import java.util.*
  */
 class NotesRecyclerAdapter : RecyclerView.Adapter<NoteHolder>() {
 
-    private val mData = ArrayList<Note>()
-    var actionsListener: ActionsListener<Note>? = null
+    private val mData = ArrayList<NoteWithImages>()
+    var actionsListener: ActionsListener<NoteWithImages>? = null
 
-    var data: List<Note>
+    var data: List<NoteWithImages>
         get() = mData
         set(list) {
             this.mData.clear()
@@ -41,7 +41,7 @@ class NotesRecyclerAdapter : RecyclerView.Adapter<NoteHolder>() {
         return mData.size
     }
 
-    fun getItem(position: Int): Note {
+    fun getItem(position: Int): NoteWithImages {
         return mData[position]
     }
 

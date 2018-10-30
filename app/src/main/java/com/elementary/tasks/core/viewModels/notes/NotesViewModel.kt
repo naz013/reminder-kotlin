@@ -2,15 +2,7 @@ package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
-import java.util.*
+import com.elementary.tasks.core.data.models.NoteWithImages
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -32,25 +24,10 @@ import java.util.*
  */
 class NotesViewModel(application: Application) : BaseNotesViewModel(application) {
 
-    var notes: LiveData<List<Note>>
+    var notes: LiveData<List<NoteWithImages>>
 
     init {
         notes = appDb.notesDao().loadAll()
-    }
-
-    fun deleteAll(list: List<Note>) {
-        launch(CommonPool) {
-            val ids = ArrayList<String>()
-            for (item in list) {
-                ids.add(item.key)
-            }
-            appDb.notesDao().delete(list)
-            val work = OneTimeWorkRequest.Builder(DeleteNoteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putStringArray(Constants.INTENT_IDS, ids.toTypedArray()).build())
-                    .addTag("NT_WORK")
-                    .build()
-            WorkManager.getInstance().enqueue(work)
-        }
     }
 
     fun reload() {

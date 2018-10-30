@@ -28,7 +28,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -82,7 +84,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private val mAdapter = ImagesGridAdapter()
     private var mProgress: ProgressDialog? = null
 
-    private var mItem: Note? = null
+    private var mItem: NoteWithImages? = null
     private var mReminder: Reminder? = null
 
     private var speech: SpeechRecognizer? = null
@@ -325,16 +327,14 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
     }
 
+    private fun saveEditedImage() {
+        val image = imagesSingleton.getEditable() ?: return
+        mAdapter.setImage(image, mEditPosition)
+    }
+
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, id)).get(NoteViewModel::class.java)
         viewModel.note.observe(this, Observer { this.showNote(it) })
-        viewModel.editedPicture.observe(this, Observer { note ->
-            if (note != null) {
-                val image = note.image ?: return@Observer
-                mAdapter.setImage(NoteImage(image), mEditPosition)
-                viewModel.deleteTmpNote(note)
-            }
-        })
         viewModel.reminder.observe(this, Observer<Reminder> { this.showReminder(it) })
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
@@ -383,20 +383,22 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
     }
 
-    private fun showNote(note: Note?) {
-        this.mItem = note
-        if (note != null) {
+    private fun showNote(noteWithImages: NoteWithImages?) {
+        this.mItem = noteWithImages
+        if (noteWithImages != null) {
+            mAdapter.setImages(noteWithImages.images)
+            val note = noteWithImages.note ?: return
             mColor = note.color
             mFontStyle = note.style
             setText(note.summary)
-            mAdapter.setImages(note.images)
+
         }
     }
 
     private fun initImagesList() {
         mAdapter.setEditable(true)
-        mAdapter.actionsListener = object : ActionsListener<NoteImage> {
-            override fun onAction(view: View, position: Int, t: NoteImage?, actions: ListActions) {
+        mAdapter.actionsListener = object : ActionsListener<ImageFile> {
+            override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
                     ListActions.EDIT -> editImage(position)
                     ListActions.OPEN -> openImagePreview(position)
@@ -415,7 +417,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun editImage(position: Int) {
-        viewModel.saveTmpNote(mAdapter.getItem(position).image)
+        imagesSingleton.setEditable(mAdapter.getItem(position))
         this.mEditPosition = position
         startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }
@@ -460,8 +462,9 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
             return
         }
-        if (mItem != null) {
-            TelephonyUtil.sendNote(file, this, mItem!!.summary)
+        val noteWithImages = mItem
+        if (noteWithImages != null) {
+            TelephonyUtil.sendNote(file, this, noteWithImages.note?.summary)
         }
     }
 
@@ -480,31 +483,40 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         remindTime.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled)
     }
 
-    private fun createObject(): Note? {
+    private fun createObject(): NoteWithImages? {
         val text = taskMessage.text.toString().trim { it <= ' ' }
         val images = mAdapter.data
         if (TextUtils.isEmpty(text) && images.isEmpty()) {
             taskMessage.error = getString(R.string.must_be_not_empty)
             return null
         }
-        var note = mItem
+        var noteWithImages = mItem
+
+        var note = noteWithImages?.note
         if (note == null) {
             note = Note()
         }
         note.summary = text
         note.date = TimeUtil.gmtDateTime
-        note.images = images
         note.color = mColor
         note.style = mFontStyle
-        return note
+
+        if (noteWithImages == null) {
+            noteWithImages = NoteWithImages()
+        }
+
+        noteWithImages.images = images
+        noteWithImages.note = note
+        return noteWithImages
     }
 
     private fun saveNote() {
-        val note = createObject() ?: return
+        val noteWithImages = createObject() ?: return
         val hasReminder = isReminderAttached
         if (!hasReminder && mItem != null) removeNoteFromReminder()
         var reminder: Reminder? = null
-        if (hasReminder) {
+        val note = noteWithImages.note
+        if (hasReminder && note != null) {
             val calendar = Calendar.getInstance()
             calendar.set(mYear, mMonth, mDay, mHour, mMinute)
             reminder = createReminder(note, calendar) ?: return
@@ -512,7 +524,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (prefs.isNoteColorRememberingEnabled) {
             prefs.lastNoteColor = mColor
         }
-        viewModel.saveNote(note, reminder)
+        viewModel.saveNote(noteWithImages, reminder)
     }
 
     private fun createReminder(note: Note, calendar: Calendar): Reminder? {
@@ -609,13 +621,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         photoSelectionUtil.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             when (requestCode) {
-                EDIT_CODE -> if (mEditPosition != -1) updateImage()
+                EDIT_CODE -> if (mEditPosition != -1) {
+                    saveEditedImage()
+                }
             }
         }
-    }
-
-    private fun updateImage() {
-        viewModel.loadEditedPicture()
     }
 
     private fun addImageFromUri(uri: Uri?) {
@@ -630,7 +640,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (bitmapImage != null) {
             val outputStream = ByteArrayOutputStream()
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            mAdapter.addImage(NoteImage(outputStream.toByteArray()))
+            mAdapter.addImage(ImageFile(outputStream.toByteArray()))
         }
     }
 

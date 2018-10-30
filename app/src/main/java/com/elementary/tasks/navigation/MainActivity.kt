@@ -89,7 +89,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val noteViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         val reminderViewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
         mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
-                reminderViewModel, noteViewModel, themeUtil, prefs, notifier)
+                reminderViewModel, noteViewModel, prefs, notifier)
         when {
             savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
             intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {

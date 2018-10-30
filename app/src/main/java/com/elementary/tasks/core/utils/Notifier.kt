@@ -17,7 +17,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
@@ -52,13 +52,14 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         createChannels(context)
     }
 
-    fun showNoteNotification(item: Note) {
+    fun showNoteNotification(noteWithImages: NoteWithImages) {
+        val note = noteWithImages.note ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setContentText(context.getString(R.string.note))
         if (Module.isLollipop) {
             builder.color = ViewUtils.getColor(context, R.color.bluePrimary)
         }
-        val content = item.summary
+        val content = note.summary
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_note_white)
         } else {
@@ -71,8 +72,8 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
         }
-        if (!item.images.isEmpty() && Module.isMarshmallow) {
-            val image = item.images[0]
+        if (!noteWithImages.images.isEmpty() && Module.isMarshmallow) {
+            val image = noteWithImages.images[0]
             val bitmap = BitmapFactory.decodeByteArray(image.image, 0, image.image!!.size)
             builder.setLargeIcon(bitmap)
             val s = NotificationCompat.BigPictureStyle()
@@ -81,7 +82,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             builder.setStyle(s)
         }
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        manager?.notify(item.uniqueId, builder.build())
+        manager?.notify(note.uniqueId, builder.build())
         if (isWear && Module.isJellyMR2) {
             val wearableNotificationBuilder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
             wearableNotificationBuilder.setSmallIcon(R.drawable.ic_note_nv_white)
@@ -94,7 +95,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             wearableNotificationBuilder.setOnlyAlertOnce(true)
             wearableNotificationBuilder.setGroup("GROUP")
             wearableNotificationBuilder.setGroupSummary(false)
-            manager?.notify(item.uniqueId, wearableNotificationBuilder.build())
+            manager?.notify(note.uniqueId, wearableNotificationBuilder.build())
         }
     }
 

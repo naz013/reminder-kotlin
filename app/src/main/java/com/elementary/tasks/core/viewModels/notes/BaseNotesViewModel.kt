@@ -5,7 +5,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
@@ -38,10 +38,12 @@ import timber.log.Timber
  */
 abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(application) {
 
-    fun deleteNote(note: Note) {
+    fun deleteNote(noteWithImages: NoteWithImages) {
+        val note = noteWithImages.note ?: return
         isInProgress.postValue(true)
         launch(CommonPool) {
             appDb.notesDao().delete(note)
+            appDb.notesDao().deleteAllImages(note.key)
             withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
@@ -54,26 +56,43 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
         }
     }
 
-    fun saveNote(note: Note) {
+    fun saveNote(note: NoteWithImages) {
+        val v = note.note ?: return
         isInProgress.postValue(true)
         launch(CommonPool) {
-            appDb.notesDao().insert(note)
+            appDb.notesDao().insert(v)
+            if (note.images.isNotEmpty()) {
+                note.images = note.images.map {
+                    it.noteId = v.key
+                    it
+                }
+                appDb.notesDao().insertAll(note.images)
+            }
             withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, note.key).build())
-                    .addTag(note.key)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, v.key).build())
+                    .addTag(v.key)
                     .build()
             WorkManager.getInstance().enqueue(work)
         }
     }
 
-    fun saveNote(note: Note, reminder: Reminder?) {
+    fun saveNote(note: NoteWithImages, reminder: Reminder?) {
+        val v = note.note ?: return
         isInProgress.postValue(true)
         launch(CommonPool) {
-            appDb.notesDao().insert(note)
+            if (note.images.isNotEmpty()) {
+                note.images = note.images.map {
+                    it.noteId = v.key
+                    it
+                }
+                appDb.notesDao().insertAll(note.images)
+            }
+            Timber.d("saveNote: %s", note)
+            appDb.notesDao().insert(v)
             withUIContext {
                 if (reminder != null) {
                     saveReminder(reminder)
@@ -82,8 +101,8 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 result.postValue(Commands.SAVED)
             }
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, note.key).build())
-                    .addTag(note.key)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, v.key).build())
+                    .addTag(v.key)
                     .build()
             WorkManager.getInstance().enqueue(work)
         }
@@ -91,9 +110,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
 
     private fun saveReminder(reminder: Reminder) {
         launch(CommonPool) {
-            Timber.d("saveReminder: %s", appDb.isOpen)
             val group = appDb.reminderGroupDao().defaultGroup()
-            Timber.d("saveReminder: group -> %s", group)
             if (group != null) {
                 reminder.groupColor = group.groupColor
                 reminder.groupTitle = group.groupTitle
@@ -107,7 +124,6 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                     .addTag(reminder.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
-            Timber.d("saveReminder: %s", appDb.reminderDao().getById(reminder.uuId))
         }
     }
 

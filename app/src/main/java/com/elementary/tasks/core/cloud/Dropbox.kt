@@ -688,9 +688,11 @@ class Dropbox {
                 val localFile = File("$dir/$fileName")
                 val cloudFile = dbxNoteFolder + fileName
                 downloadFile(localFile, cloudFile)
-                val note = backupTool.getNote(localFile.toString(), null)
-                if (note != null) {
+                val item = backupTool.getNote(localFile.toString(), null)
+                val note = item?.note
+                if (item != null && note != null) {
                     dao.insert(note)
+                    dao.insertAll(item.images)
                 }
                 if (deleteFile) {
                     if (localFile.exists()) {
