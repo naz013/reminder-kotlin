@@ -46,6 +46,7 @@ import kotlinx.android.synthetic.main.activity_create_note.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import org.apache.commons.lang3.StringUtils
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
@@ -387,6 +388,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun showNote(noteWithImages: NoteWithImages?) {
         this.mItem = noteWithImages
+        Timber.d("showNote: $noteWithImages")
         if (noteWithImages != null) {
             mAdapter.setImages(noteWithImages.images)
             val note = noteWithImages.note ?: return
@@ -394,6 +396,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             mFontStyle = note.style
             setText(note.summary)
             colorSlider.setSelection(mColor)
+            updateBackground()
         }
     }
 
