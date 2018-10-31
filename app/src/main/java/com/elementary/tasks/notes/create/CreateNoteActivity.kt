@@ -43,6 +43,8 @@ import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.activity_create_note.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import org.apache.commons.lang3.StringUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -391,7 +393,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             mColor = note.color
             mFontStyle = note.style
             setText(note.summary)
-
+            colorSlider.setSelection(mColor)
         }
     }
 
@@ -447,12 +449,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
         val note = createObject() ?: return
         showProgress()
-        val callback = object : BackupTool.CreateCallback {
-            override fun onReady(file: File?) {
+        launch(CommonPool) {
+            val file = backupTool.createNote(note)
+            withUIContext {
                 if (file != null) sendNote(file)
             }
         }
-        Thread { backupTool.createNote(note, callback) }.start()
     }
 
     private fun sendNote(file: File) {

@@ -32,6 +32,8 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -138,11 +140,12 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
 
     private fun shareNote(note: NoteWithImages) {
         showProgress()
-        Thread { backupTool.createNote(note, object : BackupTool.CreateCallback {
-            override fun onReady(file: File?) {
+        launch(CommonPool) {
+            val file = backupTool.createNote(note)
+            withUIContext {
                 if (file != null) sendNote(note, file)
             }
-        }) }.start()
+        }
     }
 
     private fun sendNote(note: NoteWithImages, file: File) {

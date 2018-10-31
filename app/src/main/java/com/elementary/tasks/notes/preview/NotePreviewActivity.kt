@@ -9,7 +9,6 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -29,6 +28,8 @@ import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_note_preview.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -77,7 +78,6 @@ class NotePreviewActivity : ThemedActivity() {
         setContentView(R.layout.activity_note_preview)
         initActionBar()
         initImagesList()
-        initScrollView()
         initReminderCard()
         initViewModel()
     }
@@ -135,33 +135,9 @@ class NotePreviewActivity : ThemedActivity() {
                 .putExtra(Constants.INTENT_POSITION, position))
     }
 
-    private fun initScrollView() {
-        scrollContent.viewTreeObserver.addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener {
-            override fun onScrollChanged() {
-                val scrollY = scrollContent.scrollY
-                if (!mNote!!.images.isEmpty()) {
-                    appBar.background.alpha = getAlphaForActionBar(scrollY)
-                } else {
-                    appBar.background.alpha = 255
-                }
-            }
-
-            private fun getAlphaForActionBar(scrollY: Int): Int {
-                val minDist = 0
-                val maxDist = MeasureUtils.dp2px(this@NotePreviewActivity, 200)
-                return when {
-                    scrollY > maxDist -> 255
-                    scrollY < minDist -> 0
-                    else -> (255.0 / maxDist * scrollY).toInt()
-                }
-            }
-        })
-    }
-
     private fun initActionBar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         toolbar.title = ""
     }
 
@@ -194,7 +170,7 @@ class NotePreviewActivity : ThemedActivity() {
             if (Module.isLollipop) {
                 window.statusBarColor = themeUtil.getNoteLightColor(note.color)
             }
-            scrollContent.setBackgroundColor(themeUtil.getNoteLightColor(note.color))
+            windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(note.color))
         }
     }
 
@@ -229,11 +205,12 @@ class NotePreviewActivity : ThemedActivity() {
             return
         }
         showProgress()
-        Thread { backupTool.createNote(mNote, object : BackupTool.CreateCallback {
-            override fun onReady(file: File?) {
+        launch(CommonPool) {
+            val file = backupTool.createNote(mNote)
+            withUIContext {
                 if (file != null) sendNote(file)
             }
-        }) }.start()
+        }
     }
 
     private fun sendNote(file: File) {

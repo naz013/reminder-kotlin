@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/windowBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/scrollContent"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
@@ -19,27 +18,28 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/imagesList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/noteText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="72dp"
-                android:paddingBottom="24dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/pureBlack"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="NOte" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/imagesList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/reminderContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_margin="16dp"
                 app:cardUseCompatPadding="true">
 
                 <LinearLayout
@@ -51,7 +51,6 @@
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="16dp"
                         android:paddingStart="16dp"
                         android:text="@string/reminder"
                         android:textAllCaps="true"
@@ -67,10 +66,10 @@
                         android:id="@+id/reminderTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="15dp"
                         android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
                         android:paddingTop="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="15dp"
                         android:textSize="18sp"
                         app:font_style="roboto_light" />
 
@@ -93,7 +92,6 @@
                             android:id="@+id/deleteReminder"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
                             android:layout_marginStart="16dp"
                             android:background="@null"
                             android:text="@string/delete"
@@ -103,17 +101,20 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+            android:background="@android:color/transparent" />
 
     </com.google.android.material.appbar.AppBarLayout>
 </RelativeLayout>
