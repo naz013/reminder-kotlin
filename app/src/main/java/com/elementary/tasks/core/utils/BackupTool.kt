@@ -471,28 +471,24 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    fun createNote(item: NoteWithImages?, callback: CreateCallback?) {
-        val note = item?.note ?: return
+    fun createNote(item: NoteWithImages?): File? {
+        val note = item?.note ?: return null
         val jsonData = WeakReference(Gson().toJson(OldNote(item)))
         val file: File
         val dir = MemoryUtil.mailDir
-        if (dir != null) {
+        return if (dir != null) {
             val exportFileName = note.key + FileConfig.FILE_NAME_NOTE
             file = File(dir, exportFileName)
             try {
                 writeFile(file, jsonData.get())
                 jsonData.clear()
-                callback?.onReady(file)
+                file
             } catch (e: Exception) {
-                callback?.onReady(null)
+                null
             }
         } else {
-            callback?.onReady(null)
+            null
         }
-    }
-
-    interface CreateCallback {
-        fun onReady(file: File?)
     }
 
     companion object {
