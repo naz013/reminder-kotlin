@@ -44,6 +44,7 @@ import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
+import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
@@ -147,4 +148,5 @@ interface AppComponent {
     fun inject(activity: ReminderPreviewActivity)
     fun inject(activity: ImagePreviewActivity)
     fun inject(activity: ImageEditActivity)
+    fun inject(activity: NotePreviewActivity)
 }
