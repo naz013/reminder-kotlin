@@ -555,10 +555,10 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         when (code) {
             Color.RED -> color = R.color.redAccent
             Color.PURPLE -> color = R.color.purpleAccent
-            Color.GREEN -> color = R.color.greenAccent
             Color.LIGHT_GREEN -> color = R.color.greenLightAccent
-            Color.BLUE -> color = R.color.blueAccent
+            Color.GREEN -> color = R.color.greenAccent
             Color.LIGHT_BLUE -> color = R.color.blueLightAccent
+            Color.BLUE -> color = R.color.blueAccent
             Color.YELLOW -> color = R.color.yellowAccent
             Color.ORANGE -> color = R.color.orangeAccent
             Color.CYAN -> color = R.color.cyanAccent
@@ -587,10 +587,10 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             intArrayOf(
                     getColor(R.color.redAccent),
                     getColor(R.color.purpleAccent),
-                    getColor(R.color.greenAccent),
                     getColor(R.color.greenLightAccent),
-                    getColor(R.color.blueAccent),
+                    getColor(R.color.greenAccent),
                     getColor(R.color.blueLightAccent),
+                    getColor(R.color.blueAccent),
                     getColor(R.color.yellowAccent),
                     getColor(R.color.orangeAccent),
                     getColor(R.color.cyanAccent),
@@ -606,10 +606,10 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             intArrayOf(
                     getColor(R.color.redAccent),
                     getColor(R.color.purpleAccent),
-                    getColor(R.color.greenAccent),
                     getColor(R.color.greenLightAccent),
-                    getColor(R.color.blueAccent),
+                    getColor(R.color.greenAccent),
                     getColor(R.color.blueLightAccent),
+                    getColor(R.color.blueAccent),
                     getColor(R.color.yellowAccent),
                     getColor(R.color.orangeAccent),
                     getColor(R.color.cyanAccent),
