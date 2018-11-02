@@ -201,7 +201,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         remindDate.setOnClickListener { dateDialog() }
         remindTime.setOnClickListener { timeDialog() }
         micButton.setOnClickListener { micClick() }
-        discardReminder.setOnClickListener { ViewUtils.collapse(remindContainer) }
+        discardReminder.setOnClickListener { remindContainer.visibility = View.GONE }
         remindContainer.visibility = View.GONE
         initImagesList()
 
@@ -303,19 +303,23 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun toggleColorView() {
-        if (colorLayout.visibility == View.GONE) {
+        if (isColorPickerHidden()) {
             colorLayout.visibility = View.VISIBLE
         } else {
             colorLayout.visibility = View.GONE
         }
     }
 
+    private fun isColorPickerHidden(): Boolean {
+        return colorLayout.visibility == View.GONE
+    }
+
     private fun switchReminder() {
         if (!isReminderAttached) {
             setDateTime(null)
-            ViewUtils.expand(remindContainer)
+            remindContainer.visibility = View.VISIBLE
         } else {
-            ViewUtils.collapse(remindContainer)
+            remindContainer.visibility = View.GONE
         }
     }
 
@@ -745,6 +749,14 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 }
             }, clipData.itemCount).execute(clipData)
         }
+    }
+
+    override fun onBackPressed() {
+        if (!isColorPickerHidden()) {
+            toggleColorView()
+            return
+        }
+        super.onBackPressed()
     }
 
     companion object {
