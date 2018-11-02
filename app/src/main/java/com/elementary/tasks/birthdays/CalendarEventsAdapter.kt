@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener

@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.di
 
-import com.elementary.tasks.birthdays.BirthdayHolder
+import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataProvider
 import com.elementary.tasks.core.BaseNotificationActivity

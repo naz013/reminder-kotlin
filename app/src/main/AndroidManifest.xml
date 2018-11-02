@@ -214,7 +214,7 @@
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".reminder.preview.FullscreenMapActivity" />
         <activity android:name=".missedCalls.MissedCallDialogActivity" />
-        <activity android:name=".birthdays.ShowBirthdayActivity" />
+        <activity android:name=".birthdays.preview.ShowBirthdayActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpDialog"
             android:theme="@style/Light1.Dialog" />

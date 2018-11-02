@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays
+package com.elementary.tasks.birthdays.list
 
 import android.view.LayoutInflater
 import android.view.View
