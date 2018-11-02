@@ -234,13 +234,13 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         var showIn = getString(R.string.show_in_status_bar)
         showIn = showIn.substring(0, showIn.length - 1)
         val items = arrayOf(getString(R.string.open), getString(R.string.share), showIn, getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
-        dialogues.showLCAM(context!!, { item ->
+        dialogues.showPopup(context!!, view, { item ->
             when (item) {
                 0 -> previewNote(note.getKey(), view)
                 1 -> shareNote(note)
                 2 -> showInStatusBar(note)
                 3 -> selectColor(note)
-                4 -> context!!.startActivity(Intent(context, CreateNoteActivity::class.java)
+                4 -> context?.startActivity(Intent(context, CreateNoteActivity::class.java)
                         .putExtra(Constants.INTENT_ID, note.getKey()))
                 5 -> viewModel.deleteNote(note)
             }
