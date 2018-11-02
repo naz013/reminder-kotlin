@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.Actions
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.ShowBirthdayActivity
+import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday

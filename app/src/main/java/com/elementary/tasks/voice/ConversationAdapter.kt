@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.BirthdayHolder
+import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ThemeUtil

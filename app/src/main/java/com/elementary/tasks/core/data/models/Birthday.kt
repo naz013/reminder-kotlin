@@ -63,8 +63,7 @@ class Birthday : RecyclerInterface {
     }
 
     @Ignore
-    constructor(name: String, date: String, number: String, showedYear: Int, contactId: Int, day: Int, month: Int) {
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
+    constructor(name: String, date: String, number: String, showedYear: Int, contactId: Int, day: Int, month: Int): this() {
         this.name = name
         this.date = date
         this.number = number
@@ -75,7 +74,6 @@ class Birthday : RecyclerInterface {
         this.day = day
         this.month = month
         this.dayMonth = day.toString() + "|" + month
-        this.uuId = UUID.randomUUID().toString()
     }
 
     fun getDateTime(time: Long): Long {

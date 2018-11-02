@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.cloud.Google
@@ -349,6 +350,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         when (itemId) {
             R.id.nav_current -> replaceFragment(RemindersFragment(), getString(R.string.tasks))
             R.id.nav_notes -> replaceFragment(NotesFragment(), getString(R.string.notes))
+            R.id.nav_birthdays -> replaceFragment(BirthdaysFragment(), getString(R.string.birthdays))
             R.id.nav_calendar -> replaceFragment(CalendarFragment(), getString(R.string.calendar))
             R.id.nav_day_view -> replaceFragment(DayViewFragment(), getString(R.string.events))
             R.id.nav_tasks -> replaceFragment(GoogleTasksFragment(), getString(R.string.google_tasks))
