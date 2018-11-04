@@ -182,6 +182,7 @@ dependencies {
     implementation 'com.github.florent37:expansionpanel:1.1.1'
     implementation 'com.tapadoo.android:alerter:2.0.1'
     implementation 'com.github.naz013:ColorSlider:1.0.3'
+    implementation 'com.airbnb.android:lottie:2.8.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.16.0'

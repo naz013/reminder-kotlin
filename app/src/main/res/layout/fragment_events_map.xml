@@ -37,20 +37,21 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/emptyImage"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_marginBottom="24dp"
-                app:srcCompat="@drawable/ic_empty_places" />
+                android:layout_gravity="center"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/empty_status" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/emptyText"
                 style="?textAppearanceHeadline6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center|top"
                 android:text="@string/no_events" />
 
