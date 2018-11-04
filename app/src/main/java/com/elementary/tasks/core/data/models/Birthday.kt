@@ -5,8 +5,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.interfaces.RecyclerInterface
-import com.elementary.tasks.core.utils.SuperUtil
-import com.google.gson.annotations.SerializedName
 import java.util.*
 
 /**
@@ -28,39 +26,22 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-class Birthday : RecyclerInterface {
-
-    @SerializedName("name")
-    var name: String = ""
-    @SerializedName("date")
-    var date: String = ""
-    @SerializedName("number")
-    var number: String = ""
-    @SerializedName("key")
-    var key: String = ""
-    @SerializedName("showedYear")
-    var showedYear: Int = 0
-    @SerializedName("contactId")
-    var contactId: Int = 0
-    @SerializedName("day")
-    var day: Int = 0
-    @SerializedName("month")
-    var month: Int = 0
-    @SerializedName("uniqueId")
-    var uniqueId: Int = 0
-    @SerializedName("dayMonth")
-    var dayMonth: String = ""
-    @PrimaryKey
-    @SerializedName("uuId")
-    var uuId: String = ""
+data class Birthday(
+        var name: String = "",
+        var date: String = "",
+        var number: String = "",
+        var key: String = "",
+        var showedYear: Int = 0,
+        var contactId: Int = 0,
+        var day: Int = 0,
+        var month: Int = 0,
+        var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+        var dayMonth: String = "",
+        @PrimaryKey var uuId: String = UUID.randomUUID().toString()
+) : RecyclerInterface {
 
     override val viewType: Int
         get() = 2
-
-    constructor() {
-        this.uuId = UUID.randomUUID().toString()
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-    }
 
     @Ignore
     constructor(name: String, date: String, number: String, showedYear: Int, contactId: Int, day: Int, month: Int): this() {
@@ -85,17 +66,5 @@ class Birthday : RecyclerInterface {
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, day)
         return calendar.timeInMillis
-    }
-
-    override fun equals(obj: Any?): Boolean {
-        return this.key == (obj as Birthday).key
-    }
-
-    override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, Birthday::class.java)
-    }
-
-    override fun hashCode(): Int {
-        return UUID.fromString(uuId).hashCode()
     }
 }

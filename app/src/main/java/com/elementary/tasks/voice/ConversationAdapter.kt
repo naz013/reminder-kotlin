@@ -86,7 +86,6 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is GroupHolder -> holder.setData(mData[position].`object` as ReminderGroup)
             is BirthdayHolder -> {
                 holder.setData(mData[position].`object` as Birthday)
-                holder.setColor(themeUtil.getColor(themeUtil.colorBirthdayCalendar()))
             }
             is ShoppingHolder -> holder.setData(mData[position].`object` as Reminder)
             is AskHolder -> holder.setAskAction(mData[position].`object` as AskAction)

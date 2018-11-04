@@ -93,8 +93,8 @@ class CreateGroupActivity : ThemedActivity() {
         initViewModel(id)
         if (intent.data != null) {
             try {
-                val name = intent.data
-                val scheme = name?.scheme
+                val name = intent.data ?: return
+                val scheme = name.scheme
                 val item = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
                     backupTool.getGroup(cr, name)
@@ -162,9 +162,9 @@ class CreateGroupActivity : ThemedActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_group_edit, menu)
-        if (mItem != null && viewModel.allGroups.value != null && viewModel.allGroups.value!!.size > 1) {
+        menuInflater.inflate(R.menu.activity_simple_save_action, menu)
+        val groups = viewModel.allGroups.value ?: listOf()
+        if (mItem != null && groups.size > 1) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true

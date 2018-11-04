@@ -1,5 +1,6 @@
 package com.elementary.tasks.birthdays.list
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,9 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
-import kotlinx.android.synthetic.main.list_item_events.view.*
+import kotlinx.android.synthetic.main.list_item_birthday.view.*
 import javax.inject.Inject
 
 /**
@@ -31,26 +35,24 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_events, parent, false)) {
+        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_birthday, parent, false)) {
 
     @Inject lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)
-        itemView.itemCard.setOnLongClickListener { view ->
-            listener?.invoke(view, adapterPosition, ListActions.MORE)
-            true
-        }
+        itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
         itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-    }
-
-    fun setColor(color: Int) {
-        itemView.eventColor.setBackgroundColor(color)
     }
 
     fun setData(item: Birthday) {
         itemView.eventText.text = item.name
-        itemView.eventNumber.text = item.number
+        if (TextUtils.isEmpty(item.number)) {
+            itemView.eventNumber.visibility = View.GONE
+        } else {
+            itemView.eventNumber.visibility = View.VISIBLE
+            itemView.eventNumber.text = item.number
+        }
         loadBirthday(itemView.eventDate, item.date)
     }
 

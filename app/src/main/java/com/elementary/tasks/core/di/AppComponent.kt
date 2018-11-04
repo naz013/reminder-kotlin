@@ -3,6 +3,7 @@ package com.elementary.tasks.core.di
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataProvider
+import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
@@ -32,6 +33,7 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.views.*
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
+import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.login.RestoreDropboxTask
 import com.elementary.tasks.login.RestoreGoogleTask
 import com.elementary.tasks.login.RestoreLocalTask
@@ -149,4 +151,6 @@ interface AppComponent {
     fun inject(activity: ImagePreviewActivity)
     fun inject(activity: ImageEditActivity)
     fun inject(activity: NotePreviewActivity)
+    fun inject(activity: AddBirthdayActivity)
+    fun inject(activity: CreateGroupActivity)
 }
