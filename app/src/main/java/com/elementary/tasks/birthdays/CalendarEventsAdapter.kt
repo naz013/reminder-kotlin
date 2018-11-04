@@ -61,7 +61,6 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is BirthdayHolder -> {
                 val item = data[position].`object` as Birthday
                 holder.setData(item)
-                holder.setColor(data[position].color)
             }
             is ReminderHolder -> {
                 val item = data[position].`object` as Reminder

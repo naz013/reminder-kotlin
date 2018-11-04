@@ -1,34 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
-
-        <com.elementary.tasks.core.views.roboto.RoboEditText
-            android:id="@+id/birthName"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@android:color/transparent"
-            android:hint="@string/name"
-            android:textColorHint="@color/whitePrimary"
-            android:textSize="@dimen/create_text_size_secondary"
-            app:edit_font_style="roboto_light" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,89 +27,121 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/birthNameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:boxBackgroundColor="@color/secondary_12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
+
+                <androidx.emoji.widget.EmojiAppCompatEditText
+                    android:id="@+id/birthName"
+                    style="?textAppearanceSubtitle1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:maxLength="70"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <com.elementary.tasks.core.views.ThemedImageButton
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/dateIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:background="@null"
-                    android:scaleType="center"
-                    app:srcCompat="@drawable/ic_calendar" />
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_today_24px"
+                    app:tint="?android:textColorPrimary" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/birthDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="8dp"
                     android:background="?android:attr/selectableItemBackground"
-                    android:text="25/05/1985"
-                    android:textSize="@dimen/add_birthday_text_size_primary"
-                    app:font_style="roboto_medium" />
+                    android:padding="4dp"
+                    android:textAppearance="?textAppearanceHeadline5"
+                    tools:text="25/05/1985" />
 
             </LinearLayout>
 
-            <View
+            <com.elementary.tasks.core.views.DividerView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/view_margin_top"
-                android:layout_marginBottom="@dimen/view_margin_top"
-                android:background="?attr/colorAccent" />
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="16dp" />
 
-            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/contactCheck"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:paddingEnd="@dimen/checkbox_padding"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="12dp"
                 android:text="@string/contact"
-                android:textSize="@dimen/add_birthday_text_size_primary"
-                app:check_font_style="roboto_light" />
+                android:textAppearance="?textAppearanceCaption" />
 
             <LinearLayout
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin_top"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:visibility="visible">
 
-                <com.elementary.tasks.core.views.ThemedImageButton
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/pickContact"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:background="@android:color/transparent"
-                    android:clickable="false"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/acc_select_number_from_contacts"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:textSize="@dimen/add_birthday_text_size_primary"
-                    app:srcCompat="@drawable/ic_perm_identity_black_24dp" />
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_contacts_24px"
+                    app:tint="?android:textColorPrimary" />
 
-                <com.elementary.tasks.core.views.roboto.RoboEditText
-                    android:id="@+id/phone"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/numberLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:ems="10"
-                    android:hint="@string/phone"
-                    android:inputType="phone"
-                    android:textSize="@dimen/add_birthday_text_size_primary"
-                    app:edit_font_style="roboto_light" />
+                    app:boxBackgroundColor="@color/secondary_12"
+                    app:boxCornerRadiusTopEnd="5dp"
+                    app:boxCornerRadiusTopStart="5dp">
+
+                    <com.elementary.tasks.core.views.PhoneAutoCompleteView
+                        android:id="@+id/numberView"
+                        style="?textAppearanceSubtitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/phone"
+                        android:inputType="text|phone"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
