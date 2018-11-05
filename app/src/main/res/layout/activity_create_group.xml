@@ -72,12 +72,13 @@
                 android:textAppearance="?textAppearanceCaption"
                 android:textColor="?colorSecondary" />
 
-            <com.elementary.tasks.core.views.ColorPickerView
-                android:id="@+id/pickerView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp" />
+            <com.github.naz013.colorslider.ColorSlider
+                android:id="@+id/colorSlider"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

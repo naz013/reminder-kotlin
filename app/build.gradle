@@ -154,7 +154,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
-    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation('com.google.firebase:firebase-config:16.0.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
@@ -183,6 +183,7 @@ dependencies {
     implementation 'com.tapadoo.android:alerter:2.0.1'
     implementation 'com.github.naz013:ColorSlider:1.0.3'
     implementation 'com.airbnb.android:lottie:2.8.0'
+    implementation 'co.revely:gradient:1.0.1'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.16.0'

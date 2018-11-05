@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import androidx.annotation.*
 import androidx.annotation.IntRange
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import java.util.*
@@ -89,10 +90,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                 }
             }
             }
-
-    val indicator: Int
-        @DrawableRes
-        get() = getIndicator(prefs.appThemeColor)
 
     val dialogStyle: Int
         @StyleRes
@@ -227,7 +224,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
 
     @ColorInt
     fun getColor(@ColorRes color: Int): Int {
-        return ViewUtils.getColor(context, color)
+        return ContextCompat.getColor(context, color)
     }
 
     @ColorRes

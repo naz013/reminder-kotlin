@@ -3,7 +3,7 @@ package com.elementary.tasks.groups.list
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.interfaces.SimpleListener
+import com.elementary.tasks.core.interfaces.ActionsListener
 import java.util.*
 
 /**
@@ -27,7 +27,7 @@ import java.util.*
 class GroupsRecyclerAdapter : RecyclerView.Adapter<GroupHolder>() {
 
     private val mDataList = ArrayList<ReminderGroup>()
-    var mEventListener: SimpleListener? = null
+    var actionsListener: ActionsListener<ReminderGroup>? = null
 
     fun setData(list: List<ReminderGroup>) {
         this.mDataList.clear()
@@ -36,7 +36,11 @@ class GroupsRecyclerAdapter : RecyclerView.Adapter<GroupHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
-        return GroupHolder(parent, mEventListener)
+        return GroupHolder(parent) { view, i, listActions ->
+            if (actionsListener != null) {
+                actionsListener?.onAction(view, i, getItem(i), listActions)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: GroupHolder, position: Int) {

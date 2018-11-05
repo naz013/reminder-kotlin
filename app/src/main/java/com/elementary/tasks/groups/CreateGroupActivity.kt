@@ -42,7 +42,6 @@ class CreateGroupActivity : ThemedActivity() {
 
     private lateinit var viewModel: GroupViewModel
 
-    private var color = 0
     private var mItem: ReminderGroup? = null
 
     @Inject
@@ -55,9 +54,8 @@ class CreateGroupActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_group)
-
         initActionBar()
-
+        colorSlider.setColors(themeUtil.colorsForSlider())
         loadGroup()
     }
 
@@ -76,9 +74,11 @@ class CreateGroupActivity : ThemedActivity() {
 
     private fun showGroup(reminderGroup: ReminderGroup) {
         this.mItem = reminderGroup
+
         nameInput.setText(reminderGroup.groupTitle)
-        color = reminderGroup.groupColor
-        pickerView.setSelectedColor(color)
+
+        colorSlider.setSelection(reminderGroup.groupColor)
+
         defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
         defaultCheck.isChecked = reminderGroup.isDefaultGroup
 
@@ -142,11 +142,11 @@ class CreateGroupActivity : ThemedActivity() {
         }
         var item = mItem
         if (item == null) {
-            item = ReminderGroup(text, UUID.randomUUID().toString(), color, TimeUtil.gmtDateTime)
+            item = ReminderGroup(text, UUID.randomUUID().toString(), 0, TimeUtil.gmtDateTime)
         }
         val wasDefault = item.isDefaultGroup
 
-        item.groupColor = pickerView.selectedCode
+        item.groupColor = colorSlider.selectedItem
         item.isDefaultGroup = defaultCheck.isChecked
         item.groupTitle = text
         item.groupDateTime = TimeUtil.gmtDateTime
