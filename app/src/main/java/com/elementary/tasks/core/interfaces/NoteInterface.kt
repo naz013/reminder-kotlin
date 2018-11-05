@@ -5,4 +5,5 @@ interface NoteInterface {
     fun getKey(): String
     fun getColor(): Int
     fun getStyle(): Int
+    fun getOpacity(): Int
 }

@@ -164,13 +164,12 @@ class NotePreviewActivity : ThemedActivity() {
         this.mNote = noteWithImages
         if (noteWithImages != null) {
             showImages(noteWithImages.images)
-            val note = noteWithImages.note ?: return
-            noteText.text = note.summary
-            noteText.typeface = AssetsUtil.getTypeface(this, note.style)
+            noteText.text = noteWithImages.getSummary()
+            noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
             if (Module.isLollipop) {
-                window.statusBarColor = themeUtil.getNoteLightColor(note.color)
+                window.statusBarColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity())
             }
-            windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(note.color))
+            windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity()))
         }
     }
 

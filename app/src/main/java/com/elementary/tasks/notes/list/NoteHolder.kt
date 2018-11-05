@@ -60,9 +60,17 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
     }
 
     fun setData(item: NoteWithImages) {
-        loadNoteCard(itemView.clickView, item.getColor())
+        loadNoteCard(itemView.clickView, item)
         loadImage(itemView.imagesView, item)
         loadNote(itemView.noteTv, item)
+
+        if (themeUtil.isAlmostTransparent(item.getOpacity())) {
+            itemView.button_more.colorFilter = null
+            if (themeUtil.isDark) itemView.button_more.setImageResource(R.drawable.ic_more_vert_white_24dp)
+            else itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
+        } else {
+            itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
+        }
     }
 
     private fun loadNote(textView: TextView, note: NoteWithImages) {
@@ -82,8 +90,8 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         textView.textSize = (prefs.noteTextSize + 12).toFloat()
     }
 
-    private fun loadNoteCard(cardView: CardView, color: Int) {
-        cardView.setCardBackgroundColor(themeUtil.getNoteLightColor(color))
+    private fun loadNoteCard(cardView: CardView, note: NoteWithImages) {
+        cardView.setCardBackgroundColor(themeUtil.getNoteLightColor(note.getColor(), note.getOpacity()))
     }
 
     private fun setImage(imageView: ImageView, image: ByteArray?) {
