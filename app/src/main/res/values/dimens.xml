@@ -55,5 +55,6 @@
     <dimen name="checkbox_padding">27dp</dimen>
     <dimen name="empty_image_size">128dp</dimen>
     <dimen name="empty_animation_size">188dp</dimen>
+    <dimen name="corner_radius">5dp</dimen>
 
 </resources>

@@ -10,8 +10,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.interfaces.SimpleListener
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
 import com.elementary.tasks.groups.CreateGroupActivity
@@ -41,28 +42,6 @@ class GroupsFragment : BaseNavigationFragment() {
     private lateinit var viewModel: GroupsViewModel
     private var mAdapter: GroupsRecyclerAdapter = GroupsRecyclerAdapter()
 
-    private val mEventListener = object : SimpleListener {
-        override fun onItemClicked(position: Int, view: View) {
-            startActivity(Intent(context, CreateGroupActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).groupUuId))
-        }
-
-        override fun onItemLongClicked(position: Int, view: View) {
-            var items = arrayOf(getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
-            if (mAdapter.itemCount == 1) {
-                items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
-            }
-            dialogues.showLCAM(context!!, { item ->
-                when (item) {
-                    0 -> changeColor(mAdapter.getItem(position))
-                    1 -> startActivity(Intent(context, CreateGroupActivity::class.java)
-                            .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).groupUuId))
-                    2 -> viewModel.deleteGroup(mAdapter.getItem(position))
-                }
-            }, *items)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_groups, container, false)
     }
@@ -75,7 +54,7 @@ class GroupsFragment : BaseNavigationFragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(GroupsViewModel::class.java)
-        viewModel.allGroups.observe(this, Observer{ groups ->
+        viewModel.allGroups.observe(this, Observer { groups ->
             if (groups != null) {
                 showGroups(groups)
             }
@@ -96,11 +75,42 @@ class GroupsFragment : BaseNavigationFragment() {
     }
 
     private fun initGroupsList() {
-        mAdapter.mEventListener = mEventListener
+        mAdapter.actionsListener = object : ActionsListener<ReminderGroup> {
+            override fun onAction(view: View, position: Int, t: ReminderGroup?, actions: ListActions) {
+                if (t == null) return
+                when (actions) {
+                    ListActions.MORE -> {
+                        showMore(view, t)
+                    }
+                    ListActions.EDIT -> {
+                        editGroup(view, t)
+                    }
+                }
+            }
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
         refreshView()
+    }
+
+    private fun showMore(view: View, t: ReminderGroup) {
+        var items = arrayOf(getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
+        if (mAdapter.itemCount == 1) {
+            items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
+        }
+        dialogues.showPopup(context!!, view, { item ->
+            when (item) {
+                0 -> changeColor(t)
+                1 -> editGroup(view, t)
+                2 -> viewModel.deleteGroup(t)
+            }
+        }, *items)
+    }
+
+    private fun editGroup(view: View, t: ReminderGroup) {
+        startActivity(Intent(context, CreateGroupActivity::class.java)
+                .putExtra(Constants.INTENT_ID, t.groupUuId))
     }
 
     override fun getTitle(): String = getString(R.string.groups)

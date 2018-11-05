@@ -1,12 +1,16 @@
 package com.elementary.tasks.groups.list
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.interfaces.SimpleListener
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.MeasureUtils
 import kotlinx.android.synthetic.main.list_item_group.view.*
 
 /**
@@ -27,25 +31,27 @@ import kotlinx.android.synthetic.main.list_item_group.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?) :
+class GroupHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
 
     init {
         itemView.clickView.setOnClickListener { view ->
-            mEventListener?.onItemClicked(adapterPosition, view)
+            listener?.invoke(view, adapterPosition, ListActions.EDIT)
         }
-        itemView.clickView.setOnLongClickListener { view ->
-            mEventListener?.onItemLongClicked(adapterPosition, view)
-            true
+        itemView.button_more.setOnClickListener { view ->
+            listener?.invoke(view, adapterPosition, ListActions.MORE)
         }
     }
 
     fun setData(item: ReminderGroup) {
         itemView.textView.text = item.groupTitle
-        loadIndicator(itemView.indicator, item.groupColor)
+        gradientBg(itemView.gradientView, item)
     }
 
-    private fun loadIndicator(view: View, color: Int) {
-        view.setBackgroundResource(themeUtil.getCategoryIndicator(color))
+    private fun gradientBg(gradientView: ImageView, item: ReminderGroup) {
+        val gd = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
+                intArrayOf(Color.TRANSPARENT, themeUtil.getNoteLightColor(item.groupColor)))
+        gd.cornerRadius = MeasureUtils.dp2px(gradientView.context, 5).toFloat()
+        gradientView.background = gd
     }
 }
