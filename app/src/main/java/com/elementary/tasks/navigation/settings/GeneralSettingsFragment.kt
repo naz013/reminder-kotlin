@@ -36,18 +36,8 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         get() {
             val theme = prefs.appTheme
             return when (theme) {
-                ThemeUtil.THEME_PURE_BLACK -> getString(R.string.amoled)
-                ThemeUtil.THEME_PURE_WHITE -> getString(R.string.white)
-                ThemeUtil.THEME_LIGHT_1 -> getString(R.string.light) + " 1"
-                ThemeUtil.THEME_LIGHT_2 -> getString(R.string.light) + " 2"
-                ThemeUtil.THEME_LIGHT_3 -> getString(R.string.light) + " 3"
-                ThemeUtil.THEME_LIGHT_4 -> getString(R.string.light) + " 4"
-                ThemeUtil.THEME_DARK_1 -> getString(R.string.dark) + " 1"
-                ThemeUtil.THEME_DARK_2 -> getString(R.string.dark) + " 2"
-                ThemeUtil.THEME_DARK_3 -> getString(R.string.dark) + " 3"
-                ThemeUtil.THEME_DARK_4 -> getString(R.string.dark) + " 4"
                 ThemeUtil.THEME_AUTO -> getString(R.string.auto)
-                else -> getString(R.string.dark)
+                else -> SelectThemeActivity.NAMES[theme - 1]
             }
         }
 

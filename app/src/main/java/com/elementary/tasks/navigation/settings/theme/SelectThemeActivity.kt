@@ -51,34 +51,34 @@ class SelectThemeActivity : ThemedActivity() {
         val loaded = prefs.appTheme
         val list = mutableListOf<Theme>()
         list.add(autoTheme(loaded))
-        list.add(Theme(ThemeUtil.THEME_PURE_WHITE, loaded == ThemeUtil.THEME_PURE_WHITE, !Module.isPro, false, getString(R.string.white),
+        list.add(Theme(ThemeUtil.THEME_PURE_WHITE, loaded == ThemeUtil.THEME_PURE_WHITE, !Module.isPro, NAMES[0],
                 toColor(R.color.pureWhite), toColor(R.color.pureWhite), toColor(R.color.pureWhite)))
 
-        list.add(Theme(ThemeUtil.THEME_LIGHT_1, loaded == ThemeUtil.THEME_LIGHT_1, false, false, getString(R.string.light) + " 1",
+        list.add(Theme(ThemeUtil.THEME_LIGHT_1, loaded == ThemeUtil.THEME_LIGHT_1, false, NAMES[1],
                 toColor(R.color.lightPrimaryDark1), toColor(R.color.lightPrimary1), toColor(R.color.lightBg1)))
 
-        list.add(Theme(ThemeUtil.THEME_LIGHT_2, loaded == ThemeUtil.THEME_LIGHT_2, !Module.isPro, false, getString(R.string.light) + " 2",
+        list.add(Theme(ThemeUtil.THEME_LIGHT_2, loaded == ThemeUtil.THEME_LIGHT_2, false, NAMES[2],
                 toColor(R.color.lightPrimaryDark2), toColor(R.color.lightPrimary2), toColor(R.color.lightBg2)))
 
-        list.add(Theme(ThemeUtil.THEME_LIGHT_3, loaded == ThemeUtil.THEME_LIGHT_3, !Module.isPro, false, getString(R.string.light) + " 3",
+        list.add(Theme(ThemeUtil.THEME_LIGHT_3, loaded == ThemeUtil.THEME_LIGHT_3, false, NAMES[3],
                 toColor(R.color.lightPrimaryDark3), toColor(R.color.lightPrimary3), toColor(R.color.lightBg3)))
 
-        list.add(Theme(ThemeUtil.THEME_LIGHT_4, loaded == ThemeUtil.THEME_LIGHT_4, !Module.isPro, false,getString(R.string.light) + " 4",
+        list.add(Theme(ThemeUtil.THEME_LIGHT_4, loaded == ThemeUtil.THEME_LIGHT_4, false, NAMES[4],
                 toColor(R.color.lightPrimaryDark4), toColor(R.color.lightPrimary4), toColor(R.color.lightBg4)))
 
-        list.add(Theme(ThemeUtil.THEME_DARK_1, loaded == ThemeUtil.THEME_DARK_1, false, true, getString(R.string.dark) + " 1",
+        list.add(Theme(ThemeUtil.THEME_DARK_1, loaded == ThemeUtil.THEME_DARK_1, true, NAMES[5],
                 toColor(R.color.darkPrimaryDark1), toColor(R.color.darkPrimary1), toColor(R.color.darkBg1)))
 
-        list.add(Theme(ThemeUtil.THEME_DARK_2, loaded == ThemeUtil.THEME_DARK_2, !Module.isPro, true, getString(R.string.dark) + " 2",
+        list.add(Theme(ThemeUtil.THEME_DARK_2, loaded == ThemeUtil.THEME_DARK_2, true, NAMES[6],
                 toColor(R.color.darkPrimaryDark2), toColor(R.color.darkPrimary2), toColor(R.color.darkBg2)))
 
-        list.add(Theme(ThemeUtil.THEME_DARK_3, loaded == ThemeUtil.THEME_DARK_3, !Module.isPro, true, getString(R.string.dark) + " 3",
+        list.add(Theme(ThemeUtil.THEME_DARK_3, loaded == ThemeUtil.THEME_DARK_3, true, NAMES[7],
                 toColor(R.color.darkPrimaryDark3), toColor(R.color.darkPrimary3), toColor(R.color.darkBg3)))
 
-        list.add(Theme(ThemeUtil.THEME_DARK_4, loaded == ThemeUtil.THEME_DARK_4, !Module.isPro, true, getString(R.string.dark) + " 4",
+        list.add(Theme(ThemeUtil.THEME_DARK_4, loaded == ThemeUtil.THEME_DARK_4, true, NAMES[8],
                 toColor(R.color.darkPrimaryDark4), toColor(R.color.darkPrimary4), toColor(R.color.darkBg4)))
 
-        list.add(Theme(ThemeUtil.THEME_PURE_BLACK, loaded == ThemeUtil.THEME_PURE_BLACK, !Module.isPro, true, getString(R.string.amoled),
+        list.add(Theme(ThemeUtil.THEME_PURE_BLACK, loaded == ThemeUtil.THEME_PURE_BLACK, true, NAMES[9],
                 toColor(R.color.pureBlack), toColor(R.color.pureBlack), toColor(R.color.pureBlack)))
 
         adapter.setThemes(list)
@@ -96,10 +96,10 @@ class SelectThemeActivity : ThemedActivity() {
         val max = calendar.timeInMillis
         val isDark = mTime !in min..max
         return if (isDark) {
-            Theme(ThemeUtil.THEME_AUTO, loaded == ThemeUtil.THEME_AUTO, false, true, getString(R.string.auto),
+            Theme(ThemeUtil.THEME_AUTO, loaded == ThemeUtil.THEME_AUTO, true, getString(R.string.auto),
                     toColor(R.color.darkPrimaryDark1), toColor(R.color.darkPrimary1), toColor(R.color.darkBg1))
         } else {
-            Theme(ThemeUtil.THEME_AUTO, loaded == ThemeUtil.THEME_AUTO, false, false, getString(R.string.auto),
+            Theme(ThemeUtil.THEME_AUTO, loaded == ThemeUtil.THEME_AUTO, false, getString(R.string.auto),
                     toColor(R.color.lightPrimaryDark1), toColor(R.color.lightPrimary1), toColor(R.color.lightBg1))
         }
     }
@@ -156,5 +156,20 @@ class SelectThemeActivity : ThemedActivity() {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
+    }
+
+    companion object {
+        val NAMES = arrayOf(
+                "FFFFFF",
+                "F5F5F5",
+                "EEEEEE",
+                "E0E0E0",
+                "9E9E9E",
+                "757575",
+                "616161",
+                "424242",
+                "212121",
+                "000000"
+        )
     }
 }

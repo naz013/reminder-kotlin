@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.theme
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
@@ -34,17 +33,6 @@ class ThemesAdapter : RecyclerView.Adapter<ThemesAdapter.ThemeHolder>() {
             itemView.titleView.text = theme.name
             itemView.bgView.setBackgroundColor(theme.bgColor)
             itemView.barView.setBackgroundColor(theme.barColor)
-            itemView.statusView.setBackgroundColor(theme.statusColor)
-            if (theme.isLocked) {
-                itemView.lockView.visibility = View.VISIBLE
-            } else {
-                itemView.lockView.visibility = View.GONE
-            }
-            if (theme.isSelected) {
-                itemView.selectionView.visibility = View.VISIBLE
-            } else {
-                itemView.selectionView.visibility = View.GONE
-            }
             if (theme.isDark) {
                 itemView.borderView.setBackgroundResource(R.color.pureWhite)
             } else {
@@ -61,12 +49,10 @@ class ThemesAdapter : RecyclerView.Adapter<ThemesAdapter.ThemeHolder>() {
 
     private fun handleClick(position: Int) {
         val theme = themes[position]
-        if (!theme.isLocked && !theme.isSelected) {
-            deselectPrev()
-            theme.isSelected = true
-            notifyItemChanged(position)
-            selectedListener?.invoke(theme)
-        }
+        deselectPrev()
+        theme.isSelected = true
+        notifyItemChanged(position)
+        selectedListener?.invoke(theme)
     }
 
     private fun deselectPrev() {
