@@ -549,6 +549,10 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
     }
 
+    fun isAlmostTransparent(opacity: Int): Boolean {
+        return opacity < 25
+    }
+
     @ColorInt
     fun getNoteLightColor(code: Int): Int {
         val color: Int
@@ -577,8 +581,38 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                 R.color.blueAccent
             }
         }
-        val alpha = prefs.noteColorOpacity
-        return adjustAlpha(getColor(color), alpha)
+        return getColor(color)
+    }
+
+    @ColorInt
+    fun getNoteLightColor(code: Int, opacity: Int): Int {
+        val color: Int
+        when (code) {
+            Color.RED -> color = R.color.redAccent
+            Color.PURPLE -> color = R.color.purpleAccent
+            Color.LIGHT_GREEN -> color = R.color.greenLightAccent
+            Color.GREEN -> color = R.color.greenAccent
+            Color.LIGHT_BLUE -> color = R.color.blueLightAccent
+            Color.BLUE -> color = R.color.blueAccent
+            Color.YELLOW -> color = R.color.yellowAccent
+            Color.ORANGE -> color = R.color.orangeAccent
+            Color.CYAN -> color = R.color.cyanAccent
+            Color.PINK -> color = R.color.pinkAccent
+            Color.TEAL -> color = R.color.tealAccent
+            Color.AMBER -> color = R.color.amberAccent
+            else -> color = if (Module.isPro) {
+                when (code) {
+                    Color.DEEP_PURPLE -> R.color.purpleDeepAccent
+                    Color.DEEP_ORANGE -> R.color.orangeDeepAccent
+                    Color.LIME -> R.color.limeAccent
+                    Color.INDIGO -> R.color.indigoAccent
+                    else -> R.color.blueAccent
+                }
+            } else {
+                R.color.blueAccent
+            }
+        }
+        return adjustAlpha(getColor(color), opacity)
     }
 
     @ColorInt

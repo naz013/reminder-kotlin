@@ -75,7 +75,8 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
             rView.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load))
             return rView
         }
-        rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.getColor()))
+        rView.setInt(R.id.noteBackground, "setBackgroundColor",
+                themeUtil.getNoteLightColor(note.getColor(), note.getOpacity()))
 
         if (note.images.isNotEmpty()) {
             val image = note.images[0]

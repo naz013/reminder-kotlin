@@ -3,7 +3,6 @@ package com.elementary.tasks.core.data.models
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.elementary.tasks.core.interfaces.NoteInterface
-import com.elementary.tasks.core.utils.SuperUtil
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -35,19 +34,23 @@ class NoteWithImages : NoteInterface {
     var images: List<ImageFile> = ArrayList()
 
     override fun getSummary(): String {
-        return note?.summary ?: return ""
+        return note?.summary ?: ""
     }
 
     override fun getKey(): String {
-        return note?.key ?: return ""
+        return note?.key ?: ""
     }
 
     override fun getColor(): Int {
-        return note?.color ?: return 0
+        return note?.color ?: 0
     }
 
     override fun getStyle(): Int {
-        return note?.style ?: return 0
+        return note?.style ?: 0
+    }
+
+    override fun getOpacity(): Int {
+        return note?.opacity ?: 100
     }
 
     override fun toString(): String {

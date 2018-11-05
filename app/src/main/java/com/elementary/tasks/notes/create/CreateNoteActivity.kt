@@ -272,7 +272,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun initMenu() {
-        bottomBarView.setBackgroundColor(themeUtil.backgroundStyle)
         colorButton.setOnClickListener { toggleColorView() }
         imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
         reminderButton.setOnClickListener { switchReminder() }
@@ -400,6 +399,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             mFontStyle = note.style
             setText(note.summary)
             colorSlider.setSelection(mColor)
+            opacityBar.progress = note.opacity
             updateBackground()
         }
     }
@@ -509,6 +509,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         note.date = TimeUtil.gmtDateTime
         note.color = mColor
         note.style = mFontStyle
+        note.opacity = opacityBar.progress
 
         if (noteWithImages == null) {
             noteWithImages = NoteWithImages()
@@ -658,12 +659,13 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun updateBackground() {
-        val lightColor = themeUtil.getNoteLightColor(mColor)
+        val lightColor = themeUtil.getNoteLightColor(mColor, opacityBar.progress)
         layoutContainer.setBackgroundColor(lightColor)
         appBar.setBackgroundColor(lightColor)
         if (Module.isLollipop) {
             window.statusBarColor = lightColor
         }
+        bottomBar.setCardBackgroundColor(themeUtil.getNoteLightColor(mColor))
     }
 
     private fun showStyleDialog() {

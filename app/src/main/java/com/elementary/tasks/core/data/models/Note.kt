@@ -3,7 +3,6 @@ package com.elementary.tasks.core.data.models
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import java.util.*
 
 /**
@@ -25,34 +24,23 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-class Note() {
-
-    @SerializedName("summary")
-    var summary: String = ""
-    @SerializedName("key")
-    @PrimaryKey
-    var key: String = ""
-    @SerializedName("date")
-    var date: String = ""
-    @SerializedName("color")
-    var color: Int = 0
-    @SerializedName("style")
-    var style: Int = 0
-    @SerializedName("uniqueId")
-    var uniqueId: Int = 0
-
+data class Note(
+        var summary: String = "",
+        @PrimaryKey
+        var key: String = UUID.randomUUID().toString(),
+        var date: String = "",
+        var color: Int = 0,
+        var style: Int = 0,
+        var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+        var opacity: Int = 100
+) {
     @Ignore
-    constructor(oldNote: OldNote): this() {
+    constructor(oldNote: OldNote) : this() {
         this.color = oldNote.color
         this.key = oldNote.key
         this.date = oldNote.date
         this.style = oldNote.style
         this.uniqueId = oldNote.uniqueId
-    }
-
-    init {
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-        key = UUID.randomUUID().toString()
     }
 
     override fun toString(): String {
