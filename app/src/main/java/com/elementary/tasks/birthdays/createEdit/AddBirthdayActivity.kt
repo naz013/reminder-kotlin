@@ -58,7 +58,7 @@ class AddBirthdayActivity : ThemedActivity() {
     @Inject
     lateinit var backupTool: BackupTool
 
-    private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         mYear = year
         mMonth = monthOfYear
         mDay = dayOfMonth
@@ -239,16 +239,15 @@ class AddBirthdayActivity : ThemedActivity() {
             contactId = Contacts.getIdFromNumber(number, this)
         }
         var birthday = mBirthday
-        if (birthday != null) {
-            birthday.name = contact
-            birthday.contactId = contactId
-            birthday.date = birthDate.text.toString()
-            birthday.number = number
-            birthday.day = mDay
-            birthday.month = mMonth
-        } else {
+        if (birthday == null) {
             birthday = Birthday(contact, birthDate.text.toString().trim { it <= ' ' }, number, 0, contactId, mDay, mMonth)
         }
+        birthday.name = contact
+        birthday.contactId = contactId
+        birthday.date = birthDate.text.toString()
+        birthday.number = number
+        birthday.day = mDay
+        birthday.month = mMonth
         viewModel.saveBirthday(birthday)
     }
 
@@ -267,7 +266,7 @@ class AddBirthdayActivity : ThemedActivity() {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, prefs, myDateCallBack, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
