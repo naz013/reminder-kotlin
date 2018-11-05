@@ -5,7 +5,6 @@ import androidx.annotation.ColorInt
 data class Theme(
         val id: Int,
         var isSelected: Boolean = false,
-        val isLocked: Boolean = false,
         val isDark: Boolean = false,
         val name: String = "",
         @ColorInt val statusColor: Int,
