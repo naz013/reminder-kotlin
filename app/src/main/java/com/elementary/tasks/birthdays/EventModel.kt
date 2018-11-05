@@ -1,7 +1,7 @@
 package com.elementary.tasks.birthdays
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,17 @@ package com.elementary.tasks.birthdays
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class EventsItem internal constructor(viewType: Int, `object`: Any, var day: Int, var month: Int, var year: Int, var color: Int) : AdapterItem(viewType, `object`) {
-
-    override fun toString(): String {
-        return "EvI{" +
-                "d=" + day +
-                ", m=" + month +
-                ", y=" + year +
-                '}'.toString()
+data class EventModel(
+        val viewType: Int,
+        var model: Any,
+        val day: Int,
+        val month: Int,
+        val year: Int,
+        val color: Int
+) {
+    companion object {
+        const val REMINDER = 0
+        const val SHOPPING = 1
+        const val BIRTHDAY = 2
     }
 }

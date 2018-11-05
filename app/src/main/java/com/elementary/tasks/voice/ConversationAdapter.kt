@@ -67,7 +67,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             Reply.REPLY -> VoiceHolder(parent)
             Reply.RESPONSE -> VoiceResponseHolder(parent)
-            Reply.REMINDER -> ReminderHolder(parent, null, false)
+            Reply.REMINDER -> ReminderHolder(parent, false, false, null)
             Reply.NOTE -> NoteHolder(parent, null)
             Reply.GROUP -> GroupHolder(parent, null)
             Reply.SHOW_MORE -> ShowMoreHolder(parent)

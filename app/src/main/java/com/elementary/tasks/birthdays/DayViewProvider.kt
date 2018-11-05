@@ -38,7 +38,7 @@ import kotlin.Comparator
  */
 class DayViewProvider(private val mContext: Context) {
 
-    private val data = ArrayList<EventsItem>()
+    private val data = ArrayList<EventModel>()
     private var hour: Int = 0
     private var minute: Int = 0
     private var isFeature: Boolean = false
@@ -164,7 +164,7 @@ class DayViewProvider(private val mContext: Context) {
                 calendar1.set(Calendar.DAY_OF_MONTH, bDay)
                 calendar1.set(Calendar.HOUR_OF_DAY, hour)
                 calendar1.set(Calendar.MINUTE, minute)
-                data.add(EventsItem(AdapterItem.BIRTHDAY, item, bDay, bMonth, bYear, color))
+                data.add(EventModel(EventModel.BIRTHDAY, item, bDay, bMonth, bYear, color))
             }
         }
     }
@@ -194,7 +194,7 @@ class DayViewProvider(private val mContext: Context) {
                 var mMonth = calendar1.get(Calendar.MONTH)
                 var mYear = calendar1.get(Calendar.YEAR)
                 if (eventTime > 0) {
-                    data.add(EventsItem(item.viewType, item, mDay, mMonth, mYear, color))
+                    data.add(EventModel(item.viewType, item, mDay, mMonth, mYear, color))
                 } else {
                     continue
                 }
@@ -220,7 +220,7 @@ class DayViewProvider(private val mContext: Context) {
                                 mMonth = calendar1.get(Calendar.MONTH)
                                 mYear = calendar1.get(Calendar.YEAR)
                                 days++
-                                data.add(EventsItem(item.viewType,
+                                data.add(EventModel(item.viewType,
                                         Reminder(item, true).apply {
                                             this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
                                         },
@@ -245,7 +245,7 @@ class DayViewProvider(private val mContext: Context) {
                             mYear = calendar1.get(Calendar.YEAR)
                             if (eventTime > 0) {
                                 days++
-                                data.add(EventsItem(item.viewType,
+                                data.add(EventModel(item.viewType,
                                         Reminder(item, true).apply {
                                             this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
                                         },
@@ -272,7 +272,7 @@ class DayViewProvider(private val mContext: Context) {
                             mYear = calendar1.get(Calendar.YEAR)
                             if (eventTime > 0) {
                                 days++
-                                data.add(EventsItem(item.viewType,
+                                data.add(EventModel(item.viewType,
                                         Reminder(item, true).apply {
                                             this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
                                         },
@@ -285,7 +285,7 @@ class DayViewProvider(private val mContext: Context) {
         }
     }
 
-    private fun notifyEnd(callback: Callback?, list: List<EventsItem>) {
+    private fun notifyEnd(callback: Callback?, list: List<EventModel>) {
         if (callback != null) {
             removeCallback(callback)
             callback.apply(list)
@@ -297,7 +297,7 @@ class DayViewProvider(private val mContext: Context) {
     }
 
     interface Callback {
-        fun apply(list: List<EventsItem>)
+        fun apply(list: List<EventModel>)
     }
 
     private inner class CancelableRunnable internal constructor(private val day: Int, private val month: Int, private val year: Int, private val sort: Boolean, private var callback: Callback?) : Runnable {
@@ -314,7 +314,7 @@ class DayViewProvider(private val mContext: Context) {
 
         override fun run() {
             if (isCanceled) return
-            val res = ArrayList<EventsItem>()
+            val res = ArrayList<EventModel>()
             Timber.d("run: d->%d, m->%d, y->%d, data-> %s", day, month, year, data)
             for (item in ArrayList(data)) {
                 if (item == null) continue
@@ -322,7 +322,7 @@ class DayViewProvider(private val mContext: Context) {
                 val mMonth = item.month
                 val mYear = item.year
                 val type = item.viewType
-                if (type == AdapterItem.BIRTHDAY && mDay == day && mMonth == month) {
+                if (type == EventModel.BIRTHDAY && mDay == day && mMonth == month) {
                     res.add(item)
                 } else {
                     if (mDay == day && mMonth == month && mYear == year) {
@@ -341,26 +341,26 @@ class DayViewProvider(private val mContext: Context) {
             res.sortWith(Comparator { eventsItem, t1 ->
                 var time1: Long = 0
                 var time2: Long = 0
-                if (eventsItem.`object` is Birthday) {
-                    val item = eventsItem.`object` as Birthday
+                if (eventsItem.model is Birthday) {
+                    val item = eventsItem.model as Birthday
                     val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
                     if (dateItem != null) {
                         val calendar = dateItem.calendar
                         time1 = calendar.timeInMillis
                     }
-                } else if (eventsItem.`object` is Reminder) {
-                    val reminder = eventsItem.`object` as Reminder
+                } else if (eventsItem.model is Reminder) {
+                    val reminder = eventsItem.model as Reminder
                     time1 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
                 }
-                if (t1.`object` is Birthday) {
-                    val item = t1.`object` as Birthday
+                if (t1.model is Birthday) {
+                    val item = t1.model as Birthday
                     val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
                     if (dateItem != null) {
                         val calendar = dateItem.calendar
                         time2 = calendar.timeInMillis
                     }
-                } else if (t1.`object` is Reminder) {
-                    val reminder = t1.`object` as Reminder
+                } else if (t1.model is Reminder) {
+                    val reminder = t1.model as Reminder
                     time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
                 }
                 (time1 - time2).toInt()

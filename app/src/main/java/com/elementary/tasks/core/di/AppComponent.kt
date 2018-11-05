@@ -3,6 +3,7 @@ package com.elementary.tasks.core.di
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataProvider
+import com.elementary.tasks.birthdays.EventsListFragment
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
@@ -140,6 +141,7 @@ interface AppComponent {
     fun inject(restoreLocalTask: RestoreLocalTask)
     fun inject(imagesGridAdapter: ImagesGridAdapter)
     fun inject(typeFragment: TypeFragment)
+    fun inject(fragment: EventsListFragment)
     fun inject(placesRecyclerAdapter: PlacesRecyclerAdapter)
     fun inject(locationPlacesAdapter: LocationPlacesAdapter)
     fun inject(voiceWidgetDialog: VoiceWidgetDialog)

@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataSingleton
-import com.elementary.tasks.birthdays.EventsItem
+import com.elementary.tasks.birthdays.EventModel
 import com.elementary.tasks.birthdays.EventsPagerItem
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -45,7 +45,7 @@ import kotlinx.coroutines.experimental.withContext
 class DayViewViewModel(application: Application) : BaseDbViewModel(application) {
 
     private val liveData = DayViewLiveData()
-    var events: LiveData<List<EventsItem>> = liveData
+    var events: LiveData<List<EventModel>> = liveData
     private var item: EventsPagerItem? = null
 
     fun setItem(item: EventsPagerItem?) {
@@ -90,7 +90,7 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
         }
     }
 
-    private inner class DayViewLiveData internal constructor() : LiveData<List<EventsItem>>(), DayViewProvider.Callback, DayViewProvider.InitCallback {
+    private inner class DayViewLiveData internal constructor() : LiveData<List<EventModel>>(), DayViewProvider.Callback, DayViewProvider.InitCallback {
 
         init {
             val provider = EventsDataSingleton.getInstance().provider
@@ -99,12 +99,11 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
 
         internal fun update() {
             val provider = EventsDataSingleton.getInstance().provider
-            if (provider != null && item != null) {
-                provider.findMatches(item!!.day, item!!.month, item!!.year, true, this)
-            }
+            val model = item ?: return
+            provider?.findMatches(model.day, model.month, model.year, true, this)
         }
 
-        override fun apply(list: List<EventsItem>) {
+        override fun apply(list: List<EventModel>) {
             postValue(list)
         }
 

@@ -35,7 +35,8 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?, val editable: Boolean) :
+class ReminderHolder(parent: ViewGroup, private val hasHeader: Boolean, val editable: Boolean,
+                     private val listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     @Inject
@@ -51,6 +52,9 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
             itemView.itemCheck.visibility = View.VISIBLE
         } else {
             itemView.itemCheck.visibility = View.GONE
+        }
+        if (!hasHeader) {
+            itemView.listHeader.visibility = View.GONE
         }
         itemView.todoList.visibility = View.GONE
         itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
