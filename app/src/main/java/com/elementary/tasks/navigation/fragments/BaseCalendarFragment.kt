@@ -10,7 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.CalendarEventsAdapter
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataSingleton
-import com.elementary.tasks.birthdays.EventsItem
+import com.elementary.tasks.birthdays.EventModel
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
@@ -89,7 +89,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
             val mMonth = calendar.get(Calendar.MONTH)
             val mYear = calendar.get(Calendar.YEAR)
             provider.findMatches(mDay, mMonth, mYear, true, object : DayViewProvider.Callback {
-                override fun apply(list: List<EventsItem>) {
+                override fun apply(list: List<EventModel>) {
                     if (context != null) {
                         val mAdapter = CalendarEventsAdapter()
                         mAdapter.setData(list)

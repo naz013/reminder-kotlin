@@ -5,21 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
-import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import kotlinx.android.synthetic.main.fragment_events_list.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,11 +42,17 @@ import kotlinx.android.synthetic.main.fragment_events_list.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EventsListFragment : BaseFragment() {
+class EventsListFragment : Fragment() {
 
     private val mAdapter = CalendarEventsAdapter()
     private lateinit var viewModel: DayViewViewModel
     private var mItem: EventsPagerItem? = null
+    @Inject
+    lateinit var dialogues: Dialogues
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,25 +67,25 @@ class EventsListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mAdapter.setEventListener(object : ActionsListener<EventsItem> {
-            override fun onAction(view: View, position: Int, t: EventsItem?, actions: ListActions) {
+        mAdapter.setEventListener(object : ActionsListener<EventModel> {
+            override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
                 if (t == null) return
                 when (actions) {
                     ListActions.MORE -> {
-                        val `object` = t.`object`
-                        if (`object` is Birthday) {
-                            showBirthdayLcam(`object`)
+                        val model = t.model
+                        if (model is Birthday) {
+                            showBirthdayLcam(view, model)
                         }
                     }
                     ListActions.OPEN -> {
-                        val `object` = t.`object`
-                        if (`object` is Birthday) {
-                            editBirthday(`object`)
-                        } else if (`object` is Reminder) {
+                        val model = t.model
+                        if (model is Birthday) {
+                            editBirthday(model)
+                        } else if (model is Reminder) {
                             if (view.id == R.id.button_more) {
-                                showActionDialog(`object`, view)
+                                showActionDialog(model, view)
                             } else {
-                                showReminder(`object`)
+                                showReminder(model)
                             }
                         }
                     }
@@ -94,7 +103,7 @@ class EventsListFragment : BaseFragment() {
     private fun initBirthdayViewModel() {
         viewModel = ViewModelProviders.of(this).get(DayViewViewModel::class.java)
         viewModel.setItem(mItem)
-        viewModel.events.observe(this, Observer<List<EventsItem>> {
+        viewModel.events.observe(this, Observer<List<EventModel>> {
             if (it != null) {
                 mAdapter.setData(it)
                 reloadView()
@@ -112,9 +121,9 @@ class EventsListFragment : BaseFragment() {
         }
     }
 
-    private fun showBirthdayLcam(birthday: Birthday) {
+    private fun showBirthdayLcam(view: View, birthday: Birthday) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        dialogues.showLCAM(context!!, { item ->
+        dialogues.showPopup(context!!, view, { item ->
             when (item) {
                 0 -> editBirthday(birthday)
                 1 -> viewModel.deleteBirthday(birthday)
@@ -124,16 +133,17 @@ class EventsListFragment : BaseFragment() {
 
     private fun editBirthday(item: Birthday) {
         startActivity(Intent(context, AddBirthdayActivity::class.java)
-                .putExtra(Constants.INTENT_ID, item.uniqueId))
+                .putExtra(Constants.INTENT_ID, item.uuId))
     }
 
     private fun showReminder(reminder: Reminder) {
         startActivity(Intent(context, ReminderPreviewActivity::class.java)
-                .putExtra(Constants.INTENT_ID, reminder.uniqueId))
+                .putExtra(Constants.INTENT_ID, reminder.uuId))
     }
 
     private fun editReminder(uuId: String?) {
-        startActivity(Intent(context, CreateReminderActivity::class.java).putExtra(Constants.INTENT_ID, uuId))
+        startActivity(Intent(context, CreateReminderActivity::class.java)
+                .putExtra(Constants.INTENT_ID, uuId))
     }
 
     private fun showActionDialog(reminder: Reminder, view: View) {
@@ -146,8 +156,6 @@ class EventsListFragment : BaseFragment() {
             }
         }, *items)
     }
-
-    override fun getTitle(): String = ""
 
     companion object {
         private const val ARGUMENT_PAGE_NUMBER = "arg_page"

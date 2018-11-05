@@ -20,16 +20,4 @@ import java.io.Serializable
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class EventsPagerItem(var position: Int, var current: Int, var day: Int, var month: Int, var year: Int) : Serializable {
-
-    override fun toString(): String {
-        return "EventsPagerItem{" +
-                "position=" + position +
-                ", current=" + current +
-                ", day=" + day +
-                ", month=" + month +
-                ", year=" + year +
-                '}'.toString()
-    }
-}
+data class EventsPagerItem(var position: Int, var current: Int, var day: Int, var month: Int, var year: Int) : Serializable

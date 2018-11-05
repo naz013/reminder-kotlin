@@ -73,18 +73,16 @@ class DayViewFragment : BaseCalendarFragment() {
             calendar.timeInMillis = dateMills
         }
         val dayString = TimeUtil.getDate(calendar.timeInMillis)
-        if (callback != null) callback?.onTitleChange(dayString)
+        callback?.onTitleChange(dayString)
     }
 
     override fun onResume() {
         super.onResume()
-        if (callback != null) {
-            callback?.onMenuSelect(R.id.nav_day_view)
-        }
+        callback?.onMenuSelect(R.id.nav_day_view)
         loadData()
     }
 
-    override fun getTitle(): String = getString(R.string.calendar)
+    override fun getTitle(): String = ""
 
     private fun loadData() {
         initProvider()

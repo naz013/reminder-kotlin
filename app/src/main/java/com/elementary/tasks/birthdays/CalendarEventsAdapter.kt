@@ -30,23 +30,23 @@ import java.util.*
  */
 class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var data: List<EventsItem> = ArrayList()
-    private var mEventListener: ActionsListener<EventsItem>? = null
+    private var data: List<EventModel> = ArrayList()
+    private var mEventListener: ActionsListener<EventModel>? = null
 
-    fun setData(data: List<EventsItem>) {
+    fun setData(data: List<EventModel>) {
         this.data = data
         notifyDataSetChanged()
     }
 
-    fun setEventListener(listener: ActionsListener<EventsItem>?) {
+    fun setEventListener(listener: ActionsListener<EventModel>?) {
         this.mEventListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            0 -> ReminderHolder(parent, { view, i, listActions ->
+            0 -> ReminderHolder(parent, false, false) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
-            }, false)
+            }
             1 -> ShoppingHolder(parent, { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }, false)
@@ -59,22 +59,15 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is BirthdayHolder -> {
-                val item = data[position].`object` as Birthday
-                holder.setData(item)
+                holder.setData(data[position].model as Birthday)
             }
             is ReminderHolder -> {
-                val item = data[position].`object` as Reminder
-                holder.setData(item)
+                holder.setData(data[position].model as Reminder)
             }
             is ShoppingHolder -> {
-                val item = data[position].`object` as Reminder
-                holder.setData(item)
+                holder.setData(data[position].model as Reminder)
             }
         }
-    }
-
-    override fun getItemId(position: Int): Long {
-        return 0
     }
 
     override fun getItemCount(): Int {
@@ -85,7 +78,7 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return data[position].viewType
     }
 
-    fun getItem(position: Int): AdapterItem {
+    fun getItem(position: Int): EventModel {
         return data[position]
     }
 }

@@ -265,7 +265,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun setMenuVisible() {
         val menu = nav_view.menu
-        menu.getItem(4)?.isVisible = Google.getInstance() != null
+        menu.getItem(5)?.isVisible = Google.getInstance() != null
         menu.getItem(11)?.isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 
@@ -307,12 +307,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             pressedTime = System.currentTimeMillis()
             Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun firstBackPress() {
-        isBackPressed = true
-        pressedTime = System.currentTimeMillis()
-        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

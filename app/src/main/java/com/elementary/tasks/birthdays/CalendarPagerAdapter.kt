@@ -29,6 +29,7 @@ class CalendarPagerAdapter(fm: FragmentManager, datas: List<EventsPagerItem>) : 
     private val datas = ArrayList<EventsPagerItem>()
 
     init {
+        this.datas.clear()
         this.datas.addAll(datas)
     }
 
