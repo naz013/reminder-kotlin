@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays
+package com.elementary.tasks.dayView
 
 /**
  * Copyright 2018 Nazar Suhovich

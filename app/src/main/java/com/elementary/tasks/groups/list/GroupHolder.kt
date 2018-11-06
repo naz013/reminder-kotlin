@@ -10,7 +10,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.MeasureUtils
 import kotlinx.android.synthetic.main.list_item_group.view.*
 
 /**
@@ -51,7 +50,7 @@ class GroupHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit
     private fun gradientBg(gradientView: ImageView, item: ReminderGroup) {
         val gd = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
                 intArrayOf(Color.TRANSPARENT, themeUtil.getNoteLightColor(item.groupColor)))
-        gd.cornerRadius = MeasureUtils.dp2px(gradientView.context, 5).toFloat()
+        gd.cornerRadius = 0f
         gradientView.background = gd
     }
 }

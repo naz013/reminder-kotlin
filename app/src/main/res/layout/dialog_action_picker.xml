@@ -28,7 +28,7 @@
         android:paddingRight="24dp"
         android:paddingBottom="16dp">
 
-        <ndroidx.appcompat.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addEvent"
             android:layout_width="64dp"
             android:layout_height="64dp"

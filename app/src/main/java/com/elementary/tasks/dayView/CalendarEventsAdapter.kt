@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays
+package com.elementary.tasks.dayView
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

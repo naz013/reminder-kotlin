@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.*
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.CalendarPagerAdapter
-import com.elementary.tasks.birthdays.EventsPagerItem
+import com.elementary.tasks.dayView.CalendarPagerAdapter
+import com.elementary.tasks.dayView.EventsPagerItem
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
@@ -62,11 +62,14 @@ class DayViewFragment : BaseCalendarFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_day_view, container, false)
+    override fun layoutRes(): Int = R.layout.fragment_day_view
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        fab.setOnClickListener { showActionDialog(false) }
     }
 
-    private fun updateMenuTitles() {
+    private fun updateMenuTitles(): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         if (dateMills != 0L) {
@@ -74,6 +77,7 @@ class DayViewFragment : BaseCalendarFragment() {
         }
         val dayString = TimeUtil.getDate(calendar.timeInMillis)
         callback?.onTitleChange(dayString)
+        return dayString
     }
 
     override fun onResume() {
@@ -82,7 +86,7 @@ class DayViewFragment : BaseCalendarFragment() {
         loadData()
     }
 
-    override fun getTitle(): String = ""
+    override fun getTitle(): String = updateMenuTitles()
 
     private fun loadData() {
         initProvider()
@@ -105,6 +109,8 @@ class DayViewFragment : BaseCalendarFragment() {
         val targetYear = calendar.get(Calendar.YEAR)
 
         calendar.timeInMillis = System.currentTimeMillis()
+        dateMills = calendar.timeInMillis
+        updateMenuTitles()
 
         var position = 0
         var targetPosition = -1

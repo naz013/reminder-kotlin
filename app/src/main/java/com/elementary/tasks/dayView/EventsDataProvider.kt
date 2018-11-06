@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays
+package com.elementary.tasks.dayView
 
 import android.app.AlarmManager
 import android.content.Context

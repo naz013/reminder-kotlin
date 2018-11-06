@@ -48,8 +48,13 @@ class GroupsFragment : BaseNavigationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.setOnClickListener { addGroup() }
         initGroupsList()
         initViewModel()
+    }
+
+    private fun addGroup() {
+        startActivity(Intent(context, CreateGroupActivity::class.java))
     }
 
     private fun initViewModel() {
