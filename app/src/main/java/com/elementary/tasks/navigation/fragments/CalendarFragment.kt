@@ -8,7 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.EventsDataProvider
+import com.elementary.tasks.dayView.EventsDataProvider
 import com.elementary.tasks.core.calendar.CalendarSingleton
 import com.elementary.tasks.core.calendar.FlextCalendarFragment
 import com.elementary.tasks.core.calendar.FlextListener

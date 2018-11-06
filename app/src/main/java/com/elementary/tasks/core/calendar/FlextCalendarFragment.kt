@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.EventsDataProvider
+import com.elementary.tasks.dayView.EventsDataProvider
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment

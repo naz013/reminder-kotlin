@@ -2,7 +2,7 @@ package com.elementary.tasks.core.calendar
 
 import android.view.View
 
-import com.elementary.tasks.birthdays.EventsDataProvider
+import com.elementary.tasks.dayView.EventsDataProvider
 
 /**
  * Copyright 2017 Nazar Suhovich

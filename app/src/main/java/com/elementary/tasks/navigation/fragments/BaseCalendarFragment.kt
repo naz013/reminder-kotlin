@@ -7,10 +7,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.CalendarEventsAdapter
-import com.elementary.tasks.birthdays.DayViewProvider
-import com.elementary.tasks.birthdays.EventsDataSingleton
-import com.elementary.tasks.birthdays.EventModel
+import com.elementary.tasks.dayView.CalendarEventsAdapter
+import com.elementary.tasks.dayView.DayViewProvider
+import com.elementary.tasks.dayView.EventsDataSingleton
+import com.elementary.tasks.dayView.EventModel
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
@@ -36,7 +36,6 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 abstract class BaseCalendarFragment : BaseNavigationFragment() {
 
     protected var dateMills: Long = 0
@@ -46,7 +45,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
         val builder = dialogues.getDialog(context!!)
         val binding = LayoutInflater.from(context).inflate(R.layout.dialog_action_picker, null)
         binding.addBirth.setOnClickListener {
-            mDialog!!.dismiss()
+            mDialog?.dismiss()
             addBirthday()
         }
         binding.addBirth.setOnLongClickListener {
@@ -54,7 +53,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
             true
         }
         binding.addEvent.setOnClickListener {
-            mDialog!!.dismiss()
+            mDialog?.dismiss()
             addReminder()
         }
         binding.addEvent.setOnLongClickListener {
@@ -73,7 +72,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
         }
         builder.setView(binding)
         mDialog = builder.create()
-        mDialog!!.show()
+        mDialog?.show()
     }
 
     private fun showMessage(string: String) {
