@@ -15,10 +15,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
@@ -47,6 +47,7 @@ import kotlinx.android.synthetic.main.fragment_places.*
 class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
 
     private lateinit var viewModel: BirthdaysViewModel
+    private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> viewModel.deleteBirthday(birthday) })
 
     private val mAdapter = BirthdaysRecyclerAdapter()
     private var mSearchView: SearchView? = null
@@ -132,9 +133,8 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
         recyclerView.layoutManager = LinearLayoutManager(context)
         mAdapter.actionsListener = object : ActionsListener<Birthday> {
             override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
-                when (actions) {
-                    ListActions.OPEN -> if (t != null) openBirthday(t)
-                    ListActions.MORE -> if (t != null) showMore(t, view)
+                if (t != null) {
+                    birthdayResolver.resolveAction(view, t, actions)
                 }
             }
         }
@@ -143,22 +143,6 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
             callback?.onScrollUpdate(it)
         }
         refreshView()
-    }
-
-    private fun showMore(birthday: Birthday?, view: View) {
-        val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        dialogues.showPopup(context!!, view, { item ->
-            if (item == 0) {
-                openBirthday(birthday!!)
-            } else if (item == 1) {
-                viewModel.deleteBirthday(birthday!!)
-            }
-        }, *items)
-    }
-
-    private fun openBirthday(birthday: Birthday) {
-        startActivity(Intent(context, AddBirthdayActivity::class.java)
-                .putExtra(Constants.INTENT_ID, birthday.uuId))
     }
 
     private fun refreshView() {

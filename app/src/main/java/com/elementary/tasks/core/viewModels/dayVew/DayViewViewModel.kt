@@ -15,12 +15,14 @@ import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import com.elementary.tasks.core.utils.temp.UI
+import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
@@ -47,10 +49,32 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
     private val liveData = DayViewLiveData()
     var events: LiveData<List<EventModel>> = liveData
     private var item: EventsPagerItem? = null
+    var allGroups: LiveData<List<ReminderGroup>>
+
+    init {
+        allGroups = appDb.reminderGroupDao().loadAll()
+    }
 
     fun setItem(item: EventsPagerItem?) {
         this.item = item
         liveData.update()
+    }
+
+    fun saveReminder(reminder: Reminder) {
+        isInProgress.postValue(true)
+        launch(CommonPool) {
+            appDb.reminderDao().insert(reminder)
+            withUIContext {
+                isInProgress.postValue(false)
+                result.postValue(Commands.SAVED)
+                liveData.update()
+            }
+            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
+                    .addTag(reminder.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
+        }
     }
 
     fun deleteBirthday(birthday: Birthday) {
