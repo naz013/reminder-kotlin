@@ -40,8 +40,6 @@ class ReminderHolder(parent: ViewGroup, private val hasHeader: Boolean, val edit
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     @Inject
-    lateinit var timeCount: TimeCount
-    @Inject
     lateinit var reminderUtils: ReminderUtils
 
     val listHeader: TextView = itemView.listHeader
@@ -94,7 +92,7 @@ class ReminderHolder(parent: ViewGroup, private val hasHeader: Boolean, val edit
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            itemView.remainingTime.text = timeCount.getRemaining(item.eventTime, item.delay)
+            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay)
         } else {
             itemView.remainingTime.text = ""
         }

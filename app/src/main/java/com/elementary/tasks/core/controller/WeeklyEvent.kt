@@ -83,6 +83,6 @@ class WeeklyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun calculateTime(isNew: Boolean): Long {
-        return timeCount.getNextWeekdayTime(reminder)
+        return TimeCount.getNextWeekdayTime(reminder)
     }
 }

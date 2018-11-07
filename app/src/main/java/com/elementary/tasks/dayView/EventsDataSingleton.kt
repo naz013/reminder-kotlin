@@ -21,10 +21,6 @@ package com.elementary.tasks.dayView
 class EventsDataSingleton private constructor() {
     var provider: DayViewProvider? = null
 
-    fun setChanged() {
-        if (provider != null) provider!!.setDataChanged(true)
-    }
-
     companion object {
 
         private var instance: EventsDataSingleton? = null

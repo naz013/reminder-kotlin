@@ -38,8 +38,6 @@ abstract class TypeFragment : Fragment() {
     @Inject
     lateinit var themeUtil: ThemeUtil
     @Inject
-    lateinit var timeCount: TimeCount
-    @Inject
     lateinit var reminderUtils: ReminderUtils
 
     init {

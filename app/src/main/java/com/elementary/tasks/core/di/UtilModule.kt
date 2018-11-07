@@ -63,12 +63,6 @@ class UtilModule {
 
     @Provides
     @Singleton
-    fun providesTimeCount(application: Application, prefs: Prefs): TimeCount {
-        return TimeCount(application, prefs)
-    }
-
-    @Provides
-    @Singleton
     fun providesSoundStack(application: Application, prefs: Prefs): SoundStackHolder {
         return SoundStackHolder(application, prefs)
     }

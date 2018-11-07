@@ -83,6 +83,6 @@ class MonthlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun calculateTime(isNew: Boolean): Long {
-        return timeCount.getNextMonthDayTime(reminder)
+        return TimeCount.getNextMonthDayTime(reminder)
     }
 }

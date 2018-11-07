@@ -42,7 +42,6 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
     private val mHandler = Handler(Looper.getMainLooper())
 
     @Inject lateinit var themeUtil: ThemeUtil
-    @Inject lateinit var timeCount: TimeCount
 
     val events: Map<DateTime, Events>
         get() = map
@@ -133,7 +132,7 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
                             }
                             do {
                                 item.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-                                eventTime = timeCount.getNextMonthDayTime(item)
+                                eventTime = TimeCount.getNextMonthDayTime(item)
                                 if (eventTime == item.dateTime) {
                                     continue
                                 }

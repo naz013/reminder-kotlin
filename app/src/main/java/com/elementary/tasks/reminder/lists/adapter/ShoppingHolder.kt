@@ -43,8 +43,6 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     val listHeader: TextView = itemView.listHeader
 
     @Inject
-    lateinit var timeCount: TimeCount
-    @Inject
     lateinit var reminderUtils: ReminderUtils
 
     init {
@@ -105,7 +103,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            itemView.remainingTime.text = timeCount.getRemaining(item.eventTime, item.delay)
+            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay)
         } else {
             itemView.remainingTime.text = ""
         }

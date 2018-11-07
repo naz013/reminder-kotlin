@@ -58,7 +58,7 @@ class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     private fun loadBirthday(textView: RoboTextView, fullDate: String) {
         val is24 = prefs.is24HourFormatEnabled
-        val dateItem = TimeUtil.getFutureBirthdayDate(prefs, fullDate)
+        val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), fullDate)
         if (dateItem != null) {
             textView.text = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.calendar.timeInMillis, is24, false),
                     "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year))

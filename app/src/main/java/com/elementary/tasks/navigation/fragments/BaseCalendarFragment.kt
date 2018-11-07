@@ -7,16 +7,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.dayView.day.CalendarEventsAdapter
-import com.elementary.tasks.dayView.DayViewProvider
-import com.elementary.tasks.dayView.EventsDataSingleton
-import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -80,48 +75,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
     }
 
     private fun loadEvents(binding: View) {
-        val provider = EventsDataSingleton.getInstance().provider
-        if (provider != null && provider.isReady) {
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = dateMills
-            val mDay = calendar.get(Calendar.DAY_OF_MONTH)
-            val mMonth = calendar.get(Calendar.MONTH)
-            val mYear = calendar.get(Calendar.YEAR)
-            provider.findMatches(mDay, mMonth, mYear, true, object : DayViewProvider.Callback {
-                override fun apply(list: List<EventModel>) {
-                    if (context != null) {
-                        val mAdapter = CalendarEventsAdapter()
-                        mAdapter.setData(list)
-                        binding.eventsList.adapter = mAdapter
-                        binding.eventsList.visibility = View.VISIBLE
-                        binding.loadingView.visibility = View.GONE
-                    }
-                }
-            })
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        initProvider()
-    }
-
-    protected fun initProvider() {
-        val time = prefs.birthdayTime
-        val isFeature = prefs.isFutureEventEnabled
-        val isRemindersEnabled = prefs.isRemindersInCalendarEnabled
-        var provider = EventsDataSingleton.getInstance().provider
-        if (provider == null) {
-            provider = DayViewProvider(context!!)
-            EventsDataSingleton.getInstance().provider = provider
-        }
-        if (!provider.isInProgress) {
-            provider.setBirthdays(true)
-            provider.setTime(TimeUtil.getBirthdayTime(time))
-            provider.setReminders(isRemindersEnabled)
-            provider.setFeature(isFeature)
-            provider.fillArray()
-        }
     }
 
     private fun addReminder() {

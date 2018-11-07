@@ -105,7 +105,7 @@ class MonthFragment : RepeatableTypeFragment() {
         reminder.dayOfMonth = mDay
         reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
-        val startTime = timeCount.getNextMonthDayTime(reminder)
+        val startTime = TimeCount.getNextMonthDayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {

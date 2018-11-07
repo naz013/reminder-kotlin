@@ -6,6 +6,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -13,6 +15,9 @@ import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
+import com.elementary.tasks.dayView.day.DayCallback
+import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.dayView.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import kotlinx.android.synthetic.main.fragment_day_view.*
@@ -36,10 +41,13 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class DayViewFragment : BaseCalendarFragment() {
+class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
     lateinit var dayPagerAdapter: DayPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
+    private lateinit var viewModel: DayViewViewModel
+    private var eventsPagerItem: EventsPagerItem? = null
+    private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -76,6 +84,25 @@ class DayViewFragment : BaseCalendarFragment() {
         fab.setOnClickListener { showActionDialog(false) }
 
         initPager()
+        initViewModel()
+
+        loadData()
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this,
+                DayViewViewModel.Factory(activity?.application!!, prefs.isFutureEventEnabled))
+                .get(DayViewViewModel::class.java)
+        viewModel.events.observe(this, Observer<Pair<EventsPagerItem, List<EventModel>>> {
+            val item = eventsPagerItem
+            if (it != null && item != null) {
+                val foundItem = it.first
+                val foundList = it.second
+                if (foundItem == item) {
+                    listener?.invoke(foundItem, foundList)
+                }
+            }
+        })
     }
 
     private fun initPager() {
@@ -92,13 +119,11 @@ class DayViewFragment : BaseCalendarFragment() {
     override fun onResume() {
         super.onResume()
         callback?.onMenuSelect(R.id.nav_day_view)
-        loadData()
     }
 
     override fun getTitle(): String = updateMenuTitles()
 
     private fun loadData() {
-        initProvider()
         if (dateMills != 0L) {
             showEvents(dateMills)
         } else {
@@ -132,6 +157,16 @@ class DayViewFragment : BaseCalendarFragment() {
         pager.isEnabled = true
         pager.addOnPageChangeListener(datePageChangeListener)
         pager.currentItem = InfiniteViewPager.OFFSET + 1
+    }
+
+    override fun getViewModel(): DayViewViewModel {
+        return viewModel
+    }
+
+    override fun find(eventsPagerItem: EventsPagerItem, listener: ((EventsPagerItem, List<EventModel>) -> Unit)?) {
+        this.eventsPagerItem = eventsPagerItem
+        this.listener = listener
+        viewModel.findEvents(eventsPagerItem)
     }
 
     private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {
@@ -188,6 +223,7 @@ class DayViewFragment : BaseCalendarFragment() {
 
         override fun onPageSelected(position: Int) {
             refreshAdapters(position)
+            dayPagerAdapter.fragments[getCurrent(position)].requestData()
             val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
             val calendar = Calendar.getInstance()
             calendar.set(item.year, item.month, item.day)
