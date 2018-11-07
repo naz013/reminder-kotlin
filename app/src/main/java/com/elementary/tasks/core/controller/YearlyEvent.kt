@@ -82,6 +82,6 @@ class YearlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun calculateTime(isNew: Boolean): Long {
-        return timeCount.getNextYearDayTime(reminder)
+        return TimeCount.getNextYearDayTime(reminder)
     }
 }

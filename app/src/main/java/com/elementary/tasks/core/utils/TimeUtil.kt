@@ -117,9 +117,8 @@ object TimeUtil {
         return dialog
     }
 
-    fun getFutureBirthdayDate(prefs: Prefs, fullDate: String): DateItem? {
+    fun getFutureBirthdayDate(birthdayTime: Long, fullDate: String): DateItem? {
         var date: Date? = null
-        val dateTime = prefs.birthdayTime
         try {
             date = TimeUtil.BIRTH_DATE_FORMAT.parse(fullDate)
         } catch (e: ParseException) {
@@ -136,7 +135,7 @@ object TimeUtil {
             val bDay = calendar.get(Calendar.DAY_OF_MONTH)
             val bMonth = calendar.get(Calendar.MONTH)
             val year = calendar.get(Calendar.YEAR)
-            calendar.timeInMillis = TimeUtil.getBirthdayTime(dateTime)
+            calendar.timeInMillis = birthdayTime
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
             calendar.timeInMillis = System.currentTimeMillis()

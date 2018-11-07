@@ -85,7 +85,7 @@ class YearFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = 0
 
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
-        val startTime = timeCount.getNextYearDayTime(reminder)
+        val startTime = TimeCount.getNextYearDayTime(reminder)
 
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))

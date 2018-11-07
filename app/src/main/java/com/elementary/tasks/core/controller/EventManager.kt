@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.controller
 
 import android.content.Context
-
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
@@ -10,8 +9,6 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
-
 import javax.inject.Inject
 
 /**
@@ -36,7 +33,6 @@ abstract class EventManager(val reminder: Reminder) : EventControl {
     @Inject lateinit var context: Context
     @Inject lateinit var db: AppDb
     @Inject lateinit var prefs: Prefs
-    @Inject lateinit var timeCount: TimeCount
     @Inject lateinit var updatesHelper: UpdatesHelper
     @Inject lateinit var notifier: Notifier
     @Inject lateinit var calendarUtils: CalendarUtils

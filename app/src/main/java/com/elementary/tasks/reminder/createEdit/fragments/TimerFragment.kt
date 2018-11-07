@@ -79,7 +79,7 @@ class TimerFragment : RepeatableTypeFragment() {
         reminder.target = number
         reminder.type = type
         reminder.after = after
-        val startTime = timeCount.generateNextTimer(reminder, true)
+        val startTime = TimeCount.generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))

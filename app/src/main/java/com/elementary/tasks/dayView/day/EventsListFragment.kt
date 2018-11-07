@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -16,11 +14,12 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
 import com.elementary.tasks.dayView.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.android.synthetic.main.fragment_events_list.*
+import timber.log.Timber
 import javax.inject.Inject
+
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,14 +41,14 @@ import javax.inject.Inject
  */
 class EventsListFragment : Fragment() {
 
+    private var callback: DayCallback? = null
     private val mAdapter = CalendarEventsAdapter()
-    private lateinit var viewModel: DayViewViewModel
-    private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> viewModel.deleteBirthday(birthday) })
+    private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday) })
     private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
-            saveAction = {reminder -> viewModel.saveReminder(reminder) },
+            saveAction = {reminder -> callback?.getViewModel()?.saveReminder(reminder) },
             toggleAction = {},
-            deleteAction = {reminder -> viewModel.moveToTrash(reminder) },
-            allGroups = { return@ReminderResolver viewModel.allGroups.value ?: listOf() })
+            deleteAction = {reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
+            allGroups = { return@ReminderResolver callback?.getViewModel()?.allGroups?.value ?: listOf() })
     private var mItem: EventsPagerItem? = null
     @Inject
     lateinit var dialogues: Dialogues
@@ -62,14 +61,14 @@ class EventsListFragment : Fragment() {
 
     fun setModel(eventsPagerItem: EventsPagerItem) {
         this.mItem = eventsPagerItem
-        try {
-            viewModel.setItem(eventsPagerItem)
-        } catch (e: UninitializedPropertyAccessException) {
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val fragment = parentFragment
+        if (fragment != null) {
+            callback = fragment as DayCallback?
+        }
         if (arguments != null) {
             mItem = arguments?.getSerializable(ARGUMENT_PAGE_NUMBER) as EventsPagerItem?
         }
@@ -97,18 +96,6 @@ class EventsListFragment : Fragment() {
         recyclerView.adapter = mAdapter
 
         reloadView()
-        initBirthdayViewModel()
-    }
-
-    private fun initBirthdayViewModel() {
-        viewModel = ViewModelProviders.of(this).get(DayViewViewModel::class.java)
-        viewModel.setItem(mItem)
-        viewModel.events.observe(this, Observer<List<EventModel>> {
-            if (it != null) {
-                mAdapter.setData(it)
-                reloadView()
-            }
-        })
     }
 
     private fun reloadView() {
@@ -118,6 +105,17 @@ class EventsListFragment : Fragment() {
         } else {
             recyclerView.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
+        }
+    }
+
+    fun requestData() {
+        val item = mItem
+        if (item != null) {
+            callback?.find(item) { eventsPagerItem, list ->
+                Timber.d("setModel: $eventsPagerItem, ${list.size}")
+                mAdapter.setData(list)
+                reloadView()
+            }
         }
     }
 

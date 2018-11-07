@@ -95,7 +95,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                     map[id] = item
                 }
                 else -> {
-                    val dT = mCount.getNextDateTime(eventTime)
+                    val dT = mCount.getNextDateTime(eventTime, prefs)
                     date = dT[0]
                     time = dT[1]
                 }
@@ -147,7 +147,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             var time2: Long = 0
             if (eventsItem.item is Birthday) {
                 val item = eventsItem.item as Birthday
-                val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
+                val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), item.date)
                 if (dateItem != null) {
                     val calendar = dateItem.calendar
                     time1 = calendar.timeInMillis
@@ -158,7 +158,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             }
             if (o2.item is Birthday) {
                 val item = o2.item as Birthday
-                val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
+                val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), item.date)
                 if (dateItem != null) {
                     val calendar = dateItem.calendar
                     time2 = calendar.timeInMillis
@@ -225,7 +225,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             rView.setTextViewText(R.id.taskTime, item.time)
             rView.setTextColor(R.id.taskTime, itemTextColor)
 
-            rView.setTextViewText(R.id.leftTime, mCount.getRemaining(item.date))
+            rView.setTextViewText(R.id.leftTime, mCount.getRemaining(mContext, item.date))
             rView.setTextColor(R.id.leftTime, itemTextColor)
 
             if (item.id != null) {

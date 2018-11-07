@@ -28,8 +28,17 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class TimeCount @Inject constructor(private val context: Context, private val prefs: Prefs) {
+object TimeCount {
+
+    const val SECOND: Long = 1000
+    const val MINUTE: Long = 60 * SECOND
+    const val HOUR: Long = MINUTE * 60
+    private const val HALF_DAY: Long = HOUR * 12
+    const val DAY: Long = HALF_DAY * 2
+
+    fun isCurrent(eventTime: String?): Boolean {
+        return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis()
+    }
 
     fun generateNextTimer(reminder: Reminder, isNew: Boolean): Long {
         val hours = reminder.hours
@@ -96,15 +105,15 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
         }
     }
 
-    fun getRemaining(dateTime: String?, delay: Int): String {
+    fun getRemaining(context: Context, dateTime: String?, delay: Int): String {
         if (TextUtils.isEmpty(dateTime)) {
-            return getRemaining(0)
+            return getRemaining(context, 0)
         }
         val time = TimeUtil.getDateTimeFromGmt(dateTime)
-        return getRemaining(time + delay * MINUTE)
+        return getRemaining(context, time + delay * MINUTE)
     }
 
-    fun getRemaining(eventTime: Long): String {
+    fun getRemaining(context: Context, eventTime: Long): String {
         val difference = eventTime - System.currentTimeMillis()
         val days = difference / DAY
         var hours = (difference - DAY * days) / HOUR
@@ -119,17 +128,17 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
                     last -= 10
                 }
                 if (last == 1L && days != 11L) {
-                    result.append(String.format(getString(R.string.x_day), days.toString()))
+                    result.append(String.format(getString(context, R.string.x_day), days.toString()))
                 } else if (last < 5 && (days < 12 || days > 14)) {
-                    result.append(String.format(getString(R.string.x_dayzz), days.toString()))
+                    result.append(String.format(getString(context, R.string.x_dayzz), days.toString()))
                 } else {
-                    result.append(String.format(getString(R.string.x_days), days.toString()))
+                    result.append(String.format(getString(context, R.string.x_days), days.toString()))
                 }
             } else {
                 if (days < 2) {
-                    result.append(String.format(getString(R.string.x_day), days.toString()))
+                    result.append(String.format(getString(context, R.string.x_day), days.toString()))
                 } else {
-                    result.append(String.format(getString(R.string.x_days), days.toString()))
+                    result.append(String.format(getString(context, R.string.x_days), days.toString()))
                 }
             }
         } else if (difference > HOUR) {
@@ -140,17 +149,17 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
                     last -= 10
                 }
                 if (last == 1L && hours != 11L) {
-                    result.append(String.format(getString(R.string.x_hour), hours.toString()))
+                    result.append(String.format(getString(context, R.string.x_hour), hours.toString()))
                 } else if (last < 5 && (hours < 12 || hours > 14)) {
-                    result.append(String.format(getString(R.string.x_hourzz), hours.toString()))
+                    result.append(String.format(getString(context, R.string.x_hourzz), hours.toString()))
                 } else {
-                    result.append(String.format(getString(R.string.x_hours), hours.toString()))
+                    result.append(String.format(getString(context, R.string.x_hours), hours.toString()))
                 }
             } else {
                 if (hours < 2) {
-                    result.append(String.format(getString(R.string.x_hour), hours.toString()))
+                    result.append(String.format(getString(context, R.string.x_hour), hours.toString()))
                 } else {
-                    result.append(String.format(getString(R.string.x_hours), hours.toString()))
+                    result.append(String.format(getString(context, R.string.x_hours), hours.toString()))
                 }
             }
         } else if (difference > MINUTE) {
@@ -161,28 +170,28 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
                     last -= 10
                 }
                 if (last == 1L && minutes != 11L) {
-                    result.append(String.format(getString(R.string.x_minute), minutes.toString()))
+                    result.append(String.format(getString(context, R.string.x_minute), minutes.toString()))
                 } else if (last < 5 && (minutes < 12 || minutes > 14)) {
-                    result.append(String.format(getString(R.string.x_minutezz), minutes.toString()))
+                    result.append(String.format(getString(context, R.string.x_minutezz), minutes.toString()))
                 } else {
-                    result.append(String.format(getString(R.string.x_minutes), minutes.toString()))
+                    result.append(String.format(getString(context, R.string.x_minutes), minutes.toString()))
                 }
             } else {
                 if (hours < 2) {
-                    result.append(String.format(getString(R.string.x_minute), minutes.toString()))
+                    result.append(String.format(getString(context, R.string.x_minute), minutes.toString()))
                 } else {
-                    result.append(String.format(getString(R.string.x_minutes), minutes.toString()))
+                    result.append(String.format(getString(context, R.string.x_minutes), minutes.toString()))
                 }
             }
         } else if (difference > 0) {
-            result.append(getString(R.string.less_than_minute))
+            result.append(getString(context, R.string.less_than_minute))
         } else {
-            result.append(getString(R.string.overdue))
+            result.append(getString(context, R.string.overdue))
         }
         return result.toString()
     }
 
-    private fun getString(@StringRes res: Int): String {
+    private fun getString(context: Context, @StringRes res: Int): String {
         return context.getString(res)
     }
 
@@ -264,7 +273,7 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
         return cc.timeInMillis
     }
 
-    fun getNextDateTime(timeLong: Long): Array<String> {
+    fun getNextDateTime(timeLong: Long, prefs: Prefs): Array<String> {
         val date: String
         val time: String
         if (timeLong == 0L) {
@@ -296,18 +305,5 @@ class TimeCount @Inject constructor(private val context: Context, private val pr
             cc.set(Calendar.YEAR, cc.get(Calendar.YEAR) + 1)
         }
         return cc.timeInMillis
-    }
-
-    companion object {
-
-        const val SECOND: Long = 1000
-        const val MINUTE: Long = 60 * SECOND
-        const val HOUR: Long = MINUTE * 60
-        private const val HALF_DAY: Long = HOUR * 12
-        const val DAY: Long = HALF_DAY * 2
-
-        fun isCurrent(eventTime: String?): Boolean {
-            return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis()
-        }
     }
 }

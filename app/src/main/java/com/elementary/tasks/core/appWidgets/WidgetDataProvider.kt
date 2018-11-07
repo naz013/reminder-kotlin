@@ -11,7 +11,6 @@ import com.elementary.tasks.core.utils.TimeUtil
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,8 +38,6 @@ class WidgetDataProvider(private val mContext: Context) {
     private var hour: Int = 0
     private var minute: Int = 0
     private var isFeature: Boolean = false
-
-    @Inject lateinit var timeCount: TimeCount
 
     enum class WidgetType {
         BIRTHDAY,
@@ -148,7 +145,7 @@ class WidgetDataProvider(private val mContext: Context) {
                         }
                         do {
                             item.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-                            eventTime = timeCount.getNextMonthDayTime(item)
+                            eventTime = TimeCount.getNextMonthDayTime(item)
                             calendar1.timeInMillis = eventTime
                             days++
                             val sDay = calendar1.get(Calendar.DAY_OF_MONTH)

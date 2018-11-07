@@ -10,10 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.IntervalUtil
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
@@ -98,7 +95,7 @@ class VoiceResultDialog : BaseDialog() {
         }
         loadContact(reminder, binding)
         if (reminder.isActive && !reminder.isRemoved) {
-            binding.remainingTime.text = timeCount.getRemaining(reminder.eventTime, reminder.delay)
+            binding.remainingTime.text = TimeCount.getRemaining(this, reminder.eventTime, reminder.delay)
         } else {
             binding.remainingTime.text = ""
         }

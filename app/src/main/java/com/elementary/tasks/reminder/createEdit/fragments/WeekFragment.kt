@@ -100,7 +100,7 @@ class WeekFragment : RepeatableTypeFragment() {
         reminder.type = type
         reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
-        val startTime = timeCount.getNextWeekdayTime(reminder)
+        val startTime = TimeCount.getNextWeekdayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))

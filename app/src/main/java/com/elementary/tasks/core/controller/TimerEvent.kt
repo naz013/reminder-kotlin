@@ -93,7 +93,7 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun calculateTime(isNew: Boolean): Long {
-        return timeCount.generateNextTimer(reminder, isNew)
+        return TimeCount.generateNextTimer(reminder, isNew)
     }
 
     companion object {
