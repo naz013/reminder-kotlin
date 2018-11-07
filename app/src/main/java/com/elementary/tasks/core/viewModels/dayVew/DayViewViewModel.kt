@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.EventsDataSingleton
-import com.elementary.tasks.dayView.EventModel
+import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.dayView.EventsPagerItem
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory

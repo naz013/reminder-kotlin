@@ -3,7 +3,7 @@ package com.elementary.tasks.dayView
 import java.io.Serializable
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,4 +20,9 @@ import java.io.Serializable
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-data class EventsPagerItem(var position: Int, var current: Int, var day: Int, var month: Int, var year: Int) : Serializable
+data class EventsPagerItem(
+        var day: Int,
+        var month: Int,
+        var year: Int,
+        var isToday: Boolean = false
+) : Serializable
