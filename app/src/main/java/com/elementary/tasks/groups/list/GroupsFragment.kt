@@ -12,6 +12,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
@@ -104,7 +105,7 @@ class GroupsFragment : BaseNavigationFragment() {
         if (mAdapter.itemCount == 1) {
             items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
         }
-        dialogues.showPopup(context!!, view, { item ->
+        Dialogues.showPopup(view, { item ->
             when (item) {
                 0 -> changeColor(t)
                 1 -> editGroup(view, t)

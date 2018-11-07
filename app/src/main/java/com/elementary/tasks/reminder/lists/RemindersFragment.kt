@@ -8,8 +8,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -21,15 +19,18 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
 import javax.inject.Inject
@@ -57,6 +58,12 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private lateinit var viewModel: ActiveRemindersViewModel
     @Inject
     lateinit var reminderUtils: ReminderUtils
+
+    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
+            saveAction = {reminder -> viewModel.saveReminder(reminder) },
+            toggleAction = {reminder -> viewModel.toggleReminder(reminder) },
+            deleteAction = {reminder -> viewModel.moveToTrash(reminder) },
+            allGroups = { return@ReminderResolver viewModel.allGroups.value ?: listOf() })
 
     private val mAdapter = RemindersRecyclerAdapter()
 
@@ -188,33 +195,11 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         addStatusFilter(filters)
     }
 
-    private fun showActionDialog(reminder: Reminder, view: View) {
-        val items = arrayOf(getString(R.string.open), getString(R.string.edit), getString(R.string.change_group), getString(R.string.move_to_trash))
-        dialogues.showPopup(context!!, view, { item ->
-            when (item) {
-                0 -> previewReminder(reminder.uuId)
-                1 -> editReminder(reminder.uuId)
-                2 -> changeGroup(reminder)
-                3 -> viewModel.moveToTrash(reminder)
-            }
-        }, *items)
-    }
-
-    private fun editReminder(uuId: String) {
-        startActivity(Intent(context, CreateReminderActivity::class.java).putExtra(Constants.INTENT_ID, uuId))
-    }
-
-    private fun switchReminder(reminder: Reminder) {
-        viewModel.toggleReminder(reminder)
-    }
-
     private fun initList() {
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
-                when (actions) {
-                    ListActions.MORE -> if (t != null) showActionDialog(t, view)
-                    ListActions.OPEN -> if (t != null) previewReminder(t.uuId)
-                    ListActions.SWITCH -> if (t != null) switchReminder(t)
+                if (t != null) {
+                    reminderResolver.resolveAction(view, t, actions)
                 }
             }
         }
@@ -226,11 +211,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun getTitle(): String = getString(R.string.tasks)
-
-    private fun previewReminder(id: String) {
-        startActivity(Intent(context, ReminderPreviewActivity::class.java)
-                .putExtra(Constants.INTENT_ID, id))
-    }
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
@@ -317,32 +297,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             mGroupsIds.add(item.groupUuId)
         }
         filters.add(filter)
-    }
-
-    private fun changeGroup(reminder: Reminder) {
-        mGroupsIds.clear()
-        val arrayAdapter = ArrayAdapter<String>(
-                context!!, android.R.layout.select_dialog_item)
-        val groups = viewModel.allGroups.value
-        if (groups != null) {
-            for (item in groups) {
-                arrayAdapter.add(item.groupTitle)
-                mGroupsIds.add(item.groupUuId)
-            }
-        }
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.choose_group))
-        builder.setAdapter(arrayAdapter) { dialog, which ->
-            dialog.dismiss()
-            val catId = mGroupsIds[which]
-            if (reminder.groupUuId.matches(catId.toRegex())) {
-                Toast.makeText(context, getString(R.string.same_group), Toast.LENGTH_SHORT).show()
-                return@setAdapter
-            }
-            viewModel.changeGroup(reminder, catId)
-        }
-        val alert = builder.create()
-        alert.show()
     }
 
     override fun onChanged(result: List<Reminder>) {

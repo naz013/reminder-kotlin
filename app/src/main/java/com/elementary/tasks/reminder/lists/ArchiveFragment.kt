@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.lists
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -19,13 +18,12 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
@@ -51,11 +49,17 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ArchiveFragment() : BaseNavigationFragment(), FilterCallback<Reminder> {
+class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private lateinit var viewModel: ArchiveRemindersViewModel
     @Inject
     lateinit var reminderUtils: ReminderUtils
+
+    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues },
+            saveAction = { reminder -> viewModel.saveReminder(reminder) },
+            toggleAction = {},
+            deleteAction = { reminder -> viewModel.deleteReminder(reminder, true) },
+            allGroups = { return@ReminderResolver viewModel.allGroups.value ?: listOf() })
 
     private var mAdapter = RemindersRecyclerAdapter()
 
@@ -150,7 +154,7 @@ class ArchiveFragment() : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ArchiveRemindersViewModel::class.java)
-        viewModel.events.observe(this, Observer{ reminders ->
+        viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
             }
@@ -159,28 +163,11 @@ class ArchiveFragment() : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun getTitle(): String = getString(R.string.trash)
 
-    private fun editReminder(reminder: Reminder) {
-        startActivity(Intent(context, CreateReminderActivity::class.java)
-                .putExtra(Constants.INTENT_ID, reminder.uuId))
-    }
-
     private fun showData(result: List<Reminder>) {
         filterController.original = result.toMutableList()
         reloadView()
         refreshFilters()
         activity?.invalidateOptionsMenu()
-    }
-
-    private fun showActionDialog(reminder: Reminder, view: View) {
-        val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        dialogues.showPopup(context!!, view, { item ->
-            if (item == 0) {
-                editReminder(reminder)
-            }
-            if (item == 1) {
-                viewModel.deleteReminder(reminder, true)
-            }
-        }, *items)
     }
 
     private fun refreshFilters() {
@@ -195,9 +182,8 @@ class ArchiveFragment() : BaseNavigationFragment(), FilterCallback<Reminder> {
         mAdapter.setEditable(false)
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
-                when (actions) {
-                    ListActions.MORE -> if (t != null) showActionDialog(t, view)
-                    ListActions.OPEN -> if (t != null) editReminder(t)
+                if (t != null) {
+                    reminderResolver.resolveAction(view, t, actions)
                 }
             }
         }

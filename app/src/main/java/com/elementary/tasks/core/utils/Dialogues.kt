@@ -95,19 +95,6 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         alert.show()
     }
 
-    fun showPopup(context: Context, anchor: View,
-                  listener: ((Int) -> Unit)?, vararg actions: String) {
-        val popupMenu = PopupMenu(context, anchor)
-        popupMenu.setOnMenuItemClickListener { item ->
-            listener?.invoke(item.order)
-            true
-        }
-        for (i in actions.indices) {
-            popupMenu.menu.add(1, i + 1000, i, actions[i])
-        }
-        popupMenu.show()
-    }
-
     interface OnValueSelectedListener<T> {
         fun onSelected(t: T)
         fun getTitle(t: T): String
@@ -116,6 +103,19 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
     companion object {
         private const val MAX_RADIUS = 100000
         private const val MAX_DEF_RADIUS = 5000
+
+        fun showPopup(anchor: View,
+                      listener: ((Int) -> Unit)?, vararg actions: String) {
+            val popupMenu = PopupMenu(anchor.context, anchor)
+            popupMenu.setOnMenuItemClickListener { item ->
+                listener?.invoke(item.order)
+                true
+            }
+            for (i in actions.indices) {
+                popupMenu.menu.add(1, i + 1000, i, actions[i])
+            }
+            popupMenu.show()
+        }
 
         fun setFullWidthDialog(dialog: AlertDialog, activity: Activity) {
             val window = dialog.window

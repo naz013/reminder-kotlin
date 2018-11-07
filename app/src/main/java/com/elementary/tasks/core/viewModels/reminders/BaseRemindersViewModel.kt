@@ -143,19 +143,6 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
         }
     }
 
-    fun changeGroup(reminder: Reminder, groupId: String) {
-        isInProgress.postValue(true)
-        launch(CommonPool) {
-            reminder.groupUuId = groupId
-            appDb.reminderDao().insert(reminder)
-            withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
-            }
-            backupReminder(reminder.uuId)
-        }
-    }
-
     private fun backupReminder(uuId: String) {
         val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
                 .setInputData(Data.Builder().putString(Constants.INTENT_ID, uuId).build())

@@ -234,7 +234,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         var showIn = getString(R.string.show_in_status_bar)
         showIn = showIn.substring(0, showIn.length - 1)
         val items = arrayOf(getString(R.string.open), getString(R.string.share), showIn, getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
-        dialogues.showPopup(context!!, view, { item ->
+        Dialogues.showPopup(view, { item ->
             when (item) {
                 0 -> previewNote(note.getKey(), view)
                 1 -> shareNote(note)

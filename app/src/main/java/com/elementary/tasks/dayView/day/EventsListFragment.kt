@@ -1,6 +1,5 @@
 package com.elementary.tasks.dayView.day
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,17 +10,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
 import com.elementary.tasks.dayView.EventsPagerItem
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
+import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.android.synthetic.main.fragment_events_list.*
 import javax.inject.Inject
 
@@ -47,6 +44,12 @@ class EventsListFragment : Fragment() {
 
     private val mAdapter = CalendarEventsAdapter()
     private lateinit var viewModel: DayViewViewModel
+    private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> viewModel.deleteBirthday(birthday) })
+    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
+            saveAction = {reminder -> viewModel.saveReminder(reminder) },
+            toggleAction = {},
+            deleteAction = {reminder -> viewModel.moveToTrash(reminder) },
+            allGroups = { return@ReminderResolver viewModel.allGroups.value ?: listOf() })
     private var mItem: EventsPagerItem? = null
     @Inject
     lateinit var dialogues: Dialogues
@@ -81,25 +84,11 @@ class EventsListFragment : Fragment() {
         mAdapter.setEventListener(object : ActionsListener<EventModel> {
             override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
                 if (t == null) return
-                when (actions) {
-                    ListActions.MORE -> {
-                        val model = t.model
-                        if (model is Birthday) {
-                            showBirthdayLcam(view, model)
-                        }
-                    }
-                    ListActions.OPEN -> {
-                        val model = t.model
-                        if (model is Birthday) {
-                            editBirthday(model)
-                        } else if (model is Reminder) {
-                            if (view.id == R.id.button_more) {
-                                showActionDialog(model, view)
-                            } else {
-                                showReminder(model)
-                            }
-                        }
-                    }
+                val item = t.model
+                if (item is Birthday) {
+                    birthdayResolver.resolveAction(view, item, actions)
+                } else if (item is Reminder) {
+                    reminderResolver.resolveAction(view, item, actions)
                 }
             }
         })
@@ -130,42 +119,6 @@ class EventsListFragment : Fragment() {
             recyclerView.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
         }
-    }
-
-    private fun showBirthdayLcam(view: View, birthday: Birthday) {
-        val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        dialogues.showPopup(context!!, view, { item ->
-            when (item) {
-                0 -> editBirthday(birthday)
-                1 -> viewModel.deleteBirthday(birthday)
-            }
-        }, *items)
-    }
-
-    private fun editBirthday(item: Birthday) {
-        startActivity(Intent(context, AddBirthdayActivity::class.java)
-                .putExtra(Constants.INTENT_ID, item.uuId))
-    }
-
-    private fun showReminder(reminder: Reminder) {
-        startActivity(Intent(context, ReminderPreviewActivity::class.java)
-                .putExtra(Constants.INTENT_ID, reminder.uuId))
-    }
-
-    private fun editReminder(uuId: String?) {
-        startActivity(Intent(context, CreateReminderActivity::class.java)
-                .putExtra(Constants.INTENT_ID, uuId))
-    }
-
-    private fun showActionDialog(reminder: Reminder, view: View) {
-        val items = arrayOf(getString(R.string.open), getString(R.string.edit), getString(R.string.move_to_trash))
-        dialogues.showPopup(context!!, view, { item ->
-            when (item) {
-                0 -> showReminder(reminder)
-                1 -> editReminder(reminder.uuId)
-                3 -> viewModel.moveToTrash(reminder)
-            }
-        }, *items)
     }
 
     companion object {
