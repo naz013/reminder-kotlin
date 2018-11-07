@@ -1,4 +1,4 @@
-package com.elementary.tasks.dayView
+package com.elementary.tasks.dayView.day
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
+import com.elementary.tasks.dayView.EventsPagerItem
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import kotlinx.android.synthetic.main.fragment_events_list.*
@@ -52,6 +53,16 @@ class EventsListFragment : Fragment() {
 
     init {
         ReminderApp.appComponent.inject(this)
+    }
+
+    fun getModel(): EventsPagerItem? = mItem
+
+    fun setModel(eventsPagerItem: EventsPagerItem) {
+        this.mItem = eventsPagerItem
+        try {
+            viewModel.setItem(eventsPagerItem)
+        } catch (e: UninitializedPropertyAccessException) {
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

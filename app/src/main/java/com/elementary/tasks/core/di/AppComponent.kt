@@ -3,7 +3,7 @@ package com.elementary.tasks.core.di
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.EventsDataProvider
-import com.elementary.tasks.dayView.EventsListFragment
+import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity

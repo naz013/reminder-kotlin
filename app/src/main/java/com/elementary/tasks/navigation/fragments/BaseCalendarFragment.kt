@@ -7,10 +7,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.dayView.CalendarEventsAdapter
+import com.elementary.tasks.dayView.day.CalendarEventsAdapter
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.EventsDataSingleton
-import com.elementary.tasks.dayView.EventModel
+import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil

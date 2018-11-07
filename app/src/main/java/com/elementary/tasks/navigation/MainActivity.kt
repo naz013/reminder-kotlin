@@ -25,6 +25,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.notes.NotesViewModel
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
+import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
 import com.elementary.tasks.navigation.fragments.*

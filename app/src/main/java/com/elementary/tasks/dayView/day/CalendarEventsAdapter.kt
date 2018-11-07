@@ -1,4 +1,4 @@
-package com.elementary.tasks.dayView
+package com.elementary.tasks.dayView.day
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

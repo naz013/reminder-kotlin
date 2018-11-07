@@ -9,6 +9,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.dayView.day.EventModel
 import timber.log.Timber
 import java.text.ParseException
 import java.util.ArrayList
