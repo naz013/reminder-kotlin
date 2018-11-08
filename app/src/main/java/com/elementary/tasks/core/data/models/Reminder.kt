@@ -1,21 +1,17 @@
 package com.elementary.tasks.core.data.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
 import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
-import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,111 +35,63 @@ import java.util.*
         ListStringTypeConverter::class,
         ListIntTypeConverter::class
 )
-class Reminder : RecyclerInterface, Serializable {
-
-    @SerializedName("summary")
-    var summary: String = ""
-    @SerializedName("noteId")
-    var noteId: String = ""
-    @SerializedName("reminderType")
-    var reminderType: Int = 0
-    @SerializedName("groupUuId")
-    var groupUuId: String = ""
-    @PrimaryKey
-    @SerializedName("uuId")
-    var uuId: String = ""
-    @SerializedName("eventTime")
-    var eventTime: String = ""
-    @SerializedName("startTime")
-    var startTime: String = ""
-    @SerializedName("eventCount")
-    var eventCount: Long = 0
-    @SerializedName("color")
-    var color: Int = 0
-    @SerializedName("delay")
-    var delay: Int = 0
-    @SerializedName("vibrate")
-    var vibrate: Boolean = false
-    @SerializedName("repeatNotification")
-    var repeatNotification: Boolean = false
-    @SerializedName("notifyByVoice")
-    var notifyByVoice: Boolean = false
-    @SerializedName("awake")
-    var awake: Boolean = false
-    @SerializedName("unlock")
-    var unlock: Boolean = false
-    @SerializedName("exportToTasks")
-    var exportToTasks: Boolean = false
-    @SerializedName("exportToCalendar")
-    var exportToCalendar: Boolean = false
-    @SerializedName("useGlobal")
-    var useGlobal: Boolean = false
-    @SerializedName("from")
-    var from: String = ""
-    @SerializedName("to")
-    var to: String = ""
-    @SerializedName("hours")
-    var hours: List<Int> = ArrayList()
-    @SerializedName("fileName")
-    var fileName: String = ""
-    @SerializedName("melodyPath")
-    var melodyPath: String = ""
-    @SerializedName("volume")
-    var volume: Int = -1
-    @SerializedName("dayOfMonth")
-    var dayOfMonth: Int = 0
-    @SerializedName("monthOfYear")
-    var monthOfYear: Int = 0
-    @SerializedName("repeatInterval")
-    var repeatInterval: Long = 0
-    @SerializedName("repeatLimit")
-    var repeatLimit: Int = -1
-    @SerializedName("after")
-    var after: Long = 0
-    @SerializedName("weekdays")
-    var weekdays: List<Int> = ArrayList()
-    @SerializedName("type")
-    var type: Int = 0
-    @SerializedName("target")
-    var target: String = ""
-    @SerializedName("subject")
-    var subject: String = ""
-    @SerializedName("attachmentFile")
-    var attachmentFile: String = ""
-    @SerializedName("attachmentFiles")
-    var attachmentFiles: List<String> = ArrayList()
-    @SerializedName("auto")
-    var auto: Boolean = false
-    @SerializedName("places")
-    var places: List<Place> = ArrayList()
-    @SerializedName("shoppings")
-    var shoppings: List<ShopItem> = ArrayList()
-    @SerializedName("uniqueId")
-    var uniqueId: Int = 0
-    @SerializedName("isActive")
-    var isActive: Boolean = false
-    @SerializedName("isRemoved")
-    var isRemoved: Boolean = false
-    @SerializedName("isNotificationShown")
-    var isNotificationShown: Boolean = false
-    @SerializedName("isLocked")
-    var isLocked: Boolean = false
-    @SerializedName("hasReminder")
-    var hasReminder: Boolean = false
-    @SerializedName("duration")
-    var duration: Long = 0
-    @SerializedName("remindBefore")
-    var remindBefore: Long = 0
-    @SerializedName("windowType")
-    var windowType = 0
-    @SerializedName("priority")
-    var priority = 2
-    @ColumnInfo(name = "groupTitle")
-    @Transient
-    var groupTitle: String = ""
-    @ColumnInfo(name = "groupColor")
-    @Transient
-    var groupColor: Int = 0
+data class Reminder(
+        var summary: String = "",
+        var noteId: String = "",
+        var reminderType: Int = 0,
+        var groupUuId: String = "",
+        @PrimaryKey
+        var uuId: String = UUID.randomUUID().toString(),
+        var eventTime: String = "",
+        var startTime: String = "",
+        var eventCount: Long = 0,
+        var color: Int = 0,
+        var delay: Int = 0,
+        var vibrate: Boolean = false,
+        var repeatNotification: Boolean = false,
+        var notifyByVoice: Boolean = false,
+        var awake: Boolean = false,
+        var unlock: Boolean = false,
+        var exportToTasks: Boolean = false,
+        var exportToCalendar: Boolean = false,
+        var useGlobal: Boolean = true,
+        var from: String = "",
+        var to: String = "",
+        var hours: List<Int> = ArrayList(),
+        var fileName: String = "",
+        var melodyPath: String = "",
+        var volume: Int = -1,
+        var dayOfMonth: Int = 0,
+        var monthOfYear: Int = 0,
+        var repeatInterval: Long = 0,
+        var repeatLimit: Int = 0,
+        var after: Long = 0,
+        var weekdays: List<Int> = ArrayList(),
+        var type: Int = 0,
+        var target: String = "",
+        var subject: String = "",
+        var attachmentFile: String = "",
+        var attachmentFiles: List<String> = ArrayList(),
+        var auto: Boolean = false,
+        var places: List<Place> = ArrayList(),
+        var shoppings: List<ShopItem> = ArrayList(),
+        var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+        var isActive: Boolean = true,
+        var isRemoved: Boolean = false,
+        var isNotificationShown: Boolean = false,
+        var isLocked: Boolean = false,
+        var hasReminder: Boolean = false,
+        var duration: Long = 0,
+        var remindBefore: Long = 0,
+        var windowType: Int = 0,
+        var priority: Int = 2,
+        @ColumnInfo(name = "groupTitle")
+        @Transient
+        var groupTitle: String = "",
+        @ColumnInfo(name = "groupColor")
+        @Transient
+        var groupColor: Int = 0
+) : RecyclerInterface, Serializable {
 
     val dateTime: Long
         get() = TimeUtil.getDateTimeFromGmt(eventTime)
@@ -158,29 +106,8 @@ class Reminder : RecyclerInterface, Serializable {
             REMINDER
         }
 
-    val keys: IntArray
-        get() {
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(eventTime)
-            val y = calendar.get(Calendar.YEAR)
-            val m = calendar.get(Calendar.MONTH)
-            val d = calendar.get(Calendar.DAY_OF_MONTH)
-            val h = calendar.get(Calendar.HOUR_OF_DAY)
-            val min = calendar.get(Calendar.MINUTE)
-            return intArrayOf(y, m, d, h, min)
-        }
-
-    constructor() {
-        this.uuId = UUID.randomUUID().toString()
-        this.eventTime = TimeUtil.gmtDateTime
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-        this.isActive = true
-        this.isRemoved = false
-        this.useGlobal = true
-        this.hasReminder = false
-    }
-
-    constructor(item: Reminder, fullCopy: Boolean) {
+    @Ignore
+    constructor(item: Reminder, fullCopy: Boolean) : this() {
         this.summary = item.summary
         this.reminderType = item.reminderType
         this.groupUuId = item.groupUuId
@@ -234,6 +161,10 @@ class Reminder : RecyclerInterface, Serializable {
             this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
         }
     }
+
+    fun isLimited(): Boolean = repeatLimit > 0
+
+    fun isLimitExceed(): Boolean = repeatLimit - eventCount - 1 > 0
 
     fun copy(): Reminder {
         val reminder = Reminder(this, false)
