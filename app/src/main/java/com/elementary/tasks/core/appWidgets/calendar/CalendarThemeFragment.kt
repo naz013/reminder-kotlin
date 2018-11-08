@@ -12,7 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.calendar.FlextHelper
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import hirondelle.date4j.DateTime
 import kotlinx.android.synthetic.main.fragment_calendar_widget_preview.*
@@ -124,11 +124,11 @@ class CalendarThemeFragment : BaseNavigationFragment() {
             // 17 Feb 2013 is Sunday
             val sunday = DateTime(2013, 2, 17, 0, 0, 0, 0)
             var nextDay = sunday.plusDays(startDayOfWeek - this.sunday)
-            if (prefs!!.startDay == 1) {
+            if (prefs.startDay == 1) {
                 nextDay = nextDay.plusDays(1)
             }
             for (i in 0..6) {
-                val date = FlextHelper.convertDateTimeToDate(nextDay)
+                val date = TimeUtil.convertDateTimeToDate(nextDay)
                 weekdays.add(fmt.format(date).toUpperCase())
                 nextDay = nextDay.plusDays(1)
             }

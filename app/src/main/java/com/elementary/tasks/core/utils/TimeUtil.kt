@@ -4,8 +4,11 @@ import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
+import androidx.annotation.ColorRes
 import com.elementary.tasks.R
+import hirondelle.date4j.DateTime
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -51,6 +54,7 @@ object TimeUtil {
     private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault())
     private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
     val birthFormat = SimpleDateFormat("dd|MM", Locale.getDefault())
+    val MONTH_YEAR_FORMAT = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
 
     val gmtDateTime: String
         get() {
@@ -345,6 +349,12 @@ object TimeUtil {
         return SIMPLE_DATE.format(calendar.time)
     }
 
+    fun getMonthYear(date: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = date
+        return MONTH_YEAR_FORMAT.format(calendar.time)
+    }
+
     fun getDate(date: Long): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date
@@ -549,6 +559,45 @@ object TimeUtil {
             }
         }
         return result.toString()
+    }
+
+    fun getColor(context: Context, @ColorRes res: Int): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context.resources.getColor(res, null)
+        } else {
+            context.resources.getColor(res)
+        }
+    }
+
+    fun convertDateTimeToDate(dateTime: DateTime): Date {
+        val year = dateTime.year!!
+        val datetimeMonth = dateTime.month!!
+        val day = dateTime.day!!
+        val calendar = Calendar.getInstance()
+        calendar.clear()
+        calendar.set(year, datetimeMonth - 1, day)
+        return calendar.time
+    }
+
+    fun convertToDateTime(eventTime: Long): DateTime {
+        val calendar = Calendar.getInstance()
+        calendar.clear()
+        calendar.timeInMillis = eventTime
+        var year = calendar.get(Calendar.YEAR)
+        val javaMonth = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        return try {
+            DateTime(year, javaMonth + 1, day, 0, 0, 0, 0)
+        } catch (e: Exception) {
+            calendar.timeInMillis = System.currentTimeMillis()
+            year = calendar.get(Calendar.YEAR)
+            try {
+                DateTime(year, javaMonth + 1, day, 0, 0, 0, 0)
+            } catch (e1: Exception) {
+                DateTime(year, javaMonth + 1, day - 1, 0, 0, 0, 0)
+            }
+
+        }
     }
 
     class DateItem(val calendar: Calendar, val year: Int)

@@ -7,8 +7,8 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.calendar.FlextHelper
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TimeUtil
 import hirondelle.date4j.DateTime
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,7 +59,7 @@ class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : Re
             nextDay = nextDay.plusDays(1)
         }
         for (i in 0..6) {
-            val date = FlextHelper.convertDateTimeToDate(nextDay)
+            val date = TimeUtil.convertDateTimeToDate(nextDay)
             mWeekdaysList.add(fmt.format(date).toUpperCase())
             nextDay = nextDay.plusDays(1)
         }
