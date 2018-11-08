@@ -190,16 +190,16 @@ class MonthView : View, View.OnTouchListener {
             val rect = mCells!![i]
             val color: Int
             val dateTime = mDateTimeList!![i]
-            if (mYear != dateTime.year || mMonth != dateTime.month) {
-                color = Color.GRAY
+            color = if (mYear != dateTime.year || mMonth != dateTime.month) {
+                Color.GRAY
             } else {
                 if (eventsMap.containsKey(dateTime)) {
                     drawEvents(canvas, eventsMap[dateTime]!!, rect)
                 }
                 if (dateTime.day == currentDay && dateTime.month == currentMonth && dateTime.year == currentYear) {
-                    color = mTodayColor
+                    mTodayColor
                 } else {
-                    color = mDefaultColor
+                    mDefaultColor
                 }
             }
             drawRectText(dateTime.day!!.toString(), canvas, rect, color)

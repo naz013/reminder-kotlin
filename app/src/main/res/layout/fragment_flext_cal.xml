@@ -1,92 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.flaviofaria.kenburnsview.KenBurnsView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/titleCard"
-        android:layout_width="0dp"
+    <GridView
+        android:id="@+id/weekdayView"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:clickable="false"
+        android:numColumns="7"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/monthYear"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:textSize="30sp" />
+    <com.elementary.tasks.core.calendar.InfiniteViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleCard">
-
-        <GridView
-            android:id="@+id/weekday_gridview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:clickable="false"
-            android:numColumns="7"
-            android:scrollbars="none"
-            android:stretchMode="columnWidth" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/pagerCard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card">
-
-        <com.elementary.tasks.core.calendar.InfiniteViewPager
-            android:id="@+id/months_infinite_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.tuyenmonkey.mkloader.MKLoader
-        android:id="@+id/loaderView"
-        android:layout_width="112dp"
-        android:layout_height="112dp"
-        app:layout_constraintBottom_toBottomOf="@+id/pagerCard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pagerCard"
-        app:mk_color="?attr/colorAccent"
-        app:mk_type="Sharingan" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

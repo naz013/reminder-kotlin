@@ -1,10 +1,7 @@
 package com.elementary.tasks.core.di
 
-import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.dayView.DayViewProvider
-import com.elementary.tasks.dayView.EventsDataProvider
-import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
@@ -33,6 +30,8 @@ import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.views.*
+import com.elementary.tasks.dayView.DayViewProvider
+import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.login.RestoreDropboxTask
@@ -110,7 +109,6 @@ interface AppComponent {
     fun inject(fragment: RemindersFragment)
     fun inject(fragment: NotesFragment)
     fun inject(calendarMonthFactory: CalendarMonthFactory)
-    fun inject(eventsDataProvider: EventsDataProvider)
     fun inject(widgetDataProvider: WidgetDataProvider)
     fun inject(calendarUpdateMinusService: CalendarUpdateMinusService)
     fun inject(calendarUpdateService: CalendarUpdateService)

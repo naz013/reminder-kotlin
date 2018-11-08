@@ -28,6 +28,7 @@ import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
+import com.elementary.tasks.monthView.CalendarFragment
 import com.elementary.tasks.navigation.fragments.*
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment

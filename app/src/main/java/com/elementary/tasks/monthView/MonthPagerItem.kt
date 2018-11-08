@@ -1,9 +1,9 @@
-package com.elementary.tasks.core.calendar
+package com.elementary.tasks.monthView
 
-import java.util.Date
+import java.io.Serializable
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,7 @@ import java.util.Date
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-interface FlextListener {
-    fun onClickDate(date: Date)
-
-    fun onLongClickDate(date: Date)
-
-    fun onMonthChanged(month: Int, year: Int)
-
-    fun onViewCreated()
-
-    fun onMonthSelected(month: Int)
-}
+data class MonthPagerItem(
+        var month: Int,
+        var year: Int
+) : Serializable
