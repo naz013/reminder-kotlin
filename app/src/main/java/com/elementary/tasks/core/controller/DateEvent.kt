@@ -66,7 +66,7 @@ class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun canSkip(): Boolean {
-        return isRepeatable && (reminder.repeatLimit == -1 || reminder.repeatLimit.toLong() - reminder.eventCount - 1 > 0)
+        return isRepeatable && (!reminder.isLimited() || !reminder.isLimitExceed())
     }
 
     override fun setDelay(delay: Int) {

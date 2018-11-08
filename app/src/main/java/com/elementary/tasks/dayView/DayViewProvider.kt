@@ -34,74 +34,72 @@ object DayViewProvider {
         val data = mutableListOf<EventModel>()
         for (item in reminders) {
             val mType = item.type
-            var eventTime = item.dateTime
             if (!Reminder.isGpsType(mType)) {
+                var eventTime = item.dateTime
                 val repeatTime = item.repeatInterval
                 val limit = item.repeatLimit.toLong()
                 val count = item.eventCount
-                val isLimited = limit > 0
-                val calendar1 = Calendar.getInstance()
-                calendar1.timeInMillis = eventTime
-                var mDay = calendar1.get(Calendar.DAY_OF_MONTH)
-                var mMonth = calendar1.get(Calendar.MONTH)
-                var mYear = calendar1.get(Calendar.YEAR)
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = eventTime
+                var mDay = calendar.get(Calendar.DAY_OF_MONTH)
+                var mMonth = calendar.get(Calendar.MONTH)
+                var mYear = calendar.get(Calendar.YEAR)
                 if (eventTime > 0) {
                     data.add(EventModel(item.viewType, item, mDay, mMonth, mYear, 0))
                 } else {
                     continue
                 }
                 if (isFuture) {
-                    calendar1.timeInMillis = item.startDateTime
+                    calendar.timeInMillis = item.startDateTime
                     if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
                         var days: Long = 0
                         var max = Configs.MAX_DAYS_COUNT
-                        if (isLimited) {
+                        if (item.isLimited()) {
                             max = limit - count
                         }
-                        val list = item.weekdays
+                        val weekdays = item.weekdays
                         val baseTime = item.dateTime
                         do {
-                            calendar1.timeInMillis = calendar1.timeInMillis + AlarmManager.INTERVAL_DAY
-                            eventTime = calendar1.timeInMillis
+                            calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_DAY
+                            eventTime = calendar.timeInMillis
                             if (eventTime == baseTime) {
                                 continue
                             }
-                            val weekDay = calendar1.get(Calendar.DAY_OF_WEEK)
-                            if (list[weekDay - 1] == 1 && eventTime > 0) {
-                                mDay = calendar1.get(Calendar.DAY_OF_MONTH)
-                                mMonth = calendar1.get(Calendar.MONTH)
-                                mYear = calendar1.get(Calendar.YEAR)
+                            val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
+                            if (weekdays[weekDay - 1] == 1 && eventTime > 0) {
+                                mDay = calendar.get(Calendar.DAY_OF_MONTH)
+                                mMonth = calendar.get(Calendar.MONTH)
+                                mYear = calendar.get(Calendar.YEAR)
                                 days++
-                                data.add(EventModel(item.viewType,
-                                        Reminder(item, true).apply {
-                                            this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-                                        },
-                                        mDay, mMonth, mYear, 0))
+                                val localItem = Reminder(item, true).apply {
+                                    this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                                }
+                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, 0))
                             }
                         } while (days < max)
                     } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
                         var days: Long = 0
                         var max = Configs.MAX_DAYS_COUNT
-                        if (isLimited) {
+                        if (item.isLimited()) {
                             max = limit - count
                         }
                         val baseTime = item.dateTime
+                        var localItem = item
                         do {
-                            eventTime = TimeCount.getNextMonthDayTime(item)
-                            calendar1.timeInMillis = eventTime
+                            eventTime = TimeCount.getNextMonthDayTime(localItem)
+                            calendar.timeInMillis = eventTime
                             if (eventTime == baseTime) {
                                 continue
                             }
-                            mDay = calendar1.get(Calendar.DAY_OF_MONTH)
-                            mMonth = calendar1.get(Calendar.MONTH)
-                            mYear = calendar1.get(Calendar.YEAR)
+                            mDay = calendar.get(Calendar.DAY_OF_MONTH)
+                            mMonth = calendar.get(Calendar.MONTH)
+                            mYear = calendar.get(Calendar.YEAR)
                             if (eventTime > 0) {
                                 days++
-                                data.add(EventModel(item.viewType,
-                                        Reminder(item, true).apply {
-                                            this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-                                        },
-                                        mDay, mMonth, mYear, 0))
+                                localItem = Reminder(localItem, true).apply {
+                                    this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                                }
+                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, 0))
                             }
                         } while (days < max)
                     } else {
@@ -110,25 +108,24 @@ object DayViewProvider {
                         }
                         var days: Long = 0
                         var max = Configs.MAX_DAYS_COUNT
-                        if (isLimited) {
+                        if (item.isLimited()) {
                             max = limit - count
                         }
                         do {
-                            calendar1.timeInMillis = calendar1.timeInMillis + repeatTime
-                            eventTime = calendar1.timeInMillis
+                            calendar.timeInMillis = calendar.timeInMillis + repeatTime
+                            eventTime = calendar.timeInMillis
                             if (eventTime == item.dateTime) {
                                 continue
                             }
-                            mDay = calendar1.get(Calendar.DAY_OF_MONTH)
-                            mMonth = calendar1.get(Calendar.MONTH)
-                            mYear = calendar1.get(Calendar.YEAR)
+                            mDay = calendar.get(Calendar.DAY_OF_MONTH)
+                            mMonth = calendar.get(Calendar.MONTH)
+                            mYear = calendar.get(Calendar.YEAR)
                             if (eventTime > 0) {
                                 days++
-                                data.add(EventModel(item.viewType,
-                                        Reminder(item, true).apply {
-                                            this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-                                        },
-                                        mDay, mMonth, mYear, 0))
+                                val localItem = Reminder(item, true).apply {
+                                    this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                                }
+                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, 0))
                             }
                         } while (days < max)
                     }

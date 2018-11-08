@@ -7,8 +7,6 @@ import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich

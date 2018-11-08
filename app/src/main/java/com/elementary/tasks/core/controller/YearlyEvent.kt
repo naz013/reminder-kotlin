@@ -68,7 +68,7 @@ class YearlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun canSkip(): Boolean {
-        return reminder.repeatLimit == -1 || reminder.eventCount + 1 < reminder.repeatLimit
+        return !reminder.isLimited() || !reminder.isLimitExceed()
     }
 
     override fun setDelay(delay: Int) {
