@@ -9,15 +9,12 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.coroutines.experimental.CommonPool
-import com.elementary.tasks.core.utils.temp.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
 
 /**
@@ -55,9 +52,9 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
 
     fun loadReminder(uuId: String) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val reminderItem = appDb.reminderDao().getById(uuId)
-            withContext(UI) {
+            withUIContext {
                 reminder.postValue(reminderItem)
                 isInProgress.postValue(false)
             }
@@ -82,16 +79,16 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             try {
                 google.tasks?.deleteTask(googleTask)
                 appDb.googleTasksDao().delete(googleTask)
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.DELETED)
                 }
             } catch (e: IOException) {
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.FAILED)
                 }
@@ -110,16 +107,16 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             try {
                 google.tasks?.insertTask(googleTask)
                 saveReminder(reminder)
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.SAVED)
                 }
             } catch (e: IOException) {
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.FAILED)
                 }
@@ -138,17 +135,17 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             try {
                 google.tasks?.updateTask(googleTask)
                 saveReminder(reminder)
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.SAVED)
                 }
             } catch (e: IOException) {
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.FAILED)
                 }
@@ -167,18 +164,18 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             try {
                 google.tasks?.updateTask(googleTask)
                 google.tasks?.moveTask(googleTask, oldListId)
                 saveReminder(reminder)
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.SAVED)
                 }
             } catch (e: IOException) {
-                withContext(UI) {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.FAILED)
                 }
@@ -197,7 +194,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             google.tasks?.moveTask(googleTask, oldListId)
             withUIContext {

@@ -15,10 +15,7 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.export.backups.InfoAdapter
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import kotlinx.android.synthetic.main.fragment_settings_backups.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import timber.log.Timber
+import kotlinx.coroutines.Job
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -151,7 +148,7 @@ class BackupsFragment : BaseSettingsFragment() {
         progressDialog?.setOnCancelListener {
             cancelTask()
         }
-        mJob = launch(CommonPool) {
+        mJob = launchDefault {
             val list = ArrayList<UserItem>()
             for (i in infos.indices) {
                 val info = infos[i]
@@ -174,7 +171,7 @@ class BackupsFragment : BaseSettingsFragment() {
         val context = context ?: return
 
         progressDialog = ProgressDialog.show(context, null, getString(R.string.deleting), false)
-        launch(CommonPool) {
+        launchDefault {
             if (type == Info.Dropbox) {
                 val dbx = Dropbox()
                 dbx.startSession()

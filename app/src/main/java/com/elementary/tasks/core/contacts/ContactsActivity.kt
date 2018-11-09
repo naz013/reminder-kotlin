@@ -14,9 +14,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_contacts_list.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Job
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -96,7 +94,7 @@ class ContactsActivity : ThemedActivity() {
             adapter.setData(type, fullData)
             return
         }
-        launch(CommonPool) {
+        launchDefault {
             val filtered = getFiltered(fullData.toList(), q)
             withUIContext { adapter.setData(type, filtered) }
         }
@@ -123,14 +121,14 @@ class ContactsActivity : ThemedActivity() {
     private fun selectNumber(name: String) {
         showProgress()
         mLoader?.cancel()
-        mLoader = launch(CommonPool) {
+        mLoader = launchDefault {
             val c = contentResolver.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                     ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?",
                     arrayOf(name), null)
             if (c  == null) {
                 hideProgress()
-                return@launch
+                return@launchDefault
             }
             val phoneIdx = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val phoneType = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)
@@ -203,7 +201,7 @@ class ContactsActivity : ThemedActivity() {
     private fun loadContacts() {
         showProgress()
         mLoader?.cancel()
-        mLoader = launch(CommonPool) {
+        mLoader = launchDefault {
             val mList = mutableListOf<ContactItem>()
             val cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null,
                     null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC")
@@ -264,7 +262,7 @@ class ContactsActivity : ThemedActivity() {
     private fun loadCalls() {
         showProgress()
         mLoader?.cancel()
-        mLoader = launch(CommonPool) {
+        mLoader = launchDefault {
             val mList = mutableListOf<CallsItem>()
             if (Permissions.checkPermission(this@ContactsActivity, Permissions.READ_CALLS)) {
                 val c = contentResolver.query(CallLog.Calls.CONTENT_URI, null, null,

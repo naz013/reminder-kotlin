@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -40,7 +39,7 @@ class MissedCallViewModel private constructor(application: Application, number: 
 
     fun deleteMissedCall(missedCall: MissedCall) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.missedCallsDao().delete(missedCall)
             EventJobService.cancelMissedCall(missedCall.number)
             withUIContext {

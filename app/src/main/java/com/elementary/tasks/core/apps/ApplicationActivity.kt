@@ -12,15 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.activity_application_list.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Job
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -67,7 +62,7 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
     private fun loadApps() {
         showProgress()
         mLoader?.cancel()
-        mLoader = launch(CommonPool) {
+        mLoader = launchDefault {
             val mList: MutableList<ApplicationItem> = mutableListOf()
             val pm = packageManager
             val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)

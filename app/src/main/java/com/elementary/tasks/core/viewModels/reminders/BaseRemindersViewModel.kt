@@ -12,13 +12,12 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import com.elementary.tasks.reminder.work.SingleBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.util.*
 
 /**
@@ -51,7 +50,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun saveAndStartReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.reminderDao().insert(reminder)
             EventControlFactory.getController(reminder).start()
             withUIContext {
@@ -64,7 +63,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun copyReminder(reminder: Reminder, time: Long, name: String) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val newItem = reminder.copy()
             newItem.summary = name
             val calendar = Calendar.getInstance()
@@ -88,7 +87,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun stopReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             EventControlFactory.getController(reminder).stop()
             withUIContext { isInProgress.postValue(false) }
         }
@@ -96,7 +95,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun pauseReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             EventControlFactory.getController(reminder).pause()
             withUIContext { isInProgress.postValue(false) }
         }
@@ -104,7 +103,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun resumeReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             EventControlFactory.getController(reminder).resume()
             withUIContext { isInProgress.postValue(false) }
         }
@@ -112,7 +111,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun toggleReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             if (!EventControlFactory.getController(reminder).onOff()) {
                 withUIContext {
                     isInProgress.postValue(false)
@@ -130,7 +129,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun moveToTrash(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             reminder.isRemoved = true
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().insert(reminder)
@@ -153,7 +152,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().delete(reminder)
             withUIContext {
@@ -172,7 +171,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun saveReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.reminderDao().insert(reminder)
             withUIContext {
                 isInProgress.postValue(false)

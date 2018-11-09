@@ -6,10 +6,8 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.temp.UI
 import com.elementary.tasks.core.views.*
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -26,8 +24,14 @@ import kotlinx.coroutines.experimental.withContext
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-suspend fun <T> withUIContext(start: CoroutineStart = CoroutineStart.DEFAULT,
-                              block: suspend () -> T): T = withContext(UI, start, block)
+suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T)
+        : T = withContext(Dispatchers.Main, block)
+
+fun launchDefault(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
+        : Job = GlobalScope.launch(Dispatchers.Default, start, block)
+
+fun launchIo(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
+        : Job = GlobalScope.launch(Dispatchers.IO, start, block)
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
     this.useGlobal = reminder.useGlobal

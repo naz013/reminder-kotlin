@@ -9,11 +9,10 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.groups.work.SingleBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -43,7 +42,7 @@ class GroupViewModel private constructor(application: Application, id: String) :
 
     fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             if (!wasDefault && reminderGroup.isDefaultGroup) {
                 val groups = appDb.reminderGroupDao().all()
                 for (g in groups) g.isDefaultGroup = false

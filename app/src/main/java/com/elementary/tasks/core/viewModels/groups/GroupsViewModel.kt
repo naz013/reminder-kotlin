@@ -6,10 +6,9 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.work.SingleBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -38,7 +37,7 @@ class GroupsViewModel(application: Application) : BaseGroupsViewModel(applicatio
                 .addTag(reminderGroup.groupUuId)
                 .build()
         WorkManager.getInstance().enqueue(work)
-        launch(CommonPool) {
+        launchDefault {
             reminderGroup.groupColor = color
             appDb.reminderGroupDao().insert(reminderGroup)
             withUIContext { isInProgress.postValue(false) }

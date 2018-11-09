@@ -17,8 +17,6 @@ import com.elementary.tasks.navigation.settings.export.BackupsFragment
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_export.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -118,7 +116,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         builder.setPositiveButton(R.string.all) { _, _ ->
             val dir = MemoryUtil.parent
             deleteRecursive(dir!!)
-            launch(CommonPool) {
+            launchDefault {
                 val gdx = Google.getInstance()
                 val dbx = Dropbox()
                 if (SuperUtil.isConnected(context!!)) {

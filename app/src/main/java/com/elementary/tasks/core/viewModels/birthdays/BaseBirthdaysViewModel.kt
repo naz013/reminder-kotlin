@@ -8,12 +8,10 @@ import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.coroutines.experimental.CommonPool
-import com.elementary.tasks.core.utils.temp.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -37,14 +35,14 @@ abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewMode
 
     fun deleteBirthday(birthday: Birthday) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.birthdaysDao().delete(birthday)
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
                     .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
                     .addTag(birthday.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
@@ -53,14 +51,14 @@ abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewMode
 
     fun saveBirthday(birthday: Birthday) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.birthdaysDao().insert(birthday)
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
                     .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
                     .addTag(birthday.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
