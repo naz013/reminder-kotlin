@@ -13,6 +13,7 @@ import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.monthView.MonthViewViewModel
+import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
@@ -63,22 +64,6 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
             }
             return list
         }
-
-//    private val listener = object : FlextListener {
-//        override fun onClickDate(date: Date) {
-//            replaceFragment(DayViewFragment.newInstance(dateMills, 0), "")
-//        }
-//
-//        override fun onLongClickDate(date: Date) {
-//            showActionDialog(true)
-//        }
-//
-//        override fun onMonthChanged(month: Int, year: Int) {}
-//
-//        override fun onViewCreated() {}
-//
-//        override fun onMonthSelected(month: Int) {}
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,6 +155,23 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
 
     override fun getViewModel(): MonthViewViewModel {
         return viewModel
+    }
+
+    override fun birthdayColor(): Int {
+        return themeUtil.getColor(themeUtil.colorBirthdayCalendar())
+    }
+
+    override fun reminderColor(): Int {
+        return themeUtil.getColor(themeUtil.colorReminderCalendar())
+    }
+
+    override fun onDateClick(date: Date) {
+        callback?.openFragment(DayViewFragment.newInstance(date.time, 0), "", true)
+    }
+
+    override fun onDateLongClick(date: Date) {
+        dateMills = date.time
+        showActionDialog(true)
     }
 
     private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {

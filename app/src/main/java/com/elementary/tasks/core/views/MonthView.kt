@@ -1,21 +1,17 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IntRange
+import androidx.core.content.ContextCompat
+import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.Events
-import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.*
 import hirondelle.date4j.DateTime
 import java.lang.ref.WeakReference
 import java.util.*
@@ -52,14 +48,24 @@ class MonthView : View, View.OnTouchListener {
 
     private var mContext: Context? = null
 
-    private var paint: Paint? = null
-    private var circlePaint: Paint? = null
+    private lateinit var paint: Paint
+    private lateinit var circlePaint: Paint
+    private lateinit var borderPaint: Paint
+
+    private lateinit var horizontalGradient: LinearGradient
+    private lateinit var verticalGradient: LinearGradient
+    private lateinit var gradientColors: IntArray
+
     private var mCells: MutableList<Rect>? = null
     private val circlesMap = HashMap<Rect, List<Rect>>()
+
     private var mWidth: Int = 0
     private var mHeight: Int = 0
+
     private var mDefaultColor: Int = 0
     private var mTodayColor: Int = 0
+    private var mTouchColor: Int = 0
+
     private var mTouchPosition = -1
     private var mTouchRect: Rect? = null
 
@@ -70,7 +76,7 @@ class MonthView : View, View.OnTouchListener {
         override fun run() {
             mLongClickHandler.removeCallbacks(this)
             if (mTouchRect != null && mDateLongClick != null) {
-                mDateLongClick!!.onLongClick(mDateTimeList!![mTouchPosition])
+                mDateLongClick?.onLongClick(mDateTimeList!![mTouchPosition])
             }
             cancelTouch()
         }
@@ -99,22 +105,29 @@ class MonthView : View, View.OnTouchListener {
 
     private fun init(context: Context) {
         this.mContext = context
+        this.mTouchColor = ContextCompat.getColor(context, R.color.secondary_12)
+        this.gradientColors = intArrayOf(Color.TRANSPARENT, ContextCompat.getColor(context, R.color.secondary_90), Color.TRANSPARENT)
+
+        this.borderPaint = Paint()
+        this.borderPaint.style = Paint.Style.STROKE
+        this.borderPaint.strokeWidth = MeasureUtils.dp2px(context, 1).toFloat()
+
         this.paint = Paint()
-        this.paint?.isAntiAlias = true
+        this.paint.isAntiAlias = true
         this.circlePaint = Paint()
-        this.circlePaint?.isAntiAlias = true
-        mDefaultColor = if (themeUtil.isDark) {
+        this.circlePaint.isAntiAlias = true
+        this.mDefaultColor = if (themeUtil.isDark) {
             Color.WHITE
         } else {
             Color.BLACK
         }
-        mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(prefs.todayColor))
-        paint!!.typeface = AssetsUtil.getTypeface(context, 7)
+        this.mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(prefs.todayColor))
+        this.paint.typeface = AssetsUtil.getTypeface(context, 7)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
-        currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-        currentMonth = calendar.get(Calendar.MONTH) + 1
-        currentYear = calendar.get(Calendar.YEAR)
+        this.currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+        this.currentMonth = calendar.get(Calendar.MONTH) + 1
+        this.currentYear = calendar.get(Calendar.YEAR)
         setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
         setOnTouchListener(this)
     }
@@ -129,16 +142,16 @@ class MonthView : View, View.OnTouchListener {
 
     fun setEventsMap(eventsMap: Map<DateTime, Events>) {
         this.eventsMap = eventsMap
+        invalidate()
     }
 
     fun setDate(year: Int, @IntRange(from = 1, to = 12) month: Int) {
         mDateTimeList = ArrayList()
-        mDateTimeList?.clear()
         mMonth = month
         mYear = year
         val firstDateOfMonth = DateTime(mYear, mMonth, 1, 0, 0, 0, 0)
         val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
-        var weekdayOfFirstDate = firstDateOfMonth.weekDay!!
+        var weekdayOfFirstDate = firstDateOfMonth.weekDay
         val startDayOfWeek = prefs.startDay + 1
         if (weekdayOfFirstDate < startDayOfWeek) {
             weekdayOfFirstDate += 7
@@ -148,7 +161,7 @@ class MonthView : View, View.OnTouchListener {
             if (!dateTime.lt(firstDateOfMonth)) {
                 break
             }
-            mDateTimeList!!.add(dateTime)
+            mDateTimeList?.add(dateTime)
             weekdayOfFirstDate--
         }
         for (i in 0 until lastDateOfMonth.day) {
@@ -162,19 +175,19 @@ class MonthView : View, View.OnTouchListener {
             var i = 1
             while (true) {
                 val nextDay = lastDateOfMonth.plusDays(i)
-                mDateTimeList!!.add(nextDay)
+                mDateTimeList?.add(nextDay)
                 i++
                 if (nextDay.weekDay == endDayOfWeek) {
                     break
                 }
             }
         }
-        val size = mDateTimeList!!.size
+        val size = mDateTimeList?.size ?: 0
         val numOfDays = 42 - size
-        val lastDateTime = mDateTimeList!![size - 1]
+        val lastDateTime = mDateTimeList?.get(size - 1) ?: return
         for (i in 1..numOfDays) {
             val nextDateTime = WeakReference(lastDateTime.plusDays(i))
-            mDateTimeList!!.add(nextDateTime.get()!!)
+            mDateTimeList?.add(nextDateTime.get()!!)
         }
     }
 
@@ -194,7 +207,10 @@ class MonthView : View, View.OnTouchListener {
                 Color.GRAY
             } else {
                 if (eventsMap.containsKey(dateTime)) {
-                    drawEvents(canvas, eventsMap[dateTime]!!, rect)
+                    val events = eventsMap[dateTime]
+                    if (events != null) {
+                        drawEvents(canvas, events, rect)
+                    }
                 }
                 if (dateTime.day == currentDay && dateTime.month == currentMonth && dateTime.year == currentYear) {
                     mTodayColor
@@ -202,32 +218,32 @@ class MonthView : View, View.OnTouchListener {
                     mDefaultColor
                 }
             }
-            drawRectText(dateTime.day!!.toString(), canvas, rect, color)
+            drawRectText(dateTime.day.toString(), canvas, rect, color, i)
         }
         LogUtil.d(TAG, "onDraw: " + (System.currentTimeMillis() - start))
     }
 
     private fun drawEvents(canvas: Canvas, events: Events, rect: Rect) {
-        val rects = circlesMap[rect]
+        val rects = circlesMap[rect] ?: return
         var index = 0
         events.moveToStart()
-        circlePaint!!.alpha = 50
-        circlePaint!!.style = Paint.Style.FILL
+        circlePaint.alpha = 50
+        circlePaint.style = Paint.Style.FILL
         val maxEvents = GRID_R_C * GRID_R_C
         while (events.hasNext() && index < maxEvents) {
             val event = WeakReference(events.next)
-            circlePaint!!.color = event.get()!!.color
-            val r = rects!![index]
+            circlePaint.color = event.get()!!.color
+            val r = rects[index]
             val cX = r.centerX()
             val cY = r.centerY()
             if (index > 0 && index < maxEvents - 1) {
                 val prev = WeakReference<Events.Event>(events.previousWithoutMoving)
                 if (prev.get() != null) {
                     val end = rects[index - 1]
-                    canvas.drawLine(cX.toFloat(), cY.toFloat(), end.centerX().toFloat(), end.centerY().toFloat(), circlePaint!!)
+                    canvas.drawLine(cX.toFloat(), cY.toFloat(), end.centerX().toFloat(), end.centerY().toFloat(), circlePaint)
                 }
             }
-            canvas.drawCircle(r.centerX().toFloat(), r.centerY().toFloat(), r.width() / 4f, circlePaint!!)
+            canvas.drawCircle(r.centerX().toFloat(), r.centerY().toFloat(), r.width() / 4f, circlePaint)
             index++
         }
     }
@@ -237,13 +253,17 @@ class MonthView : View, View.OnTouchListener {
         getLocalVisibleRect(bounds.get())
         val cellWidth = mWidth / COLS
         val cellHeight = mHeight / ROWS
+        horizontalGradient = LinearGradient(0f, 0f, cellWidth.toFloat(), 0f,
+                gradientColors, null, Shader.TileMode.MIRROR)
+        verticalGradient = LinearGradient(0f, 0f, 0f, cellHeight.toFloat(),
+                gradientColors, null, Shader.TileMode.MIRROR)
         mCells = ArrayList()
         for (i in 0 until ROWS) {
             for (j in 0 until COLS) {
                 val top = i * cellHeight
                 val left = j * cellWidth
                 val tmp = Rect(left, top, left + cellWidth, top + cellHeight)
-                mCells!!.add(tmp)
+                mCells?.add(tmp)
                 generateCircles(tmp)
             }
         }
@@ -266,15 +286,27 @@ class MonthView : View, View.OnTouchListener {
         circlesMap[rect] = rects
     }
 
-    private fun drawRectText(text: String, canvas: Canvas, r: Rect, color: Int) {
-        paint!!.textSize = 30f
-        paint!!.textAlign = Paint.Align.CENTER
-        paint!!.alpha = 100
-        paint!!.color = color
+    private fun drawRectText(text: String, canvas: Canvas, r: Rect, color: Int, i: Int) {
+        paint.textSize = MeasureUtils.dp2px(context, 16).toFloat()
+        paint.textAlign = Paint.Align.CENTER
+        paint.alpha = 100
+        paint.color = color
+        paint.style = Paint.Style.FILL_AND_STROKE
         val width = r.width()
-        val numOfChars = paint!!.breakText(text, true, width.toFloat(), null)
+        val numOfChars = paint.breakText(text, true, width.toFloat(), null)
         val start = (text.length - numOfChars) / 2
-        canvas.drawText(text, start, start + numOfChars, r.exactCenterX(), r.exactCenterY(), paint!!)
+        canvas.drawText(text, start, start + numOfChars, r.exactCenterX(), r.exactCenterY(), paint)
+
+        if (i == 0 || ((i - 6) % 7) != 0) {
+            borderPaint.shader = verticalGradient
+            canvas.drawLine(r.right.toFloat(), r.top.toFloat(),
+                    r.right.toFloat(), r.bottom.toFloat(), borderPaint)
+        }
+        if (i <= 34) {
+            borderPaint.shader = horizontalGradient
+            canvas.drawLine(r.left.toFloat(), r.bottom.toFloat(),
+                    r.right.toFloat(), r.bottom.toFloat(), borderPaint)
+        }
     }
 
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
@@ -292,7 +324,7 @@ class MonthView : View, View.OnTouchListener {
         val y = motionEvent.y.toInt()
         mLongClickHandler.removeCallbacks(mLongRunnable)
         if (mTouchRect != null && mTouchRect!!.contains(x, y) && mDateClick != null) {
-            mDateClick!!.onClick(mDateTimeList!![mTouchPosition])
+            mDateClick?.onClick(mDateTimeList!![mTouchPosition])
         }
         cancelTouch()
     }
