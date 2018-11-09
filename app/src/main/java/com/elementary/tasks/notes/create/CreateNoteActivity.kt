@@ -43,8 +43,6 @@ import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.activity_create_note.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -456,7 +454,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
         val note = createObject() ?: return
         showProgress()
-        launch(CommonPool) {
+        launchDefault {
             val file = backupTool.createNote(note)
             withUIContext {
                 if (file != null) sendNote(file)

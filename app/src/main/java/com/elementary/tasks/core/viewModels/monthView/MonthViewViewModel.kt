@@ -6,14 +6,13 @@ import androidx.lifecycle.Observer
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.monthView.MonthPagerItem
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*
 
@@ -70,7 +69,7 @@ class MonthViewViewModel private constructor(application: Application,
 
         private val birthdayObserver: Observer<in List<Birthday>> = Observer {
             Timber.d("birthdaysChanged: ")
-            launch(CommonPool) {
+            launchDefault {
                 if (it != null) {
                     birthdayData.clear()
                     birthdayData.addAll(DayViewProvider.loadBirthdays(birthTime, it))
@@ -80,7 +79,7 @@ class MonthViewViewModel private constructor(application: Application,
         }
         private val reminderObserver: Observer<in List<Reminder>> = Observer {
             Timber.d("remindersChanged: ")
-            launch(CommonPool) {
+            launchDefault {
                 if (it != null) {
                     reminderData.clear()
                     reminderData.addAll(DayViewProvider.loadReminders(calculateFuture, it))
@@ -139,7 +138,7 @@ class MonthViewViewModel private constructor(application: Application,
 
         private fun findMatches(list: List<EventModel>, monthPagerItem: MonthPagerItem, sort: Boolean) {
             this.job?.cancel()
-            this.job = launch(CommonPool) {
+            this.job = launchDefault {
                 val res = ArrayList<EventModel>()
                 Timber.d("Search events: $monthPagerItem")
                 for (item in list) {

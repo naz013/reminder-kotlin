@@ -8,11 +8,9 @@ import androidx.work.WorkManager
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.coroutines.experimental.CommonPool
-import com.elementary.tasks.core.utils.temp.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import java.util.*
 
 @Suppress("JoinDeclarationAndAssignment")
@@ -44,7 +42,7 @@ class BirthdaysViewModel(application: Application) : BaseBirthdaysViewModel(appl
 
     fun deleteAllBirthdays() {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val list = appDb.birthdaysDao().all()
             val ids = ArrayList<String>()
             for (birthday in list) {
@@ -56,7 +54,7 @@ class BirthdaysViewModel(application: Application) : BaseBirthdaysViewModel(appl
                     .addTag("BD_WORK")
                     .build()
             WorkManager.getInstance().enqueue(work)
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }

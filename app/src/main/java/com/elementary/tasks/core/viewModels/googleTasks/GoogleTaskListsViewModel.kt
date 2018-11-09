@@ -6,12 +6,10 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.google.api.services.tasks.model.TaskLists
-import kotlinx.coroutines.experimental.CommonPool
-import com.elementary.tasks.core.utils.temp.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
 import java.util.*
 
@@ -52,7 +50,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             var lists: TaskLists? = null
             try {
                 lists = mGoogle.tasks?.taskLists
@@ -74,7 +72,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                     appDb.googleTaskListsDao().insert(taskList)
                     val tasks = mGoogle.tasks?.getTasks(listId)
                     if (tasks == null || tasks.isEmpty()) {
-                        withContext(UI) {
+                        withUIContext {
                             isInProgress.postValue(false)
                             result.postValue(Commands.UPDATED)
                             updatesHelper.updateTasksWidget()
@@ -92,7 +90,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                             googleTasks.add(googleTask)
                         }
                         appDb.googleTasksDao().insertAll(googleTasks)
-                        withContext(UI) {
+                        withUIContext {
                             isInProgress.postValue(false)
                             result.postValue(Commands.UPDATED)
                             updatesHelper.updateTasksWidget()
@@ -117,11 +115,11 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
             result.postValue(Commands.FAILED)
         } else {
             isInProgress.postValue(true)
-            launch(CommonPool) {
+            launchDefault {
                 val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, Google.TASKS_COMPLETE)
                 appDb.googleTasksDao().deleteAll(googleTasks)
-                mGoogle.tasks!!.clearTaskList(googleTaskList.listId)
-                withContext(UI) {
+                mGoogle.tasks?.clearTaskList(googleTaskList.listId)
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.UPDATED)
                     updatesHelper.updateTasksWidget()

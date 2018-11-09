@@ -9,11 +9,10 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.places.work.SingleBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -43,7 +42,7 @@ class SmsTemplateViewModel private constructor(application: Application, key: St
 
     fun saveTemplate(smsTemplate: SmsTemplate) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.smsTemplatesDao().insert(smsTemplate)
             withUIContext {
                 isInProgress.postValue(false)

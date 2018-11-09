@@ -7,12 +7,11 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.groups.work.DeleteBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -42,7 +41,7 @@ abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(a
 
     fun deleteGroup(reminderGroup: ReminderGroup) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.reminderGroupDao().delete(reminderGroup)
             withUIContext {
                 isInProgress.postValue(false)

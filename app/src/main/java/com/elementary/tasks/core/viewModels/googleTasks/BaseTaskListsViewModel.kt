@@ -5,12 +5,10 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.coroutines.experimental.CommonPool
-import com.elementary.tasks.core.utils.temp.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
 
 /**
@@ -44,7 +42,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             return
         }
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val def = googleTaskList.def
             google.tasks!!.deleteTaskList(googleTaskList.listId)
             appDb.googleTaskListsDao().delete(googleTaskList)
@@ -57,7 +55,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
                     appDb.googleTaskListsDao().insert(taskList)
                 }
             }
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
@@ -74,20 +72,20 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             result.postValue(Commands.FAILED)
         } else {
             isInProgress.postValue(true)
-            launch(CommonPool) {
+            launchDefault {
                 try {
                     if (googleTask.status == Google.TASKS_NEED_ACTION) {
                         mGoogle.tasks?.updateTaskStatus(Google.TASKS_COMPLETE, googleTask.listId, googleTask.taskId)
                     } else {
                         mGoogle.tasks?.updateTaskStatus(Google.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
                     }
-                    withContext(UI) {
+                    withUIContext {
                         isInProgress.postValue(false)
                         result.postValue(Commands.UPDATED)
                         updatesHelper.updateTasksWidget()
                     }
                 } catch (e: IOException) {
-                    withContext(UI) {
+                    withUIContext {
                         isInProgress.postValue(false)
                         result.postValue(Commands.FAILED)
                     }

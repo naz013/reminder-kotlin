@@ -17,14 +17,10 @@ import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.temp.UI
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -67,9 +63,9 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getNotes() {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault{
             val list = LinkedList(appDb.notesDao().all())
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 notes.postValue(list)
             }
@@ -78,9 +74,9 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getShoppingReminders() {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val list = LinkedList(appDb.reminderDao().getAllTypes(true, false, intArrayOf(Reminder.BY_DATE_SHOP)))
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 shoppingLists.postValue(list)
             }
@@ -89,13 +85,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getEnabledReminders(dateTime: Long) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val list = LinkedList(appDb.reminderDao().getAllTypesInRange(
                     true,
                     false,
                     TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                     TimeUtil.getGmtFromDateTime(dateTime)))
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 enabledReminders.postValue(list)
             }
@@ -104,12 +100,12 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getReminders(dateTime: Long) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val list = LinkedList(appDb.reminderDao().getActiveInRange(
                     false,
                     TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                     TimeUtil.getGmtFromDateTime(dateTime)))
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 activeReminders.postValue(list)
             }
@@ -118,7 +114,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getBirthdays(dateTime: Long, time: Long) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val list = LinkedList(appDb.birthdaysDao().all())
             for (i in list.indices.reversed()) {
                 val itemTime = list[i].getDateTime(time)
@@ -126,7 +122,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                     list.removeAt(i)
                 }
             }
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 birthdays.postValue(list)
             }
@@ -209,11 +205,11 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun disableAllReminders(showToast: Boolean) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             for (reminder in appDb.reminderDao().getAll(true, false)) {
                 stopReminder(reminder)
             }
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
                 if (showToast) {
@@ -225,13 +221,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun emptyTrash(showToast: Boolean) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             val archived = appDb.reminderDao().getAll(false, true)
             for (reminder in archived) {
                 deleteReminder(reminder, false)
                 calendarUtils.deleteEvents(reminder.uniqueId)
             }
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.TRASH_CLEARED)
                 if (showToast) {
@@ -300,7 +296,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         if (addQuickNote && prefs.getBoolean(PrefsConstants.QUICK_NOTE_REMINDER)) {
             saveQuickReminder(note.key, note.summary)
         }
-        launch(CommonPool) {
+        launchDefault {
             appDb.notesDao().insert(note)
         }
         updatesHelper.updateNotesWidget()
@@ -334,7 +330,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     }
 
     fun saveGroup(model: ReminderGroup, showToast: Boolean) {
-        launch(CommonPool) {
+        launchDefault {
             appDb.reminderGroupDao().insert(model)
         }
             if (showToast) {

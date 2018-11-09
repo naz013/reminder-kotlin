@@ -16,12 +16,10 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.android.synthetic.main.list_item_email.view.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.util.*
-
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -170,7 +168,7 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun loadContacts(callback: ((List<PhoneItem>) -> Unit)?) {
-        launch(CommonPool) {
+        launchDefault {
             val list = ArrayList<PhoneItem>()
             val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
             val projection = arrayOf(

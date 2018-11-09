@@ -11,11 +11,10 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -47,7 +46,7 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
 
     fun deleteAll(data: List<Reminder>) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             for (reminder in data) EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().deleteAll(*data.toTypedArray())
             withUIContext {

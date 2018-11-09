@@ -28,8 +28,6 @@ import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_note_preview.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -204,7 +202,7 @@ class NotePreviewActivity : ThemedActivity() {
             return
         }
         showProgress()
-        launch(CommonPool) {
+        launchDefault {
             val file = backupTool.createNote(mNote)
             withUIContext {
                 if (file != null) sendNote(file)

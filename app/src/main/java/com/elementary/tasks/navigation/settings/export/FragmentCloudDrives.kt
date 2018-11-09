@@ -12,13 +12,12 @@ import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -115,7 +114,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     private fun disconnectFromGoogleServices() {
         mGoogleLogin.logOut()
-        launch(CommonPool) {
+        launchDefault {
             AppDb.getAppDatabase(context!!).googleTasksDao().deleteAll()
             AppDb.getAppDatabase(context!!).googleTaskListsDao().deleteAll()
             withUIContext { finishSync() }

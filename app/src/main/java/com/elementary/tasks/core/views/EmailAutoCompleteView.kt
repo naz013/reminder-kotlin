@@ -15,10 +15,9 @@ import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.AssetsUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.android.synthetic.main.list_item_email.view.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -166,7 +165,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun loadContacts(callback: ((List<EmailItem>) -> Unit)?) {
-        launch(CommonPool) {
+        launchDefault {
             val list = ArrayList<EmailItem>()
             val uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI
             val projection = arrayOf(

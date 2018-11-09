@@ -15,7 +15,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.temp.UI
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
@@ -23,10 +23,7 @@ import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.EventsPagerItem
 import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.reminder.work.SingleBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*
 
@@ -72,7 +69,7 @@ class DayViewViewModel private constructor(application: Application,
 
     fun saveReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.reminderDao().insert(reminder)
             withUIContext {
                 isInProgress.postValue(false)
@@ -88,9 +85,9 @@ class DayViewViewModel private constructor(application: Application,
 
     fun deleteBirthday(birthday: Birthday) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.birthdaysDao().delete(birthday)
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
@@ -104,11 +101,11 @@ class DayViewViewModel private constructor(application: Application,
 
     fun moveToTrash(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             reminder.isRemoved = true
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().insert(reminder)
-            withContext(UI) {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
@@ -135,7 +132,7 @@ class DayViewViewModel private constructor(application: Application,
 
         private val birthdayObserver: Observer<in List<Birthday>> = Observer {
             Timber.d("birthdaysChanged: ")
-            launch(CommonPool) {
+            launchDefault {
                 if (it != null) {
                     birthdayData.clear()
                     birthdayData.addAll(DayViewProvider.loadBirthdays(birthTime, it))
@@ -145,7 +142,7 @@ class DayViewViewModel private constructor(application: Application,
         }
         private val reminderObserver: Observer<in List<Reminder>> = Observer {
             Timber.d("remindersChanged: ")
-            launch(CommonPool) {
+            launchDefault {
                 if (it != null) {
                     reminderData.clear()
                     reminderData.addAll(DayViewProvider.loadReminders(calculateFuture, it))
@@ -196,7 +193,7 @@ class DayViewViewModel private constructor(application: Application,
 
         private fun findMatches(list: List<EventModel>, eventsPagerItem: EventsPagerItem, sort: Boolean) {
             this.job?.cancel()
-            this.job = launch(CommonPool) {
+            this.job = launchDefault {
                 val res = ArrayList<EventModel>()
                 Timber.d("Search events: $eventsPagerItem")
                 for (item in list) {

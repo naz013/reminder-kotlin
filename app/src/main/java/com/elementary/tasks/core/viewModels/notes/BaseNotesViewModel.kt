@@ -8,14 +8,13 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.SingleBackupWorker
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import timber.log.Timber
 
 /**
@@ -41,7 +40,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
     fun deleteNote(noteWithImages: NoteWithImages) {
         val note = noteWithImages.note ?: return
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.notesDao().delete(note)
             appDb.notesDao().deleteAllImages(note.key)
             withUIContext {
@@ -59,7 +58,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
     fun saveNote(note: NoteWithImages) {
         val v = note.note ?: return
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             appDb.notesDao().insert(v)
             if (note.images.isNotEmpty()) {
                 note.images = note.images.map {
@@ -83,7 +82,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
     fun saveNote(note: NoteWithImages, reminder: Reminder?) {
         val v = note.note ?: return
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             if (note.images.isNotEmpty()) {
                 note.images = note.images.map {
                     it.noteId = v.key
@@ -109,7 +108,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
     }
 
     private fun saveReminder(reminder: Reminder) {
-        launch(CommonPool) {
+        launchDefault {
             val group = appDb.reminderGroupDao().defaultGroup()
             if (group != null) {
                 reminder.groupColor = group.groupColor
@@ -129,7 +128,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
 
     fun deleteReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        launch(CommonPool) {
+        launchDefault {
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().delete(reminder)
             withUIContext {

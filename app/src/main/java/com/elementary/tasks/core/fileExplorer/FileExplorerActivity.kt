@@ -19,8 +19,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_file_explorer.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.FilenameFilter
 import java.util.*
@@ -240,7 +238,7 @@ class FileExplorerActivity : ThemedActivity() {
         mFilter = false
         searchField.setText("")
         mFilter = true
-        launch(CommonPool) {
+        launchDefault {
             try {
                 path.mkdirs()
             } catch (e: SecurityException) {
