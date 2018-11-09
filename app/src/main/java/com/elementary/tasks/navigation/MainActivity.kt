@@ -228,6 +228,14 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
+    override fun openFragment(fragment: BaseFragment, tag: String, replace: Boolean) {
+        if (replace) {
+            replaceFragment(fragment, tag)
+        } else {
+            openFragment(fragment, tag)
+        }
+    }
+
     override fun openFragment(fragment: BaseFragment, tag: String) {
         val ft = supportFragmentManager.beginTransaction()
         ft.add(R.id.main_container, fragment, tag)

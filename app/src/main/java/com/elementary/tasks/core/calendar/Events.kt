@@ -1,11 +1,7 @@
 package com.elementary.tasks.core.calendar
 
 import java.util.ArrayList
-import kotlin.Boolean
 import kotlin.Comparator
-import kotlin.Int
-import kotlin.Long
-import kotlin.String
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,14 +22,14 @@ import kotlin.String
  * limitations under the License.
  */
 class Events {
-    private var events: ArrayList<Event>? = null
+    private var events: ArrayList<Event> = ArrayList()
     private var mPosition = 0
 
     val nextWithoutMoving: Event?
         get() {
             val index = mPosition + 1
-            return if (events != null && index < events!!.size) {
-                events!![index]
+            return if (index < events.size) {
+                events[index]
             } else
                 null
         }
@@ -42,16 +38,16 @@ class Events {
         get() {
             if (mPosition == 0) return null
             val index = mPosition - 1
-            return if (events != null && index < events!!.size) {
-                events!![index]
+            return if (index < events.size) {
+                events[index]
             } else
                 null
         }
 
     val next: Event?
         get() {
-            return if (events != null && mPosition < events!!.size) {
-                val event = events!![mPosition]
+            return if (mPosition < events.size) {
+                val event = events[mPosition]
                 mPosition++
                 event
             } else
@@ -59,29 +55,23 @@ class Events {
         }
 
     val last: Event?
-        get() = if (events != null) {
-            events!![events!!.size - 1]
+        get() = if (events.isNotEmpty()) {
+            events[events.size - 1]
         } else
             null
 
     constructor() {
-        events = ArrayList()
+        events.clear()
     }
 
-    constructor(event: Event) {
-        events = ArrayList()
-        events!!.add(event)
+    constructor(event: Event): this() {
+        events.add(event)
     }
 
-    constructor(task: String, color: Int, type: Type, time: Long) {
+    constructor(task: String, color: Int, type: Type, time: Long): this() {
         val event = Event(task, color, type, time)
-        if (events != null) {
-            events!!.add(event)
-        } else {
-            events = ArrayList()
-            events!!.add(event)
-        }
-        events!!.sortWith(Comparator { event1, t1 -> (event1.time - t1.time).toInt() })
+        events.add(event)
+        events.sortWith(Comparator { event1, t1 -> (event1.time - t1.time).toInt() })
     }
 
     fun moveToStart() {
@@ -90,25 +80,20 @@ class Events {
 
     fun addEvent(task: String, color: Int, type: Type, time: Long): Int {
         val event = Event(task, color, type, time)
-        if (events != null) {
-            events!!.add(event)
-        } else {
-            events = ArrayList()
-            events!!.add(event)
-        }
-        return events!!.indexOf(event)
+        events.add(event)
+        return events.indexOf(event)
     }
 
     operator fun hasNext(): Boolean {
-        return events != null && mPosition < events!!.size
+        return mPosition < events.size
     }
 
     fun count(): Int {
-        return events!!.size
+        return events.size
     }
 
     override fun toString(): String {
-        return events!!.toString()
+        return events.toString()
     }
 
     enum class Type {
@@ -116,11 +101,5 @@ class Events {
         BIRTHDAY
     }
 
-    class Event(var task: String?, var color: Int, var type: Type?, var time: Long) {
-
-        override fun toString(): String {
-            return "Event: task " + task + "" +
-                    " || color: " + color + " || type " + type
-        }
-    }
+    data class Event(var task: String?, var color: Int, var type: Type?, var time: Long)
 }

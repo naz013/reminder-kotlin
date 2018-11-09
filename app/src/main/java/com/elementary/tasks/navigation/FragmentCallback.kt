@@ -24,6 +24,8 @@ interface FragmentCallback {
 
     fun openFragment(fragment: BaseFragment, tag: String)
 
+    fun openFragment(fragment: BaseFragment, tag: String, replace: Boolean)
+
     fun onTitleChange(title: String)
 
     fun onFragmentSelect(fragment: BaseFragment)
