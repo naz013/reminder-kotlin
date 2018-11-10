@@ -62,6 +62,7 @@ class EventsListFragment : Fragment() {
     fun getModel(): EventsPagerItem? = mItem
 
     fun setModel(eventsPagerItem: EventsPagerItem) {
+        if (isVisible) mAdapter.setData(listOf())
         this.mItem = eventsPagerItem
     }
 

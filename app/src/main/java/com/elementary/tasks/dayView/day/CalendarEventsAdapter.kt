@@ -45,7 +45,7 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            0 -> ReminderHolder(parent, false, false, false) { view, i, listActions ->
+            0 -> ReminderHolder(parent, false, false, showMore) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }
             1 -> ShoppingHolder(parent, false, showMore) { view, i, listActions ->
