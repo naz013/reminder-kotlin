@@ -63,7 +63,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             saveAction = {reminder -> viewModel.saveReminder(reminder) },
             toggleAction = {reminder -> viewModel.toggleReminder(reminder) },
             deleteAction = {reminder -> viewModel.moveToTrash(reminder) },
-            allGroups = { return@ReminderResolver viewModel.allGroups.value ?: listOf() })
+            allGroups = { return@ReminderResolver viewModel.groups })
 
     private val mAdapter = RemindersRecyclerAdapter()
 
@@ -188,9 +188,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private fun refreshFilters() {
         filters.clear()
         addDateFilter(filters)
-        if (viewModel.allGroups.value != null) {
-            addGroupFilter(viewModel.allGroups.value!!)
-        }
+        addGroupFilter(viewModel.groups)
         addTypeFilter(filters)
         addStatusFilter(filters)
     }

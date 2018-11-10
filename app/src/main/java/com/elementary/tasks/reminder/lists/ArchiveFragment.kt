@@ -59,7 +59,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             saveAction = { reminder -> viewModel.saveReminder(reminder) },
             toggleAction = {},
             deleteAction = { reminder -> viewModel.deleteReminder(reminder, true) },
-            allGroups = { return@ReminderResolver viewModel.allGroups.value ?: listOf() })
+            allGroups = { return@ReminderResolver viewModel.groups })
 
     private var mAdapter = RemindersRecyclerAdapter()
 
@@ -172,10 +172,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun refreshFilters() {
         filters.clear()
-        if (viewModel.groups.value != null) {
-            addGroupFilter(viewModel.groups.value!!)
-            addTypeFilter(filters)
-        }
+        addGroupFilter(viewModel.groups)
+        addTypeFilter(filters)
     }
 
     private fun initList() {

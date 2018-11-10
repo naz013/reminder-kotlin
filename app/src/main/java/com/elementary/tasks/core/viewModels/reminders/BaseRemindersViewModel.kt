@@ -2,7 +2,7 @@ package com.elementary.tasks.core.viewModels.reminders
 
 import android.app.Application
 import android.widget.Toast
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -40,12 +40,21 @@ import java.util.*
  */
 abstract class BaseRemindersViewModel(application: Application) : BaseDbViewModel(application) {
 
-    var defaultReminderGroup: LiveData<ReminderGroup>
-    var allGroups: LiveData<List<ReminderGroup>>
+    var defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
+    var allGroups: MutableLiveData<List<ReminderGroup>> = MutableLiveData()
+    val groups = mutableListOf<ReminderGroup>()
 
     init {
-        defaultReminderGroup = appDb.reminderGroupDao().loadDefault()
-        allGroups = appDb.reminderGroupDao().loadAll()
+        appDb.reminderGroupDao().loadDefault().observeForever {
+            defaultReminderGroup.postValue(it)
+        }
+        appDb.reminderGroupDao().loadAll().observeForever {
+            allGroups.postValue(it)
+            if (it != null) {
+                groups.clear()
+                groups.addAll(it)
+            }
+        }
     }
 
     fun saveAndStartReminder(reminder: Reminder) {

@@ -9,7 +9,6 @@ import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -37,11 +36,9 @@ import com.elementary.tasks.reminder.work.DeleteBackupWorker
 class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewModel(application) {
 
     var events: LiveData<List<Reminder>>
-    var groups: LiveData<List<ReminderGroup>>
 
     init {
         events = appDb.reminderDao().loadByRemoved(true)
-        groups = appDb.reminderGroupDao().loadAll()
     }
 
     fun deleteAll(data: List<Reminder>) {

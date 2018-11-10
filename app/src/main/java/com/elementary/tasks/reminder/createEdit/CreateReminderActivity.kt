@@ -267,16 +267,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun changeGroup() {
-        val groups = viewModel.allGroups.value
-        val names = groups?.map { it.groupTitle } ?: listOf()
+        val groups = viewModel.groups
+        val names = groups.map { it.groupTitle }
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
                 android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminder.groupTitle)) { dialog, which ->
             dialog.dismiss()
-            if (groups != null) {
-                showGroup(groups[which])
-            }
+            showGroup(groups[which])
         }
         val alert = builder.create()
         alert.show()
