@@ -68,7 +68,6 @@ class MonthViewViewModel private constructor(application: Application,
         private var sort = false
 
         private val birthdayObserver: Observer<in List<Birthday>> = Observer {
-            Timber.d("birthdaysChanged: ")
             launchDefault {
                 if (it != null) {
                     birthdayData.clear()
@@ -78,7 +77,6 @@ class MonthViewViewModel private constructor(application: Application,
             }
         }
         private val reminderObserver: Observer<in List<Reminder>> = Observer {
-            Timber.d("remindersChanged: ")
             launchDefault {
                 if (it != null) {
                     reminderData.clear()
@@ -95,8 +93,7 @@ class MonthViewViewModel private constructor(application: Application,
             }
         }
 
-        fun findEvents(monthPagerItem: MonthPagerItem, sort: Boolean, listener: ((MonthPagerItem, List<EventModel>) -> Unit)?) {
-            if (listener == null) return
+        fun findEvents(monthPagerItem: MonthPagerItem, sort: Boolean, listener: ((MonthPagerItem, List<EventModel>) -> Unit)) {
             this.listener = listener
             this.monthPagerItem = monthPagerItem
             this.sort = sort
@@ -110,17 +107,14 @@ class MonthViewViewModel private constructor(application: Application,
 
         override fun onInactive() {
             super.onInactive()
-            Timber.d("onInactive: ")
             birthdays.observeForever(birthdayObserver)
             if (addReminders) {
                 reminders.observeForever(reminderObserver)
             }
-            this.monthPagerItem = null
         }
 
         override fun onActive() {
             super.onActive()
-            Timber.d("onActive: ")
             birthdays.removeObserver(birthdayObserver)
             if (addReminders) {
                 reminders.removeObserver(reminderObserver)
@@ -133,7 +127,8 @@ class MonthViewViewModel private constructor(application: Application,
 
         private fun repeatSearch() {
             val item = monthPagerItem ?: return
-            findEvents(item, this.sort, listener)
+            val callback = listener?: return
+            findEvents(item, this.sort, callback)
         }
 
         private fun findMatches(list: List<EventModel>, monthPagerItem: MonthPagerItem, sort: Boolean) {
@@ -142,7 +137,6 @@ class MonthViewViewModel private constructor(application: Application,
                 val res = ArrayList<EventModel>()
                 Timber.d("Search events: $monthPagerItem")
                 for (item in list) {
-                    val mDay = item.day
                     val mMonth = item.month
                     val mYear = item.year
                     val type = item.viewType

@@ -37,7 +37,8 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?, val editable: Boolean) :
+class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean = true,
+                     private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     val listHeader: TextView = itemView.listHeader
@@ -54,8 +55,14 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         }
         itemView.reminder_phone.visibility = View.GONE
         itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
         itemView.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+
+        if (showMore) {
+            itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+            itemView.button_more.visibility = View.VISIBLE
+        } else {
+            itemView.button_more.visibility = View.GONE
+        }
     }
 
     fun setData(reminder: Reminder) {

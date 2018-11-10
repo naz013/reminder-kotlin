@@ -17,6 +17,7 @@ import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.dayView.day.EventModel
 import hirondelle.date4j.DateTime
 import kotlinx.android.synthetic.main.fragment_date_grid.*
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.util.*
 
@@ -87,12 +88,17 @@ class MonthFragment : Fragment() {
     fun requestData() {
         val item = mItem
         if (item != null) {
-            callback?.find(item) { eventsPagerItem, list ->
-                Timber.d("setModel: $eventsPagerItem, ${list.size}")
-                launchDefault {
-                    val data = mapData(list)
-                    withUIContext {
-                        monthView?.setEventsMap(data)
+            launchDefault {
+                delay(250)
+                withUIContext {
+                    callback?.find(item) { eventsPagerItem, list ->
+                        Timber.d("setModel: $eventsPagerItem, ${list.size}")
+                        launchDefault {
+                            val data = mapData(list)
+                            withUIContext {
+                                monthView?.setEventsMap(data)
+                            }
+                        }
                     }
                 }
             }

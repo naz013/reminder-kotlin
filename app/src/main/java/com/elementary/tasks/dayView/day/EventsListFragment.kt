@@ -14,12 +14,14 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.dayView.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.android.synthetic.main.fragment_events_list.*
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
-
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -111,11 +113,17 @@ class EventsListFragment : Fragment() {
     fun requestData() {
         val item = mItem
         if (item != null) {
-            callback?.find(item) { eventsPagerItem, list ->
-                Timber.d("setModel: $eventsPagerItem, ${list.size}")
-                mAdapter.setData(list)
-                reloadView()
+            launchDefault {
+                delay(250)
+                withUIContext {
+                    callback?.find(item) { eventsPagerItem, list ->
+                        Timber.d("setModel: $eventsPagerItem, ${list.size}")
+                        mAdapter.setData(list)
+                        reloadView()
+                    }
+                }
             }
+
         }
     }
 
