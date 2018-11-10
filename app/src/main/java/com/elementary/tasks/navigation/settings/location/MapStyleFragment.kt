@@ -2,8 +2,8 @@ package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.AppCompatRadioButton
 import com.elementary.tasks.R
-import com.elementary.tasks.core.views.roboto.RoboRadioButton
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_map_style.*
 
@@ -46,59 +46,51 @@ class MapStyleFragment : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        styleDay.setOnClickListener { this.invoke(it) }
-        styleAubergine.setOnClickListener { this.invoke(it) }
-        styleAuto.setOnClickListener { this.invoke(it) }
-        styleDark.setOnClickListener { this.invoke(it) }
-        styleNight.setOnClickListener { this.invoke(it) }
-        styleRetro.setOnClickListener { this.invoke(it) }
-        styleSilver.setOnClickListener { this.invoke(it) }
-
-        styleDay.callOnClick()
+        styleDay.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+        styleAubergine.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+        styleAuto.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+        styleDark.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+        styleNight.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+        styleRetro.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
+        styleSilver.setOnCheckedChangeListener { buttonView, isChecked -> invoke(buttonView, isChecked) }
 
         selectCurrent(prefs.mapStyle)
     }
 
     private fun selectCurrent(mapStyle: Int) {
         when (mapStyle) {
-            0 -> styleDay.callOnClick()
-            1 -> styleRetro.callOnClick()
-            2 -> styleSilver.callOnClick()
-            3 -> styleNight.callOnClick()
-            4 -> styleDark.callOnClick()
-            5 -> styleAubergine.callOnClick()
-            6 -> styleAuto.callOnClick()
+            1 -> styleRetro.isChecked = true
+            2 -> styleSilver.isChecked = true
+            3 -> styleNight.isChecked = true
+            4 -> styleDark.isChecked = true
+            5 -> styleAubergine.isChecked = true
+            6 -> styleAuto.isChecked = true
+            else -> styleDay.isChecked = true
         }
     }
 
-    private operator fun invoke(v: View) {
-        clearChecks()
-        if (v is RoboRadioButton) {
-            v.isChecked = true
+    private fun invoke(v: View, isChecked: Boolean) {
+        if (!isChecked) return
+        buttons().forEach {
+            if (v.id != it.id) {
+                it.isChecked = false
+            }
         }
     }
 
-    private fun clearChecks() {
-        styleDay.isChecked = false
-        styleAubergine.isChecked = false
-        styleAuto.isChecked = false
-        styleDark.isChecked = false
-        styleNight.isChecked = false
-        styleRetro.isChecked = false
-        styleSilver.isChecked = false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         prefs.mapStyle = selection
+    }
+
+    private fun buttons(): List<AppCompatRadioButton> {
+        return listOf(styleDay, styleAubergine, styleAuto, styleDark, styleNight, styleRetro, styleSilver)
     }
 
     override fun getTitle(): String = getString(R.string.map_style)
 
     companion object {
 
-        fun newInstance(): MapStyleFragment {
-            return MapStyleFragment()
-        }
+        fun newInstance(): MapStyleFragment = MapStyleFragment()
     }
 }
