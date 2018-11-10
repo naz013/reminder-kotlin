@@ -32,6 +32,7 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var data: List<EventModel> = ArrayList()
     private var mEventListener: ActionsListener<EventModel>? = null
+    var showMore: Boolean = true
 
     fun setData(data: List<EventModel>) {
         this.data = data
@@ -44,13 +45,13 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            0 -> ReminderHolder(parent, false, false) { view, i, listActions ->
+            0 -> ReminderHolder(parent, false, false, false) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }
-            1 -> ShoppingHolder(parent, { view, i, listActions ->
+            1 -> ShoppingHolder(parent, false, showMore) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
-            }, false)
-            else -> BirthdayHolder(parent) { view, i, listActions ->
+            }
+            else -> BirthdayHolder(parent, showMore) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }
         }

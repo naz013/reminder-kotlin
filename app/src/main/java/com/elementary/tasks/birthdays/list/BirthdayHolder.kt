@@ -34,14 +34,19 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
+class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_birthday, parent, false)) {
 
     @Inject lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)
-        itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        if (showMore) {
+            itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+            itemView.button_more.visibility = View.VISIBLE
+        } else {
+            itemView.button_more.visibility = View.GONE
+        }
         itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
     }
 

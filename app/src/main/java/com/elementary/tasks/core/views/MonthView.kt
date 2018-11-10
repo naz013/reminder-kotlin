@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.Events
@@ -122,7 +123,7 @@ class MonthView : View, View.OnTouchListener {
             Color.BLACK
         }
         this.mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(prefs.todayColor))
-        this.paint.typeface = AssetsUtil.getTypeface(context, 7)
+        this.paint.typeface = ResourcesCompat.getFont(context, R.font.merriweathersans_regular)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         this.currentDay = calendar.get(Calendar.DAY_OF_MONTH)

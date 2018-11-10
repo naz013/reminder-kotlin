@@ -94,13 +94,13 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == Reminder.REMINDER) {
-            ReminderHolder(parent, true, isEditable) { view, i, listActions ->
+            ReminderHolder(parent, true, isEditable, true) { view, i, listActions ->
                 actionsListener?.onAction(view, i, getItem(i), listActions)
             }
         } else {
-            ShoppingHolder(parent, { view, i, listActions ->
+            ShoppingHolder(parent, isEditable, true) { view, i, listActions ->
                 actionsListener?.onAction(view, i, getItem(i), listActions)
-            }, isEditable)
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.elementary.tasks.monthView
 
 import android.app.AlarmManager
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -46,6 +47,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
     private lateinit var viewModel: MonthViewViewModel
     private var monthPagerItem: MonthPagerItem? = null
     private var listener: ((MonthPagerItem, List<EventModel>) -> Unit)? = null
+    private val eventsList: MutableList<EventModel> = mutableListOf()
 
     private var startDayOfWeek = SUNDAY
     private val weekdayAdapter: WeekdayArrayAdapter
@@ -97,6 +99,8 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
                 val foundItem = it.first
                 val foundList = it.second
                 if (foundItem == item) {
+                    eventsList.clear()
+                    eventsList.addAll(foundList)
                     listener?.invoke(foundItem, foundList)
                 }
             }
@@ -109,31 +113,22 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
     }
 
     private fun updateMenuTitles(mills: Long): String {
-        val dayString = TimeUtil.getMonthYear(mills)
-        callback?.onTitleChange(dayString)
-        return dayString
+        val monthTitle = DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString()
+        callback?.onTitleChange(monthTitle)
+        return monthTitle
     }
 
     private fun showCalendar() {
         dayPagerAdapter = MonthPagerAdapter(if (Module.isJellyMR2) childFragmentManager else fragmentManager!!)
         pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
+
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(Calendar.DAY_OF_MONTH, 15)
-        val date = calendar.timeInMillis
-        var mills = date - MONTH
-        dayPagerAdapter.fragments[0].setModel(fromMills(mills))
 
-        mills += MONTH
-        val current = mills
-        dayPagerAdapter.fragments[1].setModel(fromMills(mills))
+        updateMenuTitles(calendar.timeInMillis)
+        datePageChangeListener.setCurrentDateTime(calendar.timeInMillis)
 
-        mills += MONTH
-        dayPagerAdapter.fragments[2].setModel(fromMills(mills))
-
-        updateMenuTitles(current)
-
-        datePageChangeListener.setCurrentDateTime(current)
         pager.isEnabled = true
         pager.addOnPageChangeListener(datePageChangeListener)
         pager.currentItem = InfiniteViewPager.OFFSET + 1
@@ -171,7 +166,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
 
     override fun onDateLongClick(date: Date) {
         dateMills = date.time
-        showActionDialog(true)
+        showActionDialog(true, eventsList)
     }
 
     private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {
@@ -241,5 +236,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
         private const val MONDAY = 2
         private const val NUMBER_OF_PAGES = 4
         private const val MONTH = AlarmManager.INTERVAL_DAY * 30
+        private const val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE
+                or DateUtils.FORMAT_NO_MONTH_DAY or DateUtils.FORMAT_SHOW_YEAR)
     }
 }

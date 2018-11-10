@@ -30,21 +30,24 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addEvent"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_alarm"
+            android:padding="16dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_alarm_24px"
             app:tint="?android:textColorPrimary" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addBirth"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_cake_black_24dp"
+            android:padding="16dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_cake_24px"
             app:tint="?android:textColorPrimary" />
 
     </LinearLayout>

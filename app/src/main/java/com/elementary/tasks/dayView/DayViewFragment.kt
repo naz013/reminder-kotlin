@@ -2,6 +2,7 @@ package com.elementary.tasks.dayView
 
 import android.app.AlarmManager
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -91,7 +92,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
-                DayViewViewModel.Factory(activity?.application!!, prefs.isFutureEventEnabled))
+                DayViewViewModel.Factory(activity?.application!!, prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
                 .get(DayViewViewModel::class.java)
         viewModel.events.observe(this, Observer<Pair<EventsPagerItem, List<EventModel>>> {
             val item = eventsPagerItem
@@ -111,9 +112,10 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
     }
 
     private fun updateMenuTitles(): String {
-        val dayString = if (dateMills != 0L) TimeUtil.getDate(dateMills) else TimeUtil.getDate(System.currentTimeMillis())
-        callback?.onTitleChange(dayString)
-        return dayString
+        val mills = if (dateMills != 0L) dateMills else System.currentTimeMillis()
+        val monthTitle = DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString()
+        callback?.onTitleChange(monthTitle)
+        return monthTitle
     }
 
     override fun onResume() {
@@ -141,16 +143,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
     }
 
     private fun showEvents(date: Long) {
-        var mills = date - AlarmManager.INTERVAL_DAY
-        dayPagerAdapter.fragments[0].setModel(fromMills(mills))
-
-        mills += AlarmManager.INTERVAL_DAY
-        dateMills = mills
-        dayPagerAdapter.fragments[1].setModel(fromMills(mills))
-
-        mills += AlarmManager.INTERVAL_DAY
-        dayPagerAdapter.fragments[2].setModel(fromMills(mills))
-
+        dateMills = date
         updateMenuTitles()
 
         datePageChangeListener.setCurrentDateTime(dateMills)
@@ -236,7 +229,8 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
         private const val DATE_KEY = "date"
         private const val POS_KEY = "position"
-        const val NUMBER_OF_PAGES = 4
+        private const val NUMBER_OF_PAGES = 4
+        const val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR)
 
         fun newInstance(date: Long, position: Int): DayViewFragment {
             val pageFragment = DayViewFragment()
