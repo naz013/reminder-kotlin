@@ -288,7 +288,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun showGroups() {
-        val items = Container(viewModel.allGroups.value)
+        val items = Container(viewModel.groups)
         if (items.isEmpty) {
             addResponse(getLocalized(R.string.no_groups_found))
         } else {

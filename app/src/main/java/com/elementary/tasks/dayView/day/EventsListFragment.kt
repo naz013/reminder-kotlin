@@ -50,7 +50,7 @@ class EventsListFragment : Fragment() {
             saveAction = {reminder -> callback?.getViewModel()?.saveReminder(reminder) },
             toggleAction = {},
             deleteAction = {reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
-            allGroups = { return@ReminderResolver callback?.getViewModel()?.allGroups?.value ?: listOf() })
+            allGroups = { return@ReminderResolver callback?.getViewModel()?.groups ?: listOf() })
     private var mItem: EventsPagerItem? = null
     @Inject
     lateinit var dialogues: Dialogues
@@ -62,7 +62,7 @@ class EventsListFragment : Fragment() {
     fun getModel(): EventsPagerItem? = mItem
 
     fun setModel(eventsPagerItem: EventsPagerItem) {
-        if (isVisible) mAdapter.setData(listOf())
+        mAdapter.setData(listOf())
         this.mItem = eventsPagerItem
     }
 

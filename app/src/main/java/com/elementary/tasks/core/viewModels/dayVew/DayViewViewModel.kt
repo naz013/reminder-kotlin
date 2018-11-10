@@ -51,10 +51,15 @@ class DayViewViewModel private constructor(application: Application,
 
     private var liveData: DayViewLiveData
     var events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
-    var allGroups: LiveData<List<ReminderGroup>>
+    var groups: MutableList<ReminderGroup> = mutableListOf()
 
     init {
-        allGroups = appDb.reminderGroupDao().loadAll()
+        appDb.reminderGroupDao().loadAll().observeForever{
+            if (it != null) {
+                groups.clear()
+                groups.addAll(it)
+            }
+        }
         liveData = DayViewLiveData()
     }
 
