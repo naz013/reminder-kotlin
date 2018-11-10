@@ -33,6 +33,7 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     var actionsListener: ActionsListener<Reminder>? = null
     private var isEditable = true
     private val mData = mutableListOf<Reminder>()
+    var showHeader = true
 
     var data: List<Reminder>
         get() = mData
@@ -108,13 +109,17 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         val item = getItem(position)
         if (holder is ReminderHolder) {
             holder.setData(item)
-            if (isEditable) {
+            if (showHeader) {
                 initLabel(holder.listHeader, position)
+            } else {
+                holder.listHeader.visibility = View.GONE
             }
         } else if (holder is ShoppingHolder) {
             holder.setData(item)
-            if (isEditable) {
+            if (showHeader) {
                 initLabel(holder.listHeader, position)
+            } else {
+                holder.listHeader.visibility = View.GONE
             }
         }
     }

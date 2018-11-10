@@ -180,6 +180,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun initList() {
         mAdapter.setEditable(false)
+        mAdapter.showHeader = false
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 if (t != null) {

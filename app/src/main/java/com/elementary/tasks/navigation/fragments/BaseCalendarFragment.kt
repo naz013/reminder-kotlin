@@ -8,16 +8,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.dayView.day.CalendarEventsAdapter
 import com.elementary.tasks.dayView.day.EventModel
+import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*
 import kotlinx.coroutines.Job
@@ -47,6 +47,12 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
     protected var dateMills: Long = 0
     private var mDialog: AlertDialog? = null
     private var job: Job? = null
+    private val birthdayResolver = BirthdayResolver(deleteAction = { })
+    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
+            saveAction = { },
+            toggleAction = {},
+            deleteAction = { },
+            allGroups = { return@ReminderResolver listOf() })
 
     protected fun showActionDialog(showEvents: Boolean, list: List<EventModel> = listOf()) {
         val builder = dialogues.getDialog(context!!)
@@ -146,6 +152,18 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
 
     private fun showList(binding: View, res: ArrayList<EventModel>) {
         val adapter = CalendarEventsAdapter()
+        adapter.setEventListener(object : ActionsListener<EventModel> {
+            override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
+                if (t != null) {
+                    val model = t.model
+                    if (model is Birthday) {
+                        birthdayResolver.resolveAction(view, model, actions)
+                    } else if (model is Reminder) {
+                        reminderResolver.resolveAction(view, model, actions)
+                    }
+                }
+            }
+        })
         adapter.showMore = false
         adapter.setData(res)
         binding.eventsList.adapter = adapter
