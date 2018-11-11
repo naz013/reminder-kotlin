@@ -725,5 +725,7 @@
     <string name="retry">Retry</string>
     <string name="create_group">Create group</string>
     <string name="make_default">Make default</string>
+    <string name="do_not_create_reminder_for_missed_calls">Do not create reminder for missed calls</string>
+    <string name="do_not_show_sms_screen_after_call">Do not show SMS screen after rejected call</string>
 
 </resources>

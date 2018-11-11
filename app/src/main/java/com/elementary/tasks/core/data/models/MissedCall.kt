@@ -2,8 +2,7 @@ package com.elementary.tasks.core.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.elementary.tasks.core.utils.SuperUtil
-import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -25,21 +24,9 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-class MissedCall {
-
-    @SerializedName("number")
-    @PrimaryKey
-    var number: String = ""
-    @SerializedName("dateTime")
-    var dateTime: Long = 0
-    @SerializedName("uniqueId")
-    var uniqueId: Int = 0
-
-    init {
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-    }
-
-    override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, MissedCall::class.java)
-    }
-}
+data class MissedCall(
+        @PrimaryKey
+        var number: String = "",
+        var dateTime: Long = 0,
+        var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE)
+) : Serializable

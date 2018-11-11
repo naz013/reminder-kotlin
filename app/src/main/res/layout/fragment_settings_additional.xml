@@ -19,7 +19,7 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_twotone_phone_missed_24px"
             app:prefs_primary_text="@string/missed_call_reminder"
-            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_off="@string/do_not_create_reminder_for_missed_calls"
             app:prefs_secondary_text_on="@string/create_reminders_for_missed_calls"
             app:prefs_type="check_switch" />
 
@@ -33,13 +33,22 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/missedCallWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Open Missed Screen"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/quickSMSPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_twotone_reply_24px"
             app:prefs_primary_text="@string/quick_sms"
-            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_off="@string/do_not_show_sms_screen_after_call"
             app:prefs_secondary_text_on="@string/show_quick_answer_window"
             app:prefs_type="check_switch" />
 
@@ -53,6 +62,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/quickSmsWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Open Quick SMS Screen"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/followReminderPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,6 +79,15 @@
             app:prefs_secondary_text_off="@string/do_nothing"
             app:prefs_secondary_text_on="@string/show_event_screen_after_phone_call"
             app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/afterCallWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Open After Call Screen"
+            app:prefs_type="none" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

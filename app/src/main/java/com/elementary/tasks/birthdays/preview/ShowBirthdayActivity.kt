@@ -154,11 +154,8 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         setContentView(R.layout.activity_show_birthday)
 
-        loadImage(bgImage)
-        colorify(buttonOk, buttonCall, buttonSend)
-
         buttonOk.setOnClickListener { ok() }
-        buttonCall.setOnClickListener { call() }
+        buttonCall.setOnClickListener { makeCall() }
         buttonSend.setOnClickListener { sendSMS() }
 
         buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
@@ -278,10 +275,6 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         }
     }
 
-    override fun call() {
-        makeCall()
-    }
-
     private fun makeCall() {
         if (Permissions.checkPermission(this, Permissions.CALL_PHONE) && mBirthday != null) {
             TelephonyUtil.makeCall(mBirthday!!.number, this)
@@ -289,14 +282,6 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         } else {
             Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE)
         }
-    }
-
-    override fun delay() {
-        close()
-    }
-
-    override fun cancel() {
-        sendSMS()
     }
 
     private fun sendSMS() {
@@ -308,11 +293,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         }
     }
 
-    override fun favourite() {
-        close()
-    }
-
-    override fun ok() {
+    private fun ok() {
         updateBirthday(mBirthday)
     }
 

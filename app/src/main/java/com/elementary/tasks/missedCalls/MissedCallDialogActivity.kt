@@ -1,5 +1,6 @@
 package com.elementary.tasks.missedCalls
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.MissedCall
@@ -51,13 +53,13 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         get() = prefs.isVibrateEnabled
 
     override val summary: String
-        get() = mMissedCall!!.number
+        get() = mMissedCall?.number ?: ""
 
     override val uuId: String
         get() = ""
 
     override val id: Int
-        get() = mMissedCall!!.uniqueId
+        get() = mMissedCall?.uniqueId ?: 0
 
     override val ledColor: Int
         get() = LED.getLED(prefs.ledColor)
@@ -77,38 +79,35 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reminder_dialog)
-
-        container.visibility = View.GONE
-        subjectContainer.visibility = View.GONE
-        contactBlock.visibility = View.INVISIBLE
-        delayContainer.visibility = View.GONE
-
-        buttonDelay.hide()
-        buttonDelayFor.hide()
-        buttonNotification.hide()
-        buttonEdit.hide()
-        buttonAttachment.hide()
-        buttonCancel.hide()
-        buttonRefresh.hide()
+        setContentView(R.layout.activity_missed_dialog)
 
         contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
         contactPhoto.visibility = View.GONE
 
         initViewModel()
+
+        if (BuildConfig.DEBUG) {
+            loadTest()
+        }
+    }
+
+    private fun loadTest() {
+        val isMocked = intent.getBooleanExtra(ARG_TEST, false)
+        if (isMocked) {
+            val missedCall = intent.getSerializableExtra(ARG_TEST_ITEM) as MissedCall?
+            if (missedCall != null) showInfo(missedCall)
+        }
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(application,
-                intent.getStringExtra(Constants.INTENT_ID))).get(MissedCallViewModel::class.java)
-        viewModel.missedCall.observe(this, Observer{ missedCall ->
+                intent.getStringExtra(Constants.INTENT_ID) ?: "")).get(MissedCallViewModel::class.java)
+        viewModel.missedCall.observe(this, Observer { missedCall ->
             if (missedCall != null) {
                 showInfo(missedCall)
-            } else {
-                closeWindow()
             }
         })
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
@@ -127,42 +126,34 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         }
 
         val name = Contacts.getNameFromNumber(missedCall.number, this)
-        val wearMessage = (name ?: "") + "\n" + missedCall.number
         if (missedCall.number != "") {
             val conID = Contacts.getIdFromNumber(missedCall.number, this).toLong()
-
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
                 contactPhoto.setImageURI(photo)
             } else {
                 contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: missedCall.number))
             }
-            remText.setText(R.string.missed_call)
-            contactInfo.text = wearMessage
-            actionDirect.setText(R.string.from)
-            someView.setText(R.string.last_called)
-            messageView.text = formattedTime
-            container.visibility = View.VISIBLE
         } else {
             contactPhoto.visibility = View.INVISIBLE
         }
 
+        remText.setText(R.string.last_called)
+        reminder_time.text = formattedTime
+
         contactName.text = name
         contactNumber.text = missedCall.number
 
-        contactBlock.visibility = View.VISIBLE
-        buttonCall.text = getString(R.string.make_call)
-        buttonSms.visibility = View.VISIBLE
-
         buttonSms.setOnClickListener { sendSMS() }
-        buttonOk.setOnClickListener { ok() }
-        buttonCall.setOnClickListener { call() }
+        buttonOk.setOnClickListener { removeMissed() }
+        buttonCall.setOnClickListener { makeCall() }
 
         showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
         init()
     }
 
     private fun closeWindow() {
+        discardNotification(id)
         removeFlags()
         finish()
     }
@@ -181,10 +172,6 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         }
     }
 
-    override fun call() {
-        makeCall()
-    }
-
     private fun makeCall() {
         if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(mMissedCall!!.number, this@MissedCallDialogActivity)
@@ -194,27 +181,11 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         }
     }
 
-    override fun delay() {
-        closeWindow()
-    }
-
-    override fun cancel() {
-        sendSMS()
-    }
-
     private fun sendSMS() {
         val sendIntent = Intent(Intent.ACTION_VIEW)
         sendIntent.type = "vnd.android-dir/mms-sms"
-        sendIntent.putExtra("address", mMissedCall!!.number)
+        sendIntent.putExtra("address", mMissedCall?.number)
         startActivity(Intent.createChooser(sendIntent, "SMS:"))
-        removeMissed()
-    }
-
-    override fun favourite() {
-        closeWindow()
-    }
-
-    override fun ok() {
         removeMissed()
     }
 
@@ -299,6 +270,15 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     companion object {
         private const val TAG = "MCDialogActivity"
+        private const val ARG_TEST = "arg_test"
+        private const val ARG_TEST_ITEM = "arg_test_item"
         private const val CALL_PERM = 612
+
+        fun mockTest(context: Context, missedCall: MissedCall) {
+            val intent = Intent(context, MissedCallDialogActivity::class.java)
+            intent.putExtra(ARG_TEST, true)
+            intent.putExtra(ARG_TEST_ITEM, missedCall)
+            context.startActivity(intent)
+        }
     }
 }
