@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
@@ -55,6 +56,10 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         missedCallWindow.setOnClickListener {
             MissedCallDialogActivity.mockTest(context!!,
                     MissedCall(number = "0662552549", dateTime = System.currentTimeMillis()))
+        }
+
+        quickSmsWindow.setOnClickListener {
+            QuickSmsActivity.openScreen(context!!, "0662552549")
         }
     }
 

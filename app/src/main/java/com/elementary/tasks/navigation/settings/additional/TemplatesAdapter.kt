@@ -60,15 +60,13 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
         }
 
         init {
-            itemView.clickView.setOnClickListener { view -> openTemplate(view, adapterPosition) }
-            itemView.clickView.setOnLongClickListener {
+            itemView.buttonMore.visibility = View.VISIBLE
+            itemView.clickView.setOnClickListener {
+                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+            }
+            itemView.buttonMore.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-                true
             }
         }
-    }
-
-    private fun openTemplate(view: View, position: Int) {
-        actionsListener?.onAction(view, position, getItem(position), ListActions.OPEN)
     }
 }

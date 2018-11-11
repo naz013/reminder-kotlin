@@ -16,6 +16,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
@@ -119,7 +120,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
             override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
                 when (actions) {
                     ListActions.MORE -> if (t != null) {
-                        showMenu(t)
+                        showMenu(view, t)
                     }
                     ListActions.OPEN -> if (t != null) {
                         openTemplate(t)
@@ -134,9 +135,9 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
         refreshView()
     }
 
-    private fun showMenu(smsTemplate: SmsTemplate) {
+    private fun showMenu(view: View, smsTemplate: SmsTemplate) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        dialogues.showLCAM(context!!, {
+        Dialogues.showPopup(view, {
             when (it) {
                 0 -> openTemplate(smsTemplate)
                 1 -> deleteTemplate(smsTemplate)

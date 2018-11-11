@@ -85,10 +85,6 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         contactPhoto.visibility = View.GONE
 
         initViewModel()
-
-        if (BuildConfig.DEBUG) {
-            loadTest()
-        }
     }
 
     private fun loadTest() {
@@ -100,8 +96,9 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(application,
-                intent.getStringExtra(Constants.INTENT_ID) ?: "")).get(MissedCallViewModel::class.java)
+        val number = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(application, number))
+                .get(MissedCallViewModel::class.java)
         viewModel.missedCall.observe(this, Observer { missedCall ->
             if (missedCall != null) {
                 showInfo(missedCall)
@@ -114,6 +111,9 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
                 }
             }
         })
+        if (number == "" && BuildConfig.DEBUG) {
+            loadTest()
+        }
     }
 
     private fun showInfo(missedCall: MissedCall) {

@@ -5,11 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_message.view.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,12 +31,6 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
     private val mDataList = mutableListOf<SmsTemplate>()
     var selectedPosition = -1
         private set
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     fun setData(list: List<SmsTemplate>) {
         this.mDataList.clear()
@@ -64,14 +55,15 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
         fun bind(item: SmsTemplate) {
             itemView.messageView.text = item.title
             if (item.isSelected) {
-//                itemView.cardView.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorAccent()))
+                itemView.bgView.setBackgroundResource(R.color.secondary_12)
             } else {
-//                itemView.cardView.setCardBackgroundColor(themeUtil.cardStyle)
+                itemView.bgView.setBackgroundResource(android.R.color.transparent)
             }
         }
 
         init {
-            itemView.setOnClickListener { selectItem(adapterPosition) }
+            itemView.clickView.setOnClickListener { selectItem(adapterPosition) }
+            itemView.buttonMore.visibility = View.GONE
         }
     }
 
