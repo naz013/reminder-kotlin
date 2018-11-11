@@ -4,28 +4,19 @@ import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.speech.tts.TextToSpeech
 import android.text.TextUtils
-import android.util.DisplayMetrics
 import android.view.MotionEvent
-import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.views.TextDrawable
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -147,16 +138,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
-    protected abstract fun call()
-
-    protected abstract fun delay()
-
-    protected abstract fun cancel()
-
-    protected abstract fun favourite()
-
-    protected abstract fun ok()
-
     protected abstract fun showSendingError()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -186,69 +167,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             discardMedia()
         }
         return super.onTouchEvent(event)
-    }
-
-    protected fun setTextDrawable(button: FloatingActionButton, text: String) {
-        val drawable = TextDrawable.builder()
-                .beginConfig()
-                .textColor(Color.BLACK)
-                .useFont(Typeface.MONOSPACE)
-                .fontSize(30)
-                .bold()
-                .toUpperCase()
-                .endConfig()
-                .buildRound(text, Color.TRANSPARENT)
-        button.setImageDrawable(drawable)
-    }
-
-    protected fun colorify(vararg fab: FloatingActionButton) {
-        for (button in fab) {
-            button.backgroundTintList = ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorAccent())
-        }
-    }
-
-    protected fun loadImage(imageView: ImageView) {
-        imageView.visibility = View.GONE
-        val imagePrefs = prefs.reminderImage
-        val blur = prefs.isBlurEnabled
-        LogUtil.d(TAG, "loadImage: $imagePrefs, blur $blur")
-        val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metrics)
-        val width = metrics.widthPixels
-        val height = (metrics.heightPixels * 0.75).toInt()
-        when {
-            imagePrefs.matches(Constants.DEFAULT.toRegex()) -> {
-                if (blur && Module.isPro) {
-                    Glide.with(this)
-                            .load(R.drawable.photo)
-                            .apply(RequestOptions.bitmapTransform(BlurTransformation(15, 2)))
-                            .apply(RequestOptions.overrideOf(width, height))
-                            .into(imageView)
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.photo)
-                            .apply(RequestOptions.overrideOf(width, height))
-                            .into(imageView)
-                }
-                imageView.visibility = View.VISIBLE
-            }
-            imagePrefs.matches(Constants.NONE.toRegex()) -> imageView.visibility = View.GONE
-            else -> {
-                if (blur && Module.isPro) {
-                    Glide.with(this)
-                            .load(Uri.parse(imagePrefs))
-                            .apply(RequestOptions.bitmapTransform(BlurTransformation(15, 2)))
-                            .apply(RequestOptions.overrideOf(width, height))
-                            .into(imageView)
-                } else {
-                    Glide.with(this)
-                            .load(Uri.parse(imagePrefs))
-                            .apply(RequestOptions.overrideOf(width, height))
-                            .into(imageView)
-                }
-                imageView.visibility = View.VISIBLE
-            }
-        }
     }
 
     private fun setUpScreenOptions() {
@@ -312,7 +230,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         }
 
     }
-
 
     protected fun showProgressDialog(message: String) {
         hideProgressDialog()

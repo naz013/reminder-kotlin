@@ -670,7 +670,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         todoList.visibility = View.VISIBLE
     }
 
-    override fun call() {
+    private fun call() {
         val reminder = mReminder ?: return
         if (mControl == null) return
         mControl?.next()
@@ -719,7 +719,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
     }
 
-    override fun delay() {
+    private fun delay() {
         if (mControl != null) {
             val delay = prefs.snoozeTime
             mControl?.setDelay(delay)
@@ -729,7 +729,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         finish()
     }
 
-    override fun cancel() {
+    private fun cancel() {
         if (mControl != null) {
             mControl?.stop()
             removeFlags()
@@ -738,7 +738,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         finish()
     }
 
-    override fun favourite() {
+    private fun favourite() {
         if (mControl != null) {
             mControl?.next()
             removeFlags()
@@ -748,7 +748,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         finish()
     }
 
-    override fun ok() {
+    private fun ok() {
         if (mControl != null) {
             mControl?.next()
             removeFlags()

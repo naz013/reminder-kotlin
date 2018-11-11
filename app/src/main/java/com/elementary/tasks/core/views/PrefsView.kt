@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
@@ -59,6 +60,7 @@ class PrefsView : RelativeLayout {
             }
         }
     private var isForPro: Boolean = false
+    private var isTest: Boolean = false
     private var viewType = CHECK
     private var mOnText: String? = null
     private var mOffText: String? = null
@@ -111,6 +113,7 @@ class PrefsView : RelativeLayout {
                 divTop = a.getBoolean(R.styleable.PrefsView_prefs_divider_top, false)
                 divBottom = a.getBoolean(R.styleable.PrefsView_prefs_divider_bottom, false)
                 isForPro = a.getBoolean(R.styleable.PrefsView_prefs_pro, false)
+                isTest = a.getBoolean(R.styleable.PrefsView_prefs_isTest, false)
                 viewType = a.getInt(R.styleable.PrefsView_prefs_type, CHECK)
                 res = a.getInt(R.styleable.PrefsView_prefs_view_resource, 0)
                 iconId = a.getResourceId(R.styleable.PrefsView_prefs_icon, 0)
@@ -193,7 +196,13 @@ class PrefsView : RelativeLayout {
     }
 
     private fun setVisible() {
-        visibility = if (isForPro) {
+        visibility = if (isTest) {
+            if (BuildConfig.DEBUG) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        } else if (isForPro) {
             if (Module.isPro) {
                 View.VISIBLE
             } else {
@@ -227,10 +236,11 @@ class PrefsView : RelativeLayout {
 
     fun setDetailText(text: String?) {
         if (isCheckable && hasOnOff()) {
-            if (isChecked)
+            if (isChecked) {
                 detail.text = mOnText
-            else
+            } else {
                 detail.text = mOffText
+            }
             detail.visibility = View.VISIBLE
         } else {
             if (text == null) {

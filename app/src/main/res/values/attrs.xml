@@ -12,6 +12,7 @@
         <attr name="prefs_divider_bottom" format="boolean" />
         <attr name="prefs_checked" format="boolean" />
         <attr name="prefs_pro" format="boolean" />
+        <attr name="prefs_isTest" format="boolean" />
         <attr name="prefs_view_resource" format="reference" />
         <attr name="prefs_icon" format="reference" />
         <attr name="prefs_type" format="enum">

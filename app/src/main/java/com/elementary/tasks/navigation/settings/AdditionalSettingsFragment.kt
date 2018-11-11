@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.missedCalls.MissedCallDialogActivity
 import com.elementary.tasks.navigation.settings.additional.TemplatesFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_additional.*
@@ -49,6 +51,11 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         initMessagesPrefs()
         followReminderPrefs.setOnClickListener { changeFollowPrefs() }
         followReminderPrefs.isChecked = prefs.isFollowReminderEnabled
+
+        missedCallWindow.setOnClickListener {
+            MissedCallDialogActivity.mockTest(context!!,
+                    MissedCall(number = "0662552549", dateTime = System.currentTimeMillis()))
+        }
     }
 
     private fun initMessagesPrefs() {
