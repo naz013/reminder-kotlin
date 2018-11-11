@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clickView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     android:stateListAnimator="@animator/card_animator"
+    app:cardCornerRadius="5dp"
     tools:targetApi="lollipop">
 
     <LinearLayout
+        android:id="@+id/bgView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/messageView"
-            android:layout_width="match_parent"
+            style="?textAppearanceSubtitle1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:textAppearance="?textAppearanceSubtitle1"
+            android:layout_weight="1"
             tools:text="Title" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/buttonMore"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_more_vert_black_24dp"
+            app:tint="?android:textColorPrimary" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

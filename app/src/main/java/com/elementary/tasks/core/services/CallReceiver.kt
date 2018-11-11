@@ -103,10 +103,8 @@ class CallReceiver : BaseBroadcast() {
                             LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber!!)
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                                 val number = mIncomingNumber
-                                if (appDb.smsTemplatesDao().all().isNotEmpty()) {
-                                    mContext.startActivity(Intent(mContext, QuickSmsActivity::class.java)
-                                            .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
-                                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                                if (number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
+                                    QuickSmsActivity.openScreen(mContext, number)
                                 }
                             }
                         }

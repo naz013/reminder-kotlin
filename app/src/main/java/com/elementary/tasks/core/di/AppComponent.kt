@@ -4,7 +4,6 @@ import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
 import com.elementary.tasks.core.appWidgets.calendar.CalendarMonthFactory
 import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateMinusService
@@ -96,7 +95,6 @@ interface AppComponent {
     fun inject(shoppingHolder: ShoppingHolder)
     fun inject(google: Google)
     fun inject(backupTool: BackupTool)
-    fun inject(adapter: SelectableTemplatesAdapter)
     fun inject(baseDialog: BaseDialog)
     fun inject(themedActivity: ThemedActivity)
     fun inject(activity: CreateNoteActivity)
