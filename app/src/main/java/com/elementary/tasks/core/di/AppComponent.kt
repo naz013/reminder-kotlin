@@ -4,6 +4,7 @@ import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
 import com.elementary.tasks.core.appWidgets.calendar.CalendarMonthFactory
 import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateMinusService
@@ -151,4 +152,5 @@ interface AppComponent {
     fun inject(activity: NotePreviewActivity)
     fun inject(activity: AddBirthdayActivity)
     fun inject(activity: CreateGroupActivity)
+    fun inject(activity: FollowReminderActivity)
 }
