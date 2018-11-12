@@ -9,7 +9,6 @@ import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
 import javax.inject.Inject
 
@@ -76,10 +75,9 @@ class CallReceiver : BaseBroadcast() {
                         val isFollow = prefs.isFollowReminderEnabled
                         if (mIncomingNumber != null && isFollow) {
                             val number = mIncomingNumber
-                            mContext.startActivity(Intent(mContext, FollowReminderActivity::class.java)
-                                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
-                                    .putExtra(Constants.SELECTED_TIME, startCallTime)
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP))
+                            if (number != null) {
+                                FollowReminderActivity.mockScreen(mContext, number, startCallTime)
+                            }
                         }
                     } else if (prevState == TelephonyManager.CALL_STATE_RINGING) {
                         prevState = state

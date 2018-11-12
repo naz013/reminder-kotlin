@@ -2,6 +2,8 @@ package com.elementary.tasks.core.additional
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +19,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
@@ -42,9 +45,9 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListener {
+class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListener {
 
-    private var viewModel: ReminderViewModel? = null
+    private lateinit var viewModel: ReminderViewModel
 
     private var mHour = 0
     private var mCustomHour = 0
@@ -56,6 +59,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     private var mCustomMonth = 0
     private var mDay = 1
     private var mCustomDay = 1
+
     private var mTomorrowTime: Long = 0
     private var mNextWorkTime: Long = 0
     private var mCurrentTime: Long = 0
@@ -66,7 +70,9 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     private var mTasks = true
     private var mNumber: String = ""
     private var mGoogleTasks: Google? = null
-    @Inject lateinit var reminderUtils: ReminderUtils
+    private var defGroup: ReminderGroup? = null
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
 
     private val adapter: SpinnerAdapter
         get() {
@@ -97,7 +103,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         customDate.text = TimeUtil.DATE_FORMAT.format(c.time)
     }
 
-    private var myCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+    private var myTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mCustomHour = hourOfDay
         mCustomMinute = minute
 
@@ -126,12 +132,13 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
         val name = Contacts.getNameFromNumber(mNumber, this@FollowReminderActivity)
         setContentView(R.layout.activity_follow)
-        initActionBar()
+
         val c = Calendar.getInstance()
         if (receivedDate != 0L) {
             c.timeInMillis = receivedDate
-        } else
+        } else {
             c.timeInMillis = System.currentTimeMillis()
+        }
         mCurrentTime = c.timeInMillis
 
         textField.hint = getString(R.string.message)
@@ -155,7 +162,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, "")).get(ReminderViewModel::class.java)
-        viewModel!!.result.observe(this, Observer { commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> closeWindow()
@@ -163,6 +170,9 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
                     }
                 }
             }
+        })
+        viewModel.defaultReminderGroup.observe(this, Observer{
+            defGroup = it
         })
     }
 
@@ -232,9 +242,6 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         if (mTasks) {
             taskExport.visibility = View.VISIBLE
         }
-        if (!mCalendar && !mStock && !mTasks) {
-            card5.visibility = View.GONE
-        }
     }
 
     private fun initPrefs() {
@@ -242,16 +249,6 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         mStock = prefs.isStockCalendarEnabled
         mTasks = mGoogleTasks != null
         mIs24Hour = prefs.is24HourFormatEnabled
-    }
-
-    private fun initActionBar() {
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        }
-        toolbar.setTitle(R.string.create_task)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 
     private fun getAfterMins(progress: Int): Int {
@@ -276,11 +273,11 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myCallBack, mCustomHour, mCustomMinute)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myTimeCallBack, mCustomHour, mCustomMinute)
     }
 
     private fun saveDateTask() {
-        val text = textField.text!!.toString().trim { it <= ' ' }
+        val text = textField.text.toString().trim { it <= ' ' }
         if (text.matches("".toRegex()) && typeMessage.isChecked) {
             textField.error = getString(R.string.must_be_not_empty)
             return
@@ -289,7 +286,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         setUpTimes()
         val due = reminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
         val reminder = Reminder()
-        val def = viewModel!!.defaultReminderGroup.value
+        val def = defGroup
         if (def != null) {
             reminder.groupUuId = def.groupUuId
         }
@@ -304,7 +301,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         if (exportCheck.visibility == View.VISIBLE) {
             reminder.exportToCalendar = exportCheck.isChecked
         }
-        viewModel!!.saveAndStartReminder(reminder)
+        viewModel.saveAndStartReminder(reminder)
     }
 
     private fun closeWindow() {
@@ -394,8 +391,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.activity_follow_menu, menu)
+        menuInflater.inflate(R.menu.activity_follow_menu, menu)
         return true
     }
 
@@ -410,6 +406,16 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    companion object {
+
+        fun mockScreen(context: Context, number: String, dataTime: Long) {
+            context.startActivity(Intent(context, FollowReminderActivity::class.java)
+                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
+                    .putExtra(Constants.SELECTED_TIME, dataTime)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP))
         }
     }
 }

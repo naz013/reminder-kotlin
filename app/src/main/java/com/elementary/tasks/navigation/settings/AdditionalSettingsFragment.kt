@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.Dialogues
@@ -60,6 +61,10 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
         quickSmsWindow.setOnClickListener {
             QuickSmsActivity.openScreen(context!!, "0662552549")
+        }
+
+        afterCallWindow.setOnClickListener {
+            FollowReminderActivity.mockScreen(context!!, "0662552549", System.currentTimeMillis())
         }
     }
 
