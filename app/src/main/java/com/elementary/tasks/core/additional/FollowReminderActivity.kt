@@ -5,8 +5,6 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
@@ -177,6 +175,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun initViews() {
+        fab.setOnClickListener { saveDateTask() }
         typeCall.isChecked = true
         timeTomorrow.setOnCheckedChangeListener(this)
         timeAfter.setOnCheckedChangeListener(this)
@@ -390,23 +389,8 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         mDay = c.get(Calendar.DAY_OF_MONTH)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.activity_follow_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_add -> {
-                saveDateTask()
-                true
-            }
-            android.R.id.home -> {
-                closeWindow()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
+    override fun onBackPressed() {
+        closeWindow()
     }
 
     companion object {

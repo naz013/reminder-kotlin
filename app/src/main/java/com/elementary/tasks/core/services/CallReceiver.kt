@@ -9,7 +9,7 @@ import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
-import com.elementary.tasks.core.utils.LogUtil
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -30,7 +30,6 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CallReceiver : BaseBroadcast() {
 
     private lateinit var mContext: Context
@@ -57,7 +56,7 @@ class CallReceiver : BaseBroadcast() {
     inner class CustomPhoneStateListener : PhoneStateListener() {
 
         override fun onCallStateChanged(state: Int, incomingNumber: String?) {
-            LogUtil.d(TAG, "onCallStateChanged: $incomingNumber")
+            Timber.d("onCallStateChanged: $incomingNumber")
             if (incomingNumber != null && incomingNumber.isNotEmpty()) {
                 mIncomingNumber = incomingNumber
             } else {
@@ -84,7 +83,7 @@ class CallReceiver : BaseBroadcast() {
                         val currTime = System.currentTimeMillis()
                         if (currTime - startCallTime >= 1000 * 10) {
                             val number = mIncomingNumber
-                            LogUtil.d(TAG, "onCallStateChanged: is missed $number")
+                            Timber.d("onCallStateChanged: is missed $number")
                             if (prefs.isMissedReminderEnabled && number != null) {
                                 var missedCall = appDb.missedCallsDao().getByNumber(number)
                                 if (missedCall != null) {
@@ -98,7 +97,7 @@ class CallReceiver : BaseBroadcast() {
                                 EventJobService.enableMissedCall(prefs, missedCall.number)
                             }
                         } else {
-                            LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber!!)
+                            Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                                 val number = mIncomingNumber
                                 if (number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
@@ -110,10 +109,5 @@ class CallReceiver : BaseBroadcast() {
                 }
             }
         }
-    }
-
-    companion object {
-
-        private const val TAG = "CallReceiver"
     }
 }
