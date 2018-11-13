@@ -125,9 +125,8 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mGoogleTasks = Google.getInstance()
-        val i = intent
-        val receivedDate = i.getLongExtra(Constants.SELECTED_TIME, 0)
-        mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
+        val receivedDate = intent.getLongExtra(Constants.SELECTED_TIME, 0)
+        mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
         val name = Contacts.getNameFromNumber(mNumber, this@FollowReminderActivity)
         setContentView(R.layout.activity_follow)
 
@@ -237,9 +236,13 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private fun initExportChecks() {
         if (mCalendar || mStock) {
             exportCheck.visibility = View.VISIBLE
+        } else {
+            exportCheck.visibility = View.GONE
         }
         if (mTasks) {
             taskExport.visibility = View.VISIBLE
+        } else {
+            taskExport.visibility = View.GONE
         }
     }
 
@@ -268,17 +271,18 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, prefs, myDateCallBack, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, myDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myTimeCallBack, mCustomHour, mCustomMinute)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mCustomHour, mCustomMinute, myTimeCallBack)
     }
 
     private fun saveDateTask() {
         val text = textField.text.toString().trim { it <= ' ' }
         if (text.matches("".toRegex()) && typeMessage.isChecked) {
-            textField.error = getString(R.string.must_be_not_empty)
+            textLayout.error = getString(R.string.must_be_not_empty)
+            textLayout.isErrorEnabled = true
             return
         }
         val type = type

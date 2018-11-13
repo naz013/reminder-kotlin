@@ -25,7 +25,7 @@
                 tools:text="564164684" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/taskLayout"
+                android:id="@+id/textLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
