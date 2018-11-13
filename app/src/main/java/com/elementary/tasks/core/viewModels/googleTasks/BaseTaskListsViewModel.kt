@@ -34,14 +34,15 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
     fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             val def = googleTaskList.def
             google.tasks!!.deleteTaskList(googleTaskList.listId)
@@ -56,8 +57,8 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
                 }
             }
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
             }
         }
     }
@@ -65,13 +66,14 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
     fun toggleTask(googleTask: GoogleTask) {
         val mGoogle = Google.getInstance()
         if (mGoogle?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
         } else {
-            isInProgress.postValue(true)
+            postInProgress(true)
             launchDefault {
                 try {
                     if (googleTask.status == Google.TASKS_NEED_ACTION) {
@@ -80,14 +82,14 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
                         mGoogle.tasks?.updateTaskStatus(Google.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
                     }
                     withUIContext {
-                        isInProgress.postValue(false)
-                        result.postValue(Commands.UPDATED)
+                        postInProgress(false)
+                        Commands.UPDATED.post()
                         updatesHelper.updateTasksWidget()
                     }
                 } catch (e: IOException) {
                     withUIContext {
-                        isInProgress.postValue(false)
-                        result.postValue(Commands.FAILED)
+                        postInProgress(false)
+                        Commands.FAILED.post()
                     }
                 }
             }

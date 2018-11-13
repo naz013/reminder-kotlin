@@ -2,9 +2,6 @@ package com.elementary.tasks.core.viewModels.groups
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -40,18 +37,14 @@ abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(a
     }
 
     fun deleteGroup(reminderGroup: ReminderGroup) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.reminderGroupDao().delete(reminderGroup)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
             }
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())
-                    .addTag(reminderGroup.groupUuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
         }
     }
 }

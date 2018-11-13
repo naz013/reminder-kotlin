@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.viewModels.groups
 
 import android.app.Application
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -31,16 +28,12 @@ import com.elementary.tasks.groups.work.SingleBackupWorker
 class GroupsViewModel(application: Application) : BaseGroupsViewModel(application) {
 
     fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
-        isInProgress.postValue(true)
-        val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())
-                .addTag(reminderGroup.groupUuId)
-                .build()
-        WorkManager.getInstance().enqueue(work)
+        postInProgress(true)
         launchDefault {
             reminderGroup.groupColor = color
             appDb.reminderGroupDao().insert(reminderGroup)
-            withUIContext { isInProgress.postValue(false) }
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
+            withUIContext { postInProgress(false) }
         }
     }
 }

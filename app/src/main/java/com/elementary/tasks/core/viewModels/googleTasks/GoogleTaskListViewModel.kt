@@ -51,19 +51,20 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             google.tasks?.insertTasksList(googleTaskList.title, googleTaskList.color)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
         }
     }
@@ -71,38 +72,39 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.googleTaskListsDao().insert(googleTaskList)
             try {
                 google.tasks?.updateTasksList(googleTaskList.title, googleTaskList.listId)
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.SAVED)
+                    postInProgress(false)
+                    Commands.SAVED.post()
                 }
             } catch (e: IOException) {
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.FAILED)
+                    postInProgress(false)
+                    Commands.FAILED.post()
                 }
             }
         }
     }
 
     fun saveLocalGoogleTaskList(googleTaskList: GoogleTaskList) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.googleTaskListsDao().insert(googleTaskList)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
         }
     }

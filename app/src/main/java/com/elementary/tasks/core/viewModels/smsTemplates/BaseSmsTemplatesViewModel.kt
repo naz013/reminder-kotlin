@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.viewModels.smsTemplates
 
 import android.app.Application
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -33,18 +30,14 @@ import com.elementary.tasks.navigation.settings.additional.work.DeleteBackupWork
 abstract class BaseSmsTemplatesViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deleteSmsTemplate(smsTemplate: SmsTemplate) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.smsTemplatesDao().delete(smsTemplate)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
             }
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, smsTemplate.key).build())
-                    .addTag(smsTemplate.key)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 }

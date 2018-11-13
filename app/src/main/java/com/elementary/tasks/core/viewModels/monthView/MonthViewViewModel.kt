@@ -40,7 +40,8 @@ class MonthViewViewModel private constructor(application: Application,
                                              private val birthTime: Long = 0) : BaseDbViewModel(application) {
 
     private var liveData: MonthViewLiveData
-    var events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()
+    private var _events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()
+    var events: LiveData<Pair<MonthPagerItem, List<EventModel>>> = _events
 
     init {
         liveData = MonthViewLiveData()
@@ -49,7 +50,7 @@ class MonthViewViewModel private constructor(application: Application,
     fun findEvents(item: MonthPagerItem) {
         try {
             liveData.findEvents(item, false) { eventsPagerItem, list ->
-                events.postValue(Pair(eventsPagerItem, list))
+                _events.postValue(Pair(eventsPagerItem, list))
             }
         } catch (e: UninitializedPropertyAccessException) {
         }

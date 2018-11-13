@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.viewModels.birthdays
 
 import android.app.Application
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
@@ -34,33 +31,25 @@ import com.elementary.tasks.core.viewModels.Commands
 abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deleteBirthday(birthday: Birthday) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.birthdaysDao().delete(birthday)
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
-                    .addTag(birthday.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                postCommand(Commands.DELETED)
             }
         }
     }
 
     fun saveBirthday(birthday: Birthday) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.birthdaysDao().insert(birthday)
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
-                    .addTag(birthday.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             }
         }
     }

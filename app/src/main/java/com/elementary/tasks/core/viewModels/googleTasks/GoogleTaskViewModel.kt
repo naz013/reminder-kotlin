@@ -41,7 +41,9 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     var defaultTaskList: LiveData<GoogleTaskList>
     var defaultReminderGroup: LiveData<ReminderGroup>
     var googleTaskLists: LiveData<List<GoogleTaskList>>
-    var reminder = MutableLiveData<Reminder>()
+
+    private var _reminder = MutableLiveData<Reminder>()
+    var reminder: LiveData<Reminder> = _reminder
 
     init {
         googleTask = appDb.googleTasksDao().loadById(id)
@@ -51,12 +53,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     }
 
     fun loadReminder(uuId: String) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             val reminderItem = appDb.reminderDao().getById(uuId)
             withUIContext {
-                reminder.postValue(reminderItem)
-                isInProgress.postValue(false)
+                _reminder.postValue(reminderItem)
+                postInProgress(false)
             }
         }
     }
@@ -71,26 +73,27 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun deleteGoogleTask(googleTask: GoogleTask) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             try {
                 google.tasks?.deleteTask(googleTask)
                 appDb.googleTasksDao().delete(googleTask)
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.DELETED)
+                    postInProgress(false)
+                    Commands.DELETED.post()
                 }
             } catch (e: IOException) {
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.FAILED)
+                    postInProgress(false)
+                    Commands.FAILED.post()
                 }
             }
         }
@@ -99,26 +102,27 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             try {
                 google.tasks?.insertTask(googleTask)
                 saveReminder(reminder)
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.SAVED)
+                    postInProgress(false)
+                    Commands.SAVED.post()
                 }
             } catch (e: IOException) {
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.FAILED)
+                    postInProgress(false)
+                    Commands.FAILED.post()
                 }
             }
         }
@@ -127,27 +131,28 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             try {
                 google.tasks?.updateTask(googleTask)
                 saveReminder(reminder)
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.SAVED)
+                    postInProgress(false)
+                    Commands.SAVED.post()
                 }
             } catch (e: IOException) {
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.FAILED)
+                    postInProgress(false)
+                    Commands.FAILED.post()
                 }
             }
         }
@@ -156,14 +161,15 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun updateAndMoveGoogleTask(googleTask: GoogleTask, oldListId: String, reminder: Reminder?) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             try {
@@ -171,13 +177,13 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
                 google.tasks?.moveTask(googleTask, oldListId)
                 saveReminder(reminder)
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.SAVED)
+                    postInProgress(false)
+                    Commands.SAVED.post()
                 }
             } catch (e: IOException) {
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.FAILED)
+                    postInProgress(false)
+                    Commands.FAILED.post()
                 }
             }
         }
@@ -186,20 +192,21 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
         val google = Google.getInstance()
         if (google?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             google.tasks?.moveTask(googleTask, oldListId)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
         }
     }

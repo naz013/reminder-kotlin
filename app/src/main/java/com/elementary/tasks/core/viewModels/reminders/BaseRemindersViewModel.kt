@@ -2,23 +2,20 @@ package com.elementary.tasks.core.viewModels.reminders
 
 import android.app.Application
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -40,16 +37,24 @@ import java.util.*
  */
 abstract class BaseRemindersViewModel(application: Application) : BaseDbViewModel(application) {
 
-    var defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
-    var allGroups: MutableLiveData<List<ReminderGroup>> = MutableLiveData()
+    private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
+    var defaultReminderGroup: LiveData<ReminderGroup> = _defaultReminderGroup
+
+    private var _allGroups: MutableLiveData<List<ReminderGroup>> = MutableLiveData()
+    var allGroups: LiveData<List<ReminderGroup>> = _allGroups
+
     val groups = mutableListOf<ReminderGroup>()
 
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
+
     init {
+        ReminderApp.appComponent.inject(this)
         appDb.reminderGroupDao().loadDefault().observeForever {
-            defaultReminderGroup.postValue(it)
+            _defaultReminderGroup.postValue(it)
         }
         appDb.reminderGroupDao().loadAll().observeForever {
-            allGroups.postValue(it)
+            _allGroups.postValue(it)
             if (it != null) {
                 groups.clear()
                 groups.addAll(it)
@@ -58,20 +63,20 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     }
 
     fun saveAndStartReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.reminderDao().insert(reminder)
             EventControlFactory.getController(reminder).start()
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
             backupReminder(reminder.uuId)
         }
     }
 
     fun copyReminder(reminder: Reminder, time: Long, name: String) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             val newItem = reminder.copy()
             newItem.summary = name
@@ -95,98 +100,92 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     }
 
     fun stopReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).stop()
-            withUIContext { isInProgress.postValue(false) }
+            withUIContext { postInProgress(false) }
         }
     }
 
     fun pauseReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).pause()
-            withUIContext { isInProgress.postValue(false) }
+            withUIContext { postInProgress(false) }
         }
     }
 
     fun resumeReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).resume()
-            withUIContext { isInProgress.postValue(false) }
+            withUIContext { postInProgress(false) }
         }
     }
 
     fun toggleReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             if (!EventControlFactory.getController(reminder).onOff()) {
                 withUIContext {
-                    isInProgress.postValue(false)
+                    postInProgress(false)
                     Toast.makeText(getApplication(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+                    Commands.FAILED.post()
                 }
             } else {
-                withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.SAVED)
-                }
                 backupReminder(reminder.uuId)
+                withUIContext {
+                    postInProgress(false)
+                    Commands.SAVED.post()
+                }
             }
         }
     }
 
     fun moveToTrash(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             reminder.isRemoved = true
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().insert(reminder)
+            backupReminder(reminder.uuId)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
-            backupReminder(reminder.uuId)
         }
     }
 
     private fun backupReminder(uuId: String) {
-        val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                .setInputData(Data.Builder().putString(Constants.INTENT_ID, uuId).build())
-                .addTag(uuId)
-                .build()
-        WorkManager.getInstance().enqueue(work)
+        startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
     }
 
     fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().delete(reminder)
+            calendarUtils.deleteEvents(reminder.uniqueId)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                postInProgress(false)
                 if (showMessage) Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
-            calendarUtils.deleteEvents(reminder.uniqueId)
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
-                    .addTag(reminder.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 
     fun saveReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.reminderDao().insert(reminder)
-            withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
-            }
             backupReminder(reminder.uuId)
+            withUIContext {
+                postInProgress(false)
+                Commands.SAVED.post()
+            }
         }
     }
 }

@@ -4,9 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -41,18 +38,14 @@ class PlaceViewModel private constructor(application: Application, key: String) 
     }
 
     fun savePlace(place: Place) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.placesDao().insert(place)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, place.id).build())
-                    .addTag(place.id)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 
