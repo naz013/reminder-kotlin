@@ -4,9 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -41,18 +38,14 @@ class SmsTemplateViewModel private constructor(application: Application, key: St
     }
 
     fun saveTemplate(smsTemplate: SmsTemplate) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.smsTemplatesDao().insert(smsTemplate)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, smsTemplate.key).build())
-                    .addTag(smsTemplate.key)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 

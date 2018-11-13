@@ -38,13 +38,13 @@ class MissedCallViewModel private constructor(application: Application, number: 
     }
 
     fun deleteMissedCall(missedCall: MissedCall) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.missedCallsDao().delete(missedCall)
             EventJobService.cancelMissedCall(missedCall.number)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
             }
         }
     }

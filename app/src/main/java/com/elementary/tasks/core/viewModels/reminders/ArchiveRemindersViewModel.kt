@@ -4,8 +4,6 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
@@ -42,20 +40,20 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
     }
 
     fun deleteAll(data: List<Reminder>) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
-            for (reminder in data) EventControlFactory.getController(reminder).stop()
+            data.asSequence().forEach {
+                EventControlFactory.getController(it).stop()
+            }
             appDb.reminderDao().deleteAll(*data.toTypedArray())
+            startWork(DeleteBackupWorker::class.java,
+                    Data.Builder().putStringArray(Constants.INTENT_IDS, data.map { it.uuId }.toTypedArray()).build(),
+                    "RM_WORK")
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
                 Toast.makeText(getApplication(), R.string.trash_cleared, Toast.LENGTH_SHORT).show()
             }
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putStringArray(Constants.INTENT_IDS, data.map { it.uuId }.toTypedArray()).build())
-                    .addTag("RM_WORK")
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 }

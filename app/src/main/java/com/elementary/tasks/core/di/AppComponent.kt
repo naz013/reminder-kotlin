@@ -29,6 +29,8 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
+import com.elementary.tasks.core.viewModels.notes.BaseNotesViewModel
+import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.core.views.*
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
@@ -88,6 +90,8 @@ import javax.inject.Singleton
 interface AppComponent {
     fun language(): Language
     fun inject(viewModel: BaseDbViewModel)
+    fun inject(viewModel: BaseNotesViewModel)
+    fun inject(viewModel: BaseRemindersViewModel)
     fun inject(adapter: RemindersRecyclerAdapter)
     fun inject(eventManager: EventManager)
     fun inject(callReceiver: CallReceiver)

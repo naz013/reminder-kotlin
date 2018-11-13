@@ -5,11 +5,15 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.CalendarUtils
 import javax.inject.Inject
 
 /**
@@ -32,18 +36,42 @@ import javax.inject.Inject
  */
 open class BaseDbViewModel(application: Application) : AndroidViewModel(application), LifecycleObserver {
 
-    var result = MutableLiveData<Commands>()
-    var isInProgress = MutableLiveData<Boolean>()
+    private val _result = MutableLiveData<Commands>()
+    val result: LiveData<Commands> = _result
+    private val _isInProgress = MutableLiveData<Boolean>()
+    val isInProgress: LiveData<Boolean> = _isInProgress
 
     @Inject
     lateinit var appDb: AppDb
     @Inject
     lateinit var updatesHelper: UpdatesHelper
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
     protected val handler = Handler(Looper.getMainLooper())
 
     init {
         ReminderApp.appComponent.inject(this)
+    }
+
+    protected fun postInProgress(isInProgress: Boolean) {
+        _isInProgress.postValue(isInProgress)
+    }
+
+    protected fun postCommand(commands: Commands) {
+        _result.postValue(commands)
+    }
+
+    protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String) {
+        startWork(clazz, Data.Builder().putString(key, valueTag).build(), valueTag)
+    }
+
+    protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String) {
+        val work = OneTimeWorkRequest.Builder(clazz)
+                .setInputData(data)
+                .addTag(tag)
+                .build()
+        WorkManager.getInstance().enqueue(work)
+    }
+
+    protected fun Commands.post() {
+        postCommand(this)
     }
 }

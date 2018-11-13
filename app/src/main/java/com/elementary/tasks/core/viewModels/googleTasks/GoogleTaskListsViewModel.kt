@@ -42,14 +42,15 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     fun sync() {
         val mGoogle = Google.getInstance()
         if (mGoogle?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
             return
         }
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             var lists: TaskLists? = null
             try {
@@ -73,8 +74,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                     val tasks = mGoogle.tasks?.getTasks(listId)
                     if (tasks == null || tasks.isEmpty()) {
                         withUIContext {
-                            isInProgress.postValue(false)
-                            result.postValue(Commands.UPDATED)
+                            postInProgress(false)
+                            Commands.UPDATED.post()
                             updatesHelper.updateTasksWidget()
                         }
                     } else {
@@ -91,8 +92,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                         }
                         appDb.googleTasksDao().insertAll(googleTasks)
                         withUIContext {
-                            isInProgress.postValue(false)
-                            result.postValue(Commands.UPDATED)
+                            postInProgress(false)
+                            Commands.UPDATED.post()
                             updatesHelper.updateTasksWidget()
                         }
                     }
@@ -108,20 +109,21 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     fun clearList(googleTaskList: GoogleTaskList) {
         val mGoogle = Google.getInstance()
         if (mGoogle?.tasks == null) {
+            Commands.FAILED.post()
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            result.postValue(Commands.FAILED)
+            Commands.FAILED.post()
         } else {
-            isInProgress.postValue(true)
+            postInProgress(true)
             launchDefault {
                 val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, Google.TASKS_COMPLETE)
                 appDb.googleTasksDao().deleteAll(googleTasks)
                 mGoogle.tasks?.clearTaskList(googleTaskList.listId)
                 withUIContext {
-                    isInProgress.postValue(false)
-                    result.postValue(Commands.UPDATED)
+                    postInProgress(false)
+                    Commands.UPDATED.post()
                     updatesHelper.updateTasksWidget()
                 }
             }

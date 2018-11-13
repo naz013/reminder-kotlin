@@ -1,12 +1,11 @@
 package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -16,6 +15,7 @@ import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.SingleBackupWorker
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -37,27 +37,30 @@ import timber.log.Timber
  */
 abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(application) {
 
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     fun deleteNote(noteWithImages: NoteWithImages) {
         val note = noteWithImages.note ?: return
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.notesDao().delete(note)
             appDb.notesDao().deleteAllImages(note.key)
+            startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
             }
-            val work = OneTimeWorkRequest.Builder(DeleteNoteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, note.key).build())
-                    .addTag(note.key)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 
     fun saveNote(note: NoteWithImages) {
         val v = note.note ?: return
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.notesDao().insert(v)
             if (note.images.isNotEmpty()) {
@@ -67,21 +70,17 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 }
                 appDb.notesDao().insertAll(note.images)
             }
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, v.key).build())
-                    .addTag(v.key)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 
     fun saveNote(note: NoteWithImages, reminder: Reminder?) {
         val v = note.note ?: return
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             if (note.images.isNotEmpty()) {
                 note.images = note.images.map {
@@ -92,18 +91,14 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
             }
             Timber.d("saveNote: %s", note)
             appDb.notesDao().insert(v)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
             withUIContext {
+                postInProgress(false)
+                Commands.SAVED.post()
                 if (reminder != null) {
                     saveReminder(reminder)
                 }
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
             }
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, v.key).build())
-                    .addTag(v.key)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 
@@ -118,29 +113,22 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
 
             appDb.reminderDao().insert(reminder)
             EventControlFactory.getController(reminder).start()
-            val work = OneTimeWorkRequest.Builder(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
-                    .addTag(reminder.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
+                    Constants.INTENT_ID, reminder.uuId)
         }
     }
 
     fun deleteReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().delete(reminder)
-            withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.UPDATED)
-            }
             calendarUtils.deleteEvents(reminder.uniqueId)
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
-                    .addTag(reminder.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+            withUIContext {
+                postInProgress(false)
+                Commands.UPDATED.post()
+            }
         }
     }
 }

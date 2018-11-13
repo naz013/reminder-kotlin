@@ -4,9 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -41,7 +38,7 @@ class GroupViewModel private constructor(application: Application, id: String) :
     }
 
     fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             if (!wasDefault && reminderGroup.isDefaultGroup) {
                 val groups = appDb.reminderGroupDao().all()
@@ -49,14 +46,10 @@ class GroupViewModel private constructor(application: Application, id: String) :
                 appDb.reminderGroupDao().insertAll(groups)
             }
             appDb.reminderGroupDao().insert(reminderGroup)
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminderGroup.groupUuId).build())
-                    .addTag(reminderGroup.groupUuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                Commands.SAVED.post()
             }
         }
     }

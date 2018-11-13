@@ -4,9 +4,6 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -50,14 +47,19 @@ class DayViewViewModel private constructor(application: Application,
                                            private val birthTime: Long = 0) : BaseDbViewModel(application) {
 
     private var liveData: DayViewLiveData
-    var events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
-    var groups: MutableList<ReminderGroup> = mutableListOf()
+
+    private var _events: MutableLiveData<Pair<EventsPagerItem, List<EventModel>>> = MutableLiveData()
+    var events: LiveData<Pair<EventsPagerItem, List<EventModel>>> = _events
+
+    private var _groups: MutableList<ReminderGroup> = mutableListOf()
+    var groups: List<ReminderGroup> = listOf()
+        get() = _groups
 
     init {
         appDb.reminderGroupDao().loadAll().observeForever{
             if (it != null) {
-                groups.clear()
-                groups.addAll(it)
+                _groups.clear()
+                _groups.addAll(it)
             }
         }
         liveData = DayViewLiveData()
@@ -66,60 +68,48 @@ class DayViewViewModel private constructor(application: Application,
     fun findEvents(item: EventsPagerItem) {
         try {
             liveData.findEvents(item, true) { eventsPagerItem, list ->
-                events.postValue(Pair(eventsPagerItem, list))
+                _events.postValue(Pair(eventsPagerItem, list))
             }
         } catch (e: UninitializedPropertyAccessException) {
         }
     }
 
     fun saveReminder(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.reminderDao().insert(reminder)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.SAVED)
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             }
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
-                    .addTag(reminder.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
         }
     }
 
     fun deleteBirthday(birthday: Birthday) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.birthdaysDao().delete(birthday)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                postCommand(Commands.DELETED)
             }
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, birthday.uuId).build())
-                    .addTag(birthday.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
         }
     }
 
     fun moveToTrash(reminder: Reminder) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             reminder.isRemoved = true
             EventControlFactory.getController(reminder).stop()
             appDb.reminderDao().insert(reminder)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                postCommand(Commands.DELETED)
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
-            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
-                    .addTag(reminder.uuId)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
         }
     }
 

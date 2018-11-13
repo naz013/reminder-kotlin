@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.viewModels.places
 
 import android.app.Application
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
@@ -33,18 +30,14 @@ import com.elementary.tasks.places.work.DeleteBackupWorker
 abstract class BasePlacesViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deletePlace(place: Place) {
-        isInProgress.postValue(true)
+        postInProgress(true)
         launchDefault {
             appDb.placesDao().delete(place)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
             withUIContext {
-                isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                postInProgress(false)
+                Commands.DELETED.post()
             }
-            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, place.id).build())
-                    .addTag(place.id)
-                    .build()
-            WorkManager.getInstance().enqueue(work)
         }
     }
 }
