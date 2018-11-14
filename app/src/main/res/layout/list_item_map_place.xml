@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemCard"
+    android:layout_width="312dp"
+    android:layout_height="wrap_content"
+    android:stateListAnimator="@animator/card_animator"
+    app:cardCornerRadius="5dp"
+    android:layout_marginEnd="16dp"
+    tools:targetApi="lollipop">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/dayView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="25" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/monthYearView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:text="sept
+2018" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="?textAppearanceHeadline6"
+            tools:text="Task" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/markerImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="center" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

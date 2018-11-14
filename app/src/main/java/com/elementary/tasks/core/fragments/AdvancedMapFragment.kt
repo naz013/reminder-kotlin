@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -23,7 +24,6 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.places.PlacesViewModel
-import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -54,7 +54,7 @@ class AdvancedMapFragment : BaseMapFragment() {
 
     private var mMap: GoogleMap? = null
 
-    private var placeRecyclerAdapter = PlacesRecyclerAdapter()
+    private var placeRecyclerAdapter = RecentPlacesAdapter()
 
     private var isTouch = true
     private var isZoom = true
@@ -86,16 +86,13 @@ class AdvancedMapFragment : BaseMapFragment() {
         googleMap.setOnMapClickListener(onMapClickListener)
         setOnMarkerClick(onMarkerClickListener)
         if (lastPos != null) {
-            addMarker(lastPos, lastPos!!.toString(), true, false, markerRadius)
+            addMarker(lastPos, lastPos.toString(), true, false, markerRadius)
         }
         mCallback?.onMapReady()
     }
 
     private val isMarkersVisible: Boolean
         get() = styleCard != null && styleCard.visibility == View.VISIBLE
-
-    private val isPlacesVisible: Boolean
-        get() = placesListCard != null && placesListCard.visibility == View.VISIBLE
 
     private val isLayersVisible: Boolean
         get() = layersContainer != null && layersContainer.visibility == View.VISIBLE
@@ -108,10 +105,6 @@ class AdvancedMapFragment : BaseMapFragment() {
                 searchCard.visibility = View.INVISIBLE
             }
         }
-    }
-
-    fun setAdapter(adapter: PlacesRecyclerAdapter) {
-        this.placeRecyclerAdapter = adapter
     }
 
     fun setListener(listener: MapListener) {
@@ -242,6 +235,10 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
     }
 
+    fun setStyle(style: Int) {
+        this.markerStyle = style
+    }
+
     fun moveCamera(pos: LatLng, i1: Int, i2: Int, i3: Int, i4: Int) {
         if (mMap != null) {
             animate(pos)
@@ -274,14 +271,13 @@ class AdvancedMapFragment : BaseMapFragment() {
                 animate(pos)
             } else {
                 try {
-                    location = mMap!!.myLocation
+                    location = mMap?.myLocation
                     if (location != null) {
                         val pos = LatLng(location.latitude, location.longitude)
                         animate(pos)
                     }
                 } catch (ignored: IllegalStateException) {
                 }
-
             }
         }
     }
@@ -294,10 +290,6 @@ class AdvancedMapFragment : BaseMapFragment() {
             }
             isMarkersVisible -> {
                 hideStyles()
-                false
-            }
-            isPlacesVisible -> {
-                hidePlaces()
                 false
             }
             else -> true
@@ -337,7 +329,6 @@ class AdvancedMapFragment : BaseMapFragment() {
         isDark = themeUtil.isDark
         setOnMapClickListener(GoogleMap.OnMapClickListener { latLng ->
             hideLayers()
-            hidePlaces()
             hideStyles()
             if (isTouch) {
                 addMarker(latLng, markerTitle, true, true, markerRadius)
@@ -350,7 +341,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         initViews()
 
         cardSearch.setOnItemClickListener { _, _, position, _ ->
-            val sel = cardSearch!!.getAddress(position)
+            val sel = cardSearch?.getAddress(position) ?: return@setOnItemClickListener
             val lat = sel.latitude
             val lon = sel.longitude
             val pos = LatLng(lat, lon)
@@ -387,8 +378,9 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun initViews() {
-        placesList.layoutManager = LinearLayoutManager(context)
+        placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         placesList.adapter = placeRecyclerAdapter
+        LinearSnapHelper().attachToRecyclerView(placesList)
 
         placesListCard.visibility = View.GONE
         styleCard.visibility = View.GONE
@@ -401,7 +393,6 @@ class AdvancedMapFragment : BaseMapFragment() {
             moveToMyLocation()
         }
         markersCard.setOnClickListener { toggleMarkers() }
-        placesCard.setOnClickListener { togglePlaces() }
         backCard.setOnClickListener {
             restoreScaleButton()
             mListener?.onBackClick()
@@ -420,9 +411,6 @@ class AdvancedMapFragment : BaseMapFragment() {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
         }
 
-        if (!isPlaces) {
-            placesCard.visibility = View.GONE
-        }
         if (!isBack) {
             backCard.visibility = View.GONE
         }
@@ -479,9 +467,13 @@ class AdvancedMapFragment : BaseMapFragment() {
                 when (actions) {
                     ListActions.OPEN, ListActions.MORE -> {
                         hideLayers()
-                        hidePlaces()
+                        hideStyles()
                         if (t != null) {
-                            addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, true, markerRadius)
+                            if (!Module.isPro) {
+                                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, true, markerRadius)
+                            } else {
+                                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, t.marker, true, markerRadius)
+                            }
                         }
                     }
                 }
@@ -489,71 +481,39 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
         placeRecyclerAdapter.data = places
         if (places.isEmpty()) {
-            placesCard.visibility = View.GONE
-            placesList.visibility = View.GONE
-            emptyItem?.visibility = View.VISIBLE
+            placesListCard.visibility = View.GONE
         } else {
-            emptyItem?.visibility = View.GONE
-            placesCard.visibility = View.VISIBLE
-            placesList.visibility = View.VISIBLE
-        }
-    }
-
-    private fun addMarkers(list: List<Place>) {
-        if (list.isNotEmpty()) {
-            for (model in list) {
-                addMarker(LatLng(model.latitude, model.longitude), model.name, false,
-                        model.marker, false, model.radius)
-            }
+            placesListCard.visibility = View.VISIBLE
         }
     }
 
     private fun toggleMarkers() {
         if (isLayersVisible) hideLayers()
-        if (isPlacesVisible) hidePlaces()
         if (isMarkersVisible) {
             hideStyles()
         } else {
-            ViewUtils.slideInUp(context!!, styleCard)
+            styleCard.visibility = View.VISIBLE
         }
     }
 
     private fun hideStyles() {
         if (isMarkersVisible) {
-            ViewUtils.slideOutDown(context!!, styleCard)
-        }
-    }
-
-    private fun togglePlaces() {
-        if (isMarkersVisible) hideStyles()
-        if (isLayersVisible) hideLayers()
-
-        if (isPlacesVisible) {
-            hidePlaces()
-        } else {
-            ViewUtils.slideInUp(context!!, placesListCard)
-        }
-    }
-
-    private fun hidePlaces() {
-        if (isPlacesVisible) {
-            ViewUtils.slideOutDown(context!!, placesListCard)
+            styleCard.visibility = View.GONE
         }
     }
 
     private fun toggleLayers() {
         if (isMarkersVisible) hideStyles()
-        if (isPlacesVisible) hidePlaces()
         if (isLayersVisible) {
             hideLayers()
         } else {
-            ViewUtils.showOver(layersContainer)
+            layersContainer.visibility = View.VISIBLE
         }
     }
 
     private fun hideLayers() {
         if (isLayersVisible) {
-            ViewUtils.hideOver(layersContainer!!)
+            layersContainer.visibility = View.GONE
         }
     }
 
@@ -616,7 +576,6 @@ class AdvancedMapFragment : BaseMapFragment() {
     companion object {
 
         private const val TAG = "AdvancedMapFragment"
-        private const val SHOWCASE = "map_showcase"
         private const val REQ_LOC = 1245
 
         const val ENABLE_TOUCH = "enable_touch"

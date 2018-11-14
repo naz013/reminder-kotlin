@@ -37,7 +37,7 @@ object TimeUtil {
 
     private const val GMT = "GMT"
 
-    val BIRTH_DATE_FORMAT: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    val BIRTH_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val FORMAT_24 = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
     private val TIME_STAMP_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault())
     private val FORMAT_12 = SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault())
@@ -54,7 +54,43 @@ object TimeUtil {
     private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault())
     private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
     val birthFormat = SimpleDateFormat("dd|MM", Locale.getDefault())
-    val MONTH_YEAR_FORMAT = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+    private val MONTH_YEAR_FORMAT = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+
+    private val DAY_FORMAT = SimpleDateFormat("dd", Locale.getDefault())
+    private val MONTH_FORMAT = SimpleDateFormat("MMM", Locale.getDefault())
+    private val YEAR_FORMAT = SimpleDateFormat("yyyy", Locale.getDefault())
+
+    fun getPlaceDateTimeFromGmt(dateTime: String?): DMY {
+        var date: Date
+
+        try {
+            GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
+            date = GMT_DATE_FORMAT.parse(dateTime)
+        } catch (e: ParseException) {
+            date = Date()
+        } catch (e: NumberFormatException) {
+            date = Date()
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            date = Date()
+        }
+
+        var day = ""
+        var month = ""
+        var year = ""
+
+        try {
+            day = DAY_FORMAT.format(date)
+            month = MONTH_FORMAT.format(date)
+            year = YEAR_FORMAT.format(date)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            e.printStackTrace()
+        }
+        return DMY(day, month, year)
+    }
 
     val gmtDateTime: String
         get() {
@@ -600,5 +636,7 @@ object TimeUtil {
         }
     }
 
-    class DateItem(val calendar: Calendar, val year: Int)
+    data class DateItem(val calendar: Calendar, val year: Int)
+
+    data class DMY(val day: String, val month: String, val year: String)
 }
