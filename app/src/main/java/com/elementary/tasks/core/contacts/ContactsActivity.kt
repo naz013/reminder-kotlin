@@ -280,8 +280,8 @@ class ContactsActivity : ThemedActivity() {
                         val name = c.getString(nameIndex)
                         val id = Contacts.getIdFromNumber(phoneNumber, this@ContactsActivity)
                         var photo: String? = null
-                        if (id != 0) {
-                            val uri = Contacts.getPhoto(id.toLong())
+                        if (id != 0L) {
+                            val uri = Contacts.getPhoto(id)
                             if (uri != null) {
                                 photo = uri.toString()
                             }

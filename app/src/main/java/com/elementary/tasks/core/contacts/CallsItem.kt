@@ -18,6 +18,6 @@ package com.elementary.tasks.core.contacts
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-data class CallsItem(var name: String?, var number: String, var uri: String?, var date: Long, var id: Int, var type: Int) {
+data class CallsItem(var name: String?, var number: String, var uri: String?, var date: Long, var id: Long, var type: Int) {
     val numberName: String = number + if (name != "") name else ""
 }

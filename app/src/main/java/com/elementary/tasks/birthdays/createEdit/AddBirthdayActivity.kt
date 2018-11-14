@@ -225,7 +225,7 @@ class AddBirthdayActivity : ThemedActivity() {
             birthName.error = getString(R.string.must_be_not_empty)
             return
         }
-        var contactId = 0
+        var contactId = 0L
         if (contactCheck.isChecked) {
             number = numberView.text.toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(number)) {

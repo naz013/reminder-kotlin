@@ -63,7 +63,7 @@ class CheckBirthdaysWorker : Worker() {
                 while (birthdayCur.moveToNext()) {
                     val birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
                     val name = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME))
-                    val id = birthdayCur.getInt(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+                    val id = birthdayCur.getLong(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                     val number = Contacts.getNumber(name, applicationContext)
                     val calendar = Calendar.getInstance()
                     for (f in birthdayFormats) {
