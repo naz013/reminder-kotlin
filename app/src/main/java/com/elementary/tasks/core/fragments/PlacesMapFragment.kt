@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -21,7 +22,10 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.Api
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
@@ -67,8 +71,8 @@ class PlacesMapFragment : BaseMapFragment() {
     private var isDark = false
     private var mRadius = -1
     private var markerStyle = -1
-    private var mLat: Double = 0.toDouble()
-    private var mLng: Double = 0.toDouble()
+    private var mLat: Double = 0.0
+    private var mLng: Double = 0.0
 
     private var mLocList: LocationTracker? = null
 
@@ -85,7 +89,6 @@ class PlacesMapFragment : BaseMapFragment() {
         setMyLocation()
         googleMap.setOnMapClickListener {
             hideLayers()
-            hidePlaces()
             hideStyles()
         }
         mCallback?.onMapReady()
@@ -102,7 +105,7 @@ class PlacesMapFragment : BaseMapFragment() {
                     Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
                 }
                 addSelectAllItem()
-                refreshAdapter(true)
+                refreshAdapter()
             } else {
                 Toast.makeText(context, R.string.no_places_found, Toast.LENGTH_SHORT).show()
             }
@@ -131,9 +134,6 @@ class PlacesMapFragment : BaseMapFragment() {
 
     private val isMarkersVisible: Boolean
         get() = styleCard.visibility == View.VISIBLE
-
-    private val isPlacesVisible: Boolean
-        get() = placesListCard.visibility == View.VISIBLE
 
     private val isLayersVisible: Boolean
         get() = layersContainer.visibility == View.VISIBLE
@@ -213,7 +213,7 @@ class PlacesMapFragment : BaseMapFragment() {
     fun selectMarkers(list: List<Place>) {
         mMap?.clear()
         toModels(list, true)
-        refreshAdapter(false)
+        refreshAdapter()
     }
 
     fun animate(latLng: LatLng?) {
@@ -231,10 +231,6 @@ class PlacesMapFragment : BaseMapFragment() {
             }
             isMarkersVisible -> {
                 hideStyles()
-                false
-            }
-            isPlacesVisible -> {
-                hidePlaces()
                 false
             }
             else -> true
@@ -276,7 +272,8 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun initViews() {
-        placesList.layoutManager = LinearLayoutManager(context)
+        placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        LinearSnapHelper().attachToRecyclerView(placesList)
 
         placesListCard.visibility = View.GONE
         styleCard.visibility = View.GONE
@@ -286,7 +283,6 @@ class PlacesMapFragment : BaseMapFragment() {
         zoomCard.setOnClickListener { zoomClick() }
         layersCard.setOnClickListener { toggleLayers() }
         markersCard.setOnClickListener { toggleMarkers() }
-        placesCard.setOnClickListener { togglePlaces() }
         cardClear.setOnClickListener { loadPlaces() }
         backCard.setOnClickListener {
             restoreScaleButton()
@@ -372,13 +368,12 @@ class PlacesMapFragment : BaseMapFragment() {
         }
     }
 
-    private fun refreshAdapter(show: Boolean) {
+    private fun refreshAdapter() {
         val placesAdapter = GooglePlacesAdapter()
         placesAdapter.setPlaces(spinnerArray)
         placesAdapter.setEventListener(object : SimpleListener {
             override fun onItemClicked(position: Int, view: View) {
                 hideLayers()
-                hidePlaces()
                 animate(spinnerArray[position].position)
             }
 
@@ -387,14 +382,11 @@ class PlacesMapFragment : BaseMapFragment() {
             }
         })
         if (spinnerArray.size > 0) {
-            emptyItem.visibility = View.GONE
-            placesList.visibility = View.VISIBLE
+            placesListCard.visibility = View.VISIBLE
             placesList.adapter = placesAdapter
             addMarkers()
-            if (!isPlacesVisible && show) ViewUtils.slideInUp(context!!, placesListCard)
         } else {
-            placesList.visibility = View.GONE
-            emptyItem.visibility = View.VISIBLE
+            placesListCard.visibility = View.GONE
         }
     }
 
@@ -419,49 +411,31 @@ class PlacesMapFragment : BaseMapFragment() {
 
     private fun toggleMarkers() {
         if (isLayersVisible) hideLayers()
-        if (isPlacesVisible) hidePlaces()
         if (isMarkersVisible) {
             hideStyles()
         } else {
-            ViewUtils.slideInUp(context!!, styleCard)
+            styleCard.visibility = View.VISIBLE
         }
     }
 
     private fun hideStyles() {
         if (isMarkersVisible) {
-            ViewUtils.slideOutDown(context!!, styleCard)
-        }
-    }
-
-    private fun togglePlaces() {
-        if (isMarkersVisible) hideStyles()
-        if (isLayersVisible) hideLayers()
-        if (isPlacesVisible) {
-            hidePlaces()
-        } else {
-            ViewUtils.slideInUp(context!!, placesListCard)
-        }
-    }
-
-    private fun hidePlaces() {
-        if (isPlacesVisible) {
-            ViewUtils.slideOutDown(context!!, placesListCard)
+            styleCard.visibility = View.GONE
         }
     }
 
     private fun toggleLayers() {
         if (isMarkersVisible) hideStyles()
-        if (isPlacesVisible) hidePlaces()
         if (isLayersVisible) {
             hideLayers()
         } else {
-            ViewUtils.showOver(layersContainer)
+            layersContainer.visibility = View.VISIBLE
         }
     }
 
     private fun hideLayers() {
         if (isLayersVisible) {
-            ViewUtils.hideOver(layersContainer)
+            layersContainer.visibility = View.GONE
         }
     }
 
