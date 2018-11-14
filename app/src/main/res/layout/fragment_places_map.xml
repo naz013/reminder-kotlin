@@ -13,196 +13,166 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ScrollView
+    <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/zoomCard"
-                android:layout_width="@dimen/create_imagebutton_size"
-                android:layout_height="@dimen/create_imagebutton_size"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp"
-                tools:targetApi="lollipop">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/zoomIcon"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_fullscreen_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/backCard"
-                android:layout_width="@dimen/create_imagebutton_size"
-                android:layout_height="@dimen/create_imagebutton_size"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp"
-                tools:targetApi="lollipop">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_arrow_back_ios_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/layersCard"
-                android:layout_width="@dimen/create_imagebutton_size"
-                android:layout_height="@dimen/create_imagebutton_size"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp"
-                tools:targetApi="lollipop">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_layers_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/markersCard"
-                android:layout_width="@dimen/create_imagebutton_size"
-                android:layout_height="@dimen/create_imagebutton_size"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp"
-                tools:targetApi="lollipop">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_style_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/placesCard"
-                android:layout_width="@dimen/create_imagebutton_size"
-                android:layout_height="@dimen/create_imagebutton_size"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:stateListAnimator="@animator/card_animator"
-                app:cardCornerRadius="5dp"
-                tools:targetApi="lollipop">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_place_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-    </ScrollView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/searchCard"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/create_imagebutton_size"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_toEndOf="@+id/buttonContainer"
-        app:cardCornerRadius="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addressLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="-4dp"
-                android:layout_marginBottom="-8dp"
-                android:layout_weight="1"
-                app:boxBackgroundColor="@color/secondary_12"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/cardSearch"
-                    style="?textAppearanceSubtitle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/search_place"
-                    android:imeOptions="actionSearch"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/zoomCard"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp"
+            tools:targetApi="lollipop">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/cardClear"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?selectableItemBackgroundBorderless"
+                android:id="@+id/zoomIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                android:tint="?android:textColorPrimary"
-                app:srcCompat="@drawable/ic_twotone_search_24px" />
+                app:srcCompat="@drawable/ic_twotone_fullscreen_24px"
+                app:tint="?android:textColorPrimary" />
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/layersContainer"
-        android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/backCard"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp"
+            tools:targetApi="lollipop">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_arrow_back_ios_24px"
+                app:tint="?android:textColorPrimary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layersCard"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp"
+            tools:targetApi="lollipop">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_layers_24px"
+                app:tint="?android:textColorPrimary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/markersCard"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp"
+            tools:targetApi="lollipop">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_style_24px"
+                app:tint="?android:textColorPrimary" />
+
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchCard"
-        android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/buttonContainer"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:cardCornerRadius="5dp">
+        android:orientation="vertical">
 
-        <ScrollView
-            android:layout_width="112dp"
-            android:layout_height="wrap_content">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/searchCard"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/addressLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-4dp"
+                    android:layout_marginBottom="-8dp"
+                    android:layout_weight="1"
+                    app:boxBackgroundColor="@color/secondary_12"
+                    app:boxCornerRadiusTopEnd="5dp"
+                    app:boxCornerRadiusTopStart="5dp">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/cardSearch"
+                        style="?textAppearanceSubtitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/search_place"
+                        android:imeOptions="actionSearch"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/cardClear"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="?colorSecondary"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_search_24px"
+                    app:tint="@color/whitePrimary" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layersContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:cardCornerRadius="5dp">
+
+            <LinearLayout
+                android:layout_width="112dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -255,92 +225,67 @@
                     android:textAppearance="?textAppearanceBody1" />
 
             </LinearLayout>
-        </ScrollView>
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/styleCard"
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="-15dp"
-        android:paddingBottom="15dp"
-        android:visibility="visible"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/styleCard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="174dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="visible"
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
-                android:id="@+id/groupOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/groupTwo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                <LinearLayout
+                    android:id="@+id/groupOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal" />
 
-            <LinearLayout
-                android:id="@+id/groupThree"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                <LinearLayout
+                    android:id="@+id/groupTwo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:id="@+id/groupThree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
 
-    <com.google.android.material.card.MaterialCardView
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/placesListCard"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="-15dp"
-        android:paddingBottom="15dp"
-        android:visibility="gone"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="4dp">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceHeadline6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/found_places" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/placesList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp" />
-
-        <LinearLayout
-            android:id="@+id/emptyItem"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/emptyImage"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginBottom="24dp"
-                app:srcCompat="@drawable/ic_empty_places" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/emptyText"
-                style="?textAppearanceHeadline6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:gravity="center|top"
-                android:text="@string/no_places" />
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+    </LinearLayout>
 </RelativeLayout>

@@ -728,5 +728,6 @@
     <string name="do_not_create_reminder_for_missed_calls">Do not create reminder for missed calls</string>
     <string name="do_not_show_sms_screen_after_call">Do not show SMS screen after rejected call</string>
     <string name="recent_places">recent places</string>
+    <string name="found_places">found places</string>
 
 </resources>

@@ -56,14 +56,12 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
         }
 
         init {
-            v.setOnClickListener { view ->
+            itemView.listItem.setOnClickListener { view ->
                 if (itemCount > 1 && adapterPosition == last) {
-                    for (item in array) item.isSelected = !item.isSelected
+                    for (item in array) item.isSelected = true
                     notifyDataSetChanged()
                 } else {
-                    if (mEventListener != null) {
-                        mEventListener!!.onItemClicked(adapterPosition, view)
-                    }
+                    mEventListener?.onItemClicked(adapterPosition, view)
                 }
             }
             itemView.placeCheck.setOnClickListener {
