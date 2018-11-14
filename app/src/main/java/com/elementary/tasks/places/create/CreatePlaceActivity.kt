@@ -62,7 +62,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         setContentView(R.layout.activity_create_place)
         initActionBar()
 
-        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
+        mGoogleMap = AdvancedMapFragment.newInstance(false, true, false, false,
                 prefs.markerStyle, themeUtil.isDark)
         mGoogleMap?.setListener(this)
         mGoogleMap?.setCallback(this)
@@ -123,6 +123,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         this.mItem = place
         if (place != null) {
             titleView.text = getString(R.string.edit_place)
+            mGoogleMap?.setStyle(place.marker)
             mGoogleMap?.addMarker(LatLng(place.latitude, place.longitude), place.name, true, true, -1)
             placeName.setText(place.name)
         }
@@ -131,7 +132,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     private fun addPlace() {
         val pl = place
         if (pl != null) {
-            var name: String = placeName.text.toString().trim { it <= ' ' }
+            var name: String = placeName.text.toString().trim()
             if (name.matches("".toRegex())) {
                 name = placeTitle
             }
@@ -147,8 +148,9 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
                 item.name = name
                 item.latitude = latitude
                 item.longitude = longitude
+                item.marker = mGoogleMap?.markerStyle ?: prefs.markerStyle
             } else {
-                item = Place(prefs.radius, 0, latitude, longitude, name, "", ArrayList())
+                item = Place(prefs.radius, mGoogleMap?.markerStyle ?: prefs.markerStyle, latitude, longitude, name, "", ArrayList())
             }
             viewModel.savePlace(item)
         } else {

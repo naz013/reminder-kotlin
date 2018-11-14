@@ -712,5 +712,30 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         const val THEME_DARK_4 = 9
         const val THEME_PURE_BLACK = 10
         const val NUM_OF_MARKERS = 16
+
+        @DrawableRes
+        fun getMarkerStyle(code: Int): Int {
+            val color: Int
+            when (code) {
+                Color.RED -> color = R.drawable.ic_location_pointer_red
+                Color.PURPLE -> color = R.drawable.ic_location_pointer_purple
+                Color.LIGHT_GREEN -> color = R.drawable.ic_location_pointer_green_light
+                Color.GREEN -> color = R.drawable.ic_location_pointer_green
+                Color.LIGHT_BLUE -> color = R.drawable.ic_location_pointer_blue_light
+                Color.BLUE -> color = R.drawable.ic_location_pointer_blue
+                Color.YELLOW -> color = R.drawable.ic_location_pointer_yellow
+                Color.ORANGE -> color = R.drawable.ic_location_pointer_orange
+                Color.CYAN -> color = R.drawable.ic_location_pointer_cyan
+                Color.PINK -> color = R.drawable.ic_location_pointer_pink
+                Color.TEAL -> color = R.drawable.ic_location_pointer_teal
+                Color.AMBER -> color = R.drawable.ic_location_pointer_amber
+                Color.DEEP_PURPLE -> color = R.drawable.ic_location_pointer_purple_deep
+                Color.DEEP_ORANGE -> color = R.drawable.ic_location_pointer_orange_deep
+                Color.INDIGO -> color = R.drawable.ic_location_pointer_indigo
+                Color.LIME -> color = R.drawable.ic_location_pointer_lime
+                else -> color = R.drawable.ic_location_pointer_blue
+            }
+            return color
+        }
     }
 }

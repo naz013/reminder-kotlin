@@ -1,4 +1,4 @@
-package com.elementary.tasks.places.list
+package com.elementary.tasks.core.fragments
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +10,11 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
-import kotlinx.android.synthetic.main.list_item_place.view.*
+import com.elementary.tasks.core.utils.TimeUtil
+import kotlinx.android.synthetic.main.list_item_map_place.view.*
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +31,7 @@ import kotlinx.android.synthetic.main.list_item_place.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder>() {
+class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>() {
 
     private val mData = mutableListOf<Place>()
     var actionsListener: ActionsListener<Place>? = null
@@ -51,15 +52,15 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
         fun bind(item: Place) {
             itemView.textView.text = item.name
             loadMarker(itemView.markerImage, item.marker)
+
+            val dmy = TimeUtil.getPlaceDateTimeFromGmt(item.dateTime)
+            itemView.dayView.text = dmy.day
+            itemView.monthYearView.text = "${dmy.month}\n${dmy.year}"
         }
 
         init {
             itemView.itemCard.setOnClickListener { view ->
                 actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
-            }
-            itemView.itemCard.setOnLongClickListener { view ->
-                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-                true
             }
         }
     }
@@ -69,7 +70,7 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_place, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_map_place, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

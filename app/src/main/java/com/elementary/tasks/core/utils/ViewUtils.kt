@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -92,20 +91,6 @@ object ViewUtils {
                 }
             })
         }
-    }
-
-    fun getFabState(context: Context, @ColorRes colorNormal: Int, @ColorRes colorPressed: Int): ColorStateList {
-        val states = arrayOf(intArrayOf(android.R.attr.state_pressed), intArrayOf(android.R.attr.state_focused), intArrayOf())
-        val colorP = getColor(context, colorPressed)
-        val colorN = getColor(context, colorNormal)
-        val colors = intArrayOf(colorP, colorN, colorN)
-        return ColorStateList(states, colors)
-    }
-
-    fun getFabState(@ColorInt colorNormal: Int, @ColorInt colorPressed: Int): ColorStateList {
-        val states = arrayOf(intArrayOf(android.R.attr.state_pressed), intArrayOf(android.R.attr.state_focused), intArrayOf())
-        val colors = intArrayOf(colorPressed, colorNormal, colorNormal)
-        return ColorStateList(states, colors)
     }
 
     fun getDrawable(context: Context, @DrawableRes resource: Int): Drawable {

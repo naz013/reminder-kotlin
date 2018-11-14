@@ -282,7 +282,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private fun showGroup(item: ReminderGroup?) {
         if (item == null) return
-        fragment?.onGroupUpdate(item)
+        val frag = fragment ?: return
+        if (frag.isAdded && frag.isVisible) {
+            frag.onGroupUpdate(item)
+        }
     }
 
     private fun openRecognizer() {

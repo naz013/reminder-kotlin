@@ -72,10 +72,14 @@ abstract class TypeFragment : Fragment() {
     }
 
     open fun onGroupUpdate(reminderGroup: ReminderGroup) {
-        val reminder = reminderInterface.reminder
-        reminder.groupUuId = reminderGroup.groupUuId
-        reminder.groupColor = reminderGroup.groupColor
-        reminder.groupTitle = reminderGroup.groupTitle
+        try {
+            val reminder = reminderInterface.reminder
+            reminder.groupUuId = reminderGroup.groupUuId
+            reminder.groupColor = reminderGroup.groupColor
+            reminder.groupTitle = reminderGroup.groupTitle
+        } catch (e: UninitializedPropertyAccessException) {
+
+        }
     }
 
     override fun onResume() {
