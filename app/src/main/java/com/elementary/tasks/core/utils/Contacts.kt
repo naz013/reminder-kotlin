@@ -1,9 +1,7 @@
 package com.elementary.tasks.core.utils
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.provider.ContactsContract
@@ -50,9 +48,9 @@ object Contacts {
      * @param context     application context.
      * @return Contact identifier
      */
-    fun getIdFromNumber(phoneNumber: String?, context: Context): Int {
+    fun getIdFromNumber(phoneNumber: String?, context: Context): Long {
         if (phoneNumber == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
-        var phoneContactID = 0
+        var phoneContactID = 0L
         try {
             val contact = Uri.encode(phoneNumber)
             val contactLookupCursor = context.contentResolver
@@ -60,7 +58,7 @@ object Contacts {
                             arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID), null, null, null)
                     ?: return 0
             while (contactLookupCursor.moveToNext()) {
-                phoneContactID = contactLookupCursor.getInt(
+                phoneContactID = contactLookupCursor.getLong(
                         contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID))
             }
             contactLookupCursor.close()

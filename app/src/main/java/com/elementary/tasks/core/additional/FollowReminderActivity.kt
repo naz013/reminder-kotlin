@@ -146,6 +146,15 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         } else {
             contactInfo.text = mNumber
         }
+
+        val photo = Contacts.getPhoto(Contacts.getIdFromNumber(mNumber, this))
+        if (photo != null) {
+            photoBlock.visibility = View.VISIBLE
+            photoView.setImageURI(photo)
+        } else {
+            photoBlock.visibility = View.GONE
+        }
+
         initViews()
         initPrefs()
         initExportChecks()

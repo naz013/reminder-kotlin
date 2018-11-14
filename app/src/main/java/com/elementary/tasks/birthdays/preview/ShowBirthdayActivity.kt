@@ -190,7 +190,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         if (!TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
             birthday.number = Contacts.getNumber(birthday.name, this)
         }
-        if (birthday.contactId == 0 && !TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
+        if (birthday.contactId == 0L && !TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
             birthday.contactId = Contacts.getIdFromNumber(birthday.number, this)
         }
         val photo = Contacts.getPhoto(birthday.contactId.toLong())

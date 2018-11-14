@@ -32,7 +32,7 @@ data class Birthday(
         var number: String = "",
         var key: String = "",
         var showedYear: Int = 0,
-        var contactId: Int = 0,
+        var contactId: Long = 0L,
         var day: Int = 0,
         var month: Int = 0,
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
@@ -44,7 +44,7 @@ data class Birthday(
         get() = 2
 
     @Ignore
-    constructor(name: String, date: String, number: String, showedYear: Int, contactId: Int, day: Int, month: Int): this() {
+    constructor(name: String, date: String, number: String, showedYear: Int, contactId: Long, day: Int, month: Int): this() {
         this.name = name
         this.date = date
         this.number = number

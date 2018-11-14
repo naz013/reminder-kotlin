@@ -56,15 +56,15 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
         missedCallWindow.setOnClickListener {
             MissedCallDialogActivity.mockTest(context!!,
-                    MissedCall(number = "0662552549", dateTime = System.currentTimeMillis()))
+                    MissedCall(number = "2454548", dateTime = System.currentTimeMillis()))
         }
 
         quickSmsWindow.setOnClickListener {
-            QuickSmsActivity.openScreen(context!!, "0662552549")
+            QuickSmsActivity.openScreen(context!!, "2454548")
         }
 
         afterCallWindow.setOnClickListener {
-            FollowReminderActivity.mockScreen(context!!, "0662552549", System.currentTimeMillis())
+            FollowReminderActivity.mockScreen(context!!, "2454548", System.currentTimeMillis())
         }
     }
 
