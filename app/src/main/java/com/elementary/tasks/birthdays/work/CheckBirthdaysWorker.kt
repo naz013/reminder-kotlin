@@ -1,7 +1,9 @@
 package com.elementary.tasks.birthdays.work
 
+import android.content.Context
 import android.provider.ContactsContract
 import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Contacts
@@ -30,7 +32,7 @@ import java.util.*
  * limitations under the License.
  */
 
-class CheckBirthdaysWorker : Worker() {
+class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     private val birthdayFormats = arrayOf<DateFormat>(
             SimpleDateFormat("yyyy-MM-dd", Locale.US),

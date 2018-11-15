@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.settings.additional.work
 
+import android.content.Context
 import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.Google
@@ -12,7 +14,7 @@ import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
 
-class SingleBackupWorker : Worker() {
+class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
         val uuId = inputData.getString(Constants.INTENT_ID) ?: ""
