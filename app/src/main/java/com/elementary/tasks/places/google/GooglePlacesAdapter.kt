@@ -45,6 +45,7 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
             itemView.text1.text = googlePlaceItem.name
             itemView.text2.text = googlePlaceItem.address
             itemView.placeIcon.setImageResource(getIcon(googlePlaceItem.types))
+            itemView.placeCheck.isChecked = googlePlaceItem.isSelected
             if (itemCount > 1 && adapterPosition == last) {
                 itemView.placeCheck.visibility = View.GONE
                 itemView.placeIcon.visibility = View.GONE
@@ -58,15 +59,16 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
         init {
             itemView.listItem.setOnClickListener { view ->
                 if (itemCount > 1 && adapterPosition == last) {
-                    for (item in array) item.isSelected = true
+                    array.forEach {
+                        it.isSelected = true
+                    }
                     notifyDataSetChanged()
                 } else {
                     mEventListener?.onItemClicked(adapterPosition, view)
                 }
             }
             itemView.placeCheck.setOnClickListener {
-                val item = array[adapterPosition]
-                item.isSelected = !item.isSelected
+                array[adapterPosition].isSelected = !array[adapterPosition].isSelected
                 notifyItemChanged(adapterPosition)
             }
         }

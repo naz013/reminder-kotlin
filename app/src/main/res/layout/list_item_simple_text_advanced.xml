@@ -5,6 +5,7 @@
     android:id="@+id/listItem"
     android:layout_width="312dp"
     android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
     android:stateListAnimator="@animator/card_animator"
     app:cardCornerRadius="5dp"
@@ -37,6 +38,7 @@
                 style="?textAppearanceSubtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="2"
                 tools:text="Title" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -44,6 +46,7 @@
                 style="?textAppearanceSubtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="2"
                 tools:text="Title" />
 
         </LinearLayout>
