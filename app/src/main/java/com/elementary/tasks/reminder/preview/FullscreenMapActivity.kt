@@ -43,6 +43,7 @@ class FullscreenMapActivity : ThemedActivity() {
 
     private var reminder: Reminder? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
+    private var placeIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +52,12 @@ class FullscreenMapActivity : ThemedActivity() {
 
         mapButton.setOnClickListener {
             val reminder = reminder ?: return@setOnClickListener
-            val place = reminder.places[0]
+            if (placeIndex < reminder.places.size - 1) {
+                placeIndex++
+            } else {
+                placeIndex = 0
+            }
+            val place = reminder.places[placeIndex]
             val lat = place.latitude
             val lon = place.longitude
             mGoogleMap?.moveCamera(LatLng(lat, lon), 0, 0, 0, 0)
@@ -71,10 +77,15 @@ class FullscreenMapActivity : ThemedActivity() {
     }
 
     private fun showMapData(reminder: Reminder) {
+        reminder.places.forEach {
+            val lat = it.latitude
+            val lon = it.longitude
+            mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, false, false, it.radius)
+        }
         val place = reminder.places[0]
         val lat = place.latitude
         val lon = place.longitude
-        mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, true, true, place.radius)
+        mGoogleMap?.moveCamera(LatLng(lat, lon), 0, 0, 0, 0)
     }
 
     private fun showInfo(reminder: Reminder) {

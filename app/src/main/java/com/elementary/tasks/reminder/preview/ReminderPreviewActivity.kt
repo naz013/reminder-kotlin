@@ -36,7 +36,6 @@ import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
 import com.elementary.tasks.notes.list.NoteHolder
-import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
@@ -193,13 +192,23 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun showMapData(reminder: Reminder) {
+        mapContainer.visibility = View.VISIBLE
+        location.visibility = View.VISIBLE
+
+        var places = ""
+        reminder.places.forEach {
+            val lat = it.latitude
+            val lon = it.longitude
+            mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, false, false, it.radius)
+            places += String.format(Locale.getDefault(), "%.5f %.5f", lat, lon)
+            places += "\n"
+        }
+        location.text = places
+
         val place = reminder.places[0]
         val lat = place.latitude
         val lon = place.longitude
-        mapContainer.visibility = View.VISIBLE
-        location.visibility = View.VISIBLE
-        location.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, reminder.places.size)
-        mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, true, true, place.radius)
+        mGoogleMap?.moveCamera(LatLng(lat, lon), 0, 0, 0, 0)
     }
 
 //    private val mReadyCallback = object : ReadyListener {
