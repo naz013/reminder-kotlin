@@ -352,7 +352,7 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun loadPlaces() {
-        val req = cardSearch.text.toString().trim { it <= ' ' }.toLowerCase()
+        val req = cardSearch.text.toString().trim().toLowerCase()
         if (req.matches("".toRegex())) return
         cancelSearchTask()
         call = RequestBuilder.getSearch(req)
