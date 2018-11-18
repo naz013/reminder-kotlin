@@ -1,21 +1,21 @@
 package com.elementary.tasks.notes
 
+import android.content.Context
 import android.os.Handler
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.notes.NotesViewModel
-import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
-import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import kotlinx.android.synthetic.main.view_note_card.view.*
 import kotlinx.android.synthetic.main.view_note_reminder_card.view.*
 import kotlinx.android.synthetic.main.view_note_status_card.view.*
@@ -39,14 +39,12 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class QuickNoteCoordinator(private val mContext: MainActivity, private val parent: ViewGroup,
+class QuickNoteCoordinator(private val context: Context, private val parent: ViewGroup,
                            private val noteList: ViewGroup,
-                           private var reminderViewModel: ActiveRemindersViewModel,
-                           private var noteViewModel: NotesViewModel,
+                           private var noteViewModel: NoteViewModel,
                            private val prefs: Prefs,
                            private val notifier: Notifier) {
 
-    private var mNote: NoteWithImages? = null
     val isNoteVisible: Boolean
         get() = parent.visibility == View.VISIBLE
 
@@ -61,35 +59,6 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
             false
         }
         parent.visibility = View.GONE
-
-        initReminderViewModel()
-        initNoteViewModel()
-    }
-
-    private fun initNoteViewModel() {
-        noteViewModel.result.observe(mContext, Observer{ commands ->
-            if (commands != null) {
-                when (commands) {
-                    Commands.SAVED -> if (prefs.isNoteReminderEnabled) {
-                        if (mNote != null) {
-                            addReminderCard(mNote!!)
-                        }
-                    } else {
-                        if (mNote != null) {
-                            addNotificationCard(mNote!!)
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-    private fun initReminderViewModel() {
-        reminderViewModel.result.observe(mContext, Observer{ commands ->
-            if (commands != null && commands == Commands.SAVED) {
-                if (mNote != null) addNotificationCard(mNote!!)
-            }
-        })
     }
 
     fun switchQuickNote() {
@@ -101,28 +70,29 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
     }
 
     fun hideNoteView() {
-        ViewUtils.hideReveal(parent)
+        parent.visibility = View.GONE
         noteList.removeAllViewsInLayout()
     }
 
     private fun showNoteView() {
-        ViewUtils.showReveal(parent)
+        parent.visibility = View.VISIBLE
         Handler().postDelayed({ this.addFirstCard() }, 250)
     }
 
     private fun addFirstCard() {
-        val binding = LayoutInflater.from(mContext).inflate(R.layout.view_note_card, noteList, false)
+        val binding = LayoutInflater.from(context).inflate(R.layout.view_note_card, noteList, false)
         binding.buttonSave.setOnClickListener { saveNote(binding) }
         binding.noteCard.visibility = View.GONE
 
         noteList.addView(binding)
-        ViewUtils.slideInUp(mContext, binding.noteCard)
+        binding.noteCard.visibility = View.VISIBLE
     }
 
     private fun saveNote(binding: View) {
-        val text = binding.quickNote.text.toString().trim { it <= ' ' }
+        val text = binding.quickNote.text.toString().trim()
         if (TextUtils.isEmpty(text)) {
-            binding.quickNote.error = mContext.getString(R.string.must_be_not_empty)
+            binding.nameLayout.error = context.getString(R.string.must_be_not_empty)
+            binding.nameLayout.isErrorEnabled = true
             return
         }
         binding.quickNote.isEnabled = false
@@ -137,12 +107,17 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         }
         val noteWithImages = NoteWithImages()
         noteWithImages.note = item
-        mNote = noteWithImages
-        noteViewModel.saveNote(noteWithImages)
+
+        if (prefs.isNoteReminderEnabled) {
+            addReminderCard(noteWithImages)
+        } else {
+            noteViewModel.saveNote(noteWithImages)
+            addNotificationCard(noteWithImages)
+        }
     }
 
     private fun addReminderCard(item: NoteWithImages) {
-        val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_reminder_card, noteList, false)
+        val cardBinding = LayoutInflater.from(context).inflate(R.layout.view_note_reminder_card, noteList, false)
 
         cardBinding.buttonYes.setOnClickListener {
             cardBinding.buttonNo.isEnabled = false
@@ -157,11 +132,15 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         cardBinding.noteReminderCard.visibility = View.GONE
 
         noteList.addView(cardBinding)
-        Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteReminderCard) }, 250)
+        cardBinding.noteReminderCard.visibility = View.VISIBLE
     }
 
     private fun addReminderToNote(item: NoteWithImages) {
-        val note = item.note ?: return
+        val note = item.note
+        if (note == null) {
+            hideNoteView()
+            return
+        }
 
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
@@ -172,19 +151,21 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         reminder.isActive = true
         reminder.isRemoved = false
         reminder.summary = note.summary
-        val def = reminderViewModel.defaultReminderGroup.value
-        if (def != null) {
-            reminder.groupUuId = def.groupUuId
-        }
+//        val def = reminderViewModel.defaultReminderGroup.value
+//        if (def != null) {
+//            reminder.groupUuId = def.groupUuId
+//        }
         val prefsTime = prefs.noteReminderTime * TimeCount.MINUTE
         val startTime = System.currentTimeMillis() + prefsTime
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminderViewModel.saveAndStartReminder(reminder)
+
+        noteViewModel.saveNote(item, reminder)
+        hideNoteView()
     }
 
     private fun addNotificationCard(item: NoteWithImages) {
-        val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_status_card, noteList, false)
+        val cardBinding = LayoutInflater.from(context).inflate(R.layout.view_note_status_card, noteList, false)
 
         cardBinding.buttonYesStatus.setOnClickListener {
             cardBinding.buttonNoStatus.isEnabled = false
@@ -195,7 +176,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         cardBinding.noteStatusCard.visibility = View.GONE
 
         noteList.addView(cardBinding)
-        Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard) }, 250)
+        cardBinding.noteStatusCard.visibility = View.VISIBLE
     }
 
     private fun showInStatusBar(item: NoteWithImages) {

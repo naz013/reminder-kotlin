@@ -23,13 +23,15 @@ import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.core.viewModels.notes.NotesViewModel
-import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
 import com.elementary.tasks.monthView.CalendarFragment
-import com.elementary.tasks.navigation.fragments.*
+import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.navigation.fragments.FeedbackFragment
+import com.elementary.tasks.navigation.fragments.HelpFragment
+import com.elementary.tasks.navigation.fragments.MapFragment
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
@@ -89,10 +91,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun initQuickNote(savedInstanceState: Bundle?) {
-        val noteViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
-        val reminderViewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
+        val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, "")).get(NoteViewModel::class.java)
         mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
-                reminderViewModel, noteViewModel, prefs, notifier)
+                noteViewModel, prefs, notifier)
         when {
             savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
             intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {

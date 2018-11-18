@@ -1,31 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/noteCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:visibility="visible">
+    android:layout_marginBottom="8dp"
+    android:visibility="visible"
+    app:cardCornerRadius="5dp">
 
     <LinearLayout
-        android:id="@+id/bgView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="1dp"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="16dp">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/quickNote"
-            style="?textAppearanceHeadline6"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/note"
-            android:inputType="textMultiLine" />
+            app:boxBackgroundColor="@color/secondary_12"
+            app:boxCornerRadiusTopEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/quickNote"
+                style="?textAppearanceHeadline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="@string/note"
+                android:inputType="textMultiLine"
+                tools:text="Note" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSave"
-            style="?snackbarButtonStyle"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"

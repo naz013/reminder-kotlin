@@ -4,22 +4,21 @@
     android:id="@+id/noteReminderCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="5dp">
 
     <LinearLayout
-        android:id="@+id/bgViewReminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="1dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="?textAppearanceHeadline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:text="@string/add_reminder" />
 
         <LinearLayout
@@ -31,15 +30,15 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonYes"
-                style="?snackbarButtonStyle"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/yes" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonNo"
-                style="?snackbarButtonStyle"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/no" />
