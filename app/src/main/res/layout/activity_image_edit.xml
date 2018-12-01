@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -13,17 +13,18 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?android:colorBackground" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:tabBackground="?android:colorBackground"
             app:tabIconTint="?android:textColorPrimary"
             app:tabIndicatorColor="?colorSecondary"
             app:tabSelectedTextColor="?android:textColorPrimary"
-            app:tabTextColor="?android:textColorPrimary"
-            android:layout_height="wrap_content">
+            app:tabTextColor="?android:textColorPrimary">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/cropItem"

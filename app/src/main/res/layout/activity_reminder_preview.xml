@@ -15,7 +15,7 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?android:colorBackground"
             android:orientation="vertical"
             android:stateListAnimator="@animator/toolbar_animator"
             tools:targetApi="lollipop">
@@ -24,6 +24,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="?android:colorBackground"
                 app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
                 tools:title="Test" />
         </com.google.android.material.appbar.AppBarLayout>

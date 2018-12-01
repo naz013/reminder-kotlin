@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="?colorPrimary"
+        android:background="?android:colorBackground"
         android:stateListAnimator="@animator/toolbar_animator"
         tools:targetApi="lollipop">
 
@@ -17,6 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?android:colorBackground"
             app:title="@string/create_template" />
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -8,7 +8,6 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
         android:stateListAnimator="@animator/toolbar_animator"
         tools:targetApi="lollipop">
 
@@ -16,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary">
+            android:background="?android:colorBackground">
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/navSpinner"

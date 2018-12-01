@@ -19,7 +19,6 @@
         android:layout_marginBottom="-15dp"
         android:paddingBottom="15dp"
         android:visibility="visible"
-        app:cardBackgroundColor="?colorPrimary"
         app:cardCornerRadius="15dp"
         app:cardElevation="4dp">
 
