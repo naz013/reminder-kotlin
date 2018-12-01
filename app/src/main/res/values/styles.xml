@@ -90,6 +90,7 @@
         <item name="android:spinnerItemStyle">@style/Text.Body1</item>
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
     </style>
 
     <style name="Base.Dark" parent="Theme.MaterialComponents.NoActionBar">
@@ -111,11 +112,11 @@
         <item name="android:spinnerItemStyle">@style/Text.Body1</item>
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
     </style>
 
     <style name="PureWhite" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
-        <item name="colorPrimary">@color/pureWhite</item>
         <item name="android:windowBackground">@color/pureWhite</item>
         <item name="android:colorBackground">@color/pureWhite</item>
         <item name="materialCardViewStyle">@style/PureWhite.Card</item>
@@ -127,7 +128,6 @@
 
     <style name="Light1" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
-        <item name="colorPrimary">@color/lightPrimary1</item>
         <item name="android:windowBackground">@color/lightPrimary1</item>
         <item name="android:colorBackground">@color/lightPrimary1</item>
         <item name="materialCardViewStyle">@style/Light1.Card</item>
@@ -139,7 +139,6 @@
 
     <style name="Light2" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimaryDark2</item>
-        <item name="colorPrimary">@color/lightPrimary2</item>
         <item name="android:windowBackground">@color/lightPrimary2</item>
         <item name="android:colorBackground">@color/lightPrimary2</item>
         <item name="materialCardViewStyle">@style/Light2.Card</item>
@@ -151,7 +150,6 @@
 
     <style name="Light3" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimaryDark3</item>
-        <item name="colorPrimary">@color/lightPrimary3</item>
         <item name="android:windowBackground">@color/lightPrimary3</item>
         <item name="android:colorBackground">@color/lightPrimary3</item>
         <item name="materialCardViewStyle">@style/Light3.Card</item>
@@ -163,7 +161,6 @@
 
     <style name="Light4" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimaryDark4</item>
-        <item name="colorPrimary">@color/lightPrimary4</item>
         <item name="android:windowBackground">@color/lightPrimary4</item>
         <item name="android:colorBackground">@color/lightPrimary4</item>
         <item name="materialCardViewStyle">@style/Light4.Card</item>
@@ -175,7 +172,6 @@
 
     <style name="Dark1" parent="Base.Dark">
         <item name="colorPrimaryDark">@color/darkPrimary1</item>
-        <item name="colorPrimary">@color/darkPrimary1</item>
         <item name="android:windowBackground">@color/darkPrimary1</item>
         <item name="android:colorBackground">@color/darkPrimary1</item>
         <item name="materialCardViewStyle">@style/Dark1.Card</item>
@@ -187,7 +183,6 @@
 
     <style name="Dark2" parent="Base.Dark">
         <item name="colorPrimaryDark">@color/darkPrimary2</item>
-        <item name="colorPrimary">@color/darkPrimary2</item>
         <item name="android:windowBackground">@color/darkPrimary2</item>
         <item name="android:colorBackground">@color/darkPrimary2</item>
         <item name="materialCardViewStyle">@style/Dark2.Card</item>
@@ -199,7 +194,6 @@
 
     <style name="Dark3" parent="Base.Dark">
         <item name="colorPrimaryDark">@color/darkPrimary3</item>
-        <item name="colorPrimary">@color/darkPrimary3</item>
         <item name="android:windowBackground">@color/darkPrimary3</item>
         <item name="android:colorBackground">@color/darkPrimary3</item>
         <item name="materialCardViewStyle">@style/Dark3.Card</item>
@@ -211,7 +205,6 @@
 
     <style name="Dark4" parent="Base.Dark">
         <item name="colorPrimaryDark">@color/darkPrimary4</item>
-        <item name="colorPrimary">@color/darkPrimary4</item>
         <item name="android:windowBackground">@color/darkPrimary4</item>
         <item name="android:colorBackground">@color/darkPrimary4</item>
         <item name="materialCardViewStyle">@style/Dark4.Card</item>
@@ -223,7 +216,6 @@
 
     <style name="PureBlack" parent="Base.Dark">
         <item name="colorPrimaryDark">@color/pureBlackDark</item>
-        <item name="colorPrimary">@color/pureBlack</item>
         <item name="android:windowBackground">@color/pureBlack</item>
         <item name="android:colorBackground">@color/pureBlack</item>
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
@@ -237,6 +229,7 @@
 
     <style name="Base.Light.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
     </style>
 
     <style name="PureWhite.Dialog" parent="Base.Light.Dialog">
@@ -281,6 +274,7 @@
 
     <style name="Base.Dark.Dialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
     </style>
 
     <style name="Dark1.Dialog" parent="Base.Dark.Dialog">
@@ -317,6 +311,7 @@
 
     <style name="PureBlack.Dialog" parent="Base.Dark.Dialog">
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
         <item name="android:colorBackground">@color/pureBlack</item>
         <item name="android:popupBackground">@color/pureBlack</item>
         <item name="android:windowBackground">@color/pureBlack</item>

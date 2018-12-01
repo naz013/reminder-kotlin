@@ -20,7 +20,7 @@
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
+                android:background="?android:colorBackground"
                 android:stateListAnimator="@animator/toolbar_animator"
                 tools:targetApi="lollipop">
 
@@ -28,6 +28,7 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:background="?android:colorBackground"
                     app:titleTextAppearance="@style/ToolbarTextStyle"
                     tools:title="Test" />
 

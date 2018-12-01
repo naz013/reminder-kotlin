@@ -3,7 +3,6 @@
 
     <style name="PureWhite" parent="Base.Light">
         <item name="colorPrimaryDark">@color/pureWhite</item>
-        <item name="colorPrimary">@color/pureWhite</item>
         <item name="android:windowBackground">@color/pureWhite</item>
         <item name="android:colorBackground">@color/pureWhite</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -12,7 +11,6 @@
 
     <style name="Light1" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimary1</item>
-        <item name="colorPrimary">@color/lightPrimary1</item>
         <item name="android:windowBackground">@color/lightPrimary1</item>
         <item name="android:colorBackground">@color/lightPrimary1</item>
         <item name="materialCardViewStyle">@style/Light1.Card</item>
@@ -21,7 +19,6 @@
 
     <style name="Light2" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimary2</item>
-        <item name="colorPrimary">@color/lightPrimary2</item>
         <item name="android:windowBackground">@color/lightPrimary2</item>
         <item name="android:colorBackground">@color/lightPrimary2</item>
         <item name="materialCardViewStyle">@style/Light2.Card</item>
@@ -30,7 +27,6 @@
 
     <style name="Light3" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimary3</item>
-        <item name="colorPrimary">@color/lightPrimary3</item>
         <item name="android:windowBackground">@color/lightPrimary3</item>
         <item name="android:colorBackground">@color/lightPrimary3</item>
         <item name="materialCardViewStyle">@style/Light3.Card</item>
@@ -39,7 +35,6 @@
 
     <style name="Light4" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimary4</item>
-        <item name="colorPrimary">@color/lightPrimary4</item>
         <item name="android:windowBackground">@color/lightPrimary4</item>
         <item name="android:colorBackground">@color/lightPrimary4</item>
         <item name="materialCardViewStyle">@style/Light4.Card</item>
@@ -65,6 +60,7 @@
         <item name="android:spinnerItemStyle">@style/Text.Body1</item>
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
