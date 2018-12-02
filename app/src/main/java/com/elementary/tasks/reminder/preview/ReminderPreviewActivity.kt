@@ -326,16 +326,13 @@ class ReminderPreviewActivity : ThemedActivity() {
         if (due > 0) {
             timeView.visibility = View.VISIBLE
             time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, false)
-            var repeatStr: String? = IntervalUtil.getInterval(this, reminder.repeatInterval)
-            if (Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
-                repeatStr = reminderUtils.getRepeatString(reminder.weekdays)
+            when {
+                Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
+                Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> repeat.text = reminderUtils.getRepeatString(reminder.weekdays)
+                Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> repeat.text = getString(R.string.yearly)
+                else -> repeat.text = IntervalUtil.getInterval(this, reminder.repeatInterval)
             }
-            if (repeatStr != null) {
-                repeat.text = repeatStr
-                repeatView.visibility = View.VISIBLE
-            } else {
-                repeatView.visibility = View.GONE
-            }
+            repeatView.visibility = View.VISIBLE
         } else {
             timeView.visibility = View.GONE
             repeatView.visibility = View.GONE

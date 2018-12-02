@@ -37,7 +37,6 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class MonthFragment : RepeatableTypeFragment() {
 
     private var mHour = 0
@@ -103,8 +102,10 @@ class MonthFragment : RepeatableTypeFragment() {
         reminder.target = number
         reminder.type = type
         reminder.dayOfMonth = mDay
-        reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        if (reminder.repeatInterval <= 0) {
+            reminder.repeatInterval = 1
+        }
         val startTime = TimeCount.getNextMonthDayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -174,6 +175,9 @@ class MonthFragment : RepeatableTypeFragment() {
         beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
             reminderInterface.reminder.remindBefore = it
             updateHeader()
+        }
+        repeatView.bindProperty(reminderInterface.reminder.repeatInterval) {
+            reminderInterface.reminder.repeatInterval = it
         }
         exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
             reminderInterface.reminder.exportToCalendar = it

@@ -239,32 +239,28 @@ object TimeCount {
         }
         val beforeValue = reminder.remindBefore
         if (dayOfMonth == 0) {
-            return getLastMonthDayTime(fromTime, beforeValue)
+            return getLastMonthDayTime(fromTime, reminder)
         }
         val cc = Calendar.getInstance()
         cc.timeInMillis = fromTime
         cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        if (cc.timeInMillis - beforeValue > System.currentTimeMillis()) {
-            return cc.timeInMillis
-        }
-        cc.set(Calendar.MONTH, cc.get(Calendar.MONTH) + 1)
-        while (cc.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
-            cc.timeInMillis = cc.timeInMillis + AlarmManager.INTERVAL_DAY
+        while (cc.timeInMillis - beforeValue < System.currentTimeMillis() && cc.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
+            cc.set(Calendar.MONTH, cc.get(Calendar.MONTH) + reminder.repeatInterval.toInt())
         }
         return cc.timeInMillis
     }
 
-    private fun getLastMonthDayTime(fromTime: Long, beforeValue: Long): Long {
+    private fun getLastMonthDayTime(fromTime: Long, reminder: Reminder): Long {
         val cc = Calendar.getInstance()
         cc.timeInMillis = fromTime
         while (true) {
             val lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
             cc.set(Calendar.DAY_OF_MONTH, lastDay)
-            if (cc.timeInMillis - beforeValue > System.currentTimeMillis()) {
+            if (cc.timeInMillis - reminder.remindBefore > System.currentTimeMillis()) {
                 break
             }
             cc.set(Calendar.DAY_OF_MONTH, 1)
-            cc.add(Calendar.MONTH, 1)
+            cc.add(Calendar.MONTH, reminder.repeatInterval.toInt())
         }
         cc.set(Calendar.SECOND, 0)
         cc.set(Calendar.MILLISECOND, 0)

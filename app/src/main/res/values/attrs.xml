@@ -30,13 +30,15 @@
     </declare-styleable>
 
     <declare-styleable name="RepeatView">
-        <attr name="repeat_type" format="enum">
+        <attr name="repeatType" format="enum">
             <enum name="seconds" value="0" />
             <enum name="minutes" value="1" />
             <enum name="hours" value="2" />
             <enum name="days" value="3" />
             <enum name="weeks" value="4" />
+            <enum name="months" value="5" />
         </attr>
+        <attr name="isLocked" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="BeforePickerView">
