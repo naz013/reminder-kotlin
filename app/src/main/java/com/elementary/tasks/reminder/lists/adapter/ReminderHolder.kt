@@ -106,7 +106,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
 
     private fun loadRepeat(model: Reminder) {
         when {
-            Reminder.isBase(model.type, Reminder.BY_MONTH) -> itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), 1.toString())
+            Reminder.isBase(model.type, Reminder.BY_MONTH) -> itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), model.repeatInterval.toString())
             Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = reminderUtils.getRepeatString(model.weekdays)
             Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> itemView.repeatInterval.text = itemView.repeatInterval.context.getString(R.string.yearly)
             else -> itemView.repeatInterval.text = IntervalUtil.getInterval(itemView.repeatInterval.context, model.repeatInterval)

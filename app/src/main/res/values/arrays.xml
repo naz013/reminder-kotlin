@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="app_languages">
+    <string-array name="app_languages" >
         <item>@string/auto</item>
         <item>English</item>
         <item>Deutsch</item>
@@ -33,6 +33,10 @@
         <item>@string/_hours</item>
         <item>@string/days</item>
         <item>@string/weeks</item>
+    </string-array>
+
+    <string-array name="repeat_times_month">
+        <item>@string/months</item>
     </string-array>
 
     <string-array name="before_times">
@@ -92,4 +96,5 @@
     <string-array name="app_translators">
         <item>Chinese: Waye Wrong</item>
     </string-array>
+    <string name="months">months</string>
 </resources>

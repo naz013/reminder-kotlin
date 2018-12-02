@@ -197,6 +197,16 @@
                         android:layout_marginRight="16dp"
                         app:before_type="minutes" />
 
+                    <com.elementary.tasks.core.views.RepeatView
+                        android:id="@+id/repeatView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="16dp"
+                        app:isLocked="true"
+                        app:repeatType="months" />
+
                     <com.elementary.tasks.core.views.RepeatLimitView
                         android:id="@+id/repeatLimitView"
                         android:layout_width="match_parent"
