@@ -11,8 +11,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:background="?attr/selectableItemBackground"
-        android:fontFamily="@font/roboto_medium"
         android:text="@string/skip"
+        android:textAppearance="?textAppearanceButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -24,8 +24,8 @@
         android:layout_marginBottom="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/acc_next"
-        android:fontFamily="@font/roboto_medium"
         android:text="@string/acc_next"
+        android:textAppearance="?textAppearanceButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
