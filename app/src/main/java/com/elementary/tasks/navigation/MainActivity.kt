@@ -20,7 +20,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.async.BackupSettingTask
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
@@ -276,7 +276,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun setMenuVisible() {
         val menu = nav_view.menu
-        menu.getItem(5)?.isVisible = Google.getInstance() != null
+        menu.getItem(5)?.isVisible = GTasks.getInstance(this)?.isLogged ?: false
         menu.getItem(11)?.isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 

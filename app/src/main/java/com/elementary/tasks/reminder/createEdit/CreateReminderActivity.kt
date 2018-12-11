@@ -21,7 +21,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
@@ -111,7 +111,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_reminder)
-        canExportToTasks = Google.getInstance() != null
+        canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         initActionBar()
         initNavigation()
         loadReminder(savedInstanceState)

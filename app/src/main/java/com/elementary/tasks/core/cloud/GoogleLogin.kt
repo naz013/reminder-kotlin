@@ -4,12 +4,10 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Prefs
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
@@ -39,27 +37,59 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GoogleLogin(private val activity: Activity, private val prefs: Prefs, private val mCallback: LoginCallback?) {
+class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
 
-    private var mGoogle: Google? = Google.getInstance()
+    private var mGoogleTasks: GTasks? = GTasks.getInstance(activity)
+    private var mGoogleDrive: GDrive? = GDrive.getInstance(activity)
     private var mAccountName: String? = null
+
     private val mUiHandler = Handler(Looper.getMainLooper())
-    private var mProgress: ProgressDialog? = null
+
     private var rtIntent: Intent? = null
+    private var mDriveCallback: DriveCallback? = null
+    private var mTasksCallback: TasksCallback? = null
+    private var isDriveLogin = false
 
-    val isLogged: Boolean
-        get() = mGoogle != null
+    var isGooleDriveLogged = false
+        private set
+        get() {
+            return mGoogleDrive?.isLogged ?: false
+        }
 
-    fun logOut() {
+    var isGooleTasksLogged = false
+        private set
+        get() {
+            return mGoogleTasks?.isLogged ?: false
+        }
+
+    fun logOutDrive() {
         prefs.driveUser = Prefs.DRIVE_USER_NONE
-        mGoogle!!.logOut()
-        mGoogle = null
+        mGoogleDrive?.logOut()
+        mGoogleDrive = null
     }
 
-    fun login() {
+    fun logOutTasks() {
+        prefs.tasksUser = Prefs.DRIVE_USER_NONE
+        mGoogleTasks?.logOut()
+        mGoogleTasks = null
+    }
+
+    fun loginDrive(loginCallback: DriveCallback) {
+        isDriveLogin = true
+        mDriveCallback = loginCallback
+        askIntent()
+    }
+
+    private fun askIntent() {
         val intent = AccountPicker.newChooseAccountIntent(null, null,
                 arrayOf("com.google"), false, null, null, null, null)
         activity.startActivityForResult(intent, REQUEST_AUTHORIZATION)
+    }
+
+    fun loginTasks(loginCallback: TasksCallback) {
+        isDriveLogin = false
+        mTasksCallback = loginCallback
+        askIntent()
     }
 
     private fun getAndUseAuthTokenInAsyncTask(account: Account) {
@@ -73,44 +103,57 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs, priv
                         if (rtIntent != null) {
                             activity.startActivityForResult(rtIntent, REQUEST_ACCOUNT_PICKER)
                         } else {
-                            mCallback?.onFail()
+                            sendFail()
                         }
                     } else {
                         finishLogin(mAccountName!!)
-                        mCallback?.onSuccess()
+                        sendResult()
                     }
                 } else {
-                    mCallback?.onFail()
+                    sendFail()
                 }
             }
         }.start()
     }
 
+    private fun sendFail() {
+        if (isDriveLogin) {
+            mDriveCallback?.onFail()
+        } else {
+            mTasksCallback?.onFail()
+        }
+    }
+
+    private fun sendResult() {
+        if (isDriveLogin) {
+            mGoogleDrive = GDrive.getInstance(activity)
+            mDriveCallback?.onResult(mGoogleDrive, true)
+        } else {
+            mGoogleTasks = GTasks.getInstance(activity)
+            mTasksCallback?.onResult(mGoogleTasks, true)
+        }
+    }
+
     private fun hideProgress() {
         Timber.d("hideProgress: ")
-        try {
-            if (mProgress != null && mProgress!!.isShowing) {
-                mProgress!!.dismiss()
-            }
-        } catch (ignored: IllegalArgumentException) {
-        }
-        mProgress = null
+        if (isDriveLogin) mDriveCallback?.onProgress(false)
+        else mTasksCallback?.onProgress(false)
     }
 
     private fun showProgress() {
         Timber.d("showProgress: ")
-        if (mProgress != null && mProgress!!.isShowing) return
-        mProgress = ProgressDialog(activity, ProgressDialog.STYLE_SPINNER)
-        mProgress!!.setMessage(activity.getString(R.string.trying_to_log_in))
-        mProgress!!.setCancelable(false)
-        mProgress!!.isIndeterminate = true
-        mProgress!!.show()
+        if (isDriveLogin) mDriveCallback?.onProgress(true)
+        else mTasksCallback?.onProgress(true)
     }
 
     private fun getAccessToken(account: Account): String? {
         Timber.d("getAccessToken: ")
         try {
-            val scope = "oauth2:" + DriveScopes.DRIVE + " " + TasksScopes.TASKS
+            val scope = "oauth2:" + if (isDriveLogin) {
+                DriveScopes.DRIVE
+            } else {
+                TasksScopes.TASKS
+            }
             val token = GoogleAuthUtil.getToken(activity, account, scope)
             Timber.d("getAccessToken: ok")
             return token
@@ -139,25 +182,31 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs, priv
             mAccountName = data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
             if (mAccountName != null) {
                 finishLogin(mAccountName!!)
-                mCallback?.onSuccess()
+                sendResult()
             } else {
-                mCallback?.onFail()
+                sendFail()
             }
         } else {
-            mCallback?.onFail()
+            sendFail()
         }
     }
 
     private fun finishLogin(account: String) {
-        prefs.driveUser = account
-        mGoogle = Google.getInstance()
+        if (isDriveLogin) prefs.driveUser = account
+        else prefs.tasksUser = account
     }
 
-    interface LoginCallback {
-        fun onSuccess()
+    interface LoginCallback<V> {
+        fun onProgress(isLoading: Boolean)
+
+        fun onResult(v: V?, isLogged: Boolean)
 
         fun onFail()
     }
+
+    interface DriveCallback : LoginCallback<GDrive>
+
+    interface TasksCallback : LoginCallback<GTasks>
 
     companion object {
 

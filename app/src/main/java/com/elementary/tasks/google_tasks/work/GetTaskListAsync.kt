@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.AsyncTask
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -33,7 +33,7 @@ import javax.inject.Inject
  */
 
 class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) : AsyncTask<Void, Void, Boolean>() {
-    private val mGoogle: Google? = Google.getInstance()
+    private val mGoogle: GTasks? = GTasks.getInstance(context)
     private val appDb: AppDb = AppDb.getAppDatabase(context)
     @Inject
     lateinit var updatesHelper: UpdatesHelper
@@ -43,10 +43,10 @@ class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) 
     }
 
     override fun doInBackground(vararg params: Void): Boolean {
-        if (mGoogle?.tasks != null) {
+        if (mGoogle != null) {
             var lists: TaskLists? = null
             try {
-                lists = mGoogle.tasks!!.taskLists
+                lists = mGoogle.taskLists
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -67,7 +67,7 @@ class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) 
                     listItem.def = 1
                     listItem.systemDefault = 1
                     appDb.googleTaskListsDao().insert(listItem)
-                    val tasks = mGoogle.tasks!!.getTasks(listId)
+                    val tasks = mGoogle.getTasks(listId)
                     if (tasks.isEmpty()) return false
                     for (task in tasks) {
                         var googleTask = appDb.googleTasksDao().getById(task.id)

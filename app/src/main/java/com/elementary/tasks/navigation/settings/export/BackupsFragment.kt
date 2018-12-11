@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.export.backups.InfoAdapter
@@ -123,7 +123,7 @@ class BackupsFragment : BaseSettingsFragment() {
         if (dbx.isLinked) {
             list.add(Info.Dropbox)
         }
-        val gdx = Google.getInstance()
+        val gdx = GDrive.getInstance(context!!)
         if (gdx != null) {
             list.add(Info.Google)
         }
@@ -195,7 +195,7 @@ class BackupsFragment : BaseSettingsFragment() {
                     dbx.cleanFolder()
                 }
             } else if (type == Info.Google) {
-                val gdx = Google.getInstance()
+                val gdx = GDrive.getInstance(context)
                 val isLinked = gdx != null
                 val isConnected = SuperUtil.isConnected(context)
                 for (file in params) {
@@ -212,9 +212,9 @@ class BackupsFragment : BaseSettingsFragment() {
                         }
                     }
                 }
-                if (isLinked && isConnected && gdx!!.drive != null) {
+                if (isLinked && isConnected && gdx != null) {
                     try {
-                        gdx.drive?.cleanFolder()
+                        gdx.cleanFolder()
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -283,15 +283,12 @@ class BackupsFragment : BaseSettingsFragment() {
     }
 
     private fun addGoogleData(list: MutableList<UserItem>) {
-        val gdx = Google.getInstance()
+        val gdx = GDrive.getInstance(context!!)
         if (gdx != null && SuperUtil.isConnected(context!!)) {
-            val drives = gdx.drive
-            if (drives != null) {
-                val userItem = drives.data
-                if (userItem != null) {
-                    userItem.kind = Info.Google
-                    list.add(userItem)
-                }
+            val userItem = gdx.data
+            if (userItem != null) {
+                userItem.kind = Info.Google
+                list.add(userItem)
             }
         }
     }

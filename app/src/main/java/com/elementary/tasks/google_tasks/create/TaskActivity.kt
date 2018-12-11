@@ -14,13 +14,12 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
@@ -360,7 +359,7 @@ open class TaskActivity : ThemedActivity() {
         if (action.matches(TasksConstants.EDIT.toRegex()) && item != null) {
             val initListId = item.listId
             item.listId = listId
-            item.status = Google.TASKS_NEED_ACTION
+            item.status = GTasks.TASKS_NEED_ACTION
             item.title = taskName
             item.notes = note
             if (reminder != null) {
@@ -375,7 +374,7 @@ open class TaskActivity : ThemedActivity() {
         } else {
             item = GoogleTask()
             item.listId = listId
-            item.status = Google.TASKS_NEED_ACTION
+            item.status = GTasks.TASKS_NEED_ACTION
             item.title = taskName
             item.notes = note
             item.dueDate = due

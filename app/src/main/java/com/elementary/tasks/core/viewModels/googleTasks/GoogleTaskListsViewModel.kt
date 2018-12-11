@@ -2,7 +2,7 @@ package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
@@ -40,8 +40,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     }
 
     fun sync() {
-        val mGoogle = Google.getInstance()
-        if (mGoogle?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -54,7 +54,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
         launchDefault {
             var lists: TaskLists? = null
             try {
-                lists = mGoogle.tasks?.taskLists
+                lists = google.taskLists
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -71,8 +71,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                         taskList = GoogleTaskList(item, color)
                     }
                     appDb.googleTaskListsDao().insert(taskList)
-                    val tasks = mGoogle.tasks?.getTasks(listId)
-                    if (tasks == null || tasks.isEmpty()) {
+                    val tasks = google.getTasks(listId)
+                    if (tasks.isEmpty()) {
                         withUIContext {
                             postInProgress(false)
                             Commands.UPDATED.post()
@@ -107,8 +107,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     }
 
     fun clearList(googleTaskList: GoogleTaskList) {
-        val mGoogle = Google.getInstance()
-        if (mGoogle?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -118,9 +118,9 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
         } else {
             postInProgress(true)
             launchDefault {
-                val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, Google.TASKS_COMPLETE)
+                val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
                 appDb.googleTasksDao().deleteAll(googleTasks)
-                mGoogle.tasks?.clearTaskList(googleTaskList.listId)
+                google.clearTaskList(googleTaskList.listId)
                 withUIContext {
                     postInProgress(false)
                     Commands.UPDATED.post()

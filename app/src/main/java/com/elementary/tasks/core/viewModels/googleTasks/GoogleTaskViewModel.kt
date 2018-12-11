@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -71,8 +71,8 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     }
 
     fun deleteGoogleTask(googleTask: GoogleTask) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -84,7 +84,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         postInProgress(true)
         launchDefault {
             try {
-                google.tasks?.deleteTask(googleTask)
+                google.deleteTask(googleTask)
                 appDb.googleTasksDao().delete(googleTask)
                 withUIContext {
                     postInProgress(false)
@@ -100,8 +100,8 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     }
 
     fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -113,7 +113,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         postInProgress(true)
         launchDefault {
             try {
-                google.tasks?.insertTask(googleTask)
+                google.insertTask(googleTask)
                 saveReminder(reminder)
                 withUIContext {
                     postInProgress(false)
@@ -129,8 +129,8 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     }
 
     fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -143,7 +143,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             try {
-                google.tasks?.updateTask(googleTask)
+                google.updateTask(googleTask)
                 saveReminder(reminder)
                 withUIContext {
                     postInProgress(false)
@@ -159,8 +159,8 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     }
 
     fun updateAndMoveGoogleTask(googleTask: GoogleTask, oldListId: String, reminder: Reminder?) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -173,8 +173,8 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             try {
-                google.tasks?.updateTask(googleTask)
-                google.tasks?.moveTask(googleTask, oldListId)
+                google.updateTask(googleTask)
+                google.moveTask(googleTask, oldListId)
                 saveReminder(reminder)
                 withUIContext {
                     postInProgress(false)
@@ -190,8 +190,8 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     }
 
     fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -203,7 +203,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         postInProgress(true)
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
-            google.tasks?.moveTask(googleTask, oldListId)
+            google.moveTask(googleTask, oldListId)
             withUIContext {
                 postInProgress(false)
                 Commands.SAVED.post()

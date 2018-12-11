@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
@@ -17,13 +16,10 @@ import android.view.View
 import android.webkit.WebView
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.DropboxLogin
+import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
@@ -62,60 +58,19 @@ class LoginActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        googleLogin = GoogleLogin(this, prefs, object : GoogleLogin.LoginCallback {
-
-            override fun onSuccess() {
-                loadDataFromGoogle()
-            }
-
-            override fun onFail() {
-                showLoginError()
-            }
-        })
+        googleLogin = GoogleLogin(this, prefs)
         dropboxLogin = DropboxLogin(this, object : DropboxLogin.LoginCallback {
             override fun onSuccess(logged: Boolean) {
                 if (logged) loadDataFromDropbox()
             }
         })
         initButtons()
-        loadPhotoView()
         initCheckbox()
-    }
-
-    private fun loadPhotoView() {
-        val myOptions = RequestOptions()
-                .centerCrop()
-                .override(768, 1280)
-
-        Glide.with(this)
-                .load("https://unsplash.it/1080/1920?image=596&blur")
-                .apply(myOptions)
-                .into(object : SimpleTarget<Drawable>() {
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        imageView2.setImageDrawable(resource)
-                    }
-
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
-                        loadDefaultImage()
-                    }
-                })
-    }
-
-    private fun loadDefaultImage() {
-        val myOptions = RequestOptions()
-                .centerCrop()
-                .override(768, 1280)
-
-        Glide.with(this)
-                .load(R.drawable.photo)
-                .apply(myOptions)
-                .into(imageView2)
     }
 
     override fun onResume() {
         super.onResume()
-        dropboxLogin!!.checkDropboxStatus()
+        dropboxLogin?.checkDropboxStatus()
     }
 
     private fun loadDataFromDropbox() {
@@ -235,7 +190,19 @@ class LoginActivity : ThemedActivity() {
     private fun googleLoginClick() {
         if (Permissions.checkPermission(this, Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
-            googleLogin?.login()
+            googleLogin?.loginDrive(object : GoogleLogin.DriveCallback {
+                override fun onProgress(isLoading: Boolean) {
+
+                }
+
+                override fun onResult(v: GDrive?, isLogged: Boolean) {
+                    if (isLogged) loadDataFromGoogle()
+                }
+
+                override fun onFail() {
+                    showLoginError()
+                }
+            })
         } else {
             Permissions.requestPermission(this, PERM, Permissions.GET_ACCOUNTS,
                     Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)

@@ -5,7 +5,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.Constants
@@ -42,7 +42,7 @@ class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (isConnected) {
             Dropbox().uploadNoteByFileName(fileName)
             try {
-                Google.getInstance()?.drive?.saveNoteToDrive(File(dir, fileName).toString())
+                GDrive.getInstance(applicationContext)?.saveNoteToDrive(File(dir, fileName).toString())
             } catch (e: IOException) {
                 e.printStackTrace()
             }

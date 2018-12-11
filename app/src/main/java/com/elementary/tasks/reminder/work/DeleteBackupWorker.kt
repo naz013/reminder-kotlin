@@ -5,7 +5,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.SuperUtil
@@ -31,7 +31,7 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (isConnected) {
             Dropbox().deleteReminder(fileName)
             try {
-                Google.getInstance()?.drive?.deleteReminderFileByName(fileName)
+                GDrive.getInstance(applicationContext)?.deleteReminderFileByName(fileName)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

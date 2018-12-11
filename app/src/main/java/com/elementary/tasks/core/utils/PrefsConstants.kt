@@ -27,6 +27,7 @@ object PrefsConstants {
     const val APP_THEME = "theme_"
     const val APP_THEME_COLOR = "theme_color"
     const val DRIVE_USER = "ggl_user"
+    const val TASKS_USER = "gtl_user"
     const val SCREEN = "screen"
     const val MAP_TYPE = "new_map_type"
     const val MAP_STYLE = "new_map_style"

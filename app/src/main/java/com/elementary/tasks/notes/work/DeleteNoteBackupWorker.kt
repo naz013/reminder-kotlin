@@ -5,7 +5,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.SuperUtil
@@ -31,7 +31,7 @@ class DeleteNoteBackupWorker(context: Context, workerParams: WorkerParameters) :
         if (isConnected) {
             Dropbox().deleteNote(fileName)
             try {
-                Google.getInstance()?.drive?.deleteNoteFileByName(fileName)
+                GDrive.getInstance(applicationContext)?.deleteNoteFileByName(fileName)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

@@ -10,7 +10,7 @@ import android.widget.CheckedTextView
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.export.BackupsFragment
@@ -117,12 +117,12 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             val dir = MemoryUtil.parent
             deleteRecursive(dir!!)
             launchDefault {
-                val gdx = Google.getInstance()
+                val gdx = GDrive.getInstance(context!!)
                 val dbx = Dropbox()
                 if (SuperUtil.isConnected(context!!)) {
-                    if (gdx?.drive != null) {
+                    if (gdx != null) {
                         try {
-                            gdx.drive!!.clean()
+                            gdx.clean()
                         } catch (e: IOException) {
                             e.printStackTrace()
                         }

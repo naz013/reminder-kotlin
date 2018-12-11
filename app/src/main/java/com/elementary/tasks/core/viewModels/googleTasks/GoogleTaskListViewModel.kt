@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
@@ -49,8 +49,8 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     }
 
     fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -61,7 +61,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
         }
         postInProgress(true)
         launchDefault {
-            google.tasks?.insertTasksList(googleTaskList.title, googleTaskList.color)
+            google.insertTasksList(googleTaskList.title, googleTaskList.color)
             withUIContext {
                 postInProgress(false)
                 Commands.SAVED.post()
@@ -70,8 +70,8 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     }
 
     fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -84,7 +84,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
         launchDefault {
             appDb.googleTaskListsDao().insert(googleTaskList)
             try {
-                google.tasks?.updateTasksList(googleTaskList.title, googleTaskList.listId)
+                google.updateTasksList(googleTaskList.title, googleTaskList.listId)
                 withUIContext {
                     postInProgress(false)
                     Commands.SAVED.post()
