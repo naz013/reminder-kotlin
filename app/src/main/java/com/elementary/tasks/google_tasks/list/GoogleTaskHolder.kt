@@ -8,11 +8,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
 import kotlinx.android.synthetic.main.list_item_task.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -60,7 +58,7 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
     }
 
     private fun loadCheck(checkBox: CheckBox, item: GoogleTask) {
-        checkBox.isChecked = item.status.matches(Google.TASKS_COMPLETE.toRegex())
+        checkBox.isChecked = item.status.matches(GTasks.TASKS_COMPLETE.toRegex())
     }
 
     private fun loadDue(view: TextView, due: Long) {

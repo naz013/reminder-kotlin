@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
@@ -67,7 +67,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private var mStock = true
     private var mTasks = true
     private var mNumber: String = ""
-    private var mGoogleTasks: Google? = null
+    private var canExportToTasks: Boolean = false
     private var defGroup: ReminderGroup? = null
     @Inject
     lateinit var reminderUtils: ReminderUtils
@@ -124,7 +124,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mGoogleTasks = Google.getInstance()
+        canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         val receivedDate = intent.getLongExtra(Constants.SELECTED_TIME, 0)
         mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
         val name = Contacts.getNameFromNumber(mNumber, this@FollowReminderActivity)
@@ -248,7 +248,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         } else {
             exportCheck.visibility = View.GONE
         }
-        if (mTasks) {
+        if (canExportToTasks) {
             taskExport.visibility = View.VISIBLE
         } else {
             taskExport.visibility = View.GONE
@@ -258,7 +258,6 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private fun initPrefs() {
         mCalendar = prefs.isCalendarEnabled
         mStock = prefs.isStockCalendarEnabled
-        mTasks = mGoogleTasks != null
         mIs24Hour = prefs.is24HourFormatEnabled
     }
 

@@ -2,7 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +29,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
                                    private val backupTool: BackupTool) {
 
     private val isConnected: Boolean = SuperUtil.isConnected(context)
-    private val mDrive: Google? = Google.getInstance()
+    private val mDrive: GDrive? = GDrive.getInstance(context)
     private val mDropbox: Dropbox = Dropbox()
 
     /**
@@ -50,9 +50,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.uploadSettings()
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.saveSettingsToDrive()
-                }
+                mDrive?.saveSettingsToDrive()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -66,11 +64,9 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         backupTool.exportGroups()
         if (isConnected) {
             mDropbox.uploadGroups()
-            if (mDrive?.drive != null) {
-                try {
-                    mDrive.drive?.saveGroupsToDrive()
-                } catch (e: Exception) {
-                }
+            try {
+                mDrive?.saveGroupsToDrive()
+            } catch (e: Exception) {
             }
         }
     }
@@ -87,9 +83,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.downloadGroups(delete)
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadGroups(delete)
-                }
+                mDrive?.downloadGroups(delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -103,11 +97,9 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         backupTool.exportReminders()
         if (isConnected) {
             mDropbox.uploadReminderByFileName(null)
-            if (mDrive?.drive != null) {
-                try {
-                    mDrive.drive?.saveRemindersToDrive()
-                } catch (e: Exception) {
-                }
+            try {
+                mDrive?.saveRemindersToDrive()
+            } catch (e: Exception) {
             }
         }
     }
@@ -124,9 +116,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.downloadReminders(delete)
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadReminders(context, delete)
-                }
+                mDrive?.downloadReminders(context, delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -140,11 +130,9 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         backupTool.exportNotes()
         if (isConnected) {
             mDropbox.uploadNotes()
-            if (mDrive?.drive != null) {
-                try {
-                    mDrive.drive?.saveNotesToDrive()
-                } catch (e: Exception) {
-                }
+            try {
+                mDrive?.saveNotesToDrive()
+            } catch (e: Exception) {
             }
         }
     }
@@ -161,9 +149,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.downloadNotes(delete)
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadNotes(delete)
-                }
+                mDrive?.downloadNotes(delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -177,11 +163,9 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         backupTool.exportBirthdays()
         if (isConnected) {
             mDropbox.uploadBirthdays()
-            if (mDrive?.drive != null) {
-                try {
-                    mDrive.drive?.saveBirthdaysToDrive()
-                } catch (e: Exception) {
-                }
+            try {
+                mDrive?.saveBirthdaysToDrive()
+            } catch (e: Exception) {
             }
         }
     }
@@ -198,9 +182,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.downloadBirthdays(delete)
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadBirthdays(delete)
-                }
+                mDrive?.downloadBirthdays(delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -214,11 +196,9 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         backupTool.exportPlaces()
         if (isConnected) {
             mDropbox.uploadPlaces()
-            if (mDrive?.drive != null) {
-                try {
-                    mDrive.drive?.savePlacesToDrive()
-                } catch (e: Exception) {
-                }
+            try {
+                mDrive?.savePlacesToDrive()
+            } catch (e: Exception) {
             }
         }
     }
@@ -235,9 +215,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.downloadPlaces(delete)
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadPlaces(delete)
-                }
+                mDrive?.downloadPlaces(delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -251,11 +229,9 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         backupTool.exportTemplates()
         if (isConnected) {
             mDropbox.uploadTemplates()
-            if (mDrive?.drive != null) {
-                try {
-                    mDrive.drive?.saveTemplatesToDrive()
-                } catch (e: Exception) {
-                }
+            try {
+                mDrive?.saveTemplatesToDrive()
+            } catch (e: Exception) {
             }
         }
     }
@@ -272,9 +248,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
         if (isConnected) {
             mDropbox.downloadTemplates(delete)
             try {
-                if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadTemplates(delete)
-                }
+                mDrive?.downloadTemplates(delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

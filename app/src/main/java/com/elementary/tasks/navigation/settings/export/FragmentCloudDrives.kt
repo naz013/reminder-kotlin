@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.export
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,14 +7,13 @@ import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.DropboxLogin
+import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.google_tasks.work.GetTaskListAsync
-import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
 
@@ -42,19 +40,9 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     private lateinit var mDropbox: DropboxLogin
     private lateinit var mGoogleLogin: GoogleLogin
 
-    private var mDialog: ProgressDialog? = null
-    private val mLoginCallback = object : GoogleLogin.LoginCallback {
-        override fun onSuccess() {
-            startSync()
-        }
-
-        override fun onFail() {
-            showErrorDialog()
-        }
-    }
     private val mDropboxCallback = object : DropboxLogin.LoginCallback {
-        override fun onSuccess(logged: Boolean) {
-            if (logged) {
+        override fun onSuccess(b: Boolean) {
+            if (b) {
                 linkDropbox.text = getString(R.string.disconnect)
             } else {
                 linkDropbox.text = getString(R.string.connect)
@@ -74,21 +62,39 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mDropbox = DropboxLogin(activity!!, mDropboxCallback)
-        mGoogleLogin = GoogleLogin(activity!!, prefs, mLoginCallback)
+        mGoogleLogin = GoogleLogin(activity!!, prefs)
         initDropboxButton()
         initGoogleDriveButton()
+        initGoogleTasksButton()
+
         checkGoogleStatus()
+    }
+
+    private fun initGoogleTasksButton() {
+        linkGTasks.setOnClickListener { googleTasksButtonClick() }
     }
 
     private fun initGoogleDriveButton() {
         linkGDrive.setOnClickListener { googleDriveButtonClick() }
     }
 
+    private fun googleTasksButtonClick() {
+        if (Permissions.checkPermission(activity!!,
+                        Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                        Permissions.WRITE_EXTERNAL)) {
+            switchGoogleTasksStatus()
+        } else {
+            Permissions.requestPermission(activity!!, 104,
+                    Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                    Permissions.WRITE_EXTERNAL)
+        }
+    }
+
     private fun googleDriveButtonClick() {
         if (Permissions.checkPermission(activity!!,
                         Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
-            switchGoogleStatus()
+            switchGoogleDriveStatus()
         } else {
             Permissions.requestPermission(activity!!, 103,
                     Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
@@ -100,25 +106,70 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         linkDropbox.setOnClickListener { mDropbox.login() }
     }
 
-    private fun switchGoogleStatus() {
+    private fun switchGoogleTasksStatus() {
         if (!SuperUtil.checkGooglePlayServicesAvailability(activity!!)) {
             Toast.makeText(context, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
             return
         }
-        if (mGoogleLogin.isLogged) {
-            disconnectFromGoogleServices()
+        if (mGoogleLogin.isGooleTasksLogged) {
+            disconnectFromGoogleTasks()
         } else {
-            mGoogleLogin.login()
+            mGoogleLogin.loginTasks(object : GoogleLogin.TasksCallback {
+                override fun onProgress(isLoading: Boolean) {
+                    updateProgress(isLoading)
+                }
+
+                override fun onResult(v: GTasks?, isLogged: Boolean) {
+
+                }
+
+                override fun onFail() {
+                    showErrorDialog()
+                }
+            })
         }
     }
 
-    private fun disconnectFromGoogleServices() {
-        mGoogleLogin.logOut()
+    private fun updateProgress(loading: Boolean) {
+
+    }
+
+    private fun switchGoogleDriveStatus() {
+        if (!SuperUtil.checkGooglePlayServicesAvailability(activity!!)) {
+            Toast.makeText(context, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (mGoogleLogin.isGooleDriveLogged) {
+            disconnectFromGoogleDrive()
+        } else {
+            mGoogleLogin.loginDrive(object : GoogleLogin.DriveCallback {
+                override fun onProgress(isLoading: Boolean) {
+                    updateProgress(isLoading)
+                }
+
+                override fun onResult(v: GDrive?, isLogged: Boolean) {
+
+                }
+
+                override fun onFail() {
+                    showErrorDialog()
+                }
+            })
+        }
+    }
+
+    private fun disconnectFromGoogleTasks() {
+        mGoogleLogin.logOutTasks()
         launchDefault {
             AppDb.getAppDatabase(context!!).googleTasksDao().deleteAll()
             AppDb.getAppDatabase(context!!).googleTaskListsDao().deleteAll()
-            withUIContext { finishSync() }
+
         }
+    }
+
+    private fun disconnectFromGoogleDrive() {
+        mGoogleLogin.logOutDrive()
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -126,16 +177,24 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         if (grantResults.isEmpty()) return
         when (requestCode) {
             103 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                switchGoogleStatus()
+                switchGoogleDriveStatus()
+            }
+            104 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                switchGoogleTasksStatus()
             }
         }
     }
 
     private fun checkGoogleStatus() {
-        if (mGoogleLogin.isLogged) {
-            linkGDrive.setText(R.string.disconnect)
+        if (mGoogleLogin.isGooleDriveLogged) {
+            linkGDrive.text = getString(R.string.disconnect)
         } else {
             linkGDrive.text = getString(R.string.connect)
+        }
+        if (mGoogleLogin.isGooleTasksLogged) {
+            linkGTasks.text = getString(R.string.disconnect)
+        } else {
+            linkGTasks.text = getString(R.string.connect)
         }
     }
 
@@ -150,24 +209,5 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         mGoogleLogin.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun startSync() {
-        mDialog = ProgressDialog.show(context, null, getString(R.string.retrieving_tasks), false, true)
-        GetTaskListAsync(context!!, object : TasksCallback {
-            override fun onFailed() {
-                finishSync()
-            }
-
-            override fun onComplete() {
-                finishSync()
-            }
-        }).execute()
-    }
-
-    private fun finishSync() {
-        if (mDialog != null && mDialog!!.isShowing) mDialog?.dismiss()
-        checkGoogleStatus()
-        if (callback != null) callback?.refreshMenu()
     }
 }

@@ -199,6 +199,10 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
         get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER))
         set(value) = putString(PrefsConstants.DRIVE_USER, SuperUtil.encrypt(value))
 
+    var tasksUser: String
+        get() = SuperUtil.decrypt(getString(PrefsConstants.TASKS_USER))
+        set(value) = putString(PrefsConstants.TASKS_USER, SuperUtil.encrypt(value))
+
     var reminderImage: String
         get() = getString(PrefsConstants.REMINDER_IMAGE)
         set(value) = putString(PrefsConstants.REMINDER_IMAGE, value)

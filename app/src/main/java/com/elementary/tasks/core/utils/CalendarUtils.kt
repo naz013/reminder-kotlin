@@ -108,7 +108,7 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
     }
 
     /**
-     * Holder list of available Google calendars.
+     * Holder list of available GTasks calendars.
      *
      * @return List of CalendarItem's.
      */

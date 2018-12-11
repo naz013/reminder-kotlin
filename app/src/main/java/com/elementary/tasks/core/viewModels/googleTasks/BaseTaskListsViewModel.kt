@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
@@ -32,8 +32,8 @@ import java.io.IOException
 abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
-        val google = Google.getInstance()
-        if (google?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -45,7 +45,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
         postInProgress(true)
         launchDefault {
             val def = googleTaskList.def
-            google.tasks!!.deleteTaskList(googleTaskList.listId)
+            google.deleteTaskList(googleTaskList.listId)
             appDb.googleTaskListsDao().delete(googleTaskList)
             appDb.googleTasksDao().deleteAll(googleTaskList.listId)
             if (def == 1) {
@@ -64,8 +64,8 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
     }
 
     fun toggleTask(googleTask: GoogleTask) {
-        val mGoogle = Google.getInstance()
-        if (mGoogle?.tasks == null) {
+        val google = GTasks.getInstance(getApplication())
+        if (google == null) {
             Commands.FAILED.post()
             return
         }
@@ -76,10 +76,10 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             postInProgress(true)
             launchDefault {
                 try {
-                    if (googleTask.status == Google.TASKS_NEED_ACTION) {
-                        mGoogle.tasks?.updateTaskStatus(Google.TASKS_COMPLETE, googleTask.listId, googleTask.taskId)
+                    if (googleTask.status == GTasks.TASKS_NEED_ACTION) {
+                        google.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask.listId, googleTask.taskId)
                     } else {
-                        mGoogle.tasks?.updateTaskStatus(Google.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
+                        google.updateTaskStatus(GTasks.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
                     }
                     withUIContext {
                         postInProgress(false)

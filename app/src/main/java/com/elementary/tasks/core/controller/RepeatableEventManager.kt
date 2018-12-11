@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobService
@@ -38,12 +38,12 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
             val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
             val mItem = GoogleTask()
             mItem.listId = ""
-            mItem.status = Google.TASKS_NEED_ACTION
+            mItem.status = GTasks.TASKS_NEED_ACTION
             mItem.title = reminder.summary
             mItem.dueDate = due
             mItem.notes = context.getString(R.string.from_reminder)
             mItem.uuId = reminder.uuId
-            // TODO: 23.06.2018 Add export to Google Tasks work via WorkManager
+            // TODO: 23.06.2018 Add export to GTasks Tasks work via WorkManager
         }
         if (reminder.exportToCalendar) {
             if (prefs.isStockCalendarEnabled) {

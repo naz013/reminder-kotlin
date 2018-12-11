@@ -18,7 +18,8 @@ import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.async.SyncTask
 import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.contacts.ContactsRecyclerAdapter
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.dialogs.BaseDialog
@@ -98,7 +99,8 @@ interface AppComponent {
     fun inject(conversationAdapter: ConversationAdapter)
     fun inject(reminderHolder: ReminderHolder)
     fun inject(shoppingHolder: ShoppingHolder)
-    fun inject(google: Google)
+    fun inject(GTasks: GTasks)
+    fun inject(google: GDrive)
     fun inject(backupTool: BackupTool)
     fun inject(baseDialog: BaseDialog)
     fun inject(themedActivity: ThemedActivity)
