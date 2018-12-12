@@ -1,101 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/screen_label"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="48dp"
-        android:layout_marginRight="8dp"
+        android:gravity="start|bottom"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceHeadline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/app_name"
+            app:fontFamily="@font/merriweathersans_light" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appNameBannerPro"
+            style="?textAppearanceHeadline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="@string/pro"
+            android:textColor="?colorSecondary"
+            app:fontFamily="@font/merriweathersans_italic" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:text="@string/log_in"
-        android:textSize="22sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_name" />
+        android:textAppearance="?textAppearanceHeadline6" />
 
-    <Button
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5" />
+
+    <LinearLayout
+        android:id="@+id/progressView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/progressMessageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?textAppearanceSubtitle1"
+            tools:text="@string/log_in" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/google_button"
-        android:layout_width="156dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="59dp"
-        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
         android:text="@string/google_drive"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/screen_label" />
+        android:textAppearance="?textAppearanceButton" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/dropbox_button"
-        android:layout_width="156dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:text="@string/dropbox"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/google_button" />
+        android:textAppearance="?textAppearanceButton" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/local_button"
-        android:layout_width="156dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:text="@string/local"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dropbox_button" />
+        android:textAppearance="?textAppearanceButton" />
 
-    <TextView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/skip_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/skip"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/terms_check_box"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="51dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/app_title"
-        android:textSize="27sp"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center_horizontal"
+        android:text="@string/skip" />
 
     <CheckBox
         android:id="@+id/terms_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:checked="true"
-        android:textColorLink="?android:textColorPrimary"
         android:text="@string/i_accept"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:textColorLink="?android:textColorPrimary"
+        android:textSize="12sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
