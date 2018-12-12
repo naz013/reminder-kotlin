@@ -37,9 +37,7 @@ import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.groups.CreateGroupActivity
-import com.elementary.tasks.login.RestoreDropboxTask
-import com.elementary.tasks.login.RestoreGoogleTask
-import com.elementary.tasks.login.RestoreLocalTask
+import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
@@ -139,9 +137,6 @@ interface AppComponent {
     fun inject(getTaskListAsync: GetTaskListAsync)
     fun inject(baseHolder: BaseHolder)
     fun inject(holder: NoteHolder)
-    fun inject(restoreDropboxTask: RestoreDropboxTask)
-    fun inject(restoreGoogleTask: RestoreGoogleTask)
-    fun inject(restoreLocalTask: RestoreLocalTask)
     fun inject(imagesGridAdapter: ImagesGridAdapter)
     fun inject(typeFragment: TypeFragment)
     fun inject(fragment: EventsListFragment)
@@ -159,4 +154,5 @@ interface AppComponent {
     fun inject(activity: AddBirthdayActivity)
     fun inject(activity: CreateGroupActivity)
     fun inject(activity: FollowReminderActivity)
+    fun inject(activity: LoginActivity)
 }

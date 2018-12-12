@@ -17,20 +17,23 @@ import android.webkit.WebView
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.google_tasks.work.GetTaskListAsync
-import com.elementary.tasks.google_tasks.work.TasksCallback
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_login.*
+import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -55,17 +58,39 @@ class LoginActivity : ThemedActivity() {
     private var googleLogin: GoogleLogin? = null
     private var dropboxLogin: DropboxLogin? = null
 
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
+        else appNameBannerPro.visibility = View.GONE
         googleLogin = GoogleLogin(this, prefs)
         dropboxLogin = DropboxLogin(this, object : DropboxLogin.LoginCallback {
-            override fun onSuccess(logged: Boolean) {
-                if (logged) loadDataFromDropbox()
+            override fun onSuccess(b: Boolean) {
+                if (b) loadDataFromDropbox()
             }
         })
         initButtons()
         initCheckbox()
+    }
+
+    private fun showProgress(message: String?) {
+        if (message == null) {
+            setEnabling(true)
+            progressView.visibility = View.INVISIBLE
+        } else {
+            setEnabling(false)
+            progressMessageView.text = message
+            progressView.visibility = View.VISIBLE
+        }
     }
 
     override fun onResume() {
@@ -74,7 +99,46 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun loadDataFromDropbox() {
-        RestoreDropboxTask(this) { openApplication() }.execute()
+        showProgress(getString(R.string.please_wait))
+        launchDefault {
+            val drive = Dropbox()
+
+            withUIContext { showProgress(getString(R.string.syncing_groups)) }
+            drive.downloadGroups(false)
+
+            verifyGroups()
+
+            withUIContext { showProgress(getString(R.string.syncing_reminders)) }
+            drive.downloadReminders(false)
+
+            //export & import notes
+            withUIContext { showProgress(getString(R.string.syncing_notes)) }
+            drive.downloadNotes(false)
+
+            //export & import birthdays
+            withUIContext { showProgress(getString(R.string.syncing_birthdays)) }
+            drive.downloadBirthdays(false)
+
+            //export & import places
+            withUIContext { showProgress(getString(R.string.syncing_places)) }
+            drive.downloadPlaces(false)
+
+            //export & import templates
+            withUIContext { showProgress(getString(R.string.syncing_templates)) }
+            drive.downloadTemplates(false)
+            drive.downloadSettings()
+
+            withUIContext {
+                finishRestoring()
+            }
+        }
+    }
+
+    private fun finishRestoring() {
+        updatesHelper.updateWidget()
+        updatesHelper.updateNotesWidget()
+        showProgress(null)
+        openApplication()
     }
 
     private fun showLoginError() {
@@ -88,32 +152,7 @@ class LoginActivity : ThemedActivity() {
         google_button.setOnClickListener { googleLoginClick() }
         local_button.setOnClickListener { restoreLocalData() }
         dropbox_button.setOnClickListener { loginToDropbox() }
-        skip_button.setOnClickListener { askForBirthdays() }
-    }
-
-    private fun askForBirthdays() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.import_birthdays))
-        builder.setMessage(getString(R.string.would_you_like_to_import_birthdays))
-        builder.setPositiveButton(getString(R.string.import_string)) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-            importBirthdays()
-        }
-        builder.setNegativeButton(getString(R.string.open_app)) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-            openApplication()
-        }
-        builder.create().show()
-    }
-
-    private fun importBirthdays() {
-        if (!Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-            Permissions.requestPermission(this, PERM_BIRTH, Permissions.READ_CONTACTS)
-            return
-        }
-        prefs.isContactBirthdaysEnabled = true
-        prefs.isBirthdayReminderEnabled = true
-        //todo Add birthday search
+        skip_button.setOnClickListener { openApplication() }
     }
 
     private fun initGroups() {
@@ -135,31 +174,136 @@ class LoginActivity : ThemedActivity() {
             Permissions.requestPermission(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
             return
         }
-        RestoreLocalTask(this) { openApplication() }.execute()
+        showProgress(getString(R.string.please_wait))
+        launchDefault {
+            withUIContext { showProgress(getString(R.string.syncing_groups)) }
+            try {
+                backupTool.importGroups()
+            } catch (ignored: IOException) {
+            }
+
+            verifyGroups()
+
+            withUIContext { showProgress(getString(R.string.syncing_reminders)) }
+            try {
+                backupTool.importReminders(this@LoginActivity)
+            } catch (ignored: IOException) {
+            }
+
+            withUIContext { showProgress(getString(R.string.syncing_notes)) }
+            try {
+                backupTool.importNotes()
+            } catch (ignored: IOException) {
+            }
+
+            withUIContext { showProgress(getString(R.string.syncing_birthdays)) }
+            try {
+                backupTool.importBirthdays()
+            } catch (ignored: IOException) {
+            }
+
+            withUIContext { showProgress(getString(R.string.syncing_places)) }
+            try {
+                backupTool.importPlaces()
+            } catch (ignored: IOException) {
+            }
+
+            withUIContext { showProgress(getString(R.string.syncing_templates)) }
+            try {
+                backupTool.importTemplates()
+            } catch (ignored: IOException) {
+            }
+
+            prefs.loadPrefsFromFile()
+
+            withUIContext {
+                finishRestoring()
+            }
+        }
+    }
+
+    private fun verifyGroups() {
+        val list = AppDb.getAppDatabase(this).reminderGroupDao().all()
+        if (list.isEmpty()) {
+            val defUiID = GroupsUtil.initDefault(this)
+            val items = AppDb.getAppDatabase(this).reminderDao().all()
+            val dao = AppDb.getAppDatabase(this).reminderDao()
+            for (item in items) {
+                item.groupUuId = defUiID
+                dao.insert(item)
+            }
+        }
     }
 
     private fun loadDataFromGoogle() {
-        RestoreGoogleTask(this) { this.loadGoogleTasks() }.execute()
-    }
+        showProgress(getString(R.string.please_wait))
+        launchDefault {
+            val drive = GDrive.getInstance(this@LoginActivity)
+            if (drive != null) {
+                withUIContext { showProgress(getString(R.string.syncing_groups)) }
+                try {
+                    drive.downloadGroups(false)
+                } catch (e: Exception) {
+                }
 
-    private fun loadGoogleTasks() {
-        GetTaskListAsync(this, object : TasksCallback {
-            override fun onComplete() {
-                openApplication()
+                verifyGroups()
+
+                withUIContext { showProgress(getString(R.string.syncing_reminders)) }
+                try {
+                    drive.downloadReminders(this@LoginActivity, false)
+                } catch (e: Exception) {
+                }
+
+                //export & import notes
+                withUIContext { showProgress(getString(R.string.syncing_notes)) }
+                try {
+                    drive.downloadNotes(false)
+                } catch (e: Exception) {
+                }
+
+                //export & import birthdays
+                withUIContext { showProgress(getString(R.string.syncing_birthdays)) }
+                try {
+                    drive.downloadBirthdays(false)
+                } catch (e: Exception) {
+                }
+
+                //export & import places
+                withUIContext { showProgress(getString(R.string.syncing_places)) }
+                try {
+                    drive.downloadPlaces(false)
+                } catch (e: Exception) {
+                }
+
+                //export & import templates
+                withUIContext { showProgress(getString(R.string.syncing_templates)) }
+                try {
+                    drive.downloadTemplates(false)
+                } catch (e: Exception) {
+                }
+
+                try {
+                    drive.downloadSettings(this@LoginActivity, false)
+                } catch (e: Exception) {
+                }
             }
 
-            override fun onFailed() {
-                openApplication()
+            withUIContext {
+                finishRestoring()
             }
-        }).execute()
+        }
     }
 
     private fun openApplication() {
         enableShortcuts()
-        initGroups()
-        prefs.isUserLogged = true
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
+        launchDefault {
+            initGroups()
+            prefs.isUserLogged = true
+            withUIContext {
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
+            }
+        }
     }
 
     private fun enableShortcuts() {
@@ -268,7 +412,6 @@ class LoginActivity : ThemedActivity() {
             PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) googleLoginClick()
             PERM_DROPBOX -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) loginToDropbox()
             PERM_LOCAL -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) restoreLocalData()
-            PERM_BIRTH -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) importBirthdays()
         }
     }
 
@@ -277,7 +420,6 @@ class LoginActivity : ThemedActivity() {
         private const val PERM = 103
         private const val PERM_DROPBOX = 104
         private const val PERM_LOCAL = 105
-        private const val PERM_BIRTH = 106
         private const val TERMS_URL = "termsopen.com"
     }
 }
