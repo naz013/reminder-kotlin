@@ -32,9 +32,9 @@ import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
-import com.elementary.tasks.google_tasks.create.TaskActivity
-import com.elementary.tasks.google_tasks.create.TasksConstants
-import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
+import com.elementary.tasks.googleTasks.create.TaskActivity
+import com.elementary.tasks.googleTasks.create.TasksConstants
+import com.elementary.tasks.googleTasks.list.GoogleTaskHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter

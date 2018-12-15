@@ -203,10 +203,10 @@
         <activity android:name=".notes.preview.ImagePreviewActivity" />
         <activity android:name=".notes.preview.NotePreviewActivity" />
         <activity
-            android:name=".google_tasks.create.TaskListActivity"
+            android:name=".googleTasks.create.TaskListActivity"
             android:configChanges="keyboardHidden" />
         <activity
-            android:name=".google_tasks.create.TaskActivity"
+            android:name=".googleTasks.create.TaskActivity"
             android:configChanges="keyboardHidden" />
         <activity android:name=".core.contacts.ContactsActivity" />
         <activity android:name=".reminder.preview.ReminderDialogActivity" />

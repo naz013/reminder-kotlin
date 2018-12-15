@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks.create
+package com.elementary.tasks.googleTasks.create
 
 import android.app.ProgressDialog
 import android.os.Bundle
@@ -12,7 +12,6 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.core.views.ColorPickerView

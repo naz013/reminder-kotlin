@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks.create
+package com.elementary.tasks.googleTasks.create
 
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
