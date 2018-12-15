@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks.list
+package com.elementary.tasks.googleTasks.list
 
 import android.view.LayoutInflater
 import android.view.View

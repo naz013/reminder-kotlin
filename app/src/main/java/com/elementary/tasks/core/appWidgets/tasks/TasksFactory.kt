@@ -12,7 +12,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.googleTasks.create.TasksConstants
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject

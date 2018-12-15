@@ -1,22 +1,26 @@
-package com.elementary.tasks.google_tasks.list
+package com.elementary.tasks.googleTasks.list
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
-import com.elementary.tasks.google_tasks.create.TaskActivity
-import com.elementary.tasks.google_tasks.create.TasksConstants
-import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.googleTasks.create.TaskActivity
+import com.elementary.tasks.googleTasks.create.TasksConstants
 import kotlinx.android.synthetic.main.fragment_google_list.*
+import kotlinx.coroutines.delay
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,16 +41,21 @@ import kotlinx.android.synthetic.main.fragment_google_list.*
  * limitations under the License.
  */
 
-class TaskListFragment : BaseFragment() {
+class TaskListFragment : Fragment() {
 
+    private var callback: PageCallback? = null
     private val adapter = TasksRecyclerAdapter()
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val fragment = parentFragment
+        if (fragment != null) {
+            callback = fragment as PageCallback?
+        }
         if (arguments != null) {
-            mId = arguments!!.getString(ARG_ID) ?: ""
+            mId = arguments?.getString(ARG_ID) ?: ""
         }
     }
 
@@ -61,22 +70,37 @@ class TaskListFragment : BaseFragment() {
         initViewModel()
     }
 
+    fun requestData() {
+        Timber.d("requestData: $mId")
+        launchDefault {
+            delay(250)
+            withUIContext {
+                callback?.find(mId) { listId, data ->
+                    Timber.d("setModel: $listId, $data")
+                    showTasks(data.googleTasks)
+                }
+            }
+        }
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
                 GoogleTaskListViewModel.Factory(activity!!.application, mId)).get(GoogleTaskListViewModel::class.java)
-        viewModel.googleTasks.observe(this, Observer{ googleTasks ->
-            if (googleTasks != null) {
-                showTasks(googleTasks)
-            }
-        })
+//        viewModel.googleTasks.observe(this, Observer{ googleTasks ->
+//            if (googleTasks != null) {
+//                showTasks(googleTasks)
+//            }
+//        })
     }
 
     private fun showTasks(googleTasks: List<GoogleTask>) {
+        Timber.d("showTasks: $googleTasks")
         adapter.setGoogleTasks(googleTasks)
         reloadView()
     }
 
     private fun initList() {
+        recyclerView.layoutManager = LinearLayoutManager(context)
         adapter.actionsListener = object : ActionsListener<GoogleTask> {
             override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
                 when (actions) {
@@ -84,8 +108,8 @@ class TaskListFragment : BaseFragment() {
                     ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t)
                 }
             }
-
         }
+        recyclerView.adapter = adapter
     }
 
     private fun editTask(googleTask: GoogleTask) {
@@ -102,15 +126,11 @@ class TaskListFragment : BaseFragment() {
 
     private fun reloadView() {
         if (adapter.itemCount > 0) {
-            recyclerView.visibility = View.VISIBLE
             emptyItem.visibility = View.GONE
         } else {
-            recyclerView.visibility = View.GONE
             emptyItem.visibility = View.VISIBLE
         }
     }
-
-    override fun getTitle(): String = ""
 
     companion object {
 
