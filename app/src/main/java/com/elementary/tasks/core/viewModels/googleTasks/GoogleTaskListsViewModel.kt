@@ -54,7 +54,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
         launchDefault {
             var lists: TaskLists? = null
             try {
-                lists = google.taskLists
+                lists = google.taskLists()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

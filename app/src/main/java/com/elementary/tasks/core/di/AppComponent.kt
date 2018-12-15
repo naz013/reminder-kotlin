@@ -35,12 +35,12 @@ import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.core.views.*
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
-import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
+import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
@@ -134,7 +134,7 @@ interface AppComponent {
     fun inject(iconRadioButton: IconRadioButton)
     fun inject(monthView: MonthView)
     fun inject(dateTimeView: DateTimeView)
-    fun inject(getTaskListAsync: GetTaskListAsync)
+    fun inject(fragment: FragmentCloudDrives)
     fun inject(baseHolder: BaseHolder)
     fun inject(holder: NoteHolder)
     fun inject(imagesGridAdapter: ImagesGridAdapter)

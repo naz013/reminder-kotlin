@@ -75,8 +75,10 @@ class GTasks private constructor(context: Context) {
         isLogged = false
     }
 
-    val taskLists: TaskLists? @Throws(IOException::class)
-        get() = if (!isLogged || tasksService == null) null else tasksService?.tasklists()?.list()?.execute()
+    @Throws(IOException::class)
+    fun taskLists(): TaskLists? {
+        return if (!isLogged || tasksService == null) null else tasksService?.tasklists()?.list()?.execute()
+    }
 
     @Throws(IOException::class)
     fun insertTask(item: GoogleTask): Boolean {

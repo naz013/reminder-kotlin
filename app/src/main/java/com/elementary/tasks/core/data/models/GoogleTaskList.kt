@@ -1,15 +1,12 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.SuperUtil
-import com.google.api.services.tasks.model.TaskList
-import com.google.gson.annotations.SerializedName
-
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.google.api.services.tasks.model.TaskList
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,51 +24,36 @@ import androidx.room.PrimaryKey
  * limitations under the License.
  */
 @Entity
-class GoogleTaskList {
-
-    @SerializedName("title")
-    var title: String = ""
-    @SerializedName("listId")
-    @PrimaryKey
-    var listId: String = ""
-    @SerializedName("def")
-    var def: Int = 0
-    @SerializedName("eTag")
-    var eTag: String = ""
-    @SerializedName("kind")
-    var kind: String = ""
-    @SerializedName("selfLink")
-    var selfLink: String = ""
-    @SerializedName("updated")
-    var updated: Long = 0
-    @SerializedName("color")
-    var color: Int = 0
-    @SerializedName("systemDefault")
-    var systemDefault: Int = 0
-
-    constructor()
+data class GoogleTaskList(
+        var title: String = "",
+        @PrimaryKey
+        var listId: String = "",
+        var def: Int = 0,
+        var eTag: String = "",
+        var kind: String = "",
+        var selfLink: String = "",
+        var updated: Long = 0,
+        var color: Int = 0,
+        var systemDefault: Int = 0
+) {
 
     @Ignore
-    constructor(taskList: TaskList, color: Int) {
+    constructor(taskList: TaskList, color: Int) : this() {
         this.color = color
-        title = taskList.title
-        listId = taskList.id
-        eTag = taskList.etag
-        kind = taskList.kind
-        selfLink = taskList.selfLink
-        updated = if (taskList.updated != null) taskList.updated.value else 0
+        this.title = taskList.title ?: ""
+        this.listId = taskList.id ?: ""
+        this.eTag = taskList.etag ?: ""
+        this.kind = taskList.kind ?: ""
+        this.selfLink = taskList.selfLink ?: ""
+        this.updated = if (taskList.updated != null) taskList.updated.value else 0
     }
 
     fun update(taskList: TaskList) {
-        title = taskList.title
-        listId = taskList.id
-        eTag = taskList.etag
-        kind = taskList.kind
-        selfLink = taskList.selfLink
-        updated = if (taskList.updated != null) taskList.updated.value else 0
-    }
-
-    override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, GoogleTaskList::class.java)
+        this.title = taskList.title ?: ""
+        this.listId = taskList.id ?: ""
+        this.eTag = taskList.etag ?: ""
+        this.kind = taskList.kind ?: ""
+        this.selfLink = taskList.selfLink ?: ""
+        this.updated = if (taskList.updated != null) taskList.updated.value else 0
     }
 }

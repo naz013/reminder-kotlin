@@ -3,12 +3,10 @@ package com.elementary.tasks.core.data.models
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.elementary.tasks.core.utils.SuperUtil
 import com.google.api.services.tasks.model.Task
-import com.google.gson.annotations.SerializedName
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,46 +24,28 @@ import com.google.gson.annotations.SerializedName
  * limitations under the License.
  */
 @Entity
-class GoogleTask {
-
-    @SerializedName("title")
-    var title: String = ""
-    @SerializedName("taskId")
-    @PrimaryKey
-    var taskId: String = ""
-    @SerializedName("completeDate")
-    var completeDate: Long = 0
-    @SerializedName("del")
-    var del: Int = 0
-    @SerializedName("dueDate")
-    var dueDate: Long = 0
-    @SerializedName("eTag")
-    var eTag: String = ""
-    @SerializedName("kind")
-    var kind: String = ""
-    @SerializedName("notes")
-    var notes: String = ""
-    @SerializedName("parent")
-    var parent: String = ""
-    @SerializedName("position")
-    var position: String = ""
-    @SerializedName("selfLink")
-    var selfLink: String = ""
-    @SerializedName("updateDate")
-    var updateDate: Long = 0
-    @SerializedName("listId")
-    var listId: String = ""
-    @SerializedName("status")
-    var status: String = ""
-    @SerializedName("uuId")
-    var uuId: String = ""
-    @SerializedName("hidden")
-    var hidden: Int = 0
-
-    constructor()
+data class GoogleTask(
+        var title: String = "",
+        @PrimaryKey
+        var taskId: String = "",
+        var completeDate: Long = 0,
+        var del: Int = 0,
+        var dueDate: Long = 0,
+        var eTag: String = "",
+        var kind: String = "",
+        var notes: String = "",
+        var parent: String = "",
+        var position: String = "",
+        var selfLink: String = "",
+        var updateDate: Long = 0,
+        var listId: String = "",
+        var status: String = "",
+        var uuId: String = "",
+        var hidden: Int = 0
+) {
 
     @Ignore
-    constructor(item: GoogleTask) {
+    constructor(item: GoogleTask) : this() {
         this.listId = item.listId
         this.selfLink = item.selfLink
         this.kind = item.kind
@@ -85,7 +65,7 @@ class GoogleTask {
     }
 
     @Ignore
-    constructor(task: Task, listId: String) {
+    constructor(task: Task, listId: String) : this() {
         this.listId = listId
         val dueDate = task.due
         val due = dueDate?.value ?: 0
@@ -93,33 +73,33 @@ class GoogleTask {
         val complete = completeDate?.value ?: 0
         val updateDate = task.updated
         val update = updateDate?.value ?: 0
-        val taskId = task.id
+        val taskId = task.id ?: ""
         var isDeleted = false
         try {
-            isDeleted = task.deleted!!
+            isDeleted = task.deleted ?: false
         } catch (ignored: NullPointerException) {
         }
 
         var isHidden = false
         try {
-            isHidden = task.hidden!!
+            isHidden = task.hidden ?: false
         } catch (ignored: NullPointerException) {
         }
 
-        this.selfLink = task.selfLink
-        this.kind = task.kind
-        this.eTag = task.etag
-        this.title = task.title
+        this.selfLink = task.selfLink ?: ""
+        this.kind = task.kind ?: ""
+        this.eTag = task.etag ?: ""
+        this.title = task.title ?: ""
         this.taskId = taskId
         this.completeDate = complete
         this.del = if (isDeleted) 1 else 0
         this.hidden = if (isHidden) 1 else 0
         this.dueDate = due
-        this.notes = task.notes
-        this.parent = task.parent
-        this.position = task.position
+        this.notes = task.notes ?: ""
+        this.parent = task.parent ?: ""
+        this.position = task.position ?: ""
         this.updateDate = update
-        this.status = task.status
+        this.status = task.status ?: ""
     }
 
     fun update(task: Task) {
@@ -131,33 +111,29 @@ class GoogleTask {
         val update = updateDate?.value ?: 0
         var isDeleted = false
         try {
-            isDeleted = task.deleted!!
+            isDeleted = task.deleted ?: false
         } catch (ignored: NullPointerException) {
         }
 
         var isHidden = false
         try {
-            isHidden = task.hidden!!
+            isHidden = task.hidden ?: false
         } catch (ignored: NullPointerException) {
         }
 
-        this.selfLink = task.selfLink
-        this.kind = task.kind
-        this.eTag = task.etag
-        this.title = task.title
-        this.taskId = task.id
+        this.selfLink = task.selfLink ?: ""
+        this.kind = task.kind ?: ""
+        this.eTag = task.etag ?: ""
+        this.title = task.title ?: ""
+        this.taskId = task.id ?: ""
         this.completeDate = complete
         this.del = if (isDeleted) 1 else 0
         this.hidden = if (isHidden) 1 else 0
         this.dueDate = due
-        this.notes = task.notes
-        this.parent = task.parent
-        this.position = task.position
+        this.notes = task.notes ?: ""
+        this.parent = task.parent ?: ""
+        this.position = task.position ?: ""
         this.updateDate = update
-        this.status = task.status
-    }
-
-    override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, GoogleTask::class.java)
+        this.status = task.status ?: ""
     }
 }

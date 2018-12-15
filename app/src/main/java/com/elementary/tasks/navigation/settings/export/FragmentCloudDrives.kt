@@ -6,16 +6,26 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.google.api.services.tasks.model.TaskLists
 import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
+import timber.log.Timber
+import java.io.IOException
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,6 +50,8 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     private lateinit var mDropbox: DropboxLogin
     private lateinit var mGoogleLogin: GoogleLogin
 
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
     private val mDropboxCallback = object : DropboxLogin.LoginCallback {
         override fun onSuccess(b: Boolean) {
             if (b) {
@@ -48,6 +60,10 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                 linkDropbox.text = getString(R.string.connect)
             }
         }
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     private fun showErrorDialog() {
@@ -61,6 +77,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateProgress(false)
         mDropbox = DropboxLogin(activity!!, mDropboxCallback)
         mGoogleLogin = GoogleLogin(activity!!, prefs)
         initDropboxButton()
@@ -120,7 +137,10 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                 }
 
                 override fun onResult(v: GTasks?, isLogged: Boolean) {
-
+                    Timber.d("onResult: $isLogged")
+                    if (isLogged) {
+                        loadGoogleTasks()
+                    }
                 }
 
                 override fun onFail() {
@@ -130,8 +150,70 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         }
     }
 
-    private fun updateProgress(loading: Boolean) {
+    private fun loadGoogleTasks() {
+        val gTasks = GTasks.getInstance(context!!) ?: return
+        checkGoogleStatus()
+        updateProgress(true)
+        launchDefault {
+            val appDb: AppDb = AppDb.getAppDatabase(context!!)
 
+            var lists: TaskLists? = null
+            try {
+                lists = gTasks.taskLists()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            if (lists != null && lists.size > 0 && lists.items != null) {
+                for (item in lists.items) {
+                    val listId = item.id
+                    var taskList = appDb.googleTaskListsDao().getById(listId)
+                    if (taskList != null) {
+                        taskList.update(item)
+                    } else {
+                        val r = Random()
+                        val color = r.nextInt(15)
+                        taskList = GoogleTaskList(item, color)
+                    }
+                    Timber.d("loadGoogleTasks: $taskList")
+                    appDb.googleTaskListsDao().insert(taskList)
+                    val listItem = appDb.googleTaskListsDao().all()[0].apply {
+                        this.def = 1
+                        this.systemDefault = 1
+                    }
+                    appDb.googleTaskListsDao().insert(listItem)
+                    val tasks = gTasks.getTasks(listId)
+                    if (!tasks.isEmpty()) {
+                        for (task in tasks) {
+                            var googleTask = appDb.googleTasksDao().getById(task.id)
+                            if (googleTask != null) {
+                                googleTask.update(task)
+                                googleTask.listId = task.id
+                            } else {
+                                googleTask = GoogleTask(task, listId)
+                            }
+                            appDb.googleTasksDao().insert(googleTask)
+                        }
+                    }
+                }
+            }
+
+            withUIContext {
+                updatesHelper.updateTasksWidget()
+                updateProgress(false)
+            }
+        }
+    }
+
+    private fun updateProgress(loading: Boolean) {
+        if (loading) {
+            progressView.visibility = View.VISIBLE
+        } else {
+            progressView.visibility = View.GONE
+        }
+        linkDropbox.isEnabled = !loading
+        linkGDrive.isEnabled = !loading
+        linkGTasks.isEnabled = !loading
     }
 
     private fun switchGoogleDriveStatus() {
@@ -148,7 +230,9 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                 }
 
                 override fun onResult(v: GDrive?, isLogged: Boolean) {
-
+                    if (isLogged) {
+                        checkGoogleStatus()
+                    }
                 }
 
                 override fun onFail() {
@@ -160,16 +244,21 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     private fun disconnectFromGoogleTasks() {
         mGoogleLogin.logOutTasks()
+        updateProgress(true)
         launchDefault {
             AppDb.getAppDatabase(context!!).googleTasksDao().deleteAll()
             AppDb.getAppDatabase(context!!).googleTaskListsDao().deleteAll()
-
+            withUIContext {
+                updatesHelper.updateTasksWidget()
+                updateProgress(false)
+                checkGoogleStatus()
+            }
         }
     }
 
     private fun disconnectFromGoogleDrive() {
         mGoogleLogin.logOutDrive()
-
+        checkGoogleStatus()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
