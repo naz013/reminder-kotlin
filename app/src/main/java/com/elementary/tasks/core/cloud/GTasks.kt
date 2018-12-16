@@ -123,15 +123,19 @@ class GTasks private constructor(context: Context) {
     }
 
     @Throws(IOException::class)
-    fun updateTaskStatus(status: String, listId: String, taskId: String) {
+    fun updateTaskStatus(status: String, googleTask: GoogleTask) {
         if (!isLogged || tasksService == null) return
-        val task = tasksService?.tasks()?.get(listId, taskId)?.execute() ?: return
+        val task = tasksService?.tasks()?.get(googleTask.listId, googleTask.taskId)?.execute() ?: return
         task.status = status
-        if (status.matches(TASKS_NEED_ACTION.toRegex())) {
+        if (status == TASKS_NEED_ACTION) {
             task.completed = Data.NULL_DATE_TIME
         }
         task.updated = DateTime(System.currentTimeMillis())
-        tasksService?.tasks()?.update(listId, task.id, task)?.execute()
+        val result = tasksService?.tasks()?.update(googleTask.listId, task.id, task)?.execute()
+        if (result != null) {
+            googleTask.update(result)
+            appDb.googleTasksDao().insert(googleTask)
+        }
     }
 
     @Throws(IOException::class)

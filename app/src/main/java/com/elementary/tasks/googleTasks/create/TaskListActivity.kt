@@ -1,6 +1,5 @@
 package com.elementary.tasks.googleTasks.create
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,7 +13,6 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
-import com.elementary.tasks.core.views.ColorPickerView
 import kotlinx.android.synthetic.main.activity_create_task_list.*
 import javax.inject.Inject
 
@@ -36,14 +34,10 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
+class TaskListActivity : ThemedActivity() {
 
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mItem: GoogleTaskList? = null
-    private var color: Int = 0
-
-    private var mDialog: ProgressDialog? = null
 
     @Inject
     lateinit var updatesHelper: UpdatesHelper
@@ -56,25 +50,23 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_task_list)
 
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        initActionBar()
+        colorSlider.setColors(themeUtil.colorsForSlider())
+
+        initViewModel(intent.getStringExtra(Constants.INTENT_ID) ?: "")
+    }
+
+    private fun initActionBar() {
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        pickerView.setListener(this)
-
-        initViewModel(intent.getStringExtra(Constants.INTENT_ID))
-    }
-
-    private fun hideDialog() {
-        try {
-            if (mDialog != null && mDialog!!.isShowing) {
-                mDialog?.dismiss()
-            }
-        } catch (e: Exception) {
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
         }
+        toolbar.setTitle(R.string.new_tasks_list)
     }
 
     private fun initViewModel(id: String) {
@@ -86,8 +78,8 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         })
         viewModel.isInProgress.observe(this, Observer{ aBoolean ->
             if (aBoolean != null) {
-                if (aBoolean) showProgressDialog()
-                else hideDialog()
+                if (aBoolean) showProgress()
+                else hideProgress()
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -99,21 +91,27 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         })
     }
 
+    private fun showProgress() {
+
+    }
+
+    private fun hideProgress() {
+
+    }
+
     private fun editTaskList(googleTaskList: GoogleTaskList) {
-        mItem = googleTaskList
+        this.mItem = googleTaskList
         editField.setText(googleTaskList.title)
         if (googleTaskList.def == 1) {
             defaultCheck.isChecked = true
             defaultCheck.isEnabled = false
         }
-        color = googleTaskList.color
-        pickerView.setSelectedColor(color)
-        setColor(color)
+        colorSlider.setSelection(googleTaskList.color)
     }
 
     private fun saveTaskList() {
         val listName = editField.text.toString().trim()
-        if (listName.matches("".toRegex())) {
+        if (listName == "") {
             editField.error = getString(R.string.must_be_not_empty)
             return
         }
@@ -124,7 +122,7 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
             isNew = true
         }
         item.title = listName
-        item.color = color
+        item.color = colorSlider.selectedItem
         item.updated = System.currentTimeMillis()
         if (defaultCheck.isChecked) {
             item.def = 1
@@ -147,10 +145,6 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         if (mItem != null && prefs.isAutoSaveEnabled) {
             saveTaskList()
         }
-    }
-
-    private fun showProgressDialog() {
-        mDialog = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -185,33 +179,22 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     }
 
     private fun deleteList() {
-        if (mItem != null) {
-            viewModel.deleteGoogleTaskList(mItem!!)
-        }
+        val item = mItem ?: return
+        viewModel.deleteGoogleTaskList(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_create_task_list, menu)
-        if (mItem != null && mItem!!.systemDefault != 1) {
+        menuInflater.inflate(R.menu.activity_simple_save_action, menu)
+        val item = mItem
+        if (item != null && item.systemDefault != 1) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
         }
         return true
     }
 
-    private fun setColor(i: Int) {
-        color = i
-        appBar.setBackgroundColor(themeUtil.getNoteColor(i))
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         updatesHelper.updateTasksWidget()
-    }
-
-
-    override fun onColorSelect(code: Int) {
-        setColor(code)
     }
 
     companion object {

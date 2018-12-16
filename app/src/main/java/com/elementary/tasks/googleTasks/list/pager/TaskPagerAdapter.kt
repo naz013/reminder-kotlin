@@ -35,7 +35,7 @@ class TaskPagerAdapter(fm: FragmentManager, data: List<String>) : FragmentPagerA
     }
 
     fun getCurrent(position: Int): TaskListFragment? {
-        return if (data.size < position) {
+        return if (position < data.size) {
             data[position]
         } else {
             null

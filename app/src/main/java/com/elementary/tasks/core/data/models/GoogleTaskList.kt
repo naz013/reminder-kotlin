@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.api.services.tasks.model.TaskList
+import java.io.Serializable
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -35,7 +36,7 @@ data class GoogleTaskList(
         var updated: Long = 0,
         var color: Int = 0,
         var systemDefault: Int = 0
-) {
+) : Serializable {
 
     @Ignore
     constructor(taskList: TaskList, color: Int) : this() {

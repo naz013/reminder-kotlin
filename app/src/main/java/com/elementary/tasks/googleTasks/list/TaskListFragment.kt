@@ -6,20 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants
 import kotlinx.android.synthetic.main.fragment_google_list.*
-import kotlinx.coroutines.delay
 import timber.log.Timber
 
 /**
@@ -40,22 +39,34 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TaskListFragment : Fragment() {
 
-    private var callback: PageCallback? = null
     private val adapter = TasksRecyclerAdapter()
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mId: String = ""
+    private var mGoogleTaskListsMap: MutableMap<String, GoogleTaskList> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fragment = parentFragment
         if (fragment != null) {
-            callback = fragment as PageCallback?
+            val callback = fragment as PageCallback?
+            callback?.provideGoogleTasksLists {
+                mapLists(it)
+            }
         }
         if (arguments != null) {
             mId = arguments?.getString(ARG_ID) ?: ""
+        }
+    }
+
+    private fun mapLists(googleTaskLists: List<GoogleTaskList>) {
+        if (googleTaskLists.isNotEmpty()) {
+            mGoogleTaskListsMap.clear()
+            for (list in googleTaskLists) {
+                mGoogleTaskListsMap[list.listId] = list
+            }
+            adapter.googleTaskListMap = mGoogleTaskListsMap
         }
     }
 
@@ -70,31 +81,18 @@ class TaskListFragment : Fragment() {
         initViewModel()
     }
 
-    fun requestData() {
-        Timber.d("requestData: $mId")
-        launchDefault {
-            delay(250)
-            withUIContext {
-                callback?.find(mId) { listId, data ->
-                    Timber.d("setModel: $listId, $data")
-                    showTasks(data.googleTasks)
-                }
-            }
-        }
-    }
-
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
                 GoogleTaskListViewModel.Factory(activity!!.application, mId)).get(GoogleTaskListViewModel::class.java)
-//        viewModel.googleTasks.observe(this, Observer{ googleTasks ->
-//            if (googleTasks != null) {
-//                showTasks(googleTasks)
-//            }
-//        })
+        viewModel.googleTasks.observe(this, Observer{ googleTasks ->
+            if (googleTasks != null) {
+                showTasks(googleTasks)
+            }
+        })
     }
 
     private fun showTasks(googleTasks: List<GoogleTask>) {
-        Timber.d("showTasks: $googleTasks")
+        adapter.googleTaskListMap = mGoogleTaskListsMap
         adapter.setGoogleTasks(googleTasks)
         reloadView()
     }
@@ -135,11 +133,15 @@ class TaskListFragment : Fragment() {
     companion object {
 
         private const val ARG_ID = "arg_id"
+        private const val ARG_LIST = "arg_list"
 
-        fun newInstance(id: String): TaskListFragment {
+        fun newInstance(id: String, googleTaskList: GoogleTaskList? = null): TaskListFragment {
             val fragment = TaskListFragment()
             val bundle = Bundle()
             bundle.putString(ARG_ID, id)
+            if (googleTaskList != null) {
+                bundle.putSerializable(ARG_LIST, googleTaskList)
+            }
             fragment.arguments = bundle
             return fragment
         }

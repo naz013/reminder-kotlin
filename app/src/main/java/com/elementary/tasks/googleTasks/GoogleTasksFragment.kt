@@ -21,6 +21,7 @@ import com.elementary.tasks.googleTasks.list.PageCallback
 import com.elementary.tasks.googleTasks.list.pager.TaskPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import kotlinx.android.synthetic.main.fragment_google_tasks.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,12 +46,12 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
     private lateinit var viewModel: GoogleTaskListsViewModel
     private var googleTaskLists = listOf<GoogleTaskList>()
     private var taskPagerAdapter: TaskPagerAdapter? = null
+    private var defaultGoogleTaskList: GoogleTaskList? = null
+    private val mListenersList: MutableList<(List<GoogleTaskList>) -> Unit> = mutableListOf()
     private var currentPos: Int = 0
         get() {
             return pager.currentItem
         }
-    private var listId: String? = null
-    private var listener: ((String, GoogleTaskComposed) -> Unit)? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -112,6 +113,7 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.setOnClickListener { addNewTask() }
         initViewModel()
     }
 
@@ -130,20 +132,29 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
                 showPages(googleTaskLists.toMutableList())
             }
         })
-        viewModel.googleTasks.observe(this, Observer {
-            val item = listId
-            if (it != null && item != null) {
-                val foundItem = it.first
-                val foundList = it.second
-                if (foundItem == item) {
-                    listener?.invoke(foundItem, foundList)
-                }
-            }
+        viewModel.defaultTaskList.observe(this, Observer {
+            this.defaultGoogleTaskList = it
+            refreshFab()
         })
+    }
+
+    private val mPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrolled(i: Int, v: Float, i2: Int) {
+
+        }
+
+        override fun onPageSelected(i: Int) {
+            refreshCurrent(i)
+        }
+
+        override fun onPageScrollStateChanged(i: Int) {
+
+        }
     }
 
     private fun showPages(googleTaskLists: MutableList<GoogleTaskList>) {
         this.googleTaskLists = googleTaskLists
+        notifyFragments(googleTaskLists)
 
         val pages = mutableListOf("")
         for (list in googleTaskLists) {
@@ -158,28 +169,33 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
             TaskPagerAdapter(fragmentManager!!, pages)
         }
         pager.adapter = taskPagerAdapter
-        pager.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(i: Int, v: Float, i2: Int) {
-
-            }
-
-            override fun onPageSelected(i: Int) {
-                refreshCurrent(i)
-            }
-
-            override fun onPageScrollStateChanged(i: Int) {
-
-            }
-        })
+        pager.addOnPageChangeListener(mPageChangeListener)
         pager.currentItem = if (pos < googleTaskLists.size) pos else 0
         refreshCurrent(pager.currentItem)
     }
 
+    private fun notifyFragments(googleTaskLists: MutableList<GoogleTaskList>) {
+        for (listener in mListenersList) {
+            listener.invoke(googleTaskLists)
+        }
+    }
+
     private fun refreshCurrent(position: Int) {
+        Timber.d("refreshCurrent: $position")
         updateScreenTitle()
         prefs.lastGoogleList = position
         activity?.invalidateOptionsMenu()
-        taskPagerAdapter?.getCurrent(position)?.requestData()
+        refreshFab()
+    }
+
+    private fun refreshFab() {
+        if (pager.currentItem > 0) {
+            fab.show()
+        } else {
+            if (defaultGoogleTaskList == null) {
+                fab.hide()
+            }
+        }
     }
 
     override fun getTitle(): String = updateScreenTitle()
@@ -195,8 +211,9 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
     }
 
     private fun addNewTask() {
+        val currentList = currentTaskList() ?: return
         startActivity(Intent(context, TaskActivity::class.java)
-                .putExtra(Constants.INTENT_ID, googleTaskLists[currentPos].listId)
+                .putExtra(Constants.INTENT_ID, currentList.listId)
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
     }
 
@@ -246,10 +263,16 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         viewModel.clearList(googleTaskLists[currentPos])
     }
 
-    override fun find(listId: String, listener: ((String, GoogleTaskComposed) -> Unit)?) {
-        this.listId = listId
-        this.listener = listener
-        viewModel.findTasks(listId)
+    override fun onStop() {
+        super.onStop()
+        pager?.removeOnPageChangeListener(mPageChangeListener)
+    }
+
+    override fun provideGoogleTasksLists(listener: ((List<GoogleTaskList>) -> Unit)?) {
+        if (listener != null) {
+            mListenersList.add(listener)
+            listener.invoke(googleTaskLists)
+        }
     }
 
     companion object {

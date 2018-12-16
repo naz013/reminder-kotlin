@@ -731,5 +731,6 @@
     <string name="found_places">found places</string>
     <string name="repeat_every">Repeat every</string>
     <string name="pro">PRO</string>
+    <string name="new_tasks_list">New tasks list</string>
 
 </resources>

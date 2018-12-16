@@ -39,7 +39,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
 
     init {
         defaultTaskList = appDb.googleTaskListsDao().loadDefault()
-        if (listId == null) {
+        if (listId == null || listId == "") {
             googleTasks = appDb.googleTasksDao().loadAll()
             googleTaskList = appDb.googleTaskListsDao().loadById("")
         } else {
