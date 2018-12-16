@@ -1,7 +1,7 @@
 package com.elementary.tasks.googleTasks.list
 
-import com.elementary.tasks.googleTasks.GoogleTaskComposed
+import com.elementary.tasks.core.data.models.GoogleTaskList
 
 interface PageCallback {
-    fun find(listId: String, listener: ((String, GoogleTaskComposed) -> Unit)?)
+    fun provideGoogleTasksLists(listener: ((List<GoogleTaskList>) -> Unit)?)
 }

@@ -167,7 +167,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     private fun showTask() {
         val task = mGoogleTask
         if (task != null) {
-            val binding = GoogleTaskHolder(dataContainer, null)
+            val binding = GoogleTaskHolder(dataContainer, mapOf(), null)
             binding.bind(task)
             binding.itemView.setOnClickListener {
                 startActivity(Intent(this@ReminderPreviewActivity, TaskActivity::class.java)

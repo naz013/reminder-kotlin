@@ -3,13 +3,14 @@ package com.elementary.tasks.googleTasks.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.core.graphics.drawable.DrawableCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.ListActions
 import kotlinx.android.synthetic.main.list_item_task.view.*
 import java.text.SimpleDateFormat
@@ -30,35 +31,35 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
+class GoogleTaskHolder (parent: ViewGroup, val map: Map<String, GoogleTaskList>, listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_task, parent, false)) {
 
     fun bind(googleTask: GoogleTask) {
         itemView.task.text = googleTask.title
         itemView.note.text = googleTask.notes
-        loadTaskCard(itemView.card, googleTask.hidden)
-        loadMarker(itemView.listColor, googleTask.listId)
         loadDue(itemView.taskDate, googleTask.dueDate)
-        loadCheck(itemView.checkDone, googleTask)
+        loadCheck(itemView.statusIcon, googleTask)
     }
 
     init {
-        itemView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
-        itemView.checkDone.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+        itemView.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
+        itemView.statusIcon.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
     }
 
-    private fun loadMarker(view: View, listId: String) {
-//            if (listId != "" && colors != null && colors.containsKey(listId)) {
-//                view.setBackgroundColor(ThemeUtil.getInstance(view.context).getNoteColor(colors.get(listId)))
-//            }
-    }
-
-    private fun loadTaskCard(cardView: CardView, i: Int) {
-
-    }
-
-    private fun loadCheck(checkBox: CheckBox, item: GoogleTask) {
-        checkBox.isChecked = item.status.matches(GTasks.TASKS_COMPLETE.toRegex())
+    private fun loadCheck(view: ImageView, item: GoogleTask) {
+        var color = themeUtil.getNoteLightColor(0)
+        if (item.listId != "" && map.containsKey(item.listId)) {
+            val googleTaskList = map[item.listId]
+            if (googleTaskList != null) {
+                color = themeUtil.getNoteLightColor(googleTaskList.color)
+            }
+        }
+        if (item.status == GTasks.TASKS_COMPLETE) {
+            view.setImageResource(R.drawable.ic_check)
+        } else {
+            view.setImageResource(R.drawable.ic_empty_circle)
+        }
+        DrawableCompat.setTint(view.drawable, color)
     }
 
     private fun loadDue(view: TextView, due: Long) {

@@ -77,9 +77,9 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             launchDefault {
                 try {
                     if (googleTask.status == GTasks.TASKS_NEED_ACTION) {
-                        google.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask.listId, googleTask.taskId)
+                        google.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask)
                     } else {
-                        google.updateTaskStatus(GTasks.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
+                        google.updateTaskStatus(GTasks.TASKS_NEED_ACTION, googleTask)
                     }
                     withUIContext {
                         postInProgress(false)

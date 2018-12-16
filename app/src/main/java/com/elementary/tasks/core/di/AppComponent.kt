@@ -35,6 +35,7 @@ import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.core.views.*
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
+import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TaskListActivity
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.login.LoginActivity
@@ -157,4 +158,5 @@ interface AppComponent {
     fun inject(activity: FollowReminderActivity)
     fun inject(activity: LoginActivity)
     fun inject(activity: TaskListActivity)
+    fun inject(activity: TaskActivity)
 }

@@ -3,6 +3,7 @@ package com.elementary.tasks.googleTasks.list
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import java.util.*
 
@@ -24,10 +25,15 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TasksRecyclerAdapter internal constructor() : RecyclerView.Adapter<GoogleTaskHolder>() {
+class TasksRecyclerAdapter : RecyclerView.Adapter<GoogleTaskHolder>() {
 
     private var googleTasks: List<GoogleTask> = ArrayList()
     var actionsListener: ActionsListener<GoogleTask>? = null
+    var googleTaskListMap: Map<String, GoogleTaskList> = mapOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     fun setGoogleTasks(googleTasks: List<GoogleTask>) {
         this.googleTasks = googleTasks
@@ -35,7 +41,7 @@ class TasksRecyclerAdapter internal constructor() : RecyclerView.Adapter<GoogleT
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoogleTaskHolder {
-        return GoogleTaskHolder(parent) { view, i, listActions ->
+        return GoogleTaskHolder(parent, googleTaskListMap) { view, i, listActions ->
             actionsListener?.onAction(view, i, googleTasks[i], listActions)
         }
     }
