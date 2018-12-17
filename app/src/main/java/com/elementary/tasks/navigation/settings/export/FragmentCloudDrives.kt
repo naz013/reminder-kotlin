@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
+import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
 import java.io.IOException
 import java.util.*

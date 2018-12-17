@@ -51,7 +51,7 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
                     "RM_WORK")
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
                 Toast.makeText(getApplication(), R.string.trash_cleared, Toast.LENGTH_SHORT).show()
             }
         }

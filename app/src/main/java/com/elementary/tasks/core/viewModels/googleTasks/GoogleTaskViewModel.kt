@@ -73,12 +73,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun deleteGoogleTask(googleTask: GoogleTask) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -88,12 +88,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
                 appDb.googleTasksDao().delete(googleTask)
                 withUIContext {
                     postInProgress(false)
-                    Commands.DELETED.post()
+                    postCommand(Commands.DELETED)
                 }
             } catch (e: IOException) {
                 withUIContext {
                     postInProgress(false)
-                    Commands.FAILED.post()
+                    postCommand(Commands.FAILED)
                 }
             }
         }
@@ -102,12 +102,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -117,12 +117,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
                 saveReminder(reminder)
                 withUIContext {
                     postInProgress(false)
-                    Commands.SAVED.post()
+                    postCommand(Commands.SAVED)
                 }
             } catch (e: IOException) {
                 withUIContext {
                     postInProgress(false)
-                    Commands.FAILED.post()
+                    postCommand(Commands.FAILED)
                 }
             }
         }
@@ -131,12 +131,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -147,12 +147,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
                 saveReminder(reminder)
                 withUIContext {
                     postInProgress(false)
-                    Commands.SAVED.post()
+                    postCommand(Commands.SAVED)
                 }
             } catch (e: IOException) {
                 withUIContext {
                     postInProgress(false)
-                    Commands.FAILED.post()
+                    postCommand(Commands.FAILED)
                 }
             }
         }
@@ -161,12 +161,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun updateAndMoveGoogleTask(googleTask: GoogleTask, oldListId: String, reminder: Reminder?) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -178,12 +178,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
                 saveReminder(reminder)
                 withUIContext {
                     postInProgress(false)
-                    Commands.SAVED.post()
+                    postCommand(Commands.SAVED)
                 }
             } catch (e: IOException) {
                 withUIContext {
                     postInProgress(false)
-                    Commands.FAILED.post()
+                    postCommand(Commands.FAILED)
                 }
             }
         }
@@ -192,12 +192,12 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -206,7 +206,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             google.moveTask(googleTask, oldListId)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }

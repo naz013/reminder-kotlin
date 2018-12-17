@@ -69,7 +69,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             EventControlFactory.getController(reminder).start()
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
             backupReminder(reminder.uuId)
         }
@@ -130,13 +130,13 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 withUIContext {
                     postInProgress(false)
                     Toast.makeText(getApplication(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
-                    Commands.FAILED.post()
+                    postCommand(Commands.FAILED)
                 }
             } else {
                 backupReminder(reminder.uuId)
                 withUIContext {
                     postInProgress(false)
-                    Commands.SAVED.post()
+                    postCommand(Commands.SAVED)
                 }
             }
         }
@@ -151,7 +151,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             backupReminder(reminder.uuId)
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
         }
@@ -184,7 +184,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             backupReminder(reminder.uuId)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }

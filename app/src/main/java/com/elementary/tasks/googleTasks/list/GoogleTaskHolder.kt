@@ -37,6 +37,11 @@ class GoogleTaskHolder (parent: ViewGroup, val map: Map<String, GoogleTaskList>,
     fun bind(googleTask: GoogleTask) {
         itemView.task.text = googleTask.title
         itemView.note.text = googleTask.notes
+        if (googleTask.notes.isEmpty()) {
+            itemView.note.visibility = View.GONE
+        } else {
+            itemView.note.visibility = View.VISIBLE
+        }
         loadDue(itemView.taskDate, googleTask.dueDate)
         loadCheck(itemView.statusIcon, googleTask)
     }

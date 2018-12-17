@@ -34,12 +34,12 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
     fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -58,7 +58,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             }
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
             }
         }
     }
@@ -66,12 +66,12 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
     fun toggleTask(googleTask: GoogleTask) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
         } else {
             postInProgress(true)
             launchDefault {
@@ -83,13 +83,13 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
                     }
                     withUIContext {
                         postInProgress(false)
-                        Commands.UPDATED.post()
+                        postCommand(Commands.UPDATED)
                         updatesHelper.updateTasksWidget()
                     }
                 } catch (e: IOException) {
                     withUIContext {
                         postInProgress(false)
-                        Commands.FAILED.post()
+                        postCommand(Commands.FAILED)
                     }
                 }
             }

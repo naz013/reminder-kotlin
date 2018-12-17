@@ -44,7 +44,7 @@ class PlaceViewModel private constructor(application: Application, key: String) 
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }

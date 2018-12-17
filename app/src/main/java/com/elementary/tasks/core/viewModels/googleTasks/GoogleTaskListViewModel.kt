@@ -51,12 +51,12 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -64,7 +64,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
             google.insertTasksList(googleTaskList.title, googleTaskList.color)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }
@@ -72,12 +72,12 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -87,12 +87,12 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
                 google.updateTasksList(googleTaskList.title, googleTaskList.listId)
                 withUIContext {
                     postInProgress(false)
-                    Commands.SAVED.post()
+                    postCommand(Commands.SAVED)
                 }
             } catch (e: IOException) {
                 withUIContext {
                     postInProgress(false)
-                    Commands.FAILED.post()
+                    postCommand(Commands.FAILED)
                 }
             }
         }
@@ -104,7 +104,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
             appDb.googleTaskListsDao().insert(googleTaskList)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }

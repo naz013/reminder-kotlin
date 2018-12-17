@@ -44,7 +44,7 @@ class SmsTemplateViewModel private constructor(application: Application, key: St
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }
