@@ -36,7 +36,7 @@ abstract class BaseSmsTemplatesViewModel(application: Application) : BaseDbViewM
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
             }
         }
     }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -15,10 +16,13 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_google_list.*
+import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
 
 /**
@@ -76,6 +80,8 @@ class TaskListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progressMessageView.text = getString(R.string.please_wait)
+        updateProgress(false)
         initEmpty()
         initList()
         initViewModel()
@@ -84,11 +90,41 @@ class TaskListFragment : Fragment() {
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
                 GoogleTaskListViewModel.Factory(activity!!.application, mId)).get(GoogleTaskListViewModel::class.java)
+        viewModel.isInProgress.observe(this, Observer {
+            if (it != null) {
+                updateProgress(it)
+            }
+        })
+        viewModel.result.observe(this, Observer {
+            if (it != null) {
+                showResult(it)
+            }
+        })
         viewModel.googleTasks.observe(this, Observer{ googleTasks ->
             if (googleTasks != null) {
                 showTasks(googleTasks)
             }
         })
+    }
+
+    private fun showResult(commands: Commands) {
+        Timber.d("showResult: $commands")
+        when(commands) {
+            Commands.FAILED -> {
+                Toast.makeText(context!!, getString(R.string.failed_to_update_task), Toast.LENGTH_SHORT).show()
+            }
+            Commands.UPDATED -> {
+                Toast.makeText(context!!, getString(R.string.task_updated), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateProgress(b: Boolean) {
+        if (b) {
+            progressView.visibility = View.VISIBLE
+        } else {
+            progressView.visibility = View.GONE
+        }
     }
 
     private fun showTasks(googleTasks: List<GoogleTask>) {

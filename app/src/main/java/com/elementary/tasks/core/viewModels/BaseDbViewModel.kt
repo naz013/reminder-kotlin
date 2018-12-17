@@ -70,8 +70,4 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
                 .build()
         WorkManager.getInstance().enqueue(work)
     }
-
-    protected fun Commands.post() {
-        postCommand(this)
-    }
 }

@@ -53,7 +53,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
             startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
             }
         }
     }
@@ -73,7 +73,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }
@@ -94,7 +94,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
                 if (reminder != null) {
                     saveReminder(reminder)
                 }
@@ -127,7 +127,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
             withUIContext {
                 postInProgress(false)
-                Commands.UPDATED.post()
+                postCommand(Commands.UPDATED)
             }
         }
     }

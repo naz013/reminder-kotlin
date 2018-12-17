@@ -36,7 +36,7 @@ abstract class BasePlacesViewModel(application: Application) : BaseDbViewModel(a
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
             }
         }
     }

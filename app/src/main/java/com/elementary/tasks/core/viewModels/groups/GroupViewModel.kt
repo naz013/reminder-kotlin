@@ -49,7 +49,7 @@ class GroupViewModel private constructor(application: Application, id: String) :
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
             withUIContext {
                 postInProgress(false)
-                Commands.SAVED.post()
+                postCommand(Commands.SAVED)
             }
         }
     }

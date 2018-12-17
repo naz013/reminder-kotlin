@@ -44,7 +44,7 @@ class MissedCallViewModel private constructor(application: Application, number: 
             EventJobService.cancelMissedCall(missedCall.number)
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
             }
         }
     }

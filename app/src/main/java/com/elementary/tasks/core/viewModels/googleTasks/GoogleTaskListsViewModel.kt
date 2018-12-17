@@ -44,12 +44,12 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     fun sync() {
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         postInProgress(true)
@@ -77,7 +77,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                     if (tasks.isEmpty()) {
                         withUIContext {
                             postInProgress(false)
-                            Commands.UPDATED.post()
+                            postCommand(Commands.UPDATED)
                             updatesHelper.updateTasksWidget()
                         }
                     } else {
@@ -95,7 +95,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                         appDb.googleTasksDao().insertAll(googleTasks)
                         withUIContext {
                             postInProgress(false)
-                            Commands.UPDATED.post()
+                            postCommand(Commands.UPDATED)
                             updatesHelper.updateTasksWidget()
                         }
                     }
@@ -111,12 +111,12 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     fun clearList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
         if (!isConnected) {
-            Commands.FAILED.post()
+            postCommand(Commands.FAILED)
         } else {
             postInProgress(true)
             launchDefault {
@@ -125,7 +125,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                 google.clearTaskList(googleTaskList.listId)
                 withUIContext {
                     postInProgress(false)
-                    Commands.UPDATED.post()
+                    postCommand(Commands.UPDATED)
                     updatesHelper.updateTasksWidget()
                 }
             }

@@ -42,7 +42,7 @@ abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(a
             appDb.reminderGroupDao().delete(reminderGroup)
             withUIContext {
                 postInProgress(false)
-                Commands.DELETED.post()
+                postCommand(Commands.DELETED)
             }
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
         }

@@ -31,6 +31,7 @@ import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.view_progress.*
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
