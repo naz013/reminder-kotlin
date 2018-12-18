@@ -20,10 +20,8 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_google_list.*
 import kotlinx.android.synthetic.main.view_progress.*
-import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -108,14 +106,13 @@ class TaskListFragment : Fragment() {
     }
 
     private fun showResult(commands: Commands) {
-        Timber.d("showResult: $commands")
         when(commands) {
             Commands.FAILED -> {
                 Toast.makeText(context!!, getString(R.string.failed_to_update_task), Toast.LENGTH_SHORT).show()
             }
-            Commands.UPDATED -> {
-                Toast.makeText(context!!, getString(R.string.task_updated), Toast.LENGTH_SHORT).show()
-            }
+//            Commands.UPDATED -> {
+//                Toast.makeText(context!!, getString(R.string.task_updated), Toast.LENGTH_SHORT).show()
+//            }
         }
     }
 

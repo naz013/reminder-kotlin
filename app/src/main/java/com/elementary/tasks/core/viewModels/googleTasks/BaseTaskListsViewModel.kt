@@ -50,7 +50,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             appDb.googleTasksDao().deleteAll(googleTaskList.listId)
             if (def == 1) {
                 val lists = appDb.googleTaskListsDao().all()
-                if (!lists.isEmpty()) {
+                if (lists.isNotEmpty()) {
                     val taskList = lists[0]
                     taskList.def = 1
                     appDb.googleTaskListsDao().insert(taskList)

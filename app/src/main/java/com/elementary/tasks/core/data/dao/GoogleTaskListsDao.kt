@@ -36,7 +36,7 @@ interface GoogleTaskListsDao {
     @Query("SELECT * FROM GoogleTaskList WHERE def=1")
     fun defaultGoogleTaskList(): GoogleTaskList?
 
-    @Query("SELECT * FROM GoogleTaskList")
+    @Query("SELECT * FROM GoogleTaskList ORDER BY title")
     fun loadAll(): LiveData<List<GoogleTaskList>>
 
     @Query("SELECT * FROM GoogleTaskList WHERE def=1")

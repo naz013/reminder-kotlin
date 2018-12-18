@@ -14,10 +14,4 @@
         android:title="@string/sync"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_order"
-        android:icon="@drawable/ic_sort_black_24dp"
-        android:title="@string/order"
-        app:showAsAction="never" />
-
 </menu>

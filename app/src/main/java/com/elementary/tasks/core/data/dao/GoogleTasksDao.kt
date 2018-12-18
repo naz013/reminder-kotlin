@@ -30,16 +30,16 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface GoogleTasksDao {
 
-    @Query("SELECT * FROM GoogleTask")
+    @Query("SELECT * FROM GoogleTask ORDER BY status DESC, title ASC")
     fun all(): List<GoogleTask>
 
-    @Query("SELECT * FROM GoogleTask")
+    @Query("SELECT * FROM GoogleTask ORDER BY status DESC, title ASC")
     fun loadAll(): LiveData<List<GoogleTask>>
 
-    @Query("SELECT * FROM GoogleTask WHERE listId=:listId")
+    @Query("SELECT * FROM GoogleTask WHERE listId=:listId ORDER BY status DESC, title ASC")
     fun loadAllByList(listId: String): LiveData<List<GoogleTask>>
 
-    @Query("SELECT * FROM GoogleTask WHERE listId=:listId AND status=:status")
+    @Query("SELECT * FROM GoogleTask WHERE listId=:listId AND status=:status ORDER BY title ASC")
     fun getAllByList(listId: String, status: String): List<GoogleTask>
 
     @Insert(onConflict = REPLACE)
