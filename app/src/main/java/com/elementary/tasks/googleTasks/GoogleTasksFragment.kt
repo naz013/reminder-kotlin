@@ -93,10 +93,6 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
                 clearList()
                 return true
             }
-            R.id.action_order -> {
-                showDialog()
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -174,6 +170,16 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         refreshCurrent(pager.currentItem)
     }
 
+    override fun onBackStackResume() {
+        super.onBackStackResume()
+        pager.addOnPageChangeListener(mPageChangeListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pager.removeOnPageChangeListener(mPageChangeListener)
+    }
+
     private fun notifyFragments(googleTaskLists: MutableList<GoogleTaskList>) {
         for (listener in mListenersList) {
             listener.invoke(googleTaskLists)
@@ -217,31 +223,6 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
     }
 
-    private fun showDialog() {
-        val items = arrayOf(
-                getString(R.string.default_string),
-                getString(R.string.by_date_az),
-                getString(R.string.by_date_za),
-                getString(R.string.active_first),
-                getString(R.string.completed_first)
-        )
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.order)
-        builder.setItems(items) { dialog, which ->
-            when (which) {
-                0 -> prefs.tasksOrder = Constants.ORDER_DEFAULT
-                1 -> prefs.tasksOrder = Constants.ORDER_DATE_A_Z
-                2 -> prefs.tasksOrder = Constants.ORDER_DATE_Z_A
-                3 -> prefs.tasksOrder = Constants.ORDER_COMPLETED_Z_A
-                4 -> prefs.tasksOrder = Constants.ORDER_COMPLETED_A_Z
-            }
-            dialog.dismiss()
-            viewModel.reload()
-        }
-        val alert = builder.create()
-        alert.show()
-    }
-
     private fun deleteDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
@@ -261,11 +242,6 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
     private fun clearList() {
         viewModel.clearList(googleTaskLists[currentPos])
-    }
-
-    override fun onStop() {
-        super.onStop()
-        pager?.removeOnPageChangeListener(mPageChangeListener)
     }
 
     override fun provideGoogleTasksLists(listener: ((List<GoogleTaskList>) -> Unit)?) {

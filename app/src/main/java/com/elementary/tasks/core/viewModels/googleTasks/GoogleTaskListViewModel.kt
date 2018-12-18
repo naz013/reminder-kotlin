@@ -11,6 +11,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -39,6 +40,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
 
     init {
         defaultTaskList = appDb.googleTaskListsDao().loadDefault()
+        Timber.d("GoogleTaskListViewModel: $listId")
         if (listId == null || listId == "") {
             googleTasks = appDb.googleTasksDao().loadAll()
             googleTaskList = appDb.googleTaskListsDao().loadById("")

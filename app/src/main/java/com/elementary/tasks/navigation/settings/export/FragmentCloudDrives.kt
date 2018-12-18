@@ -178,13 +178,8 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                     }
                     Timber.d("loadGoogleTasks: $taskList")
                     appDb.googleTaskListsDao().insert(taskList)
-                    val listItem = appDb.googleTaskListsDao().all()[0].apply {
-                        this.def = 1
-                        this.systemDefault = 1
-                    }
-                    appDb.googleTaskListsDao().insert(listItem)
                     val tasks = gTasks.getTasks(listId)
-                    if (!tasks.isEmpty()) {
+                    if (tasks.isNotEmpty()) {
                         for (task in tasks) {
                             var googleTask = appDb.googleTasksDao().getById(task.id)
                             if (googleTask != null) {
@@ -196,6 +191,14 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                             appDb.googleTasksDao().insert(googleTask)
                         }
                     }
+                }
+                val lists = appDb.googleTaskListsDao().all()
+                if (lists.isNotEmpty()) {
+                    val listItem = lists[0].apply {
+                        this.def = 1
+                        this.systemDefault = 1
+                    }
+                    appDb.googleTaskListsDao().insert(listItem)
                 }
             }
 

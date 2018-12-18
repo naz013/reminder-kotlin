@@ -415,10 +415,6 @@ class Prefs @Inject constructor(private val context: Context) : SharedPrefs(cont
         get() = getInt(PrefsConstants.LAST_LIST)
         set(value) = putInt(PrefsConstants.LAST_LIST, value)
 
-    var tasksOrder: String
-        get() = getString(PrefsConstants.TASKS_ORDER)
-        set(value) = putString(PrefsConstants.TASKS_ORDER, value)
-
     var isBetaWarmingShowed: Boolean
         get() = getBoolean(PrefsConstants.BETA_KEY)
         set(value) = putBoolean(PrefsConstants.BETA_KEY, value)
