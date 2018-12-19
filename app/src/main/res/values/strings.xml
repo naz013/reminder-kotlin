@@ -734,5 +734,7 @@
     <string name="new_tasks_list">New tasks list</string>
     <string name="task_updated">Task updated</string>
     <string name="failed_to_update_task">Failed to update task</string>
+    <string name="details">Details</string>
+    <string name="edit_task_list">Edit task list</string>
 
 </resources>

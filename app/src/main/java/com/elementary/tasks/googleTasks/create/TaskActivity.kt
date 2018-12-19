@@ -1,11 +1,11 @@
 package com.elementary.tasks.googleTasks.create
 
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -19,11 +19,11 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
 import kotlinx.android.synthetic.main.activity_create_google_task.*
+import kotlinx.android.synthetic.main.view_progress.*
 import java.util.*
 import javax.inject.Inject
 
@@ -45,7 +45,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-open class TaskActivity : ThemedActivity() {
+class TaskActivity : ThemedActivity() {
 
     private lateinit var viewModel: GoogleTaskViewModel
 
@@ -60,8 +60,7 @@ open class TaskActivity : ThemedActivity() {
     private var isDate = false
 
     private var mItem: GoogleTask? = null
-    private var mDialog: ProgressDialog? = null
-    private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         mYear = year
         mMonth = monthOfYear
         mDay = dayOfMonth
@@ -71,7 +70,7 @@ open class TaskActivity : ThemedActivity() {
         dateField.text = TimeUtil.getDate(calendar.time)
     }
 
-    private var myCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+    private var mTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mHour = hourOfDay
         mMinute = minute
         val c = Calendar.getInstance()
@@ -87,22 +86,15 @@ open class TaskActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
-    private fun hideDialog() {
-        if (mDialog != null && mDialog!!.isShowing) {
-            try {
-                mDialog?.dismiss()
-            } catch (e: IllegalArgumentException) {
-                LogUtil.d(TAG, "hideDialog: " + e.localizedMessage)
-            }
-
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_google_task)
         initToolbar()
         initFields()
+
+        progressMessageView.text = getString(R.string.please_wait)
+        updateProgress(false)
+
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         mHour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -123,13 +115,20 @@ open class TaskActivity : ThemedActivity() {
         switchDate()
     }
 
+    private fun updateProgress(b: Boolean) {
+        if (b) {
+            progressView.visibility = View.VISIBLE
+        } else {
+            progressView.visibility = View.GONE
+        }
+    }
+
     private fun initViewModel(taskId: String, listId: String) {
         this.listId = listId
         viewModel = ViewModelProviders.of(this, GoogleTaskViewModel.Factory(application, taskId)).get(GoogleTaskViewModel::class.java)
         viewModel.isInProgress.observe(this, Observer{ aBoolean ->
             if (aBoolean != null) {
-                if (aBoolean) showProgressDialog()
-                else hideDialog()
+                updateProgress(aBoolean)
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -172,7 +171,6 @@ open class TaskActivity : ThemedActivity() {
         this.listId = googleTaskList.listId
         toolbar.setTitle(R.string.new_task)
         listText.text = googleTaskList.title
-        setColor(googleTaskList.color)
     }
 
     private fun selectCurrent(googleTaskLists: List<GoogleTaskList>) {
@@ -193,8 +191,8 @@ open class TaskActivity : ThemedActivity() {
 
         val note = googleTask.notes
         if (note != "") {
-            noteField.setText(note)
-            noteField.setSelection(noteField.text.toString().trim { it <= ' ' }.length)
+            detailsField.setText(note)
+            detailsField.setSelection(detailsField.text.toString().trim().length)
         }
         val time = googleTask.dueDate
         if (time != 0L) {
@@ -302,10 +300,6 @@ open class TaskActivity : ThemedActivity() {
         }
     }
 
-    private fun showProgressDialog() {
-        mDialog = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false)
-    }
-
     private fun selectList(move: Boolean) {
         var list = viewModel.googleTaskLists.value
         if (list == null) list = ArrayList()
@@ -341,12 +335,12 @@ open class TaskActivity : ThemedActivity() {
     }
 
     private fun saveTask() {
-        val taskName = editField.text.toString().trim { it <= ' ' }
+        val taskName = editField.text.toString().trim()
         if (taskName.matches("".toRegex())) {
             editField.error = getString(R.string.must_be_not_empty)
             return
         }
-        val note = noteField.text.toString().trim { it <= ' ' }
+        val note = detailsField.text.toString().trim()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(mYear, mMonth, mDay, 12, 0, 0)
@@ -418,10 +412,6 @@ open class TaskActivity : ThemedActivity() {
         }
     }
 
-    private fun setColor(i: Int) {
-        appBar.setBackgroundColor(themeUtil.getNoteColor(i))
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_create_task, menu)
@@ -455,11 +445,11 @@ open class TaskActivity : ThemedActivity() {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, prefs, myDateCallBack, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myCallBack, mHour, mMinute)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeCallBack)
     }
 
     override fun onDestroy() {
@@ -468,8 +458,6 @@ open class TaskActivity : ThemedActivity() {
     }
 
     companion object {
-
-        private const val TAG = "TaskActivity"
 
         private const val MENU_ITEM_DELETE = 12
         private const val MENU_ITEM_MOVE = 14
