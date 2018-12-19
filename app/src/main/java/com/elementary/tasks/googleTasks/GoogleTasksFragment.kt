@@ -150,7 +150,6 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
     private fun showPages(googleTaskLists: MutableList<GoogleTaskList>) {
         this.googleTaskLists = googleTaskLists
-        notifyFragments(googleTaskLists)
 
         val pages = mutableListOf("")
         for (list in googleTaskLists) {
@@ -167,6 +166,9 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         pager.adapter = taskPagerAdapter
         pager.addOnPageChangeListener(mPageChangeListener)
         pager.currentItem = if (pos < googleTaskLists.size) pos else 0
+
+        notifyFragments(googleTaskLists)
+
         refreshCurrent(pager.currentItem)
     }
 
@@ -191,6 +193,7 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         updateScreenTitle()
         prefs.lastGoogleList = position
         activity?.invalidateOptionsMenu()
+        taskPagerAdapter?.getCurrent(position)?.mapLists(googleTaskLists)
         refreshFab()
     }
 

@@ -3,6 +3,7 @@ package com.elementary.tasks.googleTasks.create
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -14,6 +15,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import kotlinx.android.synthetic.main.activity_create_task_list.*
+import kotlinx.android.synthetic.main.view_progress.*
 import javax.inject.Inject
 
 /**
@@ -49,11 +51,21 @@ class TaskListActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_task_list)
+        progressMessageView.text = getString(R.string.please_wait)
+        updateProgress(false)
 
         initActionBar()
         colorSlider.setColors(themeUtil.colorsForSlider())
 
         initViewModel(intent.getStringExtra(Constants.INTENT_ID) ?: "")
+    }
+
+    private fun updateProgress(b: Boolean) {
+        if (b) {
+            progressView.visibility = View.VISIBLE
+        } else {
+            progressView.visibility = View.GONE
+        }
     }
 
     private fun initActionBar() {
@@ -78,8 +90,7 @@ class TaskListActivity : ThemedActivity() {
         })
         viewModel.isInProgress.observe(this, Observer{ aBoolean ->
             if (aBoolean != null) {
-                if (aBoolean) showProgress()
-                else hideProgress()
+                updateProgress(aBoolean)
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -89,14 +100,6 @@ class TaskListActivity : ThemedActivity() {
                 }
             }
         })
-    }
-
-    private fun showProgress() {
-
-    }
-
-    private fun hideProgress() {
-
     }
 
     private fun editTaskList(googleTaskList: GoogleTaskList) {

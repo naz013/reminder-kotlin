@@ -62,7 +62,7 @@ class TaskListFragment : Fragment() {
         }
     }
 
-    private fun mapLists(googleTaskLists: List<GoogleTaskList>) {
+    public fun mapLists(googleTaskLists: List<GoogleTaskList>) {
         if (googleTaskLists.isNotEmpty()) {
             mGoogleTaskListsMap.clear()
             for (list in googleTaskLists) {
@@ -110,9 +110,6 @@ class TaskListFragment : Fragment() {
             Commands.FAILED -> {
                 Toast.makeText(context!!, getString(R.string.failed_to_update_task), Toast.LENGTH_SHORT).show()
             }
-//            Commands.UPDATED -> {
-//                Toast.makeText(context!!, getString(R.string.task_updated), Toast.LENGTH_SHORT).show()
-//            }
         }
     }
 

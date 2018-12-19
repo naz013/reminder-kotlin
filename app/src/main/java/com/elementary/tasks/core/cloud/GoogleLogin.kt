@@ -6,9 +6,9 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.UserRecoverableAuthException
@@ -43,20 +43,18 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     private var mGoogleDrive: GDrive? = GDrive.getInstance(activity)
     private var mAccountName: String? = null
 
-    private val mUiHandler = Handler(Looper.getMainLooper())
-
     private var rtIntent: Intent? = null
     private var mDriveCallback: DriveCallback? = null
     private var mTasksCallback: TasksCallback? = null
     private var isDriveLogin = false
 
-    var isGooleDriveLogged = false
+    var isGoogleDriveLogged = false
         private set
         get() {
             return mGoogleDrive?.isLogged ?: false
         }
 
-    var isGooleTasksLogged = false
+    var isGoogleTasksLogged = false
         private set
         get() {
             return mGoogleTasks?.isLogged ?: false
@@ -93,10 +91,10 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     }
 
     private fun getAndUseAuthTokenInAsyncTask(account: Account) {
-        mUiHandler.post { this.showProgress() }
-        Thread {
+        launchDefault {
+            withUIContext { showProgress() }
             val token = getAccessToken(account)
-            mUiHandler.post {
+            withUIContext {
                 hideProgress()
                 if (token != null) {
                     if (token == RT_CODE) {
@@ -113,7 +111,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
                     sendFail()
                 }
             }
-        }.start()
+        }
     }
 
     private fun sendFail() {
