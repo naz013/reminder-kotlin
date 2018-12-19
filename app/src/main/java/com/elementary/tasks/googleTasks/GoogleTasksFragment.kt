@@ -203,6 +203,8 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         } else {
             if (defaultGoogleTaskList == null) {
                 fab.hide()
+            } else {
+                fab.show()
             }
         }
     }
