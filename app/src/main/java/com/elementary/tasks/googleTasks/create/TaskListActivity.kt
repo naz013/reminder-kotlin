@@ -104,6 +104,7 @@ class TaskListActivity : ThemedActivity() {
 
     private fun editTaskList(googleTaskList: GoogleTaskList) {
         this.mItem = googleTaskList
+        toolbar.title = getString(R.string.edit_task_list)
         editField.setText(googleTaskList.title)
         if (googleTaskList.def == 1) {
             defaultCheck.isChecked = true
