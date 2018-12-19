@@ -129,7 +129,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             Toast.makeText(context, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
             return
         }
-        if (mGoogleLogin.isGooleTasksLogged) {
+        if (mGoogleLogin.isGoogleTasksLogged) {
             disconnectFromGoogleTasks()
         } else {
             mGoogleLogin.loginTasks(object : GoogleLogin.TasksCallback {
@@ -225,7 +225,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             Toast.makeText(context, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
             return
         }
-        if (mGoogleLogin.isGooleDriveLogged) {
+        if (mGoogleLogin.isGoogleDriveLogged) {
             disconnectFromGoogleDrive()
         } else {
             mGoogleLogin.loginDrive(object : GoogleLogin.DriveCallback {
@@ -279,12 +279,12 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun checkGoogleStatus() {
-        if (mGoogleLogin.isGooleDriveLogged) {
+        if (mGoogleLogin.isGoogleDriveLogged) {
             linkGDrive.text = getString(R.string.disconnect)
         } else {
             linkGDrive.text = getString(R.string.connect)
         }
-        if (mGoogleLogin.isGooleTasksLogged) {
+        if (mGoogleLogin.isGoogleTasksLogged) {
             linkGTasks.text = getString(R.string.disconnect)
         } else {
             linkGTasks.text = getString(R.string.connect)
