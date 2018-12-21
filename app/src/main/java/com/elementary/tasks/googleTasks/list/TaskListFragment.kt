@@ -128,6 +128,11 @@ class TaskListFragment : Fragment() {
     }
 
     private fun initList() {
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = false
+            viewModel.sync()
+        }
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter.actionsListener = object : ActionsListener<GoogleTask> {
             override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {

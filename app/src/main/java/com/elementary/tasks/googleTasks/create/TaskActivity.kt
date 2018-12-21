@@ -54,6 +54,7 @@ class TaskActivity : ThemedActivity() {
     private var mYear = 0
     private var mMonth = 0
     private var mDay = 1
+    private var mIsLoading = false
     private var listId: String = ""
     private var action: String = ""
     private var isReminder = false
@@ -116,6 +117,7 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun updateProgress(b: Boolean) {
+        mIsLoading = b
         if (b) {
             progressView.visibility = View.VISIBLE
         } else {
@@ -134,7 +136,7 @@ class TaskActivity : ThemedActivity() {
         viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
-                    Commands.SAVED, Commands.DELETED -> finish()
+                    Commands.SAVED, Commands.DELETED -> onBackPressed()
                 }
             }
         })
@@ -301,6 +303,7 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun selectList(move: Boolean) {
+        if (mIsLoading) return
         var list = viewModel.googleTaskLists.value
         if (list == null) list = ArrayList()
         val names = ArrayList<String>()
@@ -335,6 +338,7 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun saveTask() {
+        if (mIsLoading) return
         val taskName = editField.text.toString().trim()
         if (taskName.matches("".toRegex())) {
             editField.error = getString(R.string.must_be_not_empty)
@@ -395,6 +399,7 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun deleteDialog() {
+        if (mIsLoading) return
         val builder = dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_task))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
@@ -407,9 +412,8 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun deleteTask() {
-        if (mItem != null) {
-            viewModel.deleteGoogleTask(mItem!!)
-        }
+        val item = mItem ?: return
+        viewModel.deleteGoogleTask(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -437,7 +441,7 @@ class TaskActivity : ThemedActivity() {
                 return true
             }
             android.R.id.home -> {
-                finish()
+                onBackPressed()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -455,6 +459,11 @@ class TaskActivity : ThemedActivity() {
     override fun onDestroy() {
         super.onDestroy()
         updatesHelper.updateTasksWidget()
+    }
+
+    override fun onBackPressed() {
+        if (mIsLoading) return
+        super.onBackPressed()
     }
 
     companion object {

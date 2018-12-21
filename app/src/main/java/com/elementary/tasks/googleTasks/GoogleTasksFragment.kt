@@ -73,10 +73,6 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_sync -> {
-                viewModel.sync()
-                return true
-            }
             R.id.action_add_list -> {
                 startActivity(Intent(context, TaskListActivity::class.java))
                 return true

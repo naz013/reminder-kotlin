@@ -40,6 +40,7 @@ class TaskListActivity : ThemedActivity() {
 
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mItem: GoogleTaskList? = null
+    private var mIsLoading = false
 
     @Inject
     lateinit var updatesHelper: UpdatesHelper
@@ -61,6 +62,7 @@ class TaskListActivity : ThemedActivity() {
     }
 
     private fun updateProgress(b: Boolean) {
+        mIsLoading = b
         if (b) {
             progressView.visibility = View.VISIBLE
         } else {
@@ -83,20 +85,20 @@ class TaskListActivity : ThemedActivity() {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(application, id)).get(GoogleTaskListViewModel::class.java)
-        viewModel.googleTaskList.observe(this, Observer{ googleTaskList ->
+        viewModel.googleTaskList.observe(this, Observer { googleTaskList ->
             if (googleTaskList != null) {
                 editTaskList(googleTaskList)
             }
         })
-        viewModel.isInProgress.observe(this, Observer{ aBoolean ->
+        viewModel.isInProgress.observe(this, Observer { aBoolean ->
             if (aBoolean != null) {
                 updateProgress(aBoolean)
             }
         })
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
-                    Commands.DELETED, Commands.SAVED -> finish()
+                    Commands.DELETED, Commands.SAVED -> onBackPressed()
                 }
             }
         })
@@ -114,6 +116,7 @@ class TaskListActivity : ThemedActivity() {
     }
 
     private fun saveTaskList() {
+        if (mIsLoading) return
         val listName = editField.text.toString().trim()
         if (listName == "") {
             editField.error = getString(R.string.must_be_not_empty)
@@ -154,7 +157,7 @@ class TaskListActivity : ThemedActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                onBackPressed()
                 true
             }
             MENU_ITEM_DELETE -> {
@@ -170,6 +173,7 @@ class TaskListActivity : ThemedActivity() {
     }
 
     private fun deleteDialog() {
+        if (mIsLoading) return
         val builder = dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_list))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
@@ -199,6 +203,11 @@ class TaskListActivity : ThemedActivity() {
     override fun onDestroy() {
         super.onDestroy()
         updatesHelper.updateTasksWidget()
+    }
+
+    override fun onBackPressed() {
+        if (mIsLoading) return
+        super.onBackPressed()
     }
 
     companion object {
