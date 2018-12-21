@@ -3,7 +3,7 @@ package com.elementary.tasks.places.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
@@ -30,42 +30,24 @@ import kotlinx.android.synthetic.main.list_item_place.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder>() {
+class PlacesRecyclerAdapter : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolder>(PlaceDiffCallback()) {
 
-    private val mData = mutableListOf<Place>()
     var actionsListener: ActionsListener<Place>? = null
-
-    var data: List<Place>
-        get() = mData
-        set(list) {
-            this.mData.clear()
-            this.mData.addAll(list)
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return mData.size
-    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Place) {
             itemView.textView.text = item.name
-            loadMarker(itemView.markerImage, item.marker)
+            itemView.markerImage.setImageResource(ThemeUtil.getMarkerStyle(item.marker))
         }
 
         init {
-            itemView.itemCard.setOnClickListener { view ->
-                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+            itemView.itemCard.setOnClickListener {
+                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            itemView.itemCard.setOnLongClickListener { view ->
-                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-                true
+            itemView.buttonMore.setOnClickListener {
+                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
             }
         }
-    }
-
-    fun getItem(position: Int): Place {
-        return mData[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -74,9 +56,5 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
-    }
-
-    fun loadMarker(view: ImageView, color: Int) {
-        view.setImageResource(ThemeUtil.getMarkerStyle(color))
     }
 }

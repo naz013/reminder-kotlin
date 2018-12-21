@@ -18,6 +18,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.Commands
@@ -143,7 +144,7 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
             override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
                 when (actions) {
                     ListActions.OPEN -> if (t != null) openPlace(t)
-                    ListActions.MORE -> if (t != null) showMore(t)
+                    ListActions.MORE -> if (t != null) showMore(view, t)
                 }
             }
         }
@@ -154,15 +155,14 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
         refreshView()
     }
 
-    private fun showMore(place: Place?) {
-        val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        dialogues.showLCAM(context!!, { item ->
-            if (item == 0) {
+    private fun showMore(view: View, place: Place?) {
+        Dialogues.showPopup(view, {
+            if (it == 0) {
                 openPlace(place!!)
-            } else if (item == 1) {
+            } else if (it == 1) {
                 viewModel.deletePlace(place!!)
             }
-        }, *items)
+        }, getString(R.string.edit), getString(R.string.delete))
     }
 
     private fun openPlace(place: Place) {
@@ -179,7 +179,7 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
     }
 
     override fun onChanged(result: List<Place>) {
-        mAdapter.data = result
+        mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         refreshView()
     }

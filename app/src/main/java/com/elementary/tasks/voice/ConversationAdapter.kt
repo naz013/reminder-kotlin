@@ -3,6 +3,7 @@ package com.elementary.tasks.voice
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -40,7 +41,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDiffCallback()) {
 
     private val mData = ArrayList<Reply>()
     var mCallback: (() -> Unit)? = null

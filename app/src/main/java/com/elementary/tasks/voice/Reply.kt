@@ -1,7 +1,5 @@
 package com.elementary.tasks.voice
 
-import com.backdoor.engine.ObjectUtil
-
 /**
  * Copyright 2017 Nazar Suhovich
  *
@@ -20,12 +18,7 @@ import com.backdoor.engine.ObjectUtil
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class Reply(var viewType: Int, var `object`: Any?) {
-
-    override fun toString(): String {
-        return ObjectUtil.getObjectPrint(this, Reply::class.java)
-    }
+data class Reply(var viewType: Int, var `object`: Any?) {
 
     companion object {
 
