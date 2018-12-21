@@ -230,6 +230,7 @@ class GTasks private constructor(context: Context) {
                 val clone = GoogleTask(item)
                 clone.listId = oldList
                 deleteTask(clone)
+                appDb.googleTasksDao().delete(item)
                 return insertTask(item)
             }
         } catch (e: IOException) {
