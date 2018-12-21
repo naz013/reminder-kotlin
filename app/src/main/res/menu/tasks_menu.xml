@@ -8,10 +8,4 @@
         android:title="@string/add_list"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_sync"
-        android:icon="@drawable/ic_cached_black_24dp"
-        android:title="@string/sync"
-        app:showAsAction="never" />
-
 </menu>
