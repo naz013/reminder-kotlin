@@ -275,24 +275,21 @@ class CalendarThemeFragment : BaseNavigationFragment() {
                 if (rMark != 0) {
                     reminderMark.setBackgroundResource(rMark)
                 } else {
-                    reminderMark.setBackgroundColor(context.resources
-                            .getColor(themeUtil!!.colorReminderCalendar()))
+                    reminderMark.setBackgroundColor(themeUtil.colorReminderCalendar())
                 }
             }
             if (selDay == 11) {
                 if (bMark != 0) {
                     birthdayMark.setBackgroundResource(bMark)
                 } else {
-                    birthdayMark.setBackgroundColor(context.resources
-                            .getColor(themeUtil!!.colorBirthdayCalendar()))
+                    birthdayMark.setBackgroundColor(themeUtil.colorBirthdayCalendar())
                 }
             }
             if (11 == selDay) {
                 if (cMark != 0) {
                     currentMark.setBackgroundResource(cMark)
                 } else {
-                    currentMark.setBackgroundColor(context.resources
-                            .getColor(themeUtil!!.colorCurrentCalendar()))
+                    currentMark.setBackgroundColor(themeUtil.colorCurrentCalendar())
                 }
             }
             return cView

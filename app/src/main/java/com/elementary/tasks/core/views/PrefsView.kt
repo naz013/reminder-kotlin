@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
@@ -258,6 +260,12 @@ class PrefsView : RelativeLayout {
 
     fun setValueText(text: String) {
         prefsValue.text = text
+    }
+
+    fun setViewColor(@ColorInt color: Int) {
+        if (color != 0) {
+            prefsView.setBackgroundColor(color)
+        }
     }
 
     fun setViewResource(@DrawableRes resource: Int) {

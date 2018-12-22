@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
@@ -205,7 +204,7 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
                             rView.setInt(R.id.reminderMark, "setBackgroundResource", reminderM)
                         } else {
                             rView.setInt(R.id.reminderMark, "setBackgroundColor",
-                                    ContextCompat.getColor(mContext, themeUtil.colorReminderCalendar()))
+                                    themeUtil.colorReminderCalendar())
                         }
                     } else {
                         rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
@@ -215,7 +214,7 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
                             rView.setInt(R.id.birthdayMark, "setBackgroundResource", birthdayM)
                         } else {
                             rView.setInt(R.id.birthdayMark, "setBackgroundColor",
-                                    ContextCompat.getColor(mContext, themeUtil.colorBirthdayCalendar()))
+                                    themeUtil.colorBirthdayCalendar())
                         }
                     } else {
                         rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
@@ -231,7 +230,7 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
                 rView.setInt(R.id.currentMark, "setBackgroundResource", currentM)
             } else {
                 rView.setInt(R.id.currentMark, "setBackgroundColor",
-                        ContextCompat.getColor(mContext, themeUtil.colorCurrentCalendar()))
+                        themeUtil.colorCurrentCalendar())
             }
         } else {
             rView.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)

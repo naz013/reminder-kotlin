@@ -153,11 +153,11 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
     }
 
     override fun birthdayColor(): Int {
-        return themeUtil.getColor(themeUtil.colorBirthdayCalendar())
+        return themeUtil.colorBirthdayCalendar()
     }
 
     override fun reminderColor(): Int {
-        return themeUtil.getColor(themeUtil.colorReminderCalendar())
+        return themeUtil.colorReminderCalendar()
     }
 
     override fun onDateClick(date: Date) {
