@@ -136,7 +136,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         if (item == null) return false
         when (item.itemId) {
             R.id.action_delete_all -> {
-                viewModel.deleteAll(mAdapter.data)
                 return true
             }
         }
@@ -242,7 +241,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun onChanged(result: List<Reminder>) {
-        mAdapter.data = result
+        mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         reloadView()
     }

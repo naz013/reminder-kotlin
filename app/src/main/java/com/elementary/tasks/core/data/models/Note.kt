@@ -42,8 +42,4 @@ data class Note(
         this.style = oldNote.style
         this.uniqueId = oldNote.uniqueId
     }
-
-    override fun toString(): String {
-        return "Note(summary='$summary', key='$key', color=$color, style=$style, uniqueId=$uniqueId)"
-    }
 }

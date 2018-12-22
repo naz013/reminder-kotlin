@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -28,31 +29,21 @@ import com.elementary.tasks.core.utils.TimeUtil
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
 
     var actionsListener: ActionsListener<Reminder>? = null
     private var isEditable = true
-    private val mData = mutableListOf<Reminder>()
     var showHeader = true
+    var data = listOf<Reminder>()
+        private set
 
-    var data: List<Reminder>
-        get() = mData
-        set(list) {
-            this.mData.clear()
-            this.mData.addAll(list)
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return mData.size
+    override fun submitList(list: List<Reminder>?) {
+        super.submitList(list)
+        data = list ?: listOf()
     }
 
     fun setEditable(editable: Boolean) {
         isEditable = editable
-    }
-
-    fun getItem(position: Int): Reminder {
-        return mData[position]
     }
 
     private fun initLabel(listHeader: TextView, position: Int) {

@@ -45,7 +45,7 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
             data.asSequence().forEach {
                 EventControlFactory.getController(it).stop()
             }
-            appDb.reminderDao().deleteAll(*data.toTypedArray())
+            appDb.reminderDao().deleteAll(data)
             startWork(DeleteBackupWorker::class.java,
                     Data.Builder().putStringArray(Constants.INTENT_IDS, data.map { it.uuId }.toTypedArray()).build(),
                     "RM_WORK")

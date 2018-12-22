@@ -1,10 +1,9 @@
 package com.elementary.tasks.groups.list
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,16 +23,9 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GroupsRecyclerAdapter : RecyclerView.Adapter<GroupHolder>() {
+class GroupsRecyclerAdapter : ListAdapter<ReminderGroup, GroupHolder>(GroupDiffCallback()) {
 
-    private val mDataList = ArrayList<ReminderGroup>()
     var actionsListener: ActionsListener<ReminderGroup>? = null
-
-    fun setData(list: List<ReminderGroup>) {
-        this.mDataList.clear()
-        this.mDataList.addAll(list)
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
         return GroupHolder(parent) { view, i, listActions ->
@@ -44,15 +36,6 @@ class GroupsRecyclerAdapter : RecyclerView.Adapter<GroupHolder>() {
     }
 
     override fun onBindViewHolder(holder: GroupHolder, position: Int) {
-        val item = mDataList[position]
-        holder.setData(item)
-    }
-
-    fun getItem(position: Int): ReminderGroup {
-        return mDataList[position]
-    }
-
-    override fun getItemCount(): Int {
-        return mDataList.size
+        holder.setData(getItem(position))
     }
 }

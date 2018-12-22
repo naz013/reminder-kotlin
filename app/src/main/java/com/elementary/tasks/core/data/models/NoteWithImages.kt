@@ -24,14 +24,12 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NoteWithImages : NoteInterface {
-
-    @SerializedName("note")
-    @Embedded
-    var note: Note? = null
-    @Relation(parentColumn =  "key", entityColumn = "noteId")
-    @SerializedName("images")
-    var images: List<ImageFile> = ArrayList()
+data class NoteWithImages(@SerializedName("note")
+                          @Embedded
+                          var note: Note? = null,
+                          @Relation(parentColumn = "key", entityColumn = "noteId")
+                          @SerializedName("images")
+                          var images: List<ImageFile> = ArrayList()) : NoteInterface {
 
     override fun getSummary(): String {
         return note?.summary ?: ""
@@ -51,9 +49,5 @@ class NoteWithImages : NoteInterface {
 
     override fun getOpacity(): Int {
         return note?.opacity ?: 100
-    }
-
-    override fun toString(): String {
-        return "NoteWithImages(note=$note, images=$images)"
     }
 }

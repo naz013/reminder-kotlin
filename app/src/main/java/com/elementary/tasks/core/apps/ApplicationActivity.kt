@@ -166,7 +166,7 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
     }
 
     override fun onChanged(result: List<ApplicationItem>) {
-        adapter.data = result.toMutableList()
+        adapter.submitList(result)
         contactsList.smoothScrollToPosition(0)
         refreshView()
     }

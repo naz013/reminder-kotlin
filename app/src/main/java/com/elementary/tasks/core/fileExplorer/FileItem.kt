@@ -18,4 +18,4 @@ package com.elementary.tasks.core.fileExplorer
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-data class FileDataItem(val fileName: String, var icon: Int, val filePath: String)
+data class FileItem(val fileName: String, var icon: Int, val filePath: String)

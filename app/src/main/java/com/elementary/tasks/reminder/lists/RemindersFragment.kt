@@ -298,7 +298,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun onChanged(result: List<Reminder>) {
-        mAdapter.data = result
+        mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         reloadView()
     }

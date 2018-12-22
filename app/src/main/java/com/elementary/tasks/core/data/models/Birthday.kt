@@ -44,7 +44,7 @@ data class Birthday(
         get() = 2
 
     @Ignore
-    constructor(name: String, date: String, number: String, showedYear: Int, contactId: Long, day: Int, month: Int): this() {
+    constructor(name: String, date: String, number: String, showedYear: Int, contactId: Long, day: Int, month: Int) : this() {
         this.name = name
         this.date = date
         this.number = number

@@ -68,7 +68,7 @@ class GroupsFragment : BaseNavigationFragment() {
     }
 
     private fun showGroups(reminderGroups: List<ReminderGroup>) {
-        mAdapter.setData(reminderGroups)
+        mAdapter.submitList(reminderGroups)
         refreshView()
     }
 
