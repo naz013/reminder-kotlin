@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.export
 
-import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
@@ -15,6 +14,7 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.export.backups.InfoAdapter
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import kotlinx.android.synthetic.main.fragment_settings_backups.*
+import kotlinx.android.synthetic.main.view_progress.*
 import kotlinx.coroutines.Job
 import java.io.File
 import java.io.IOException
@@ -41,7 +41,6 @@ import java.util.*
 class BackupsFragment : BaseSettingsFragment() {
 
     private var mAdapter: InfoAdapter? = null
-    private var progressDialog: ProgressDialog? = null
     private var mJob: Job? = null
 
     private val localFolders: List<File?>
@@ -88,6 +87,7 @@ class BackupsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initProgress()
         ViewUtils.listenScrollableView(scrollView) {
             callback?.onScrollUpdate(it)
         }
@@ -99,6 +99,11 @@ class BackupsFragment : BaseSettingsFragment() {
         }
 
         loadUserInfo()
+    }
+
+    private fun initProgress() {
+        progressMessageView.setText(R.string.please_wait)
+        hideProgress()
     }
 
     override fun getTitle(): String = getString(R.string.backup_files)
@@ -141,13 +146,8 @@ class BackupsFragment : BaseSettingsFragment() {
     }
 
     private fun loadInfo(infos: List<Info>) {
-        val context = context ?: return
-
-        progressDialog = ProgressDialog.show(context, null, getString(R.string.retrieving_data), false)
-        progressDialog?.setCancelable(true)
-        progressDialog?.setOnCancelListener {
-            cancelTask()
-        }
+        mJob?.cancel()
+        showProgress()
         mJob = launchDefault {
             val list = ArrayList<UserItem>()
             for (i in infos.indices) {
@@ -160,17 +160,25 @@ class BackupsFragment : BaseSettingsFragment() {
             }
             withUIContext {
                 mJob = null
-                progressDialog?.dismiss()
+                hideProgress()
                 mAdapter?.setData(list)
             }
         }
+    }
+
+    private fun showProgress() {
+        progressView.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        progressView.visibility = View.GONE
     }
 
     private fun deleteFiles(params: List<File?>, type: Info) {
         mJob = null
         val context = context ?: return
 
-        progressDialog = ProgressDialog.show(context, null, getString(R.string.deleting), false)
+        showProgress()
         launchDefault {
             if (type == Info.Dropbox) {
                 val dbx = Dropbox()
@@ -237,7 +245,7 @@ class BackupsFragment : BaseSettingsFragment() {
                 }
             }
             withUIContext {
-                progressDialog?.dismiss()
+                hideProgress()
                 Toast.makeText(context, R.string.all_files_removed, Toast.LENGTH_SHORT).show()
                 loadUserInfo()
             }

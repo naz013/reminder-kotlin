@@ -6,8 +6,17 @@
     android:background="?android:colorBackground">
 
     <LinearLayout
-        android:id="@+id/itemsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/view_progress" />
+
+        <LinearLayout
+            android:id="@+id/itemsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>
