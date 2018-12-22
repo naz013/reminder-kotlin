@@ -1,10 +1,9 @@
 package com.elementary.tasks.notes.list
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,26 +23,9 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotesRecyclerAdapter : RecyclerView.Adapter<NoteHolder>() {
+class NotesRecyclerAdapter : ListAdapter<NoteWithImages, NoteHolder>(NoteDIffCallback()) {
 
-    private val mData = ArrayList<NoteWithImages>()
     var actionsListener: ActionsListener<NoteWithImages>? = null
-
-    var data: List<NoteWithImages>
-        get() = mData
-        set(list) {
-            this.mData.clear()
-            this.mData.addAll(list)
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return mData.size
-    }
-
-    fun getItem(position: Int): NoteWithImages {
-        return mData[position]
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         return NoteHolder(parent) { view, i, listActions ->

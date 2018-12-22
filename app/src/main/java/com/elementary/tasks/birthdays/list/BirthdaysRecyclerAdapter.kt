@@ -1,7 +1,7 @@
 package com.elementary.tasks.birthdays.list
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 
@@ -23,26 +23,9 @@ import com.elementary.tasks.core.interfaces.ActionsListener
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdaysRecyclerAdapter : RecyclerView.Adapter<BirthdayHolder>() {
+class BirthdaysRecyclerAdapter : ListAdapter<Birthday, BirthdayHolder>(BirthdayDiffCallback()) {
 
-    private val mData = mutableListOf<Birthday>()
     var actionsListener: ActionsListener<Birthday>? = null
-
-    var data: List<Birthday>
-        get() = mData
-        set(list) {
-            this.mData.clear()
-            this.mData.addAll(list)
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return mData.size
-    }
-
-    fun getItem(position: Int): Birthday {
-        return mData[position]
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BirthdayHolder {
         return BirthdayHolder(parent) { view, i, listActions ->

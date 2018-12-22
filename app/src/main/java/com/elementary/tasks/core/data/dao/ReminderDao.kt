@@ -79,5 +79,5 @@ interface ReminderDao {
     fun delete(reminder: Reminder)
 
     @Delete
-    fun deleteAll(vararg reminder: Reminder)
+    fun deleteAll(reminders: Iterable<Reminder>)
 }

@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.activity_file_explorer.*
 import java.io.File
 import java.io.FilenameFilter
@@ -42,13 +43,13 @@ import kotlin.Comparator
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FileExplorerActivity : ThemedActivity() {
+class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
 
     private val str = ArrayList<String>()
     private var firstLvl: Boolean = true
     private var mFilter: Boolean = false
 
-    private var mDataList: MutableList<FileDataItem> = mutableListOf()
+    private var mDataList: MutableList<FileItem> = mutableListOf()
     private var path = File(Environment.getExternalStorageDirectory().toString() + "")
     private var mFileName: String = ""
     private var mFilePath: String = ""
@@ -56,13 +57,14 @@ class FileExplorerActivity : ThemedActivity() {
     private var filType: String = ""
 
     private val mAdapter: FileRecyclerAdapter = FileRecyclerAdapter()
+    private val filterController = FileFilterController(this)
     private var mSound: Sound? = null
 
     private val directoryIcon: Int = R.drawable.ic_twotone_folder_24px
     private val undoIcon: Int = R.drawable.ic_twotone_subdirectory_arrow_left_24px
 
     private fun selectFile(position: Int) {
-        val item = mAdapter.getItem(position)
+        val item = mAdapter.getFileItem(position)
         mFileName = item.fileName
         mFilePath = item.filePath
         val sel = File(path.toString() + "/" + mFileName)
@@ -154,10 +156,6 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun initRecyclerView() {
-        mAdapter.filterCallback = {
-            recyclerView.scrollToPosition(0)
-            refreshView()
-        }
         mAdapter.clickListener = { this.selectFile(it) }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -175,7 +173,9 @@ class FileExplorerActivity : ThemedActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (mFilter) mAdapter.filter(s.toString(), mDataList)
+                if (mFilter) {
+                    filterController.setSearchValue(s.toString())
+                }
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -248,7 +248,7 @@ class FileExplorerActivity : ThemedActivity() {
                 createFilteredFileList()
             }
             withUIContext {
-                mAdapter.setData(mDataList)
+                filterController.original = mDataList
                 loaderView.visibility = View.GONE
                 loadList()
             }
@@ -272,13 +272,13 @@ class FileExplorerActivity : ThemedActivity() {
                     if (o1 == null) return@Comparator -1
                     if (o2 == null) return@Comparator 1
                     when {
-                        o1.isDirectory == o2.isDirectory -> o1.name.compareTo(o2.name)
+                        o1.isDirectory == o2.isDirectory -> o1.name.toLowerCase().compareTo(o2.name.toLowerCase())
                         o1.isDirectory -> -1
                         o1.isDirectory -> 1
                         else -> 0
                     }
                 })
-                .map { FileDataItem(it.name, if (it.isDirectory) directoryIcon else 0, it.toString()) }
+                .map { FileItem(it.name, if (it.isDirectory) directoryIcon else 0, it.toString()) }
                 .toMutableList()
 
         if ((!firstLvl)) {
@@ -287,8 +287,8 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun addUpItem() {
-        val temp = ArrayList<FileDataItem>(mDataList.size + 1)
-        temp.add(0, FileDataItem(getString(R.string.up), undoIcon, ""))
+        val temp = ArrayList<FileItem>(mDataList.size + 1)
+        temp.add(0, FileItem(getString(R.string.up), undoIcon, ""))
         temp.addAll(mDataList)
         mDataList = temp
     }
@@ -359,6 +359,12 @@ class FileExplorerActivity : ThemedActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onChanged(result: List<FileItem>) {
+        mAdapter.submitList(result)
+        recyclerView.scrollToPosition(0)
+        refreshView()
     }
 
     companion object {

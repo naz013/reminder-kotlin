@@ -1,11 +1,10 @@
 package com.elementary.tasks.googleTasks.list
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,9 +24,8 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TasksRecyclerAdapter : RecyclerView.Adapter<GoogleTaskHolder>() {
+class TasksRecyclerAdapter : ListAdapter<GoogleTask, GoogleTaskHolder>(GoogleTaskDiffCallback()) {
 
-    private var googleTasks: List<GoogleTask> = ArrayList()
     var actionsListener: ActionsListener<GoogleTask>? = null
     var googleTaskListMap: Map<String, GoogleTaskList> = mapOf()
         set(value) {
@@ -35,22 +33,13 @@ class TasksRecyclerAdapter : RecyclerView.Adapter<GoogleTaskHolder>() {
             notifyDataSetChanged()
         }
 
-    fun setGoogleTasks(googleTasks: List<GoogleTask>) {
-        this.googleTasks = googleTasks
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoogleTaskHolder {
         return GoogleTaskHolder(parent, googleTaskListMap) { view, i, listActions ->
-            actionsListener?.onAction(view, i, googleTasks[i], listActions)
+            actionsListener?.onAction(view, i, getItem(i), listActions)
         }
     }
 
     override fun onBindViewHolder(holder: GoogleTaskHolder, position: Int) {
-        holder.bind(googleTasks[position])
-    }
-
-    override fun getItemCount(): Int {
-        return googleTasks.size
+        holder.bind(getItem(position))
     }
 }

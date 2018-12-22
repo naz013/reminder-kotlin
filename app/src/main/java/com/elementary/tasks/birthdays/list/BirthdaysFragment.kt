@@ -154,7 +154,7 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
     }
 
     override fun onChanged(result: List<Birthday>) {
-        mAdapter.data = result
+        mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         refreshView()
     }

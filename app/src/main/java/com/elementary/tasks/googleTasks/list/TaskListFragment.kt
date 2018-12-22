@@ -62,7 +62,7 @@ class TaskListFragment : Fragment() {
         }
     }
 
-    public fun mapLists(googleTaskLists: List<GoogleTaskList>) {
+    fun mapLists(googleTaskLists: List<GoogleTaskList>) {
         if (googleTaskLists.isNotEmpty()) {
             mGoogleTaskListsMap.clear()
             for (list in googleTaskLists) {
@@ -123,7 +123,7 @@ class TaskListFragment : Fragment() {
 
     private fun showTasks(googleTasks: List<GoogleTask>) {
         adapter.googleTaskListMap = mGoogleTaskListsMap
-        adapter.setGoogleTasks(googleTasks)
+        adapter.submitList(googleTasks)
         reloadView()
     }
 

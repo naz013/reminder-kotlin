@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -29,22 +30,9 @@ import kotlinx.android.synthetic.main.list_item_application.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AppsRecyclerAdapter : RecyclerView.Adapter<AppsRecyclerAdapter.ApplicationViewHolder>() {
+class AppsRecyclerAdapter : ListAdapter<ApplicationItem, AppsRecyclerAdapter.ApplicationViewHolder>(AppsDiffCallback()) {
+
     var actionsListener: ActionsListener<ApplicationItem>? = null
-    var data: MutableList<ApplicationItem> = mutableListOf()
-        set(list) {
-            field.clear()
-            field.addAll(list)
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return data.size
-    }
-
-    fun getItem(position: Int): ApplicationItem {
-        return data[position]
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder {
         return ApplicationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_application, parent, false))

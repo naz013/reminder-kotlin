@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.list
 
-import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -32,6 +31,7 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
+import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -62,7 +62,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
 
     private var mAdapter: NotesRecyclerAdapter = NotesRecyclerAdapter()
     private var enableGrid = false
-    private var mProgress: ProgressDialog? = null
 
     private val filterController = NoteFilterController(this)
 
@@ -156,13 +155,11 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
     }
 
     private fun hideProgress() {
-        if (mProgress != null && mProgress!!.isShowing) {
-            mProgress?.dismiss()
-        }
+        progressView.visibility = View.GONE
     }
 
     private fun showProgress() {
-        mProgress = ProgressDialog.show(context, null, getString(R.string.please_wait), true, false)
+        progressView.visibility = View.VISIBLE
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -189,13 +186,20 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
             true
         }
 
+        initProgress()
+
         initList()
         initViewModel()
     }
 
+    private fun initProgress() {
+        progressMessageView.setText(R.string.please_wait)
+        hideProgress()
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
-        viewModel.notes.observe(this, Observer{ list ->
+        viewModel.notes.observe(this, Observer { list ->
             if (list != null) {
                 Timber.d("initViewModel: $list")
                 filterController.original = list
@@ -308,7 +312,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
     }
 
     override fun onChanged(result: List<NoteWithImages>) {
-        mAdapter.data = result
+        mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         refreshView()
     }
