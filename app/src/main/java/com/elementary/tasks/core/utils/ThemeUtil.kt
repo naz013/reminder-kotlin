@@ -287,9 +287,9 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return color
     }
 
-    @ColorRes
+    @ColorInt
     fun colorBirthdayCalendar(): Int {
-        return colorPrimary(prefs.birthdayColor)
+        return getNoteLightColor(prefs.birthdayColor)
     }
 
     @ColorRes
@@ -324,14 +324,14 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return color
     }
 
-    @ColorRes
+    @ColorInt
     fun colorReminderCalendar(): Int {
-        return colorPrimary(prefs.reminderColor)
+        return getNoteLightColor(prefs.reminderColor)
     }
 
-    @ColorRes
+    @ColorInt
     fun colorCurrentCalendar(): Int {
-        return colorPrimary(prefs.todayColor)
+        return getNoteLightColor(prefs.todayColor)
     }
 
     @DrawableRes

@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport
-import com.elementary.tasks.navigation.settings.calendar.FragmentRemindersColor
-import com.elementary.tasks.navigation.settings.calendar.FragmentTodayColor
 import kotlinx.android.synthetic.main.fragment_settings_calendar.*
+import kotlinx.android.synthetic.main.view_color_slider.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,6 +44,51 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         initRemindersPrefs()
         initFirstDayPrefs()
         eventsImportPrefs.setOnClickListener { callback?.openFragment(FragmentEventsImport(), getString(R.string.import_events)) }
+
+        reminderColorPrefs.setDependentView(reminderInCalendarPrefs)
+        reminderColorPrefs.setOnClickListener {
+            showColorPopup(prefs.reminderColor, getString(R.string.reminders_color)) { color ->
+                prefs.reminderColor = color
+                initRemindersColorPrefs()
+            }
+        }
+        initRemindersColorPrefs()
+
+        themeColorPrefs.setOnClickListener {
+            showColorPopup(prefs.todayColor, getString(R.string.today_color)) { color ->
+                prefs.todayColor = color
+                initTodayColorPrefs()
+            }
+        }
+        initTodayColorPrefs()
+
+        selectedColorPrefs.setOnClickListener {
+            showColorPopup(prefs.birthdayColor, getString(R.string.birthdays_color)) { color ->
+                prefs.birthdayColor = color
+                initBirthdaysColorPrefs()
+            }
+        }
+        initBirthdaysColorPrefs()
+    }
+
+    private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
+        val builder = dialogues.getDialog(context!!)
+        val layout = layoutInflater.inflate(R.layout.view_color_slider, null, false)
+        builder.setView(layout)
+        val slider = layout.colorSlider
+        slider.setColors(themeUtil.colorsForSlider())
+        slider.setSelection(current)
+        builder.setTitle(title)
+        builder.setPositiveButton(R.string.save) { d, _ ->
+            onSave.invoke(slider.selectedItem)
+            d.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { d, _ ->
+            d.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun initFirstDayPrefs() {
@@ -78,9 +122,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initRemindersColorPrefs() {
-        reminderColorPrefs.setDependentView(reminderInCalendarPrefs)
-        reminderColorPrefs.setOnClickListener { callback?.openFragment(FragmentRemindersColor(), getString(R.string.reminders_color)) }
-        reminderColorPrefs.setViewResource(themeUtil.getIndicator(prefs.reminderColor))
+        reminderColorPrefs.setViewColor(themeUtil.colorReminderCalendar())
     }
 
     private fun initRemindersPrefs() {
@@ -105,22 +147,13 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         prefs.isFutureEventEnabled = !isChecked
     }
 
-    override fun onBackStackResume() {
-        super.onBackStackResume()
-        initRemindersColorPrefs()
-        initTodayColorPrefs()
-        initBirthdaysColorPrefs()
-    }
-
     override fun getTitle(): String = getString(R.string.calendar)
 
     private fun initBirthdaysColorPrefs() {
-        selectedColorPrefs.setOnClickListener { callback?.openFragment(FragmentBirthdaysColor(), getString(R.string.birthdays_color)) }
-        selectedColorPrefs.setViewResource(themeUtil.getIndicator(prefs.birthdayColor))
+        selectedColorPrefs.setViewColor(themeUtil.colorBirthdayCalendar())
     }
 
     private fun initTodayColorPrefs() {
-        themeColorPrefs.setOnClickListener { callback?.openFragment(FragmentTodayColor(), getString(R.string.today_color)) }
-        themeColorPrefs.setViewResource(themeUtil.getIndicator(prefs.todayColor))
+        themeColorPrefs.setViewColor(themeUtil.colorCurrentCalendar())
     }
 }
