@@ -127,8 +127,12 @@ class MonthFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        monthDayField.setOnClickListener { TimeUtil.showDatePicker(activity!!, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateSelect) }
-        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect) }
+        monthDayField.setOnClickListener {
+            TimeUtil.showDatePicker(activity!!, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateSelect)
+        }
+        timeField.setOnClickListener {
+            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect)
+        }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormatEnabled)
 
@@ -265,6 +269,8 @@ class MonthFragment : RepeatableTypeFragment() {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
             mDay = calendar.get(Calendar.DAY_OF_MONTH)
+            mMonth = calendar.get(Calendar.MONTH)
+            mYear = calendar.get(Calendar.YEAR)
             if (mDay > 28) mDay = 1
         }
     }
