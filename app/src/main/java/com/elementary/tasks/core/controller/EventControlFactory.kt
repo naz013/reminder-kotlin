@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.LogUtil
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,8 +23,6 @@ import com.elementary.tasks.core.utils.LogUtil
  */
 object EventControlFactory {
 
-    private const val TAG = "EventControlFactory"
-
     fun getController(reminder: Reminder): EventControl {
         val control: EventControl = when {
             Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) -> ShoppingEvent(reminder)
@@ -38,7 +36,7 @@ object EventControlFactory {
             Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> YearlyEvent(reminder)
             else -> DateEvent(reminder)
         }
-        LogUtil.d(TAG, "getController: $control")
+        Timber.d("getController: $control")
         return control
     }
 }

@@ -36,8 +36,9 @@ class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
             super.save()
             super.enableReminder()
             super.export()
+            return true
         }
-        return true
+        return false
     }
 
     override fun skip(): Boolean {
@@ -60,7 +61,6 @@ class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
         return if (isActive) {
             stop()
         } else {
-            super.save()
             start()
         }
     }

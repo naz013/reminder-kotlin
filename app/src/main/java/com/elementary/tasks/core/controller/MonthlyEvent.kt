@@ -37,8 +37,9 @@ class MonthlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
             super.save()
             super.enableReminder()
             super.export()
+            return true
         }
-        return true
+        return false
     }
 
     override fun skip(): Boolean {
