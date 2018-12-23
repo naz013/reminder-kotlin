@@ -101,7 +101,7 @@ class VoiceResultDialog : BaseDialog() {
         }
         when {
             Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> binding.repeatInterval.text = String.format(binding.repeatInterval.context.getString(R.string.xM), 1.toString())
-            Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = reminderUtils.getRepeatString(reminder.weekdays)
+            Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
             Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeatInterval.text = binding.repeatInterval.context.getString(R.string.yearly)
             else -> binding.repeatInterval.text = IntervalUtil.getInterval(binding.repeatInterval.context, reminder.repeatInterval)
         }
@@ -112,7 +112,7 @@ class VoiceResultDialog : BaseDialog() {
         } else {
             binding.endContainer.visibility = View.VISIBLE
         }
-        binding.chipType.text = reminderUtils.getTypeString(reminder.type)
+        binding.chipType.text = ReminderUtils.getTypeString(this, reminder.type)
     }
 
     private fun loadContact(model: Reminder, itemView: View) {

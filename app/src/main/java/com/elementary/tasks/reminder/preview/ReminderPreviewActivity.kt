@@ -21,7 +21,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Note
@@ -44,7 +43,6 @@ import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -76,19 +74,12 @@ class ReminderPreviewActivity : ThemedActivity() {
     private var reminder: Reminder? = null
     private var shoppingAdapter = ShopListRecyclerAdapter()
 
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
-
     private var mSendListener = { isSent: Boolean ->
         if (isSent) {
             finish()
         } else {
             showSendingError()
         }
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
@@ -233,7 +224,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         showStatus(reminder)
         window_type_view.text = getWindowType(reminder.windowType)
         taskText.text = reminder.summary
-        type.text = reminderUtils.getTypeString(reminder.type)
+        type.text = ReminderUtils.getTypeString(type.context, reminder.type)
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
 
         showDueAndRepeat(reminder)
@@ -328,7 +319,7 @@ class ReminderPreviewActivity : ThemedActivity() {
             time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, false)
             when {
                 Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
-                Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> repeat.text = reminderUtils.getRepeatString(reminder.weekdays)
+                Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> repeat.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
                 Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> repeat.text = getString(R.string.yearly)
                 else -> repeat.text = IntervalUtil.getInterval(this, reminder.repeatInterval)
             }

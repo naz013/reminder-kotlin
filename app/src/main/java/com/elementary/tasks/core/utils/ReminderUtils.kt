@@ -14,8 +14,6 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.BirthdayActionService
 import com.elementary.tasks.core.services.ReminderActionService
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,10 +33,12 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class ReminderUtils @Inject constructor(private val context: Context, private val prefs: Prefs) {
+object ReminderUtils {
 
-    private fun getSoundUri(melody: String?): Uri {
+    const val DAY_CHECKED = 1
+    private const val TAG = "ReminderUtils"
+
+    private fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
             UriUtil.getUri(context, melody)
         } else {
@@ -51,7 +51,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         }
     }
 
-    fun showSimpleBirthday(id: String) {
+    fun showSimpleBirthday(context: Context, prefs: Prefs, id: String) {
         val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         if (Module.isLollipop) {
@@ -68,22 +68,22 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         builder.setContentTitle(birthday.name)
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context)
                 && prefs.isSoundInSilentModeEnabled) {
-            val melodyPath: String? = if (Module.isPro && !isGlobal()) {
+            val melodyPath: String? = if (Module.isPro && !isGlobal(prefs)) {
                 prefs.birthdayMelody
             } else {
                 prefs.melodyFile
             }
-            val uri = getSoundUri(melodyPath)
+            val uri = getSoundUri(context, prefs, melodyPath)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             builder.setSound(uri)
         }
         var vibrate = prefs.isVibrateEnabled
-        if (Module.isPro && !isGlobal()) {
+        if (Module.isPro && !isGlobal(prefs)) {
             vibrate = prefs.isBirthdayVibrationEnabled
         }
         if (vibrate) {
             vibrate = prefs.isInfiniteVibrateEnabled
-            if (Module.isPro && !isGlobal()) {
+            if (Module.isPro && !isGlobal(prefs)) {
                 vibrate = prefs.isBirthdayInfiniteVibrationEnabled
             }
             val pattern: LongArray = if (vibrate) {
@@ -95,7 +95,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         }
         if (Module.isPro && prefs.isLedEnabled) {
             var ledColor = LED.getLED(prefs.ledColor)
-            if (Module.isPro && !isGlobal()) {
+            if (Module.isPro && !isGlobal(prefs)) {
                 ledColor = LED.getLED(prefs.birthdayLedColor)
             }
             builder.setLights(ledColor, 500, 1000)
@@ -132,11 +132,11 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         mNotifyMgr.notify(birthday.uniqueId, builder.build())
     }
 
-    private fun isGlobal(): Boolean {
+    private fun isGlobal(prefs: Prefs): Boolean {
         return prefs.isBirthdayGlobalEnabled
     }
 
-    fun showSimpleReminder(id: String) {
+    fun showSimpleReminder(context: Context, prefs: Prefs, id: String) {
         LogUtil.d(TAG, "showSimpleReminder: ")
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         val dismissIntent = Intent(context, ReminderActionService::class.java)
@@ -164,7 +164,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
             context.getString(R.string.app_name)
         }
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
-            val uri = getSoundUri(reminder.melodyPath)
+            val uri = getSoundUri(context, prefs, reminder.melodyPath)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             builder.setSound(uri)
         }
@@ -199,7 +199,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         return calendar.timeInMillis + after
     }
 
-    fun getRepeatString(repCode: List<Int>): String {
+    fun getRepeatString(context: Context, prefs: Prefs, repCode: List<Int>): String {
         val sb = StringBuilder()
         val first = prefs.startDay
         if (first == 0 && repCode[0] == DAY_CHECKED) {
@@ -252,7 +252,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         return `is`
     }
 
-    fun getTypeString(type: Int): String {
+    fun getTypeString(context: Context, type: Int): String {
         val res: String
         when {
             Reminder.isKind(type, Reminder.Kind.CALL) -> {
@@ -279,13 +279,13 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
             Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> res = context.getString(R.string.shopping_list)
             Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> res = context.getString(R.string.e_mail)
             else -> {
-                res = getType(type)
+                res = getType(context, type)
             }
         }
         return res
     }
 
-    fun getPriorityTitle(priority: Int): String {
+    fun getPriorityTitle(context: Context, priority: Int): String {
         return when (priority) {
             0 -> context.getString(R.string.priority_lowest)
             1 -> context.getString(R.string.priority_low)
@@ -296,7 +296,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         }
     }
 
-    fun getType(type: Int): String {
+    fun getType(context: Context, type: Int): String {
         return when {
             Reminder.isBase(type, Reminder.BY_MONTH) -> context.getString(R.string.day_of_month)
             Reminder.isBase(type, Reminder.BY_WEEK) -> context.getString(R.string.alarm)
@@ -310,10 +310,5 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
             Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
             else -> context.getString(R.string.by_date)
         }
-    }
-
-    companion object {
-        const val DAY_CHECKED = 1
-        private const val TAG = "ReminderUtils"
     }
 }

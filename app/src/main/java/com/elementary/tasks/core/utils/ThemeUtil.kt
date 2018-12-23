@@ -158,12 +158,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             }
         }
 
-    val rectangle: Int
-        @DrawableRes
-        get() {
-            return R.drawable.rectangle_stroke_blue
-        }
-
     val styleName: Int
         @StringRes
         get() {

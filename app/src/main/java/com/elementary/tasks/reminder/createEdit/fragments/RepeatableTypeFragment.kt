@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import com.elementary.tasks.core.utils.IntervalUtil
+import com.elementary.tasks.core.utils.ReminderUtils
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,7 +33,7 @@ abstract class RepeatableTypeFragment : TypeFragment() {
            summary += "$groupName, "
         }
 
-        summary += reminderUtils.getPriorityTitle(reminder.priority) + ", "
+        summary += ReminderUtils.getPriorityTitle(context!!, reminder.priority) + ", "
 
         val before = reminder.remindBefore
         if (before > 0) {

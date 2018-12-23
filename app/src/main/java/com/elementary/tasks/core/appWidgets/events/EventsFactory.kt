@@ -39,14 +39,14 @@ import kotlin.Comparator
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class EventsFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private val data = ArrayList<CalendarItem>()
     private val map = HashMap<String, Reminder>()
-    @Inject lateinit var mCount: TimeCount
-    @Inject lateinit var prefs: Prefs
-    @Inject lateinit var reminderUtils: ReminderUtils
+    @Inject
+    lateinit var mCount: TimeCount
+    @Inject
+    lateinit var prefs: Prefs
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
@@ -81,7 +81,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 Reminder.isBase(type, Reminder.BY_WEEK) -> {
                     val calendar = Calendar.getInstance()
                     calendar.timeInMillis = eventTime
-                    date = reminderUtils.getRepeatString(item.weekdays)
+                    date = ReminderUtils.getRepeatString(mContext, prefs, item.weekdays)
                     time = TimeUtil.getTime(calendar.time, is24)
                 }
                 Reminder.isBase(type, Reminder.BY_MONTH) -> {

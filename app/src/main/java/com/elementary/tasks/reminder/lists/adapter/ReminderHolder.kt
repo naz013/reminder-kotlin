@@ -8,14 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -39,13 +37,9 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
                      private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
-
     val listHeader: TextView = itemView.listHeader
 
     init {
-        ReminderApp.appComponent.inject(this)
         if (editable) {
             itemView.itemCheck.visibility = View.VISIBLE
         } else {
@@ -89,11 +83,11 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
     }
 
     private fun loadPriority(type: Int) {
-        itemView.chipPriority.text = reminderUtils.getPriorityTitle(type)
+        itemView.chipPriority.text = ReminderUtils.getPriorityTitle(itemView.context, type)
     }
 
     private fun loadType(type: Int) {
-        itemView.chipType.text = reminderUtils.getTypeString(type)
+        itemView.chipType.text = ReminderUtils.getTypeString(itemView.context, type)
     }
 
     private fun loadLeft(item: Reminder) {
@@ -105,11 +99,12 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
     }
 
     private fun loadRepeat(model: Reminder) {
+        val context = itemView.repeatInterval.context
         when {
             Reminder.isBase(model.type, Reminder.BY_MONTH) -> itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), model.repeatInterval.toString())
-            Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = reminderUtils.getRepeatString(model.weekdays)
+            Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = ReminderUtils.getRepeatString(context, prefs, model.weekdays)
             Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> itemView.repeatInterval.text = itemView.repeatInterval.context.getString(R.string.yearly)
-            else -> itemView.repeatInterval.text = IntervalUtil.getInterval(itemView.repeatInterval.context, model.repeatInterval)
+            else -> itemView.repeatInterval.text = IntervalUtil.getInterval(context, model.repeatInterval)
         }
     }
 

@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -29,7 +28,6 @@ import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import kotlinx.android.synthetic.main.fragment_trash.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -52,8 +50,6 @@ import javax.inject.Inject
 class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private lateinit var viewModel: ArchiveRemindersViewModel
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
 
     private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues },
             saveAction = { reminder -> viewModel.saveReminder(reminder) },
@@ -87,10 +83,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val mSearchCloseListener = {
         refreshFilters()
         false
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -205,7 +197,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
         for (integer in types) {
-            filter.add(FilterView.FilterElement(themeUtil.getReminderIllustration(integer), reminderUtils.getType(integer), integer))
+            filter.add(FilterView.FilterElement(themeUtil.getReminderIllustration(integer), ReminderUtils.getType(context!!, integer), integer))
         }
         if (filter.size != 0) {
             filters.add(filter)

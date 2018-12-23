@@ -75,12 +75,6 @@ class UtilModule {
 
     @Provides
     @Singleton
-    fun providesReminderUtils(application: Application, prefs: Prefs): ReminderUtils {
-        return ReminderUtils(application, prefs)
-    }
-
-    @Provides
-    @Singleton
     fun providesBackupTool(appDb: AppDb): BackupTool {
         return BackupTool(appDb)
     }

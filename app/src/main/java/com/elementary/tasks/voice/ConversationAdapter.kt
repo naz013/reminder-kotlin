@@ -10,7 +10,6 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
@@ -48,8 +47,6 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
 
     @Inject
     lateinit var language: Language
-    @Inject
-    lateinit var themeUtil: ThemeUtil
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -131,8 +128,8 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
                     askAction!!.onNo()
                 }
             }
-            itemView.replyNo.setBackgroundResource(themeUtil.rectangle)
-            itemView.replyYes.setBackgroundResource(themeUtil.rectangle)
+            itemView.replyNo.setBackgroundResource(R.drawable.rectangle_stroke_blue)
+            itemView.replyYes.setBackgroundResource(R.drawable.rectangle_stroke_blue)
             itemView.replyNo.text = language.getLocalized(itemView.context, R.string.no)
             itemView.replyYes.text = language.getLocalized(itemView.context, R.string.yes)
         }

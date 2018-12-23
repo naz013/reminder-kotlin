@@ -8,6 +8,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
+import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
 
@@ -71,7 +72,7 @@ class ReminderActionService : BaseBroadcast() {
                     if (windowType == 0) {
                         context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
                     } else {
-                        reminderUtils.showSimpleReminder(id)
+                        ReminderUtils.showSimpleReminder(context, prefs, id)
                     }
                 } else {
                     showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
