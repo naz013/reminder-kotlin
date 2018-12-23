@@ -64,7 +64,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
 
     override fun pause(): Boolean {
         notifier.hideNotification(reminder.uniqueId)
-        EventJobService.cancelReminder(reminder.uniqueId.toString())
+        EventJobService.cancelReminder(reminder.uuId)
         RepeatNotificationReceiver().cancelAlarm(context, reminder.uniqueId)
         return true
     }
