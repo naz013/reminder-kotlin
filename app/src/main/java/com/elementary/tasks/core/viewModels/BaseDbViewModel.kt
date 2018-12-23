@@ -40,6 +40,8 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
     val result: LiveData<Commands> = _result
     private val _isInProgress = MutableLiveData<Boolean>()
     val isInProgress: LiveData<Boolean> = _isInProgress
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
 
     @Inject
     lateinit var appDb: AppDb
@@ -57,6 +59,10 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
 
     protected fun postCommand(commands: Commands) {
         _result.postValue(commands)
+    }
+
+    protected fun postError(error: String) {
+        _error.postValue(error)
     }
 
     protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String) {

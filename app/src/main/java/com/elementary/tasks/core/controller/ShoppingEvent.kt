@@ -32,12 +32,20 @@ class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
         get() = false
 
     override fun start(): Boolean {
-        reminder.isActive = true
-        super.save()
-        if (!TextUtils.isEmpty(reminder.eventTime) && TimeCount.isCurrent(reminder.eventTime)) {
-            super.enableReminder()
+        return if (reminder.hasReminder) {
+            if (!TextUtils.isEmpty(reminder.eventTime) && TimeCount.isCurrent(reminder.eventTime)) {
+                reminder.isActive = true
+                super.save()
+                super.enableReminder()
+                true
+            } else {
+                false
+            }
+        } else {
+            reminder.isActive = true
+            super.save()
+            true
         }
-        return true
     }
 
     override fun skip(): Boolean {

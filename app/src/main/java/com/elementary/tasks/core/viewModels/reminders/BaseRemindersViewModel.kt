@@ -150,7 +150,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             if (!EventControlFactory.getController(reminder).onOff()) {
                 withUIContext {
                     postInProgress(false)
-                    Toast.makeText(getApplication(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+                    postError(getApplication<ReminderApp>().getString(R.string.reminder_is_outdated))
                     postCommand(Commands.FAILED)
                 }
             } else {

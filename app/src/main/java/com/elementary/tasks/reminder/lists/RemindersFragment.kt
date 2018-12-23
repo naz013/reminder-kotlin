@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -167,6 +168,13 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         viewModel.events.observe(this, Observer{ reminders ->
             if (reminders != null) {
                 showData(reminders)
+            }
+        })
+        viewModel.error.observe(this, Observer {
+            Timber.d("initViewModel: onError -> $it")
+            if (it != null) {
+                mAdapter.notifyDataSetChanged()
+                Toast.makeText(context!!, it, Toast.LENGTH_SHORT).show()
             }
         })
     }
