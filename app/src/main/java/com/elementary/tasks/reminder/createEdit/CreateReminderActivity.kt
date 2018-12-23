@@ -65,32 +65,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             prefs.lastUsedReminder = position
 //            reminder.type = typeFromPosition(position)
-            when (position) {
-                DATE -> replaceFragment(DateFragment())
-                TIMER -> replaceFragment(TimerFragment())
-                WEEK -> replaceFragment(WeekFragment())
-                GPS -> if (hasGpsPermission(GPS)) {
-                    replaceFragment(LocationFragment())
-                } else {
-                    navSpinner.setSelection(DATE)
-                }
-                SKYPE -> replaceFragment(SkypeFragment())
-                APP -> replaceFragment(ApplicationFragment())
-                MONTH -> replaceFragment(MonthFragment())
-                SHOP -> replaceFragment(ShopFragment())
-                EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
-                    replaceFragment(EmailFragment())
-                } else {
-                    navSpinner.setSelection(DATE)
-                    Permissions.requestPermission(this@CreateReminderActivity, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)
-                }
-                GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
-                    replaceFragment(PlacesFragment())
-                } else {
-                    navSpinner.setSelection(DATE)
-                }
-                YEAR -> replaceFragment(YearFragment())
-            }
+            openScreen(position)
         }
 
         override fun onNothingSelected(parent: AdapterView<*>) {
@@ -119,32 +94,32 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         loadReminder(savedInstanceState)
     }
 
-    private fun typeFromPosition(position: Int): Int {
-        return when (position) {
-            DATE -> Reminder.BY_DATE
-            TIMER -> Reminder.BY_TIME
-            WEEK -> Reminder.BY_WEEK
+    private fun openScreen(position: Int) {
+        when (position) {
+            DATE -> replaceFragment(DateFragment())
+            TIMER -> replaceFragment(TimerFragment())
+            WEEK -> replaceFragment(WeekFragment())
             GPS -> if (hasGpsPermission(GPS)) {
-                Reminder.BY_LOCATION
+                replaceFragment(LocationFragment())
             } else {
-                Reminder.BY_DATE
+                navSpinner.setSelection(DATE)
             }
-            SKYPE -> Reminder.BY_SKYPE
-            APP -> Reminder.BY_DATE_APP
-            MONTH -> Reminder.BY_MONTH
-            SHOP -> Reminder.BY_DATE_SHOP
+            SKYPE -> replaceFragment(SkypeFragment())
+            APP -> replaceFragment(ApplicationFragment())
+            MONTH -> replaceFragment(MonthFragment())
+            SHOP -> replaceFragment(ShopFragment())
             EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
-                Reminder.BY_DATE_EMAIL
+                replaceFragment(EmailFragment())
             } else {
-                Reminder.BY_DATE
+                navSpinner.setSelection(DATE)
+                Permissions.requestPermission(this@CreateReminderActivity, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)
             }
             GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
-                Reminder.BY_PLACES
+                replaceFragment(PlacesFragment())
             } else {
-                Reminder.BY_DATE
+                navSpinner.setSelection(DATE)
             }
-            YEAR -> Reminder.BY_DAY_OF_YEAR
-            else -> Reminder.BY_DATE
+            YEAR -> replaceFragment(YearFragment())
         }
     }
 
@@ -183,7 +158,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         initViewModel(id)
         when {
             savedInstanceState != null -> {
-                editReminder(savedInstanceState.getSerializable(ARG_ITEM) as Reminder? ?: reminder)
+                editReminder(savedInstanceState.getSerializable(ARG_ITEM) as Reminder? ?: reminder, false)
             }
             id != "" -> {
                 isEditing = true
@@ -215,27 +190,34 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
     }
 
-    private fun editReminder(reminder: Reminder) {
+    private fun editReminder(reminder: Reminder, stop: Boolean = true) {
         Timber.d("editReminder: ")
         this.reminder = reminder
-        viewModel.pauseReminder(reminder)
+        if (stop) viewModel.pauseReminder(reminder)
+        val current = navSpinner.selectedItemPosition
+        var toSelect = 0
         when (reminder.type) {
-            Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> navSpinner.setSelection(DATE)
-            Reminder.BY_TIME -> navSpinner.setSelection(TIMER)
-            Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> navSpinner.setSelection(WEEK)
+            Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = DATE
+            Reminder.BY_TIME -> toSelect = TIMER
+            Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = WEEK
             Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
-            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT-> navSpinner.setSelection(GPS)
-            Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> navSpinner.setSelection(SKYPE)
-            Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> navSpinner.setSelection(APP)
-            Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> navSpinner.setSelection(MONTH)
-            Reminder.BY_DATE_SHOP -> navSpinner.setSelection(SHOP)
-            Reminder.BY_DATE_EMAIL -> navSpinner.setSelection(EMAIL)
-            Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> navSpinner.setSelection(YEAR)
+            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = GPS
+            Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> toSelect = SKYPE
+            Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = APP
+            Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = MONTH
+            Reminder.BY_DATE_SHOP -> toSelect = SHOP
+            Reminder.BY_DATE_EMAIL -> toSelect = EMAIL
+            Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> toSelect = YEAR
             else -> if (Module.isPro) {
                 when (reminder.type) {
-                    Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> navSpinner.setSelection(GPS_PLACE)
+                    Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> toSelect = GPS_PLACE
                 }
             }
+        }
+        if (current == toSelect) {
+            openScreen(toSelect)
+        } else {
+            navSpinner.setSelection(toSelect)
         }
     }
 
@@ -294,13 +276,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true, prefs, language)
     }
 
-    fun replaceFragment(fragment: TypeFragment) {
+    private fun replaceFragment(fragment: TypeFragment) {
         Timber.d("replaceFragment: ")
         this.fragment = fragment
         supportFragmentManager.beginTransaction()
                 .replace(R.id.main_container, fragment, null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit()
+                .commitAllowingStateLoss()
         Timber.d("replaceFragment: done")
     }
 
@@ -420,7 +402,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             if (matches != null) {
                 val model = conversationViewModel.findResults(matches)
                 if (model != null) {
-                    processModel(model)
+                    editReminder(model, false)
                 } else {
                     val text = matches[0].toString()
                     fragment?.onVoiceAction(StringUtils.capitalize(text))
@@ -458,11 +440,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private fun removeMelody() {
         fragment?.onMelodySelect("")
-    }
-
-    private fun processModel(model: Reminder) {
-        this.reminder = model
-        editReminder(model)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
