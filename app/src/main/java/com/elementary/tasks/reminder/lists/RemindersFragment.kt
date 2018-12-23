@@ -31,6 +31,7 @@ import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import kotlinx.android.synthetic.main.fragment_reminders.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -172,7 +173,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun showData(result: List<Reminder>) {
         filterController.original = result.toMutableList()
-        reloadView()
         refreshFilters()
         activity?.invalidateOptionsMenu()
     }
@@ -290,6 +290,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun onChanged(result: List<Reminder>) {
+        Timber.d("onChanged: ${result.size}")
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         reloadView()
