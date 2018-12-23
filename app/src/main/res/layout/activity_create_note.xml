@@ -17,7 +17,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?android:colorBackground"
             app:navigationIcon="@drawable/ic_twotone_arrow_back_24px" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -104,12 +103,15 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <com.haozhang.lib.AnimatedRecordingView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/recordingView"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="128dp"
             android:layout_above="@+id/bottomBar"
-            android:visibility="gone" />
+            android:visibility="visible"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/material_wave_loading" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/bottomBar"
@@ -218,7 +220,7 @@
                         android:layout_marginEnd="16dp"
                         android:text="@string/opacity"
                         android:textAppearance="?textAppearanceCaption"
-                        android:textColor="?colorSecondary" />
+                        android:textColor="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatSeekBar
                         android:id="@+id/opacityBar"
