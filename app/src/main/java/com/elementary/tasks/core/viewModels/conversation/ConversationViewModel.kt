@@ -63,8 +63,6 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     @Inject
     lateinit var prefs: Prefs
     @Inject
-    lateinit var timeCount: TimeCount
-    @Inject
     lateinit var recognizer: Recognizer
 
     init {
@@ -259,7 +257,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         var typeT = Reminder.BY_DATE
         if (action == Action.WEEK || action == Action.WEEK_CALL || action == Action.WEEK_SMS) {
             typeT = Reminder.BY_WEEK
-            eventTime = timeCount.getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0)
+            eventTime = TimeCount.getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0)
             if (!TextUtils.isEmpty(number)) {
                 typeT = if (action == Action.WEEK_CALL)
                     Reminder.BY_WEEK_CALL

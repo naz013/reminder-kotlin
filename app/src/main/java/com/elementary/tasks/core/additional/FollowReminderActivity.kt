@@ -23,7 +23,6 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import kotlinx.android.synthetic.main.activity_follow.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -69,8 +68,6 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private var mNumber: String = ""
     private var canExportToTasks: Boolean = false
     private var defGroup: ReminderGroup? = null
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
 
     private val adapter: SpinnerAdapter
         get() {
@@ -295,7 +292,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         }
         val type = type
         setUpTimes()
-        val due = reminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
+        val due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
         val reminder = Reminder()
         val def = defGroup
         if (def != null) {

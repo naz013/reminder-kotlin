@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentActivity
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.ThemeUtil
 import javax.inject.Inject
 
@@ -27,13 +26,11 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 abstract class BaseDialog : FragmentActivity() {
 
     @Inject lateinit var themeUtil: ThemeUtil
     @Inject lateinit var dialogues: Dialogues
     @Inject lateinit var prefs: Prefs
-    @Inject lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)

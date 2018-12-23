@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
 import javax.inject.Inject
 
 /**
@@ -28,8 +27,6 @@ abstract class BaseBroadcast : BroadcastReceiver() {
     lateinit var prefs: Prefs
     @Inject
     lateinit var notifier: Notifier
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)

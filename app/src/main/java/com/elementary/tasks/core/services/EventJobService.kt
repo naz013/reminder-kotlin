@@ -41,8 +41,6 @@ class EventJobService : Job() {
 
     @Inject
     lateinit var prefs: Prefs
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -99,7 +97,7 @@ class EventJobService : Job() {
         if (prefs.reminderType == 0) {
             context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.uuId))
         } else {
-            reminderUtils.showSimpleBirthday(item.uuId)
+            ReminderUtils.showSimpleBirthday(context, prefs, item.uuId)
         }
     }
 

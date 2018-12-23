@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
 
 /**
@@ -33,7 +34,7 @@ abstract class RadiusTypeFragment : TypeFragment() {
             summary += "$groupName, "
         }
 
-        summary += reminderUtils.getPriorityTitle(reminder.priority) + ", "
+        summary += ReminderUtils.getPriorityTitle(context!!, reminder.priority) + ", "
 
         return summary
     }

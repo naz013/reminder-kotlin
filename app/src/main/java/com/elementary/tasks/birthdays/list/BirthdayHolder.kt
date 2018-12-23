@@ -37,7 +37,8 @@ import javax.inject.Inject
 class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_birthday, parent, false)) {
 
-    @Inject lateinit var prefs: Prefs
+    @Inject
+    lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)

@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import javax.inject.Inject
 
 /**
@@ -37,8 +39,6 @@ abstract class TypeFragment : Fragment() {
     lateinit var dialogues: Dialogues
     @Inject
     lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)

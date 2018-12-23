@@ -17,7 +17,6 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -42,9 +41,6 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     val listHeader: TextView = itemView.listHeader
-
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -101,11 +97,11 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     }
 
     private fun loadPriority(type: Int) {
-        itemView.chipPriority.text = reminderUtils.getPriorityTitle(type)
+        itemView.chipPriority.text = ReminderUtils.getPriorityTitle(itemView.context, type)
     }
 
     private fun loadType(type: Int) {
-        itemView.chipType.text = reminderUtils.getTypeString(type)
+        itemView.chipType.text = ReminderUtils.getTypeString(itemView.context, type)
     }
 
     private fun loadLeft(item: Reminder) {
