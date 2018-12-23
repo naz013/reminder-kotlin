@@ -46,7 +46,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     override fun stop(): Boolean {
-        EventJobService.cancelReminder(reminder.uniqueId.toString())
+        EventJobService.cancelReminder(reminder.uuId)
         reminder.isActive = false
         super.save()
         notifier.hideNotification(reminder.uniqueId)
@@ -89,7 +89,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     override fun pause(): Boolean {
-        EventJobService.cancelReminder(reminder.uniqueId.toString())
+        EventJobService.cancelReminder(reminder.uuId)
         stopTracking(true)
         return true
     }

@@ -37,7 +37,6 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
 
     private var alarmMgr: AlarmManager? = null
@@ -69,9 +68,9 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         if (Module.isMarshmallow) {
-            alarmMgr!!.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis + minutes, minutes.toLong(), alarmIntent)
+            alarmMgr?.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis + minutes, minutes.toLong(), alarmIntent)
         } else {
-            alarmMgr!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis + minutes, minutes.toLong(), alarmIntent)
+            alarmMgr?.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis + minutes, minutes.toLong(), alarmIntent)
         }
     }
 
@@ -79,9 +78,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         val intent = Intent(context, RepeatNotificationReceiver::class.java)
         alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if (alarmMgr != null) {
-            alarmMgr!!.cancel(alarmIntent)
-        }
+        alarmMgr?.cancel(alarmIntent)
     }
 
     private fun getSoundUri(melody: String?, context: Context): Uri {

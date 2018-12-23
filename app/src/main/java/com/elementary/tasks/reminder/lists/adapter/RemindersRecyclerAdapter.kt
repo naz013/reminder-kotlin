@@ -40,6 +40,7 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
     override fun submitList(list: List<Reminder>?) {
         super.submitList(list)
         data = list ?: listOf()
+        notifyDataSetChanged()
     }
 
     fun setEditable(editable: Boolean) {
