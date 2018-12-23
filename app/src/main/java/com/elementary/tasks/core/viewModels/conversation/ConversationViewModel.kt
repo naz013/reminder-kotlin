@@ -22,6 +22,7 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -271,23 +272,26 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         } else if (action == Action.MAIL) {
             typeT = Reminder.BY_DATE_EMAIL
         }
-        val item = defaultReminderGroup.value
-        var categoryId = ""
-        if (item != null) {
-            categoryId = item.groupUuId
-        }
+
         val isCal = prefs.getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
         val isStock = prefs.getBoolean(PrefsConstants.EXPORT_TO_STOCK)
+
         val reminder = Reminder()
+        val group = defaultGroup
+        if (group != null) {
+            reminder.groupColor = group.groupColor
+            reminder.groupTitle = group.groupTitle
+            reminder.groupUuId = group.groupUuId
+        }
         reminder.type = typeT
         reminder.summary = summary
-        reminder.groupUuId = categoryId
         reminder.weekdays = weekdays
         reminder.repeatInterval = repeat
         reminder.target = number
         reminder.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
         reminder.startTime = TimeUtil.getGmtFromDateTime(eventTime)
         reminder.exportToCalendar = isCalendar && (isCal || isStock)
+        Timber.d("createReminder: $reminder")
         return reminder
     }
 
@@ -323,9 +327,11 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         mReminder.useGlobal = true
         mReminder.noteId = key
         mReminder.summary = summary
-        val def = defaultReminderGroup.value
-        if (def != null) {
-            mReminder.groupUuId = def.groupUuId
+        val group = defaultGroup
+        if (group != null) {
+            mReminder.groupColor = group.groupColor
+            mReminder.groupTitle = group.groupTitle
+            mReminder.groupUuId = group.groupUuId
         }
         mReminder.startTime = TimeUtil.getGmtFromDateTime(due)
         mReminder.eventTime = TimeUtil.getGmtFromDateTime(due)

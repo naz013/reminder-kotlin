@@ -151,10 +151,6 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         reminder.isActive = true
         reminder.isRemoved = false
         reminder.summary = note.summary
-//        val def = reminderViewModel.defaultReminderGroup.value
-//        if (def != null) {
-//            reminder.groupUuId = def.groupUuId
-//        }
         val prefsTime = prefs.noteReminderTime * TimeCount.MINUTE
         val startTime = System.currentTimeMillis() + prefsTime
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)

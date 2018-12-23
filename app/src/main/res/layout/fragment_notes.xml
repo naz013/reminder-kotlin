@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
@@ -40,7 +40,10 @@
 
         </LinearLayout>
 
-        <include layout="@layout/view_progress" />
+        <include
+            layout="@layout/view_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
