@@ -99,35 +99,26 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle) {
-            LogUtil.d(TAG, "onReadyForSpeech: ")
         }
 
         override fun onBeginningOfSpeech() {
-            LogUtil.d(TAG, "onBeginningOfSpeech: ")
+            Timber.d("onBeginningOfSpeech: ")
             showRecording()
         }
 
         override fun onRmsChanged(v: Float) {
-            var v = v
-            v *= 2000
-            var db = 0.0
-            if (v > 1) {
-                db = 20 * Math.log10(v.toDouble())
-            }
-            recordingView.setVolume(db.toFloat())
         }
 
         override fun onBufferReceived(bytes: ByteArray) {
-            LogUtil.d(TAG, "onBufferReceived: " + Arrays.toString(bytes))
         }
 
         override fun onEndOfSpeech() {
             hideRecording()
-            LogUtil.d(TAG, "onEndOfSpeech: ")
+            Timber.d("onEndOfSpeech: ")
         }
 
         override fun onError(i: Int) {
-            LogUtil.d(TAG, "onError: $i")
+            Timber.d("onError: $i")
             releaseSpeech()
             hideRecording()
         }
@@ -137,7 +128,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             if (res != null && res.size > 0) {
                 setText(StringUtils.capitalize(res[0].toString().toLowerCase()))
             }
-            LogUtil.d(TAG, "onResults: $res")
+            Timber.d("onResults: $res")
             releaseSpeech()
         }
 
@@ -146,11 +137,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             if (res != null && res.size > 0) {
                 setText(res[0].toString().toLowerCase())
             }
-            LogUtil.d(TAG, "onPartialResults: $res")
+            Timber.d("onPartialResults: $res")
         }
 
         override fun onEvent(i: Int, bundle: Bundle) {
-            LogUtil.d(TAG, "onEvent: ")
         }
     }
 
@@ -196,6 +186,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         initActionBar()
         initMenu()
 
+        hideRecording()
+
         remindDate.setOnClickListener { dateDialog() }
         remindTime.setOnClickListener { timeDialog() }
         micButton.setOnClickListener { micClick() }
@@ -225,12 +217,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun showRecording() {
-        recordingView.start()
         recordingView.visibility = View.VISIBLE
     }
 
     private fun hideRecording() {
-        recordingView.stop()
         recordingView.visibility = View.GONE
     }
 
@@ -657,13 +647,17 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun updateBackground() {
-        val lightColor = themeUtil.getNoteLightColor(mColor, opacityBar.progress)
-        layoutContainer.setBackgroundColor(lightColor)
-        appBar.setBackgroundColor(lightColor)
+        val lightColorSemi = themeUtil.getNoteLightColor(mColor, opacityBar.progress)
+        layoutContainer.setBackgroundColor(lightColorSemi)
+        toolbar.setBackgroundColor(lightColorSemi)
+        appBar.setBackgroundColor(lightColorSemi)
+
+        val lightColor = themeUtil.getNoteLightColor(mColor, 100)
         if (Module.isLollipop) {
             window.statusBarColor = lightColor
         }
-        bottomBar.setCardBackgroundColor(themeUtil.getNoteLightColor(mColor))
+        bottomBar.setCardBackgroundColor(lightColor)
+        bottomBar.invalidate()
     }
 
     private fun showStyleDialog() {
@@ -761,7 +755,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     companion object {
 
-        private const val TAG = "CreateNoteActivity"
         const val MENU_ITEM_DELETE = 12
         private const val EDIT_CODE = 11223
         private const val AUDIO_CODE = 255000
