@@ -14,6 +14,7 @@ import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import com.elementary.tasks.reminder.work.SingleBackupWorker
+import kotlinx.coroutines.delay
 import java.util.*
 import javax.inject.Inject
 
@@ -44,14 +45,17 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     var allGroups: LiveData<List<ReminderGroup>> = _allGroups
 
     val groups = mutableListOf<ReminderGroup>()
+    var defaultGroup: ReminderGroup? = null
 
     @Inject
     lateinit var calendarUtils: CalendarUtils
 
     init {
         ReminderApp.appComponent.inject(this)
-        appDb.reminderGroupDao().loadDefault().observeForever {
-            _defaultReminderGroup.postValue(it)
+        launchDefault {
+            val defGroup = appDb.reminderGroupDao().defaultGroup(true)
+            defaultGroup = defGroup
+            withUIContext {  _defaultReminderGroup.postValue(defGroup) }
         }
         appDb.reminderGroupDao().loadAll().observeForever {
             _allGroups.postValue(it)
@@ -65,19 +69,36 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     fun saveAndStartReminder(reminder: Reminder) {
         postInProgress(true)
         launchDefault {
+            if (reminder.groupUuId == "") {
+                val group = appDb.reminderGroupDao().defaultGroup()
+                if (group != null) {
+                    reminder.groupColor = group.groupColor
+                    reminder.groupTitle = group.groupTitle
+                    reminder.groupUuId = group.groupUuId
+                }
+            }
             appDb.reminderDao().insert(reminder)
+            delay(250)
             EventControlFactory.getController(reminder).start()
+            backupReminder(reminder.uuId)
             withUIContext {
                 postInProgress(false)
                 postCommand(Commands.SAVED)
             }
-            backupReminder(reminder.uuId)
         }
     }
 
     fun copyReminder(reminder: Reminder, time: Long, name: String) {
         postInProgress(true)
         launchDefault {
+            if (reminder.groupUuId == "") {
+                val group = appDb.reminderGroupDao().defaultGroup()
+                if (group != null) {
+                    reminder.groupColor = group.groupColor
+                    reminder.groupTitle = group.groupTitle
+                    reminder.groupUuId = group.groupUuId
+                }
+            }
             val newItem = reminder.copy()
             newItem.summary = name
             val calendar = Calendar.getInstance()

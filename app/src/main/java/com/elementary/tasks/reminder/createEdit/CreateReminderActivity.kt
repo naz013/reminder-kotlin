@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -308,6 +310,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 save()
                 return true
             }
+            R.id.action_voice -> {
+                openRecognizer()
+                return true
+            }
             MENU_ITEM_DELETE -> {
                 deleteReminder()
                 return true
@@ -392,8 +398,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_create_reminder, menu)
+        menuInflater.inflate(R.menu.menu_create_reminder, menu)
+        val micIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_mic_24px)
+        if (isDark) {
+            val white = ContextCompat.getColor(this, R.color.whitePrimary)
+            DrawableCompat.setTint(micIcon!!, white)
+        } else {
+            val black = ContextCompat.getColor(this, R.color.pureBlack)
+            DrawableCompat.setTint(micIcon!!, black)
+        }
+        menu.getItem(0)?.icon = micIcon
         if (isEditing) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }

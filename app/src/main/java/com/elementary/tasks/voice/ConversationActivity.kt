@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -60,6 +61,7 @@ class ConversationActivity : ThemedActivity() {
     private var tts: TextToSpeech? = null
     private var isTtsReady: Boolean = false
     private var mAskAction: AskAction? = null
+    private val handler = Handler(Looper.getMainLooper())
 
     private val mTextToSpeechListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
@@ -69,7 +71,7 @@ class ConversationActivity : ThemedActivity() {
             } else {
                 isTtsReady = true
                 addResponse(getLocalized(R.string.hi_how_can_i_help_you))
-                Handler().postDelayed({ micClick() }, 1500)
+                postMicClick({ micClick() })
             }
         } else {
             LogUtil.d(TAG, "Initialization Failed!")
@@ -124,6 +126,10 @@ class ConversationActivity : ThemedActivity() {
         override fun onEvent(i: Int, bundle: Bundle) {
             LogUtil.d(TAG, "onEvent: ")
         }
+    }
+
+    private fun postMicClick(action: () -> Unit, time: Long = 2500) {
+        handler.postDelayed({ action.invoke() }, time)
     }
 
     private fun showSilentMessage() {
@@ -348,7 +354,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.group_created))
         val item = viewModel.createGroup(model)
         addObjectResponse(Reply(Reply.GROUP, item))
-        Handler().postDelayed({ askGroupAction(item) }, 1000)
+        postMicClick({ askGroupAction(item) }, 1500)
     }
 
     private fun noteAction(model: Model) {
@@ -356,7 +362,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.note_created))
         val item = viewModel.createNote(model.summary)
         addObjectResponse(Reply(Reply.NOTE, item))
-        Handler().postDelayed({ askNoteAction(item) }, 1000)
+        postMicClick({ askNoteAction(item) }, 1500)
     }
 
     private fun reminderAction(model: Model) {
@@ -367,10 +373,10 @@ class ConversationActivity : ThemedActivity() {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
                     TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale, language) +
                     ". " + getLocalized(R.string.would_you_like_to_save_it))
-            Handler().postDelayed({ askReminderAction(reminder, false) }, 8000)
+            postMicClick({ askReminderAction(reminder, false) }, 8000)
         } else {
             addResponse(getLocalized(R.string.reminder_created))
-            Handler().postDelayed({ askReminderAction(reminder, true) }, 1000)
+            postMicClick({ askReminderAction(reminder, true) }, 1000)
         }
     }
 
@@ -389,7 +395,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        Handler().postDelayed({ this.micClick() }, 1500)
+        postMicClick({ this.micClick() }, 2000)
     }
 
     private fun askReminderAction(reminder: Reminder, ask: Boolean) {
@@ -407,7 +413,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        Handler().postDelayed({ this.micClick() }, 1500)
+        postMicClick({ this.micClick() }, 2000)
     }
 
     private fun askNoteAction(note: Note) {
@@ -417,7 +423,7 @@ class ConversationActivity : ThemedActivity() {
                 viewModel.saveNote(note, false, false)
                 addResponse(getLocalized(R.string.note_saved))
                 if (prefs.isNoteReminderEnabled) {
-                    Handler().postDelayed({ askQuickReminder(note) }, 1500)
+                    postMicClick({ askQuickReminder(note) }, 2000)
                 } else {
                     mAskAction = null
                 }
@@ -429,7 +435,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        Handler().postDelayed({ this.micClick() }, 1500)
+        postMicClick({ this.micClick() }, 2000)
     }
 
     private fun askQuickReminder(note: Note) {
@@ -455,7 +461,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        Handler().postDelayed({ this.micClick() }, 1500)
+        postMicClick({ this.micClick() }, 2000)
     }
 
     private fun addAskReply() {
@@ -464,8 +470,8 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun addResponse(message: String) {
-        mAdapter.addReply(Reply(Reply.RESPONSE, message))
         playTts(message)
+        mAdapter.addReply(Reply(Reply.RESPONSE, message))
     }
 
     private fun disableReminders() {
