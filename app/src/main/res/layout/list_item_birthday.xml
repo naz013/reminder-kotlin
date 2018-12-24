@@ -34,7 +34,7 @@
                 android:textAppearance="?textAppearanceBody1"
                 tools:text="Title" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 android:textAppearance="?textAppearanceBody2"
                 tools:text="Number" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

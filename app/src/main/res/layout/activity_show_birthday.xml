@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -36,8 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="150dp"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="150dp"
             app:cardCornerRadius="5dp"
             app:contentPadding="20dp">
 
@@ -47,38 +47,35 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/reminder_margin_top"
+                    android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:text="Contact"
-                    android:textSize="@dimen/reminder_text_size_normal"
-                    app:font_style="roboto_medium" />
+                    android:textAppearance="?textAppearanceHeadline5"
+                    tools:text="Contact" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/userNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/reminder_margin_top"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="+31234567890"
-                    android:textSize="@dimen/reminder_text_size_normal"
-                    app:font_style="roboto_light" />
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="+31234567890" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/userYears"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/reminder_margin_top"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="26 years"
-                    android:textSize="@dimen/reminder_text_size_normal"
-                    app:font_style="roboto_bold" />
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="26 years" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

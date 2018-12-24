@@ -4,6 +4,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -12,7 +13,6 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import kotlinx.android.synthetic.main.list_item_birthday.view.*
 import javax.inject.Inject
 
@@ -62,7 +62,7 @@ class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val li
         loadBirthday(itemView.eventDate, item.date)
     }
 
-    private fun loadBirthday(textView: RoboTextView, fullDate: String) {
+    private fun loadBirthday(textView: TextView, fullDate: String) {
         val is24 = prefs.is24HourFormatEnabled
         val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), fullDate)
         if (dateItem != null) {

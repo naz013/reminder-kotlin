@@ -19,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -27,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.drawing.DrawView
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.views.roboto.RoboEditText
 import com.elementary.tasks.notes.editor.layers.LayersRecyclerAdapter
 import com.elementary.tasks.notes.editor.layers.OnStartDragListener
 import com.elementary.tasks.notes.editor.layers.SimpleItemTouchHelperCallback
@@ -559,7 +559,7 @@ class DrawFragment : BitmapFragment() {
 
     private fun showTextPickerDialog() {
         val builder = dialogues.getDialog(context!!)
-        val editText = RoboEditText(context!!)
+        val editText = AppCompatEditText(context!!)
         editText.setHint(R.string.text)
         builder.setView(editText)
         builder.setPositiveButton(R.string.add_text) { dialogInterface, _ ->
