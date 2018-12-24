@@ -120,6 +120,11 @@
         <item name="android:windowBackground">@color/pureWhite</item>
         <item name="android:colorBackground">@color/pureWhite</item>
         <item name="materialCardViewStyle">@style/PureWhite.Card</item>
+        <item name="popupMenuStyle">@style/PureWhite.PopupMenu</item>
+    </style>
+
+    <style name="PureWhite.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/pureWhite</item>
     </style>
 
     <style name="PureWhite.Card" parent="Widget.MaterialComponents.CardView" >
@@ -131,6 +136,11 @@
         <item name="android:windowBackground">@color/lightPrimary1</item>
         <item name="android:colorBackground">@color/lightPrimary1</item>
         <item name="materialCardViewStyle">@style/Light1.Card</item>
+        <item name="popupMenuStyle">@style/Light1.PopupMenu</item>
+    </style>
+
+    <style name="Light1.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary1</item>
     </style>
 
     <style name="Light1.Card" parent="Widget.MaterialComponents.CardView" >
@@ -142,6 +152,11 @@
         <item name="android:windowBackground">@color/lightPrimary2</item>
         <item name="android:colorBackground">@color/lightPrimary2</item>
         <item name="materialCardViewStyle">@style/Light2.Card</item>
+        <item name="popupMenuStyle">@style/Light2.PopupMenu</item>
+    </style>
+
+    <style name="Light2.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary2</item>
     </style>
 
     <style name="Light2.Card" parent="Widget.MaterialComponents.CardView" >
@@ -153,6 +168,11 @@
         <item name="android:windowBackground">@color/lightPrimary3</item>
         <item name="android:colorBackground">@color/lightPrimary3</item>
         <item name="materialCardViewStyle">@style/Light3.Card</item>
+        <item name="popupMenuStyle">@style/Light3.PopupMenu</item>
+    </style>
+
+    <style name="Light3.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary3</item>
     </style>
 
     <style name="Light3.Card" parent="Widget.MaterialComponents.CardView" >
@@ -164,6 +184,11 @@
         <item name="android:windowBackground">@color/lightPrimary4</item>
         <item name="android:colorBackground">@color/lightPrimary4</item>
         <item name="materialCardViewStyle">@style/Light4.Card</item>
+        <item name="popupMenuStyle">@style/Light4.PopupMenu</item>
+    </style>
+
+    <style name="Light4.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary4</item>
     </style>
 
     <style name="Light4.Card" parent="Widget.MaterialComponents.CardView" >
@@ -175,6 +200,11 @@
         <item name="android:windowBackground">@color/darkPrimary1</item>
         <item name="android:colorBackground">@color/darkPrimary1</item>
         <item name="materialCardViewStyle">@style/Dark1.Card</item>
+        <item name="popupMenuStyle">@style/Dark1.PopupMenu</item>
+    </style>
+
+    <style name="Dark1.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary1</item>
     </style>
 
     <style name="Dark1.Card" parent="Widget.MaterialComponents.CardView" >
@@ -186,6 +216,11 @@
         <item name="android:windowBackground">@color/darkPrimary2</item>
         <item name="android:colorBackground">@color/darkPrimary2</item>
         <item name="materialCardViewStyle">@style/Dark2.Card</item>
+        <item name="popupMenuStyle">@style/Dark2.PopupMenu</item>
+    </style>
+
+    <style name="Dark2.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary2</item>
     </style>
 
     <style name="Dark2.Card" parent="Widget.MaterialComponents.CardView" >
@@ -197,6 +232,11 @@
         <item name="android:windowBackground">@color/darkPrimary3</item>
         <item name="android:colorBackground">@color/darkPrimary3</item>
         <item name="materialCardViewStyle">@style/Dark3.Card</item>
+        <item name="popupMenuStyle">@style/Dark3.PopupMenu</item>
+    </style>
+
+    <style name="Dark3.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary3</item>
     </style>
 
     <style name="Dark3.Card" parent="Widget.MaterialComponents.CardView" >
@@ -208,6 +248,11 @@
         <item name="android:windowBackground">@color/darkPrimary4</item>
         <item name="android:colorBackground">@color/darkPrimary4</item>
         <item name="materialCardViewStyle">@style/Dark4.Card</item>
+        <item name="popupMenuStyle">@style/Dark4.PopupMenu</item>
+    </style>
+
+    <style name="Dark4.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary4</item>
     </style>
 
     <style name="Dark4.Card" parent="Widget.MaterialComponents.CardView" >
@@ -221,6 +266,11 @@
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
         <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
         <item name="materialCardViewStyle">@style/PureBlack.Card</item>
+        <item name="popupMenuStyle">@style/PureBlack.PopupMenu</item>
+    </style>
+
+    <style name="PureBlack.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/pureBlack</item>
     </style>
 
     <style name="PureBlack.Card" parent="Widget.MaterialComponents.CardView" >
