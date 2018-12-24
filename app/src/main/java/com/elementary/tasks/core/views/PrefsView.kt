@@ -332,6 +332,6 @@ class PrefsView : RelativeLayout {
         private const val SWITCH = 1
         private const val VIEW = 2
         private const val TEXT = 3
-        private const val SHOW_ICON: Boolean = true
+        private const val SHOW_ICON: Boolean = false
     }
 }

@@ -27,7 +27,7 @@
                 android:paddingRight="16dp"
                 android:textColor="@color/pureBlack"
                 android:textSize="18sp"
-                tools:text="NOte" />
+                tools:text="Note" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/imagesList"
@@ -48,25 +48,21 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
                         android:text="@string/reminder"
-                        android:textAllCaps="true"
-                        android:textSize="18sp"
-                        app:font_style="roboto_bold" />
+                        android:textAppearance="?textAppearanceCaption"
+                        tools:ignore="RtlSymmetry" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/reminderTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="15dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="15dp"
-                        android:textSize="18sp"
-                        app:font_style="roboto_light" />
+                        android:layout_margin="16dp"
+                        android:textAppearance="?textAppearanceHeadline6"
+                        tools:text="Summary" />
 
                     <LinearLayout
                         android:id="@+id/buttonContainer"
@@ -75,24 +71,22 @@
                         android:gravity="end"
                         android:orientation="horizontal">
 
-                        <com.elementary.tasks.core.views.roboto.RoboButton
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/editReminder"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="?selectableItemBackground"
-                            android:padding="4dp"
                             android:text="@string/edit"
-                            app:button_font_style="roboto_light" />
+                            android:textAppearance="?textAppearanceButton" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboButton
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/deleteReminder"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
-                            android:background="?selectableItemBackground"
-                            android:padding="4dp"
                             android:text="@string/delete"
-                            app:button_font_style="roboto_light" />
+                            android:textAppearance="?textAppearanceButton" />
 
                     </LinearLayout>
                 </LinearLayout>

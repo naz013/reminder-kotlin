@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
+    <TextView
         android:id="@+id/themeTip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/swipe_to_change_theme"
-        android:textSize="20sp" />
+        android:textAppearance="?textAppearanceHeadline6" />
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
+    <TextView
         android:id="@+id/themeTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/themeTip"
-        android:layout_marginBottom="45dp"
         android:layout_marginTop="40dp"
+        android:layout_marginBottom="45dp"
         android:gravity="center"
-        android:textSize="30sp"
-        app:font_style="roboto_medium" />
+        android:textAppearance="?textAppearanceHeadline4" />
 
     <LinearLayout
         android:id="@+id/noteLayout"
@@ -61,29 +59,25 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/tasksCount"
                 android:layout_toStartOf="@+id/tasksCount"
+                android:layout_toLeftOf="@+id/tasksCount"
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_settings_white" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <TextView
                 android:id="@+id/widgetTitle"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_toLeftOf="@+id/settingsButton"
                 android:layout_toStartOf="@+id/settingsButton"
                 android:gravity="center|end"
                 android:maxLines="1"
-                android:paddingLeft="16dp"
                 android:paddingStart="16dp"
                 android:singleLine="true"
                 android:text="@string/notes"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/whitePrimary"
-                android:textSize="18sp"
-                app:font_style="roboto_light" />
+                android:textAppearance="?textAppearanceHeadline6"
+                android:textColor="@color/whitePrimary" />
         </RelativeLayout>
 
         <LinearLayout
@@ -102,12 +96,13 @@
                 android:background="@color/pinkAccent"
                 android:orientation="vertical">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <TextView
                     android:id="@+id/note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:text="@string/app_title"
+                    android:textAppearance="?textAppearanceBody1"
                     android:textColor="@color/material_grey" />
 
             </LinearLayout>
