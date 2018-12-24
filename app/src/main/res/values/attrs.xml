@@ -51,22 +51,7 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="IconRadioButton">
-        <attr name="ir_text_size" format="dimension" />
-        <attr name="ir_text" format="string" />
-        <attr name="ir_icon" format="reference" />
-        <attr name="ir_icon_light" format="reference" />
-        <attr name="ir_checked" format="boolean" />
-        <attr name="ir_checkable" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="ActionView" />
-
-    <declare-styleable name="TextViewWithIcon">
-        <attr name="tv_icon" format="reference" />
-        <attr name="tv_tint_color" format="reference" />
-        <attr name="tv_tint" format="boolean" />
-    </declare-styleable>
 
     <declare-styleable name="ButtonBarContainerTheme">
         <attr name="metaButtonBarStyle" format="reference" />
