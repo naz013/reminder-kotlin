@@ -62,10 +62,6 @@
 
     <declare-styleable name="ActionView" />
 
-    <declare-styleable name="ThemedImageButton">
-        <attr name="tb_message" format="string" />
-    </declare-styleable>
-
     <declare-styleable name="TextViewWithIcon">
         <attr name="tv_icon" format="reference" />
         <attr name="tv_tint_color" format="reference" />

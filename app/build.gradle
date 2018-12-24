@@ -22,13 +22,6 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
-//    lintOptions {
-//        checkReleaseBuilds false
-//        abortOnError false
-//    }
-//    dexOptions {
-//        javaMaxHeapSize "5g"
-//    }
     signingConfigs {
         freeApp {
             storeFile file('justreminder.jks')

@@ -67,11 +67,10 @@
                     android:enabled="false"
                     android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
-                    app:chipBackgroundColor="@android:color/transparent"
+                    android:textColorLink="?android:textColorPrimary"
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:chipSurfaceColor="?android:colorBackground"
                     tools:text="@string/timer" />
 
                 <com.google.android.material.chip.Chip
@@ -82,11 +81,10 @@
                     android:enabled="false"
                     android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
-                    app:chipBackgroundColor="@android:color/transparent"
+                    android:textColorLink="?android:textColorPrimary"
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
-                    app:layout_constraintStart_toEndOf="@+id/chipType"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:chipSurfaceColor="?android:colorBackground"
                     tools:text="Group" />
 
                 <com.google.android.material.chip.Chip
@@ -97,11 +95,10 @@
                     android:enabled="false"
                     android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
-                    app:chipBackgroundColor="@android:color/transparent"
+                    android:textColorLink="?android:textColorPrimary"
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
-                    app:layout_constraintStart_toEndOf="@+id/chipGroup"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:chipSurfaceColor="?android:colorBackground"
                     tools:text="High" />
 
             </com.google.android.material.chip.ChipGroup>
@@ -183,7 +180,6 @@
                         tools:text="10 minutes" />
 
                 </LinearLayout>
-
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
