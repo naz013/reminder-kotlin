@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,22 +21,22 @@
                 android:layout_height="match_parent"
                 android:visibility="visible" />
 
-            <com.elementary.tasks.core.views.ThemedImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/settingsButton"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_settings"
-                app:tb_message="@string/action_settings" />
+                android:background="?selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_twotone_settings_24px"
+                app:tint="?android:textColorPrimary" />
 
-            <com.elementary.tasks.core.views.ThemedImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/backButton"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:background="@null"
-                app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+                android:background="?selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
+                app:tint="?android:textColorPrimary" />
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>

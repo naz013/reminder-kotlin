@@ -3,6 +3,7 @@ package com.elementary.tasks.core.views
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,6 @@ import android.widget.CheckBox
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
@@ -128,7 +128,7 @@ class PrefsView : RelativeLayout {
             } finally {
                 a.recycle()
             }
-            if (iconId != 0) {
+            if (iconId != 0 && SHOW_ICON) {
                 iconView.visibility = View.VISIBLE
                 iconView.setImageResource(iconId)
             } else {
@@ -245,7 +245,7 @@ class PrefsView : RelativeLayout {
             }
             detail.visibility = View.VISIBLE
         } else {
-            if (text == null) {
+            if (TextUtils.isEmpty(text)) {
                 detail.visibility = View.GONE
             } else {
                 detail.text = text
@@ -332,5 +332,6 @@ class PrefsView : RelativeLayout {
         private const val SWITCH = 1
         private const val VIEW = 2
         private const val TEXT = 3
+        private const val SHOW_ICON = false
     }
 }

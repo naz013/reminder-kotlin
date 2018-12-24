@@ -131,7 +131,6 @@ interface AppComponent {
     fun inject(typeFragment: TypeFragment)
     fun inject(fragment: EventsListFragment)
 
-    fun inject(themedImageButton: ThemedImageButton)
     fun inject(textViewWithIcon: TextViewWithIcon)
     fun inject(repeatView: RepeatView)
     fun inject(iconRadioButton: IconRadioButton)
