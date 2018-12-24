@@ -32,7 +32,9 @@ import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.notes.BaseNotesViewModel
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
-import com.elementary.tasks.core.views.*
+import com.elementary.tasks.core.views.DateTimeView
+import com.elementary.tasks.core.views.MonthView
+import com.elementary.tasks.core.views.RepeatView
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.googleTasks.create.TaskActivity
@@ -131,9 +133,7 @@ interface AppComponent {
     fun inject(typeFragment: TypeFragment)
     fun inject(fragment: EventsListFragment)
 
-    fun inject(textViewWithIcon: TextViewWithIcon)
     fun inject(repeatView: RepeatView)
-    fun inject(iconRadioButton: IconRadioButton)
     fun inject(monthView: MonthView)
     fun inject(dateTimeView: DateTimeView)
 
