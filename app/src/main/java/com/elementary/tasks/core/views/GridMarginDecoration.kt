@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings.images
+package com.elementary.tasks.core.views
 
 import android.graphics.Rect
 import android.view.View

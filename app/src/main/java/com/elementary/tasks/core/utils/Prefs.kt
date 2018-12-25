@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
+import android.text.TextUtils
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -25,7 +26,18 @@ import javax.inject.Singleton
  * limitations under the License.
  */
 @Singleton
-class Prefs @Inject constructor(private val context: Context) : SharedPrefs(context) {
+class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
+
+    var pinCode: String
+        get() = SuperUtil.decrypt(getString(PrefsConstants.PIN_CODE))
+        set(value) = putString(PrefsConstants.PIN_CODE, SuperUtil.encrypt(value))
+
+    var hasPinCode: Boolean = false
+        get() = !TextUtils.isEmpty(pinCode)
+
+    var useFingerprint: Boolean
+        get() = getBoolean(PrefsConstants.USE_FINGERPRINT)
+        set(value) = putBoolean(PrefsConstants.USE_FINGERPRINT, value)
 
     var appLanguage: Int
         get() = getInt(PrefsConstants.APP_LANGUAGE)

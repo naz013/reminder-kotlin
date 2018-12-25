@@ -30,7 +30,6 @@ class SplashScreen : ThemedActivity() {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
-
     }
 
     override fun onResume() {
@@ -44,8 +43,16 @@ class SplashScreen : ThemedActivity() {
             openIntroScreen()
         } else {
             initGroups()
-            runApplication()
+            if (prefs.hasPinCode) {
+                openPinLogin()
+            } else {
+                runApplication()
+            }
         }
+    }
+
+    private fun openPinLogin() {
+
     }
 
     private fun openIntroScreen() {

@@ -4,6 +4,13 @@ import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.navigation.settings.additional.AdditionalSettingsFragment
+import com.elementary.tasks.navigation.settings.calendar.CalendarSettingsFragment
+import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
+import com.elementary.tasks.navigation.settings.location.LocationSettingsFragment
+import com.elementary.tasks.navigation.settings.other.OtherSettingsFragment
+import com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment
+import com.elementary.tasks.navigation.settings.voice.VoiceSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 /**
@@ -44,6 +51,7 @@ class SettingsFragment : BaseSettingsFragment() {
         exportSettings.setOnClickListener { callback?.openFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
         calendarSettings.setOnClickListener { callback?.openFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
         birthdaysSettings.setOnClickListener { callback?.openFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
+        securitySettings.setOnClickListener { callback?.openFragment(SecuritySettingsFragment(), getString(R.string.security)) }
     }
 
     override fun getTitle(): String = getString(R.string.action_settings)

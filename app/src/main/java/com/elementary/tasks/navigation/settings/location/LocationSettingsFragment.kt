@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings
+package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
 import android.view.View
@@ -8,8 +8,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.navigation.settings.location.MapStyleFragment
-import com.elementary.tasks.navigation.settings.location.MarkerStyleFragment
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.list.PlacesFragment
 import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_location.*
