@@ -71,7 +71,11 @@ class SecuritySettingsFragment : BaseSettingsFragment() {
             }
 
             override fun onReady(context: Context, fingerprintUiHelper: FingerprintHelper) {
-                fingerprintSwitchPrefs.visibility = View.VISIBLE
+                if (fingerprintUiHelper.canUseFinger(context)) {
+                    fingerprintSwitchPrefs.visibility = View.VISIBLE
+                } else {
+                    fingerprintSwitchPrefs.visibility = View.GONE
+                }
             }
         })
     }

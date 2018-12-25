@@ -9,6 +9,7 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.intro.IntroActivity
 import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 
 class SplashScreen : ThemedActivity() {
 
@@ -52,7 +53,8 @@ class SplashScreen : ThemedActivity() {
     }
 
     private fun openPinLogin() {
-
+        startActivity(Intent(this, PinLoginActivity::class.java))
+        finish()
     }
 
     private fun openIntroScreen() {

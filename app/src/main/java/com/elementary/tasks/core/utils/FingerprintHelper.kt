@@ -45,7 +45,7 @@ class FingerprintHelper(context: Context, callback: Callback?) : FingerprintMana
         else mFingerprintManager?.isHardwareDetected ?: false && mFingerprintManager?.hasEnrolledFingerprints() ?: false
     }
 
-    fun startListening(cryptoObject: FingerprintManager.CryptoObject) {
+    fun startListening(cryptoObject: FingerprintManager.CryptoObject?) {
         if (!isFingerprintAuthAvailable() || mFingerprintManager == null) {
             return
         }
