@@ -22,7 +22,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
-import com.elementary.tasks.navigation.settings.images.GridMarginDecoration
+import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager

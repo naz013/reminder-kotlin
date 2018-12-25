@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings
+package com.elementary.tasks.navigation.settings.calendar
 
 import android.os.Bundle
 import android.view.View
@@ -6,7 +6,7 @@ import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_calendar.*
 import kotlinx.android.synthetic.main.view_color_slider.view.*
 

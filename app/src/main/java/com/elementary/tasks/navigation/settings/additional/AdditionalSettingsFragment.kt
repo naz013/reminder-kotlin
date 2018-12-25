@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings
+package com.elementary.tasks.navigation.settings.additional
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.missedCalls.MissedCallDialogActivity
-import com.elementary.tasks.navigation.settings.additional.TemplatesFragment
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_additional.*
 import java.util.*

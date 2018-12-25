@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings
+package com.elementary.tasks.navigation.settings.export
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,8 +13,7 @@ import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.navigation.settings.export.BackupsFragment
-import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
+import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_export.*
 import java.io.File

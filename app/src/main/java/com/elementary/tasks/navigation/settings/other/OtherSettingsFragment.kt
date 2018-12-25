@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings
+package com.elementary.tasks.navigation.settings.other
 
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -15,9 +15,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.navigation.settings.other.ChangesFragment
-import com.elementary.tasks.navigation.settings.other.OssFragment
-import com.elementary.tasks.navigation.settings.other.PermissionsFragment
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.dialog_about_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_other.*
 import java.util.*

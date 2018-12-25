@@ -736,5 +736,19 @@
     <string name="failed_to_update_task">Failed to update task</string>
     <string name="details">Details</string>
     <string name="edit_task_list">Edit task list</string>
+    <string name="pin_protection">PIN protection</string>
+    <string name="do_not_use_pin_protection">Do not use PIN protection</string>
+    <string name="protect_application_with_pin">Protect application with PIN</string>
+    <string name="add_pin">Add PIN</string>
+    <string name="change_pin">Change PIN</string>
+    <string name="do_not_use_fingerprint_to_login">Do not use fingerprint to login</string>
+    <string name="allow_fingerprint_login">Allow fingerprint login</string>
+    <string name="fingerprint">Fingerprint</string>
+    <string name="pin">PIN</string>
+    <string name="repeat_pin">Repeat PIN</string>
+    <string name="wrong_pin">Wrong PIN</string>
+    <string name="pin_not_match">PIN not match</string>
+    <string name="old_pin">Old PIN</string>
+    <string name="disable_pin">Disable PIN</string>
 
 </resources>
