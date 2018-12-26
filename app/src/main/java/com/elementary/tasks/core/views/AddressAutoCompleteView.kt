@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.async.GeocoderTask
-import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.LogUtil
 
 /**
@@ -69,8 +68,6 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        mTypeface = AssetsUtil.getDefaultTypeface(getContext())
-
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 

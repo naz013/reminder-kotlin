@@ -63,7 +63,7 @@ class Text(text: String, fontSize: Float, textPaint: Paint) : Drawing {
         this.textPaint.color = color
     }
 
-    fun setFontFamily(id: Int, fontFamily: Typeface) {
+    fun setFontFamily(id: Int, fontFamily: Typeface?) {
         this.fontFamily = id
         this.textPaint.typeface = fontFamily
     }
