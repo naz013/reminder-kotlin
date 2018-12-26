@@ -17,7 +17,7 @@ import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.missedCalls.MissedCallViewModel
-import kotlinx.android.synthetic.main.activity_reminder_dialog.*
+import kotlinx.android.synthetic.main.activity_missed_dialog.*
 import java.sql.Date
 
 /**
@@ -127,7 +127,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
         val name = Contacts.getNameFromNumber(missedCall.number, this)
         if (missedCall.number != "") {
-            val conID = Contacts.getIdFromNumber(missedCall.number, this).toLong()
+            val conID = Contacts.getIdFromNumber(missedCall.number, this)
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
                 contactPhoto.setImageURI(photo)
