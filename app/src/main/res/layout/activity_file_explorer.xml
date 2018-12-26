@@ -168,7 +168,7 @@
                         android:layout_height="40dp"
                         android:layout_marginStart="8dp"
                         android:contentDescription="@string/acc_pause"
-                        app:srcCompat="@drawable/ic_pause_black_24dp"
+                        app:srcCompat="@drawable/ic_twotone_pause_circle_filled_24px"
                         app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView

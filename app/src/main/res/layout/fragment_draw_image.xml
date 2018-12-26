@@ -102,7 +102,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/tool_button_states"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_format_text"
+                app:srcCompat="@drawable/ic_twotone_text_fields_24px"
                 app:tint="?android:textColorPrimary" />
 
             <androidx.appcompat.widget.AppCompatImageView

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_voice"
-        android:icon="@drawable/ic_microphone_black"
+        android:icon="@drawable/ic_twotone_mic_24px"
         android:title="@string/voice_control"
         android:visible="false"
         app:showAsAction="ifRoom" />

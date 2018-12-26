@@ -491,37 +491,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return color
     }
 
-    @DrawableRes
-    fun getCategoryIndicator(code: Int): Int {
-        val color: Int
-        when (code) {
-            Color.RED -> color = R.drawable.circle_red
-            Color.PURPLE -> color = R.drawable.circle_purple
-            Color.LIGHT_GREEN -> color = R.drawable.circle_green_light
-            Color.GREEN -> color = R.drawable.circle_green
-            Color.LIGHT_BLUE -> color = R.drawable.circle_blue_light
-            Color.BLUE -> color = R.drawable.circle_blue
-            Color.YELLOW -> color = R.drawable.circle_yellow
-            Color.ORANGE -> color = R.drawable.circle_orange
-            Color.CYAN -> color = R.drawable.circle_cyan
-            Color.PINK -> color = R.drawable.circle_pink
-            Color.TEAL -> color = R.drawable.circle_teal
-            Color.AMBER -> color = R.drawable.circle_amber
-            else -> color = if (Module.isPro) {
-                when (code) {
-                    Color.DEEP_PURPLE -> R.drawable.circle_deep_purple
-                    Color.DEEP_ORANGE -> R.drawable.circle_deep_orange
-                    Color.LIME -> R.drawable.circle_lime
-                    Color.INDIGO -> R.drawable.circle_indigo
-                    else -> R.drawable.circle_blue
-                }
-            } else {
-                R.drawable.circle_blue
-            }
-        }
-        return color
-    }
-
     @ColorRes
     fun getCategoryColor(code: Int): Int {
         return colorPrimary(code)

@@ -51,7 +51,7 @@ class QuickReminderWidget : AppWidgetProvider() {
             val configIntent = Intent(context, CreateReminderActivity::class.java)
             val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
             rv.setOnClickPendingIntent(R.id.imageView, configPendingIntent)
-            WidgetUtils.setIcon(context, rv, R.drawable.ic_access_time_white_24dp, R.id.imageView)
+            WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_access_time_24px, R.id.imageView)
             appWidgetManager.updateAppWidget(widgetID, rv)
         }
     }
