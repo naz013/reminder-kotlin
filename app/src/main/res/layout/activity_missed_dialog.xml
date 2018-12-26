@@ -70,14 +70,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCall"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
             android:elevation="4dp"
             android:paddingStart="12dp"
@@ -103,13 +105,13 @@
             android:contentDescription="@string/acc_button_ok"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_twotone_done_white" />
+            app:srcCompat="@drawable/ic_twotone_done_24px" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSms"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="64dp"
             android:layout_weight="1"
             android:elevation="4dp"
             android:paddingStart="12dp"
