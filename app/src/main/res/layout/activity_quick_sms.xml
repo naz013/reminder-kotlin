@@ -6,7 +6,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSend"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -16,8 +16,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/acc_button_send_message"
-        android:padding="8dp"
+        android:padding="16dp"
         android:text="@string/send"
+        android:textAppearance="?textAppearanceButton"
         android:textColor="?colorSecondary" />
 
     <androidx.appcompat.widget.AppCompatTextView
