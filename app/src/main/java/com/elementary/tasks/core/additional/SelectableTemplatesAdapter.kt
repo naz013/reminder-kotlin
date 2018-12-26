@@ -68,7 +68,15 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
     }
 
     fun getItem(position: Int): SmsTemplate? {
-        return mDataList[position]
+        return if (position < mDataList.size) {
+           try {
+               mDataList[position]
+           } catch (e: Exception) {
+               null
+           }
+        } else {
+            null
+        }
     }
 
     fun selectItem(position: Int) {

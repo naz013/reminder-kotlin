@@ -38,7 +38,6 @@ import kotlinx.android.synthetic.main.view_standard_prefs.view.*
 import kotlinx.android.synthetic.main.view_text_prefs.view.*
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -492,20 +491,7 @@ class DrawFragment : BitmapFragment() {
     private fun showStyleDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.font_style))
-        val contacts = ArrayList<String>()
-        contacts.clear()
-        contacts.add("Black")
-        contacts.add("Black Italic")
-        contacts.add("Bold")
-        contacts.add("Bold Italic")
-        contacts.add("Italic")
-        contacts.add("Light")
-        contacts.add("Light Italic")
-        contacts.add("Medium")
-        contacts.add("Medium Italic")
-        contacts.add("Regular")
-        contacts.add("Thin")
-        contacts.add("Thin Italic")
+        val contacts = AssetsUtil.getFontNames()
         val inflater = LayoutInflater.from(context)
         val adapter = object : ArrayAdapter<String>(context!!,
                 android.R.layout.simple_list_item_single_choice, contacts) {
@@ -520,7 +506,7 @@ class DrawFragment : BitmapFragment() {
                 return cView
             }
 
-            private fun getTypeface(position: Int): Typeface {
+            private fun getTypeface(position: Int): Typeface? {
                 return AssetsUtil.getTypeface(context, position)
             }
         }

@@ -14,7 +14,6 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.android.synthetic.main.list_item_email.view.*
@@ -60,7 +59,6 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         this.mContext = context
-        mTypeface = AssetsUtil.getDefaultTypeface(getContext())
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
