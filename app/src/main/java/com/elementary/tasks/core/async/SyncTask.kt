@@ -5,7 +5,6 @@ import android.os.AsyncTask
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.IoHelper
@@ -42,7 +41,6 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
     private val builder: NotificationCompat.Builder
 
     init {
-        ReminderApp.appComponent.inject(this)
         builder = NotificationCompat.Builder(context, Notifier.CHANNEL_SYSTEM)
     }
 
@@ -54,11 +52,6 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
             else
                 context.getString(R.string.app_name))
             builder.setContentText(context.getString(R.string.sync))
-            if (Module.isLollipop) {
-                builder.setSmallIcon(R.drawable.ic_cached_black_24dp)
-            } else {
-                builder.setSmallIcon(R.drawable.ic_cached_nv_white)
-            }
             mNotifyMgr = NotificationManagerCompat.from(context)
             mNotifyMgr?.notify(2, builder.build())
         }
@@ -119,16 +112,6 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
         super.onPostExecute(aVoid)
         if (!quiet) {
             builder.setContentTitle(context.getString(R.string.done))
-            if (Module.isLollipop) {
-                builder.setSmallIcon(R.drawable.ic_done_white_24dp)
-            } else {
-                builder.setSmallIcon(R.drawable.ic_done_nv_white)
-            }
-            if (Module.isPro) {
-                builder.setContentText(context.getString(R.string.app_name_pro))
-            } else {
-                builder.setContentText(context.getString(R.string.app_name))
-            }
             builder.setWhen(System.currentTimeMillis())
             mNotifyMgr?.notify(2, builder.build())
             mListener?.endExecution(aVoid!!)

@@ -15,7 +15,6 @@ import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.async.BackupTask
-import com.elementary.tasks.core.async.SyncTask
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GTasks
@@ -112,7 +111,6 @@ interface AppComponent {
     fun inject(calendarUpdateMinusService: CalendarUpdateMinusService)
     fun inject(calendarUpdateService: CalendarUpdateService)
     fun inject(calendarWeekdayFactory: CalendarWeekdayFactory)
-    fun inject(syncTask: SyncTask)
     fun inject(backupSettingTask: BackupSettingTask)
     fun inject(backupTask: BackupTask)
     fun inject(notesFactory: NotesFactory)

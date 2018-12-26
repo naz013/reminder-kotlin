@@ -15,7 +15,7 @@
     <drawable name="simple_left_arrow_black">@drawable/ic_keyboard_arrow_left_black_24dp</drawable>
     <drawable name="simple_right_arrow_black">@drawable/ic_keyboard_arrow_right_black_24dp</drawable>
     <drawable name="simple_plus_button_black">@drawable/ic_add_black_24dp</drawable>
-    <drawable name="simple_voice_button_black">@drawable/ic_microphone_black</drawable>
+    <drawable name="simple_voice_button_black">@drawable/ic_twotone_mic_24px</drawable>
     <drawable name="simple_settings_button_black">@drawable/ic_settings</drawable>
 
 </resources>

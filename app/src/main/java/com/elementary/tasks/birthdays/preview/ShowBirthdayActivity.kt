@@ -158,9 +158,9 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         buttonCall.setOnClickListener { makeCall() }
         buttonSend.setOnClickListener { sendSMS() }
 
-        buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
-        buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
-        buttonSend.setImageResource(R.drawable.ic_send_black_24dp)
+        buttonOk.setImageResource(R.drawable.ic_twotone_done_24px)
+        buttonCall.setImageResource(R.drawable.ic_twotone_call_24px)
+        buttonSend.setImageResource(R.drawable.ic_twotone_send_24px)
 
         contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
         contactPhoto.visibility = View.GONE
@@ -314,7 +314,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     override fun showSendingError() {
-        buttonCall.setImageResource(R.drawable.ic_refresh)
+        buttonCall.setImageResource(R.drawable.ic_twotone_refresh_24px)
         buttonCall.contentDescription = getString(R.string.acc_button_retry_to_send_message)
         if (buttonCall.visibility == View.GONE) {
             buttonCall.show()

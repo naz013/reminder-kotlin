@@ -187,7 +187,7 @@ class EventsTheme : Parcelable {
 
             list.add(EventsTheme(R.color.whitePrimary, R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack), R.drawable.ic_add_black_24dp,
-                    R.drawable.ic_settings, R.drawable.ic_microphone_black,
+                    R.drawable.ic_settings, R.drawable.ic_twotone_mic_24px,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.white), R.color.material_grey,
                     getResColor(context, R.color.whitePrimary)))
 
@@ -217,7 +217,7 @@ class EventsTheme : Parcelable {
 
             list.add(EventsTheme(R.color.simple_transparent_header_color, R.color.simple_transparent_header_color,
                     getResColor(context, R.color.pureBlack), R.drawable.ic_add_black_24dp,
-                    R.drawable.ic_settings, R.drawable.ic_microphone_black,
+                    R.drawable.ic_settings, R.drawable.ic_twotone_mic_24px,
                     getResColor(context, R.color.pureBlack), R.color.simple_transparent_header_color, 0, "Transparent Dark", R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
