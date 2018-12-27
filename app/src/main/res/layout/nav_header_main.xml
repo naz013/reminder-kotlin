@@ -15,21 +15,21 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appNameBanner"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/app_name"
+            android:textAppearance="?textAppearanceHeadline5"
             app:fontFamily="@font/merriweathersans_light" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appNameBannerPro"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:text="PRO"
+            android:textAppearance="?textAppearanceHeadline5"
             android:textColor="?colorSecondary"
             app:fontFamily="@font/merriweathersans_italic" />
 
@@ -37,24 +37,24 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/sale_badge"
-        style="?textAppearanceBody1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:background="?selectableItemBackground"
         android:padding="8dp"
+        android:textAppearance="?textAppearanceBody1"
         android:textColor="?colorSecondary"
         android:visibility="gone"
         tools:text="Sale till" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/update_badge"
-        style="?textAppearanceBody1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:padding="8dp"
+        android:textAppearance="?textAppearanceBody1"
         android:textColor="?colorSecondary"
         android:visibility="gone"
         tools:text="Sale till" />

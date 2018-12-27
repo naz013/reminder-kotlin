@@ -15,21 +15,21 @@
         android:padding="8dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/app_name"
+            android:textAppearance="?textAppearanceHeadline5"
             app:fontFamily="@font/merriweathersans_light" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appNameBannerPro"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:text="@string/pro"
+            android:textAppearance="?textAppearanceHeadline5"
             android:textColor="?colorSecondary"
             app:fontFamily="@font/merriweathersans_italic" />
 
@@ -55,13 +55,13 @@
 
         <androidx.emoji.widget.EmojiAppCompatEditText
             android:id="@+id/pinField"
-            style="?textAppearanceSubtitle1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pin"
             android:inputType="numberPassword"
             android:maxLength="6"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textAppearance="?textAppearanceSubtitle1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,7 +71,7 @@
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        app:srcCompat="@drawable/ic_twotone_fingerprint_secondary"/>
+        app:srcCompat="@drawable/ic_twotone_fingerprint_secondary" />
 
     <View
         android:layout_width="match_parent"
@@ -85,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="32dp"
-        android:text="@string/log_in" />
+        android:text="@string/log_in"
+        android:textAppearance="?textAppearanceButton" />
 
 </LinearLayout>

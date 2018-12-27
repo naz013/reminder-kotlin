@@ -24,10 +24,10 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textView"
-            style="?textAppearanceHeadline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/background" />
+            android:text="@string/background"
+            android:textAppearance="?textAppearanceHeadline6" />
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/headerBgColor"

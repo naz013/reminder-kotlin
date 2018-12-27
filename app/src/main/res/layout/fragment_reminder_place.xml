@@ -30,17 +30,16 @@
 
                 <androidx.emoji.widget.EmojiAppCompatEditText
                     android:id="@+id/taskSummary"
-                    style="?textAppearanceSubtitle1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/remind_me"
-                    android:maxLines="3" />
+                    android:maxLines="3"
+                    android:textAppearance="?textAppearanceSubtitle1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/attackDelay"
-                style="?textAppearanceBody1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -48,7 +47,8 @@
                 android:layout_marginEnd="16dp"
                 android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/delay_tracking" />
+                android:text="@string/delay_tracking"
+                android:textAppearance="?textAppearanceBody1" />
 
             <LinearLayout
                 android:id="@+id/delayLayout"
@@ -104,7 +104,6 @@
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/cardSummary"
-                            style="?textAppearanceSubtitle1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -112,6 +111,7 @@
                             android:layout_toStartOf="@+id/headerIndicator"
                             android:maxLines="1"
                             android:singleLine="true"
+                            android:textAppearance="?textAppearanceSubtitle1"
                             tools:text="@string/date_and_time" />
 
                         <androidx.appcompat.widget.AppCompatImageView

@@ -139,7 +139,7 @@
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/cardSearch"
-                        style="?textAppearanceSubtitle2"
+                        android:textAppearance="?textAppearanceSubtitle2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="@string/search_place"
@@ -274,7 +274,7 @@
         android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceHeadline6"
+            android:textAppearance="?textAppearanceHeadline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

@@ -23,13 +23,13 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/shopText"
-        style="?textAppearanceBody1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:textAppearance="?textAppearanceBody1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/itemCheck"
         app:layout_constraintRight_toLeftOf="@+id/clearButton"

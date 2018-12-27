@@ -112,13 +112,13 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/emptyText"
-            style="?textAppearanceHeadline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:gravity="center|top"
-            android:text="@string/no_contacts_found" />
+            android:text="@string/no_contacts_found"
+            android:textAppearance="?textAppearanceHeadline6" />
 
     </LinearLayout>
 

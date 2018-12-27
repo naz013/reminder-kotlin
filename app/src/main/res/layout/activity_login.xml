@@ -15,21 +15,21 @@
         android:padding="8dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/app_name"
+            android:textAppearance="?textAppearanceHeadline5"
             app:fontFamily="@font/merriweathersans_light" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appNameBannerPro"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:text="@string/pro"
+            android:textAppearance="?textAppearanceHeadline5"
             android:textColor="?colorSecondary"
             app:fontFamily="@font/merriweathersans_italic" />
 
@@ -95,7 +95,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/skip" />
+        android:text="@string/skip"
+        android:textAppearance="?textAppearanceButton" />
 
     <CheckBox
         android:id="@+id/terms_check_box"

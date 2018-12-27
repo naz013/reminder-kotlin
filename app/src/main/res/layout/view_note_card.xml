@@ -27,12 +27,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/quickNote"
-                style="?textAppearanceHeadline6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:hint="@string/note"
                 android:inputType="textMultiLine"
+                android:textAppearance="?textAppearanceHeadline6"
                 tools:text="Note" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -45,7 +45,8 @@
             android:layout_gravity="end|bottom"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="@string/save" />
+            android:text="@string/save"
+            android:textAppearance="?textAppearanceButton" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

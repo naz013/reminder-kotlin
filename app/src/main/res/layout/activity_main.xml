@@ -48,7 +48,7 @@
             android:layout_height="match_parent"
             android:background="@color/whitePrimary30"
             android:overScrollMode="never"
-            android:paddingEnd="88dp"
+            android:paddingEnd="72dp"
             android:scrollbars="none"
             android:visibility="gone">
 

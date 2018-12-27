@@ -34,7 +34,7 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/before_value_view"
-                    style="?textAppearanceBody1"
+                    android:textAppearance="?textAppearanceBody1"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"

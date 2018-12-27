@@ -21,11 +21,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleAuto"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/auto" />
+                android:text="@string/auto"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"
@@ -48,11 +48,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleDay"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/day" />
+                android:text="@string/day"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"
@@ -70,11 +70,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleRetro"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/retro" />
+                android:text="@string/retro"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"
@@ -92,11 +92,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleSilver"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/silver" />
+                android:text="@string/silver"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"
@@ -114,11 +114,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleNight"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/night" />
+                android:text="@string/night"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"
@@ -136,11 +136,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleDark"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/dark" />
+                android:text="@string/dark"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"
@@ -158,11 +158,11 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleAubergine"
-                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/aubergine" />
+                android:text="@string/aubergine"
+                android:textAppearance="?textAppearanceCaption" />
 
             <ImageView
                 android:layout_width="56dp"

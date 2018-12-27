@@ -19,11 +19,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/messageView"
-            style="?textAppearanceSubtitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_weight="1"
+            android:textAppearance="?textAppearanceSubtitle1"
             tools:text="Title" />
 
         <androidx.appcompat.widget.AppCompatImageView

@@ -48,12 +48,12 @@
 
                 <androidx.emoji.widget.EmojiAppCompatEditText
                     android:id="@+id/editField"
-                    style="?textAppearanceSubtitle1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/name"
                     android:maxLength="120"
-                    android:maxLines="3" />
+                    android:maxLines="3"
+                    android:textAppearance="?textAppearanceSubtitle1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
