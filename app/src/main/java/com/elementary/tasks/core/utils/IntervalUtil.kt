@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.elementary.tasks.R
-import timber.log.Timber
 import java.util.*
 
 /**
@@ -57,7 +56,6 @@ object IntervalUtil {
     }
 
     fun getInterval(mContext: Context, mills: Long): String {
-        Timber.d("getInterval: $mills")
         var code = mills
         val tmp = mills / TimeCount.MINUTE
         val interval: String

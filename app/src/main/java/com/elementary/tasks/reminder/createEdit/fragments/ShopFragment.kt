@@ -175,7 +175,8 @@ class ShopFragment : RepeatableTypeFragment() {
     private fun addNewItem() {
         val task = shopEdit.text.toString().trim { it <= ' ' }
         if (task.matches("".toRegex())) {
-            shopEdit.error = getString(R.string.must_be_not_empty)
+            shopLayout.error = getString(R.string.must_be_not_empty)
+            shopLayout.isErrorEnabled = true
             return
         }
         mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))

@@ -10,9 +10,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.TimeUtil
+import timber.log.Timber
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +38,46 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
     var data = listOf<Reminder>()
         private set
 
+    init {
+        registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                updateItem(positionStart + 1)
+            }
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                super.onItemRangeRemoved(positionStart, itemCount)
+                updateItem(positionStart)
+            }
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                updateItem(toPosition)
+                updateItem(fromPosition)
+            }
+        })
+    }
+
+    private fun updateItem(position: Int) {
+        if (itemCount > position) {
+            notifyItemChanged(position)
+            updateBefore(position)
+            updateAfter(position, itemCount)
+        }
+    }
+
+    private fun updateBefore(position: Int) {
+        if (position > 0) {
+            notifyItemChanged(position - 1)
+        }
+    }
+
+    private fun updateAfter(position: Int, count: Int) {
+        if (position + 1 < count) {
+            notifyItemChanged(position + 1)
+        }
+    }
+
     override fun submitList(list: List<Reminder>?) {
         super.submitList(list)
         data = list ?: listOf()
@@ -54,7 +95,7 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
         var prevItem: Reminder? = null
         try {
             prevItem = getItem(position - 1)
-        } catch (ignored: ArrayIndexOutOfBoundsException) {
+        } catch (ignored: Exception) {
         }
 
         val context = listHeader.context
@@ -98,6 +139,7 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        Timber.d("onBindViewHolder: $position")
         val item = getItem(position)
         if (holder is ReminderHolder) {
             holder.setData(item)
