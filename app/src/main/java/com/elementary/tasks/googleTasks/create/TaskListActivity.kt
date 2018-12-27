@@ -119,7 +119,8 @@ class TaskListActivity : ThemedActivity() {
         if (mIsLoading) return
         val listName = editField.text.toString().trim()
         if (listName == "") {
-            editField.error = getString(R.string.must_be_not_empty)
+            nameLayout.error = getString(R.string.must_be_not_empty)
+            nameLayout.isErrorEnabled = true
             return
         }
         var isNew = false

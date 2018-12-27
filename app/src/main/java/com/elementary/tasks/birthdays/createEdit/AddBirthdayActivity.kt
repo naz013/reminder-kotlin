@@ -222,7 +222,8 @@ class AddBirthdayActivity : ThemedActivity() {
     private fun saveBirthday() {
         val contact = birthName.text!!.toString()
         if (contact.matches("".toRegex())) {
-            birthName.error = getString(R.string.must_be_not_empty)
+            birthNameLayout.error = getString(R.string.must_be_not_empty)
+            birthNameLayout.isErrorEnabled = true
             return
         }
         var contactId = 0L
