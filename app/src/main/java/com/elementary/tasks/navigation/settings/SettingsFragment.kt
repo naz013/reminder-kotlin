@@ -52,6 +52,7 @@ class SettingsFragment : BaseSettingsFragment() {
         calendarSettings.setOnClickListener { callback?.openFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
         birthdaysSettings.setOnClickListener { callback?.openFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
         securitySettings.setOnClickListener { callback?.openFragment(SecuritySettingsFragment(), getString(R.string.security)) }
+        testsScreen.setOnClickListener { callback?.openFragment(TestsFragment(), "Tests") }
     }
 
     override fun getTitle(): String = getString(R.string.action_settings)
