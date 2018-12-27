@@ -11,17 +11,17 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/nameView"
-        style="?textAppearanceBody1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceBody1"
         tools:text="Name" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/emailView"
-        style="?textAppearanceBody2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textAppearance="?textAppearanceBody2"
         tools:text="email@com.c" />
 
 </LinearLayout>

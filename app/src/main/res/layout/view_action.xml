@@ -9,13 +9,13 @@
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/actionCheck"
-            style="?textAppearanceBody1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingStart="@dimen/checkbox_padding"
             android:paddingEnd="@dimen/checkbox_padding"
-            android:text="@string/action" />
+            android:text="@string/action"
+            android:textAppearance="?textAppearanceBody1" />
 
         <LinearLayout
             android:id="@+id/actionBlock"
@@ -38,22 +38,22 @@
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/callAction"
-                        style="?textAppearanceCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
-                        android:text="@string/make_call" />
+                        android:text="@string/make_call"
+                        android:textAppearance="?textAppearanceCaption" />
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/messageAction"
-                        style="?textAppearanceCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
-                        android:text="@string/sms" />
+                        android:text="@string/sms"
+                        android:textAppearance="?textAppearanceCaption" />
                 </RadioGroup>
 
             </HorizontalScrollView>
@@ -88,13 +88,13 @@
 
                     <com.elementary.tasks.core.views.PhoneAutoCompleteView
                         android:id="@+id/numberView"
-                        style="?textAppearanceSubtitle2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="@string/phone"
                         android:inputType="text|phone"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceSubtitle2" />
 
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>

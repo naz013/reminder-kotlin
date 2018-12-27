@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?android:selectableItemBackground"
+    android:background="?android:selectableItemBackground"
     android:orientation="horizontal"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/txtTitle"
-        style="?textAppearanceBody1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
+        android:textAppearance="?textAppearanceBody1"
         tools:text="@string/yearly" />
 
 </LinearLayout>

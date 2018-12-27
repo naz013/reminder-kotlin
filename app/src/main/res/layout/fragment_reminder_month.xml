@@ -25,11 +25,11 @@
 
             <androidx.emoji.widget.EmojiAppCompatEditText
                 android:id="@+id/taskSummary"
-                style="?textAppearanceSubtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/remind_me"
-                android:maxLines="3" />
+                android:maxLines="3"
+                android:textAppearance="?textAppearanceSubtitle1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,10 +52,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/timeField"
-                style="?textAppearanceHeadline6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
+                android:textAppearance="?textAppearanceHeadline6"
                 tools:text="14:05" />
 
         </LinearLayout>
@@ -70,22 +70,22 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/dayCheck"
-                style="?textAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/select_day" />
+                android:text="@string/select_day"
+                android:textAppearance="?textAppearanceCaption" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/lastCheck"
-                style="?textAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/last_day" />
+                android:text="@string/last_day"
+                android:textAppearance="?textAppearanceCaption" />
 
         </RadioGroup>
 
@@ -109,11 +109,11 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/monthDayField"
-                style="?textAppearanceHeadline6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:background="?android:attr/selectableItemBackground"
+                android:textAppearance="?textAppearanceHeadline6"
                 tools:text="25" />
 
         </LinearLayout>
@@ -137,7 +137,6 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/cardSummary"
-                        style="?textAppearanceSubtitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -145,6 +144,7 @@
                         android:layout_toStartOf="@+id/headerIndicator"
                         android:maxLines="1"
                         android:singleLine="true"
+                        android:textAppearance="?textAppearanceSubtitle1"
                         tools:text="@string/date_and_time" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -307,7 +307,6 @@
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToCalendar"
-                        style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -317,11 +316,11 @@
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/add_to_calendar"
+                        android:textAppearance="?textAppearanceBody1"
                         android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToTasks"
-                        style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -331,6 +330,7 @@
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/google_tasks"
+                        android:textAppearance="?textAppearanceBody1"
                         android:visibility="visible" />
 
                     <com.elementary.tasks.core.views.ActionView

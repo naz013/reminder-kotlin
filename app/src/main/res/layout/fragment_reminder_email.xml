@@ -25,14 +25,14 @@
 
             <com.elementary.tasks.core.views.EmailAutoCompleteView
                 android:id="@+id/mail"
-                style="?textAppearanceSubtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/e_mail"
                 android:inputType="textEmailAddress"
                 android:maxLength="50"
                 android:maxLines="1"
-                android:paddingStart="12dp" />
+                android:paddingStart="12dp"
+                android:textAppearance="?textAppearanceSubtitle1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,13 +50,13 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/subject"
-                style="?textAppearanceSubtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/subject"
                 android:inputType="textEmailSubject"
                 android:maxLength="50"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceSubtitle2" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,12 +74,12 @@
 
             <androidx.emoji.widget.EmojiAppCompatEditText
                 android:id="@+id/taskSummary"
-                style="?textAppearanceSubtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/message"
                 android:inputType="textMultiLine"
-                android:maxLines="3" />
+                android:maxLines="3"
+                android:textAppearance="?textAppearanceSubtitle2" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,7 +110,6 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/cardSummary"
-                        style="?textAppearanceSubtitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -118,6 +117,7 @@
                         android:layout_toStartOf="@+id/headerIndicator"
                         android:maxLines="1"
                         android:singleLine="true"
+                        android:textAppearance="?textAppearanceSubtitle1"
                         tools:text="@string/date_and_time" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -279,7 +279,6 @@
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToCalendar"
-                        style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -289,11 +288,11 @@
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/add_to_calendar"
+                        android:textAppearance="?textAppearanceBody1"
                         android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToTasks"
-                        style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -303,6 +302,7 @@
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/google_tasks"
+                        android:textAppearance="?textAppearanceBody1"
                         android:visibility="visible" />
 
                     <com.elementary.tasks.core.views.TuneExtraView

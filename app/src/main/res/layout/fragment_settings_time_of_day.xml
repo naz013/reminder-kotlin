@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:colorBackground"
     android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:background="?android:colorBackground">
+    android:paddingRight="16dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,20 +14,20 @@
         android:layout_marginTop="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/morningTime"
-            android:text="@string/morning" />
+            android:text="@string/morning"
+            android:textAppearance="?textAppearanceBody1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/morningTime"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:padding="5dp"
+            android:textAppearance="?textAppearanceHeadline5"
             tools:text="07:00" />
     </RelativeLayout>
 
@@ -37,20 +37,20 @@
         android:layout_marginTop="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/dayTime"
-            android:text="@string/day" />
+            android:text="@string/day"
+            android:textAppearance="?textAppearanceBody1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/dayTime"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:padding="5dp"
+            android:textAppearance="?textAppearanceHeadline5"
             tools:text="12:00" />
     </RelativeLayout>
 
@@ -60,20 +60,20 @@
         android:layout_marginTop="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/eveningTime"
-            android:text="@string/evening" />
+            android:text="@string/evening"
+            android:textAppearance="?textAppearanceBody1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/eveningTime"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:padding="5dp"
+            android:textAppearance="?textAppearanceHeadline5"
             tools:text="18:00" />
     </RelativeLayout>
 
@@ -83,20 +83,20 @@
         android:layout_marginTop="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/nightTime"
-            android:text="@string/night" />
+            android:text="@string/night"
+            android:textAppearance="?textAppearanceBody1" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/nightTime"
-            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:padding="5dp"
+            android:textAppearance="?textAppearanceHeadline5"
             tools:text="23:00" />
     </RelativeLayout>
 </LinearLayout>

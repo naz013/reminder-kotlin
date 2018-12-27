@@ -34,12 +34,12 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/sourceName"
-                style="?textAppearanceCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/moreButton"
                 android:gravity="center_vertical"
+                android:textAppearance="?textAppearanceCaption"
                 tools:text="Name" />
 
         </RelativeLayout>
@@ -61,13 +61,13 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cloudUser"
-                style="?textAppearanceSubtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:layout_toEndOf="@+id/userPhoto"
                 android:gravity="center_vertical"
+                android:textAppearance="?textAppearanceSubtitle1"
                 tools:text="Name" />
 
         </RelativeLayout>
@@ -97,17 +97,17 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/usedSpace"
-                    style="?textAppearanceBody1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceBody1"
                     tools:text="Name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/freeSpace"
-                    style="?textAppearanceBody1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:textAppearance="?textAppearanceBody1"
                     tools:text="Name" />
 
             </LinearLayout>
@@ -122,21 +122,21 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cloudText"
-                style="?textAppearanceBody2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"
                 android:gravity="center_vertical"
                 android:text="@string/files"
+                android:textAppearance="?textAppearanceBody2"
                 tools:text="Name" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cloudCount"
-                style="?textAppearanceHeadline5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="?textAppearanceHeadline5"
                 tools:text="5" />
 
         </LinearLayout>

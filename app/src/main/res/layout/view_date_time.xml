@@ -22,20 +22,20 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/dateField"
-            style="?textAppearanceHeadline6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
+            android:textAppearance="?textAppearanceHeadline6"
             tools:text="Tue, 5 Nov 2015" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timeField"
-            style="?textAppearanceHeadline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:textAppearance="?textAppearanceHeadline6"
             tools:text="14:05" />
 
     </LinearLayout>

@@ -16,10 +16,10 @@
         android:padding="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="?textAppearanceHeadline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_reminder" />
+            android:text="@string/add_reminder"
+            android:textAppearance="?textAppearanceHeadline5" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,14 +34,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@string/yes" />
+                android:text="@string/yes"
+                android:textAppearance="?textAppearanceButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonNo"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/no" />
+                android:text="@string/no"
+                android:textAppearance="?textAppearanceButton" />
 
         </LinearLayout>
     </LinearLayout>

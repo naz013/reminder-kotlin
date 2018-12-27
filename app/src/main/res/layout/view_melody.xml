@@ -21,10 +21,10 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text"
             android:layout_width="0dp"
-            style="?textAppearanceBody1"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_weight="1"
+            android:textAppearance="?textAppearanceBody1"
             tools:text="File Name" />
 
         <androidx.appcompat.widget.AppCompatImageView

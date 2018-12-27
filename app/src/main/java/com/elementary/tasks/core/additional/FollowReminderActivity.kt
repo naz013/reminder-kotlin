@@ -64,7 +64,6 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private var mIs24Hour = true
     private var mCalendar = true
     private var mStock = true
-    private var mTasks = true
     private var mNumber: String = ""
     private var canExportToTasks: Boolean = false
     private var defGroup: ReminderGroup? = null
@@ -85,7 +84,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
             return ArrayAdapter(this, android.R.layout.simple_list_item_1, spinnerArray)
         }
 
-    private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         mCustomYear = year
         mCustomMonth = monthOfYear
         mCustomDay = dayOfMonth
@@ -98,7 +97,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         customDate.text = TimeUtil.DATE_FORMAT.format(c.time)
     }
 
-    private var myTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+    private var mTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mCustomHour = hourOfDay
         mCustomMinute = minute
 
@@ -146,10 +145,10 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
 
         val photo = Contacts.getPhoto(Contacts.getIdFromNumber(mNumber, this))
         if (photo != null) {
-            photoBlock.visibility = View.VISIBLE
-            photoView.setImageURI(photo)
+            contactPhoto.visibility = View.VISIBLE
+            contactPhoto.setImageURI(photo)
         } else {
-            photoBlock.visibility = View.GONE
+            contactPhoto.visibility = View.GONE
         }
 
         initViews()
@@ -276,11 +275,11 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, myDateCallBack)
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mCustomHour, mCustomMinute, myTimeCallBack)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mCustomHour, mCustomMinute, mTimeCallBack)
     }
 
     private fun saveDateTask() {

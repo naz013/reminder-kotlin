@@ -25,11 +25,11 @@
 
             <androidx.emoji.widget.EmojiAppCompatEditText
                 android:id="@+id/taskSummary"
-                style="?textAppearanceSubtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/remind_me"
-                android:maxLines="3" />
+                android:maxLines="3"
+                android:textAppearance="?textAppearanceSubtitle1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,23 +51,23 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/application"
-                style="?textAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/application" />
+                android:text="@string/application"
+                android:textAppearance="?textAppearanceCaption" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/browser"
-                style="?textAppearanceCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
-                android:text="@string/open_link" />
+                android:text="@string/open_link"
+                android:textAppearance="?textAppearanceCaption" />
         </RadioGroup>
 
         <LinearLayout
@@ -92,12 +92,12 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/applicationName"
-                style="?textAppearanceBody1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:maxLines="1"
-                android:text="@string/application_not_selected" />
+                android:text="@string/application_not_selected"
+                android:textAppearance="?textAppearanceBody1" />
 
         </LinearLayout>
 
@@ -115,13 +115,13 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/urlField"
-                style="?textAppearanceSubtitle2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/url"
                 android:inputType="textEmailAddress"
                 android:maxLength="100"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:textAppearance="?textAppearanceSubtitle2" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,7 +144,6 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/cardSummary"
-                        style="?textAppearanceSubtitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -152,6 +151,7 @@
                         android:layout_toStartOf="@+id/headerIndicator"
                         android:maxLines="1"
                         android:singleLine="true"
+                        android:textAppearance="?textAppearanceSubtitle1"
                         tools:text="@string/date_and_time" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -313,7 +313,6 @@
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToCalendar"
-                        style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -323,11 +322,11 @@
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/add_to_calendar"
+                        android:textAppearance="?textAppearanceBody1"
                         android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/exportToTasks"
-                        style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -337,6 +336,7 @@
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/google_tasks"
+                        android:textAppearance="?textAppearanceBody1"
                         android:visibility="visible" />
 
                     <com.elementary.tasks.core.views.TuneExtraView
