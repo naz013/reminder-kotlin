@@ -7,6 +7,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import kotlinx.android.synthetic.main.fragment_settings_tests.*
 import java.util.*
 
@@ -40,7 +42,13 @@ class TestsFragment : BaseSettingsFragment() {
     }
 
     private fun openReminderScreen() {
-
+        val reminder = Reminder().apply {
+            this.summary = "Test"
+            this.target = "16546848"
+            this.type = Reminder.BY_DATE_CALL
+            this.useGlobal = true
+        }
+        ReminderDialogActivity.mockTest(context!!, reminder)
     }
 
     private fun openBirthdayScreen() {
