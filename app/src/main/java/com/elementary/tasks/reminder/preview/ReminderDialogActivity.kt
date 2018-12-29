@@ -648,6 +648,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showReminder() {
+        if (isMockedTest) return
         if (!isTtsEnabled) {
             showReminderNotification(this)
         } else {
