@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
@@ -38,10 +39,9 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class ShowBirthdayActivity : BaseNotificationActivity() {
 
-    private var viewModel: BirthdayViewModel? = null
+    private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
     override var isScreenResumed: Boolean = false
         private set
@@ -50,20 +50,20 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     private val isBirthdaySilentEnabled: Boolean
         get() {
-            var `is` = prefs.isSoundInSilentModeEnabled
+            var isEnabled = prefs.isSoundInSilentModeEnabled
             if (Module.isPro && !isGlobal) {
-                `is` = prefs.isBirthdaySilentEnabled
+                isEnabled = prefs.isBirthdaySilentEnabled
             }
-            return `is`
+            return isEnabled
         }
 
     private val isTtsEnabled: Boolean
         get() {
-            var `is` = prefs.isTtsEnabled
+            var isEnabled = prefs.isTtsEnabled
             if (Module.isPro && !isGlobal) {
-                `is` = prefs.isBirthdayTtsEnabled
+                isEnabled = prefs.isBirthdayTtsEnabled
             }
-            return `is`
+            return isEnabled
         }
 
     override val ttsLocale: Locale?
@@ -111,13 +111,13 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override val uuId: String
         get() = if (mBirthday != null) {
-            mBirthday!!.uuId
+            mBirthday?.uuId ?: ""
         } else
             ""
 
     override val id: Int
         get() = if (mBirthday != null) {
-            mBirthday!!.uniqueId
+            mBirthday?.uniqueId ?: 112
         } else
             0
 
@@ -156,11 +156,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
         buttonOk.setOnClickListener { ok() }
         buttonCall.setOnClickListener { makeCall() }
-        buttonSend.setOnClickListener { sendSMS() }
-
-        buttonOk.setImageResource(R.drawable.ic_twotone_done_24px)
-        buttonCall.setImageResource(R.drawable.ic_twotone_call_24px)
-        buttonSend.setImageResource(R.drawable.ic_twotone_send_24px)
+        buttonSms.setOnClickListener { sendSMS() }
 
         contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
         contactPhoto.visibility = View.GONE
@@ -170,18 +166,29 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
-        viewModel!!.birthday.observe(this, Observer<Birthday>{ birthday ->
+        viewModel.birthday.observe(this, Observer<Birthday>{ birthday ->
             if (birthday != null) {
                 showBirthday(birthday)
             }
         })
-        viewModel!!.result.observe(this, Observer<Commands>{ commands ->
+        viewModel.result.observe(this, Observer<Commands>{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> close()
                 }
             }
         })
+        if (id == "" && BuildConfig.DEBUG) {
+            loadTest()
+        }
+    }
+
+    private fun loadTest() {
+        val isMocked = intent.getBooleanExtra(ARG_TEST, false)
+        if (isMocked) {
+            val birthday = intent.getSerializableExtra(ARG_TEST_ITEM) as Birthday?
+            if (birthday != null) showBirthday(birthday)
+        }
     }
 
     private fun showBirthday(birthday: Birthday) {
@@ -193,9 +200,10 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         if (birthday.contactId == 0L && !TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
             birthday.contactId = Contacts.getIdFromNumber(birthday.number, this)
         }
-        val photo = Contacts.getPhoto(birthday.contactId.toLong())
+        val photo = Contacts.getPhoto(birthday.contactId)
         if (photo != null) {
             contactPhoto.setImageURI(photo)
+            contactPhoto.visibility = View.VISIBLE
         } else {
             contactPhoto.visibility = View.GONE
         }
@@ -206,12 +214,15 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         userYears.contentDescription = years
         summary = birthday.name + "\n" + years
         if (TextUtils.isEmpty(birthday.number)) {
-            buttonCall.hide()
-            buttonSend.hide()
+            buttonCall.visibility = View.INVISIBLE
+            buttonSms.visibility = View.INVISIBLE
             userNumber.visibility = View.GONE
         } else {
             userNumber.text = birthday.number
             userNumber.contentDescription = birthday.number
+            buttonCall.visibility = View.VISIBLE
+            buttonSms.visibility = View.VISIBLE
+            userNumber.visibility = View.VISIBLE
         }
         showNotification(TimeUtil.getAge(birthday.date), birthday.name)
         if (isTtsEnabled) {
@@ -303,7 +314,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             calendar.timeInMillis = System.currentTimeMillis()
             val year = calendar.get(Calendar.YEAR)
             birthday.showedYear = year
-            viewModel!!.saveBirthday(birthday)
+            viewModel.saveBirthday(birthday)
         }
     }
 
@@ -314,11 +325,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     override fun showSendingError() {
-        buttonCall.setImageResource(R.drawable.ic_twotone_refresh_24px)
-        buttonCall.contentDescription = getString(R.string.acc_button_retry_to_send_message)
-        if (buttonCall.visibility == View.GONE) {
-            buttonCall.show()
-        }
+        Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -338,6 +345,15 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
         private const val CALL_PERM = 612
         private const val SMS_PERM = 613
+        private const val ARG_TEST = "arg_test"
+        private const val ARG_TEST_ITEM = "arg_test_item"
+
+        fun mockTest(context: Context, birthday: Birthday) {
+            val intent = Intent(context, ShowBirthdayActivity::class.java)
+            intent.putExtra(ARG_TEST, true)
+            intent.putExtra(ARG_TEST_ITEM, birthday)
+            context.startActivity(intent)
+        }
 
         fun getLaunchIntent(context: Context, id: String): Intent {
             val resultIntent = Intent(context, ShowBirthdayActivity::class.java)

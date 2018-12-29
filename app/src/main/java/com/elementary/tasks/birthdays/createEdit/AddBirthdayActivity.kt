@@ -62,17 +62,7 @@ class AddBirthdayActivity : ThemedActivity() {
         mYear = year
         mMonth = monthOfYear
         mDay = dayOfMonth
-        val monthStr: String = if (mMonth < 9) {
-            "0" + (mMonth + 1)
-        } else {
-            (mMonth + 1).toString()
-        }
-        val dayStr: String = if (mDay < 10) {
-            "0$mDay"
-        } else {
-            mDay.toString()
-        }
-        birthDate.text = SuperUtil.appendString(mYear.toString(), "-", monthStr, "-", dayStr)
+        birthDate.text = createBirthDate(mDay, mMonth, mYear)
     }
 
     init {
@@ -220,15 +210,15 @@ class AddBirthdayActivity : ThemedActivity() {
     }
 
     private fun saveBirthday() {
-        val contact = birthName.text!!.toString()
-        if (contact.matches("".toRegex())) {
+        val contact = birthName.text.toString().trim()
+        if (contact == "") {
             birthNameLayout.error = getString(R.string.must_be_not_empty)
             birthNameLayout.isErrorEnabled = true
             return
         }
         var contactId = 0L
         if (contactCheck.isChecked) {
-            number = numberView.text.toString().trim { it <= ' ' }
+            number = numberView.text.toString().trim()
             if (TextUtils.isEmpty(number)) {
                 numberLayout.error = getString(R.string.you_dont_insert_number)
                 numberLayout.isErrorEnabled = true
@@ -241,7 +231,7 @@ class AddBirthdayActivity : ThemedActivity() {
         }
         var birthday = mBirthday
         if (birthday == null) {
-            birthday = Birthday(contact, birthDate.text.toString().trim { it <= ' ' }, number, 0, contactId, mDay, mMonth)
+            birthday = Birthday(contact, birthDate.text.toString().trim(), number, 0, contactId, mDay, mMonth)
         }
         birthday.name = contact
         birthday.contactId = contactId
@@ -299,5 +289,19 @@ class AddBirthdayActivity : ThemedActivity() {
     companion object {
         private const val MENU_ITEM_DELETE = 12
         private const val CONTACT_PERM = 102
+
+        fun createBirthDate(day: Int, month: Int, year: Int): String {
+            val monthStr: String = if (month < 9) {
+                "0" + (month + 1)
+            } else {
+                (month + 1).toString()
+            }
+            val dayStr: String = if (day < 10) {
+                "0$day"
+            } else {
+                day.toString()
+            }
+            return SuperUtil.appendString(year.toString(), "-", monthStr, "-", dayStr)
+        }
     }
 }
