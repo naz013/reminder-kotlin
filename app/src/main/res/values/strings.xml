@@ -750,5 +750,7 @@
     <string name="pin_not_match">PIN not match</string>
     <string name="old_pin">Old PIN</string>
     <string name="disable_pin">Disable PIN</string>
+    <string name="acc_open_attachment">Open attachment</string>
+    <string name="acc_resend_message">Resend message</string>
 
 </resources>

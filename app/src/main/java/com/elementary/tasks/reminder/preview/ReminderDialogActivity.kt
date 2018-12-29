@@ -66,6 +66,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private var mReminder: Reminder? = null
     private var mControl: EventControl? = null
+    private var isMockedTest = false
     override var isScreenResumed: Boolean = false
         private set
 
@@ -128,7 +129,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
 
     override val melody: String
-        get() = if (mReminder == null) "" else mReminder!!.melodyPath
+        get() = if (mReminder == null) "" else mReminder?.melodyPath ?: ""
 
     override val isVibrate: Boolean
         get() {
@@ -139,13 +140,13 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
 
     override val summary: String
-        get() = if (mReminder == null) "" else mReminder!!.summary
+        get() = if (mReminder == null) "" else mReminder?.summary ?: ""
 
     override val uuId: String
-        get() = if (mReminder == null) "" else mReminder!!.uuId
+        get() = if (mReminder == null) "" else mReminder?.uuId ?: ""
 
     override val id: Int
-        get() = if (mReminder == null) 0 else mReminder!!.uniqueId
+        get() = if (mReminder == null) 0 else mReminder?.uniqueId ?: 2121
 
     override val ledColor: Int
         get() {
@@ -168,7 +169,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
 
     override val isGlobal: Boolean
-        get() = mReminder != null && mReminder!!.useGlobal
+        get() = mReminder != null && mReminder?.useGlobal ?: false
 
     override val isUnlockDevice: Boolean
         get() {
@@ -251,11 +252,25 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 }
             }
         })
+
+        if (id == "" && BuildConfig.DEBUG) {
+            loadTest()
+        }
     }
 
-    private fun showInfo(reminder: Reminder?) {
+    private fun loadTest() {
+        isMockedTest = intent.getBooleanExtra(ARG_TEST, false)
+        if (isMockedTest) {
+            val reminder = intent.getSerializableExtra(ARG_TEST_ITEM) as Reminder?
+            if (reminder != null) showInfo(reminder)
+        }
+    }
+
+    private fun showInfo(reminder: Reminder) {
         this.mReminder = reminder
-        this.mControl = EventControlFactory.getController(reminder!!)
+        if (!isMockedTest) {
+            this.mControl = EventControlFactory.getController(reminder)
+        }
         LogUtil.d(TAG, "showInfo: " + TimeUtil.getFullDateTime(reminder.eventTime))
         if (reminder.attachmentFile != "") showAttachmentButton()
 
@@ -279,7 +294,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
             if (!Reminder.isBase(reminder.type, Reminder.BY_SKYPE)) {
                 contactPhoto.visibility = View.VISIBLE
-                val conID = Contacts.getIdFromNumber(reminder.target, this).toLong()
+                val conID = Contacts.getIdFromNumber(reminder.target, this)
 
                 val name = Contacts.getNameFromNumber(reminder.target, this)
                 remText.setText(R.string.make_call)
@@ -328,7 +343,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE)) {
             if (!Reminder.isSame(reminder.type, Reminder.BY_SKYPE)) {
                 contactPhoto.visibility = View.VISIBLE
-                val conID = Contacts.getIdFromNumber(reminder.target, this).toLong()
+                val conID = Contacts.getIdFromNumber(reminder.target, this)
                 val name = Contacts.getNameFromNumber(reminder.target, this)
                 remText.setText(R.string.send_sms)
                 val userInfo = (name ?: "") + "\n" + reminder.target
@@ -450,7 +465,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             buttonDelayFor.hide()
         }
 
-        if (!mControl!!.canSkip()) {
+        if (!canSkip()) {
             buttonCancel.hide()
         } else {
             buttonCancel.show()
@@ -482,6 +497,10 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         if (isTtsEnabled) {
             startTts()
         }
+    }
+
+    private fun canSkip(): Boolean {
+        return mControl?.canSkip() ?: false
     }
 
     private fun startAgain() {
@@ -522,9 +541,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
     }
 
-    private fun fileExt(url: String?): String {
-        var url: String? = url ?: return ""
-        if (url!!.contains("?")) {
+    private fun fileExt(urlNullable: String?): String {
+        var url: String = urlNullable ?: return ""
+        if (url.contains("?")) {
             url = url.substring(0, url.indexOf("?"))
         }
         return if (url.lastIndexOf(".") == -1) {
@@ -538,7 +557,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 ext = ext.substring(0, ext.indexOf("/"))
             }
             ext.toLowerCase()
-
         }
     }
 
@@ -945,6 +963,15 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         private const val TAG = "ReminderDialogActivity"
         private const val CALL_PERM = 612
         private const val SMS_PERM = 613
+        private const val ARG_TEST = "arg_test"
+        private const val ARG_TEST_ITEM = "arg_test_item"
+
+        fun mockTest(context: Context, reminder: Reminder) {
+            val intent = Intent(context, ReminderDialogActivity::class.java)
+            intent.putExtra(ARG_TEST, true)
+            intent.putExtra(ARG_TEST_ITEM, reminder)
+            context.startActivity(intent)
+        }
 
         fun getLaunchIntent(context: Context, id: String): Intent {
             val resultIntent = Intent(context, ReminderDialogActivity::class.java)

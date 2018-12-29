@@ -85,13 +85,13 @@
                 android:id="@+id/buttonSms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/action_button_rounded"
                 android:padding="8dp"
                 android:textAllCaps="true"
                 android:textAppearance="?textAppearanceButton"
                 android:textColor="@color/secondary"
+                android:visibility="gone"
                 tools:text="@string/send_sms" />
 
         </LinearLayout>
@@ -260,6 +260,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:contentDescription="@string/acc_resend_message"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_twotone_refresh_24px" />
@@ -269,9 +270,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:contentDescription="@string/attach_file"
+            android:contentDescription="@string/acc_open_attachment"
             android:tint="@color/whitePrimary"
-            android:visibility="gone"
+            android:visibility="visible"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_twotone_attachment_24px" />
 
