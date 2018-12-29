@@ -124,7 +124,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
     private fun createReminderChannel(context: Context): NotificationChannel {
         val name = context.getString(R.string.reminder_channel)
         val descr = context.getString(R.string.default_reminder_notifications)
-        val importance = NotificationManager.IMPORTANCE_HIGH
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
         val mChannel = NotificationChannel(CHANNEL_REMINDER, name, importance)
         mChannel.description = descr
         mChannel.setShowBadge(true)

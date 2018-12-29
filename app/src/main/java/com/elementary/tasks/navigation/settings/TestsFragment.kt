@@ -1,9 +1,14 @@
 package com.elementary.tasks.navigation.settings
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
+import com.elementary.tasks.core.data.models.Birthday
 import kotlinx.android.synthetic.main.fragment_settings_tests.*
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -39,7 +44,22 @@ class TestsFragment : BaseSettingsFragment() {
     }
 
     private fun openBirthdayScreen() {
+        val birthday = Birthday().apply {
+            this.day = 25
+            this.month = 5
+            this.name = "Test User"
+            this.showedYear = 2017
+            this.uniqueId = 12123
+            this.uuId = UUID.randomUUID().toString()
+            this.number = "16546848"
+            this.date = AddBirthdayActivity.createBirthDate(day, month, 1955)
 
+            val secKey = if (TextUtils.isEmpty(number)) "0" else number.substring(1)
+            this.key = "$name|$secKey"
+
+            this.dayMonth = day.toString() + "|" + month
+        }
+        ShowBirthdayActivity.mockTest(context!!, birthday)
     }
 
     override fun getTitle(): String = "Tests"

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.interfaces.RecyclerInterface
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -38,7 +39,7 @@ data class Birthday(
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
         var dayMonth: String = "",
         @PrimaryKey var uuId: String = UUID.randomUUID().toString()
-) : RecyclerInterface {
+) : RecyclerInterface, Serializable {
 
     override val viewType: Int
         get() = 2
