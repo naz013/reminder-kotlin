@@ -159,6 +159,7 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         } else {
             TaskPagerAdapter(fragmentManager!!, pages)
         }
+        pager.offscreenPageLimit = 5
         pager.adapter = taskPagerAdapter
         pager.addOnPageChangeListener(mPageChangeListener)
         pager.currentItem = if (pos < googleTaskLists.size) pos else 0
@@ -189,7 +190,6 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         updateScreenTitle()
         prefs.lastGoogleList = position
         activity?.invalidateOptionsMenu()
-        taskPagerAdapter?.getCurrent(position)?.mapLists(googleTaskLists)
         refreshFab()
     }
 

@@ -108,7 +108,7 @@ class TaskActivity : ThemedActivity() {
         action = intent.getStringExtra(TasksConstants.INTENT_ACTION)
         if (action == "") action = TasksConstants.CREATE
 
-        if (action.matches(TasksConstants.CREATE.toRegex())) {
+        if (action == TasksConstants.CREATE) {
             initViewModel("", tmp)
         } else {
             initViewModel(tmp, "")
@@ -171,12 +171,10 @@ class TaskActivity : ThemedActivity() {
 
     private fun showTaskList(googleTaskList: GoogleTaskList) {
         this.listId = googleTaskList.listId
-        toolbar.setTitle(R.string.new_task)
         listText.text = googleTaskList.title
     }
 
     private fun selectCurrent(googleTaskLists: List<GoogleTaskList>) {
-        toolbar.setTitle(R.string.new_task)
         for (googleTaskList in googleTaskLists) {
             if (googleTaskList.listId == listId) {
                 showTaskList(googleTaskList)
@@ -226,14 +224,16 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun initToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeButtonEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
         }
+        toolbar.setTitle(R.string.new_task)
     }
 
     private fun selectDateAction(type: Int) {

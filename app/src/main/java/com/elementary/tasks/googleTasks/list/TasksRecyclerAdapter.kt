@@ -34,12 +34,12 @@ class TasksRecyclerAdapter : ListAdapter<GoogleTask, GoogleTaskHolder>(GoogleTas
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoogleTaskHolder {
-        return GoogleTaskHolder(parent, googleTaskListMap) { view, i, listActions ->
+        return GoogleTaskHolder(parent) { view, i, listActions ->
             actionsListener?.onAction(view, i, getItem(i), listActions)
         }
     }
 
     override fun onBindViewHolder(holder: GoogleTaskHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), googleTaskListMap)
     }
 }
