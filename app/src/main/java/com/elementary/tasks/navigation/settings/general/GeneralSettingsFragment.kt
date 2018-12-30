@@ -131,14 +131,46 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun init24TimePrefs() {
-        time24hourPrefs.isChecked = prefs.is24HourFormatEnabled
-        time24hourPrefs.setOnClickListener { change24Prefs() }
+        time24hourPrefs.setOnClickListener { showTimeFormatDialog() }
+        showTimeFormat()
     }
 
-    private fun change24Prefs() {
-        val is24 = time24hourPrefs.isChecked
-        prefs.is24HourFormatEnabled = !is24
-        time24hourPrefs.isChecked = !is24
+    private fun showTimeFormat() {
+        time24hourPrefs.setDetailText(currentFormat())
+    }
+
+    private fun currentFormat(): String? {
+        return when (prefs.hourFormat) {
+            0 -> getString(R.string.default_string)
+            1 -> getString(R.string.use_24_hour_format)
+            2 -> getString(R.string.use_12_hour_format)
+            else -> getString(R.string.default_string)
+        }
+    }
+
+    private fun showTimeFormatDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setCancelable(true)
+        builder.setTitle(getString(R.string._24_hour_time_format))
+
+        val adapter = ArrayAdapter(context!!,
+                android.R.layout.simple_list_item_single_choice,
+                listOf(
+                        getString(R.string.default_string),
+                        getString(R.string.use_24_hour_format),
+                        getString(R.string.use_12_hour_format)
+                ))
+        mItemSelect = prefs.hourFormat
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.hourFormat = mItemSelect
+            dialog.dismiss()
+            showTimeFormat()
+        }
+        val dialog = builder.create()
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
+        dialog.show()
     }
 
     private fun initAppTheme() {

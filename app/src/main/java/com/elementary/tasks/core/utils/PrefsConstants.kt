@@ -77,7 +77,7 @@ object PrefsConstants {
     const val APPLICATION_AUTO_LAUNCH = "application_auto_launch"
     const val REMINDERS_IN_CALENDAR = "reminders_in_calendar"
     const val REMINDER_COLOR = "reminder_color"
-    const val IS_24_TIME_FORMAT = "24_hour_format"
+    const val TIME_FORMAT = "new_hour_format"
     const val UNLOCK_DEVICE = "unlock_device"
     const val CALENDAR_FEATURE_TASKS = "feature_tasks"
     const val MISSED_CALL_REMINDER = "missed_call_reminder"

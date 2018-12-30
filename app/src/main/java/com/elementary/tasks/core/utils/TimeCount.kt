@@ -278,7 +278,7 @@ object TimeCount {
             cl.timeInMillis = timeLong
             val mTime = cl.time
             date = TimeUtil.DATE_FORMAT.format(mTime)
-            time = TimeUtil.getTime(mTime, prefs.getBoolean(PrefsConstants.IS_24_TIME_FORMAT))
+            time = TimeUtil.getTime(mTime, prefs.is24HourFormatEnabled)
         }
         return arrayOf(date, time)
     }

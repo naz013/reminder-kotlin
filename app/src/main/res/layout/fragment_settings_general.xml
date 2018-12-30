@@ -44,9 +44,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/_24_hour_time_format"
-            app:prefs_secondary_text_off="@string/use_12_hour_format"
-            app:prefs_secondary_text_on="@string/use_24_hour_format"
-            app:prefs_type="check_switch" />
+            app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/savePrefs"
