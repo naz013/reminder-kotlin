@@ -150,7 +150,7 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
         }
         recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(recyclerView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
         refreshView()
     }

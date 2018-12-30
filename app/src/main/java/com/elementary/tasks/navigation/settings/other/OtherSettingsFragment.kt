@@ -54,7 +54,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(scrollView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
 
         aboutPrefs.setOnClickListener { showAboutDialog() }

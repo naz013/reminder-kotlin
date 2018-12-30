@@ -140,7 +140,7 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
         }
         recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(recyclerView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
         refreshView()
     }

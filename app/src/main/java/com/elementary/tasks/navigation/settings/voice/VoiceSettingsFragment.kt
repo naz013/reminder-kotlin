@@ -34,7 +34,7 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(scrollView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
         initLanguagePrefs()
         timePrefs.setOnClickListener { callback?.openFragment(TimeOfDayFragment(), getString(R.string.time)) }

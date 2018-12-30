@@ -204,7 +204,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(recyclerView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
     }
 

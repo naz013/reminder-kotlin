@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -97,6 +94,10 @@ class GroupsFragment : BaseNavigationFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(recyclerView) {
+            setScroll(it)
+        }
+
         refreshView()
     }
 

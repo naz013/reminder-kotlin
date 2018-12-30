@@ -76,7 +76,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportFragmentManager.addOnBackStackChangedListener { onStackChanged() }
+//        supportFragmentManager.addOnBackStackChangedListener { onStackChanged() }
         initActionBar()
         initNavigation()
         initViewModel()
@@ -239,7 +239,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun openFragment(fragment: BaseFragment, tag: String) {
         val ft = supportFragmentManager.beginTransaction()
-        ft.add(R.id.main_container, fragment, tag)
+        ft.replace(R.id.main_container, fragment, tag)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         ft.addToBackStack(tag)
         ft.commit()
