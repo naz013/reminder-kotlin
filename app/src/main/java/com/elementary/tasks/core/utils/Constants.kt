@@ -50,5 +50,5 @@ object Constants {
     const val ORDER_DEFAULT = "default"
     const val ORDER_NAME_A_Z = "name_az"
     const val ORDER_NAME_Z_A = "name_za"
-    const val WEB_URL = "http://future-graph-651.appspot.com/"
+    const val WEB_URL = "https://craysoftware.wordpress.com/"
 }

@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings.voice
+package com.elementary.tasks.navigation.settings.other
 
 import android.annotation.SuppressLint
 import android.webkit.WebChromeClient
@@ -33,9 +33,9 @@ class HelpFragment : BaseWebViewFragment() {
         get() {
             val localeCheck = Locale.getDefault().toString().toLowerCase()
             return when {
-                localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"
-                localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-voice-russian"
-                else -> Constants.WEB_URL + "reminder-voice-english"
+                localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-help-ukrainian"
+                localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-help-russian"
+                else -> Constants.WEB_URL + "reminder-help-english"
             }
         }
 

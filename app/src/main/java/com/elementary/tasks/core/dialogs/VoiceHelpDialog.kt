@@ -35,9 +35,9 @@ class VoiceHelpDialog : BaseDialog() {
         wv.setBackgroundColor(themeUtil.backgroundStyle)
         val localeCheck = Locale.getDefault().toString().toLowerCase()
         val url = when {
-            localeCheck.startsWith("uk") -> Constants.WEB_URL + "voice_help/voice_uk.html"
-            localeCheck.startsWith("ru") -> Constants.WEB_URL + "voice_help/voice_ru.html"
-            else -> Constants.WEB_URL + "voice_help/voice_en.html"
+            localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"
+            localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-voice-russian"
+            else -> Constants.WEB_URL + "reminder-voice-english"
         }
         wv.loadUrl(url)
         wv.webViewClient = object : WebViewClient() {

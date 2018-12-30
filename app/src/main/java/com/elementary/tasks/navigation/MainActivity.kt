@@ -30,7 +30,6 @@ import com.elementary.tasks.groups.list.GroupsFragment
 import com.elementary.tasks.monthView.CalendarFragment
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.fragments.FeedbackFragment
-import com.elementary.tasks.navigation.fragments.HelpFragment
 import com.elementary.tasks.navigation.fragments.MapFragment
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment
@@ -292,7 +291,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun moveBack() {
         if (fragment != null) {
-            if (fragment is SettingsFragment) {
+            if (fragment is SettingsFragment || fragment is FeedbackFragment) {
                 if (beforeSettings != 0) {
                     prevItem = beforeSettings
                     nav_view.setCheckedItem(beforeSettings)
@@ -301,7 +300,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                     initStartFragment()
                 }
                 return
-            } else if (fragment is BaseSettingsFragment && fragment?.canGoBack()!!) {
+            } else if (fragment is BaseSettingsFragment && fragment?.canGoBack() == true) {
                 super.onBackPressed()
                 return
             }
@@ -339,11 +338,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         drawer_layout.closeDrawer(GravityCompat.START)
         Handler().postDelayed({
-            if (prevItem == item.itemId && (item.itemId != R.id.nav_feedback || item.itemId != R.id.nav_help && item.itemId != R.id.nav_pro)) {
+            if (prevItem == item.itemId && (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro)) {
                 return@postDelayed
             }
             openScreen(item.itemId)
-            if (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_help && item.itemId != R.id.nav_pro) {
+            if (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro) {
                 prevItem = item.itemId
             }
         }, 250)
@@ -367,7 +366,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                 replaceFragment(SettingsFragment(), getString(R.string.action_settings))
             }
             R.id.nav_feedback -> replaceFragment(FeedbackFragment(), getString(R.string.feedback))
-            R.id.nav_help -> replaceFragment(HelpFragment(), getString(R.string.help))
             R.id.nav_pro -> showProDialog()
         }
     }
@@ -390,9 +388,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                         getString(R.string.additional_reminder) + "\n" +
                         getString(R.string._led_notification_) + "\n" +
                         getString(R.string.led_color_for_each_reminder) + "\n" +
-                        getString(R.string.styles_for_marker) + "\n" +
-                        getString(R.string.option_for_image_blurring) + "\n" +
-                        getString(R.string.additional_app_themes))
+                        getString(R.string.styles_for_marker))
                 .setPositiveButton(R.string.buy) { dialog, _ ->
                     dialog.dismiss()
                     openMarket()

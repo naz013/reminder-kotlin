@@ -63,11 +63,6 @@
             android:title="@string/feedback" />
 
         <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_twotone_help_24px"
-            android:title="@string/help" />
-
-        <item
             android:id="@+id/nav_pro"
             android:icon="@drawable/ic_twotone_local_grocery_store_24px"
             android:title="@string/buy_pro" />
