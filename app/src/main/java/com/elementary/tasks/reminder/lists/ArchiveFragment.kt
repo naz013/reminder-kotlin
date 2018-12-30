@@ -19,6 +19,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -179,6 +180,9 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(recyclerView) {
+            setScroll(it)
+        }
     }
 
     private fun addTypeFilter(filters: MutableList<FilterView.Filter>) {

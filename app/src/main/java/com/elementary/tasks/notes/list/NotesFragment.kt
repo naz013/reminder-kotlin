@@ -229,6 +229,9 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         }
         recyclerView.adapter = mAdapter
         recyclerView.itemAnimator = DefaultItemAnimator()
+        ViewUtils.listenScrollableView(recyclerView) {
+            setScroll(it)
+        }
         refreshView()
     }
 

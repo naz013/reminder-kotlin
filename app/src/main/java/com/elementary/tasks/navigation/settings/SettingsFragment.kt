@@ -38,7 +38,7 @@ class SettingsFragment : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(scrollView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
 
         generalSettings.setOnClickListener { callback?.openFragment(GeneralSettingsFragment(), getString(R.string.general)) }

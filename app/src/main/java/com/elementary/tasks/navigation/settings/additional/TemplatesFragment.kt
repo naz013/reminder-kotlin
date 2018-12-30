@@ -130,7 +130,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
         }
         templatesList.adapter = adapter
         ViewUtils.listenScrollableView(templatesList) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
         refreshView()
     }

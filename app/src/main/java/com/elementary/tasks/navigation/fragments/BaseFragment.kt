@@ -49,6 +49,7 @@ abstract class BaseFragment : Fragment() {
 
     var isDark = false
         private set
+    private var mLastScroll: Int = 0
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -74,6 +75,12 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    protected fun setScroll(scroll: Int) {
+        if (isRemoving) return
+        this.mLastScroll = scroll
+        callback?.onScrollUpdate(scroll)
+    }
+
     protected fun moveBack() {
         activity?.onBackPressed()
     }
@@ -83,7 +90,7 @@ abstract class BaseFragment : Fragment() {
     open fun onBackStackResume() {
         callback?.onFragmentSelect(this)
         callback?.onTitleChange(getTitle())
-        callback?.onScrollUpdate(0)
+        setScroll(mLastScroll)
     }
 
     override fun onResume() {

@@ -89,7 +89,7 @@ class BackupsFragment : BaseSettingsFragment() {
         super.onViewCreated(view, savedInstanceState)
         initProgress()
         ViewUtils.listenScrollableView(scrollView) {
-            callback?.onScrollUpdate(it)
+            setScroll(it)
         }
 
         mAdapter = InfoAdapter(itemsContainer) {
