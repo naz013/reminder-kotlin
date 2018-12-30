@@ -12,8 +12,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -100,25 +98,11 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.notes_menu, menu)
 
-        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
-        val listIcon = ContextCompat.getDrawable(context!!, if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px)
-        val sortIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_filter_list_24px)
-        if (isDark) {
-            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
-            DrawableCompat.setTint(searchIcon!!, white)
-            DrawableCompat.setTint(listIcon!!, white)
-            DrawableCompat.setTint(sortIcon!!, white)
-        } else {
-            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
-            DrawableCompat.setTint(listIcon!!, black)
-            DrawableCompat.setTint(sortIcon!!, black)
-            DrawableCompat.setTint(searchIcon!!, black)
-        }
-
-        menu?.getItem(0)?.icon = searchIcon
-        menu?.getItem(1)?.icon = listIcon
         menu?.getItem(1)?.title = if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
-        menu?.getItem(2)?.icon = sortIcon
+
+        ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
+        ViewUtils.tintMenuIcon(context!!, menu, 1, if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px, isDark)
+        ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_filter_list_24px, isDark)
 
         mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?

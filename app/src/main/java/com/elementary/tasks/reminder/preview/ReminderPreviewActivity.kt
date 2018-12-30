@@ -15,8 +15,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -393,23 +391,11 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_reminder_preview, menu)
-        val editIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_edit_24px)
-        val copyIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_file_copy_24px)
-        val deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_delete_24px)
-        if (isDark) {
-            val white = ContextCompat.getColor(this, R.color.whitePrimary)
-            DrawableCompat.setTint(editIcon!!, white)
-            DrawableCompat.setTint(copyIcon!!, white)
-            DrawableCompat.setTint(deleteIcon!!, white)
-        } else {
-            val black = ContextCompat.getColor(this, R.color.pureBlack)
-            DrawableCompat.setTint(editIcon!!, black)
-            DrawableCompat.setTint(copyIcon!!, black)
-            DrawableCompat.setTint(deleteIcon!!, black)
-        }
-        menu.getItem(0)?.icon = editIcon
-        menu.getItem(1)?.icon = copyIcon
-        menu.getItem(2)?.icon = deleteIcon
+
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_file_copy_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_delete_24px, isDark)
+
         return true
     }
 

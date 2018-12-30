@@ -137,6 +137,12 @@ class NotePreviewActivity : ThemedActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.title = ""
+
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
+        }
     }
 
     private fun editNote() {
@@ -187,7 +193,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun hideProgress() {
-        if (mProgress != null && mProgress!!.isShowing) {
+        if (mProgress != null && mProgress?.isShowing == true) {
             mProgress?.dismiss()
         }
     }
@@ -226,6 +232,8 @@ class NotePreviewActivity : ThemedActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.preview_note_menu, menu)
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isDark)
         return true
     }
 
@@ -288,10 +296,9 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun deleteReminder() {
-        if (mReminder != null) {
-            viewModel.deleteReminder(mReminder!!)
-            reminderContainer.visibility = View.GONE
-        }
+        val reminder = mReminder ?: return
+        viewModel.deleteReminder(reminder)
+        reminderContainer.visibility = View.GONE
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -306,7 +313,6 @@ class NotePreviewActivity : ThemedActivity() {
 
     companion object {
 
-        const val PREVIEW_IMAGES = "preview_image_key"
         private const val SEND_CODE = 25501
     }
 }

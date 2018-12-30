@@ -74,7 +74,7 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
 //                    itemView.editButton.visibility = View.VISIBLE
 //                    itemView.editButton.setBackgroundResource(themeUtil.indicator)
 //                    itemView.editButton.setOnClickListener { view ->
-//                        actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
+//                        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
 //                    }
 //                } else {
                     itemView.editButton.visibility = View.GONE

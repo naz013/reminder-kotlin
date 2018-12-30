@@ -1,22 +1,19 @@
 package com.elementary.tasks.core.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
-import android.os.Build
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.animation.*
 import android.widget.ScrollView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,9 +33,24 @@ import com.elementary.tasks.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object ViewUtils {
 
+    fun tintMenuIcon(context: Context, menu: Menu?, index: Int, @DrawableRes resource: Int, isDark: Boolean) {
+        val icon = ContextCompat.getDrawable(context, resource)
+        if (icon != null) {
+            if (isDark) {
+                val white = ContextCompat.getColor(context, R.color.whitePrimary)
+                DrawableCompat.setTint(icon, white)
+            } else {
+                val black = ContextCompat.getColor(context, R.color.pureBlack)
+                DrawableCompat.setTint(icon, black)
+            }
+
+            menu?.getItem(index)?.icon = icon
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     fun listenScrollableView(scrollView: ScrollView, listener: ((x: Int) -> Unit)?) {
         val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
             listener?.invoke(scrollView.scrollY)
@@ -59,6 +71,7 @@ object ViewUtils {
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun listenScrollableView(scrollView: NestedScrollView, listener: ((y: Int) -> Unit)?) {
         val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
             listener?.invoke(scrollView.scrollY)
@@ -90,14 +103,6 @@ object ViewUtils {
                     listener?.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
                 }
             })
-        }
-    }
-
-    fun getDrawable(context: Context, @DrawableRes resource: Int): Drawable {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            context.resources.getDrawable(resource, null)
-        } else {
-            context.resources.getDrawable(resource)
         }
     }
 

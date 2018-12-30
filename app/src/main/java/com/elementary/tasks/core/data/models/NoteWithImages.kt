@@ -47,6 +47,6 @@ data class NoteWithImages(
     }
 
     override fun getOpacity(): Int {
-        return note?.opacity ?: 100
+        return note?.opacity ?: 0
     }
 }

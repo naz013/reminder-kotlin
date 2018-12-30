@@ -44,8 +44,9 @@ class NoteFilterController(private val mCallback: FilterCallback<NoteWithImages>
         val filter = object : AbstractFilter<String, NoteWithImages>(null) {
             private var query: String? = null
 
-            override fun filter(item: NoteWithImages): Boolean {
-                return query == null || query!!.isEmpty() || item.getSummary().toLowerCase().contains(query!!.toLowerCase())
+            override fun filter(o: NoteWithImages): Boolean {
+                val q = query ?: ""
+                return q.isEmpty() || o.getSummary().toLowerCase().contains(q.toLowerCase())
             }
 
             @Throws(Exception::class)
@@ -68,9 +69,10 @@ class NoteFilterController(private val mCallback: FilterCallback<NoteWithImages>
 
     private fun onChanged() {
         val list = ArrayList<NoteWithImages>()
+        val filter = mFilter
         for (item in this.original) {
-            if (mFilter != null) {
-                if (mFilter!!.filter(item)) list.add(item)
+            if (filter != null) {
+                if (filter.filter(item)) list.add(item)
             } else
                 list.add(item)
         }

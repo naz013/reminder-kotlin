@@ -26,10 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 class KeepLayoutManager(context: Context, spanCount: Int, private val mAdapter: RecyclerView.Adapter<*>) : GridLayoutManager(context, spanCount) {
 
     init {
-        init()
-    }
-
-    private fun init() {
         spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val size = mAdapter.itemCount
