@@ -28,6 +28,10 @@ import javax.inject.Singleton
 @Singleton
 class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
+    var homePage: String
+        get() = getString(PrefsConstants.HOME_PAGE)
+        set(value) = putString(PrefsConstants.HOME_PAGE, value)
+
     var pinCode: String
         get() = SuperUtil.decrypt(getString(PrefsConstants.PIN_CODE))
         set(value) = putString(PrefsConstants.PIN_CODE, SuperUtil.encrypt(value))

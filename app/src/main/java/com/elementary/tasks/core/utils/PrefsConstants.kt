@@ -117,6 +117,7 @@ object PrefsConstants {
     const val IGNORE_WINDOW_TYPE = "ignore_window_type"
     const val PIN_CODE = "pin_code"
     const val USE_FINGERPRINT = "use_finger"
+    const val HOME_PAGE = "home_page"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

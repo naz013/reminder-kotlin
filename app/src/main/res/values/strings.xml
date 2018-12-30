@@ -752,5 +752,6 @@
     <string name="disable_pin">Disable PIN</string>
     <string name="acc_open_attachment">Open attachment</string>
     <string name="acc_resend_message">Resend message</string>
+    <string name="start_screen">Start screen</string>
 
 </resources>

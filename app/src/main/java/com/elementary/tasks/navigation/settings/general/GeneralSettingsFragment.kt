@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings
+package com.elementary.tasks.navigation.settings.general
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.settings.general.home.PageIdentifier
+import com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity
 import kotlinx.android.synthetic.main.fragment_settings_general.*
 
 /**
@@ -53,6 +55,39 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         init24TimePrefs()
         initSavePrefs()
         initLanguagePrefs()
+        initHomePage()
+    }
+
+    private fun initHomePage() {
+        homePrefs.setOnClickListener { showHomePageDialog() }
+        showHomePage()
+    }
+
+    private fun showHomePage() {
+        homePrefs.setDetailText(PageIdentifier.name(context!!, prefs.homePage))
+    }
+
+    private fun showHomePageDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setCancelable(true)
+        builder.setTitle(getString(R.string.start_screen))
+
+        val homePages = PageIdentifier.availablePages(context!!)
+
+        val adapter = ArrayAdapter(context!!,
+                android.R.layout.simple_list_item_single_choice, homePages.map { it.name })
+        val init = prefs.homePage
+        mItemSelect = PageIdentifier.index(context!!, init)
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.homePage = homePages[mItemSelect].key
+            dialog.dismiss()
+            showHomePage()
+        }
+        val dialog = builder.create()
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
+        dialog.show()
     }
 
     private fun initLanguagePrefs() {

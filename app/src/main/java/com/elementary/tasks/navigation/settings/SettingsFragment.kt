@@ -7,6 +7,7 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.additional.AdditionalSettingsFragment
 import com.elementary.tasks.navigation.settings.calendar.CalendarSettingsFragment
 import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
+import com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment
 import com.elementary.tasks.navigation.settings.location.LocationSettingsFragment
 import com.elementary.tasks.navigation.settings.other.OtherSettingsFragment
 import com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment
