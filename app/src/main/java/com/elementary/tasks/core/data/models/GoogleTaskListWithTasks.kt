@@ -2,11 +2,10 @@ package com.elementary.tasks.core.data.models
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.elementary.tasks.core.interfaces.NoteInterface
 import java.util.*
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,30 +22,9 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-data class NoteWithImages(
+data class GoogleTaskListWithTasks(
         @Embedded
-        var note: Note? = null,
-        @Relation(parentColumn = "key", entityColumn = "noteId")
-        var images: List<ImageFile> = ArrayList()
-) : NoteInterface {
-
-    override fun getSummary(): String {
-        return note?.summary ?: ""
-    }
-
-    override fun getKey(): String {
-        return note?.key ?: ""
-    }
-
-    override fun getColor(): Int {
-        return note?.color ?: 0
-    }
-
-    override fun getStyle(): Int {
-        return note?.style ?: 0
-    }
-
-    override fun getOpacity(): Int {
-        return note?.opacity ?: 100
-    }
-}
+        var googleTaskList: GoogleTaskList? = null,
+        @Relation(parentColumn = "listId", entityColumn = "listId")
+        var tasks: List<GoogleTask> = ArrayList()
+)

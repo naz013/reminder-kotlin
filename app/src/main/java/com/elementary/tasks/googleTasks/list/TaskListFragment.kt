@@ -62,7 +62,7 @@ class TaskListFragment : Fragment() {
         }
     }
 
-    fun mapLists(googleTaskLists: List<GoogleTaskList>) {
+    private fun mapLists(googleTaskLists: List<GoogleTaskList>) {
         if (googleTaskLists.isNotEmpty()) {
             mGoogleTaskListsMap.clear()
             for (list in googleTaskLists) {
