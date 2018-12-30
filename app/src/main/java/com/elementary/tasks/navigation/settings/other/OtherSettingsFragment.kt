@@ -57,6 +57,9 @@ class OtherSettingsFragment : BaseSettingsFragment() {
             setScroll(it)
         }
 
+        helpPrefs.setOnClickListener {
+            callback?.openFragment(HelpFragment(), getString(R.string.help))
+        }
         aboutPrefs.setOnClickListener { showAboutDialog() }
         ossPrefs.setOnClickListener { openOssScreen() }
         permissionsPrefs.setOnClickListener { openPermissionsScreen() }

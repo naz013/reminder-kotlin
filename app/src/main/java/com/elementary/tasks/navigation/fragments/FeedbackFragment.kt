@@ -1,17 +1,19 @@
 package com.elementary.tasks.navigation.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.ViewUtils
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,12 +33,12 @@ import com.elementary.tasks.core.utils.Module
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class FeedbackFragment : BaseWebViewFragment() {
 
     override val url: String
         get() = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun setExtraParams(webView: WebView) {
         super.setExtraParams(webView)
         webView.settings.javaScriptEnabled = true
@@ -62,8 +64,17 @@ class FeedbackFragment : BaseWebViewFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activity?.invalidateOptionsMenu()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.menu_feedback, menu)
+        inflater?.inflate(R.menu.menu_feedback, menu)
+
+        ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_refresh_24px, isDark)
+        ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_local_post_office_24px, isDark)
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
