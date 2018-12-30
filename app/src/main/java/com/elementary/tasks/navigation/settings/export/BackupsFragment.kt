@@ -348,6 +348,11 @@ class BackupsFragment : BaseSettingsFragment() {
         item.count = count
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelTask()
+    }
+
     enum class Info {
         Dropbox, Google, Local
     }

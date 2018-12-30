@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
@@ -60,16 +60,23 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
     }
 
     fun setData(item: NoteWithImages) {
-        loadNoteCard(itemView.clickView, item)
         loadImage(itemView.imagesView, item)
         loadNote(itemView.noteTv, item)
 
+        itemView.bgView.setBackgroundColor(themeUtil.getNoteLightColor(item.getColor(), item.getOpacity()))
+
         if (themeUtil.isAlmostTransparent(item.getOpacity())) {
             itemView.button_more.colorFilter = null
-            if (themeUtil.isDark) itemView.button_more.setImageResource(R.drawable.ic_more_vert_white_24dp)
-            else itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
+            if (themeUtil.isDark) {
+                itemView.button_more.setImageResource(R.drawable.ic_more_vert_white_24dp)
+                itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
+            } else {
+                itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
+                itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
+            }
         } else {
             itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
+            itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
         }
     }
 
@@ -88,10 +95,6 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         textView.text = title
         textView.typeface = AssetsUtil.getTypeface(context, note.getStyle())
         textView.textSize = (prefs.noteTextSize + 12).toFloat()
-    }
-
-    private fun loadNoteCard(cardView: CardView, note: NoteWithImages) {
-        cardView.setCardBackgroundColor(themeUtil.getNoteLightColor(note.getColor(), note.getOpacity()))
     }
 
     private fun setImage(imageView: ImageView, image: ByteArray?) {

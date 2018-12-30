@@ -351,6 +351,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
+        if (isDark) {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
+        }
+
         ViewUtils.listenScrollableView(touchView) {
             appBar.isSelected = it > 0
         }
@@ -428,7 +434,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun hideProgress() {
-        if (mProgress != null && mProgress!!.isShowing) {
+        if (mProgress != null && (mProgress?.isShowing == true)) {
             mProgress?.dismiss()
         }
     }
@@ -606,11 +612,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.activity_create_note, menu)
+        menuInflater.inflate(R.menu.activity_create_note, menu)
         if (mItem != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isDark)
         return true
     }
 
@@ -669,14 +675,16 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         val inflater = LayoutInflater.from(this)
         val adapter = object : ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_single_choice, contacts) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
                 var cView = convertView
                 if (cView == null) {
                     cView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null)
                 }
-                val textView = cView!!.findViewById<TextView>(android.R.id.text1)
-                textView.typeface = getTypeface(position)
-                textView.text = contacts[position]
+                val textView = cView?.findViewById<TextView>(android.R.id.text1)
+                if (textView != null) {
+                    textView.typeface = getTypeface(position)
+                    textView.text = contacts[position]
+                }
                 return cView
             }
 
@@ -726,11 +734,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (uri != null) {
             addImageFromUri(uri)
         } else if (clipData != null) {
-            DecodeImagesAsync(this, {
+            DecodeImages.startDecoding(this, clipData) {
                 if (!it.isEmpty()) {
                     mAdapter.addNextImages(it)
                 }
-            }, clipData.itemCount).execute(clipData)
+            }
         }
     }
 

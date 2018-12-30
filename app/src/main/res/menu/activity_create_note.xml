@@ -10,7 +10,6 @@
 
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/ic_twotone_share_24px"
         android:title="@string/share"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

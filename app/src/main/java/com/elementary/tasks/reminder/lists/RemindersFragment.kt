@@ -10,8 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,23 +99,10 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_active_menu, menu)
-        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
-        val micIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_mic_24px)
-        val filterIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_filter_list_24px)
-        if (isDark) {
-            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
-            DrawableCompat.setTint(searchIcon!!, white)
-            DrawableCompat.setTint(micIcon!!, white)
-            DrawableCompat.setTint(filterIcon!!, white)
-        } else {
-            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
-            DrawableCompat.setTint(micIcon!!, black)
-            DrawableCompat.setTint(filterIcon!!, black)
-            DrawableCompat.setTint(searchIcon!!, black)
-        }
-        menu?.getItem(0)?.icon = searchIcon
-        menu?.getItem(1)?.icon = micIcon
-        menu?.getItem(2)?.icon = filterIcon
+
+        ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
+        ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_mic_24px, isDark)
+        ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_filter_list_24px, isDark)
 
         mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?

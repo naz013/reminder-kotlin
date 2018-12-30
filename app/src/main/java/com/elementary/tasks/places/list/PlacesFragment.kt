@@ -9,8 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,17 +77,9 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_trash, menu)
-        menu?.findItem(R.id.action_delete_all)?.isVisible = false
 
-        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
-        if (isDark) {
-            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
-            DrawableCompat.setTint(searchIcon!!, white)
-        } else {
-            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
-            DrawableCompat.setTint(searchIcon!!, black)
-        }
-        menu?.getItem(0)?.icon = searchIcon
+        menu?.findItem(R.id.action_delete_all)?.isVisible = false
+        ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
 
         mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
