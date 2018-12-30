@@ -25,7 +25,7 @@ import java.io.*
  * limitations under the License.
  */
 
-abstract class SharedPrefs(context: Context) {
+abstract class SharedPrefs(protected val context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
     fun putString(stringToSave: String, value: String) {

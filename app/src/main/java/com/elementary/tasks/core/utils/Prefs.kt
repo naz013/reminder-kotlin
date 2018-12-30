@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import android.text.TextUtils
+import android.text.format.DateFormat
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -124,8 +125,16 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         set(value) = putInt(PrefsConstants.SOUND_STREAM, value)
 
     var is24HourFormatEnabled: Boolean
-        get() = getBoolean(PrefsConstants.IS_24_TIME_FORMAT)
-        set(value) = putBoolean(PrefsConstants.IS_24_TIME_FORMAT, value)
+        get() {
+            val hourFormat = hourFormat
+            return if (hourFormat == 0) DateFormat.is24HourFormat(context)
+            else hourFormat == 1
+        }
+        private set(value) = putInt(PrefsConstants.TIME_FORMAT, 0)
+
+    var hourFormat: Int
+        get() = getInt(PrefsConstants.TIME_FORMAT)
+        set(value) = putInt(PrefsConstants.TIME_FORMAT, value)
 
     var isAutoSaveEnabled: Boolean
         get() = getBoolean(PrefsConstants.AUTO_SAVE)
@@ -551,7 +560,7 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             uiEd.putBoolean(PrefsConstants.QUICK_NOTE_REMINDER, false)
             uiEd.putBoolean(PrefsConstants.EXPORT_TO_STOCK, false)
             uiEd.putBoolean(PrefsConstants.REMINDERS_IN_CALENDAR, true)
-            uiEd.putBoolean(PrefsConstants.IS_24_TIME_FORMAT, true)
+            uiEd.putInt(PrefsConstants.TIME_FORMAT, 0)
             uiEd.putBoolean(PrefsConstants.UNLOCK_DEVICE, false)
             uiEd.putBoolean(PrefsConstants.WAKE_STATUS, false)
             uiEd.putBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS, true)
@@ -730,8 +739,8 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         if (!hasKey(PrefsConstants.NOTIFICATION_REPEAT)) {
             putBoolean(PrefsConstants.NOTIFICATION_REPEAT, false)
         }
-        if (!hasKey(PrefsConstants.IS_24_TIME_FORMAT)) {
-            putBoolean(PrefsConstants.IS_24_TIME_FORMAT, true)
+        if (!hasKey(PrefsConstants.TIME_FORMAT)) {
+            putInt(PrefsConstants.TIME_FORMAT, 0)
         }
         if (!hasKey(PrefsConstants.UNLOCK_DEVICE)) {
             putBoolean(PrefsConstants.UNLOCK_DEVICE, false)
