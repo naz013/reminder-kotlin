@@ -92,7 +92,7 @@
                 <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
         </activity>
-        <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
+        <activity android:name="com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity" />
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden">

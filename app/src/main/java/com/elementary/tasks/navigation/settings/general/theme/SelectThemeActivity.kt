@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation.settings.theme
+package com.elementary.tasks.navigation.settings.general.theme
 
 import android.os.Bundle
 import android.view.MenuItem

@@ -33,6 +33,7 @@ import com.elementary.tasks.navigation.fragments.FeedbackFragment
 import com.elementary.tasks.navigation.fragments.MapFragment
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment
+import com.elementary.tasks.navigation.settings.general.home.PageIdentifier
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
@@ -75,18 +76,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        supportFragmentManager.addOnBackStackChangedListener { onStackChanged() }
         initActionBar()
         initNavigation()
         initViewModel()
         initQuickNote(savedInstanceState)
-    }
-
-    private fun onStackChanged() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            val f = supportFragmentManager.findFragmentById(R.id.main_container)
-            if (f != null && f is BaseFragment && f.isResumed) f.onBackStackResume()
-        }
+        initStartFragment()
     }
 
     private fun initQuickNote(savedInstanceState: Bundle?) {
@@ -94,8 +88,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
                 noteViewModel, prefs, notifier)
         when {
-            savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
-            intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
+            savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, PageIdentifier.menuId(this, prefs.homePage)))
+            intent.getIntExtra(Constants.INTENT_POSITION, PageIdentifier.index(this, prefs.homePage)) != 0 -> {
                 prevItem = intent.getIntExtra(Constants.INTENT_POSITION, 0)
                 nav_view.setCheckedItem(prevItem)
                 openScreen(prevItem)
@@ -114,9 +108,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun initStartFragment() {
-        prevItem = R.id.nav_current
+        prevItem = PageIdentifier.menuId(this, prefs.homePage)
         nav_view.setCheckedItem(prevItem)
-        replaceFragment(RemindersFragment(), getString(R.string.events))
+        openScreen(prevItem)
     }
 
     private fun initActionBar() {
