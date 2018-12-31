@@ -21,6 +21,22 @@ object PageIdentifier {
     }
 
     @IdRes
+    fun menuId(context: Context, index: Int): Int {
+        return when (index) {
+            0 -> R.id.nav_current
+            1 -> R.id.nav_notes
+            2 -> R.id.nav_birthdays
+            3 -> R.id.nav_calendar
+            4 -> R.id.nav_day_view
+            5 -> {
+                if (hasGoogleTasks(context)) R.id.nav_tasks
+                else R.id.nav_current
+            }
+            else -> R.id.nav_current
+        }
+    }
+
+    @IdRes
     fun menuId(context: Context, key: String): Int {
         return when (key) {
             "home" -> R.id.nav_current
