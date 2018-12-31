@@ -266,54 +266,6 @@
             android:exported="true" />
 
         <receiver
-            android:name=".core.appWidgets.newReminder.AddReminderWidget"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/add_reminder_menu">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/add_reminder_widget_metadata" />
-        </receiver>
-        <receiver
-            android:name=".core.appWidgets.voiceControl.VoiceWidget"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/voice_control">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/voice_widget_metadata" />
-        </receiver>
-        <receiver
-            android:name=".core.appWidgets.newBirthday.AddBirthdayWidget"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/add_birthday">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/add_birthday_widget_metadata" />
-        </receiver>
-        <receiver
-            android:name=".core.appWidgets.quickReminder.QuickReminderWidget"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/add_reminder_menu">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/quick_reminder_widget_metadata" />
-        </receiver>
-        <receiver
             android:name=".core.appWidgets.buttons.CombinedButtonsWidget"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/quick_buttons">
@@ -351,39 +303,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.appWidgets.newReminder.AddReminderWidgetConfig"
-            android:configChanges="keyboardHidden|orientation|keyboard"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".core.appWidgets.newBirthday.AddBirthdayWidgetConfig"
-            android:configChanges="keyboardHidden|orientation|keyboard"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".core.appWidgets.quickReminder.QuickReminderWidgetConfig"
-            android:configChanges="keyboardHidden|orientation|keyboard"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".core.appWidgets.tasks.TasksWidgetConfig"
-            android:configChanges="keyboardHidden|orientation|keyboard"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".core.appWidgets.voiceControl.VoiceWidgetConfig"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
