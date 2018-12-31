@@ -19,7 +19,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
+import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.contacts.ContactsActivity
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.reminder.createEdit.fragments.ReminderInterface

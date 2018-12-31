@@ -8,7 +8,6 @@ import android.widget.RemoteViews
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.appWidgets.WidgetUtils
-import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 
