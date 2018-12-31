@@ -62,9 +62,11 @@ class VoiceWidgetDialog : FragmentActivity() {
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                     ?: ArrayList()
-            viewModel.parseResults(matches, true)
+            viewModel.parseResults(matches, true, this)
         }
-        notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+        if (prefs.isSbNotificationEnabled) {
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+        }
         finish()
     }
 

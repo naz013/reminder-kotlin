@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.viewModels.conversation
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.provider.ContactsContract
 import android.text.TextUtils
@@ -157,7 +158,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         return null
     }
 
-    fun parseResults(matches: ArrayList<*>, isWidget: Boolean) {
+    fun parseResults(matches: ArrayList<*>, isWidget: Boolean, context: Context) {
         for (i in matches.indices) {
             val key = matches[i]
             val keyStr = key.toString()
@@ -168,24 +169,24 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                 if (types == ActionType.ACTION && isWidget) {
                     val action = model.action
                     when (action) {
-                        Action.APP -> getApplication<Application>().startActivity(Intent(getApplication(), SplashScreen::class.java))
-                        Action.HELP -> getApplication<Application>().startActivity(Intent(getApplication(), VoiceHelpDialog::class.java)
+                        Action.APP -> context.startActivity(Intent(context, SplashScreen::class.java))
+                        Action.HELP -> context.startActivity(Intent(context, VoiceHelpDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-                        Action.BIRTHDAY -> getApplication<Application>().startActivity(Intent(getApplication(), AddBirthdayActivity::class.java))
-                        Action.REMINDER -> getApplication<Application>().startActivity(Intent(getApplication(), CreateReminderActivity::class.java))
-                        Action.VOLUME -> getApplication<Application>().startActivity(Intent(getApplication(), VolumeDialog::class.java)
+                        Action.BIRTHDAY -> context.startActivity(Intent(context, AddBirthdayActivity::class.java))
+                        Action.REMINDER -> context.startActivity(Intent(context, CreateReminderActivity::class.java))
+                        Action.VOLUME -> context.startActivity(Intent(context, VolumeDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         Action.TRASH -> emptyTrash(true)
                         Action.DISABLE -> disableAllReminders(true)
                         Action.SETTINGS -> {
-                            val startActivityIntent = Intent(getApplication(), MainActivity::class.java)
+                            val startActivityIntent = Intent(context, MainActivity::class.java)
                             startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
-                            getApplication<Application>().startActivity(startActivityIntent)
+                            context.startActivity(startActivityIntent)
                         }
                         Action.REPORT -> {
-                            val startActivityIntent = Intent(getApplication(), MainActivity::class.java)
+                            val startActivityIntent = Intent(context, MainActivity::class.java)
                             startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_feedback)
-                            getApplication<Application>().startActivity(startActivityIntent)
+                            context.startActivity(startActivityIntent)
                         }
                     }
                 } else if (types == ActionType.NOTE) {
@@ -204,7 +205,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         val reminder = createReminder(model)
         saveAndStartReminder(reminder)
         if (widget) {
-            getApplication<Application>().startActivity(Intent(getApplication(), VoiceResultDialog::class.java)
+            getApplication<ReminderApp>().startActivity(Intent(getApplication(), VoiceResultDialog::class.java)
                     .putExtra(Constants.INTENT_ID, reminder.uuId)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP))
         } else {
@@ -366,7 +367,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                 while (part.length > 1) {
                     val selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
                     val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
-                    val c = getApplication<Application>().contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    val c = getApplication<ReminderApp>().contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             projection, selection, null, null)
                     if (c != null && c.moveToFirst()) {
                         number = c.getString(0)
@@ -396,7 +397,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                 while (part.length > 1) {
                     val selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
                     val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    val c = getApplication<Application>().contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    val c = getApplication<ReminderApp>().contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             projection, selection, null, null)
                     if (c != null && c.moveToFirst()) {
                         number = c.getString(0)

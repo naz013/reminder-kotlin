@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
@@ -68,14 +69,19 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
     }
 
     override fun getViewAt(i: Int): RemoteViews {
-        val rView = RemoteViews(mContext.packageName, R.layout.list_item_note_widget)
+        val rv = RemoteViews(mContext.packageName, R.layout.list_item_note_widget)
         val note = getItem(i)
         if (note == null) {
-            rView.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load))
-            return rView
+            rv.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load))
+            return rv
         }
-        rView.setInt(R.id.noteBackground, "setBackgroundColor",
+        rv.setInt(R.id.noteBackground, "setBackgroundColor",
                 themeUtil.getNoteLightColor(note.getColor(), note.getOpacity()))
+        if (themeUtil.isAlmostTransparent(note.getOpacity())) {
+            rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureWhite))
+        } else {
+            rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureBlack))
+        }
 
         if (note.images.isNotEmpty()) {
             val image = note.images[0]
@@ -83,24 +89,24 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
             if (imageData != null) {
                 val photo = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
                 if (photo != null) {
-                    rView.setImageViewBitmap(R.id.noteImage, photo)
-                    rView.setViewVisibility(R.id.noteImage, View.VISIBLE)
+                    rv.setImageViewBitmap(R.id.noteImage, photo)
+                    rv.setViewVisibility(R.id.noteImage, View.VISIBLE)
                 } else {
-                    rView.setViewVisibility(R.id.noteImage, View.GONE)
+                    rv.setViewVisibility(R.id.noteImage, View.GONE)
                 }
             } else {
-                rView.setViewVisibility(R.id.noteImage, View.GONE)
+                rv.setViewVisibility(R.id.noteImage, View.GONE)
             }
         } else {
-            rView.setViewVisibility(R.id.noteImage, View.GONE)
+            rv.setViewVisibility(R.id.noteImage, View.GONE)
         }
-        rView.setTextViewText(R.id.note, note.getSummary())
+        rv.setTextViewText(R.id.note, note.getSummary())
         val fillInIntent = Intent()
         fillInIntent.putExtra(Constants.INTENT_ID, note.getKey())
-        rView.setOnClickFillInIntent(R.id.note, fillInIntent)
-        rView.setOnClickFillInIntent(R.id.noteImage, fillInIntent)
-        rView.setOnClickFillInIntent(R.id.noteBackground, fillInIntent)
-        return rView
+        rv.setOnClickFillInIntent(R.id.note, fillInIntent)
+        rv.setOnClickFillInIntent(R.id.noteImage, fillInIntent)
+        rv.setOnClickFillInIntent(R.id.noteBackground, fillInIntent)
+        return rv
     }
 
     override fun getLoadingView(): RemoteViews? {
