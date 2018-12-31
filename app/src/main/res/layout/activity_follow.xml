@@ -245,7 +245,7 @@
         android:text="@string/create_task"
         android:textAllCaps="true"
         android:textAppearance="?textAppearanceButton"
-        android:textColor="@android:color/white"
+        android:textColor="@color/pureBlack"
         android:textSize="14sp"
         android:visibility="visible"
         app:backgroundTint="?colorSecondary"
@@ -253,7 +253,7 @@
         app:icon="@drawable/ic_twotone_done_24px"
         app:iconPadding="12dp"
         app:iconSize="24dp"
-        app:iconTint="@android:color/white"
+        app:iconTint="@color/pureBlack"
         tools:targetApi="lollipop" />
 
 </RelativeLayout>
