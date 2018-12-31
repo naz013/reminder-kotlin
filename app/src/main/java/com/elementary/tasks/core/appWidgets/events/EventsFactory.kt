@@ -7,7 +7,10 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
@@ -44,11 +47,13 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
     private val data = ArrayList<CalendarItem>()
     private val map = HashMap<String, Reminder>()
     @Inject
-    lateinit var mCount: TimeCount
-    @Inject
     lateinit var prefs: Prefs
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate() {
         data.clear()
@@ -61,9 +66,6 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
         val is24 = prefs.is24HourFormatEnabled
         val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false)
         for (item in reminderItems) {
-            if (item.viewType == Reminder.SHOPPING) {
-                continue
-            }
             val type = item.type
             val summary = item.summary
             val eventTime = item.dateTime
@@ -95,7 +97,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                     map[id] = item
                 }
                 else -> {
-                    val dT = mCount.getNextDateTime(eventTime, prefs)
+                    val dT = TimeCount.getNextDateTime(eventTime, prefs)
                     date = dT[0]
                     time = dT[1]
                 }
@@ -181,52 +183,60 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
     }
 
     override fun getViewAt(i: Int): RemoteViews? {
-        val sp = mContext.getSharedPreferences(
-                EventsWidgetConfig.EVENTS_WIDGET_PREF, Context.MODE_PRIVATE)
-        val theme = sp.getInt(EventsWidgetConfig.EVENTS_WIDGET_THEME + widgetID, 0)
-        val eventsTheme = EventsTheme.getThemes(mContext)[theme]
-        val itemBackground = eventsTheme.itemBackground
-        val itemTextColor = eventsTheme.itemTextColor
-        val itemTextSize = sp.getFloat(EventsWidgetConfig.EVENTS_WIDGET_TEXT_SIZE + widgetID, 0f)
-        val checkboxColor = eventsTheme.checkboxColor
+        val sp = mContext.getSharedPreferences(EventsWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+        val itemTextSize = sp.getFloat(EventsWidgetConfigActivity.WIDGET_TEXT_SIZE + widgetID, 0f)
+        val itemBgColor = sp.getInt(EventsWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
 
-        var rView: RemoteViews? = null
+        var rv: RemoteViews? = null
         if (i >= count) {
             return null
         }
         val item = data[i]
         if (item.viewType == 1) {
-            rView = RemoteViews(mContext.packageName, R.layout.list_item_current_widget)
-            rView.setInt(R.id.itemBg, "setBackgroundResource", itemBackground)
+            rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_events)
+
+            rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
+
+            val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
+                ContextCompat.getColor(mContext, R.color.pureWhite)
+            } else {
+                ContextCompat.getColor(mContext, R.color.pureBlack)
+            }
+            rv.setTextColor(R.id.taskText, textColor)
+            rv.setTextColor(R.id.taskDate, textColor)
+            rv.setTextColor(R.id.taskNumber, textColor)
+            rv.setTextColor(R.id.taskTime, textColor)
+            rv.setTextColor(R.id.leftTime, textColor)
+
+            val icon = if (item.type == CalendarItem.Type.REMINDER) {
+                ViewUtils.createIcon(mContext, R.drawable.ic_twotone_alarm_24px, textColor)
+            } else {
+                ViewUtils.createIcon(mContext, R.drawable.ic_twotone_cake_24px, textColor)
+            }
+            rv.setImageViewBitmap(R.id.statusIcon, icon)
 
             var task = item.name
-            if (task == null || task.matches("".toRegex())) {
+            if (task == null || task.isBlank()) {
                 task = Contacts.getNameFromNumber(item.number, mContext)
             }
-            rView.setTextViewText(R.id.taskText, task)
-            rView.setTextColor(R.id.taskText, itemTextColor)
+            rv.setTextViewText(R.id.taskText, task)
 
-            rView.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-            rView.setTextViewTextSize(R.id.taskNumber, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-            rView.setTextViewTextSize(R.id.taskDate, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-            rView.setTextViewTextSize(R.id.taskTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-            rView.setTextViewTextSize(R.id.leftTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rv.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rv.setTextViewTextSize(R.id.taskNumber, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rv.setTextViewTextSize(R.id.taskDate, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rv.setTextViewTextSize(R.id.taskTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rv.setTextViewTextSize(R.id.leftTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
             val number = item.number
-            if (number != null && !number.matches("".toRegex())) {
-                rView.setTextViewText(R.id.taskNumber, number)
-                rView.setTextColor(R.id.taskNumber, itemTextColor)
+            if (number != null && number.isNotBlank()) {
+                rv.setTextViewText(R.id.taskNumber, number)
+                rv.setViewVisibility(R.id.taskNumber, View.VISIBLE)
             } else {
-                rView.setViewVisibility(R.id.taskNumber, View.GONE)
+                rv.setViewVisibility(R.id.taskNumber, View.INVISIBLE)
             }
-            rView.setTextViewText(R.id.taskDate, item.dayDate)
-            rView.setTextColor(R.id.taskDate, itemTextColor)
-
-            rView.setTextViewText(R.id.taskTime, item.time)
-            rView.setTextColor(R.id.taskTime, itemTextColor)
-
-            rView.setTextViewText(R.id.leftTime, mCount.getRemaining(mContext, item.date))
-            rView.setTextColor(R.id.leftTime, itemTextColor)
+            rv.setTextViewText(R.id.taskDate, item.dayDate)
+            rv.setTextViewText(R.id.taskTime, item.time)
+            rv.setTextViewText(R.id.leftTime, TimeCount.getRemaining(mContext, item.date))
 
             if (item.id != null) {
                 val fillInIntent = Intent()
@@ -236,68 +246,61 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 } else {
                     fillInIntent.putExtra(EventEditService.TYPE, false)
                 }
-                rView.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
-                rView.setOnClickFillInIntent(R.id.taskTime, fillInIntent)
-                rView.setOnClickFillInIntent(R.id.taskNumber, fillInIntent)
-                rView.setOnClickFillInIntent(R.id.taskText, fillInIntent)
-                rView.setOnClickFillInIntent(R.id.itemBg, fillInIntent)
+                rv.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
+                rv.setOnClickFillInIntent(R.id.taskTime, fillInIntent)
+                rv.setOnClickFillInIntent(R.id.taskNumber, fillInIntent)
+                rv.setOnClickFillInIntent(R.id.taskText, fillInIntent)
+                rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
             }
         }
         if (item.viewType == 2) {
-            rView = RemoteViews(mContext.packageName,
-                    R.layout.list_item_current_widget_with_list)
-            rView.setInt(R.id.itemBg, "setBackgroundResource", itemBackground)
+            rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_shop_list)
+            rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
+            val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
+                ContextCompat.getColor(mContext, R.color.pureWhite)
+            } else {
+                ContextCompat.getColor(mContext, R.color.pureBlack)
+            }
+
             val task = item.name
-            rView.setTextViewText(R.id.taskText, task)
-            rView.setTextColor(R.id.taskText, itemTextColor)
-            rView.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rv.setTextViewText(R.id.taskText, task)
+            rv.setTextColor(R.id.taskText, textColor)
+            rv.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
             var count = 0
-            val lists = map[item.id]?.shoppings
-            rView.removeAllViews(R.id.todoList)
-            if (lists != null) {
-                for (list in lists) {
-                    val view = RemoteViews(mContext.packageName, R.layout.list_item_task_item_widget)
-                    val isBlack = checkboxColor == 0
-                    if (list.isChecked) {
-                        if (isBlack) {
-                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_black_24dp)
-                        } else {
-                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_white_24dp)
-                        }
-                    } else {
-                        if (isBlack) {
-                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_black_24dp)
-                        } else {
-                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_white_24dp)
-                        }
-                    }
-
-                    view.setTextColor(R.id.shopText, itemTextColor)
-                    view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-
-                    count++
-                    if (count == 9) {
-                        view.setViewVisibility(R.id.checkView, View.INVISIBLE)
-                        view.setTextViewText(R.id.shopText, "...")
-                        rView.addView(R.id.todoList, view)
-                        break
-                    } else {
-                        view.setViewVisibility(R.id.checkView, View.VISIBLE)
-                        view.setTextViewText(R.id.shopText, list.summary)
-                        rView.addView(R.id.todoList, view)
-                    }
+            val lists = map[item.id]?.shoppings ?: listOf()
+            rv.removeAllViews(R.id.todoList)
+            for (list in lists) {
+                val view = RemoteViews(mContext.packageName, R.layout.list_item_widget_shop_item)
+                val icon = if (list.isChecked) {
+                    ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_24px, textColor)
+                } else {
+                    ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_outline_blank_24px, textColor)
+                }
+                rv.setImageViewBitmap(R.id.checkView, icon)
+                view.setTextColor(R.id.shopText, textColor)
+                view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+                count++
+                if (count == 9) {
+                    view.setViewVisibility(R.id.checkView, View.INVISIBLE)
+                    view.setTextViewText(R.id.shopText, "...")
+                    rv.addView(R.id.todoList, view)
+                    break
+                } else {
+                    view.setViewVisibility(R.id.checkView, View.VISIBLE)
+                    view.setTextViewText(R.id.shopText, list.summary)
+                    rv.addView(R.id.todoList, view)
                 }
             }
 
             val fillInIntent = Intent()
             fillInIntent.putExtra(Constants.INTENT_ID, item.id)
             fillInIntent.putExtra(EventEditService.TYPE, true)
-            rView.setOnClickFillInIntent(R.id.taskText, fillInIntent)
-            rView.setOnClickFillInIntent(R.id.itemBg, fillInIntent)
-            rView.setOnClickFillInIntent(R.id.todoList, fillInIntent)
+            rv.setOnClickFillInIntent(R.id.taskText, fillInIntent)
+            rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
+            rv.setOnClickFillInIntent(R.id.todoList, fillInIntent)
         }
-        return rView
+        return rv
     }
 
     override fun getLoadingView(): RemoteViews? {

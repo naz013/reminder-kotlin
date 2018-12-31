@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.elementary.tasks.core.appWidgets.events.EventsWidgetConfig"
+    android:configure="com.elementary.tasks.core.appWidgets.events.EventsWidgetConfigActivity"
     android:initialLayout="@layout/widget_current_tasks"
     android:minHeight="40dp"
     android:minWidth="250dp"
