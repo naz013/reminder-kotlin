@@ -21,7 +21,6 @@ import android.widget.RemoteViewsService
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class NotesService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsService.RemoteViewsFactory {
         return NotesFactory(applicationContext)

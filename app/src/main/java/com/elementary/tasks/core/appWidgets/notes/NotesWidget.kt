@@ -7,10 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.notes.preview.NotePreviewActivity
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -35,7 +37,7 @@ class NotesWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val sp = context.getSharedPreferences(
-                NotesWidgetConfig.NOTES_WIDGET_PREF, Context.MODE_PRIVATE)
+                NotesWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
         for (i in appWidgetIds) {
             updateWidget(context, appWidgetManager, sp, i)
         }
@@ -45,9 +47,9 @@ class NotesWidget : AppWidgetProvider() {
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         super.onDeleted(context, appWidgetIds)
         val editor = context.getSharedPreferences(
-                NotesWidgetConfig.NOTES_WIDGET_PREF, Context.MODE_PRIVATE).edit()
+                NotesWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE).edit()
         for (widgetID in appWidgetIds) {
-            editor.remove(NotesWidgetConfig.NOTES_WIDGET_THEME + widgetID)
+            editor.remove(NotesWidgetConfigActivity.WIDGET_HEADER_BG_COLOR + widgetID)
         }
         editor.apply()
     }
@@ -57,31 +59,25 @@ class NotesWidget : AppWidgetProvider() {
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
                          sp: SharedPreferences, widgetID: Int) {
             val rv = RemoteViews(context.packageName, R.layout.widget_note)
-            val theme = sp.getInt(NotesWidgetConfig.NOTES_WIDGET_THEME + widgetID, 0)
-            val notesTheme = NotesTheme.getThemes(context)[theme]
+            val headerBgColor = sp.getInt(NotesWidgetConfigActivity.WIDGET_HEADER_BG_COLOR + widgetID, 0)
 
-            val headerColor = notesTheme.headerColor
-            val backgroundColor = notesTheme.backgroundColor
-            val titleColor = notesTheme.titleColor
-            val plusIcon = notesTheme.plusIcon
-            val settingsIcon = notesTheme.settingsIcon
+            rv.setInt(R.id.headerBg, "setBackgroundResource", WidgetUtils.newWidgetBg(headerBgColor))
 
-            rv.setInt(R.id.headerBg, "setBackgroundResource", headerColor)
-            rv.setInt(R.id.widgetBg, "setBackgroundResource", backgroundColor)
-            rv.setTextColor(R.id.widgetTitle, titleColor)
-            WidgetUtils.setIcon(context, rv, plusIcon, R.id.tasksCount)
+            if (WidgetUtils.isDarkBg(headerBgColor)) {
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_white, R.id.btn_settings, NotesWidgetConfigActivity::class.java) {
+                    it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                }
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_white, R.id.btn_add_note, CreateNoteActivity::class.java)
+                rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureWhite))
+            } else {
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.id.btn_settings, NotesWidgetConfigActivity::class.java) {
+                    it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                }
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.id.btn_add_note, CreateNoteActivity::class.java)
+                rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
+            }
 
-            var configIntent = Intent(context, CreateNoteActivity::class.java)
-            var configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
-            rv.setOnClickPendingIntent(R.id.tasksCount, configPendingIntent)
-
-            configIntent = Intent(context, NotesWidgetConfig::class.java)
-            configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
-            rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent)
-            WidgetUtils.setIcon(context, rv, settingsIcon, R.id.settingsButton)
-
-            val startActivityIntent = Intent(context, CreateNoteActivity::class.java)
+            val startActivityIntent = Intent(context, NotePreviewActivity::class.java)
             val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT)
             rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent)

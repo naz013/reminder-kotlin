@@ -295,7 +295,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.appWidgets.notes.NotesWidgetConfig"
+            android:name=".core.appWidgets.notes.NotesWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
