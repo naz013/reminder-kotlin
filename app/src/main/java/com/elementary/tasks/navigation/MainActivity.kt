@@ -79,23 +79,27 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         initActionBar()
         initNavigation()
         initViewModel()
-        initQuickNote(savedInstanceState)
+        initQuickNote()
+        initScreen(savedInstanceState)
         initStartFragment()
     }
 
-    private fun initQuickNote(savedInstanceState: Bundle?) {
-        val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, "")).get(NoteViewModel::class.java)
-        mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
-                noteViewModel, prefs, notifier)
+    private fun initScreen(savedInstanceState: Bundle?) {
         when {
             savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, PageIdentifier.menuId(this, prefs.homePage)))
-            intent.getIntExtra(Constants.INTENT_POSITION, PageIdentifier.index(this, prefs.homePage)) != 0 -> {
-                prevItem = intent.getIntExtra(Constants.INTENT_POSITION, 0)
+            intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
+                prevItem = PageIdentifier.menuId(this, intent.getIntExtra(Constants.INTENT_POSITION, 0))
                 nav_view.setCheckedItem(prevItem)
                 openScreen(prevItem)
             }
             else -> initStartFragment()
         }
+    }
+
+    private fun initQuickNote() {
+        val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, "")).get(NoteViewModel::class.java)
+        mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
+                noteViewModel, prefs, notifier)
     }
 
     private fun initViewModel() {
