@@ -71,24 +71,20 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="content" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
+                <data android:scheme="content" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:host="*" />
                 <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
         </activity>
@@ -98,24 +94,20 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.te2" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="content" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
+                <data android:scheme="content" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:host="*" />
                 <data android:pathPattern=".*\\.te2" />
             </intent-filter>
         </activity>
@@ -129,24 +121,20 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.gr2" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="content" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
+                <data android:scheme="content" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:host="*" />
                 <data android:pathPattern=".*\\.gr2" />
             </intent-filter>
         </activity>
@@ -155,23 +143,19 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.pl2" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="content" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
+                <data android:scheme="content" />
+                <data android:host="*" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.pl2" />
             </intent-filter>
@@ -181,25 +165,41 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.no2" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="content" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
+                <data android:scheme="content" />
+                <data android:host="*" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.no2" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".birthdays.createEdit.AddBirthdayActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.bi2" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:host="*" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
         <activity android:name=".notes.preview.ImagePreviewActivity" />
@@ -227,30 +227,6 @@
         <activity
             android:name=".core.dialogs.VolumeDialog"
             android:theme="@style/Light1.Dialog" />
-        <activity android:name=".birthdays.createEdit.AddBirthdayActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="file" />
-                <data android:host="*" />
-                <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.bi2" />
-            </intent-filter>
-            <intent-filter>
-                <data android:scheme="content" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.bi2" />
-            </intent-filter>
-        </activity>
         <activity android:name=".notes.editor.ImageEditActivity" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
