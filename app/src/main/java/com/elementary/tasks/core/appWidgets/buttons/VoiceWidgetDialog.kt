@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.appWidgets.voiceControl
+package com.elementary.tasks.core.appWidgets.buttons
 
 import android.app.Activity
 import android.content.Intent

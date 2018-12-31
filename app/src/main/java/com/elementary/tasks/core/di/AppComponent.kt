@@ -11,7 +11,7 @@ import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateService
 import com.elementary.tasks.core.appWidgets.calendar.CalendarWeekdayFactory
 import com.elementary.tasks.core.appWidgets.notes.NotesFactory
 import com.elementary.tasks.core.appWidgets.tasks.TasksFactory
-import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
+import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.async.BackupTask
