@@ -317,7 +317,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return
-            viewModel.parseResults(matches, false)
+            viewModel.parseResults(matches, false, this)
         }
         fragment?.onActivityResult(requestCode, resultCode, data)
     }
