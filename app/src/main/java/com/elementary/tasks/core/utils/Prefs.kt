@@ -52,10 +52,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.TELL_ABOUT_EVENT)
         set(value) = putBoolean(PrefsConstants.TELL_ABOUT_EVENT, value)
 
-    var isMigrated: Boolean
-        get() = getBoolean(PrefsConstants.MIGRATION_COMPLETE)
-        set(value) = putBoolean(PrefsConstants.MIGRATION_COMPLETE, value)
-
     var lastUsedReminder: Int
         get() = getInt(PrefsConstants.LAST_USED_REMINDER)
         set(value) = putInt(PrefsConstants.LAST_USED_REMINDER, value)
@@ -164,10 +160,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION)
         set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)
 
-    var isCalendarImagesEnabled: Boolean
-        get() = getBoolean(PrefsConstants.CALENDAR_IMAGE)
-        set(value) = putBoolean(PrefsConstants.CALENDAR_IMAGE, value)
-
     var isNoteReminderEnabled: Boolean
         get() = getBoolean(PrefsConstants.QUICK_NOTE_REMINDER)
         set(value) = putBoolean(PrefsConstants.QUICK_NOTE_REMINDER, value)
@@ -231,10 +223,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
     var reminderImage: String
         get() = getString(PrefsConstants.REMINDER_IMAGE)
         set(value) = putString(PrefsConstants.REMINDER_IMAGE, value)
-
-    var isBlurEnabled: Boolean
-        get() = getBoolean(PrefsConstants.REMINDER_IMAGE_BLUR)
-        set(value) = putBoolean(PrefsConstants.REMINDER_IMAGE_BLUR, value)
 
     var isManualRemoveEnabled: Boolean
         get() = getBoolean(PrefsConstants.NOTIFICATION_REMOVE)
@@ -468,10 +456,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY)
         set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
-    var isNoteHintShowed: Boolean
-        get() = getBoolean(PrefsConstants.NOTE_HINT_SHOWED)
-        set(value) = putBoolean(PrefsConstants.NOTE_HINT_SHOWED, value)
-
     var reminderType: Int
         get() = getInt(PrefsConstants.REMINDER_TYPE)
         set(reminderType) = putInt(PrefsConstants.REMINDER_TYPE, reminderType)
@@ -487,14 +471,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
     var isIgnoreWindowType: Boolean
         get() = getBoolean(PrefsConstants.IGNORE_WINDOW_TYPE)
         set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)
-
-    fun isShowcase(key: String): Boolean {
-        return getBoolean(key)
-    }
-
-    fun setShowcase(key: String, value: Boolean) {
-        putBoolean(key, value)
-    }
 
     fun initPrefs(context: Context) {
         val settingsUI = File("/data/data/" + context.packageName + "/shared_prefs/" + PrefsConstants.PREFS_NAME + ".xml")

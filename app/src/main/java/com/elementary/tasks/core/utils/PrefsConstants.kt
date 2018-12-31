@@ -104,7 +104,6 @@ object PrefsConstants {
     const val RATE_COUNT = "rate_count"
     const val USER_LOGGED = "user_logged"
     const val LIVE_CONVERSATION = "live_conversation"
-    const val MIGRATION_COMPLETE = "migration_complete"
     const val AUTO_SAVE = "auto_save"
     const val REMEMBER_NOTE_COLOR = "remember_note_color"
     const val LAST_NOTE_COLOR = "last_note_color"
@@ -127,7 +126,6 @@ object PrefsConstants {
     const val TASKS_ORDER = "tasks_ordering"
     const val RATE_SHOW = "show_rate"
     const val APP_RUNS_COUNT = "app_runs"
-    const val NOTE_HINT_SHOWED = "note_hint_showed"
 
     // birthdays reminder notification constants
     const val BIRTHDAY_USE_GLOBAL = "use_global"
