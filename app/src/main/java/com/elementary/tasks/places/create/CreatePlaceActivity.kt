@@ -102,8 +102,8 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         initViewModel(id)
         if (intent.data != null) {
             try {
-                val name = intent.data
-                val scheme = name!!.scheme
+                val name = intent.data ?: return
+                val scheme = name.scheme
                 mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
                     backupTool.getPlace(cr, name)

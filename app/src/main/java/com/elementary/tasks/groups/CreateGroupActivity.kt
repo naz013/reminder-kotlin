@@ -74,16 +74,11 @@ class CreateGroupActivity : ThemedActivity() {
 
     private fun showGroup(reminderGroup: ReminderGroup) {
         this.mItem = reminderGroup
-
         nameInput.setText(reminderGroup.groupTitle)
-
         colorSlider.setSelection(reminderGroup.groupColor)
-
         defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
         defaultCheck.isChecked = reminderGroup.isDefaultGroup
-
         toolbar.setTitle(R.string.change_group)
-
         invalidateOptionsMenu()
     }
 

@@ -147,7 +147,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private val isReminderAttached: Boolean
         get() = remindContainer.visibility == View.VISIBLE
 
-    private var myDateCallBack = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+    private var mDateCallBack = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         mYear = year
         mMonth = monthOfYear
         mDay = dayOfMonth
@@ -164,7 +164,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         remindDate.text = SuperUtil.appendString(dayStr, "/", monthStr, "/", mYear.toString())
     }
 
-    private var myCallBack = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+    private var mCallBack = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mHour = hourOfDay
         mMinute = minute
         val c = Calendar.getInstance()
@@ -702,11 +702,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, myDateCallBack)
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, myCallBack)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mCallBack)
     }
 
     override fun onDestroy() {
