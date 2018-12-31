@@ -12,6 +12,7 @@ import com.elementary.tasks.core.appWidgets.calendar.CalendarWeekdayFactory
 import com.elementary.tasks.core.appWidgets.notes.NotesFactory
 import com.elementary.tasks.core.appWidgets.googleTasks.TasksFactory
 import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
+import com.elementary.tasks.core.appWidgets.events.EventsFactory
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.async.BackupTask
@@ -115,6 +116,7 @@ interface AppComponent {
     fun inject(backupTask: BackupTask)
     fun inject(notesFactory: NotesFactory)
     fun inject(tasksFactory: TasksFactory)
+    fun inject(factory: EventsFactory)
     fun inject(dropbox: Dropbox)
     fun inject(locationTracker: LocationTracker)
     fun inject(baseBroadcast: BaseBroadcast)

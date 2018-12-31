@@ -287,7 +287,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.appWidgets.events.EventsWidgetConfig"
+            android:name=".core.appWidgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
