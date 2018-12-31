@@ -3,6 +3,9 @@ package com.elementary.tasks.core.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.PorterDuff
 import android.view.*
 import android.view.animation.*
 import android.widget.ScrollView
@@ -34,6 +37,25 @@ import com.elementary.tasks.R
  * limitations under the License.
  */
 object ViewUtils {
+
+    fun createIcon(context: Context, @DrawableRes res: Int, @ColorInt color: Int): Bitmap? {
+        var icon = ContextCompat.getDrawable(context, res)
+        if (icon != null) {
+            if (Module.isLollipop) {
+                icon = (DrawableCompat.wrap(icon)).mutate()
+                DrawableCompat.setTint(icon, color)
+                DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
+            }
+            if (icon != null) {
+                val bitmap = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                icon.setBounds(0, 0, canvas.width, canvas.height)
+                icon.draw(canvas)
+                return bitmap
+            }
+        }
+        return null
+    }
 
     fun tintMenuIcon(context: Context, menu: Menu?, index: Int, @DrawableRes resource: Int, isDark: Boolean) {
         val icon = ContextCompat.getDrawable(context, resource)

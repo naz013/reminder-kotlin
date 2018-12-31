@@ -103,9 +103,9 @@ class TaskActivity : ThemedActivity() {
         mYear = calendar.get(Calendar.YEAR)
         mMonth = calendar.get(Calendar.MONTH)
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        val intent = intent
-        val tmp = intent.getStringExtra(Constants.INTENT_ID)
-        action = intent.getStringExtra(TasksConstants.INTENT_ACTION)
+
+        val tmp = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        action = intent.getStringExtra(TasksConstants.INTENT_ACTION) ?: ""
         if (action == "") action = TasksConstants.CREATE
 
         if (action == TasksConstants.CREATE) {

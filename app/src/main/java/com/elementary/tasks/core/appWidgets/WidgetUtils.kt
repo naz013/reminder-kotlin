@@ -37,8 +37,11 @@ import androidx.appcompat.widget.AppCompatDrawableManager
 object WidgetUtils {
 
     fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int,
-                   cls: Class<*>, extras: ((Intent) -> Unit)? = null) {
-        val configIntent = Intent(context, cls)
+                   cls: Class<*>, extras: ((Intent) -> Intent)? = null) {
+        var configIntent = Intent(context, cls)
+        if (extras != null) {
+            configIntent = extras.invoke(configIntent)
+        }
         extras?.invoke(configIntent)
         val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
         rv.setOnClickPendingIntent(viewId, configPendingIntent)

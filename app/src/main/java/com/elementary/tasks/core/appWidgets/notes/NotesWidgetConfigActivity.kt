@@ -42,6 +42,7 @@ class NotesWidgetConfigActivity : ThemedActivity() {
             headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
+        updateIcons(0)
 
         showCurrentTheme()
     }

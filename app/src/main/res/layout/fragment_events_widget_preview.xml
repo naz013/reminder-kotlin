@@ -86,7 +86,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    app:srcCompat="@drawable/ic_add_white_24dp" />
+                    app:srcCompat="@drawable/ic_twotone_add_white" />
 
             </LinearLayout>
 

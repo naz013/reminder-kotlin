@@ -8,14 +8,14 @@
 
     <drawable name="simple_left_arrow">@drawable/ic_keyboard_arrow_left_white_24dp</drawable>
     <drawable name="simple_right_arrow">@drawable/ic_keyboard_arrow_right_white_24dp</drawable>
-    <drawable name="simple_plus_button">@drawable/ic_add_white_24dp</drawable>
-    <drawable name="simple_voice_button">@drawable/ic_microphone_white</drawable>
-    <drawable name="simple_settings_button">@drawable/ic_settings_white</drawable>
+    <drawable name="simple_plus_button">@drawable/ic_twotone_add_white</drawable>
+    <drawable name="simple_voice_button">@drawable/ic_twotone_mic_white</drawable>
+    <drawable name="simple_settings_button">@drawable/ic_twotone_settings_white</drawable>
 
     <drawable name="simple_left_arrow_black">@drawable/ic_keyboard_arrow_left_black_24dp</drawable>
     <drawable name="simple_right_arrow_black">@drawable/ic_keyboard_arrow_right_black_24dp</drawable>
-    <drawable name="simple_plus_button_black">@drawable/ic_add_black_24dp</drawable>
+    <drawable name="simple_plus_button_black">@drawable/ic_twotone_add_24px</drawable>
     <drawable name="simple_voice_button_black">@drawable/ic_twotone_mic_24px</drawable>
-    <drawable name="simple_settings_button_black">@drawable/ic_settings</drawable>
+    <drawable name="simple_settings_button_black">@drawable/ic_twotone_settings_24px</drawable>
 
 </resources>

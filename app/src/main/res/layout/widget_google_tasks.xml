@@ -20,7 +20,7 @@
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:singleLine="true"
-            android:text="@string/notes"
+            android:text="@string/google_tasks"
             android:textAppearance="?textAppearanceHeadline5"
             android:textSize="18sp"
             tools:ignore="RtlSymmetry" />
@@ -33,7 +33,7 @@
             tools:srcCompat="@drawable/ic_twotone_settings_24px" />
 
         <ImageView
-            android:id="@+id/btn_add_note"
+            android:id="@+id/btn_add_task"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerInside"
@@ -45,7 +45,6 @@
         android:id="@+id/widgetBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <ListView
@@ -61,6 +60,6 @@
             android:id="@android:id/empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_notes" />
+            android:text="@string/no_google_tasks" />
     </LinearLayout>
 </LinearLayout>

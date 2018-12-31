@@ -7,7 +7,7 @@ import android.content.Intent
 import com.elementary.tasks.core.appWidgets.calendar.CalendarWidget
 import com.elementary.tasks.core.appWidgets.events.EventsWidget
 import com.elementary.tasks.core.appWidgets.notes.NotesWidget
-import com.elementary.tasks.core.appWidgets.tasks.TasksWidget
+import com.elementary.tasks.core.appWidgets.googleTasks.TasksWidget
 import javax.inject.Inject
 import javax.inject.Singleton
 
