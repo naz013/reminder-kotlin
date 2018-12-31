@@ -18,7 +18,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import kotlinx.android.synthetic.main.list_item_task.view.*
+import kotlinx.android.synthetic.main.list_item_google_task.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,7 +38,7 @@ import java.util.*
  * limitations under the License.
  */
 class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
-        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_task, parent, false)) {
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_google_task, parent, false)) {
 
     init {
         itemView.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
@@ -101,6 +101,7 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
             calendar.timeInMillis = due
             val update = full24Format.format(calendar.time)
             view.text = update
+            view.visibility = View.VISIBLE
         } else {
             view.visibility = View.INVISIBLE
         }
