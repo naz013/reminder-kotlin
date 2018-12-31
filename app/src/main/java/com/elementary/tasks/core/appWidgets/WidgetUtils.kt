@@ -45,9 +45,7 @@ object WidgetUtils {
     @SuppressLint("RestrictedApi")
     fun getIcon(context: Context, @DrawableRes id: Int): Bitmap {
         val d = AppCompatDrawableManager.get().getDrawable(context, id)
-        val b = Bitmap.createBitmap(d.intrinsicWidth,
-                d.intrinsicHeight,
-                Bitmap.Config.ARGB_8888)
+        val b = Bitmap.createBitmap(d.intrinsicWidth, d.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
         d.setBounds(0, 0, c.width, c.height)
         d.draw(c)
@@ -116,4 +114,24 @@ object WidgetUtils {
         }
         return drawable
     }
+
+    @DrawableRes
+    fun newWidgetBg(code: Int): Int {
+        return when (code) {
+            0 -> R.drawable.widget_bg_transparent
+            1 -> R.drawable.widget_bg_white
+            2 -> R.drawable.widget_bg_light1
+            3 -> R.drawable.widget_bg_light2
+            4 -> R.drawable.widget_bg_light3
+            5 -> R.drawable.widget_bg_light4
+            6 -> R.drawable.widget_bg_dark1
+            7 -> R.drawable.widget_bg_dark2
+            8 -> R.drawable.widget_bg_dark3
+            9 -> R.drawable.widget_bg_dark4
+            10 -> R.drawable.widget_bg_black
+            else -> R.drawable.widget_bg_black
+        }
+    }
+
+    fun isDarkBg(code: Int): Boolean = code > 5
 }
