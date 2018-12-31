@@ -1,15 +1,10 @@
 package com.elementary.tasks.core.appWidgets.buttons
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.RemoteViews
-import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
-
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.appWidgets.WidgetUtils
@@ -56,25 +51,18 @@ class CombinedButtonsWidget : AppWidgetProvider() {
             rv.setInt(R.id.widgetBg, "setBackgroundResource", WidgetUtils.newWidgetBg(color))
 
             if (WidgetUtils.isDarkBg(color)) {
-                initButton(context, rv, R.drawable.ic_twotone_alarm_white, R.id.btn_add_reminder, CreateReminderActivity::class.java)
-                initButton(context, rv, R.drawable.ic_twotone_note_white, R.id.btn_add_note, CreateNoteActivity::class.java)
-                initButton(context, rv, R.drawable.ic_twotone_cake_white, R.id.btn_add_birthday, AddBirthdayActivity::class.java)
-                initButton(context, rv, R.drawable.ic_twotone_mic_white, R.id.btn_voice, VoiceWidgetDialog::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_white, R.id.btn_add_reminder, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_note_white, R.id.btn_add_note, CreateNoteActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_white, R.id.btn_add_birthday, AddBirthdayActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_white, R.id.btn_voice, VoiceWidgetDialog::class.java)
             } else {
-                initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.id.btn_add_reminder, CreateReminderActivity::class.java)
-                initButton(context, rv, R.drawable.ic_twotone_note_24px, R.id.btn_add_note, CreateNoteActivity::class.java)
-                initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.id.btn_add_birthday, AddBirthdayActivity::class.java)
-                initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.id.btn_voice, VoiceWidgetDialog::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.id.btn_add_reminder, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_note_24px, R.id.btn_add_note, CreateNoteActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.id.btn_add_birthday, AddBirthdayActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.id.btn_voice, VoiceWidgetDialog::class.java)
             }
 
             appWidgetManager.updateAppWidget(widgetID, rv)
-        }
-
-        private fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int, cls: Class<*>) {
-            val configIntent = Intent(context, cls)
-            val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
-            rv.setOnClickPendingIntent(viewId, configPendingIntent)
-            WidgetUtils.setIcon(context, rv, iconId, viewId)
         }
     }
 }

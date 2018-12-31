@@ -65,7 +65,6 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
         } catch (e: IndexOutOfBoundsException) {
             null
         }
-
     }
 
     override fun getViewAt(i: Int): RemoteViews {
@@ -80,10 +79,15 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
 
         if (note.images.isNotEmpty()) {
             val image = note.images[0]
-            val photo = BitmapFactory.decodeByteArray(image.image, 0, image.image!!.size)
-            if (photo != null) {
-                rView.setImageViewBitmap(R.id.noteImage, photo)
-                rView.setViewVisibility(R.id.noteImage, View.VISIBLE)
+            val imageData = image.image
+            if (imageData != null) {
+                val photo = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+                if (photo != null) {
+                    rView.setImageViewBitmap(R.id.noteImage, photo)
+                    rView.setViewVisibility(R.id.noteImage, View.VISIBLE)
+                } else {
+                    rView.setViewVisibility(R.id.noteImage, View.GONE)
+                }
             } else {
                 rView.setViewVisibility(R.id.noteImage, View.GONE)
             }

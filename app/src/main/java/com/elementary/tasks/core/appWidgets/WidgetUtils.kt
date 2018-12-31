@@ -1,7 +1,9 @@
 package com.elementary.tasks.core.appWidgets
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.annotation.ColorRes
@@ -33,6 +35,23 @@ import androidx.appcompat.widget.AppCompatDrawableManager
  * limitations under the License.
  */
 object WidgetUtils {
+
+    fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int,
+                   cls: Class<*>, extras: ((Intent) -> Unit)? = null) {
+        val configIntent = Intent(context, cls)
+        extras?.invoke(configIntent)
+        val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
+        rv.setOnClickPendingIntent(viewId, configPendingIntent)
+        WidgetUtils.setIcon(context, rv, iconId, viewId)
+    }
+
+    fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int,
+                   cls: Class<*>) {
+        val configIntent = Intent(context, cls)
+        val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
+        rv.setOnClickPendingIntent(viewId, configPendingIntent)
+        WidgetUtils.setIcon(context, rv, iconId, viewId)
+    }
 
     fun setIcon(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {
         if (Module.isLollipop) {
