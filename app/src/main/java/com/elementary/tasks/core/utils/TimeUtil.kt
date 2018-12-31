@@ -606,11 +606,11 @@ object TimeUtil {
     }
 
     fun convertDateTimeToDate(dateTime: DateTime): Date {
-        val year = dateTime.year!!
-        val datetimeMonth = dateTime.month!!
-        val day = dateTime.day!!
+        val year = dateTime.year
+        val datetimeMonth = dateTime.month
+        val day = dateTime.day
         val calendar = Calendar.getInstance()
-        calendar.clear()
+        calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(year, datetimeMonth - 1, day)
         return calendar.time
     }
