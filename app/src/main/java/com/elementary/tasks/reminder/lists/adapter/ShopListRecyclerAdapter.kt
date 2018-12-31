@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.list_item_task_item_card.view.*
+import kotlinx.android.synthetic.main.list_item_shop_task.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -77,6 +77,18 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        init {
+            itemView.clearButton.setOnClickListener {
+                listener?.onItemDelete(adapterPosition)
+            }
+            itemView.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
+                if (!onBind && listener != null) {
+                    listener?.onItemCheck(adapterPosition, isChecked1)
+                }
+            }
+        }
+
         fun bind(item: ShopItem) {
             val title = item.summary
             if (item.isChecked) {
@@ -95,21 +107,10 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
                 itemView.clearButton.visibility = View.VISIBLE
             }
         }
-
-        init {
-            itemView.clearButton.setOnClickListener {
-                listener?.onItemDelete(adapterPosition)
-            }
-            itemView.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
-                if (!onBind && listener != null) {
-                    listener?.onItemCheck(adapterPosition, isChecked1)
-                }
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_task_item_card, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shop_task, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

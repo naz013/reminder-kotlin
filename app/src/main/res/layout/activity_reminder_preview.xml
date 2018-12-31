@@ -371,7 +371,7 @@
                     android:minHeight="56dp"
                     android:overScrollMode="never"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    tools:listitem="@layout/list_item_task_item_card" />
+                    tools:listitem="@layout/list_item_shop_task" />
 
                 <LinearLayout
                     android:id="@+id/mapContainer"
