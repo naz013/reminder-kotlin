@@ -64,7 +64,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             prefs.lastUsedReminder = position
-//            reminder.type = typeFromPosition(position)
             openScreen(position)
         }
 
@@ -166,17 +165,18 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             date != 0L -> {
                 reminder.type = Reminder.BY_DATE
                 reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
-                editReminder(reminder)
+                editReminder(reminder, false)
             }
             intent.data != null -> try {
-                val name = intent.data
-                val scheme = name!!.scheme
+                val uri = intent.data ?: return
+                val scheme = uri.scheme
                 reminder = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    backupTool.getReminder(cr, name) ?: Reminder()
+                    backupTool.getReminder(cr, uri) ?: Reminder()
                 } else {
-                    backupTool.getReminder(name.path, null) ?: Reminder()
+                    backupTool.getReminder(uri.path, null) ?: Reminder()
                 }
+                editReminder(reminder, false)
             } catch (e: IOException) {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
             } catch (e: IllegalStateException) {
@@ -194,6 +194,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         Timber.d("editReminder: ")
         this.reminder = reminder
         if (stop) viewModel.pauseReminder(reminder)
+        else {
+            val group = defGroup
+            if (reminder.groupUuId.isBlank() && group != null) {
+                this.reminder.groupUuId = group.groupUuId
+                this.reminder.groupColor = group.groupColor
+                this.reminder.groupTitle = group.groupTitle
+            }
+        }
         val current = navSpinner.selectedItemPosition
         var toSelect = 0
         when (reminder.type) {
@@ -267,9 +275,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private fun showGroup(item: ReminderGroup?) {
         if (item == null) return
         val frag = fragment ?: return
-        if (frag.isAdded && frag.isVisible) {
-            frag.onGroupUpdate(item)
-        }
+        frag.onGroupUpdate(item)
     }
 
     private fun openRecognizer() {

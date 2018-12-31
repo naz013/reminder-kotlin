@@ -77,14 +77,14 @@ abstract class TypeFragment : Fragment() {
             reminder.groupUuId = reminderGroup.groupUuId
             reminder.groupColor = reminderGroup.groupColor
             reminder.groupTitle = reminderGroup.groupTitle
-        } catch (e: UninitializedPropertyAccessException) {
+        } catch (e: Exception) {
 
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (reminderInterface.reminder.groupUuId == "") {
+        if (reminderInterface.reminder.groupUuId.isBlank()) {
             val defGroup = reminderInterface.defGroup ?: return
             onGroupUpdate(defGroup)
         }
