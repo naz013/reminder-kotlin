@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.appWidgets.buttons
 
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.R
@@ -41,6 +42,17 @@ class CombinedWidgetConfigActivity : ThemedActivity() {
             widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
+        updateIcons(0)
+
+        showCurrentTheme()
+    }
+
+    private fun showCurrentTheme() {
+        val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
+
+        val headerBg = sp.getInt(WIDGET_BG_COLOR + widgetID, 0)
+        bgColorSlider.setSelection(headerBg)
+        updateIcons(headerBg)
     }
 
     private fun updateIcons(code: Int) {

@@ -104,7 +104,7 @@
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_calendar"
+                app:srcCompat="@drawable/ic_twotone_today_24px"
                 app:tint="?android:textColorPrimary" />
 
             <androidx.appcompat.widget.AppCompatTextView

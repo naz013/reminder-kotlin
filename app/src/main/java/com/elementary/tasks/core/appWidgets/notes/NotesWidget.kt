@@ -66,12 +66,14 @@ class NotesWidget : AppWidgetProvider() {
             if (WidgetUtils.isDarkBg(headerBgColor)) {
                 WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_white, R.id.btn_settings, NotesWidgetConfigActivity::class.java) {
                     it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                    return@initButton it
                 }
                 WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_white, R.id.btn_add_note, CreateNoteActivity::class.java)
                 rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureWhite))
             } else {
                 WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.id.btn_settings, NotesWidgetConfigActivity::class.java) {
                     it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                    return@initButton it
                 }
                 WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.id.btn_add_note, CreateNoteActivity::class.java)
                 rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))

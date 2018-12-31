@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.appWidgets.tasks
+package com.elementary.tasks.core.appWidgets.googleTasks
 
 import android.content.Intent
 import android.widget.RemoteViewsService
@@ -21,7 +21,6 @@ import android.widget.RemoteViewsService
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TasksService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsService.RemoteViewsFactory {
         return TasksFactory(applicationContext, intent)

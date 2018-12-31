@@ -69,7 +69,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
     }
 
     override fun getViewAt(i: Int): RemoteViews {
-        val rv = RemoteViews(mContext.packageName, R.layout.list_item_note_widget)
+        val rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_note)
         val note = getItem(i)
         if (note == null) {
             rv.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load))

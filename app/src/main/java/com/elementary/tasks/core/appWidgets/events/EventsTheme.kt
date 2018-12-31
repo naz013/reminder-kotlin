@@ -144,85 +144,85 @@ class EventsTheme : Parcelable {
             val list = ArrayList<EventsTheme>()
             list.clear()
             list.add(EventsTheme(R.color.indigoPrimary, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.indigo), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.tealPrimaryDark, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.teal), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.limePrimaryDark, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.lime), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.bluePrimaryDark, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.blue), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.material_grey, R.color.material_divider,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.grey), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.greenPrimaryDark, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.green), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.pureBlack, R.color.pureBlack,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.whitePrimary), R.color.pureBlack, 1, context.getString(R.string.dark), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.whitePrimary, R.color.whitePrimary,
-                    getResColor(context, R.color.pureBlack), R.drawable.ic_add_black_24dp,
+                    getResColor(context, R.color.pureBlack), R.drawable.ic_twotone_add_24px,
                     R.drawable.ic_settings, R.drawable.ic_twotone_mic_24px,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.white), R.color.material_grey,
                     getResColor(context, R.color.whitePrimary)))
 
             list.add(EventsTheme(R.color.orangePrimaryDark, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.orange), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.redPrimaryDark, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 0, context.getString(R.string.red), R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.material_grey_dialog, R.color.orangeAccent,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.material_divider, 0, "Simple Orange", R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.simple_transparent_header_color, R.color.simple_transparent_header_color,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.whitePrimary), R.color.simple_transparent_header_color, 1, "Transparent Light", R.color.material_grey,
                     getResColor(context, R.color.whitePrimary)))
 
             list.add(EventsTheme(R.color.simple_transparent_header_color, R.color.simple_transparent_header_color,
-                    getResColor(context, R.color.pureBlack), R.drawable.ic_add_black_24dp,
+                    getResColor(context, R.color.pureBlack), R.drawable.ic_twotone_add_24px,
                     R.drawable.ic_settings, R.drawable.ic_twotone_mic_24px,
                     getResColor(context, R.color.pureBlack), R.color.simple_transparent_header_color, 0, "Transparent Dark", R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))
 
             list.add(EventsTheme(R.color.pinkAccent, R.color.material_grey,
-                    getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
+                    getResColor(context, R.color.whitePrimary), R.drawable.ic_twotone_add_white,
                     R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
                     getResColor(context, R.color.pureBlack), R.color.whitePrimary, 1, "Simple Pink", R.color.whitePrimary,
                     getResColor(context, R.color.pureBlack)))

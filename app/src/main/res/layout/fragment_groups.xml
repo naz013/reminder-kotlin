@@ -49,5 +49,5 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
+        app:srcCompat="@drawable/ic_twotone_add_24px" />
 </RelativeLayout>

@@ -253,9 +253,9 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             remoteViews.setTextViewText(R.id.text, context.getString(R.string.no_events))
             remoteViews.setViewVisibility(R.id.featured, View.GONE)
         }
-        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_alarm_white, R.id.notificationAdd)
-        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_note_white, R.id.noteAdd)
-        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon)
+        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
+        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
+        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getColor(themeUtil.colorPrimary()))
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         manager?.notify(PermanentReminderReceiver.PERM_ID, builder.build())

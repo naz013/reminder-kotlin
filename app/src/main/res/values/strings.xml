@@ -755,5 +755,7 @@
     <string name="start_screen">Start screen</string>
     <string name="quick_buttons">Quick buttons</string>
     <string name="icon_color">Icon color</string>
+    <string name="list_item_background">List item background</string>
+    <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
 
 </resources>

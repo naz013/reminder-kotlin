@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.appWidgets.tasks
+package com.elementary.tasks.core.appWidgets.googleTasks
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -6,12 +6,16 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.appWidgets.WidgetUtils
+import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.googleTasks.create.TasksConstants
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,8 +41,7 @@ import javax.inject.Inject
  */
 class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
-    private val widgetID: Int = intent.getIntExtra(
-            AppWidgetManager.EXTRA_APPWIDGET_ID,
+    private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID)
     @Inject lateinit var themeUtil: ThemeUtil
     private val mData = ArrayList<GoogleTask>()
@@ -73,53 +76,73 @@ class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsS
     }
 
     override fun getViewAt(i: Int): RemoteViews {
-        val sp = mContext.getSharedPreferences(
-                TasksWidgetConfig.TASKS_WIDGET_PREF, Context.MODE_PRIVATE)
-        val rView = RemoteViews(mContext.packageName,
-                R.layout.list_item_tasks_widget)
+        val sp = mContext.getSharedPreferences(TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+        val rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_google_task)
+
+        rv.setTextViewText(R.id.note, "")
+        rv.setTextViewText(R.id.taskDate, "")
+
         if (i >= count) {
-            rView.setTextViewText(R.id.task, mContext.getString(R.string.failed_to_load))
-            rView.setTextViewText(R.id.note, "")
-            rView.setTextViewText(R.id.taskDate, "")
-            return rView
+            rv.setTextViewText(R.id.task, mContext.getString(R.string.failed_to_load))
+            return rv
         }
-        val theme = sp.getInt(TasksWidgetConfig.TASKS_WIDGET_THEME + widgetID, 0)
-        val tasksTheme = TasksTheme.getThemes(mContext)[theme]
-        val itemTextColor = tasksTheme.itemTextColor
-        rView.setTextColor(R.id.task, itemTextColor)
-        rView.setTextColor(R.id.note, itemTextColor)
-        rView.setTextColor(R.id.taskDate, itemTextColor)
-        rView.setViewVisibility(R.id.checkDone, View.GONE)
-        if (map.containsKey(mData[i].listId)) {
-            rView.setInt(R.id.listColor, "setBackgroundColor", themeUtil.getNoteColor(map[mData[i].listId]!!))
-        }
-        val name = mData[i].title
-        rView.setTextViewText(R.id.task, name)
-        val full24Format = SimpleDateFormat("EEE,\ndd/MM", Locale.getDefault())
-        val notes = mData[i].notes
-        if (!notes.matches("".toRegex())) {
-            rView.setTextViewText(R.id.note, notes)
+        val itemBgColor = sp.getInt(TasksWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
+
+        rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
+
+        if (WidgetUtils.isDarkBg(itemBgColor)) {
+            rv.setTextColor(R.id.task, ContextCompat.getColor(mContext, R.color.pureWhite))
+            rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureWhite))
+            rv.setTextColor(R.id.taskDate, ContextCompat.getColor(mContext, R.color.pureWhite))
         } else {
-            rView.setViewVisibility(R.id.note, View.GONE)
+            rv.setTextColor(R.id.task, ContextCompat.getColor(mContext, R.color.pureBlack))
+            rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureBlack))
+            rv.setTextColor(R.id.taskDate, ContextCompat.getColor(mContext, R.color.pureBlack))
         }
 
-        val date = mData[i].dueDate
-        val calendar = java.util.Calendar.getInstance()
+        val task = mData[i]
+        val listColor = if (map.containsKey(task.listId)) {
+            themeUtil.getNoteLightColor(map[task.listId] ?: 0)
+        } else {
+            themeUtil.getNoteLightColor(0)
+        }
+
+        val icon = if (task.status == GTasks.TASKS_COMPLETE) {
+            ViewUtils.createIcon(mContext, R.drawable.ic_check, listColor)
+        } else {
+            ViewUtils.createIcon(mContext, R.drawable.ic_empty_circle, listColor)
+        }
+        rv.setImageViewBitmap(R.id.statusIcon, icon)
+
+        rv.setTextViewText(R.id.task, task.title)
+        val full24Format = SimpleDateFormat("EEE,\ndd/MM", Locale.getDefault())
+
+        val notes = task.notes
+        if (notes.isNotBlank()) {
+            rv.setTextViewText(R.id.note, notes)
+            rv.setViewVisibility(R.id.note, View.VISIBLE)
+        } else {
+            rv.setViewVisibility(R.id.note, View.GONE)
+        }
+
+        val date = task.dueDate
+        val calendar = Calendar.getInstance()
         if (date != 0L) {
             calendar.timeInMillis = date
             val update = full24Format.format(calendar.time)
-            rView.setTextViewText(R.id.taskDate, update)
+            rv.setTextViewText(R.id.taskDate, update)
+            rv.setViewVisibility(R.id.taskDate, View.VISIBLE)
         } else {
-            rView.setViewVisibility(R.id.taskDate, View.GONE)
+            rv.setViewVisibility(R.id.taskDate, View.GONE)
         }
 
         val fillInIntent = Intent()
-        fillInIntent.putExtra(Constants.INTENT_ID, mData[i].taskId)
+        fillInIntent.putExtra(Constants.INTENT_ID, task.taskId)
         fillInIntent.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)
-        rView.setOnClickFillInIntent(R.id.task, fillInIntent)
-        rView.setOnClickFillInIntent(R.id.note, fillInIntent)
-        rView.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
-        return rView
+        rv.setOnClickFillInIntent(R.id.task, fillInIntent)
+        rv.setOnClickFillInIntent(R.id.note, fillInIntent)
+        rv.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
+        return rv
     }
 
     override fun getLoadingView(): RemoteViews? {
