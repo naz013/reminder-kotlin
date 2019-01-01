@@ -190,7 +190,7 @@
                 android:scaleType="centerInside"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp"
+                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
                 app:tint="?android:textColorPrimary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

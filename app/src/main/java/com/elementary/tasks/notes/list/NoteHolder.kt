@@ -16,10 +16,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.list_item_note.view.*
@@ -65,17 +62,16 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
 
         itemView.bgView.setBackgroundColor(themeUtil.getNoteLightColor(item.getColor(), item.getOpacity()))
 
+        itemView.button_more.colorFilter = null
+        itemView.button_more.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, themeUtil.isDark))
+
         if (themeUtil.isAlmostTransparent(item.getOpacity())) {
-            itemView.button_more.colorFilter = null
             if (themeUtil.isDark) {
-                itemView.button_more.setImageResource(R.drawable.ic_more_vert_white_24dp)
                 itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
             } else {
-                itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
                 itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
             }
         } else {
-            itemView.button_more.setImageResource(R.drawable.ic_more_vert_black_24dp)
             itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
         }
     }
@@ -117,7 +113,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         }
     }
 
-    fun loadImage(container: LinearLayout, item: NoteWithImages) {
+    private fun loadImage(container: LinearLayout, item: NoteWithImages) {
         val images = item.images
         val imageView = container.findViewById<ImageView>(R.id.noteImage)
         if (!images.isEmpty()) {

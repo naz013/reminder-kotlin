@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -54,6 +55,7 @@ class NotePreviewActivity : ThemedActivity() {
     private var mNote: NoteWithImages? = null
     private var mReminder: Reminder? = null
     private var mId: String = ""
+    private var isBgDark = false
 
     private val mAdapter = ImagesGridAdapter()
     private lateinit var viewModel: NoteViewModel
@@ -72,9 +74,11 @@ class NotePreviewActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isBgDark = isDark
         mId = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         setContentView(R.layout.activity_note_preview)
         initActionBar()
+        updateTextColors()
         initImagesList()
         initReminderCard()
         initViewModel()
@@ -137,12 +141,14 @@ class NotePreviewActivity : ThemedActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.title = ""
+        toolbar.inflateMenu(R.menu.activity_preview_note)
+        updateIcons()
+    }
 
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
+    private fun updateIcons() {
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
+        ViewUtils.tintOverflowButton(toolbar, isBgDark)
+        invalidateOptionsMenu()
     }
 
     private fun editNote() {
@@ -174,7 +180,27 @@ class NotePreviewActivity : ThemedActivity() {
                 window.statusBarColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity())
             }
             windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity()))
+            isBgDark = if (themeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
+                isDark
+            } else {
+                false
+            }
+            updateTextColors()
+            updateIcons()
         }
+    }
+
+    private fun updateTextColors() {
+        val textColor = if (isBgDark) {
+            ContextCompat.getColor(this, R.color.pureWhite)
+        } else {
+            ContextCompat.getColor(this, R.color.pureBlack)
+        }
+        noteText.setTextColor(textColor)
+        reminderCardTitle.setTextColor(textColor)
+        reminderTime.setTextColor(textColor)
+        editReminder.setTextColor(textColor)
+        deleteReminder.setTextColor(textColor)
     }
 
     private fun showReminder(reminder: Reminder?) {
@@ -231,9 +257,9 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.preview_note_menu, menu)
-        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isDark)
+        menuInflater.inflate(R.menu.activity_preview_note, menu)
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isBgDark)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_favorite_24px, isBgDark)
         return true
     }
 

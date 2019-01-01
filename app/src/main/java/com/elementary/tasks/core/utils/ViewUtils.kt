@@ -6,12 +6,15 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
 import android.view.*
 import android.view.animation.*
 import android.widget.ScrollView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.NestedScrollView
@@ -38,6 +41,22 @@ import com.elementary.tasks.R
  */
 object ViewUtils {
 
+    fun tintOverflowButton(toolbar: Toolbar, isDark: Boolean): Boolean {
+        val overflowIcon = toolbar.overflowIcon ?: return false
+        val color = if (isDark) {
+            ContextCompat.getColor(toolbar.context, R.color.whitePrimary)
+        } else {
+            ContextCompat.getColor(toolbar.context, R.color.pureBlack)
+        }
+        val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+        overflowIcon.colorFilter = colorFilter
+        return true
+    }
+
+    fun backIcon(context: Context, isDark: Boolean): Drawable? {
+        return tintIcon(context, R.drawable.ic_twotone_arrow_back_24px, isDark)
+    }
+
     fun createIcon(context: Context, @DrawableRes res: Int, @ColorInt color: Int): Bitmap? {
         var icon = ContextCompat.getDrawable(context, res)
         if (icon != null) {
@@ -57,19 +76,27 @@ object ViewUtils {
         return null
     }
 
-    fun tintMenuIcon(context: Context, menu: Menu?, index: Int, @DrawableRes resource: Int, isDark: Boolean) {
-        val icon = ContextCompat.getDrawable(context, resource)
+    fun tintIcon(context: Context, @DrawableRes resource: Int, isDark: Boolean): Drawable? {
+        var icon = ContextCompat.getDrawable(context, resource)
         if (icon != null) {
-            if (isDark) {
-                val white = ContextCompat.getColor(context, R.color.whitePrimary)
-                DrawableCompat.setTint(icon, white)
-            } else {
-                val black = ContextCompat.getColor(context, R.color.pureBlack)
-                DrawableCompat.setTint(icon, black)
+            if (Module.isLollipop) {
+                icon = (DrawableCompat.wrap(icon)).mutate()
             }
-
-            menu?.getItem(index)?.icon = icon
+            if (icon == null) return null
+            val color = if (isDark) {
+                ContextCompat.getColor(context, R.color.whitePrimary)
+            } else {
+                ContextCompat.getColor(context, R.color.pureBlack)
+            }
+            DrawableCompat.setTint(icon, color)
+            DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
+            return icon
         }
+        return null
+    }
+
+    fun tintMenuIcon(context: Context, menu: Menu?, index: Int, @DrawableRes resource: Int, isDark: Boolean) {
+        menu?.getItem(index)?.icon = tintIcon(context, resource, isDark)
     }
 
     @SuppressLint("ClickableViewAccessibility")
