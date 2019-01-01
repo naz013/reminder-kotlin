@@ -142,11 +142,11 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)
         }
-        refreshView()
+        refreshView(0)
     }
 
-    private fun refreshView() {
-        if (mAdapter.itemCount == 0) {
+    private fun refreshView(count: Int) {
+        if (count == 0) {
             emptyItem.visibility = View.VISIBLE
         } else {
             emptyItem.visibility = View.GONE
@@ -156,7 +156,7 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
     override fun onChanged(result: List<Birthday>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
-        refreshView()
+        refreshView(result.size)
     }
 
     companion object {

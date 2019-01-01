@@ -216,7 +216,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)
         }
-        refreshView()
+        refreshView(0)
     }
 
     private fun showMore(view: View, note: NoteWithImages) {
@@ -288,8 +288,8 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         }, *items)
     }
 
-    private fun refreshView() {
-        if (mAdapter.itemCount == 0) {
+    private fun refreshView(count: Int) {
+        if (count == 0) {
             emptyItem.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
         } else {
@@ -301,6 +301,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
     override fun onChanged(result: List<NoteWithImages>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
-        refreshView()
+        refreshView(result.size)
     }
 }

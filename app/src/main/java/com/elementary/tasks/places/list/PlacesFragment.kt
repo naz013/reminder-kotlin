@@ -142,7 +142,7 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)
         }
-        refreshView()
+        refreshView(0)
     }
 
     private fun showMore(view: View, place: Place?) {
@@ -160,8 +160,8 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
                 .putExtra(Constants.INTENT_ID, place.id))
     }
 
-    private fun refreshView() {
-        if (mAdapter.itemCount == 0) {
+    private fun refreshView(count: Int) {
+        if (count == 0) {
             emptyItem.visibility = View.VISIBLE
         } else {
             emptyItem.visibility = View.GONE
@@ -171,7 +171,7 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
     override fun onChanged(result: List<Place>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
-        refreshView()
+        refreshView(result.size)
     }
 
     companion object {

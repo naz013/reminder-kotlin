@@ -129,7 +129,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reloadView()
         initList()
         initViewModel()
     }
@@ -147,7 +146,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun showData(result: List<Reminder>) {
         filterController.original = result.toMutableList()
-        reloadView()
         refreshFilters()
         activity?.invalidateOptionsMenu()
     }
@@ -173,6 +171,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)
         }
+        reloadView(0)
     }
 
     private fun addTypeFilter(filters: MutableList<FilterView.Filter>) {
@@ -218,8 +217,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         filters.add(filter)
     }
 
-    private fun reloadView() {
-        if (mAdapter.itemCount > 0) {
+    private fun reloadView(count: Int) {
+        if (count > 0) {
             emptyItem.visibility = View.GONE
         } else {
             emptyItem.visibility = View.VISIBLE
@@ -229,6 +228,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     override fun onChanged(result: List<Reminder>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
-        reloadView()
+        reloadView(result.size)
     }
 }

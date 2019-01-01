@@ -143,7 +143,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }
-        reloadView()
         initList()
         initViewModel()
     }
@@ -191,12 +190,13 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)
         }
+        reloadView(0)
     }
 
     override fun getTitle(): String = getString(R.string.tasks)
 
-    private fun reloadView() {
-        if (mAdapter.itemCount > 0) {
+    private fun reloadView(count: Int) {
+        if (count > 0) {
             emptyItem.visibility = View.GONE
         } else {
             emptyItem.visibility = View.VISIBLE
@@ -283,9 +283,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun onChanged(result: List<Reminder>) {
-        Timber.d("onChanged: ${result.size}")
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
-        reloadView()
+        reloadView(result.size)
     }
 }
