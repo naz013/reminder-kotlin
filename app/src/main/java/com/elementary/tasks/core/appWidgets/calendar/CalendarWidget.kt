@@ -1,28 +1,21 @@
 package com.elementary.tasks.core.appWidgets.calendar
 
-import android.annotation.TargetApi
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
-import android.os.Bundle
 import android.text.format.DateUtils
 import android.widget.RemoteViews
-
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.navigation.MainActivity
-
-import java.util.Calendar
-import java.util.Formatter
-import java.util.GregorianCalendar
-import java.util.Locale
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -45,13 +38,9 @@ import java.util.Locale
 class CalendarWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        val sp = context.getSharedPreferences(
-                CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = context.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
         for (i in appWidgetIds) {
             updateWidget(context, appWidgetManager, sp, i)
-            val options = appWidgetManager.getAppWidgetOptions(i)
-            onAppWidgetOptionsChanged(context, appWidgetManager, i,
-                    options)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
@@ -59,19 +48,14 @@ class CalendarWidget : AppWidgetProvider() {
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         super.onDeleted(context, appWidgetIds)
         val editor = context.getSharedPreferences(
-                CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE).edit()
+                CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE).edit()
         for (widgetID in appWidgetIds) {
-            editor.remove(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + widgetID)
-            editor.remove(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetID)
-            editor.remove(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetID)
+            editor.remove(CalendarWidgetConfigActivity.WIDGET_BG + widgetID)
+            editor.remove(CalendarWidgetConfigActivity.WIDGET_HEADER_BG + widgetID)
+            editor.remove(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetID)
+            editor.remove(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetID)
         }
         editor.apply()
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    override fun onAppWidgetOptionsChanged(ctxt: Context, mgr: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
-        val updateViews = RemoteViews(ctxt.packageName, R.layout.widget_calendar)
-        mgr.updateAppWidget(appWidgetId, updateViews)
     }
 
     companion object {
@@ -79,8 +63,8 @@ class CalendarWidget : AppWidgetProvider() {
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
                          sp: SharedPreferences, widgetID: Int) {
             val cal = GregorianCalendar()
-            val month = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetID, 0)
-            val year = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetID, 0)
+            val month = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetID, 0)
+            val year = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetID, 0)
             cal.set(Calendar.MONTH, month)
             cal.set(Calendar.YEAR, year)
             val monthYearStringBuilder = StringBuilder(50)
@@ -92,22 +76,41 @@ class CalendarWidget : AppWidgetProvider() {
                     monthYearFormatter, cal.timeInMillis, cal.timeInMillis, monthYearFlag)
                     .toString().toUpperCase()
 
-            val theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + widgetID, 0)
-            val item = CalendarTheme.getThemes(context)[theme]
+            val headerBgColor = sp.getInt(CalendarWidgetConfigActivity.WIDGET_HEADER_BG + widgetID, 0)
+            val bgColor = sp.getInt(CalendarWidgetConfigActivity.WIDGET_BG + widgetID, 0)
 
             val rv = RemoteViews(context.packageName, R.layout.widget_calendar)
-            rv.setTextViewText(R.id.currentDate, date)
-            rv.setTextColor(R.id.currentDate, item.titleColor)
 
-            rv.setInt(R.id.weekdayGrid, "setBackgroundResource", item.widgetBgColor)
-            rv.setInt(R.id.header, "setBackgroundResource", item.headerColor)
-            rv.setInt(R.id.monthGrid, "setBackgroundResource", item.borderColor)
+            rv.setInt(R.id.headerBg, "setBackgroundResource", WidgetUtils.newWidgetBg(headerBgColor))
+            rv.setInt(R.id.widgetBg, "setBackgroundResource", WidgetUtils.newWidgetBg(bgColor))
 
-            WidgetUtils.setIcon(context, rv, item.iconPlus, R.id.plusButton)
-            WidgetUtils.setIcon(context, rv, item.iconVoice, R.id.voiceButton)
-            WidgetUtils.setIcon(context, rv, item.iconSettings, R.id.settingsButton)
-            WidgetUtils.setIcon(context, rv, item.rightArrow, R.id.nextMonth)
-            WidgetUtils.setIcon(context, rv, item.leftArrow, R.id.prevMonth)
+            rv.setTextViewText(R.id.widgetTitle, date)
+
+            if (WidgetUtils.isDarkBg(headerBgColor)) {
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_white, R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
+                    it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                    return@initButton it
+                }
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_white, R.id.btn_add_task, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_white, R.id.btn_voice, VoiceWidgetDialog::class.java)
+
+                WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_left_24px, R.id.btn_prev, R.color.pureWhite)
+                WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_right_24px, R.id.btn_next, R.color.pureWhite)
+
+                rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureWhite))
+            } else {
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
+                    it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+                    return@initButton it
+                }
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.id.btn_add_task, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.id.btn_voice, VoiceWidgetDialog::class.java)
+
+                WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_left_24px, R.id.btn_prev, R.color.pureBlack)
+                WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_right_24px, R.id.btn_next, R.color.pureBlack)
+
+                rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
+            }
 
             val weekdayAdapter = Intent(context, CalendarWeekdayService::class.java)
             weekdayAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
@@ -123,30 +126,17 @@ class CalendarWidget : AppWidgetProvider() {
             monthAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(R.id.monthGrid, monthAdapter)
 
-            var configIntent = Intent(context, CreateReminderActivity::class.java)
-            var configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
-            rv.setOnClickPendingIntent(R.id.plusButton, configPendingIntent)
-
-            configIntent = Intent(context, VoiceWidgetDialog::class.java)
-            configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
-            rv.setOnClickPendingIntent(R.id.voiceButton, configPendingIntent)
-
-            configIntent = Intent(context, CalendarWidgetConfig::class.java)
-            configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
-            rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent)
-
             var serviceIntent = Intent(context, CalendarUpdateService::class.java)
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             serviceIntent.putExtra("actionPlus", 2)
             var servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setOnClickPendingIntent(R.id.nextMonth, servicePendingIntent)
+            rv.setOnClickPendingIntent(R.id.btn_next, servicePendingIntent)
 
             serviceIntent = Intent(context, CalendarUpdateMinusService::class.java)
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             serviceIntent.putExtra("actionMinus", 1)
             servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setOnClickPendingIntent(R.id.prevMonth, servicePendingIntent)
+            rv.setOnClickPendingIntent(R.id.btn_prev, servicePendingIntent)
 
             appWidgetManager.updateAppWidget(widgetID, rv)
             appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, R.id.weekdayGrid)

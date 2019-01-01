@@ -40,9 +40,9 @@ class CalendarUpdateMinusService : IntentService("CalendarUpdateService") {
         val action = intent?.getIntExtra("actionMinus", 0) ?: ""
         val widgetId = intent?.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID) ?: 0
-        val sp = getSharedPreferences(CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
-        var month = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetId, 0)
-        var year = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, 0)
+        val sp = getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+        var month = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetId, 0)
+        var year = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetId, 0)
         if (action != 0) {
             val editor = sp.edit()
             if (month == 0) {
@@ -50,11 +50,11 @@ class CalendarUpdateMinusService : IntentService("CalendarUpdateService") {
             } else {
                 month -= 1
             }
-            editor.putInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetId, month)
+            editor.putInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetId, month)
             if (month == 11) {
                 year -= 1
             }
-            editor.putInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, year)
+            editor.putInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetId, year)
             editor.apply()
             updatesHelper.updateCalendarWidget()
             stopSelf()

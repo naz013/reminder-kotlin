@@ -7,9 +7,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
+import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -45,8 +47,10 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
     private var mMonth: Int = 0
     private var mYear: Int = 0
 
-    @Inject lateinit var prefs: Prefs
-    @Inject lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var themeUtil: ThemeUtil
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -63,10 +67,10 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
 
-        val sp = mContext.getSharedPreferences(CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
-        val prefsMonth = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
+        val sp = mContext.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+        val prefsMonth = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
 
-        mYear = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + mWidgetId, calendar.get(Calendar.YEAR))
+        mYear = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + mWidgetId, calendar.get(Calendar.YEAR))
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
         mMonth = prefsMonth + 1
 
@@ -160,38 +164,35 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
     }
 
     override fun getViewAt(i: Int): RemoteViews {
-        val sp = mContext.getSharedPreferences(
-                CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
-        val theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + mWidgetId, 0)
-        val calendarTheme = CalendarTheme.getThemes(mContext)[theme]
-        val itemTextColor = calendarTheme.itemTextColor
-        val rowColor = calendarTheme.rowColor
-        val reminderM = calendarTheme.reminderMark
-        val birthdayM = calendarTheme.birthdayMark
-        val currentM = calendarTheme.currentMark
-        val prefsMonth = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
-        val rView = RemoteViews(mContext.packageName, R.layout.view_month_grid)
+        val sp = mContext.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+        val bgColor = sp.getInt(CalendarWidgetConfigActivity.WIDGET_BG + mWidgetId, 0)
+        val textColor = if (WidgetUtils.isDarkBg(bgColor)) {
+            ContextCompat.getColor(mContext, R.color.pureWhite)
+        } else {
+            ContextCompat.getColor(mContext, R.color.pureBlack)
+        }
+        val prefsMonth = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
+        val rv = RemoteViews(mContext.packageName, R.layout.view_month_grid)
 
-        val selDay = mDateTimeList[i].day!!
-        val selMonth = mDateTimeList[i].month!!
-        val selYear = mDateTimeList[i].year!!
+        val selDay = mDateTimeList[i].day ?: 0
+        val selMonth = mDateTimeList[i].month ?: 0
+        val selYear = mDateTimeList[i].year ?: 0
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         val realMonth = calendar.get(Calendar.MONTH)
         val realYear = calendar.get(Calendar.YEAR)
 
-        rView.setTextViewText(R.id.textView, selDay.toString())
+        rv.setTextViewText(R.id.textView, selDay.toString())
         if (selMonth == prefsMonth + 1) {
-            rView.setTextColor(R.id.textView, itemTextColor)
+            rv.setTextColor(R.id.textView, textColor)
         } else {
-            rView.setTextColor(R.id.textView, mContext.resources.getColor(R.color.material_grey))
+            rv.setTextColor(R.id.textView, ContextCompat.getColor(mContext, R.color.material_grey))
         }
-        rView.setInt(R.id.background, "setBackgroundResource", rowColor)
 
-        rView.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
-        rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
-        rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
+        rv.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
+        rv.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
+        rv.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
 
         if (mPagerData.size > 0) {
             for (item in mPagerData) {
@@ -200,24 +201,16 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
                 val year = item.year
                 if (day == selDay && month == selMonth) {
                     if (item.isHasReminders && year == selYear) {
-                        if (reminderM != 0) {
-                            rView.setInt(R.id.reminderMark, "setBackgroundResource", reminderM)
-                        } else {
-                            rView.setInt(R.id.reminderMark, "setBackgroundColor",
-                                    themeUtil.colorReminderCalendar())
-                        }
+                        rv.setInt(R.id.reminderMark, "setBackgroundColor",
+                                themeUtil.colorReminderCalendar())
                     } else {
-                        rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
+                        rv.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
                     }
                     if (item.isHasBirthdays) {
-                        if (birthdayM != 0) {
-                            rView.setInt(R.id.birthdayMark, "setBackgroundResource", birthdayM)
-                        } else {
-                            rView.setInt(R.id.birthdayMark, "setBackgroundColor",
-                                    themeUtil.colorBirthdayCalendar())
-                        }
+                        rv.setInt(R.id.birthdayMark, "setBackgroundColor",
+                                themeUtil.colorBirthdayCalendar())
                     } else {
-                        rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
+                        rv.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
                     }
                     break
                 }
@@ -226,14 +219,9 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
 
         if (mDay == selDay && mMonth == selMonth && mYear == realYear && mMonth == realMonth + 1
                 && mYear == selYear) {
-            if (currentM != 0) {
-                rView.setInt(R.id.currentMark, "setBackgroundResource", currentM)
-            } else {
-                rView.setInt(R.id.currentMark, "setBackgroundColor",
-                        themeUtil.colorCurrentCalendar())
-            }
+            rv.setInt(R.id.currentMark, "setBackgroundColor", themeUtil.colorCurrentCalendar())
         } else {
-            rView.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
+            rv.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
         }
 
         calendar.timeInMillis = System.currentTimeMillis()
@@ -248,8 +236,8 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
 
         val fillInIntent = Intent()
         fillInIntent.putExtra("date", dateMills)
-        rView.setOnClickFillInIntent(R.id.textView, fillInIntent)
-        return rView
+        rv.setOnClickFillInIntent(R.id.textView, fillInIntent)
+        return rv
     }
 
     override fun getLoadingView(): RemoteViews? {
@@ -268,5 +256,11 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
         return true
     }
 
-    private class WidgetItem internal constructor(var day: Int, var month: Int, var year: Int, internal val isHasReminders: Boolean, internal val isHasBirthdays: Boolean)
+    data class WidgetItem(
+            var day: Int,
+            var month: Int,
+            var year: Int,
+            val isHasReminders: Boolean,
+            val isHasBirthdays: Boolean
+    )
 }
