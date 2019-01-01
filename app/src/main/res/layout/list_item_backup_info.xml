@@ -29,7 +29,7 @@
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp"
+                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
                 app:tint="?android:textColorPrimary" />
 
             <androidx.appcompat.widget.AppCompatTextView

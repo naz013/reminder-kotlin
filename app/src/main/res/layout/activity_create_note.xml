@@ -56,10 +56,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="5dp"
                     android:hint="@string/note"
-                    android:textColor="?android:textColorPrimary"
-                    android:textColorHint="?android:textColorPrimary"
-                    android:textSize="@dimen/create_note_text_size"
-                    app:backgroundTint="?android:textColorPrimary" />
+                    android:textSize="@dimen/create_note_text_size" />
 
                 <LinearLayout
                     android:id="@+id/remindContainer"
@@ -95,8 +92,7 @@
                         android:background="?selectableItemBackgroundBorderless"
                         android:contentDescription="@string/acc_remove_reminder"
                         android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_clear_black_24dp"
-                        app:tint="?android:textColorPrimary" />
+                        app:srcCompat="@drawable/ic_twotone_cancel_24px" />
 
                 </LinearLayout>
             </LinearLayout>

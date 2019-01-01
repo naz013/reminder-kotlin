@@ -42,7 +42,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+                app:srcCompat="@drawable/ic_twotone_more_vert_24px" />
         </LinearLayout>
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

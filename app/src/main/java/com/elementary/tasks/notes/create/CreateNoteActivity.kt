@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -80,6 +81,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private var mColor = 0
     private var mFontStyle = 9
     private var mEditPosition = -1
+    private var isBgDark = false
 
     private lateinit var viewModel: NoteViewModel
     private val mAdapter = ImagesGridAdapter()
@@ -179,6 +181,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isBgDark = isDark
         setContentView(R.layout.activity_create_note)
 
         photoSelectionUtil = PhotoSelectionUtil(this, this)
@@ -199,7 +202,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         loadNote()
 
         updateBackground()
+        updateDarkness()
         updateTextStyle()
+        updateTextColors()
+        updateIcons()
     }
 
     private fun initColor() {
@@ -278,6 +284,9 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 prefs.noteColorOpacity = progress
                 updateBackground()
+                updateDarkness()
+                updateTextColors()
+                updateIcons()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -287,6 +296,33 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             }
         })
         updateBackground()
+    }
+
+    private fun updateDarkness() {
+        isBgDark = if (themeUtil.isAlmostTransparent(opacityBar.progress)) {
+            isDark
+        } else {
+            false
+        }
+    }
+
+    private fun updateTextColors() {
+        val textColor = if (isBgDark) {
+            ContextCompat.getColor(this, R.color.pureWhite)
+        } else {
+            ContextCompat.getColor(this, R.color.pureBlack)
+        }
+        taskMessage.setTextColor(textColor)
+        taskMessage.setHintTextColor(textColor)
+        if (Module.isLollipop) {
+            taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {
+                R.color.pureWhite
+            } else {
+                R.color.pureBlack
+            })
+        }
+        remindDate.setTextColor(textColor)
+        remindTime.setTextColor(textColor)
     }
 
     private fun toggleColorView() {
@@ -351,15 +387,20 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
-
         ViewUtils.listenScrollableView(touchView) {
             appBar.isSelected = it > 0
         }
+
+        toolbar.inflateMenu(R.menu.activity_create_note)
+        updateIcons()
+    }
+
+    private fun updateIcons() {
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
+        ViewUtils.tintOverflowButton(toolbar, isBgDark)
+        invalidateOptionsMenu()
+
+        discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
     }
 
     private fun loadNoteFromFile(filePath: String, name: Uri?) {
@@ -613,10 +654,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_create_note, menu)
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isBgDark)
         if (mItem != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
-        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isDark)
         return true
     }
 

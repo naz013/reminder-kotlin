@@ -48,6 +48,7 @@
                     android:padding="16dp">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/reminderCardTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="16dp"
