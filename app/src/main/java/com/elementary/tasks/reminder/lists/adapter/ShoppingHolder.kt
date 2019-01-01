@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
-import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
+import kotlinx.android.synthetic.main.list_item_shop_item.view.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -120,7 +120,7 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
         itemView.todoList.removeAllViewsInLayout()
         var count = 0
         for (list in shoppings) {
-            val bind = LayoutInflater.from(itemView.todoList.context).inflate(R.layout.list_item_task_item_widget, itemView.todoList, false)
+            val bind = LayoutInflater.from(itemView.todoList.context).inflate(R.layout.list_item_shop_item, itemView.todoList, false)
             val checkView = bind.checkView
             val textView = bind.shopText
             if (list.isChecked) {
