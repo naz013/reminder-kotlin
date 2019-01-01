@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import hirondelle.date4j.DateTime
@@ -36,10 +38,10 @@ class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : Re
 
     private val mWeekdaysList = ArrayList<String>()
     private val mWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-    private val SUNDAY = 1
     private val startDayOfWeek = SUNDAY
 
-    @Inject lateinit var prefs: Prefs
+    @Inject
+    lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -74,14 +76,18 @@ class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : Re
     }
 
     override fun getViewAt(i: Int): RemoteViews {
-        val sp = mContext.getSharedPreferences(CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
-        val theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + mWidgetId, 0)
-        val item = CalendarTheme.getThemes(mContext)[theme]
-        val itemTextColor = item.itemTextColor
-        val rView = RemoteViews(mContext.packageName, R.layout.list_item_weekday_grid)
-        rView.setTextViewText(R.id.textView1, mWeekdaysList[i])
-        rView.setTextColor(R.id.textView1, itemTextColor)
-        return rView
+        val sp = mContext.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+        val bgColor = sp.getInt(CalendarWidgetConfigActivity.WIDGET_BG + mWidgetId, 0)
+        val textColor = if (WidgetUtils.isDarkBg(bgColor)) {
+            ContextCompat.getColor(mContext, R.color.pureWhite)
+        } else {
+            ContextCompat.getColor(mContext, R.color.pureBlack)
+        }
+
+        val rv = RemoteViews(mContext.packageName, R.layout.list_item_weekday_grid)
+        rv.setTextViewText(R.id.textView1, mWeekdaysList[i])
+        rv.setTextColor(R.id.textView1, textColor)
+        return rv
     }
 
     override fun getLoadingView(): RemoteViews? {
@@ -98,5 +104,9 @@ class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : Re
 
     override fun hasStableIds(): Boolean {
         return true
+    }
+
+    companion object {
+        private const val SUNDAY = 1
     }
 }

@@ -15,6 +15,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 
 import androidx.appcompat.widget.AppCompatDrawableManager
+import androidx.core.content.ContextCompat
+import com.elementary.tasks.core.utils.ViewUtils
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -54,6 +56,10 @@ object WidgetUtils {
         val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
         rv.setOnClickPendingIntent(viewId, configPendingIntent)
         WidgetUtils.setIcon(context, rv, iconId, viewId)
+    }
+
+    fun setIcon(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int, @ColorRes color: Int) {
+        rv.setImageViewBitmap(viewId, ViewUtils.createIcon(context, iconId, ContextCompat.getColor(context, color)))
     }
 
     fun setIcon(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {

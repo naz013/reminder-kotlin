@@ -757,5 +757,6 @@
     <string name="icon_color">Icon color</string>
     <string name="list_item_background">List item background</string>
     <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
+    <string name="header_background">Header background</string>
 
 </resources>
