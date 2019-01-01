@@ -124,7 +124,7 @@ class TaskListFragment : Fragment() {
     private fun showTasks(googleTasks: List<GoogleTask>) {
         adapter.googleTaskListMap = mGoogleTaskListsMap
         adapter.submitList(googleTasks)
-        reloadView()
+        reloadView(googleTasks.size)
     }
 
     private fun initList() {
@@ -154,11 +154,11 @@ class TaskListFragment : Fragment() {
     private fun initEmpty() {
         emptyItem.visibility = View.VISIBLE
         emptyText.setText(R.string.no_google_tasks)
-        reloadView()
+        reloadView(0)
     }
 
-    private fun reloadView() {
-        if (adapter.itemCount > 0) {
+    private fun reloadView(count: Int) {
+        if (count > 0) {
             emptyItem.visibility = View.GONE
         } else {
             emptyItem.visibility = View.VISIBLE
