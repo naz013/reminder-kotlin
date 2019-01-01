@@ -62,8 +62,12 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
 
         itemView.bgView.setBackgroundColor(themeUtil.getNoteLightColor(item.getColor(), item.getOpacity()))
 
-        itemView.button_more.colorFilter = null
-        itemView.button_more.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, themeUtil.isDark))
+        val isDarkIcon = if (themeUtil.isAlmostTransparent(item.getOpacity())) {
+            themeUtil.isDark
+        } else {
+            false
+        }
+        itemView.button_more.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
 
         if (themeUtil.isAlmostTransparent(item.getOpacity())) {
             if (themeUtil.isDark) {
