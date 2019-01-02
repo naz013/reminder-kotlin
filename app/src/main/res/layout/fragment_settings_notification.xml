@@ -55,7 +55,7 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_twotone_watch_24px"
             app:prefs_primary_text="@string/android_wear_notification"
-            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_off="@string/do_no_show_notifications_on_wear_devices"
             app:prefs_secondary_text_on="@string/show_notifications_on_wear_devices"
             app:prefs_type="check_switch" />
 

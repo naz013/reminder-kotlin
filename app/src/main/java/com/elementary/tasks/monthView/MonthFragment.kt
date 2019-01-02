@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.dayView.day.EventModel
 import hirondelle.date4j.DateTime
-import kotlinx.android.synthetic.main.fragment_date_grid.*
+import kotlinx.android.synthetic.main.fragment_month_view.*
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.util.*
@@ -64,7 +64,7 @@ class MonthFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_date_grid, container, false)
+        return inflater.inflate(R.layout.fragment_month_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

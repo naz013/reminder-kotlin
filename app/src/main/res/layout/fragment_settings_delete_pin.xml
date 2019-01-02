@@ -22,7 +22,7 @@
             android:id="@+id/pinField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/old_pin"
+            android:hint="@string/pin"
             android:inputType="numberPassword"
             android:maxLength="6"
             android:maxLines="1"

@@ -172,7 +172,7 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
             ContextCompat.getColor(mContext, R.color.pureBlack)
         }
         val prefsMonth = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
-        val rv = RemoteViews(mContext.packageName, R.layout.view_month_grid)
+        val rv = RemoteViews(mContext.packageName, R.layout.list_item_month_grid)
 
         val selDay = mDateTimeList[i].day ?: 0
         val selMonth = mDateTimeList[i].month ?: 0

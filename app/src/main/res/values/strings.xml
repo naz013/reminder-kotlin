@@ -758,5 +758,10 @@
     <string name="list_item_background">List item background</string>
     <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
     <string name="header_background">Header background</string>
+    <string name="do_no_show_notifications_on_wear_devices">Do not show notifications on Wear devices</string>
+    <string name="do_not_create_reminder">Do not create reminder</string>
+    <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
+    <string name="do_not_show_permanent_notification">Do not show permanent notification</string>
+    <string name="do_not_show_after_calls">Do not show event creation screen after calls</string>
 
 </resources>
