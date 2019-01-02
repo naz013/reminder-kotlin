@@ -81,16 +81,21 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         initViewModel()
         initQuickNote()
         initScreen(savedInstanceState)
-        initStartFragment()
     }
 
     private fun initScreen(savedInstanceState: Bundle?) {
         when {
-            savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, PageIdentifier.menuId(this, prefs.homePage)))
+            savedInstanceState != null -> {
+                openScreen(savedInstanceState.getInt(CURRENT_SCREEN, PageIdentifier.menuId(this, prefs.homePage)))
+            }
             intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
-                prevItem = PageIdentifier.menuId(this, intent.getIntExtra(Constants.INTENT_POSITION, 0))
-                nav_view.setCheckedItem(prevItem)
-                openScreen(prevItem)
+                var pos = intent.getIntExtra(Constants.INTENT_POSITION, 0)
+                if (pos == 0) {
+                    pos = PageIdentifier.menuId(this, 0)
+                }
+                prevItem = PageIdentifier.menuId(this, 0)
+                nav_view.setCheckedItem(pos)
+                openScreen(pos)
             }
             else -> initStartFragment()
         }
@@ -112,6 +117,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun initStartFragment() {
+        Timber.d("initStartFragment: ")
         prevItem = PageIdentifier.menuId(this, prefs.homePage)
         nav_view.setCheckedItem(prevItem)
         openScreen(prevItem)
@@ -121,7 +127,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
+        toolbar.navigationIcon = ViewUtils.tintIcon(this, R.drawable.ic_twotone_menu_24px, isDark)
         toolbar.setNavigationOnClickListener { onDrawerClick() }
     }
 
@@ -205,17 +211,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onFragmentSelect(fragment: BaseFragment) {
         this.fragment = fragment
         if (this.fragment is BaseSettingsFragment) {
-            if (isDark) {
-                toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-            } else {
-                toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
-            }
+            toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
         } else {
-            if (isDark) {
-                toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
-            } else {
-                toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
-            }
+            toolbar.navigationIcon = ViewUtils.tintIcon(this, R.drawable.ic_twotone_menu_24px, isDark)
         }
     }
 
@@ -280,7 +278,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else if (mNoteView != null && mNoteView!!.isNoteVisible) {
+        } else if (mNoteView != null && mNoteView?.isNoteVisible == true) {
             mNoteView?.hideNoteView()
         } else {
             moveBack()
@@ -294,6 +292,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                     prevItem = beforeSettings
                     nav_view.setCheckedItem(beforeSettings)
                     openScreen(beforeSettings)
+                    beforeSettings = 0
                 } else {
                     initStartFragment()
                 }
@@ -305,6 +304,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
         if (isBackPressed) {
             if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
+                beforeSettings = 0
                 finish()
             } else {
                 isBackPressed = false

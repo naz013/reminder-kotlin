@@ -520,12 +520,12 @@ class DrawFragment : BitmapFragment() {
 
     private fun showPrefsPanel() {
         ViewUtils.slideInUp(context!!, prefsContent)
-        showPrefsButton.setImageResource(R.drawable.ic_expand_more_black_24dp)
+        showPrefsButton.setImageResource(R.drawable.ic_twotone_keyboard_arrow_down_24px)
     }
 
     private fun hidePrefsPanel() {
         ViewUtils.slideOutDown(context!!, prefsContent)
-        showPrefsButton.setImageResource(R.drawable.ic_expand_less_black_24dp)
+        showPrefsButton.setImageResource(R.drawable.ic_twotone_keyboard_arrow_up_24px)
     }
 
     private fun setCurrentColor(button: AppCompatImageView) {

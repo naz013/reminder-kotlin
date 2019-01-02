@@ -34,7 +34,7 @@
             android:layout_height="44dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_expand_less_black_24dp"
+            app:srcCompat="@drawable/ic_twotone_keyboard_arrow_up_24px"
             app:tint="?android:textColorPrimary" />
 
         <LinearLayout
