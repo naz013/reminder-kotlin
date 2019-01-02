@@ -5,7 +5,7 @@
     android:initialLayout="@layout/widget_calendar"
     android:minHeight="180dp"
     android:minWidth="250dp"
-    android:previewImage="@drawable/calendar_widget_preview"
+    android:previewImage="@drawable/widget_calendar"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen|keyguard" />
