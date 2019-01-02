@@ -116,6 +116,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.SYSTEM_VOLUME)
         set(value) = putBoolean(PrefsConstants.SYSTEM_VOLUME, value)
 
+    var isTwoColsEnabled: Boolean
+        get() = getBoolean(PrefsConstants.TWO_COLS)
+        set(value) = putBoolean(PrefsConstants.TWO_COLS, value)
+
     var soundStream: Int
         get() = getInt(PrefsConstants.SOUND_STREAM)
         set(value) = putInt(PrefsConstants.SOUND_STREAM, value)

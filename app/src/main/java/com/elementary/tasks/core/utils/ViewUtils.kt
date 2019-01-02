@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -40,6 +41,10 @@ import com.elementary.tasks.R
  * limitations under the License.
  */
 object ViewUtils {
+
+    fun isHorizontal(context: Context): Boolean {
+        return context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
 
     fun tintOverflowButton(toolbar: Toolbar, isDark: Boolean): Boolean {
         val overflowIcon = toolbar.overflowIcon ?: return false

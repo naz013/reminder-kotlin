@@ -56,6 +56,18 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         initSavePrefs()
         initLanguagePrefs()
         initHomePage()
+        initColsPrefs()
+    }
+
+    private fun initColsPrefs() {
+        twoColsPrefs.isChecked = prefs.isTwoColsEnabled
+        twoColsPrefs.setOnClickListener { changeColsPrefs() }
+    }
+
+    private fun changeColsPrefs() {
+        val b = savePrefs.isChecked
+        prefs.isTwoColsEnabled = !b
+        twoColsPrefs.isChecked = !b
     }
 
     private fun initHomePage() {

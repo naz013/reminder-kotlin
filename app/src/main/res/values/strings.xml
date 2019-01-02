@@ -763,5 +763,8 @@
     <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
     <string name="do_not_show_permanent_notification">Do not show permanent notification</string>
     <string name="do_not_show_after_calls">Do not show event creation screen after calls</string>
+    <string name="colums_in_lists">Columns in lists when horizontal</string>
+    <string name="show_one_column">Show one column</string>
+    <string name="show_two_columns">Show two columns</string>
 
 </resources>

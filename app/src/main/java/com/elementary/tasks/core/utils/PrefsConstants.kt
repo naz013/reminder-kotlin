@@ -117,6 +117,7 @@ object PrefsConstants {
     const val PIN_CODE = "pin_code"
     const val USE_FINGERPRINT = "use_finger"
     const val HOME_PAGE = "home_page"
+    const val TWO_COLS = "two_cols"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

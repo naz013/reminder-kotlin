@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -115,7 +116,11 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     }
 
     private fun initTemplateList() {
-        templatesList.layoutManager = LinearLayoutManager(context)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
+            templatesList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            templatesList.layoutManager = LinearLayoutManager(context)
+        }
         adapter.actionsListener = object : ActionsListener<SmsTemplate> {
             override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
                 when (actions) {
