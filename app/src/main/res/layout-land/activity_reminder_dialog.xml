@@ -136,208 +136,208 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="256dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp">
+        android:layout_marginStart="16dp"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/contactBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/contact_bg_vector"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:visibility="visible">
 
             <LinearLayout
-                android:id="@+id/contactBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/contact_bg_vector"
-                android:orientation="vertical"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:visibility="visible">
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/contactPhoto"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/acc_contact_photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="visible"
-                        app:civ_border_color="@color/material_grey_dialog"
-                        app:civ_border_width="5dp" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/contactName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:gravity="center"
-                            android:textAppearance="?textAppearanceBody1"
-                            android:textColor="@color/whitePrimary"
-                            tools:text="User Name" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/contactNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:layout_marginTop="4dp"
-                            android:gravity="center"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textColor="@color/whitePrimary"
-                            tools:text="1234567890" />
-
-                    </LinearLayout>
-                </LinearLayout>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/contactPhoto"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/acc_contact_photo"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    app:civ_border_color="@color/material_grey_dialog"
+                    app:civ_border_width="5dp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/buttonCall"
+                        android:id="@+id/contactName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/action_button_rounded"
-                        android:padding="8dp"
-                        android:textAllCaps="true"
-                        android:textAppearance="?textAppearanceButton"
-                        android:textColor="@color/secondary"
-                        tools:text="@string/make_call" />
+                        android:layout_gravity="start"
+                        android:gravity="center"
+                        android:textAppearance="?textAppearanceBody1"
+                        android:textColor="@color/whitePrimary"
+                        tools:text="User Name" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/buttonSms"
+                        android:id="@+id/contactNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/action_button_rounded"
-                        android:padding="8dp"
-                        android:textAllCaps="true"
-                        android:textAppearance="?textAppearanceButton"
-                        android:textColor="@color/secondary"
-                        android:visibility="gone"
-                        tools:text="@string/send_sms" />
+                        android:layout_gravity="start"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textColor="@color/whitePrimary"
+                        tools:text="1234567890" />
 
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/actionContainer"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonOk"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/buttonCall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/acc_button_ok"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_done_24px" />
+                    android:background="@drawable/action_button_rounded"
+                    android:padding="8dp"
+                    android:textAllCaps="true"
+                    android:textAppearance="?textAppearanceButton"
+                    android:textColor="@color/secondary"
+                    tools:text="@string/make_call" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonCancel"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/buttonSms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:contentDescription="@string/acc_button_cancel"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_cancel_24px" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonRefresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_refresh_24px" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonAttachment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:contentDescription="@string/attach_file"
-                    android:tint="@color/whitePrimary"
+                    android:background="@drawable/action_button_rounded"
+                    android:padding="8dp"
+                    android:textAllCaps="true"
+                    android:textAppearance="?textAppearanceButton"
+                    android:textColor="@color/secondary"
                     android:visibility="gone"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_attachment_24px" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/delayContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonDelay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/acc_button_snooze"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_snooze_24px" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonDelayFor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:contentDescription="@string/acc_button_snooze_for"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_more_horiz_24px" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonNotification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:contentDescription="@string/acc_button_move_to_status_bar"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_notifications_24px" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:contentDescription="@string/acc_button_edit"
-                    android:tint="@color/whitePrimary"
-                    app:fabSize="normal"
-                    app:srcCompat="@drawable/ic_twotone_edit_24px" />
+                    tools:text="@string/send_sms" />
 
             </LinearLayout>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/actionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/acc_button_ok"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_done_24px" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/acc_button_cancel"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_cancel_24px" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonRefresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_refresh_24px" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonAttachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/attach_file"
+                android:tint="@color/whitePrimary"
+                android:visibility="gone"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_attachment_24px" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/delayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonDelay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/acc_button_snooze"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_snooze_24px" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonDelayFor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/acc_button_snooze_for"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_more_horiz_24px" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/acc_button_move_to_status_bar"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_notifications_24px" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/acc_button_edit"
+                android:tint="@color/whitePrimary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_twotone_edit_24px" />
+
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
