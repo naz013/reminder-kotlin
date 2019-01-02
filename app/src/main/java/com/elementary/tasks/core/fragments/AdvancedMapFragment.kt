@@ -454,8 +454,9 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun setMyLocation() {
-        if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+        val context = activity ?: return
+        if (!Permissions.checkPermission(context, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
         } else {
             mMap?.isMyLocationEnabled = true
         }
