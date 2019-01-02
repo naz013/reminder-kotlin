@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/birthdays_in_home_screen_widget"
-            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_off="@string/do_not_show_in_home_screen_widget"
             app:prefs_secondary_text_on="@string/show_in_home_screen"
             app:prefs_type="check_switch" />
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/permanent_status_bar_notification"
-            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_off="@string/do_not_show_permanent_notification"
             app:prefs_secondary_text_on="@string/show_when_available_birthdays"
             app:prefs_type="check_switch" />
 

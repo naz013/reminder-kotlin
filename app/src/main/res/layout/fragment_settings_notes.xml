@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
             app:prefs_primary_text="@string/quick_note_reminder"
-            app:prefs_secondary_text_off="@string/do_nothing"
+            app:prefs_secondary_text_off="@string/do_not_create_reminder"
             app:prefs_secondary_text_on="@string/enable_creating_reminder_for_quick_note"
             app:prefs_type="check_switch" />
 

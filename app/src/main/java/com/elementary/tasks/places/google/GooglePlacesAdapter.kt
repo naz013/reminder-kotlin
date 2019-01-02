@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.interfaces.SimpleListener
-import kotlinx.android.synthetic.main.list_item_simple_text_advanced.view.*
+import kotlinx.android.synthetic.main.list_item_google_place.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -75,7 +75,7 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_simple_text_advanced, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_google_place, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
