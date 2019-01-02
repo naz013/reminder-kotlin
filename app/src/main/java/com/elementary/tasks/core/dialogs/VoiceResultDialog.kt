@@ -1,20 +1,17 @@
 package com.elementary.tasks.core.dialogs
 
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-import kotlinx.android.synthetic.main.list_item_reminder.view.*
-import java.util.*
+import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -53,11 +50,16 @@ class VoiceResultDialog : BaseDialog() {
         val alert = dialogues.getDialog(this)
         alert.setTitle(getString(R.string.saved))
 
-        val binding = LayoutInflater.from(this).inflate(R.layout.list_item_reminder, null, false)
-        binding.taskText.text = reminder.summary
-        bind(binding, reminder)
-        binding.itemCheck.visibility = View.GONE
-        alert.setView(binding)
+        val parent = LinearLayout(this)
+        parent.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        parent.orientation = LinearLayout.VERTICAL
+
+        val holder = ReminderHolder(parent, false, false)
+        holder.setData(reminder)
+
+        parent.addView(holder.itemView)
+
+        alert.setView(parent)
         alert.setCancelable(true)
         alert.setNegativeButton(R.string.edit) { dialogInterface, _ ->
             dialogInterface.dismiss()
@@ -73,86 +75,7 @@ class VoiceResultDialog : BaseDialog() {
         alertDialog.setOnCancelListener { finish() }
         alertDialog.setOnDismissListener { finish() }
         alertDialog.show()
-    }
 
-    private fun bind(binding: View, reminder: Reminder) {
-//        if (reminder.reminderGroup != null) {
-//            binding.itemCard.setCardBackgroundColor(themeUtil.getGroupColor(themeUtil.getCategoryColor(reminder.reminderGroup!!.groupColor)))
-//        } else {
-//            binding.itemCard.setCardBackgroundColor(themeUtil.getGroupColor(themeUtil.getCategoryColor(0)))
-//        }
-        val is24 = prefs.is24HourFormatEnabled
-        if (Reminder.isGpsType(reminder.type)) {
-            val place = reminder.places[0]
-            binding.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, reminder.places.size)
-        } else {
-            binding.taskDate.text = TimeUtil.getRealDateTime(reminder.eventTime, reminder.delay, is24)
-        }
-        if (reminder.isRemoved) {
-            binding.itemCheck.visibility = View.GONE
-        } else {
-            binding.itemCheck.isChecked = reminder.isActive
-        }
-        loadContact(reminder, binding)
-        if (reminder.isActive && !reminder.isRemoved) {
-            binding.remainingTime.text = TimeCount.getRemaining(this, reminder.eventTime, reminder.delay)
-        } else {
-            binding.remainingTime.text = ""
-        }
-        when {
-            Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> binding.repeatInterval.text = String.format(binding.repeatInterval.context.getString(R.string.xM), 1.toString())
-            Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
-            Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeatInterval.text = binding.repeatInterval.context.getString(R.string.yearly)
-            else -> binding.repeatInterval.text = IntervalUtil.getInterval(binding.repeatInterval.context, reminder.repeatInterval)
-        }
-        if (Reminder.isBase(reminder.type, Reminder.BY_LOCATION)
-                || Reminder.isBase(reminder.type, Reminder.BY_OUT)
-                || Reminder.isBase(reminder.type, Reminder.BY_PLACES)) {
-            binding.endContainer.visibility = View.GONE
-        } else {
-            binding.endContainer.visibility = View.VISIBLE
-        }
-        binding.chipType.text = ReminderUtils.getTypeString(this, reminder.type)
-    }
-
-    private fun loadContact(model: Reminder, itemView: View) {
-        val type = model.type
-        val number = model.target
-        if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
-            itemView.reminder_phone.visibility = View.VISIBLE
-            itemView.reminder_phone.text = number
-        } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
-            itemView.reminder_phone.visibility = View.VISIBLE
-            val name = Contacts.getNameFromNumber(number, itemView.reminder_phone.context)
-            if (name == null) {
-                itemView.reminder_phone.text = number
-            } else {
-                itemView.reminder_phone.text = "$name($number)"
-            }
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-            val packageManager = itemView.reminder_phone.context.packageManager
-            var applicationInfo: ApplicationInfo? = null
-            try {
-                applicationInfo = packageManager.getApplicationInfo(number, 0)
-            } catch (ignored: PackageManager.NameNotFoundException) {
-            }
-
-            val name = (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
-            itemView.reminder_phone.visibility = View.VISIBLE
-            itemView.reminder_phone.text = "$name/$number"
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
-            val name = Contacts.getNameFromMail(number, itemView.reminder_phone.context)
-            itemView.reminder_phone.visibility = View.VISIBLE
-            if (name == null) {
-                itemView.reminder_phone.text = number
-            } else {
-                itemView.reminder_phone.text = "$name($number)"
-            }
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
-            itemView.reminder_phone.visibility = View.VISIBLE
-            itemView.reminder_phone.text = number
-        } else {
-            itemView.reminder_phone.visibility = View.GONE
-        }
+        Dialogues.setFullWidthDialog(alertDialog, this)
     }
 }
