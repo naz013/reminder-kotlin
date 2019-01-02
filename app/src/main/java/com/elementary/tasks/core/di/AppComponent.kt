@@ -5,14 +5,14 @@ import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
+import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.appWidgets.calendar.CalendarMonthFactory
 import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateMinusService
 import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateService
 import com.elementary.tasks.core.appWidgets.calendar.CalendarWeekdayFactory
-import com.elementary.tasks.core.appWidgets.notes.NotesFactory
-import com.elementary.tasks.core.appWidgets.googleTasks.TasksFactory
-import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.appWidgets.events.EventsFactory
+import com.elementary.tasks.core.appWidgets.googleTasks.TasksFactory
+import com.elementary.tasks.core.appWidgets.notes.NotesFactory
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.async.BackupTask
@@ -39,6 +39,7 @@ import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TaskListActivity
+import com.elementary.tasks.googleTasks.list.TaskListFragment
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
@@ -132,6 +133,7 @@ interface AppComponent {
     fun inject(fragment: FragmentCloudDrives)
     fun inject(typeFragment: TypeFragment)
     fun inject(fragment: EventsListFragment)
+    fun inject(fragment: TaskListFragment)
 
     fun inject(repeatView: RepeatView)
     fun inject(monthView: MonthView)

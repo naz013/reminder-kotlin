@@ -10,18 +10,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants
 import kotlinx.android.synthetic.main.fragment_google_list.*
 import kotlinx.android.synthetic.main.view_progress.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,6 +52,13 @@ class TaskListFragment : Fragment() {
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mId: String = ""
     private var mGoogleTaskListsMap: MutableMap<String, GoogleTaskList> = mutableMapOf()
+
+    @Inject
+    lateinit var prefs: Prefs
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,7 +145,11 @@ class TaskListFragment : Fragment() {
             viewModel.sync()
         }
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
+            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         adapter.actionsListener = object : ActionsListener<GoogleTask> {
             override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
                 when (actions) {

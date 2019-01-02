@@ -47,6 +47,16 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/twoColsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/colums_in_lists"
+            app:prefs_secondary_text_off="@string/show_one_column"
+            app:prefs_secondary_text_on="@string/show_two_columns"
+            app:prefs_type="check_switch" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/savePrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

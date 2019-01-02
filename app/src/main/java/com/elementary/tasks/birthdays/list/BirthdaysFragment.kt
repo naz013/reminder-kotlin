@@ -14,6 +14,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
@@ -130,7 +131,12 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
     override fun getTitle(): String = getString(R.string.birthdays)
 
     private fun initList() {
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
+            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            recyclerView.layoutManager = LinearLayoutManager(context)
+        }
+
         mAdapter.actionsListener = object : ActionsListener<Birthday> {
             override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
                 if (t != null) {
