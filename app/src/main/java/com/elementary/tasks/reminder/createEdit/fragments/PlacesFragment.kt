@@ -226,7 +226,7 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     private fun updateHeader() {
-        cardSummary.text = getSummary()
+        cardSummary?.text = getSummary()
     }
 
     private fun toggleMap() {
@@ -298,7 +298,7 @@ class PlacesFragment : RadiusTypeFragment() {
 
     override fun onGroupUpdate(reminderGroup: ReminderGroup) {
         super.onGroupUpdate(reminderGroup)
-        groupView.reminderGroup = reminderGroup
+        groupView?.reminderGroup = reminderGroup
         updateHeader()
     }
 

@@ -161,7 +161,7 @@ class SkypeFragment : RepeatableTypeFragment() {
     }
 
     private fun updateHeader() {
-        cardSummary.text = getSummary()
+        cardSummary?.text = getSummary()
     }
 
     private fun initScreenState() {
@@ -206,7 +206,7 @@ class SkypeFragment : RepeatableTypeFragment() {
 
     override fun onGroupUpdate(reminderGroup: ReminderGroup) {
         super.onGroupUpdate(reminderGroup)
-        groupView.reminderGroup = reminderGroup
+        groupView?.reminderGroup = reminderGroup
         updateHeader()
     }
 
