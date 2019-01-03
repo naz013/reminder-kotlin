@@ -18,6 +18,7 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.google.api.services.tasks.TasksScopes
+import timber.log.Timber
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
@@ -85,9 +86,10 @@ class GDrive private constructor(context: Context) {
      */
     val data: UserItem?
         get() {
-            if (!isLogged || driveService == null) return null
+            val service = driveService ?: return null
+            if (!isLogged) return null
             try {
-                val about = driveService?.about()?.get()?.setFields("user, storageQuota")?.execute() ?: return null
+                val about = service.about().get().setFields("user, storageQuota").execute() ?: return null
                 val quota = about.storageQuota ?: return null
                 return UserItem(name = about.user.displayName, quota = quota.limit,
                         used = quota.usage, count = countFiles(), photo = about.user.photoLink)
@@ -105,9 +107,10 @@ class GDrive private constructor(context: Context) {
     private val folderId: String?
         @Throws(IOException::class, IllegalArgumentException::class)
         get() {
-            if (!isLogged || driveService == null) return null
-            val request = driveService?.files()?.list()
-                    ?.setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '$FOLDER_NAME'")
+            val service = driveService ?: return null
+            if (!isLogged) return null
+            val request = service.files().list()
+                    .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '$FOLDER_NAME'")
                     ?: return null
             do {
                 val files = request.execute() ?: return null
@@ -132,9 +135,10 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     private fun countFiles(): Int {
+        val service = driveService ?: return 0
+        if (!isLogged) return 0
         var count = 0
-        if (driveService == null) return 0
-        val request = driveService?.files()?.list()?.setQ("mimeType = 'text/plain'")?.setFields("nextPageToken, files") ?: return 0
+        val request = service.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files") ?: return 0
         do {
             val files = request.execute()
             val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -157,13 +161,15 @@ class GDrive private constructor(context: Context) {
 
     @Throws(IOException::class)
     fun saveSettingsToDrive() {
+        val service = driveService ?: return
+        if (!isLogged) return
         var foId: String? = null
         try {
             foId = folderId
         } catch (ignored: IllegalArgumentException) {
         }
 
-        if (foId == null || driveService == null) {
+        if (foId == null) {
             return
         }
         val folder = MemoryUtil.prefsDir ?: return
@@ -176,7 +182,7 @@ class GDrive private constructor(context: Context) {
             fileMetadata.description = "Settings Backup"
             fileMetadata.parents = listOf(foId)
             val mediaContent = FileContent("text/plain", file)
-            val req = driveService!!.files().create(fileMetadata, mediaContent)
+            val req = service.files().create(fileMetadata, mediaContent)
             req.fields = "id"
             req.execute()
             break
@@ -185,15 +191,17 @@ class GDrive private constructor(context: Context) {
 
     @Throws(IOException::class)
     private fun removeAllCopies(fileName: String) {
-        if (driveService == null || TextUtils.isEmpty(fileName)) return
-        val request = driveService!!.files().list()
+        val service = driveService ?: return
+        if (!isLogged) return
+        if (TextUtils.isEmpty(fileName)) return
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$fileName'")
                 .setFields("nextPageToken, files")
         do {
             val files = request.execute()
             val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
             for (f in fileList) {
-                driveService!!.files().delete(f.id).execute()
+                service.files().delete(f.id).execute()
             }
             request.pageToken = files.nextPageToken
         } while (request.pageToken != null)
@@ -201,12 +209,13 @@ class GDrive private constructor(context: Context) {
 
     @Throws(IOException::class)
     fun downloadSettings(context: Context, deleteFile: Boolean) {
-        if (driveService == null) return
+        val service = driveService ?: return
+        if (!isLogged) return
         val folder = MemoryUtil.prefsDir
         if (folder == null || !folder.exists() && !folder.mkdirs()) {
             return
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_SETTINGS + "'")
                 .setFields("nextPageToken, files")
         do {
@@ -220,9 +229,9 @@ class GDrive private constructor(context: Context) {
                         file.createNewFile()
                     }
                     val out = FileOutputStream(file)
-                    driveService!!.files().get(f.id).executeMediaAndDownloadTo(out)
+                    service.files().get(f.id).executeMediaAndDownloadTo(out)
                     if (deleteFile) {
-                        driveService!!.files().delete(f.id).execute()
+                        service.files().delete(f.id).execute()
                     }
                     prefs.loadPrefsFromFile()
                     break
@@ -358,7 +367,8 @@ class GDrive private constructor(context: Context) {
     @Throws(IOException::class)
     private fun saveToDrive(metadata: Metadata) {
         if (metadata.folder == null) return
-        if (driveService == null) return
+        val service = driveService ?: return
+        if (!isLogged) return
         val files = metadata.folder.listFiles() ?: return
         var foId: String? = null
         try {
@@ -377,7 +387,7 @@ class GDrive private constructor(context: Context) {
             fileMetadata.description = metadata.meta
             fileMetadata.parents = listOf(foId)
             val mediaContent = FileContent("text/plain", file)
-            driveService!!.files().create(fileMetadata, mediaContent)
+            service.files().create(fileMetadata, mediaContent)
                     .setFields("id")
                     .execute()
         }
@@ -392,7 +402,8 @@ class GDrive private constructor(context: Context) {
     @Throws(IOException::class)
     private fun saveFileToDrive(pathToFile: String, metadata: Metadata) {
         if (metadata.folder == null) return
-        val driveService = driveService ?: return
+        val service = driveService ?: return
+        if (!isLogged) return
         var fId: String? = null
         try {
             fId = folderId
@@ -413,19 +424,20 @@ class GDrive private constructor(context: Context) {
         fileMetadata.description = metadata.meta
         fileMetadata.parents = listOf(fId)
         val mediaContent = FileContent("text/plain", f)
-        driveService.files().create(fileMetadata, mediaContent)
+        service.files().create(fileMetadata, mediaContent)
                 .setFields("id")
                 .execute()
     }
 
     @Throws(IOException::class)
     fun download(deleteBackup: Boolean, metadata: Metadata) {
-        val driveService = driveService ?: return
+        val service = driveService ?: return
+        if (!isLogged) return
         val folder = metadata.folder
         if (folder == null || !folder.exists() && !folder.mkdirs()) {
             return
         }
-        val request = driveService.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + metadata.fileExt + "'")
                 .setFields("nextPageToken, files")
         do {
@@ -439,7 +451,7 @@ class GDrive private constructor(context: Context) {
                         file.createNewFile()
                     }
                     val out = FileOutputStream(file)
-                    driveService.files().get(f.id).executeMediaAndDownloadTo(out)
+                    service.files().get(f.id).executeMediaAndDownloadTo(out)
                     if (metadata.action != null) {
                         metadata.action.onSave(file)
                     }
@@ -447,7 +459,7 @@ class GDrive private constructor(context: Context) {
                         if (file.exists()) {
                             file.delete()
                         }
-                        driveService.files().delete(f.id).execute()
+                        service.files().delete(f.id).execute()
                     }
                 }
             }
@@ -599,16 +611,18 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun deleteReminderFileByName(title: String?) {
-        var titleStr = title
-        LogUtil.d(TAG, "deleteReminderFileByName: " + titleStr!!)
-        if (titleStr == "" || driveService == null) {
+        val service = driveService ?: return
+        if (!isLogged) return
+        var titleStr = title ?: return
+        Timber.d("deleteReminderFileByName: $titleStr")
+        if (titleStr == "") {
             return
         }
         val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
         do {
             val files = request.execute()
@@ -616,7 +630,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileTitle = f.name
                 if (fileTitle.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                 }
             }
             request.pageToken = files.nextPageToken
@@ -630,15 +644,14 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun deleteNoteFileByName(title: String?) {
-        var titleStr = title
-        if (titleStr == null || driveService == null) {
-            return
-        }
+        val service = driveService ?: return
+        if (!isLogged) return
+        var titleStr = title ?: return
         val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
         do {
             val files = request.execute()
@@ -646,7 +659,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileTitle = f.name
                 if (fileTitle.endsWith(FileConfig.FILE_NAME_NOTE)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                 }
             }
             request.pageToken = files.nextPageToken
@@ -660,15 +673,14 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun deleteGroupFileByName(title: String?) {
-        var titleStr = title
-        if (titleStr == null || driveService == null) {
-            return
-        }
+        val service = driveService ?: return
+        if (!isLogged) return
+        var titleStr = title ?: return
         val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
         do {
             val files = request.execute()
@@ -676,7 +688,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileTitle = f.name
                 if (fileTitle.endsWith(FileConfig.FILE_NAME_GROUP)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                 }
             }
             request.pageToken = files.nextPageToken
@@ -690,15 +702,14 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun deleteBirthdayFileByName(title: String?) {
-        var titleStr = title
-        if (titleStr == null || driveService == null) {
-            return
-        }
+        val service = driveService ?: return
+        if (!isLogged) return
+        var titleStr = title ?: return
         val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
         do {
             val files = request.execute()
@@ -706,7 +717,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileTitle = f.name
                 if (fileTitle.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                 }
             }
             request.pageToken = files.nextPageToken
@@ -720,15 +731,14 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun deletePlaceFileByName(title: String?) {
-        var titleStr = title
-        if (titleStr == null || driveService == null) {
-            return
-        }
+        val service = driveService ?: return
+        if (!isLogged) return
+        var titleStr = title ?: return
         val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
         do {
             val files = request.execute()
@@ -736,7 +746,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileTitle = f.name
                 if (fileTitle.endsWith(FileConfig.FILE_NAME_PLACE)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                 }
             }
             request.pageToken = files.nextPageToken
@@ -745,15 +755,14 @@ class GDrive private constructor(context: Context) {
 
     @Throws(IOException::class)
     fun deleteTemplateFileByName(title: String?) {
-        var titleStr = title
-        if (titleStr == null || driveService == null) {
-            return
-        }
+        val service = driveService ?: return
+        if (!isLogged) return
+        var titleStr = title ?: return
         val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = driveService!!.files().list()
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
         do {
             val files = request.execute()
@@ -761,7 +770,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileTitle = f.name
                 if (fileTitle.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                 }
             }
             request.pageToken = files.nextPageToken
@@ -773,8 +782,9 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun clean() {
-        if (driveService == null) return
-        val request = driveService!!.files().list()
+        val service = driveService ?: return
+        if (!isLogged) return
+        val request = service.files().list()
                 .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '$FOLDER_NAME'")
                 ?: return
         do {
@@ -783,7 +793,7 @@ class GDrive private constructor(context: Context) {
             for (f in fileList) {
                 val fileMIME = f.mimeType
                 if (fileMIME.contains("application/vnd.google-apps.folder") && f.name.contains(FOLDER_NAME)) {
-                    driveService!!.files().delete(f.id).execute()
+                    service.files().delete(f.id).execute()
                     break
                 }
             }
@@ -798,8 +808,9 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     fun cleanFolder() {
-        if (driveService == null) return
-        val request = driveService!!.files().list()
+        val service = driveService ?: return
+        if (!isLogged) return
+        val request = service.files().list()
                 .setQ("mimeType = 'text/plain' and (name contains '" + FileConfig.FILE_NAME_SETTINGS + "' " +
                         "or name contains '" + FileConfig.FILE_NAME_TEMPLATE + "' " +
                         "or name contains '" + FileConfig.FILE_NAME_PLACE + "' " +
@@ -812,7 +823,7 @@ class GDrive private constructor(context: Context) {
             val files = request.execute()
             val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
             for (f in fileList) {
-                driveService!!.files().delete(f.id).execute()
+                service.files().delete(f.id).execute()
             }
             request.pageToken = files.nextPageToken
         } while (request.pageToken != null && request.pageToken.length >= 0)
@@ -826,11 +837,12 @@ class GDrive private constructor(context: Context) {
      */
     @Throws(IOException::class)
     private fun createFolder(): File? {
-        if (driveService == null) return null
+        val service = driveService ?: return null
+        if (!isLogged) return null
         val folder = File()
         folder.name = FOLDER_NAME
         folder.mimeType = "application/vnd.google-apps.folder"
-        val folderInsert = driveService!!.files().create(folder)
+        val folderInsert = service.files().create(folder)
         return folderInsert?.execute()
     }
 

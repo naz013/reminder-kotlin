@@ -119,6 +119,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         if (item == null) return false
         when (item.itemId) {
             R.id.action_delete_all -> {
+                viewModel.deleteAll(mAdapter.data)
                 return true
             }
         }
