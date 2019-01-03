@@ -16,9 +16,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SwitchCompat
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import kotlinx.android.synthetic.main.view_prefs.view.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -124,7 +124,7 @@ class PrefsView : RelativeLayout {
                     title.setTextColor(primaryColor)
                 }
             } catch (e: Exception) {
-                LogUtil.e("PrefsView", "There was an error loading attributes.", e)
+                Timber.d("init: ${e.message}")
             } finally {
                 a.recycle()
             }

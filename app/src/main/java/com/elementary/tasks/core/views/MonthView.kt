@@ -12,8 +12,11 @@ import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.Events
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import hirondelle.date4j.DateTime
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
@@ -221,7 +224,7 @@ class MonthView : View, View.OnTouchListener {
             }
             drawRectText(dateTime.day.toString(), canvas, rect, color, i)
         }
-        LogUtil.d(TAG, "onDraw: " + (System.currentTimeMillis() - start))
+        Timber.d("onDraw: ${(System.currentTimeMillis() - start)}")
     }
 
     private fun drawEvents(canvas: Canvas, events: Events, rect: Rect) {
@@ -324,7 +327,7 @@ class MonthView : View, View.OnTouchListener {
         val x = motionEvent.x.toInt()
         val y = motionEvent.y.toInt()
         mLongClickHandler.removeCallbacks(mLongRunnable)
-        if (mTouchRect != null && mTouchRect!!.contains(x, y) && mDateClick != null) {
+        if (mTouchRect != null && mTouchRect?.contains(x, y) == true && mDateClick != null) {
             mDateClick?.onClick(mDateTimeList!![mTouchPosition])
         }
         cancelTouch()
@@ -333,7 +336,7 @@ class MonthView : View, View.OnTouchListener {
     private fun performMove(motionEvent: MotionEvent) {
         val x = motionEvent.x.toInt()
         val y = motionEvent.y.toInt()
-        if (mTouchRect != null && !mTouchRect!!.contains(x, y)) {
+        if (mTouchRect != null && mTouchRect?.contains(x, y) == false) {
             cancelTouch()
         }
     }
@@ -366,8 +369,6 @@ class MonthView : View, View.OnTouchListener {
     }
 
     companion object {
-
-        private const val TAG = "MonthView"
         private const val ROWS = 6
         private const val COLS = 7
         private const val GRID_R_C = 3

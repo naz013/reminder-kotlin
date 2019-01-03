@@ -6,7 +6,6 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
@@ -118,7 +117,7 @@ class GDrive private constructor(context: Context) {
                 for (f in fileList) {
                     val fileMIME = f.mimeType
                     if (fileMIME.trim { it <= ' ' }.contains("application/vnd.google-apps.folder") && f.name.contains(FOLDER_NAME)) {
-                        LogUtil.d(TAG, "getFolderId: " + f.name + ", " + f.mimeType)
+                        Timber.d("getFolderId: ${f.name}, ${f.mimeType}")
                         return f.id
                     }
                 }
@@ -248,7 +247,7 @@ class GDrive private constructor(context: Context) {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.templatesDir, "Template Backup", null))
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveTemplatesToDrive: " + e.localizedMessage)
+            Timber.d("saveTemplatesToDrive: ${e.message}")
         }
     }
 
@@ -259,7 +258,7 @@ class GDrive private constructor(context: Context) {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.remindersDir, "Reminder Backup", null))
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("saveRemindersToDrive: ${e.message}")
         }
     }
 
@@ -268,7 +267,7 @@ class GDrive private constructor(context: Context) {
             val metadata = Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.remindersDir, "Reminder Backup", null)
             saveFileToDrive(pathToFile, metadata)
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("saveReminderToDrive: ${e.message}")
         }
     }
 
@@ -277,7 +276,7 @@ class GDrive private constructor(context: Context) {
             val metadata = Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.birthdaysDir, "Birthday Backup", null)
             saveFileToDrive(pathToFile, metadata)
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("saveBirthdayToDrive: ${e.message}")
         }
     }
 
@@ -286,7 +285,7 @@ class GDrive private constructor(context: Context) {
             val metadata = Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "ReminderGroup Backup", null)
             saveFileToDrive(pathToFile, metadata)
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("saveGroupToDrive: ${e.message}")
         }
     }
 
@@ -295,7 +294,7 @@ class GDrive private constructor(context: Context) {
             val metadata = Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.placesDir, "Place Backup", null)
             saveFileToDrive(pathToFile, metadata)
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("savePlaceToDrive: ${e.message}")
         }
     }
 
@@ -304,7 +303,7 @@ class GDrive private constructor(context: Context) {
             val metadata = Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.notesDir, "Note Backup", null)
             saveFileToDrive(pathToFile, metadata)
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("saveNoteToDrive: ${e.message}")
         }
     }
 
@@ -313,7 +312,7 @@ class GDrive private constructor(context: Context) {
             val metadata = Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.templatesDir, "Template Backup", null)
             saveFileToDrive(pathToFile, metadata)
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            Timber.d("saveTemplateToDrive: ${e.message}")
         }
     }
 
@@ -321,7 +320,7 @@ class GDrive private constructor(context: Context) {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.notesDir, "Note Backup", null))
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveNotesToDrive: " + e.localizedMessage)
+            Timber.d("saveNotesToDrive: ${e.message}")
         }
     }
 
@@ -332,7 +331,7 @@ class GDrive private constructor(context: Context) {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "ReminderGroup Backup", null))
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveGroupsToDrive: " + e.localizedMessage)
+            Timber.d("saveGroupsToDrive: ${e.message}")
         }
     }
 
@@ -343,7 +342,7 @@ class GDrive private constructor(context: Context) {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.birthdaysDir, "Birthday Backup", null))
         } catch (e: IOException) {
-            LogUtil.d(TAG, "saveBirthdaysToDrive: " + e.localizedMessage)
+            Timber.d("saveBirthdaysToDrive: ${e.message}")
         }
     }
 
@@ -354,7 +353,7 @@ class GDrive private constructor(context: Context) {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.placesDir, "Place Backup", null))
         } catch (e: IOException) {
-            LogUtil.d(TAG, "savePlacesToDrive: " + e.localizedMessage)
+            Timber.d("savePlacesToDrive: ${e.message}")
         }
     }
 
@@ -480,9 +479,9 @@ class GDrive private constructor(context: Context) {
                     val item = backupTool.getTemplate(file.toString(), null)
                     if (item != null) appDb.smsTemplatesDao().insert(item)
                 } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadTemplates: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadTemplates: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 }
             }
         }))
@@ -508,9 +507,9 @@ class GDrive private constructor(context: Context) {
                         control.start()
                     }
                 } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadReminders: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadReminders: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 }
             }
         }))
@@ -529,9 +528,9 @@ class GDrive private constructor(context: Context) {
                     val item = backupTool.getPlace(file.toString(), null)
                     if (item != null) appDb.placesDao().insert(item)
                 } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadPlaces: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadPlaces: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 }
             }
         }))
@@ -554,9 +553,9 @@ class GDrive private constructor(context: Context) {
                         appDb.notesDao().insertAll(item.images)
                     }
                 } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 }
             }
         }))
@@ -575,9 +574,9 @@ class GDrive private constructor(context: Context) {
                     val item = backupTool.getGroup(file.toString(), null)
                     if (item != null) appDb.reminderGroupDao().insert(item)
                 } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 }
             }
         }))
@@ -596,9 +595,9 @@ class GDrive private constructor(context: Context) {
                     val item = backupTool.getBirthday(file.toString(), null)
                     if (item != null) appDb.birthdaysDao().insert(item)
                 } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadBirthdays: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadBirthdays: " + e.localizedMessage)
+                    Timber.d("onSave: ${e.message}")
                 }
             }
         }))
@@ -856,8 +855,6 @@ class GDrive private constructor(context: Context) {
     }
 
     companion object {
-
-        private const val TAG = "GDrive"
         private const val APPLICATION_NAME = "Reminder/6.0"
         private const val FOLDER_NAME = "Reminder"
 

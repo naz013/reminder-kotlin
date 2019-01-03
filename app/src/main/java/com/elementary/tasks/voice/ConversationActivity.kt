@@ -23,7 +23,6 @@ import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
@@ -32,6 +31,7 @@ import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -65,25 +65,25 @@ class ConversationActivity : ThemedActivity() {
 
     private val mTextToSpeechListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
-            val result = tts!!.setLanguage(Locale(language.getLanguage(prefs.voiceLocale)))
+            val result = tts?.setLanguage(Locale(language.getLanguage(prefs.voiceLocale)))
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                LogUtil.d(TAG, "This Language is not supported")
+                Timber.d("This Language is not supported")
             } else {
                 isTtsReady = true
                 addResponse(getLocalized(R.string.hi_how_can_i_help_you))
                 postMicClick({ micClick() })
             }
         } else {
-            LogUtil.d(TAG, "Initialization Failed!")
+            Timber.d("Initialization Failed!")
         }
     }
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle) {
-            LogUtil.d(TAG, "onReadyForSpeech: ")
+            Timber.d("onReadyForSpeech: ")
         }
 
         override fun onBeginningOfSpeech() {
-            LogUtil.d(TAG, "onBeginningOfSpeech: ")
+            Timber.d("onBeginningOfSpeech: ")
         }
 
         override fun onRmsChanged(v: Float) {
@@ -97,16 +97,16 @@ class ConversationActivity : ThemedActivity() {
         }
 
         override fun onBufferReceived(bytes: ByteArray) {
-            LogUtil.d(TAG, "onBufferReceived: ")
+            Timber.d("onBufferReceived: ")
         }
 
         override fun onEndOfSpeech() {
-            LogUtil.d(TAG, "onEndOfSpeech: ")
+            Timber.d("onEndOfSpeech: ")
 
         }
 
         override fun onError(i: Int) {
-            LogUtil.d(TAG, "onError: $i")
+            Timber.d("onError: $i")
             showSilentMessage()
         }
 
@@ -120,11 +120,11 @@ class ConversationActivity : ThemedActivity() {
         }
 
         override fun onPartialResults(bundle: Bundle) {
-            LogUtil.d(TAG, "onPartialResults: ")
+            Timber.d("onPartialResults: ")
         }
 
         override fun onEvent(i: Int, bundle: Bundle) {
-            LogUtil.d(TAG, "onEvent: ")
+            Timber.d("onEvent: ")
         }
     }
 
@@ -142,7 +142,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun parseResults(list: List<String>?) {
-        LogUtil.d(TAG, "parseResults: $list")
+        Timber.d("parseResults: $list")
         if (list == null || list.isEmpty()) {
             showSilentMessage()
             return
@@ -156,8 +156,8 @@ class ConversationActivity : ThemedActivity() {
                 break
             }
         }
-        if (model != null) {
-            performResult(model, suggestion!!)
+        if (model != null && suggestion != null) {
+            performResult(model, suggestion)
         } else {
             stopView()
             mAdapter.addReply(Reply(Reply.REPLY, list[0]))
@@ -192,7 +192,7 @@ class ConversationActivity : ThemedActivity() {
             mAdapter.removeAsk()
         }
         mAdapter.addReply(Reply(Reply.REPLY, s.toLowerCase()))
-        LogUtil.d(TAG, "performResult: $model")
+        Timber.d("performResult: $model")
         val actionType = model.type
         when (actionType) {
             ActionType.REMINDER -> reminderAction(model)
@@ -222,8 +222,7 @@ class ConversationActivity : ThemedActivity() {
             ActionType.ANSWER -> performAnswer(model)
             ActionType.SHOW -> {
                 stopView()
-                LogUtil.d(TAG, "performResult: " +
-                        TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true, true))
+                Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true, true)}")
                 val action = model.action
                 when (action) {
                     Action.REMINDERS -> viewModel.getReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
@@ -664,7 +663,6 @@ class ConversationActivity : ThemedActivity() {
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -692,8 +690,6 @@ class ConversationActivity : ThemedActivity() {
     }
 
     companion object {
-
-        private const val TAG = "ConversationActivity"
         private const val AUDIO_CODE = 255000
         private const val CHECK_CODE = 1651
     }

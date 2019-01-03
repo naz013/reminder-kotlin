@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -175,7 +176,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             if (animate) animate(pos)
             return true
         } else {
-            LogUtil.d(TAG, "Map is not initialized!")
+            Timber.d("Map is not initialized!")
             return false
         }
     }
@@ -263,7 +264,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             try {
                 location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
             } catch (e: IllegalArgumentException) {
-                LogUtil.e(TAG, "moveToMyLocation: ", e)
+                Timber.d("moveToMyLocation: ${e.message}")
             }
 
             if (location != null) {
@@ -576,7 +577,6 @@ class AdvancedMapFragment : BaseMapFragment() {
 
     companion object {
 
-        private const val TAG = "AdvancedMapFragment"
         private const val REQ_LOC = 1245
 
         const val ENABLE_TOUCH = "enable_touch"

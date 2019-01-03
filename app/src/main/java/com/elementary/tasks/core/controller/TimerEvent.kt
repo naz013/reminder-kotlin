@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.controller
 
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -54,7 +54,7 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
                 reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
                 time = calculateTime(false)
             }
-            LogUtil.d(TAG, "next: " + TimeUtil.getFullDateTime(time, true, true))
+            Timber.d("next: ${TimeUtil.getFullDateTime(time, true, true)}")
             reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
             reminder.eventCount = reminder.eventCount + 1
             start()
@@ -94,10 +94,5 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
     override fun calculateTime(isNew: Boolean): Long {
         return TimeCount.generateNextTimer(reminder, isNew)
-    }
-
-    companion object {
-
-        private const val TAG = "TimerEvent"
     }
 }

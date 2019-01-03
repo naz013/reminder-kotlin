@@ -11,8 +11,12 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -47,9 +51,9 @@ class GeolocationService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mTracker != null) mTracker!!.removeUpdates()
+        mTracker?.removeUpdates()
         stopForeground(true)
-        LogUtil.d(TAG, "geo service stop")
+        Timber.d("onDestroy: ")
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -57,7 +61,7 @@ class GeolocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        LogUtil.d(TAG, "geo service started")
+        Timber.d("onStartCommand: ")
         isNotificationEnabled = prefs.isDistanceNotificationEnabled
         stockRadius = prefs.radius
         mTracker = LocationTracker(applicationContext) { lat, lng ->
@@ -125,8 +129,8 @@ class GeolocationService : Service() {
         }
     }
 
-    private fun getRadius(radius: Int): Int {
-        var radius = radius
+    private fun getRadius(r: Int): Int {
+        var radius = r
         if (radius == -1) radius = stockRadius
         return radius
     }
@@ -194,8 +198,6 @@ class GeolocationService : Service() {
     }
 
     companion object {
-
-        private const val TAG = "GeolocationService"
-        const val NOTIFICATION_ID = 1245
+        private const val NOTIFICATION_ID = 1245
     }
 }

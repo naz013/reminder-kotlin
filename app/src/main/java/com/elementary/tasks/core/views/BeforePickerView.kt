@@ -9,9 +9,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import kotlinx.android.synthetic.main.view_remind_before.view.*
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -60,7 +60,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
     val beforeValue: Long
         get() {
             val rep = mRepeatValue * multiplier
-            LogUtil.d(TAG, "getBeforeValue: $rep")
+            Timber.d("getBeforeValue: $rep")
             return rep
         }
 
@@ -112,7 +112,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
             try {
                 mState = a.getInt(R.styleable.BeforePickerView_before_type, minutes)
             } catch (e: Exception) {
-                LogUtil.e(TAG, "There was an error loading attributes.", e)
+                Timber.d("init: ${e.message}")
             } finally {
                 a.recycle()
             }
@@ -187,9 +187,5 @@ class BeforePickerView : LinearLayout, TextWatcher {
 
     interface OnBeforeChangedListener {
         fun onChanged(beforeMills: Long)
-    }
-
-    companion object {
-        private const val TAG = "BeforePickerView"
     }
 }

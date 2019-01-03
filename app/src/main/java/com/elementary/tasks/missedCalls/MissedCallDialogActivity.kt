@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.missedCalls.MissedCallViewModel
 import kotlinx.android.synthetic.main.activity_missed_dialog.*
+import timber.log.Timber
 import java.sql.Date
 
 /**
@@ -122,7 +123,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         try {
             formattedTime = TimeUtil.getTime(Date(missedCall.dateTime), prefs.is24HourFormatEnabled)
         } catch (e: NullPointerException) {
-            LogUtil.d(TAG, "onCreate: " + e.localizedMessage)
+            Timber.d("showInfo: ${e.message}")
         }
 
         val name = Contacts.getNameFromNumber(missedCall.number, this)
@@ -269,7 +270,6 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     companion object {
-        private const val TAG = "MCDialogActivity"
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val CALL_PERM = 612

@@ -3,7 +3,7 @@ package com.elementary.tasks.core.services
 import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.async.EnableThread
-import com.elementary.tasks.core.utils.LogUtil
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,7 +26,7 @@ import com.elementary.tasks.core.utils.LogUtil
 class BootReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        LogUtil.d(TAG, "onReceive: ")
+        Timber.d("onReceive: ")
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             EnableThread(context).start()
             val alarmReceiver = AlarmReceiver()
@@ -50,9 +50,5 @@ class BootReceiver : BaseBroadcast() {
                 notifier.showBirthdayPermanent()
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "BootReceiver"
     }
 }

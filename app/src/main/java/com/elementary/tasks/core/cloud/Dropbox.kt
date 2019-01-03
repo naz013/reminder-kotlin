@@ -14,10 +14,10 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.io.*
 import javax.inject.Inject
 
@@ -39,7 +39,6 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class Dropbox {
 
     private val dbxFolder = "/Reminders/"
@@ -115,7 +114,7 @@ class Dropbox {
         try {
             account = api.users().spaceUsage
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "userQuota: ", e)
+            Timber.d("userQuota: ${e.message}")
         }
 
         return account?.allocation?.individualValue?.allocated ?: 0
@@ -127,7 +126,7 @@ class Dropbox {
         try {
             account = api.users().spaceUsage
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "userQuotaNormal: ", e)
+            Timber.d("userQuotaNormal: ${e.message}")
         }
 
         return account?.used ?: 0
@@ -138,11 +137,11 @@ class Dropbox {
     }
 
     fun unlink(): Boolean {
-        var `is` = false
+        var b = false
         if (logOut()) {
-            `is` = true
+            b = true
         }
-        return `is`
+        return b
     }
 
     private fun logOut(): Boolean {
@@ -198,9 +197,9 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("upload: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("upload: ${e.message}")
             }
 
         }
@@ -228,11 +227,11 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadReminderByFileName: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadReminderByFileName: ${e.message}")
             } catch (e: NullPointerException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadReminderByFileName: ${e.message}")
             }
         } else {
             upload(MemoryUtil.DIR_SD)
@@ -261,11 +260,11 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadBirthdayByFileName: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadBirthdayByFileName: ${e.message}")
             } catch (e: NullPointerException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadBirthdayByFileName: ${e.message}")
             }
         } else {
             upload(MemoryUtil.DIR_BIRTHDAY_SD)
@@ -294,11 +293,11 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadGroupByFileName: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadGroupByFileName: ${e.message}")
             } catch (e: NullPointerException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadGroupByFileName: ${e.message}")
             }
         } else {
             upload(MemoryUtil.DIR_GROUP_SD)
@@ -327,11 +326,11 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadPlaceByFileName: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadPlaceByFileName: ${e.message}")
             } catch (e: NullPointerException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadPlaceByFileName: ${e.message}")
             }
         } else {
             upload(MemoryUtil.DIR_PLACES_SD)
@@ -360,11 +359,11 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadNoteByFileName: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadNoteByFileName: ${e.message}")
             } catch (e: NullPointerException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadNoteByFileName: ${e.message}")
             }
         } else {
             upload(MemoryUtil.DIR_NOTES_SD)
@@ -393,11 +392,11 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadTemplateByFileName: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadTemplateByFileName: ${e.message}")
             } catch (e: NullPointerException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadTemplateByFileName: ${e.message}")
             }
         } else {
             upload(MemoryUtil.DIR_TEMPLATES_SD)
@@ -445,7 +444,7 @@ class Dropbox {
      * @param name file name.
      */
     fun deleteReminder(name: String) {
-        LogUtil.d(TAG, "deleteReminder: $name")
+        Timber.d("deleteReminder: $name")
         startSession()
         if (!isLinked) {
             return
@@ -454,7 +453,7 @@ class Dropbox {
         try {
             api.files().deleteV2(dbxFolder + name)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteReminder: ", e)
+            Timber.d("deleteReminder: ${e.message}")
         }
     }
 
@@ -472,7 +471,7 @@ class Dropbox {
         try {
             api.files().deleteV2(dbxNoteFolder + name)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteNote: ", e)
+            Timber.d("deleteNote: ${e.message}")
         }
     }
 
@@ -490,7 +489,7 @@ class Dropbox {
         try {
             api.files().deleteV2(dbxGroupFolder + name)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteGroup: $name", e)
+            Timber.d("deleteGroup: ${e.message}")
         }
     }
 
@@ -508,7 +507,7 @@ class Dropbox {
         try {
             api.files().deleteV2(dbxBirthFolder + name)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteBirthday: ", e)
+            Timber.d("deleteBirthday: ${e.message}")
         }
     }
 
@@ -526,7 +525,7 @@ class Dropbox {
         try {
             api.files().deleteV2(dbxPlacesFolder + name)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deletePlace: ", e)
+            Timber.d("deletePlace: ${e.message}")
         }
     }
 
@@ -544,7 +543,7 @@ class Dropbox {
         try {
             api.files().deleteV2(dbxTemplatesFolder + name)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteTemplate: ", e)
+            Timber.d("deleteTemplate: ${e.message}")
         }
     }
 
@@ -570,7 +569,7 @@ class Dropbox {
         try {
             api.files().deleteV2(folder)
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteFolder: ", e)
+            Timber.d("deleteFolder: ${e.message}")
         }
     }
 
@@ -602,11 +601,11 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadTemplates: ", e)
+            Timber.d("downloadTemplates: ${e.message}")
         } catch (e: IOException) {
-            LogUtil.e(TAG, "downloadTemplates: ", e)
+            Timber.d("downloadTemplates: ${e.message}")
         } catch (e: IllegalStateException) {
-            LogUtil.e(TAG, "downloadTemplates: ", e)
+            Timber.d("downloadTemplates: ${e.message}")
         }
     }
 
@@ -647,11 +646,11 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadReminders: ", e)
+            Timber.d("downloadReminders: ${e.message}")
         } catch (e: IOException) {
-            LogUtil.e(TAG, "downloadReminders: ", e)
+            Timber.d("downloadReminders: ${e.message}")
         } catch (e: IllegalStateException) {
-            LogUtil.e(TAG, "downloadReminders: ", e)
+            Timber.d("downloadReminders: ${e.message}")
         }
     }
 
@@ -663,10 +662,10 @@ class Dropbox {
             }
             val outputStream = FileOutputStream(localFile)
             api.files().download(cloudFile).download(outputStream)
-        } catch (e1: DbxException) {
-            LogUtil.e(TAG, "downloadFile: ", e1)
-        } catch (e1: IOException) {
-            LogUtil.e(TAG, "downloadFile: ", e1)
+        } catch (e: DbxException) {
+            Timber.d("downloadFile: ${e.message}")
+        } catch (e: IOException) {
+            Timber.d("downloadFile: ${e.message}")
         }
     }
 
@@ -702,11 +701,11 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadNotes: ", e)
+            Timber.d("downloadNotes: ${e.message}")
         } catch (e: IOException) {
-            LogUtil.e(TAG, "downloadNotes: ", e)
+            Timber.d("downloadNotes: ${e.message}")
         } catch (e: IllegalStateException) {
-            LogUtil.e(TAG, "downloadNotes: ", e)
+            Timber.d("downloadNotes: ${e.message}")
         }
     }
 
@@ -740,11 +739,11 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadGroups: ", e)
+            Timber.d("downloadGroups: ${e.message}")
         } catch (e: IOException) {
-            LogUtil.e(TAG, "downloadGroups: ", e)
+            Timber.d("downloadGroups: ${e.message}")
         } catch (e: IllegalStateException) {
-            LogUtil.e(TAG, "downloadGroups: ", e)
+            Timber.d("downloadGroups: ${e.message}")
         }
     }
 
@@ -778,11 +777,11 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadBirthdays: ", e)
+            Timber.d("downloadBirthdays: ${e.message}")
         } catch (e: IOException) {
-            LogUtil.e(TAG, "downloadBirthdays: ", e)
+            Timber.d("downloadBirthdays: ${e.message}")
         } catch (e: IllegalStateException) {
-            LogUtil.e(TAG, "downloadBirthdays: ", e)
+            Timber.d("downloadBirthdays: ${e.message}")
         }
     }
 
@@ -816,11 +815,11 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadPlaces: ", e)
+            Timber.d("downloadPlaces: ${e.message}")
         } catch (e: IOException) {
-            LogUtil.e(TAG, "downloadPlaces: ", e)
+            Timber.d("downloadPlaces: ${e.message}")
         } catch (e: IllegalStateException) {
-            LogUtil.e(TAG, "downloadPlaces: ", e)
+            Timber.d("downloadPlaces: ${e.message}")
         }
     }
 
@@ -849,9 +848,9 @@ class Dropbox {
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadSettings: ${e.message}")
             } catch (e: IOException) {
-                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+                Timber.d("uploadSettings: ${e.message}")
             }
             break
         }
@@ -877,7 +876,7 @@ class Dropbox {
                 }
             }
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "downloadSettings: ", e)
+            Timber.d("downloadSettings: ${e.message}")
         }
 
     }
@@ -898,15 +897,13 @@ class Dropbox {
             val result = api.files().listFolder("/") ?: return 0
             count = result.entries.size
         } catch (e: DbxException) {
-            LogUtil.e(TAG, "countFiles: ", e)
+            Timber.d("countFiles: ${e.message}")
         }
 
         return count
     }
 
     companion object {
-
-        private const val TAG = "Dropbox"
         private const val APP_KEY = "4zi1d414h0v8sxe"
     }
 }

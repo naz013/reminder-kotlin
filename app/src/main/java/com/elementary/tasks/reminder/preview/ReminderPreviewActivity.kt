@@ -485,10 +485,9 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun saveCopy(which: Int) {
-        LogUtil.d(TAG, "saveCopy: $which")
-        if (reminder != null) {
-            viewModel.copyReminder(reminder!!, list[which], reminder!!.summary + " - copy")
-        }
+        Timber.d("saveCopy: $which")
+        val reminder = reminder ?: return
+        viewModel.copyReminder(reminder, list[which], reminder.summary + " - copy")
     }
 
     private fun initViews() {
@@ -580,6 +579,5 @@ class ReminderPreviewActivity : ThemedActivity() {
     companion object {
         private const val CALL_PERM = 612
         private const val SMS_PERM = 613
-        private const val TAG = "ReminderPreviewActivity"
     }
 }

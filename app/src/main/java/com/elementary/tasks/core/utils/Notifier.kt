@@ -23,6 +23,7 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -183,7 +184,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
     }
 
     fun showReminderPermanent() {
-        LogUtil.d(TAG, "showPermanent: ")
+        Timber.d("showReminderPermanent: ")
         val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setAutoCancel(false)
@@ -262,10 +263,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
     }
 
     companion object {
-
         const val CHANNEL_REMINDER = "reminder.channel1"
         const val CHANNEL_SYSTEM = "reminder.channel2"
-
-        private const val TAG = "Notifier"
     }
 }

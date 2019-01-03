@@ -9,6 +9,7 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -92,23 +93,24 @@ class BirthdayActionService : BaseBroadcast() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent != null) {
             val action = intent.action
-            LogUtil.d(TAG, "onStartCommand: " + action!!)
-            when {
-                action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
-                action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
-                action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
-                else -> showReminder(context, intent)
+            Timber.d("onReceive: $action")
+            if (action != null) {
+                when {
+                    action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
+                    action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
+                    action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> {
+                        hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                    }
+                    else -> showReminder(context, intent)
+                }
             }
         }
     }
 
     companion object {
-
-        const val ACTION_SHOW = Actions.Birthday.ACTION_SHOW_FULL
-        const val ACTION_CALL = Actions.Birthday.ACTION_CALL
-        const val ACTION_SMS = Actions.Birthday.ACTION_SMS
-
-        private const val TAG = "BirthdayActionService"
+        private const val ACTION_SHOW = Actions.Birthday.ACTION_SHOW_FULL
+        private const val ACTION_CALL = Actions.Birthday.ACTION_CALL
+        private const val ACTION_SMS = Actions.Birthday.ACTION_SMS
 
         fun hide(context: Context, id: String): Intent {
             return intent(context, id, PermanentBirthdayReceiver.ACTION_HIDE)

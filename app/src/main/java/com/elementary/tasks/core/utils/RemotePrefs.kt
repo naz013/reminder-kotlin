@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import com.elementary.tasks.R
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,7 +48,7 @@ class RemotePrefs @Inject constructor(private val context: Context) {
 
     private fun fetchConfig() {
         mFirebaseRemoteConfig.fetch(3600).addOnCompleteListener { task ->
-            LogUtil.d(TAG, "fetchConfig: " + task.isSuccessful)
+            Timber.d("fetchConfig: ${task.isSuccessful}")
             if (task.isSuccessful) {
                 mFirebaseRemoteConfig.activateFetched()
             }
@@ -146,7 +147,5 @@ class RemotePrefs @Inject constructor(private val context: Context) {
 
         private const val VERSION_CODE = "version_code"
         private const val VERSION_NAME = "version_name"
-
-        private const val TAG = "RemotePrefs"
     }
 }

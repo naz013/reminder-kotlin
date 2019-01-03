@@ -16,7 +16,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.async.GeocoderTask
-import com.elementary.tasks.core.utils.LogUtil
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,11 +47,11 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private val mExecutionCallback = object : GeocoderTask.GeocoderListener {
         override fun onAddressReceived(addresses: List<Address>) {
-            LogUtil.d(TAG, "onAddressReceived: $addresses")
+            Timber.d("onAddressReceived: $addresses")
             foundPlaces = addresses
             mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, addresses)
             setAdapter<AddressAdapter>(mAdapter)
-            mAdapter!!.notifyDataSetChanged()
+            mAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -95,11 +95,11 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun performTypeValue(s: String) {
-        if (task != null && !task!!.isCancelled) {
-            task!!.cancel(true)
+        if (task != null && task?.isCancelled == false) {
+            task?.cancel(true)
         }
         task = GeocoderTask(context, mExecutionCallback)
-        task!!.execute(s)
+        task?.execute(s)
     }
 
     override fun onAttachedToWindow() {
@@ -155,10 +155,5 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
             }
             return sb.toString()
         }
-    }
-
-    companion object {
-
-        private const val TAG = "AddressAutoCompleteView"
     }
 }

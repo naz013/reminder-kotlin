@@ -12,6 +12,7 @@ import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
 import com.elementary.tasks.core.utils.MemoryUtil.writeFile
 import com.google.gson.Gson
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -82,7 +83,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             }
 
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            Timber.d("Couldn't find external storage!")
         }
     }
 
@@ -144,7 +145,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             }
 
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            Timber.d("Couldn't find external storage!")
         }
     }
 
@@ -206,7 +207,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             }
 
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            Timber.d("Couldn't find external storage!")
         }
     }
 
@@ -241,7 +242,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         if (dir != null) {
             val exportFileName = item.groupUuId + FileConfig.FILE_NAME_GROUP
             val file = File(dir, exportFileName)
-            LogUtil.d(TAG, "exportGroup: $file")
             try {
                 writeFile(file, jsonData.get())
                 jsonData.clear()
@@ -250,7 +250,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             }
 
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            Timber.d("Couldn't find external storage!")
         }
     }
 
@@ -362,7 +362,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             }
 
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            Timber.d("Couldn't find external storage!")
         }
         return null
     }
@@ -467,7 +467,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
                 e.printStackTrace()
             }
         } else {
-            LogUtil.i(TAG, "Couldn't find external storage!")
+            Timber.d("Couldn't find external storage!")
         }
     }
 
@@ -489,9 +489,5 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         } else {
             null
         }
-    }
-
-    companion object {
-        private const val TAG = "BackupTool"
     }
 }

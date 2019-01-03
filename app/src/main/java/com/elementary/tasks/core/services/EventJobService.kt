@@ -116,8 +116,6 @@ class EventJobService : Job() {
     }
 
     companion object {
-
-        private const val TAG = "EventJobService"
         private const val EVENT_BIRTHDAY = "event_birthday"
 
         private const val ARG_LOCATION = "arg_location"
@@ -206,7 +204,7 @@ class EventJobService : Job() {
         fun enableReminder(reminder: Reminder?) {
             if (reminder == null) return
             var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            LogUtil.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true))
+            Timber.d("enableReminder: ${TimeUtil.getFullDateTime(due, true, true)}")
             if (due == 0L) {
                 return
             }
@@ -240,7 +238,7 @@ class EventJobService : Job() {
         }
 
         fun cancelReminder(tag: String) {
-            Timber.i("cancelReminder: %s", tag)
+            Timber.i("cancelReminder: $tag")
             JobManager.instance().cancelAllForTag(tag)
         }
     }
