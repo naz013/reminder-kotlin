@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Reminder</string>
-    <string name="wear_service_activated_when_reminder_appears_on_mobile_application_you_also_see_it_on_your_watch">When reminder appears on mobile application, You\'ll see it on your watch.</string>
-    <string name="say_something">Say something</string>
-    <string name="voice_recognition_not_supported">No recognition engine found</string>
-</resources>
