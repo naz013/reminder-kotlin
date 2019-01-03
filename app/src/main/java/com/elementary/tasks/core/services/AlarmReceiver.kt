@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.*
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -52,8 +53,7 @@ class AlarmReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
-        LogUtil.d(TAG, "onReceive: Action - " + action + ", time - " +
-                TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
+        Timber.d("onReceive: Action - $action, time - ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true)}")
         if (action == null) return
         val service = Intent(context, AlarmReceiver::class.java)
         context.startService(service)
@@ -76,7 +76,7 @@ class AlarmReceiver : BaseBroadcast() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_BIRTHDAY_PERMANENT
         val alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_PERMANENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager ?: return
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         val currTime = calendar.timeInMillis
@@ -119,7 +119,7 @@ class AlarmReceiver : BaseBroadcast() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_EVENTS_CHECK
         val alarmIntent = PendingIntent.getBroadcast(context, EVENTS_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager ?: return
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         val interval = prefs.autoCheckInterval
@@ -144,7 +144,7 @@ class AlarmReceiver : BaseBroadcast() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_SYNC_AUTO
         val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager ?: return
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
         val calendar = Calendar.getInstance()
         val interval = prefs.autoBackupInterval
         calendar.timeInMillis = System.currentTimeMillis() + AlarmManager.INTERVAL_HOUR * interval
@@ -239,7 +239,6 @@ class AlarmReceiver : BaseBroadcast() {
     }
 
     companion object {
-
         private const val AUTO_SYNC_ID = Integer.MAX_VALUE - 1
         private const val BIRTHDAY_PERMANENT_ID = Integer.MAX_VALUE - 2
         private const val EVENTS_CHECK_ID = Integer.MAX_VALUE - 5
@@ -247,7 +246,5 @@ class AlarmReceiver : BaseBroadcast() {
         private const val ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT"
         private const val ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO"
         private const val ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK"
-
-        private const val TAG = "AlarmReceiver"
     }
 }

@@ -6,6 +6,7 @@ import android.os.Environment
 import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
+import timber.log.Timber
 import java.io.*
 
 import java.util.Locale
@@ -230,6 +231,7 @@ object MemoryUtil {
     @Throws(IOException::class)
     fun writeFile(file: File, data: String?): String? {
         if (data == null) return null
+        Timber.d("writeFile: $data")
         try {
             val inputStream = ByteArrayInputStream(data.toByteArray())
             val buffer = ByteArray(8192)

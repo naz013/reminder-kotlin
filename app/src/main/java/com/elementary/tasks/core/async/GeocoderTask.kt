@@ -4,9 +4,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.AsyncTask
-
-import com.elementary.tasks.core.utils.LogUtil
-
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -27,7 +25,6 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class GeocoderTask(mContext: Context, private val mListener: GeocoderListener?) : AsyncTask<String, Void, List<Address>>() {
     private val geocoder: Geocoder = Geocoder(mContext)
 
@@ -44,7 +41,7 @@ class GeocoderTask(mContext: Context, private val mListener: GeocoderListener?) 
 
     override fun onPostExecute(addresses: List<Address>?) {
         if (addresses == null || addresses.isEmpty()) {
-            LogUtil.d(TAG, "No Location found")
+            Timber.d("onPostExecute: ")
         } else {
             mListener?.onAddressReceived(addresses)
         }
@@ -55,10 +52,5 @@ class GeocoderTask(mContext: Context, private val mListener: GeocoderListener?) 
      */
     interface GeocoderListener {
         fun onAddressReceived(addresses: List<Address>)
-    }
-
-    companion object {
-
-        private const val TAG = "GeocoderTask"
     }
 }

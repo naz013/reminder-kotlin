@@ -9,8 +9,8 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
+import timber.log.Timber
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -59,11 +59,10 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: Dropbo
     }
 
     fun checkDropboxStatus() {
-        LogUtil.d(TAG, "checkDropboxStatus: " + mDropbox.isLinked)
+        Timber.d("checkDropboxStatus: ${mDropbox.isLinked}")
         if (mDropbox.isLinked) {
             mCallback.onSuccess(true)
         } else {
-            LogUtil.d(TAG, "checkDropboxStatus2: " + mDropbox.isLinked)
             mDropbox.startSession()
             if (mDropbox.isLinked) {
                 mCallback.onSuccess(true)
@@ -120,8 +119,6 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: Dropbo
     }
 
     companion object {
-
-        const val TAG = "DropboxLogin"
         const val MARKET_APP_JUSTREMINDER = "com.cray.software.justreminder"
         const val MARKET_APP_JUSTREMINDER_PRO = "com.cray.software.justreminderpro"
     }

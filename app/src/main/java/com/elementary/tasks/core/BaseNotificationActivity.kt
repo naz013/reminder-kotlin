@@ -17,6 +17,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -48,11 +49,10 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     lateinit var soundStackHolder: SoundStackHolder
 
     private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
-        LogUtil.d(TAG, "onInit: ")
         if (status == TextToSpeech.SUCCESS && tts != null) {
-            val result = tts!!.setLanguage(ttsLocale)
+            val result = tts?.setLanguage(ttsLocale)
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                LogUtil.d(TAG, "This Language is not supported")
+                Timber.d("This Language is not supported")
             } else {
                 if (!TextUtils.isEmpty(summary)) {
                     try {
@@ -62,14 +62,14 @@ abstract class BaseNotificationActivity : ThemedActivity() {
                     }
 
                     if (Module.isLollipop) {
-                        tts!!.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
+                        tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
                     } else {
-                        tts!!.speak(summary, TextToSpeech.QUEUE_FLUSH, null)
+                        tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null)
                     }
                 }
             }
         } else {
-            LogUtil.d(TAG, "Initialization Failed!")
+            Timber.d("Initialization Failed!")
         }
     }
     protected var mSendListener = { isSent: Boolean ->
@@ -114,7 +114,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     protected open val ttsLocale: Locale?
         get() {
-            LogUtil.d(TAG, "getTtsLocale: ")
             return language.getLocale(false)
         }
 
@@ -143,7 +142,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val current = instanceCount.incrementAndGet()
-        LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
+        Timber.d("onCreate: $current, ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true)}")
     }
 
     protected fun init() {
@@ -154,7 +153,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     override fun onDestroy() {
         super.onDestroy()
         val left = instanceCount.decrementAndGet()
-        LogUtil.d(TAG, "onDestroy: $left")
+        Timber.d("onDestroy: $left")
     }
 
     override fun onPause() {
@@ -253,7 +252,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     }
 
     protected fun showWearNotification(secondaryText: String) {
-        LogUtil.d(TAG, "showWearNotification: ")
+        Timber.d("showWearNotification: $secondaryText")
         if (Module.isJellyMR2) {
             val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
             wearableNotificationBuilder.setSmallIcon(R.drawable.ic_notification_nv_white)
@@ -272,8 +271,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     }
 
     companion object {
-
-        private const val TAG = "BNActivity"
         private const val MY_DATA_CHECK_CODE = 111
 
         private val instanceCount = AtomicInteger(0)

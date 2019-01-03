@@ -10,7 +10,6 @@ import androidx.annotation.ColorInt
 import com.elementary.tasks.core.interfaces.Observable
 import com.elementary.tasks.core.interfaces.Observer
 import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.utils.LogUtil
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -800,7 +799,6 @@ class DrawView : View, Observable {
         }
         this.historyPointer++
         if (mCanvas != null) {
-            LogUtil.d(TAG, "addBitmap: " + bitmap.width + ", " + bitmap.height + ", " + mCanvas!!.width + ", " + mCanvas!!.height)
         }
         this.invalidate()
     }
@@ -836,8 +834,6 @@ class DrawView : View, Observable {
     }
 
     companion object {
-
-        private val TAG = "DrawView"
 
         /**
          * This static method gets the designated bitmap as byte array.

@@ -7,7 +7,6 @@ import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
@@ -54,7 +53,7 @@ class ReminderActionService : BaseBroadcast() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent != null) {
             val action = intent.action
-            LogUtil.d(TAG, "onStartCommand: $action")
+            Timber.d("onReceive: $action")
             if (action != null) {
                 if (action.matches(ACTION_HIDE.toRegex())) {
                     hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
@@ -68,7 +67,7 @@ class ReminderActionService : BaseBroadcast() {
                             windowType = reminder.windowType
                         }
                     }
-                    Timber.d("start: ignore -> %b, event -> %s", ignore, reminder)
+                    Timber.d("start: ignore -> $ignore, event -> $reminder")
                     if (windowType == 0) {
                         context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
                     } else {
@@ -82,11 +81,8 @@ class ReminderActionService : BaseBroadcast() {
     }
 
     companion object {
-
         const val ACTION_SHOW = Actions.Reminder.ACTION_SHOW_FULL
         const val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
         const val ACTION_RUN = Actions.Reminder.ACTION_RUN
-
-        private const val TAG = "ReminderActionService"
     }
 }

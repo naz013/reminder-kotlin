@@ -34,6 +34,7 @@ import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_reminder_dialog.*
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
@@ -124,7 +125,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             if (!isGlobal) {
                 isTTS = reminder.notifyByVoice
             }
-            LogUtil.d(TAG, "isTtsEnabled: $isTTS")
+            Timber.d("isTtsEnabled: $isTTS")
             return isTTS
         }
 
@@ -271,7 +272,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         if (!isMockedTest) {
             this.mControl = EventControlFactory.getController(reminder)
         }
-        LogUtil.d(TAG, "showInfo: " + TimeUtil.getFullDateTime(reminder.eventTime))
+        Timber.d("showInfo: ${TimeUtil.getFullDateTime(reminder.eventTime)}")
         if (reminder.attachmentFile != "") showAttachmentButton()
 
         val contactPhoto = contactPhoto
@@ -816,7 +817,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showReminderNotification(activity: Activity) {
-        LogUtil.d(TAG, "showReminderNotification: ")
+        Timber.d("showReminderNotification: ")
         val notificationIntent = Intent(this, activity.javaClass)
         notificationIntent.putExtra(Constants.INTENT_ID, id)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
@@ -852,8 +853,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                         || SuperUtil.checkNotificationPermission(this)
                         && prefs.isSoundInSilentModeEnabled)) {
             val soundUri = soundUri
-            LogUtil.d(TAG, "showReminderNotification: $soundUri")
-            sound!!.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
+            Timber.d("showReminderNotification: $soundUri")
+            sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
         }
         if (isVibrate) {
             val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
@@ -877,7 +878,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showTTSNotification(activityClass: Activity) {
-        LogUtil.d(TAG, "showTTSNotification: ")
+        Timber.d("showTTSNotification: ")
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(summary)
         val notificationIntent = Intent(this, activityClass.javaClass)
@@ -909,7 +910,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
-        if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this) || SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)) {
+        if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
+                        || SuperUtil.checkNotificationPermission(this)
+                        && prefs.isSoundInSilentModeEnabled)) {
             playDefaultMelody()
         }
         if (isVibrate) {
@@ -935,7 +938,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun playDefaultMelody() {
         if (sound == null) return
-        LogUtil.d(TAG, "playDefaultMelody: ")
+        Timber.d("playDefaultMelody: ")
         try {
             val afd = assets.openFd("sounds/beep.mp3")
             sound?.playAlarm(afd)
@@ -960,8 +963,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     companion object {
-
-        private const val TAG = "ReminderDialogActivity"
         private const val CALL_PERM = 612
         private const val SMS_PERM = 613
         private const val ARG_TEST = "arg_test"

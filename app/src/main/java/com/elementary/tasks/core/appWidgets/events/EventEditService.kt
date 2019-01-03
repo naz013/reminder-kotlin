@@ -2,11 +2,10 @@ package com.elementary.tasks.core.appWidgets.events
 
 import android.app.IntentService
 import android.content.Intent
-
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import timber.log.Timber
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -26,13 +25,12 @@ import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class EventEditService : IntentService("EventEditService") {
 
     override fun onHandleIntent(intent: Intent?) {
         val id = intent?.getIntExtra(Constants.INTENT_ID, 0) ?: 0
         val isReminder = intent?.getBooleanExtra(TYPE, true) ?: true
-        LogUtil.d(TAG, "onHandleIntent: $id isReminder $isReminder")
+        Timber.d("onHandleIntent: $id, isReminder $isReminder")
         if (id != 0) {
             if (isReminder) {
                 startActivity(Intent(applicationContext, CreateReminderActivity::class.java)
@@ -48,8 +46,6 @@ class EventEditService : IntentService("EventEditService") {
     }
 
     companion object {
-
-        private const val TAG = "EventEditService"
         const val TYPE = "type"
     }
 }

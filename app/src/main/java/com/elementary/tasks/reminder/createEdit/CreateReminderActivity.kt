@@ -178,9 +178,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 }
                 editReminder(reminder, false)
             } catch (e: IOException) {
-                LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
+                Timber.d("loadReminder: ${e.message}")
             } catch (e: IllegalStateException) {
-                LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
+                Timber.d("loadReminder: ${e.message}")
             }
             else -> {
                 var lastPos = prefs.lastUsedReminder

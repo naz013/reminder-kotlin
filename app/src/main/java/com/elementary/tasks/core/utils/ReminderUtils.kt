@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.BirthdayActionService
 import com.elementary.tasks.core.services.ReminderActionService
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -36,7 +37,6 @@ import java.util.*
 object ReminderUtils {
 
     const val DAY_CHECKED = 1
-    private const val TAG = "ReminderUtils"
 
     private fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
@@ -137,7 +137,7 @@ object ReminderUtils {
     }
 
     fun showSimpleReminder(context: Context, prefs: Prefs, id: String) {
-        LogUtil.d(TAG, "showSimpleReminder: ")
+        Timber.d("showSimpleReminder: ")
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         val dismissIntent = Intent(context, ReminderActionService::class.java)
         dismissIntent.action = ReminderActionService.ACTION_HIDE

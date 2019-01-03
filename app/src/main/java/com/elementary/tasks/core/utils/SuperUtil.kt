@@ -26,6 +26,7 @@ import com.elementary.tasks.reminder.createEdit.fragments.ReminderInterface
 import com.elementary.tasks.voice.ConversationActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.util.*
 
@@ -49,8 +50,6 @@ import java.util.*
  */
 
 object SuperUtil {
-
-    private const val TAG = "SuperUtil"
 
     fun hasVolumePermission(context: Context): Boolean {
         if (Module.isNougat) {
@@ -95,10 +94,10 @@ object SuperUtil {
         }
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return if (mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS || mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_NONE) {
-            LogUtil.d(TAG, "isDoNotDisturbEnabled: true")
+            Timber.d("isDoNotDisturbEnabled: true")
             true
         } else {
-            LogUtil.d(TAG, "isDoNotDisturbEnabled: false")
+            Timber.d("isDoNotDisturbEnabled: false")
             false
         }
     }
@@ -161,7 +160,7 @@ object SuperUtil {
     fun checkGooglePlayServicesAvailability(a: Activity): Boolean {
         val googleAPI = GoogleApiAvailability.getInstance()
         val result = googleAPI.isGooglePlayServicesAvailable(a)
-        LogUtil.d(TAG, "Result is: $result")
+        Timber.d("checkGooglePlayServicesAvailability: $result")
         return if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(a, result, 69).show()
@@ -214,24 +213,27 @@ object SuperUtil {
 
     fun startVoiceRecognitionActivity(activity: Activity, requestCode: Int, isLive: Boolean, prefs: Prefs, language: Language) {
         val intent: Intent
-        if (isLive) {
-            intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
-        } else if (prefs.isLiveEnabled) {
-            (activity as? VoiceWidgetDialog)?.finish()
-            intent = Intent(activity, ConversationActivity::class.java)
-        } else {
-            intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
+        when {
+            isLive -> {
+                intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
+            }
+            prefs.isLiveEnabled -> {
+                (activity as? VoiceWidgetDialog)?.finish()
+                intent = Intent(activity, ConversationActivity::class.java)
+            }
+            else -> {
+                intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
+            }
         }
         try {
             activity.startActivityForResult(intent, requestCode)
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(activity, activity.getString(R.string.no_recognizer_found), Toast.LENGTH_SHORT).show()
         }
-
     }
 
     fun isAppInstalled(context: Context, packageName: String): Boolean {
@@ -243,7 +245,6 @@ object SuperUtil {
         } catch (e: PackageManager.NameNotFoundException) {
             false
         }
-
         return installed
     }
 
@@ -256,7 +257,6 @@ object SuperUtil {
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
-
     }
 
     fun isSkypeClientInstalled(context: Context): Boolean {
@@ -266,15 +266,14 @@ object SuperUtil {
         } catch (e: PackageManager.NameNotFoundException) {
             return false
         }
-
         return true
     }
 
     fun decrypt(string: String): String {
         var result = ""
-        val byte_string = Base64.decode(string, Base64.DEFAULT)
+        val bytes = Base64.decode(string, Base64.DEFAULT)
         try {
-            result = String(byte_string, charset("UTF-8"))
+            result = String(bytes, charset("UTF-8"))
         } catch (e1: UnsupportedEncodingException) {
             e1.printStackTrace()
         }
@@ -282,13 +281,13 @@ object SuperUtil {
     }
 
     fun encrypt(string: String): String {
-        var string_byted: ByteArray? = null
+        var input: ByteArray? = null
         try {
-            string_byted = string.toByteArray(charset("UTF-8"))
+            input = string.toByteArray(charset("UTF-8"))
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }
-        return Base64.encodeToString(string_byted, Base64.DEFAULT).trim { it <= ' ' }
+        return Base64.encodeToString(input, Base64.DEFAULT).trim { it <= ' ' }
     }
 
     fun launchMarket(context: Context) {

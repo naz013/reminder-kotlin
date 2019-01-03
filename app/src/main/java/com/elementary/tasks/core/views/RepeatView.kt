@@ -7,12 +7,12 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import kotlinx.android.synthetic.main.view_repeat.view.*
-import android.widget.ArrayAdapter
+import timber.log.Timber
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -152,7 +152,7 @@ class RepeatView : LinearLayout, TextWatcher {
                 mState = a.getInt(R.styleable.RepeatView_repeatType, DAYS)
                 mIsLocked = a.getBoolean(R.styleable.RepeatView_isLocked, false)
             } catch (e: Exception) {
-                LogUtil.e(TAG, "There was an error loading attributes.", e)
+                Timber.d("init: ${e.message}")
             } finally {
                 a.recycle()
             }
@@ -225,8 +225,6 @@ class RepeatView : LinearLayout, TextWatcher {
     }
 
     companion object {
-        private const val TAG = "RepeatView"
-
         private const val SECONDS = 0
         private const val MINUTES = 1
         private const val HOURS = 2

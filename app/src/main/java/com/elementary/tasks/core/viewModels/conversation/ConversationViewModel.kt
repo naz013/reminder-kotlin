@@ -151,7 +151,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             val keyStr = key.toString()
             val model = recognizer.parse(keyStr)
             if (model != null) {
-                LogUtil.d(TAG, "parseResults: $model")
+                Timber.d("findResults: $model")
                 return createReminder(model)
             }
         }
@@ -164,7 +164,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             val keyStr = key.toString()
             val model = findSuggestion(keyStr)
             if (model != null) {
-                LogUtil.d(TAG, "parseResults: $model")
+                Timber.d("parseResults: $model")
                 val types = model.type
                 if (types == ActionType.ACTION && isWidget) {
                     val action = model.action
@@ -355,8 +355,8 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     inner class ContactHelper : ContactsInterface {
 
-        override fun findEmail(input: String): ContactOutput? {
-            var input = input
+        override fun findEmail(s: String): ContactOutput? {
+            var input = s
             if (!Permissions.checkPermission(getApplication(), Permissions.READ_CONTACTS)) {
                 return null
             }
@@ -385,8 +385,8 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             return ContactOutput(input, number)
         }
 
-        override fun findNumber(input: String): ContactOutput? {
-            var input = input
+        override fun findNumber(s: String): ContactOutput? {
+            var input = s
             if (!Permissions.checkPermission(getApplication(), Permissions.READ_CONTACTS)) {
                 return null
             }
@@ -415,10 +415,5 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             }
             return ContactOutput(input.trim { it <= ' ' }, number)
         }
-    }
-
-    companion object {
-
-        private const val TAG = "ConversationViewModel"
     }
 }
