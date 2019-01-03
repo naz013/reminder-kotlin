@@ -766,5 +766,7 @@
     <string name="colums_in_lists">Columns in lists when horizontal</string>
     <string name="show_one_column">Show one column</string>
     <string name="show_two_columns">Show two columns</string>
+    <string name="silent_channel">Silent channel</string>
+    <string name="channel_for_silent_notifiations">Channel for silent notifications</string>
 
 </resources>

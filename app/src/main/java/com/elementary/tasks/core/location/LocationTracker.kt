@@ -1,16 +1,13 @@
 package com.elementary.tasks.core.location
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.os.Bundle
-import androidx.core.app.ActivityCompat
+import android.os.Looper
 import com.elementary.tasks.ReminderApp
 
 import com.elementary.tasks.core.utils.Prefs
+import com.google.android.gms.location.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -31,54 +28,47 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LocationTracker(private val mContext: Context?, private val mCallback: ((lat: Double, lng: Double) -> Unit)?) : LocationListener {
-    private var mLocationManager: LocationManager? = null
+class LocationTracker(private val mContext: Context?, private val mCallback: ((lat: Double, lng: Double) -> Unit)?) {
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            Timber.d("onLocationResult: $locationResult")
+            for (location in locationResult!!.locations) {
+                val latitude = location.latitude
+                val longitude = location.longitude
+                mCallback?.invoke(latitude, longitude)
+                break
+            }
+        }
+    }
 
-    @Inject lateinit var prefs: Prefs
+    @Inject
+    lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)
         updateListener()
     }
 
-    override fun onLocationChanged(location: Location) {
-        val latitude = location.latitude
-        val longitude = location.longitude
-        mCallback?.invoke(latitude, longitude)
-    }
-
-    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-        updateListener()
-    }
-
-    override fun onProviderEnabled(provider: String) {
-        updateListener()
-    }
-
-    override fun onProviderDisabled(provider: String) {
-        updateListener()
-    }
-
     fun removeUpdates() {
-        mLocationManager?.removeUpdates(this)
+        mFusedLocationClient?.removeLocationUpdates(mLocationCallback)
     }
 
+    @SuppressLint("MissingPermission")
     private fun updateListener() {
         if (mContext == null) {
             return
         }
-        mLocationManager = mContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val time = (prefs.trackTime * 1000 * 2).toLong()
-        val distance = prefs.trackDistance * 2
-        if (mLocationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(mContext,
-                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext,
-                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return
-            }
-            mLocationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance.toFloat(), this)
-        } else {
-            mLocationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance.toFloat(), this)
-        }
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
+        val locationRequest = LocationRequest()
+        locationRequest.interval = time
+        locationRequest.fastestInterval = 5000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+        val client = LocationServices.getSettingsClient(mContext)
+        val task = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener { mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper()) }
     }
 }

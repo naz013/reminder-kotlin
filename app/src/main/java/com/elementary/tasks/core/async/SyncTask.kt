@@ -3,7 +3,6 @@ package com.elementary.tasks.core.async
 import android.content.Context
 import android.os.AsyncTask
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
@@ -31,13 +30,11 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean) : AsyncTask<Void, String, Boolean>() {
 
     @Inject lateinit var context: Context
     @Inject lateinit var ioHelper: IoHelper
     @Inject lateinit var updatesHelper: UpdatesHelper
-    private var mNotifyMgr: NotificationManagerCompat? = null
     private val builder: NotificationCompat.Builder
 
     init {
@@ -52,8 +49,7 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
             else
                 context.getString(R.string.app_name))
             builder.setContentText(context.getString(R.string.sync))
-            mNotifyMgr = NotificationManagerCompat.from(context)
-            mNotifyMgr?.notify(2, builder.build())
+            Notifier.getManager(context)?.notify(2, builder.build())
         }
     }
 
@@ -62,7 +58,7 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
         if (!quiet) {
             builder.setContentTitle(values[0])
             builder.setWhen(System.currentTimeMillis())
-            mNotifyMgr?.notify(2, builder.build())
+            Notifier.getManager(context)?.notify(2, builder.build())
         }
     }
 
@@ -113,7 +109,7 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
         if (!quiet) {
             builder.setContentTitle(context.getString(R.string.done))
             builder.setWhen(System.currentTimeMillis())
-            mNotifyMgr?.notify(2, builder.build())
+            Notifier.getManager(context)?.notify(2, builder.build())
             mListener?.endExecution(aVoid!!)
         }
         updatesHelper.updateWidget()

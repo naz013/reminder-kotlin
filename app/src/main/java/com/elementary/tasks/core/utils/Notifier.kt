@@ -1,10 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import android.annotation.TargetApi
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -82,8 +79,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             s.bigPicture(bitmap)
             builder.setStyle(s)
         }
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        manager?.notify(note.uniqueId, builder.build())
+        getManager(context)?.notify(note.uniqueId, builder.build())
         if (isWear && Module.isJellyMR2) {
             val wearableNotificationBuilder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
             wearableNotificationBuilder.setSmallIcon(R.drawable.ic_note_nv_white)
@@ -96,16 +92,17 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             wearableNotificationBuilder.setOnlyAlertOnce(true)
             wearableNotificationBuilder.setGroup("GROUP")
             wearableNotificationBuilder.setGroupSummary(false)
-            manager?.notify(note.uniqueId, wearableNotificationBuilder.build())
+            getManager(context)?.notify(note.uniqueId, wearableNotificationBuilder.build())
         }
     }
 
     private fun createChannels(context: Context) {
         if (Module.isO) {
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+            val manager = getManager(context)
             if (manager != null) {
                 manager.createNotificationChannel(createReminderChannel(context))
                 manager.createNotificationChannel(createSystemChannel(context))
+                manager.createNotificationChannel(createSilentChannel(context))
             }
         }
     }
@@ -115,10 +112,10 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val name = context.getString(R.string.info_channel)
         val descr = context.getString(R.string.channel_for_other_info_notifications)
         val importance = NotificationManager.IMPORTANCE_LOW
-        val mChannel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
-        mChannel.description = descr
-        mChannel.setShowBadge(false)
-        return mChannel
+        val channel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
+        channel.description = descr
+        channel.setShowBadge(false)
+        return channel
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -126,15 +123,28 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val name = context.getString(R.string.reminder_channel)
         val descr = context.getString(R.string.default_reminder_notifications)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val mChannel = NotificationChannel(CHANNEL_REMINDER, name, importance)
-        mChannel.description = descr
-        mChannel.setShowBadge(true)
-        return mChannel
+        val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
+        channel.description = descr
+        channel.enableLights(true)
+        channel.enableVibration(true)
+        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        return channel
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private fun createSilentChannel(context: Context): NotificationChannel {
+        val name = context.getString(R.string.silent_channel)
+        val description = context.getString(R.string.channel_for_silent_notifiations)
+        val importance = NotificationManager.IMPORTANCE_LOW
+        val channel = NotificationChannel(CHANNEL_SILENT, name, importance)
+        channel.description = description
+        channel.enableLights(true)
+        channel.enableVibration(false)
+        return channel
     }
 
     fun hideNotification(id: Int) {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        manager?.cancel(id)
+        getManager(context)?.cancel(id)
     }
 
     fun updateReminderPermanent(action: String) {
@@ -178,8 +188,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             } else {
                 builder.addAction(R.drawable.ic_clear_nv_white, context.getString(R.string.ok), piDismiss)
             }
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-            manager?.notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
+            getManager(context)?.notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
         }
     }
 
@@ -258,12 +267,16 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getColor(themeUtil.colorPrimary()))
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        manager?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
+        getManager(context)?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
     }
 
     companion object {
         const val CHANNEL_REMINDER = "reminder.channel1"
+        const val CHANNEL_SILENT = "reminder.channel3"
         const val CHANNEL_SYSTEM = "reminder.channel2"
+
+        fun getManager(context: Context): NotificationManager? {
+            return context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+        }
     }
 }

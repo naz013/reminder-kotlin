@@ -205,6 +205,7 @@ class EventJobService : Job() {
             if (reminder == null) return
             var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
             Timber.d("enableReminder: ${TimeUtil.getFullDateTime(due, true, true)}")
+            Timber.d("enableReminder: noe -> ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true)}")
             if (due == 0L) {
                 return
             }

@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
@@ -153,7 +152,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     override fun onDestroy() {
         super.onDestroy()
         val left = instanceCount.decrementAndGet()
-        Timber.d("onDestroy: $left")
+        Timber.d("onDestroy: left screens -> $left")
     }
 
     override fun onPause() {
@@ -214,7 +213,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
                 } catch (e: ActivityNotFoundException) {
                     e.printStackTrace()
                 }
-
             }
         }
     }
@@ -227,7 +225,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
-
     }
 
     protected fun showProgressDialog(message: String) {
@@ -236,15 +233,15 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     }
 
     private fun hideProgressDialog() {
-        if (mSendDialog != null && mSendDialog!!.isShowing) {
+        if (mSendDialog != null && mSendDialog?.isShowing == true) {
             mSendDialog?.dismiss()
         }
     }
 
     protected fun discardNotification(id: Int) {
+        Timber.d("discardNotification: $id")
         discardMedia()
-        val mNotifyMgr = NotificationManagerCompat.from(this)
-        mNotifyMgr.cancel(id)
+        Notifier.getManager(this)?.cancel(id)
     }
 
     protected fun discardMedia() {
@@ -265,8 +262,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             wearableNotificationBuilder.setOnlyAlertOnce(true)
             wearableNotificationBuilder.setGroup("GROUP")
             wearableNotificationBuilder.setGroupSummary(false)
-            val mNotifyMgr = NotificationManagerCompat.from(this)
-            mNotifyMgr.notify(id, wearableNotificationBuilder.build())
+            Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
         }
     }
 

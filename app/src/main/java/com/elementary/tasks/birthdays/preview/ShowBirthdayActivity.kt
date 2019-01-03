@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
@@ -43,6 +42,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
+    private var isEventShowed = false
     override var isScreenResumed: Boolean = false
         private set
     override var summary: String = ""
@@ -175,6 +175,8 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> close()
+                    else -> {
+                    }
                 }
             }
         })
@@ -192,6 +194,8 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     private fun showBirthday(birthday: Birthday) {
+        if (isEventShowed) return
+
         this.mBirthday = birthday
 
         if (!TextUtils.isEmpty(birthday.number) && checkContactPermission()) {
@@ -264,8 +268,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
         }
-        val mNotifyMgr = NotificationManagerCompat.from(this)
-        mNotifyMgr.notify(id, builder.build())
+        Notifier.getManager(this)?.notify(id, builder.build())
         if (isWear) {
             showWearNotification(name)
         }
@@ -309,6 +312,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     private fun updateBirthday(birthday: Birthday?) {
+        isEventShowed = true
         if (birthday != null) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
