@@ -134,7 +134,6 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
                 builder.setLights(LED.getLED(prefs.ledColor), 500, 1000)
             }
         }
-        val mNotifyMgr = NotificationManagerCompat.from(context)
-        mNotifyMgr.notify(reminder.uniqueId, builder.build())
+        Notifier.getManager(context)?.notify(reminder.uniqueId, builder.build())
     }
 }

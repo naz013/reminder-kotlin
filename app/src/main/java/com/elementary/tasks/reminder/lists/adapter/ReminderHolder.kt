@@ -12,7 +12,6 @@ import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
-import timber.log.Timber
 import java.util.*
 
 /**
@@ -61,7 +60,6 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
     }
 
     fun setData(reminder: Reminder) {
-        Timber.d("setData: $reminder")
         itemView.taskText.text = reminder.summary
         loadDate(reminder)
         loadCheck(reminder)

@@ -7,6 +7,7 @@ import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
@@ -46,8 +47,7 @@ class ReminderActionService : BaseBroadcast() {
     }
 
     private fun endService(context: Context, id: Int) {
-        val mNotifyMgr = NotificationManagerCompat.from(context)
-        mNotifyMgr.cancel(id)
+        Notifier.getManager(context)?.cancel(id)
     }
 
     override fun onReceive(context: Context, intent: Intent?) {

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
@@ -44,6 +43,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     private lateinit var viewModel: MissedCallViewModel
 
     private var mMissedCall: MissedCall? = null
+    private var isEventShowed = false
     override var isScreenResumed: Boolean = false
         private set
 
@@ -85,7 +85,15 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
         contactPhoto.visibility = View.GONE
 
+        initButtons()
+
         initViewModel()
+    }
+
+    private fun initButtons() {
+        buttonSms.setOnClickListener { sendSMS() }
+        buttonOk.setOnClickListener { removeMissed() }
+        buttonCall.setOnClickListener { makeCall() }
     }
 
     private fun loadTest() {
@@ -118,6 +126,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showInfo(missedCall: MissedCall) {
+        if (isEventShowed) return
         this.mMissedCall = missedCall
         var formattedTime = ""
         try {
@@ -144,10 +153,6 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
         contactName.text = name
         contactNumber.text = missedCall.number
-
-        buttonSms.setOnClickListener { sendSMS() }
-        buttonOk.setOnClickListener { removeMissed() }
-        buttonCall.setOnClickListener { makeCall() }
 
         showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
         init()
@@ -191,6 +196,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun removeMissed() {
+        isEventShowed = true
         val missedCall = mMissedCall
         if (missedCall != null) {
             viewModel.deleteMissedCall(missedCall)
@@ -244,7 +250,8 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         }
         if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
-                        || SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)) {
+                        || SuperUtil.checkNotificationPermission(this)
+                        && prefs.isSoundInSilentModeEnabled)) {
             val soundUri = soundUri
             sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
         }
@@ -262,8 +269,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
         }
-        val mNotifyMgr = NotificationManagerCompat.from(this)
-        mNotifyMgr.notify(id, builder.build())
+        Notifier.getManager(this)?.notify(id, builder.build())
         if (isWear) {
             showWearNotification(appName)
         }

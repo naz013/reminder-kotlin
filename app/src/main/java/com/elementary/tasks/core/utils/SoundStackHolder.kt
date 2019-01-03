@@ -27,7 +27,7 @@ import javax.inject.Singleton
  * limitations under the License.
  */
 @Singleton
-class SoundStackHolder @Inject constructor(private val context: Context, private val prefs: Prefs) : Sound.PlaybackCallback {
+class SoundStackHolder @Inject constructor(context: Context, prefs: Prefs) : Sound.PlaybackCallback {
     var sound: Sound? = null
         private set
 
@@ -57,7 +57,7 @@ class SoundStackHolder @Inject constructor(private val context: Context, private
             if (mVolume < mStreamVol) {
                 mVolume++
                 mHandler.postDelayed(this, 750)
-                if (mAudioManager != null) mAudioManager!!.setStreamVolume(mStream, mVolume, 0)
+                mAudioManager?.setStreamVolume(mStream, mVolume, 0)
             } else
                 mHandler.removeCallbacks(this)
         }
@@ -91,9 +91,9 @@ class SoundStackHolder @Inject constructor(private val context: Context, private
     private fun saveDefaultVolume() {
         Timber.d("saveDefaultVolume: %s", hasDefaultSaved)
         if (!hasDefaultSaved && mAudioManager != null) {
-            mMusicVolume = mAudioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
-            mAlarmVolume = mAudioManager!!.getStreamVolume(AudioManager.STREAM_ALARM)
-            mNotificationVolume = mAudioManager!!.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
+            mMusicVolume = mAudioManager?.getStreamVolume(AudioManager.STREAM_MUSIC) ?: -1
+            mAlarmVolume = mAudioManager?.getStreamVolume(AudioManager.STREAM_ALARM) ?: -1
+            mNotificationVolume = mAudioManager?.getStreamVolume(AudioManager.STREAM_NOTIFICATION) ?: -1
             hasDefaultSaved = true
         }
     }
@@ -104,9 +104,9 @@ class SoundStackHolder @Inject constructor(private val context: Context, private
         if (hasDefaultSaved && !isDoNotDisturbEnabled) {
             if (mAudioManager != null) {
                 try {
-                    mAudioManager!!.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0)
-                    mAudioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0)
-                    mAudioManager!!.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0)
+                    mAudioManager?.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0)
+                    mAudioManager?.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0)
+                    mAudioManager?.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0)
                 } catch (ignored: SecurityException) {
                 }
 
@@ -140,14 +140,14 @@ class SoundStackHolder @Inject constructor(private val context: Context, private
             AudioManager.STREAM_MUSIC
 
         val volPercent = mMaxVolume.toFloat() / Configs.MAX_VOLUME
-        val maxVol = mAudioManager!!.getStreamMaxVolume(mStream)
+        val maxVol = mAudioManager?.getStreamMaxVolume(mStream) ?: 24
         mStreamVol = (maxVol * volPercent).toInt()
         mVolume = mStreamVol
         if (isIncreasingLoudnessEnabled) {
             mVolume = 0
             mHandler.postDelayed(mVolumeIncrease, 750)
         }
-        mAudioManager!!.setStreamVolume(mStream, mVolume, 0)
+        mAudioManager?.setStreamVolume(mStream, mVolume, 0)
     }
 
     fun cancelIncreaseSound() {

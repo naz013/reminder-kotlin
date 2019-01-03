@@ -7,7 +7,6 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -128,8 +127,7 @@ object ReminderUtils {
             }
         }
 
-        val mNotifyMgr = NotificationManagerCompat.from(context)
-        mNotifyMgr.notify(birthday.uniqueId, builder.build())
+        Notifier.getManager(context)?.notify(birthday.uniqueId, builder.build())
     }
 
     private fun isGlobal(prefs: Prefs): Boolean {
@@ -189,8 +187,7 @@ object ReminderUtils {
         } else {
             builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss)
         }
-        val mNotifyMgr = NotificationManagerCompat.from(context)
-        mNotifyMgr.notify(reminder.uniqueId, builder.build())
+        Notifier.getManager(context)?.notify(reminder.uniqueId, builder.build())
     }
 
     fun getTime(day: Int, month: Int, year: Int, hour: Int, minute: Int, after: Long): Long {
