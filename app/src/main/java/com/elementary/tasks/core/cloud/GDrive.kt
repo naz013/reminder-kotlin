@@ -74,6 +74,7 @@ class GDrive private constructor(context: Context) {
         prefs.driveUser = Prefs.DRIVE_USER_NONE
         driveService = null
         isLogged = false
+        instance = null
     }
 
     /**
@@ -205,7 +206,7 @@ class GDrive private constructor(context: Context) {
     }
 
     @Throws(IOException::class)
-    fun downloadSettings(context: Context, deleteFile: Boolean) {
+    fun downloadSettings(deleteFile: Boolean) {
         val service = driveService ?: return
         if (!isLogged) return
         val folder = MemoryUtil.prefsDir
@@ -491,7 +492,7 @@ class GDrive private constructor(context: Context) {
      * @throws IOException
      */
     @Throws(IOException::class)
-    fun downloadReminders(context: Context, deleteBackup: Boolean) {
+    fun downloadReminders(deleteBackup: Boolean) {
         download(deleteBackup, Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.googleRemindersDir, null, object : Action {
             override fun onSave(file: java.io.File) {
                 try {

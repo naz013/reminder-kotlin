@@ -251,7 +251,7 @@ class LoginActivity : ThemedActivity() {
 
                 withUIContext { showProgress(getString(R.string.syncing_reminders)) }
                 try {
-                    drive.downloadReminders(this@LoginActivity, false)
+                    drive.downloadReminders(false)
                 } catch (e: Exception) {
                 }
 
@@ -284,7 +284,7 @@ class LoginActivity : ThemedActivity() {
                 }
 
                 try {
-                    drive.downloadSettings(this@LoginActivity, false)
+                    drive.downloadSettings(false)
                 } catch (e: Exception) {
                 }
             }

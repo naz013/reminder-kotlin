@@ -64,15 +64,14 @@ class GTasks private constructor(context: Context) {
             val mTransport = AndroidHttp.newCompatibleTransport()
             tasksService = Tasks.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build()
             isLogged = true
-        } else {
-            logOut()
         }
     }
 
     internal fun logOut() {
         prefs.tasksUser = Prefs.DRIVE_USER_NONE
-        instance = null
+        tasksService = null
         isLogged = false
+        instance = null
     }
 
     @Throws(IOException::class)

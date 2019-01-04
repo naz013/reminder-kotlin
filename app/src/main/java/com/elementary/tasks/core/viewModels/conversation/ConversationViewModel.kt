@@ -63,8 +63,6 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     var birthdays: LiveData<List<Birthday>> = _birthdays
 
     @Inject
-    lateinit var prefs: Prefs
-    @Inject
     lateinit var recognizer: Recognizer
 
     init {
