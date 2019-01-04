@@ -61,13 +61,11 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         }
 
     fun logOutDrive() {
-        prefs.driveUser = Prefs.DRIVE_USER_NONE
         mGoogleDrive?.logOut()
         mGoogleDrive = null
     }
 
     fun logOutTasks() {
-        prefs.tasksUser = Prefs.DRIVE_USER_NONE
         mGoogleTasks?.logOut()
         mGoogleTasks = null
     }
@@ -105,7 +103,6 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
                         }
                     } else {
                         finishLogin(mAccountName!!)
-                        sendResult()
                     }
                 } else {
                     sendFail()
@@ -119,18 +116,6 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
             mDriveCallback?.onFail()
         } else {
             mTasksCallback?.onFail()
-        }
-    }
-
-    private fun sendResult() {
-        if (isDriveLogin) {
-            mGoogleDrive?.logOut()
-            mGoogleDrive = GDrive.getInstance(activity)
-            mDriveCallback?.onResult(mGoogleDrive, mGoogleDrive?.isLogged == true)
-        } else {
-            mGoogleTasks?.logOut()
-            mGoogleTasks = GTasks.getInstance(activity)
-            mTasksCallback?.onResult(mGoogleTasks, mGoogleTasks?.isLogged == true)
         }
     }
 
@@ -180,9 +165,9 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
             getAndUseAuthTokenInAsyncTask(gam.getAccountByName(mAccountName))
         } else if (requestCode == REQUEST_ACCOUNT_PICKER && resultCode == RESULT_OK) {
             mAccountName = data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
-            if (mAccountName != null) {
-                finishLogin(mAccountName!!)
-                sendResult()
+            val accountName = mAccountName
+            if (accountName != null) {
+                finishLogin(accountName)
             } else {
                 sendFail()
             }
@@ -192,9 +177,17 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     }
 
     private fun finishLogin(account: String) {
-        if (isDriveLogin) prefs.driveUser = account
-        else prefs.tasksUser = account
-
+        if (isDriveLogin) {
+            mGoogleDrive?.logOut()
+            prefs.driveUser = account
+            mGoogleDrive = GDrive.getInstance(activity)
+            mDriveCallback?.onResult(mGoogleDrive, mGoogleDrive?.isLogged == true)
+        } else {
+            mGoogleTasks?.logOut()
+            prefs.tasksUser = account
+            mGoogleTasks = GTasks.getInstance(activity)
+            mTasksCallback?.onResult(mGoogleTasks, mGoogleTasks?.isLogged == true)
+        }
     }
 
     interface LoginCallback<V> {
