@@ -52,6 +52,7 @@ object PrefsConstants {
     const val MARKER_STYLE = "marker_style"
     const val INFINITE_VIBRATION = "infinite_vibration"
     const val AUTO_BACKUP = "auto_backup"
+    const val DATA_BACKUP = "data_backup"
     const val AUTO_BACKUP_INTERVAL = "auto_backup_interval"
     const val SMART_FOLD = "smart_fold"
     const val NOTIFICATION_REPEAT = "notification_repeat"

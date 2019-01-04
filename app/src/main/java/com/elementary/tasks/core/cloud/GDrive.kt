@@ -67,8 +67,6 @@ class GDrive private constructor(context: Context) {
             val mTransport = AndroidHttp.newCompatibleTransport()
             driveService = Drive.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build()
             isLogged = true
-        } else {
-            logOut()
         }
     }
 

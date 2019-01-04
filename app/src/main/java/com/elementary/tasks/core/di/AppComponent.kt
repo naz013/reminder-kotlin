@@ -14,8 +14,6 @@ import com.elementary.tasks.core.appWidgets.events.EventsFactory
 import com.elementary.tasks.core.appWidgets.googleTasks.TasksFactory
 import com.elementary.tasks.core.appWidgets.notes.NotesFactory
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.async.BackupSettingTask
-import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GTasks
@@ -35,6 +33,8 @@ import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.core.views.RepeatView
+import com.elementary.tasks.core.work.BackupDataWorker
+import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.dayView.DayViewProvider
 import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.googleTasks.create.TaskActivity
@@ -45,6 +45,7 @@ import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
+import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.editor.ImageEditActivity
@@ -113,8 +114,8 @@ interface AppComponent {
     fun inject(calendarUpdateMinusService: CalendarUpdateMinusService)
     fun inject(calendarUpdateService: CalendarUpdateService)
     fun inject(calendarWeekdayFactory: CalendarWeekdayFactory)
-    fun inject(backupSettingTask: BackupSettingTask)
-    fun inject(backupTask: BackupTask)
+    fun inject(worker: BackupSettingsWorker)
+    fun inject(worker: BackupDataWorker)
     fun inject(notesFactory: NotesFactory)
     fun inject(tasksFactory: TasksFactory)
     fun inject(factory: EventsFactory)
@@ -134,6 +135,7 @@ interface AppComponent {
     fun inject(typeFragment: TypeFragment)
     fun inject(fragment: EventsListFragment)
     fun inject(fragment: TaskListFragment)
+    fun inject(fragment: ExportSettingsFragment)
 
     fun inject(repeatView: RepeatView)
     fun inject(monthView: MonthView)

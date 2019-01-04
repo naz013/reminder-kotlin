@@ -768,5 +768,7 @@
     <string name="show_two_columns">Show two columns</string>
     <string name="silent_channel">Silent channel</string>
     <string name="channel_for_silent_notifiations">Channel for silent notifications</string>
+    <string name="backup_my_data">Backup my data</string>
+    <string name="sync_data_now">Sync data now</string>
 
 </resources>

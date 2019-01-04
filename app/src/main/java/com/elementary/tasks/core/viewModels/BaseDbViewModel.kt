@@ -14,6 +14,7 @@ import androidx.work.Worker
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.utils.Prefs
 import javax.inject.Inject
 
 /**
@@ -47,6 +48,8 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
     lateinit var appDb: AppDb
     @Inject
     lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var prefs: Prefs
     protected val handler = Handler(Looper.getMainLooper())
 
     init {
@@ -70,10 +73,12 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String) {
-        val work = OneTimeWorkRequest.Builder(clazz)
-                .setInputData(data)
-                .addTag(tag)
-                .build()
-        WorkManager.getInstance().enqueue(work)
+        if (prefs.isBackupEnabled) {
+            val work = OneTimeWorkRequest.Builder(clazz)
+                    .setInputData(data)
+                    .addTag(tag)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
+        }
     }
 }

@@ -19,11 +19,11 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.googleTasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
@@ -198,9 +198,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onDestroy() {
         super.onDestroy()
-        if (prefs.isAutoBackupEnabled && prefs.isSettingsBackupEnabled
+        if (prefs.isBackupEnabled && prefs.isAutoBackupEnabled && prefs.isSettingsBackupEnabled
                 && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-            BackupSettingTask().execute()
+            BackupSettingsWorker.schedule()
         }
     }
 

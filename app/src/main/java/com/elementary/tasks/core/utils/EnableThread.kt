@@ -1,8 +1,9 @@
-package com.elementary.tasks.core.async
+package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.utils.launchDefault
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -22,11 +23,13 @@ import com.elementary.tasks.core.data.AppDb
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EnableThread(private val context: Context) : Thread() {
+object EnableThread {
 
-    override fun run() {
-        for (item in AppDb.getAppDatabase(context).reminderDao().getAll(true, false)) {
-            EventControlFactory.getController(item).start()
+    fun run(context: Context) {
+        launchDefault {
+            for (item in AppDb.getAppDatabase(context).reminderDao().getAll(true, false)) {
+                EventControlFactory.getController(item).start()
+            }
         }
     }
 }

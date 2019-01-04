@@ -9,12 +9,12 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
-import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.work.BackupDataWorker
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -58,7 +58,7 @@ class AlarmReceiver : BaseBroadcast() {
         val service = Intent(context, AlarmReceiver::class.java)
         context.startService(service)
         when (action) {
-            ACTION_SYNC_AUTO -> BackupTask().execute()
+            ACTION_SYNC_AUTO -> BackupDataWorker.schedule()
             ACTION_EVENTS_CHECK -> checkEvents(context)
             ACTION_BIRTHDAY_PERMANENT -> if (prefs.isBirthdayPermanentEnabled) {
                 notifier.showBirthdayPermanent()

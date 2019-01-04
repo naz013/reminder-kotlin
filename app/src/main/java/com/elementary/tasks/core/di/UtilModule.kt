@@ -81,12 +81,6 @@ class UtilModule {
 
     @Provides
     @Singleton
-    fun providesIoHelper(application: Application, prefs: Prefs, backupTool: BackupTool): IoHelper {
-        return IoHelper(application, prefs, backupTool)
-    }
-
-    @Provides
-    @Singleton
     fun providesDialogues(themeUtil: ThemeUtil): Dialogues {
         return Dialogues(themeUtil)
     }

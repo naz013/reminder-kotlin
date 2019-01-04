@@ -9,16 +9,20 @@ import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_export.*
+import kotlinx.android.synthetic.main.view_progress.*
 import java.io.File
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,6 +43,9 @@ import java.util.*
  * limitations under the License.
  */
 class ExportSettingsFragment : BaseCalendarFragment() {
+
+    @Inject
+    lateinit var backupTool: BackupTool
 
     private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
     private var mItemSelect: Int = 0
@@ -72,6 +79,10 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             return position
         }
 
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun layoutRes(): Int = R.layout.fragment_settings_export
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,10 +91,9 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             setScroll(it)
         }
 
-        backupsPrefs.setOnClickListener {
-            callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
-        }
+        cloudsPrefs.setOnClickListener { callback?.openFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
 
+        initBackupPrefs()
         initExportToCalendarPrefs()
         initEventDurationPrefs()
         initSelectCalendarPrefs()
@@ -92,15 +102,40 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         initAutoBackupPrefs()
         initAutoBackupIntervalPrefs()
         initClearDataPrefs()
-        initCloudDrivesPrefs()
+
+        backupsPrefs.setOnClickListener {
+            callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
+        }
     }
 
-    private fun initCloudDrivesPrefs() {
-        cloudsPrefs.setOnClickListener { callback?.openFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
+    private fun initBackupPrefs() {
+        backupDataPrefs.isChecked = prefs.isBackupEnabled
+        backupDataPrefs.setOnClickListener { changeBackupPrefs() }
+
+        if (prefs.isBackupEnabled) {
+            syncButton.visibility = View.VISIBLE
+            syncButton.setOnClickListener {
+                progressView.visibility = View.VISIBLE
+                SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool), updatesHelper, { progress ->
+                    progressMessageView.text = progress
+                }, {
+                    progressView.visibility = View.GONE
+                })
+            }
+        } else {
+            syncButton.visibility = View.GONE
+        }
+    }
+
+    private fun changeBackupPrefs() {
+        val isChecked = backupDataPrefs.isChecked
+        backupDataPrefs.isChecked = !isChecked
+        prefs.isBackupEnabled = !isChecked
     }
 
     private fun initClearDataPrefs() {
         cleanPrefs.setOnClickListener { showCleanDialog() }
+        cleanPrefs.setDependentView(backupDataPrefs)
     }
 
     private fun showCleanDialog() {
@@ -149,6 +184,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     private fun initAutoBackupIntervalPrefs() {
         syncIntervalPrefs.setOnClickListener { showIntervalDialog() }
         syncIntervalPrefs.setDependentView(autoBackupPrefs)
+        syncIntervalPrefs.setDependentView(backupDataPrefs)
         showBackupInterval()
     }
 
@@ -188,6 +224,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     private fun initAutoBackupPrefs() {
         autoBackupPrefs.isChecked = prefs.isAutoBackupEnabled
         autoBackupPrefs.setOnClickListener { changeAutoBackupPrefs() }
+        autoBackupPrefs.setDependentView(backupDataPrefs)
     }
 
     private fun changeAutoBackupPrefs() {
@@ -204,6 +241,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     private fun initSettingsBackupPrefs() {
         syncSettingsPrefs.isChecked = prefs.isSettingsBackupEnabled
         syncSettingsPrefs.setOnClickListener { changeSettingsBackupPrefs() }
+        syncSettingsPrefs.setDependentView(backupDataPrefs)
     }
 
     private fun changeSettingsBackupPrefs() {

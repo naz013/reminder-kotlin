@@ -15,7 +15,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.elementary.tasks.core.async.GeocoderTask
+import com.elementary.tasks.core.utils.GeocoderTask
 import timber.log.Timber
 
 /**
@@ -40,20 +40,8 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private var mTypeface: Typeface? = null
     private var foundPlaces: List<Address>? = null
-
-    private var task: GeocoderTask? = null
     private var mAdapter: AddressAdapter? = null
     private var isEnabledInner = true
-
-    private val mExecutionCallback = object : GeocoderTask.GeocoderListener {
-        override fun onAddressReceived(addresses: List<Address>) {
-            Timber.d("onAddressReceived: $addresses")
-            foundPlaces = addresses
-            mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, addresses)
-            setAdapter<AddressAdapter>(mAdapter)
-            mAdapter?.notifyDataSetChanged()
-        }
-    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -95,11 +83,13 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun performTypeValue(s: String) {
-        if (task != null && task?.isCancelled == false) {
-            task?.cancel(true)
+        GeocoderTask.findAddresses(context, s) {
+            Timber.d("onAddressReceived: $it")
+            foundPlaces = it
+            mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, it)
+            setAdapter<AddressAdapter>(mAdapter)
+            mAdapter?.notifyDataSetChanged()
         }
-        task = GeocoderTask(context, mExecutionCallback)
-        task?.execute(s)
     }
 
     override fun onAttachedToWindow() {
@@ -123,11 +113,8 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     private inner class AddressAdapter internal constructor(context: Context, resource: Int, objects: List<Address>) : ArrayAdapter<Address>(context, resource, objects) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var v = convertView
-            if (v == null) {
-                v = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null, false)
-            }
-            val tv1 = v!!.findViewById<TextView>(android.R.id.text1)
+            val v: View = convertView ?: LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, null, false)
+            val tv1 = v.findViewById<TextView>(android.R.id.text1)
             val tv2 = v.findViewById<TextView>(android.R.id.text2)
             val address = getItem(position) ?: return v
             if (address.getAddressLine(0) != null) {

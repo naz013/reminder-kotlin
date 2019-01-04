@@ -3,7 +3,7 @@ package com.elementary.tasks.core
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import com.elementary.tasks.core.async.EnableThread
+import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.groups.GroupsUtil
@@ -26,7 +26,7 @@ class SplashScreen : ThemedActivity() {
             val info = packageManager.getPackageInfo(packageName, 0)
             if (!prefs.getVersion(info.versionName)) {
                 prefs.saveVersionBoolean(info.versionName)
-                EnableThread(this).start()
+                EnableThread.run(this)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
