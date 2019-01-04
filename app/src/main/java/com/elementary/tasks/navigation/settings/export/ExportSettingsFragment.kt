@@ -106,20 +106,27 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         backupsPrefs.setOnClickListener {
             callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
         }
+        backupsPrefs.setDependentView(backupDataPrefs)
     }
 
     private fun initBackupPrefs() {
         backupDataPrefs.isChecked = prefs.isBackupEnabled
         backupDataPrefs.setOnClickListener { changeBackupPrefs() }
+        initSyncButton()
+    }
 
+    private fun initSyncButton() {
         if (prefs.isBackupEnabled) {
+            syncButton.isEnabled = true
             syncButton.visibility = View.VISIBLE
             syncButton.setOnClickListener {
+                syncButton.isEnabled = false
                 progressView.visibility = View.VISIBLE
                 SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool), updatesHelper, { progress ->
                     progressMessageView.text = progress
                 }, {
-                    progressView.visibility = View.GONE
+                    progressView.visibility = View.INVISIBLE
+                    syncButton.isEnabled = true
                 })
             }
         } else {
@@ -131,6 +138,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         val isChecked = backupDataPrefs.isChecked
         backupDataPrefs.isChecked = !isChecked
         prefs.isBackupEnabled = !isChecked
+        initSyncButton()
     }
 
     private fun initClearDataPrefs() {

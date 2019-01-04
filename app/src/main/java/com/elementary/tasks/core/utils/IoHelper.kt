@@ -112,7 +112,7 @@ class IoHelper(private val context: Context, private val prefs: Prefs, private v
         if (isConnected) {
             mDropbox.downloadReminders(delete)
             try {
-                mDrive?.downloadReminders(context, delete)
+                mDrive?.downloadReminders(delete)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
