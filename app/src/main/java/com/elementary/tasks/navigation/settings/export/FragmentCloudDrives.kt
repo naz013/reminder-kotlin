@@ -60,6 +60,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             } else {
                 linkDropbox.text = getString(R.string.connect)
             }
+            callback?.refreshMenu()
         }
     }
 
@@ -142,10 +143,12 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                     if (isLogged) {
                         loadGoogleTasks()
                     }
+                    callback?.refreshMenu()
                 }
 
                 override fun onFail() {
                     showErrorDialog()
+                    callback?.refreshMenu()
                 }
             })
         }
@@ -192,9 +195,9 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                         }
                     }
                 }
-                val lists = appDb.googleTaskListsDao().all()
-                if (lists.isNotEmpty()) {
-                    val listItem = lists[0].apply {
+                val local = appDb.googleTaskListsDao().all()
+                if (local.isNotEmpty()) {
+                    val listItem = local[0].apply {
                         this.def = 1
                         this.systemDefault = 1
                     }
@@ -237,10 +240,12 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                     if (isLogged) {
                         checkGoogleStatus()
                     }
+                    callback?.refreshMenu()
                 }
 
                 override fun onFail() {
                     showErrorDialog()
+                    callback?.refreshMenu()
                 }
             })
         }
