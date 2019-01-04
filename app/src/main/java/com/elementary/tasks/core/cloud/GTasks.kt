@@ -18,6 +18,7 @@ import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
 import com.google.api.services.tasks.model.TaskLists
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -57,6 +58,7 @@ class GTasks private constructor(context: Context) {
     init {
         ReminderApp.appComponent.inject(this)
         val user = prefs.tasksUser
+        Timber.d("GTasks: $user")
         if (user.matches(".*@.*".toRegex())) {
             val credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(TasksScopes.TASKS))
             credential.selectedAccountName = user
@@ -68,6 +70,7 @@ class GTasks private constructor(context: Context) {
     }
 
     internal fun logOut() {
+        Timber.d("logOut: ")
         prefs.tasksUser = Prefs.DRIVE_USER_NONE
         tasksService = null
         isLogged = false
