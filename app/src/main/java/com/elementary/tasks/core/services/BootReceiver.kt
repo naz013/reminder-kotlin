@@ -2,7 +2,7 @@ package com.elementary.tasks.core.services
 
 import android.content.Context
 import android.content.Intent
-import com.elementary.tasks.core.async.EnableThread
+import com.elementary.tasks.core.utils.EnableThread
 import timber.log.Timber
 
 /**
@@ -28,7 +28,7 @@ class BootReceiver : BaseBroadcast() {
     override fun onReceive(context: Context, intent: Intent) {
         Timber.d("onReceive: ")
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            EnableThread(context).start()
+            EnableThread.run(context)
             val alarmReceiver = AlarmReceiver()
             if (prefs.isBirthdayReminderEnabled) {
                 EventJobService.enableBirthdayAlarm(prefs)
@@ -42,7 +42,7 @@ class BootReceiver : BaseBroadcast() {
             if (prefs.isAutoEventsCheckEnabled) {
                 alarmReceiver.enableEventCheck(context)
             }
-            if (prefs.isAutoBackupEnabled) {
+            if (prefs.isBackupEnabled && prefs.isAutoBackupEnabled) {
                 alarmReceiver.enableAutoSync(context)
             }
             if (prefs.isBirthdayPermanentEnabled) {

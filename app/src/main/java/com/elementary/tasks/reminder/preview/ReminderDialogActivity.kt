@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
-import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
@@ -30,6 +29,7 @@ import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_reminder_dialog.*
@@ -569,8 +569,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             unregisterReceiver(sentReceiver)
         }
         removeFlags()
-        if (prefs.isAutoBackupEnabled) {
-            BackupTask().execute()
+        if (prefs.isBackupEnabled && prefs.isAutoBackupEnabled) {
+            BackupDataWorker.schedule()
         }
     }
 

@@ -3,8 +3,6 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -24,9 +22,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class IoHelper @Inject constructor(private val context: Context, private val prefs: Prefs,
-                                   private val backupTool: BackupTool) {
+class IoHelper(private val context: Context, private val prefs: Prefs, private val backupTool: BackupTool) {
 
     private val isConnected: Boolean = SuperUtil.isConnected(context)
     private val mDrive: GDrive? = GDrive.getInstance(context)
