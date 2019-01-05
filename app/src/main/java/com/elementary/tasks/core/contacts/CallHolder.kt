@@ -14,9 +14,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.list_item_call.view.*
 
-class CallHolder(itemView: View, val isDark: Boolean, val is24: Boolean, callback: ((Int) -> Unit)?) : RecyclerView.ViewHolder(itemView) {
+class CallHolder(itemView: View, val isDark: Boolean, private val is24: Boolean, callback: ((Int) -> Unit)?) : RecyclerView.ViewHolder(itemView) {
     fun bind(callsItem: CallsItem) {
         if (callsItem.name == null) {
             itemView.itemName.text = callsItem.number
@@ -58,15 +59,15 @@ class CallHolder(itemView: View, val isDark: Boolean, val is24: Boolean, callbac
         if (drawable != null) {
             imageView.setImageDrawable(drawable)
         } else {
-            imageView.setImageResource(if (isDark) R.drawable.ic_perm_identity_white_24dp else R.drawable.ic_perm_identity_black_24dp)
+            imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_person_24px, isDark))
         }
     }
 
     private fun loadIcon(imageView: ImageView, type: Int) {
         when (type) {
-            CallLog.Calls.INCOMING_TYPE -> imageView.setImageResource(if (isDark) R.drawable.ic_call_received_white_24dp else R.drawable.ic_call_received_black_24dp)
-            CallLog.Calls.MISSED_TYPE -> imageView.setImageResource(if (isDark) R.drawable.ic_call_missed_white_24dp else R.drawable.ic_call_missed_black_24dp)
-            else -> imageView.setImageResource(if (isDark) R.drawable.ic_call_made_white_24dp else R.drawable.ic_call_made_black_24dp)
+            CallLog.Calls.INCOMING_TYPE -> imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_call_received_24px, isDark))
+            CallLog.Calls.MISSED_TYPE -> imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_call_missed_24px, isDark))
+            else -> imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_call_made_24px, isDark))
         }
     }
 

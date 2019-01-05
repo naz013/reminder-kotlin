@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LED
 import kotlinx.android.synthetic.main.view_led_color.view.*
@@ -39,15 +40,15 @@ class LedPickerView : LinearLayout {
         }
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     private fun chipIdFromLed(id: Int): Int {
@@ -76,12 +77,17 @@ class LedPickerView : LinearLayout {
         }
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_led_color, this)
         orientation = LinearLayout.VERTICAL
 
         ledGroup.setOnCheckedChangeListener { _, checkedId ->
             updateState(ledFromChip(checkedId))
+        }
+
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.led_color), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
         }
     }
 

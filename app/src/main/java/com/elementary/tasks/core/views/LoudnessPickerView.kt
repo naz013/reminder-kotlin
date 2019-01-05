@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.Toast
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.view_loudness.view.*
 
@@ -43,15 +44,15 @@ class LoudnessPickerView : LinearLayout {
         }
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     fun setVolume(level: Int) {
@@ -59,10 +60,14 @@ class LoudnessPickerView : LinearLayout {
         this.level = sliderView.progress
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_loudness, this)
         orientation = LinearLayout.HORIZONTAL
 
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.loudness), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
         sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 level = progress

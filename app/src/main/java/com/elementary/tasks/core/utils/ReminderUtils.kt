@@ -54,7 +54,7 @@ object ReminderUtils {
         val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_cake_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_cake_nv_white)
         }
@@ -104,7 +104,7 @@ object ReminderUtils {
         val piDismiss = PendingIntent.getBroadcast(context, birthday.uniqueId,
                 BirthdayActionService.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
         if (Module.isLollipop) {
-            builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss)
+            builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
         } else {
             builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss)
         }
@@ -113,7 +113,7 @@ object ReminderUtils {
             val piCall = PendingIntent.getBroadcast(context, birthday.uniqueId,
                     BirthdayActionService.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
             if (Module.isLollipop) {
-                builder.addAction(R.drawable.ic_call_white_24dp, context.getString(R.string.make_call), piCall)
+                builder.addAction(R.drawable.ic_twotone_call_white, context.getString(R.string.make_call), piCall)
             } else {
                 builder.addAction(R.drawable.ic_call_nv_white, context.getString(R.string.make_call), piCall)
             }
@@ -121,7 +121,7 @@ object ReminderUtils {
             val piSms = PendingIntent.getBroadcast(context, birthday.uniqueId,
                     BirthdayActionService.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
             if (Module.isLollipop) {
-                builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.send_sms), piSms)
+                builder.addAction(R.drawable.ic_twotone_send_white, context.getString(R.string.send_sms), piSms)
             } else {
                 builder.addAction(R.drawable.ic_send_nv_white, context.getString(R.string.send_sms), piSms)
             }
@@ -143,7 +143,7 @@ object ReminderUtils {
         val piDismiss = PendingIntent.getBroadcast(context, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
@@ -183,7 +183,7 @@ object ReminderUtils {
         }
         builder.setContentText(appName)
         if (Module.isLollipop) {
-            builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss)
+            builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
         } else {
             builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss)
         }

@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeCount
 import kotlinx.android.synthetic.main.view_repeat.view.*
@@ -120,6 +121,11 @@ class RepeatView : LinearLayout, TextWatcher {
         View.inflate(context, R.layout.view_repeat, this)
         orientation = LinearLayout.HORIZONTAL
         mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.repeat), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
         repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
                 if (!mIsLocked) setState(i)
@@ -140,7 +146,7 @@ class RepeatView : LinearLayout, TextWatcher {
         }
         repeatTitle.setOnClickListener {
             if (mImm == null) return@setOnClickListener
-            if (!mImm!!.isActive(repeatTitle)) {
+            if (mImm?.isActive(repeatTitle) == false) {
                 mImm?.showSoftInput(repeatTitle, 0)
             }
         }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ToggleButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
@@ -95,15 +96,15 @@ class ExclusionPickerView : LinearLayout {
     var themeUtil: ThemeUtil? = null
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     fun setRangeHours(fromHour: String, toHour: String) {
@@ -117,11 +118,15 @@ class ExclusionPickerView : LinearLayout {
         showHours()
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_exclusion_picker, this)
         orientation = LinearLayout.VERTICAL
         text.setOnClickListener {
             openExclusionDialog()
+        }
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.exclusion), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
         }
     }
 

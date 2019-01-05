@@ -552,11 +552,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         ViewUtils.listenScrollableView(scrollView) {
             appBar.isSelected = it > 0
         }
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
-        }
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
     }
 
     override fun onBackPressed() {

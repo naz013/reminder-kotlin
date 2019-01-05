@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.annotation.IdRes
 import com.elementary.tasks.R
 import com.google.android.material.chip.Chip
@@ -41,15 +42,15 @@ class WindowTypeView : LinearLayout {
     private var mLastIdRes: Int = R.id.chipFullscreen
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     private fun chipIdFromType(id: Int): Int {
@@ -69,10 +70,14 @@ class WindowTypeView : LinearLayout {
         }
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_window_type, this)
         orientation = LinearLayout.VERTICAL
 
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.notification_type), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
         chipGroup.setOnCheckedChangeListener { _, id ->
             if (isAnyChecked()) {
                 updateState(typeFromChip(id))

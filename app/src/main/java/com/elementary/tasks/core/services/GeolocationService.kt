@@ -172,7 +172,7 @@ class GeolocationService : Service() {
         builder.setContentTitle(reminder.summary)
         builder.setContentText(roundedDistance.toString())
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_navigation_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_navigation_nv_white)
         }
@@ -190,7 +190,7 @@ class GeolocationService : Service() {
 
         builder.setContentTitle(getString(R.string.location_tracking_service_running))
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_navigation_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_navigation_nv_white)
         }

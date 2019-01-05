@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import kotlinx.android.synthetic.main.view_group.view.*
@@ -42,27 +43,31 @@ class GroupView : LinearLayout {
         }
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     private fun noGroup() {
         text.text = context.getString(R.string.not_selected)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_group, this)
         orientation = LinearLayout.VERTICAL
 
         text.setOnClickListener {
             onGroupSelectListener?.invoke()
+        }
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.change_group), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
         }
         reminderGroup = null
     }
