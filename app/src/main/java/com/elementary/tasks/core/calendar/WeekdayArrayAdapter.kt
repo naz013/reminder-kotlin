@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.elementary.tasks.R
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -49,9 +51,9 @@ class WeekdayArrayAdapter(context: Context, textViewResourceId: Int,
             }
         }
         val textColor: Int = if (isDark) {
-            context.resources.getColor(android.R.color.white)
+            ContextCompat.getColor(context, R.color.pureWhite)
         } else {
-            context.resources.getColor(android.R.color.black)
+            ContextCompat.getColor(context, R.color.pureBlack)
         }
         textView.setTextColor(textColor)
         textView.gravity = Gravity.CENTER

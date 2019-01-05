@@ -26,12 +26,16 @@ class ReminderResolver(
             when (listActions) {
                 ListActions.MORE -> showDeletedActionDialog(view, reminder)
                 ListActions.OPEN -> editReminder(view, reminder)
+                else -> {
+                }
             }
         } else {
             when (listActions) {
                 ListActions.MORE -> showActionDialog(view, reminder)
                 ListActions.OPEN -> previewReminder(view, reminder)
-                ListActions.SWITCH -> switchReminder(view, reminder)
+                ListActions.SWITCH -> switchReminder(reminder)
+                else -> {
+                }
             }
         }
     }
@@ -69,7 +73,7 @@ class ReminderResolver(
                 .putExtra(Constants.INTENT_ID, reminder.uuId))
     }
 
-    private fun switchReminder(view: View, reminder: Reminder) {
+    private fun switchReminder(reminder: Reminder) {
         toggleAction.invoke(reminder)
     }
 

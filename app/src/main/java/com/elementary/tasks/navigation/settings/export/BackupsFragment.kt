@@ -252,6 +252,7 @@ class BackupsFragment : BaseSettingsFragment() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun addLocalData(list: MutableList<UserItem>) {
         val path = Environment.getExternalStorageDirectory()
         val stat = StatFs(path.path)

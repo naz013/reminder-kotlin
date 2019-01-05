@@ -86,8 +86,8 @@ class ConversationActivity : ThemedActivity() {
             Timber.d("onBeginningOfSpeech: ")
         }
 
-        override fun onRmsChanged(v: Float) {
-            var v = v
+        override fun onRmsChanged(f: Float) {
+            var v = f
             v *= 2000
             var db = 0.0
             if (v > 1) {
@@ -505,6 +505,8 @@ class ConversationActivity : ThemedActivity() {
                         stopView()
                         addResponse(getLocalized(R.string.all_reminders_were_disabled))
                     }
+                    else -> {
+                    }
                 }
             }
         })
@@ -556,6 +558,7 @@ class ConversationActivity : ThemedActivity() {
         dialog.show()
     }
 
+    @Suppress("DEPRECATION")
     private fun playTts(text: String) {
         if (!isTtsReady || tts == null) return
         if (Module.isLollipop) {

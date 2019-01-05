@@ -43,6 +43,7 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         ReminderApp.appComponent.inject(this)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun setData(type: Int, data: List<Any>) {
         if (this.type == type) {
             this.type = type

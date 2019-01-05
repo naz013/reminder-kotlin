@@ -99,6 +99,8 @@ class TaskListActivity : ThemedActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> onBackPressed()
+                    else -> {
+                    }
                 }
             }
         })

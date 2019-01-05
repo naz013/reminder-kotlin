@@ -100,6 +100,8 @@ class NotePreviewActivity : ThemedActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
+                    else -> {
+                    }
                 }
             }
         })
@@ -123,6 +125,8 @@ class NotePreviewActivity : ThemedActivity() {
             override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
                     ListActions.OPEN -> openImagePreview(position)
+                    else -> {
+                    }
                 }
             }
         }

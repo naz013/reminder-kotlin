@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.activity_quick_sms.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Suppress("DEPRECATION")
 class QuickSmsActivity : ThemedActivity() {
 
     private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()

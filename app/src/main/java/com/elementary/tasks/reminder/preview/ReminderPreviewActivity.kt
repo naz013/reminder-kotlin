@@ -148,6 +148,8 @@ class ReminderPreviewActivity : ThemedActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
+                    else -> {
+                    }
                 }
             }
         })

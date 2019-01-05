@@ -210,6 +210,8 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
                 when (actions) {
                     ListActions.OPEN -> if (t != null) previewNote(t.getKey(), view)
                     ListActions.MORE -> if (t != null) showMore(view, t)
+                    else -> {
+                    }
                 }
             }
         }

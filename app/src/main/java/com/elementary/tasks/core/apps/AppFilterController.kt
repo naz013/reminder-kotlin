@@ -44,9 +44,9 @@ class AppFilterController(private val mCallback: FilterCallback<ApplicationItem>
         val filter = object : AbstractFilter<String, ApplicationItem>(null) {
             private var query: String? = null
 
-            override fun filter(item: ApplicationItem): Boolean {
+            override fun filter(o: ApplicationItem): Boolean {
                 if (query == null) return true
-                val text = item.name!!.toLowerCase()
+                val text = o.name!!.toLowerCase()
                 return text.contains(query!!.toLowerCase())
             }
 

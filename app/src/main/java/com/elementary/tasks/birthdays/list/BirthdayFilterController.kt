@@ -44,8 +44,8 @@ class BirthdayFilterController(private val mCallback: FilterCallback<Birthday>?)
         val filter = object : AbstractFilter<String, Birthday>(null) {
             private var query: String? = null
 
-            override fun filter(item: Birthday): Boolean {
-                return query == null || query!!.isEmpty() || item.name.toLowerCase().contains(query!!.toLowerCase())
+            override fun filter(o: Birthday): Boolean {
+                return query == null || query!!.isEmpty() || o.name.toLowerCase().contains(query!!.toLowerCase())
             }
 
             override fun accept(s: String) {

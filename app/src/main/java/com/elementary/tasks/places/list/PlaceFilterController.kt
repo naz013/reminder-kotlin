@@ -45,8 +45,8 @@ class PlaceFilterController(private val mCallback: FilterCallback<Place>?) {
         val filter = object : AbstractFilter<String, Place>(null) {
             private var query: String? = null
 
-            override fun filter(item: Place): Boolean {
-                return query == null || query!!.isEmpty() || item.name.toLowerCase().contains(query!!.toLowerCase())
+            override fun filter(o: Place): Boolean {
+                return query == null || query!!.isEmpty() || o.name.toLowerCase().contains(query!!.toLowerCase())
             }
 
             override fun accept(s: String) {

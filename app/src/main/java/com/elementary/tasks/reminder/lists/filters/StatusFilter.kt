@@ -24,8 +24,8 @@ class StatusFilter(filter: ObjectFilter<Reminder>?) : AbstractFilter<Int, Remind
 
     private var status = 0
 
-    override fun filter(reminder: Reminder): Boolean {
-        return super.filter(reminder) && (status == 0 || reminder.isActive == (status == 1))
+    override fun filter(o: Reminder): Boolean {
+        return super.filter(o) && (status == 0 || o.isActive == (status == 1))
     }
 
     @Throws(Exception::class)

@@ -87,7 +87,9 @@ class GroupsFragment : BaseNavigationFragment() {
                         showMore(view, t)
                     }
                     ListActions.EDIT -> {
-                        editGroup(view, t)
+                        editGroup(t)
+                    }
+                    else -> {
                     }
                 }
             }
@@ -114,13 +116,13 @@ class GroupsFragment : BaseNavigationFragment() {
         Dialogues.showPopup(view, { item ->
             when (item) {
                 0 -> changeColor(t)
-                1 -> editGroup(view, t)
+                1 -> editGroup(t)
                 2 -> viewModel.deleteGroup(t)
             }
         }, *items)
     }
 
-    private fun editGroup(view: View, t: ReminderGroup) {
+    private fun editGroup(t: ReminderGroup) {
         startActivity(Intent(context, CreateGroupActivity::class.java)
                 .putExtra(Constants.INTENT_ID, t.groupUuId))
     }

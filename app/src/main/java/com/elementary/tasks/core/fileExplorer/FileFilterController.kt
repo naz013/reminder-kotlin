@@ -43,8 +43,8 @@ class FileFilterController(private val mCallback: FilterCallback<FileItem>?) {
         val filter = object : AbstractFilter<String, FileItem>(null) {
             private var query: String? = null
 
-            override fun filter(item: FileItem): Boolean {
-                return query == null || query!!.isEmpty() || item.fileName.toLowerCase().contains(query!!.toLowerCase())
+            override fun filter(o: FileItem): Boolean {
+                return query == null || query!!.isEmpty() || o.fileName.toLowerCase().contains(query!!.toLowerCase())
             }
 
             override fun accept(s: String) {

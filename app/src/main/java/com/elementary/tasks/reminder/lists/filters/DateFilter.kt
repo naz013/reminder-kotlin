@@ -29,16 +29,16 @@ class DateFilter internal constructor(filter: ObjectFilter<Reminder>?) : Abstrac
 
     private var range = DateRange.ALL
 
-    override fun filter(reminder: Reminder): Boolean {
-        if (!super.filter(reminder)) return false
+    override fun filter(o: Reminder): Boolean {
+        if (!super.filter(o)) return false
         return if (range == DateRange.ALL)
             true
         else {
             when (range) {
-                DateFilter.DateRange.PERMANENT -> reminder.eventTime == ""
-                DateFilter.DateRange.TODAY -> compareToday(reminder.eventTime)
-                DateFilter.DateRange.TOMORROW -> compareTomorrow(reminder.eventTime)
-                else -> reminder.eventTime == ""
+                DateFilter.DateRange.PERMANENT -> o.eventTime == ""
+                DateFilter.DateRange.TODAY -> compareToday(o.eventTime)
+                DateFilter.DateRange.TOMORROW -> compareTomorrow(o.eventTime)
+                else -> o.eventTime == ""
             }
         }
     }

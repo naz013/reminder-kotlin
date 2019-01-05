@@ -137,6 +137,8 @@ class TaskActivity : ThemedActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> onBackPressed()
+                    else -> {
+                    }
                 }
             }
         })

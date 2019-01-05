@@ -79,6 +79,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         return context.createConfigurationContext(configuration)
     }
 
+    @Suppress("DEPRECATION")
     private fun updateResourcesLegacy(context: Context, locale: Locale): Context {
         Locale.setDefault(locale)
         val resources = context.resources
@@ -91,6 +92,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         return context
     }
 
+    @Suppress("DEPRECATION")
     fun getLocalized(context: Context, id: Int): String {
         return if (Module.isJellyMR1) {
             val configuration = Configuration(context.resources.configuration)
@@ -115,7 +117,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         return locales
     }
 
-    fun getScreenLanguage(code: Int): Locale {
+    private fun getScreenLanguage(code: Int): Locale {
         when (code) {
             0 -> return Locale.getDefault()
             1 -> return Locale.ENGLISH

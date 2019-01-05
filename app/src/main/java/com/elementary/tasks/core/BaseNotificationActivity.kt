@@ -40,6 +40,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Suppress("DEPRECATION")
 abstract class BaseNotificationActivity : ThemedActivity() {
 
     private var tts: TextToSpeech? = null
@@ -184,7 +185,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         if (isWake) {
             val screenLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(
                     PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP, "reminder:ReminderAPPTAG")
-            screenLock.acquire()
+            screenLock.acquire(10*60*1000L /*10 minutes*/)
             screenLock.release()
         }
     }

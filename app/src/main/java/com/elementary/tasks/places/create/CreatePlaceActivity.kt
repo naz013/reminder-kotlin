@@ -91,6 +91,8 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> finish()
+                    else -> {
+                    }
                 }
             }
         })

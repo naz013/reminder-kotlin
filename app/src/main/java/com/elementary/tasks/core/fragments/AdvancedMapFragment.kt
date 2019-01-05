@@ -252,6 +252,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         mMap?.animateCamera(update)
     }
 
+    @Suppress("DEPRECATION")
     private fun moveToMyLocation() {
         if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             Permissions.requestPermission(activity!!, REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
@@ -477,6 +478,8 @@ class AdvancedMapFragment : BaseMapFragment() {
                                 addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, t.marker, true, markerRadius)
                             }
                         }
+                    }
+                    else -> {
                     }
                 }
             }
