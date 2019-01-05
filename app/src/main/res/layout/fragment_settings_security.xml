@@ -41,5 +41,15 @@
             app:prefs_secondary_text_on="@string/allow_fingerprint_login"
             app:prefs_type="check_switch" />
 
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/telephonyPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="Phone calls and SMS"
+            app:prefs_secondary_text_off="@string/hide_that_functionality"
+            app:prefs_secondary_text_on="@string/allow_phone_call_and_sms_func"
+            app:prefs_type="check_switch" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

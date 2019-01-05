@@ -128,6 +128,12 @@ class WeekFragment : RepeatableTypeFragment() {
         }
         moreLayout.isNestedScrollingEnabled = false
 
+        if (prefs.isTelephonyAllowed) {
+            actionView.visibility = View.VISIBLE
+        } else {
+            actionView.visibility = View.GONE
+        }
+
         if (Module.isPro) {
             ledView.visibility = View.VISIBLE
         } else {

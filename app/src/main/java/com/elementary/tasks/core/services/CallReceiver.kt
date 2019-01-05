@@ -47,7 +47,7 @@ class CallReceiver : BaseBroadcast() {
     override fun onReceive(context: Context, intent: Intent) {
         mContext = context
         val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
-        if (telephony != null) {
+        if (telephony != null && prefs.isTelephonyAllowed) {
             val customPhoneListener = CustomPhoneStateListener()
             telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
         }
@@ -72,7 +72,7 @@ class CallReceiver : BaseBroadcast() {
                     if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
                         prevState = state
                         val isFollow = prefs.isFollowReminderEnabled
-                        if (mIncomingNumber != null && isFollow) {
+                        if (prefs.isTelephonyAllowed && mIncomingNumber != null && isFollow) {
                             val number = mIncomingNumber
                             if (number != null) {
                                 FollowReminderActivity.mockScreen(mContext, number, startCallTime)
@@ -84,7 +84,7 @@ class CallReceiver : BaseBroadcast() {
                         if (currTime - startCallTime >= 1000 * 10) {
                             val number = mIncomingNumber
                             Timber.d("onCallStateChanged: is missed $number")
-                            if (prefs.isMissedReminderEnabled && number != null) {
+                            if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && number != null) {
                                 var missedCall = appDb.missedCallsDao().getByNumber(number)
                                 if (missedCall != null) {
                                     EventJobService.cancelMissedCall(missedCall.number)
@@ -100,7 +100,7 @@ class CallReceiver : BaseBroadcast() {
                             Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                                 val number = mIncomingNumber
-                                if (number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
+                                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
                                     QuickSmsActivity.openScreen(mContext, number)
                                 }
                             }

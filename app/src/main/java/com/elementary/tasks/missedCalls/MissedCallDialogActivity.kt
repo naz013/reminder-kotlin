@@ -91,9 +91,16 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun initButtons() {
-        buttonSms.setOnClickListener { sendSMS() }
         buttonOk.setOnClickListener { removeMissed() }
+        buttonSms.setOnClickListener { sendSMS() }
         buttonCall.setOnClickListener { makeCall() }
+        if (prefs.isTelephonyAllowed) {
+            buttonSms.visibility = View.VISIBLE
+            buttonCall.visibility = View.VISIBLE
+        } else {
+            buttonSms.visibility = View.INVISIBLE
+            buttonCall.visibility = View.INVISIBLE
+        }
     }
 
     private fun loadTest() {

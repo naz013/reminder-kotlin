@@ -245,14 +245,22 @@ class ReminderPreviewActivity : ThemedActivity() {
         if (reminder.isActive && !reminder.isRemoved) {
             when {
                 Reminder.isKind(reminder.type, Reminder.Kind.SMS) -> {
-                    fab.setIconResource(R.drawable.ic_twotone_send_24px)
-                    fab.text = getString(R.string.send_sms)
-                    fab.visibility = View.VISIBLE
+                    if (prefs.isTelephonyAllowed) {
+                        fab.setIconResource(R.drawable.ic_twotone_send_24px)
+                        fab.text = getString(R.string.send_sms)
+                        fab.visibility = View.VISIBLE
+                    } else {
+                        fab.visibility = View.GONE
+                    }
                 }
                 Reminder.isKind(reminder.type, Reminder.Kind.CALL) -> {
-                    fab.setIconResource(R.drawable.ic_twotone_call_24px)
-                    fab.text = getString(R.string.make_call)
-                    fab.visibility = View.VISIBLE
+                    if (prefs.isTelephonyAllowed) {
+                        fab.setIconResource(R.drawable.ic_twotone_call_24px)
+                        fab.text = getString(R.string.make_call)
+                        fab.visibility = View.VISIBLE
+                    } else {
+                        fab.visibility = View.GONE
+                    }
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_APP) -> {
                     fab.setIconResource(R.drawable.ic_twotone_open_in_new_24px)

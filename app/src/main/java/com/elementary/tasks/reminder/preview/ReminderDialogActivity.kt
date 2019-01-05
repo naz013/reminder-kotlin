@@ -290,6 +290,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
         Timber.d("showInfo: ${TimeUtil.getFullDateTime(reminder.eventTime)}")
         if (reminder.attachmentFile != "") showAttachmentButton()
+        else buttonAttachment?.hide()
 
         val contactPhoto = contactPhoto
         contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
@@ -334,6 +335,13 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
                 contactBlock.visibility = View.VISIBLE
                 buttonCall.text = getString(R.string.make_call)
+                if (prefs.isTelephonyAllowed) {
+                    buttonCall.visibility = View.VISIBLE
+                    buttonSms.visibility = View.VISIBLE
+                } else {
+                    buttonCall.visibility = View.INVISIBLE
+                    buttonSms.visibility = View.INVISIBLE
+                }
             } else {
                 if (Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
                     remText.setText(R.string.video_call)
@@ -378,6 +386,13 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
                 contactName.text = name
                 contactNumber.text = reminder.target
+                if (prefs.isTelephonyAllowed) {
+                    buttonCall.visibility = View.VISIBLE
+                    buttonSms.visibility = View.VISIBLE
+                } else {
+                    buttonCall.visibility = View.INVISIBLE
+                    buttonSms.visibility = View.INVISIBLE
+                }
             } else {
                 remText.setText(R.string.skype_chat)
                 contactInfo.text = reminder.target

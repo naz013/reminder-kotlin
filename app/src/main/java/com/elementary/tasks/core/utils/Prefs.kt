@@ -44,6 +44,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.USE_FINGERPRINT)
         set(value) = putBoolean(PrefsConstants.USE_FINGERPRINT, value)
 
+    var isTelephonyAllowed: Boolean
+        get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
+        set(value) = putBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, value)
+
     var appLanguage: Int
         get() = getInt(PrefsConstants.APP_LANGUAGE)
         set(value) = putInt(PrefsConstants.APP_LANGUAGE, value)
