@@ -10,6 +10,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_select_theme.*
 import java.util.*
 
@@ -40,8 +41,8 @@ class SelectThemeActivity : ThemedActivity() {
         setContentView(R.layout.activity_select_theme)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         toolbar.title = getString(R.string.theme_color)
+        toolbar.navigationIcon = ViewUtils.backIcon(this, false)
 
         initList()
         addThemes()
@@ -149,11 +150,10 @@ class SelectThemeActivity : ThemedActivity() {
             window.statusBarColor = theme.barColor
         }
         windowBackground.setBackgroundColor(theme.barColor)
+        toolbar.navigationIcon = ViewUtils.backIcon(this, theme.isDark)
         if (theme.isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }

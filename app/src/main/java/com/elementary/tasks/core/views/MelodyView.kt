@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.view_melody.view.*
 import timber.log.Timber
@@ -49,15 +50,15 @@ class MelodyView : LinearLayout {
         }
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     private fun noFile() {
@@ -65,10 +66,14 @@ class MelodyView : LinearLayout {
         text.text = context.getString(R.string.not_selected)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_melody, this)
         orientation = LinearLayout.VERTICAL
 
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.melody), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
         removeButton.setOnClickListener {
             file = ""
         }

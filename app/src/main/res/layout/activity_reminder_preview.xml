@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?android:colorBackground"
-                app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
                 tools:title="Test" />
         </com.google.android.material.appbar.AppBarLayout>
 

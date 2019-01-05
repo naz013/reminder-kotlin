@@ -32,7 +32,7 @@
         android:background="@drawable/drawable_secondary"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_clear_white_24dp" />
+        app:srcCompat="@drawable/ic_twotone_cancel_24px" />
 
     <ImageButton
         android:id="@+id/editButton"
@@ -44,6 +44,6 @@
         android:background="@drawable/drawable_secondary"
         app:layout_constraintRight_toLeftOf="@+id/removeButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_create_white_24dp" />
+        app:srcCompat="@drawable/ic_twotone_edit_24px" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

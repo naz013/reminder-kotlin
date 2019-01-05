@@ -8,7 +8,6 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.legacy.content.WakefulBroadcastReceiver
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -110,7 +109,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
             builder.setContentText(context.getString(R.string.app_name))
         }
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeCount
 import kotlinx.android.synthetic.main.view_remind_before.view.*
@@ -57,7 +58,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
             }
         }
 
-    val beforeValue: Long
+    private val beforeValue: Long
         get() {
             val rep = mRepeatValue * multiplier
             Timber.d("getBeforeValue: $rep")
@@ -80,6 +81,11 @@ class BeforePickerView : LinearLayout, TextWatcher {
         View.inflate(context, R.layout.view_remind_before, this)
         orientation = LinearLayout.VERTICAL
         mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.before_time), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
 
         before_type_view.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {

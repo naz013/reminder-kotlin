@@ -163,7 +163,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val list = AppDb.getAppDatabase(context).birthdaysDao().getAll(day.toString() + "|" + month)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_cake_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_cake_nv_white)
         }
@@ -198,7 +198,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setAutoCancel(false)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }

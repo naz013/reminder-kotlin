@@ -773,7 +773,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
         builder.setContentText(appName)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
@@ -839,7 +839,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
         builder.setContentText(appName)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
@@ -903,7 +903,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
         builder.setContentText(appName)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)

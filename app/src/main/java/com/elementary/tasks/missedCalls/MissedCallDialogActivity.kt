@@ -242,7 +242,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         }
         builder.setContentText(appName)
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_call_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_call_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_call_nv_white)
         }

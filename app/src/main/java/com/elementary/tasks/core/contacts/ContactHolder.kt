@@ -11,6 +11,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BitmapUtils
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.list_item_contact.view.*
 
 class ContactHolder(itemView: View, val isDark: Boolean, callback: ((Int) -> Unit)?) : RecyclerView.ViewHolder(itemView) {
@@ -49,7 +50,7 @@ class ContactHolder(itemView: View, val isDark: Boolean, callback: ((Int) -> Uni
         if (drawable != null) {
             imageView.setImageDrawable(drawable)
         } else {
-            imageView.setImageResource(if (isDark) R.drawable.ic_perm_identity_white_24dp else R.drawable.ic_perm_identity_black_24dp)
+            imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_person_24px, isDark))
         }
     }
 }

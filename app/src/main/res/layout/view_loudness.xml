@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/hintIcon"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:scaleType="centerInside"

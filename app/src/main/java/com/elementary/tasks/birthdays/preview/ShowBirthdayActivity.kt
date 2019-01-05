@@ -243,7 +243,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years))
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_cake_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_cake_nv_white)

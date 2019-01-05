@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Dialogues
@@ -88,15 +89,15 @@ class TuneExtraView : LinearLayout {
         }
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     private fun fromExtra(extra: Extra): String {
@@ -127,9 +128,14 @@ class TuneExtraView : LinearLayout {
         text.text = context.getString(R.string.default_string)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         View.inflate(context, R.layout.view_tune_extra, this)
         orientation = LinearLayout.VERTICAL
+
+        hintIcon.setOnLongClickListener {
+            Toast.makeText(context, context.getString(R.string.update_additional_parameters), Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
         text.setOnClickListener {
             openCustomizationDialog()
         }
