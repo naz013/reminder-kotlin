@@ -122,6 +122,12 @@ class PlacesFragment : RadiusTypeFragment() {
         }
         moreLayout.isNestedScrollingEnabled = false
 
+        if (prefs.isTelephonyAllowed) {
+            actionView.visibility = View.VISIBLE
+        } else {
+            actionView.visibility = View.GONE
+        }
+
         val placesMap = PlacesMapFragment()
         placesMap.setListener(mListener)
         placesMap.setCallback(object : MapCallback {

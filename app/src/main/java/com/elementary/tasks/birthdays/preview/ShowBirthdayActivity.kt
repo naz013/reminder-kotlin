@@ -224,9 +224,14 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         } else {
             userNumber.text = birthday.number
             userNumber.contentDescription = birthday.number
-            buttonCall.visibility = View.VISIBLE
-            buttonSms.visibility = View.VISIBLE
             userNumber.visibility = View.VISIBLE
+            if (prefs.isTelephonyAllowed) {
+                buttonCall.visibility = View.VISIBLE
+                buttonSms.visibility = View.VISIBLE
+            } else {
+                buttonCall.visibility = View.INVISIBLE
+                buttonSms.visibility = View.INVISIBLE
+            }
         }
         showNotification(TimeUtil.getAge(birthday.date), birthday.name)
         if (isTtsEnabled) {

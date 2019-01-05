@@ -76,9 +76,9 @@ abstract class SharedPrefs(protected val context: Context) {
         prefs.edit().putBoolean(stringToSave, value).apply()
     }
 
-    fun getBoolean(stringToLoad: String): Boolean {
+    fun getBoolean(stringToLoad: String, def: Boolean = false): Boolean {
         return try {
-            prefs.getBoolean(stringToLoad, false)
+            prefs.getBoolean(stringToLoad, def)
         } catch (e: ClassCastException) {
             java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
         }

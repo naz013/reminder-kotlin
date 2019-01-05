@@ -44,6 +44,18 @@ class SecuritySettingsFragment : BaseSettingsFragment() {
         }
 
         initFingerPrefs()
+        initPhonePrefs()
+    }
+
+    private fun initPhonePrefs() {
+        telephonyPrefs.setOnClickListener { changePhonePrefs() }
+        telephonyPrefs.isChecked = prefs.isTelephonyAllowed
+    }
+
+    private fun changePhonePrefs() {
+        val isChecked = telephonyPrefs.isChecked
+        telephonyPrefs.isChecked = !isChecked
+        prefs.isTelephonyAllowed = !isChecked
     }
 
     private fun initPinPrefs() {

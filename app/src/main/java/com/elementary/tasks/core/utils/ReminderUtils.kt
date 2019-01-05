@@ -109,7 +109,7 @@ object ReminderUtils {
             builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss)
         }
 
-        if (!TextUtils.isEmpty(birthday.number)) {
+        if (prefs.isTelephonyAllowed && !TextUtils.isEmpty(birthday.number)) {
             val piCall = PendingIntent.getBroadcast(context, birthday.uniqueId,
                     BirthdayActionService.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
             if (Module.isLollipop) {

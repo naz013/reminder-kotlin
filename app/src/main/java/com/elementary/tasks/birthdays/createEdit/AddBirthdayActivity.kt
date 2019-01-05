@@ -80,6 +80,13 @@ class AddBirthdayActivity : ThemedActivity() {
             else
                 container.visibility = View.GONE
         }
+
+        if (prefs.isTelephonyAllowed) {
+            contactCheck.visibility = View.VISIBLE
+        } else {
+            contactCheck.visibility = View.GONE
+        }
+
         birthDate.setOnClickListener { dateDialog() }
         pickContact.setOnClickListener { pickContact() }
 
