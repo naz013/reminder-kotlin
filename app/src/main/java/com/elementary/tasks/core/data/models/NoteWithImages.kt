@@ -30,6 +30,10 @@ data class NoteWithImages(
         var images: List<ImageFile> = ArrayList()
 ) : NoteInterface {
 
+    override fun getGmtTime(): String {
+        return note?.date ?: ""
+    }
+
     override fun getSummary(): String {
         return note?.summary ?: ""
     }

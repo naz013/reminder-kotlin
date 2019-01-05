@@ -26,8 +26,9 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.notes.NotesViewModel
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.notes.list.filters.SearchModifier
+import com.elementary.tasks.notes.list.filters.SortModifier
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
 import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
@@ -52,7 +53,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
+class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
     private lateinit var viewModel: NotesViewModel
     @Inject
@@ -61,7 +62,8 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
     private var mAdapter: NotesRecyclerAdapter = NotesRecyclerAdapter()
     private var enableGrid = false
 
-    private val filterController = NoteFilterController(this)
+    private val filterController = SearchModifier(null, null)
+    private val sortController = SortModifier(filterController, this)
 
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
@@ -186,7 +188,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         viewModel.notes.observe(this, Observer { list ->
             if (list != null) {
                 Timber.d("initViewModel: $list")
-                filterController.original = list
+                sortController.original = list
             }
         })
     }
@@ -243,14 +245,14 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         builder.setItems(items) { dialog, which ->
             var value = ""
             when (which) {
-                0 -> value = Constants.ORDER_DATE_A_Z
-                1 -> value = Constants.ORDER_DATE_Z_A
-                2 -> value = Constants.ORDER_NAME_A_Z
-                3 -> value = Constants.ORDER_NAME_Z_A
+                0 -> value = SortModifier.DATE_AZ
+                1 -> value = SortModifier.DATE_ZA
+                2 -> value = SortModifier.TEXT_AZ
+                3 -> value = SortModifier.TEXT_ZA
             }
             prefs.noteOrder = value
+            sortController.setOrder(value)
             dialog.dismiss()
-            viewModel.reload()
         }
         val alert = builder.create()
         alert.show()
@@ -298,7 +300,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<NoteWithImages> {
         }
     }
 
-    override fun onChanged(result: List<NoteWithImages>) {
+    override fun invoke(result: List<NoteWithImages>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         refreshView(result.size)
