@@ -130,6 +130,8 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
                     ListActions.OPEN -> if (t != null) {
                         openTemplate(t)
                     }
+                    else -> {
+                    }
                 }
             }
         }

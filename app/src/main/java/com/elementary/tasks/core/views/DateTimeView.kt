@@ -70,22 +70,22 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         set(dateTime) = updateDateTime(dateTime)
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
     fun setEventListener(listener: OnSelectListener) {
         mListener = listener
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         orientation = LinearLayout.VERTICAL
         View.inflate(context, R.layout.view_date_time, this)
         descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS

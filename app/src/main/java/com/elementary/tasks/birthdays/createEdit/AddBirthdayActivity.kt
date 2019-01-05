@@ -163,6 +163,8 @@ class AddBirthdayActivity : ThemedActivity() {
             if (it != null) {
                 when (it) {
                     Commands.SAVED, Commands.DELETED -> closeScreen()
+                    else -> {
+                    }
                 }
             }
         })

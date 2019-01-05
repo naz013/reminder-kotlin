@@ -374,6 +374,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                         updatesHelper.updateWidget()
                         finish()
                     }
+                    else -> {
+                    }
                 }
             }
         })
@@ -446,6 +448,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 when (actions) {
                     ListActions.EDIT -> editImage(position)
                     ListActions.OPEN -> openImagePreview(position)
+                    else -> {
+                    }
                 }
             }
         }

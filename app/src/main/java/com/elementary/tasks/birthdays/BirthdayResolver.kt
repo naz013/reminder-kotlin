@@ -15,6 +15,8 @@ class BirthdayResolver(private val deleteAction: (birthday: Birthday) -> Unit ) 
         when (listActions) {
             ListActions.OPEN -> openBirthday(view, birthday)
             ListActions.MORE -> showMore(view, birthday)
+            else -> {
+            }
         }
     }
 

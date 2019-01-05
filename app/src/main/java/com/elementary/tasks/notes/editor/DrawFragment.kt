@@ -446,6 +446,8 @@ class DrawFragment : BitmapFragment() {
             DrawView.Mode.TEXT -> prefsContent.addView(textPanel)
             DrawView.Mode.IMAGE -> prefsContent.addView(imagePanel)
             DrawView.Mode.LAYERS -> prefsContent.addView(layersPanel)
+            else -> {
+            }
         }
         showPrefsPanel()
     }

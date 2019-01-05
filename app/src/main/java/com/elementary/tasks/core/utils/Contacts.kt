@@ -149,8 +149,8 @@ object Contacts {
      * @param context application context.
      * @return Phone number
      */
-    fun getNumber(name: String?, context: Context): String {
-        var name = name
+    fun getNumber(n: String?, context: Context): String {
+        var name = n
         var number = ""
         if (name != null && Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
             name = name.replace("'".toRegex(), "''")

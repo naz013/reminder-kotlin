@@ -26,11 +26,11 @@ class GroupFilter(filter: ObjectFilter<Reminder>?) : AbstractFilter<List<String>
 
     private var groupIds: List<String> = ArrayList()
 
-    override fun filter(reminder: Reminder): Boolean {
-        if (!super.filter(reminder)) return false
+    override fun filter(o: Reminder): Boolean {
+        if (!super.filter(o)) return false
         if (groupIds.isEmpty()) return true
         for (s in groupIds) {
-            if (reminder.groupUuId == s) return true
+            if (o.groupUuId == s) return true
         }
         return false
     }

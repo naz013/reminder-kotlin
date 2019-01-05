@@ -122,6 +122,8 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
                 when (commands) {
                     Commands.DELETED -> {
                     }
+                    else -> {
+                    }
                 }
             }
         })
@@ -140,6 +142,8 @@ class PlacesFragment : BaseSettingsFragment(), FilterCallback<Place> {
                 when (actions) {
                     ListActions.OPEN -> if (t != null) openPlace(t)
                     ListActions.MORE -> if (t != null) showMore(view, t)
+                    else -> {
+                    }
                 }
             }
         }

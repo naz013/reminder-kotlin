@@ -118,6 +118,8 @@ class CreateGroupActivity : ThemedActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> finish()
+                    else -> {
+                    }
                 }
             }
         })

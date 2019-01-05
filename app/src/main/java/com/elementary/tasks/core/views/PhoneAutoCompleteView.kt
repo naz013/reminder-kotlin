@@ -45,18 +45,18 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
     private var adapter: EmailAdapter? = null
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
+        init()
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init() {
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 

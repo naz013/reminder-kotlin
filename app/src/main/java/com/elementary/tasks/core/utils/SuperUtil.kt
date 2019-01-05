@@ -111,7 +111,7 @@ object SuperUtil {
         if (Module.isMarshmallow) {
             val builder = dialogues.getDialog(activity)
             builder.setMessage(R.string.for_correct_work_of_application)
-            builder.setPositiveButton(R.string.grant) { dialog, which ->
+            builder.setPositiveButton(R.string.grant) { dialog, _ ->
                 dialog.dismiss()
                 val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
                 try {

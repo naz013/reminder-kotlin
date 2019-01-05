@@ -3,14 +3,9 @@ package com.elementary.tasks.core.views
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.View
-import timber.log.Timber
-import java.lang.Exception
 import android.util.TypedValue
-
-
+import android.view.View
 
 
 /**
@@ -36,18 +31,18 @@ class DividerView : View {
     private var color = Color.GRAY
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         val typedValue = TypedValue()
         val themeArray = context.theme.obtainStyledAttributes(typedValue.data, intArrayOf(android.R.attr.textColorPrimary))
         val color = try {

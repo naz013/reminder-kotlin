@@ -139,6 +139,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                         setResult(Activity.RESULT_OK)
                         finish()
                     }
+                    else -> {
+                    }
                 }
             }
         })

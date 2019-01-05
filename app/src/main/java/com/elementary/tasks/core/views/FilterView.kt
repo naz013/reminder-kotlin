@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.google.android.material.chip.ChipGroup
@@ -77,7 +78,7 @@ class FilterView : LinearLayout {
                 LinearLayout.LayoutParams.WRAP_CONTENT, MeasureUtils.dp2px(mContext!!, 1))
         layoutParams.setMargins(MeasureUtils.dp2px(mContext!!, 16), 0, MeasureUtils.dp2px(mContext!!, 16), 0)
         val view = View(mContext)
-        view.setBackgroundColor(resources.getColor(R.color.whitePrimary))
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitePrimary))
         this.addView(view, layoutParams)
     }
 

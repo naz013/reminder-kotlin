@@ -122,6 +122,8 @@ class TaskListFragment : Fragment() {
             Commands.FAILED -> {
                 Toast.makeText(context!!, getString(R.string.failed_to_update_task), Toast.LENGTH_SHORT).show()
             }
+            else -> {
+            }
         }
     }
 
@@ -155,6 +157,8 @@ class TaskListFragment : Fragment() {
                 when (actions) {
                     ListActions.EDIT -> if (t != null) editTask(t)
                     ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t)
+                    else -> {
+                    }
                 }
             }
         }

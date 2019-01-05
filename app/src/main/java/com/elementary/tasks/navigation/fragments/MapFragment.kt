@@ -115,6 +115,8 @@ class MapFragment : BaseNavigationFragment() {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 when (actions) {
                     ListActions.OPEN -> if (t != null) showClickedPlace(position, t)
+                    else -> {
+                    }
                 }
             }
 

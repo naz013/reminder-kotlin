@@ -75,6 +75,8 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
                 when (commands) {
                     Commands.DELETED -> {
                     }
+                    else -> {
+                    }
                 }
             }
         })

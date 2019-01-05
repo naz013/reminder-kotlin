@@ -24,8 +24,8 @@ class TypeFilter(filter: ObjectFilter<Reminder>?) : AbstractFilter<Int, Reminder
 
     private var type = 0
 
-    override fun filter(reminder: Reminder): Boolean {
-        return super.filter(reminder) && (type == 0 || reminder.type == type)
+    override fun filter(o: Reminder): Boolean {
+        return super.filter(o) && (type == 0 || o.type == type)
     }
 
     @Throws(Exception::class)

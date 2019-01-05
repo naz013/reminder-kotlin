@@ -124,6 +124,8 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
+                    else -> {
+                    }
                 }
             }
         })

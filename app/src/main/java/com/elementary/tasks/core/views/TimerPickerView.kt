@@ -42,18 +42,18 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
         }
 
     constructor(context: Context) : super(context) {
-        init(context, null)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs)
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context, attrs)
+        init(context)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init(context: Context) {
         orientation = LinearLayout.VERTICAL
         View.inflate(context, R.layout.view_timer_picker, this)
         deleteButton.setOnClickListener {
