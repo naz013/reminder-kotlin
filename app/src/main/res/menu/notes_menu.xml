@@ -18,6 +18,5 @@
         android:id="@+id/action_order"
         android:icon="@drawable/ic_twotone_filter_list_24px"
         android:title="@string/order"
-        android:visible="false"
         app:showAsAction="ifRoom" />
 </menu>

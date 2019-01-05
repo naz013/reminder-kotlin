@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.lists.filters
 import android.annotation.SuppressLint
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 
 /**
  * Copyright 2017 Nazar Suhovich
