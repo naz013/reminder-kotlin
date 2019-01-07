@@ -3,7 +3,6 @@ package com.elementary.tasks.notes.list
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -11,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -208,7 +206,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
         mAdapter.actionsListener = object : ActionsListener<NoteWithImages> {
             override fun onAction(view: View, position: Int, t: NoteWithImages?, actions: ListActions) {
                 when (actions) {
-                    ListActions.OPEN -> if (t != null) previewNote(t.getKey(), view)
+                    ListActions.OPEN -> if (t != null) previewNote(t.getKey())
                     ListActions.MORE -> if (t != null) showMore(view, t)
                     else -> {
                     }
@@ -229,7 +227,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
         val items = arrayOf(getString(R.string.open), getString(R.string.share), showIn, getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
         Dialogues.showPopup(view, { item ->
             when (item) {
-                0 -> previewNote(note.getKey(), view)
+                0 -> previewNote(note.getKey())
                 1 -> shareNote(note)
                 2 -> showInStatusBar(note)
                 3 -> selectColor(note)
@@ -262,17 +260,9 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
     override fun getTitle(): String = getString(R.string.notes)
 
-    private fun previewNote(id: String?, view: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val intent = Intent(context, NotePreviewActivity::class.java)
-            intent.putExtra(Constants.INTENT_ID, id)
-            val transitionName = "image"
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, view, transitionName)
-            startActivity(intent, options.toBundle())
-        } else {
-            startActivity(Intent(context, NotePreviewActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, id))
-        }
+    private fun previewNote(id: String?) {
+        startActivity(Intent(context, NotePreviewActivity::class.java)
+                .putExtra(Constants.INTENT_ID, id))
     }
 
     private fun showInStatusBar(note: NoteWithImages?) {
