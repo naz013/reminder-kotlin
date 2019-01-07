@@ -300,6 +300,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             } else if (fragment is BaseSettingsFragment && fragment?.canGoBack() == true) {
                 super.onBackPressed()
                 return
+            } else if (fragment?.canGoBack() == false) {
+                return
             }
         }
         if (isBackPressed) {

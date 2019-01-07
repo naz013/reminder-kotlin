@@ -4,14 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.HorizontalScrollView
+import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.view_chip.view.*
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -33,24 +32,22 @@ import java.util.*
  * limitations under the License.
  */
 class FilterView : LinearLayout {
-    private var mContext: Context? = null
     private var numOfFilters: Int = 0
     private val mFilters = ArrayList<Filter>()
 
     constructor(context: Context) : super(context) {
-        init(context)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context)
+        init()
     }
 
-    private fun init(context: Context) {
-        this.mContext = context
+    private fun init() {
         orientation = LinearLayout.VERTICAL
     }
 
@@ -63,7 +60,7 @@ class FilterView : LinearLayout {
         if (filter == null) return
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(0, MeasureUtils.dp2px(mContext!!, 8), 0, MeasureUtils.dp2px(mContext!!, 8))
+        layoutParams.setMargins(0, MeasureUtils.dp2px(context, 8), 0, MeasureUtils.dp2px(context, 8))
         if (numOfFilters > 0) {
             this.addDivider()
         }
@@ -75,52 +72,36 @@ class FilterView : LinearLayout {
 
     private fun addDivider() {
         val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, MeasureUtils.dp2px(mContext!!, 1))
-        layoutParams.setMargins(MeasureUtils.dp2px(mContext!!, 16), 0, MeasureUtils.dp2px(mContext!!, 16), 0)
-        val view = View(mContext)
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitePrimary))
+                LinearLayout.LayoutParams.WRAP_CONTENT, MeasureUtils.dp2px(context, 1))
+        layoutParams.setMargins(0, 0, 0, 0)
+        val view = DividerView(context)
         this.addView(view, layoutParams)
     }
 
     private fun createFilter(filter: Filter): View {
-        val scrollView = HorizontalScrollView(mContext)
-        scrollView.overScrollMode = View.OVER_SCROLL_NEVER
-        scrollView.isHorizontalScrollBarEnabled = false
-        val layout = ChipGroup(mContext)
-        layout.setChipSpacing(MeasureUtils.dp2px(context, 8))
-        layout.isSingleSelection = true
-        val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(MeasureUtils.dp2px(mContext!!, 8), 0, 0, 0)
+        val chipGroup = ChipGroup(context)
+        chipGroup.setChipSpacing(MeasureUtils.dp2px(context, 8))
+        chipGroup.isSingleSelection = true
         for (element in filter) {
-            val view = createChip(element)
-            layout.addView(view, layoutParams)
-        }
-        layout.setPadding(0, 0, MeasureUtils.dp2px(mContext!!, 8), 0)
-        layout.setOnCheckedChangeListener { _, p1 ->
-            for (f in filter) {
-                if (f.id == p1 - 1000) {
-                    filter.elementClick.onClick(f.binding, p1 - 1000)
-                }
+            val chip = createChip(element, chipGroup)
+            chip.setOnClickListener {
+                Timber.d("createFilter: ${it.id}")
+                filter.elementClick.onClick(element.binding, element.id)
             }
+            chipGroup.addView(chip)
         }
-        scrollView.addView(layout)
-        return scrollView
+        chipGroup.setPadding(0, 0, MeasureUtils.dp2px(context, 8), 0)
+        return chipGroup
     }
 
-    private fun createChip(element: FilterElement): View {
-        val binding = LayoutInflater.from(mContext).inflate(R.layout.view_chip, null, false)
-        binding.chipView.text = element.title
-        if (element.iconId == 0) {
-            binding.chipView.isChipIconVisible = false
-        } else {
-            binding.chipView.setChipIconResource(element.iconId)
-            binding.chipView.isChipIconVisible = true
-        }
-        binding.chipView.isChecked = element.isChecked
-        binding.chipView.id = element.id + 1000
-        element.binding = binding
-        return binding
+    private fun createChip(element: FilterElement, parent: ViewGroup): View {
+        val chip = LayoutInflater.from(context).inflate(R.layout.view_chip, parent, false)
+        chip.chipView.text = element.title
+        chip.chipView.isChipIconVisible = false
+        chip.chipView.isChecked = element.isChecked
+        chip.chipView.id = element.id + 1000
+        element.binding = chip
+        return chip
     }
 
     interface FilterElementClick {
@@ -156,6 +137,6 @@ class FilterView : LinearLayout {
         }
     }
 
-    data class FilterElement(@DrawableRes var iconId: Int, var title: String? = null, var id: Int = 0,
+    data class FilterElement(var title: String? = null, var id: Int = 0,
                              var isChecked: Boolean = false, var binding: View? = null)
 }

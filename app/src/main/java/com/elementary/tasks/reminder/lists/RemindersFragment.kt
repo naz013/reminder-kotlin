@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
@@ -64,11 +63,10 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val mAdapter = RemindersRecyclerAdapter()
 
     private var mGroupsIds = ArrayList<String>()
-    private val filters = ArrayList<FilterView.Filter>()
     private val filterController = ReminderFilterController(this)
 
     private val filterAllElement: FilterView.FilterElement
-        get() = FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true)
+        get() = FilterView.FilterElement(getString(R.string.all), 0, true)
 
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
@@ -86,10 +84,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             filterController.setSearchValue(newText)
             return false
         }
-    }
-    private val mSearchCloseListener = {
-        refreshFilters()
-        false
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,9 +108,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
                 mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
             }
             mSearchView?.setOnQueryTextListener(queryTextListener)
-            mSearchView?.setOnCloseListener(mSearchCloseListener)
         }
-        val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
+        val isNotEmpty = filterController.original.isNotEmpty()
         menu?.getItem(0)?.isVisible = isNotEmpty
         menu?.getItem(2)?.isVisible = false
 
@@ -128,10 +121,21 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             R.id.action_voice -> if (callback != null) {
                 buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
             }
+            R.id.action_filter -> {
+                toggleFilter()
+            }
             else -> {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun toggleFilter() {
+        if (filterView.visibility == View.GONE) {
+            filterView.visibility = View.VISIBLE
+        } else {
+            filterView.visibility = View.GONE
+        }
     }
 
     override fun layoutRes(): Int = R.layout.fragment_reminders
@@ -170,11 +174,11 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun refreshFilters() {
-        filters.clear()
-        addDateFilter(filters)
-        addGroupFilter(viewModel.groups)
-        addTypeFilter(filters)
-        addStatusFilter(filters)
+        filterView.clear()
+        addDateFilter()
+        addGroupFilter()
+        addTypeFilter()
+        addStatusFilter()
     }
 
     private fun initList() {
@@ -203,12 +207,9 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    private fun showRemindersFilter() {
-    }
-
-    private fun addStatusFilter(filters: MutableList<FilterView.Filter>) {
+    private fun addStatusFilter() {
         val reminders = filterController.original
-        if (reminders.size == 0) {
+        if (reminders.isEmpty()) {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
@@ -217,14 +218,14 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(filterAllElement)
-        filter.add(FilterView.FilterElement(R.drawable.ic_power_button, getString(R.string.enabled4), 1))
-        filter.add(FilterView.FilterElement(R.drawable.ic_off, getString(R.string.disabled), 2))
-        filters.add(filter)
+        filter.add(FilterView.FilterElement(getString(R.string.enabled4), 1))
+        filter.add(FilterView.FilterElement(getString(R.string.disabled), 2))
+        filterView.addFilter(filter)
     }
 
-    private fun addDateFilter(filters: MutableList<FilterView.Filter>) {
+    private fun addDateFilter() {
         val reminders = filterController.original
-        if (reminders.size == 0) {
+        if (reminders.isEmpty()) {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
@@ -233,15 +234,15 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(filterAllElement)
-        filter.add(FilterView.FilterElement(R.drawable.ic_push_pin, getString(R.string.permanent), 1))
-        filter.add(FilterView.FilterElement(R.drawable.ic_calendar_illustration, getString(R.string.today), 2))
-        filter.add(FilterView.FilterElement(R.drawable.ic_calendar_illustration, getString(R.string.tomorrow), 3))
-        filters.add(filter)
+        filter.add(FilterView.FilterElement(getString(R.string.permanent), 1))
+        filter.add(FilterView.FilterElement(getString(R.string.today), 2))
+        filter.add(FilterView.FilterElement(getString(R.string.tomorrow), 3))
+        filterView.addFilter(filter)
     }
 
-    private fun addTypeFilter(filters: MutableList<FilterView.Filter>) {
+    private fun addTypeFilter() {
         val reminders = filterController.original
-        if (reminders.size == 0) {
+        if (reminders.isEmpty()) {
             return
         }
         val types = LinkedHashSet<Int>()
@@ -255,15 +256,19 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         })
         filter.add(filterAllElement)
         for (integer in types) {
-            filter.add(FilterView.FilterElement(themeUtil.getReminderIllustration(integer), ReminderUtils.getType(context!!, integer), integer))
+            filter.add(FilterView.FilterElement(ReminderUtils.getType(context!!, integer), integer))
         }
-        if (filter.size != 0) {
-            filters.add(filter)
+        if (filter.isNotEmpty()) {
+            filterView.addFilter(filter)
         }
     }
 
-    private fun addGroupFilter(reminderGroups: List<ReminderGroup>) {
-        mGroupsIds = ArrayList()
+    private fun addGroupFilter() {
+        mGroupsIds.clear()
+        val reminders = filterController.original
+        if (reminders.isEmpty()) {
+            return
+        }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View?, id: Int) {
                 if (id == 0) {
@@ -273,18 +278,34 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
                 }
             }
         })
-        filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        for (i in reminderGroups.indices) {
-            val item = reminderGroups[i]
-            filter.add(FilterView.FilterElement(0, item.groupTitle, i + 1))
-            mGroupsIds.add(item.groupUuId)
+        val groupIds = mutableMapOf<String, String>()
+        reminders.forEach {
+            if (it.groupUuId.isNotBlank()) {
+                groupIds[it.groupUuId] = it.groupTitle
+            }
         }
-        filters.add(filter)
+        filter.add(filterAllElement)
+        var count = 1
+        for ((key, value) in groupIds.entries) {
+            filter.add(FilterView.FilterElement(value, count))
+            mGroupsIds.add(key)
+            count++
+        }
+        filterView.addFilter(filter)
     }
 
     override fun onChanged(result: List<Reminder>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         reloadView(result.size)
+    }
+
+    override fun canGoBack(): Boolean {
+        return if (filterView.visibility == View.GONE) {
+            true
+        } else {
+            toggleFilter()
+            false
+        }
     }
 }

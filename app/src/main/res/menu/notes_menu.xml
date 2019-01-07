@@ -16,7 +16,7 @@
 
     <item
         android:id="@+id/action_order"
-        android:icon="@drawable/ic_twotone_filter_list_24px"
+        android:icon="@drawable/ic_twotone_sort_24px"
         android:title="@string/order"
         app:showAsAction="ifRoom" />
 </menu>
