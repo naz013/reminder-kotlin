@@ -16,7 +16,6 @@ import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
-
 /**
  * Copyright 2016 Nazar Suhovich
  *

@@ -72,16 +72,21 @@
     <style name="Text.Caption" parent="@style/TextAppearance.MaterialComponents.Caption">
         <item name="android:fontFamily">@font/merriweathersans_bold</item>
         <item name="fontFamily">@font/merriweathersans_bold</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Text.Button" parent="@style/TextAppearance.MaterialComponents.Body2">
         <item name="android:fontFamily">@font/merriweathersans_regular</item>
         <item name="fontFamily">@font/merriweathersans_regular</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Text.Overline" parent="@style/TextAppearance.MaterialComponents.Overline">
         <item name="android:fontFamily">@font/merriweathersans_regular</item>
         <item name="fontFamily">@font/merriweathersans_regular</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Base.Light" parent="@style/Theme.MaterialComponents.Light.NoActionBar">

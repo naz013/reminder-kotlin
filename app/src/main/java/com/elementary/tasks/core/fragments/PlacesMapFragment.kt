@@ -20,7 +20,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.network.Api
+import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.Module
@@ -95,7 +95,7 @@ class PlacesMapFragment : BaseMapFragment() {
     }
     private val mSearchCallback = object : Callback<PlacesResponse> {
         override fun onResponse(call: Call<PlacesResponse>, response: Response<PlacesResponse>) {
-            if (response.code() == Api.OK) {
+            if (response.code() == PlacesApi.OK) {
                 val places = ArrayList<GooglePlaceItem>()
                 for (place in response.body()?.results!!) {
                     places.add(PlaceParser.getDetails(place))
