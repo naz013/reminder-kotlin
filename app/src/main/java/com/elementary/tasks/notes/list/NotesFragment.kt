@@ -104,7 +104,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
         ViewUtils.tintMenuIcon(context!!, menu, 1, if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px, isDark)
-        ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_filter_list_24px, isDark)
+        ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_sort_24px, isDark)
 
         mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?

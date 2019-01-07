@@ -5,8 +5,10 @@
     android:id="@+id/chipView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:textAppearance="?textAppearanceBody2"
     android:textColor="?android:textColorPrimary"
-    app:chipBackgroundColor="?colorPrimary"
+    android:textColorLink="?android:textColorPrimary"
     app:chipStrokeColor="?colorSecondary"
     app:chipStrokeWidth="1dp"
+    app:chipSurfaceColor="?android:colorBackground"
     tools:text="All" />
