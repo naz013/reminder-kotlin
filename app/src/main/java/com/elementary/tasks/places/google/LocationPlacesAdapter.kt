@@ -9,6 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_location.view.*
@@ -74,7 +75,11 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
     }
 
     fun loadMarker(view: ImageView, color: Int) {
-        view.setImageResource(themeUtil.getMarkerStyle(color))
+        DrawableHelper.withContext(view.context)
+                .withDrawable(R.drawable.ic_twotone_place_24px)
+                .withColor(themeUtil.getNoteLightColor(color))
+                .tint()
+                .applyTo(view)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

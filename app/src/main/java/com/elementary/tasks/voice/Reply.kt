@@ -18,7 +18,7 @@ package com.elementary.tasks.voice
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-data class Reply(var viewType: Int, var `object`: Any?) {
+data class Reply(var viewType: Int, var content: Any?) {
 
     companion object {
 

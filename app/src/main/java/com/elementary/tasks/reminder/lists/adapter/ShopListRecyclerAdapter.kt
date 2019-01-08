@@ -4,10 +4,10 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.list_item_shop_task.view.*
 
 /**
@@ -101,7 +101,7 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
             if (listener == null) {
                 itemView.clearButton.visibility = View.GONE
                 itemView.itemCheck.isEnabled = false
-                itemView.shopText.setTextColor(ViewUtils.getColor(itemView.context, R.color.pureBlack))
+                itemView.shopText.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
             } else {
                 itemView.itemCheck.visibility = View.VISIBLE
                 itemView.clearButton.visibility = View.VISIBLE

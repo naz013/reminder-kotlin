@@ -2,6 +2,7 @@ package com.elementary.tasks.core.fragments
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Criteria
 import android.location.Location
@@ -10,8 +11,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -31,6 +30,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlinx.android.synthetic.main.view_color_slider.view.*
 import timber.log.Timber
 
 /**
@@ -69,6 +69,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     private var markerRadius = -1
     var markerStyle = -1
         private set
+    private var mMarkerStyle: Drawable? = null
     private var lastPos: LatLng? = null
     private val strokeWidth = 3f
 
@@ -91,9 +92,6 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
         mCallback?.onMapReady()
     }
-
-    private val isMarkersVisible: Boolean
-        get() = styleCard != null && styleCard.visibility == View.VISIBLE
 
     private val isLayersVisible: Boolean
         get() = layersContainer != null && layersContainer.visibility == View.VISIBLE
@@ -128,13 +126,16 @@ class AdvancedMapFragment : BaseMapFragment() {
                 markerRadius = prefs.radius
             if (clear) mMap?.clear()
             if (t == null || t.matches("".toRegex())) t = pos.toString()
-            if (!Module.isPro) markerStyle = 5
+            if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
+                markerStyle = DEF_MARKER_STYLE
+                createStyleDrawable()
+            }
             lastPos = pos
             mListener?.placeChanged(pos, t)
             mMap?.addMarker(MarkerOptions()
                     .position(pos)
                     .title(t)
-                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
+                    .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
                     .draggable(clear))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             mMap?.addCircle(CircleOptions()
@@ -149,14 +150,17 @@ class AdvancedMapFragment : BaseMapFragment() {
 
     fun addMarker(pos: LatLng, title: String?, clear: Boolean, markerStyle: Int, animate: Boolean, radius: Int): Boolean {
         var t = title
-        var mStyle = markerStyle
         if (mMap != null) {
             markerRadius = radius
             if (markerRadius == -1) {
                 markerRadius = prefs.radius
             }
-            if (!Module.isPro) mStyle = 5
-            this.markerStyle = mStyle
+            if (!Module.isPro  && markerStyle != DEF_MARKER_STYLE) {
+                this.markerStyle = DEF_MARKER_STYLE
+            } else {
+                this.markerStyle = markerStyle
+            }
+            createStyleDrawable()
             if (clear) mMap?.clear()
             if (t == null || t.matches("".toRegex())) t = pos.toString()
             lastPos = pos
@@ -164,9 +168,9 @@ class AdvancedMapFragment : BaseMapFragment() {
             mMap?.addMarker(MarkerOptions()
                     .position(pos)
                     .title(t)
-                    .icon(getDescriptor(themeUtil.getMarkerStyle(mStyle)))
+                    .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
                     .draggable(clear))
-            val marker = themeUtil.getMarkerRadiusStyle(mStyle)
+            val marker = themeUtil.getMarkerRadiusStyle(this.markerStyle)
             mMap?.addCircle(CircleOptions()
                     .center(pos)
                     .radius(markerRadius.toDouble())
@@ -190,11 +194,14 @@ class AdvancedMapFragment : BaseMapFragment() {
             if (markerTitle == "" || markerTitle.matches("".toRegex()))
                 markerTitle = lastPos!!.toString()
             mListener?.placeChanged(lastPos!!, markerTitle)
-            if (!Module.isPro) markerStyle = 5
+            if (!Module.isPro  && markerStyle != DEF_MARKER_STYLE) {
+                markerStyle = DEF_MARKER_STYLE
+                createStyleDrawable()
+            }
             mMap?.addMarker(MarkerOptions()
                     .position(lastPos!!)
                     .title(markerTitle)
-                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
+                    .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
                     .draggable(true))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             mMap?.addCircle(CircleOptions()
@@ -209,16 +216,20 @@ class AdvancedMapFragment : BaseMapFragment() {
 
     private fun recreateStyle(style: Int) {
         markerStyle = style
+        createStyleDrawable()
         if (mMap != null && lastPos != null) {
             mMap?.clear()
             if (markerTitle == "" || markerTitle.matches("".toRegex()))
-                markerTitle = lastPos!!.toString()
+                markerTitle = lastPos.toString()
             mListener?.placeChanged(lastPos!!, markerTitle)
-            if (!Module.isPro) markerStyle = 5
+            if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
+                markerStyle = DEF_MARKER_STYLE
+                createStyleDrawable()
+            }
             mMap?.addMarker(MarkerOptions()
                     .position(lastPos!!)
                     .title(markerTitle)
-                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
+                    .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
                     .draggable(true))
             if (markerStyle >= 0) {
                 val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
@@ -234,6 +245,14 @@ class AdvancedMapFragment : BaseMapFragment() {
             }
             animate(lastPos!!)
         }
+    }
+
+    private fun createStyleDrawable() {
+        mMarkerStyle = DrawableHelper.withContext(context!!)
+                .withDrawable(R.drawable.ic_twotone_place_24px)
+                .withColor(themeUtil.getNoteLightColor(markerStyle))
+                .tint()
+                .get()
     }
 
     fun setStyle(style: Int) {
@@ -290,10 +309,6 @@ class AdvancedMapFragment : BaseMapFragment() {
                 hideLayers()
                 false
             }
-            isMarkersVisible -> {
-                hideStyles()
-                false
-            }
             else -> true
         }
     }
@@ -325,13 +340,15 @@ class AdvancedMapFragment : BaseMapFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         markerRadius = prefs.radius
-        if (!Module.isPro) {
-            markerStyle = prefs.markerStyle
+        markerStyle = if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
+            DEF_MARKER_STYLE
+        } else {
+            prefs.markerStyle
         }
+        createStyleDrawable()
         isDark = themeUtil.isDark
         setOnMapClickListener(GoogleMap.OnMapClickListener { latLng ->
             hideLayers()
-            hideStyles()
             if (isTouch) {
                 addMarker(latLng, markerTitle, true, true, markerRadius)
             }
@@ -362,6 +379,29 @@ class AdvancedMapFragment : BaseMapFragment() {
         })
     }
 
+    private fun showStyleDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.style_of_marker))
+
+        val bind = layoutInflater.inflate(R.layout.view_color_slider, null, false)
+        bind.colorSlider.setColors(themeUtil.colorsForSlider())
+        bind.colorSlider.setSelection(prefs.markerStyle)
+        builder.setView(bind)
+
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            prefs.markerStyle = bind.colorSlider.selectedItem
+            recreateStyle(prefs.markerStyle)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
+    }
+
     fun setOnMarkerClick(onMarkerClickListener: GoogleMap.OnMarkerClickListener?) {
         this.onMarkerClickListener = onMarkerClickListener
         mMap?.setOnMarkerClickListener(onMarkerClickListener)
@@ -385,7 +425,6 @@ class AdvancedMapFragment : BaseMapFragment() {
         LinearSnapHelper().attachToRecyclerView(placesList)
 
         placesListCard.visibility = View.GONE
-        styleCard.visibility = View.GONE
         layersContainer.visibility = View.GONE
 
         zoomCard.setOnClickListener { zoomClick() }
@@ -425,34 +464,6 @@ class AdvancedMapFragment : BaseMapFragment() {
         if (!isZoom) {
             zoomCard.visibility = View.GONE
         }
-        loadMarkers()
-    }
-
-    private fun loadMarkers() {
-        groupOne.removeAllViewsInLayout()
-        groupTwo.removeAllViewsInLayout()
-        groupThree.removeAllViewsInLayout()
-        for (i in 0 until ThemeUtil.NUM_OF_MARKERS) {
-            val ib = ImageButton(context)
-            ib.setBackgroundResource(android.R.color.transparent)
-            ib.setImageResource(themeUtil.getMarkerStyle(i))
-            ib.id = i + ThemeUtil.NUM_OF_MARKERS
-            ib.setOnClickListener {
-                recreateStyle(ib.id - ThemeUtil.NUM_OF_MARKERS)
-                hideStyles()
-            }
-            val params = LinearLayout.LayoutParams(
-                    MeasureUtils.dp2px(context!!, 35),
-                    MeasureUtils.dp2px(context!!, 35))
-            val px = MeasureUtils.dp2px(context!!, 2)
-            params.setMargins(px, px, px, px)
-            ib.layoutParams = params
-            when {
-                i < 5 -> groupOne.addView(ib)
-                i < 10 -> groupTwo.addView(ib)
-                else -> groupThree.addView(ib)
-            }
-        }
     }
 
     private fun setMyLocation() {
@@ -470,7 +481,6 @@ class AdvancedMapFragment : BaseMapFragment() {
                 when (actions) {
                     ListActions.OPEN, ListActions.MORE -> {
                         hideLayers()
-                        hideStyles()
                         if (t != null) {
                             if (!Module.isPro) {
                                 addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, true, markerRadius)
@@ -494,21 +504,10 @@ class AdvancedMapFragment : BaseMapFragment() {
 
     private fun toggleMarkers() {
         if (isLayersVisible) hideLayers()
-        if (isMarkersVisible) {
-            hideStyles()
-        } else {
-            styleCard.visibility = View.VISIBLE
-        }
-    }
-
-    private fun hideStyles() {
-        if (isMarkersVisible) {
-            styleCard.visibility = View.GONE
-        }
+        showStyleDialog()
     }
 
     private fun toggleLayers() {
-        if (isMarkersVisible) hideStyles()
         if (isLayersVisible) {
             hideLayers()
         } else {
@@ -581,6 +580,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     companion object {
 
         private const val REQ_LOC = 1245
+        private const val DEF_MARKER_STYLE = 5
 
         const val ENABLE_TOUCH = "enable_touch"
         const val ENABLE_PLACES = "enable_places"

@@ -3,13 +3,13 @@ package com.elementary.tasks.core.fragments
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import kotlinx.android.synthetic.main.list_item_map_place.view.*
 
@@ -48,14 +48,19 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
         return mData.size
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : BaseHolder(itemView) {
         fun bind(item: Place) {
             itemView.textView.text = item.name
-            loadMarker(itemView.markerImage, item.marker)
 
             val dmy = TimeUtil.getPlaceDateTimeFromGmt(item.dateTime)
             itemView.dayView.text = dmy.day
             itemView.monthYearView.text = "${dmy.month}\n${dmy.year}"
+
+            DrawableHelper.withContext(itemView.context)
+                    .withDrawable(R.drawable.ic_twotone_place_24px)
+                    .withColor(themeUtil.getNoteLightColor(item.marker))
+                    .tint()
+                    .applyTo(itemView.markerImage)
         }
 
         init {
@@ -75,9 +80,5 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
-    }
-
-    fun loadMarker(view: ImageView, color: Int) {
-        view.setImageResource(ThemeUtil.getMarkerStyle(color))
     }
 }

@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.appWidgets.WidgetUtils
@@ -55,11 +56,11 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setContentText(context.getString(R.string.note))
         if (Module.isLollipop) {
-            builder.color = ViewUtils.getColor(context, R.color.bluePrimary)
+            builder.color = ContextCompat.getColor(context, R.color.bluePrimary)
         }
         val content = note.summary
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_note_white)
+            builder.setSmallIcon(R.drawable.ic_twotone_note_white)
         } else {
             builder.setSmallIcon(R.drawable.ic_note_nv_white)
         }
@@ -87,7 +88,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             wearableNotificationBuilder.setContentText(context.getString(R.string.note))
             wearableNotificationBuilder.setOngoing(false)
             if (Module.isLollipop) {
-                wearableNotificationBuilder.color = ViewUtils.getColor(context, R.color.bluePrimary)
+                wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.bluePrimary)
             }
             wearableNotificationBuilder.setOnlyAlertOnce(true)
             wearableNotificationBuilder.setGroup("GROUP")

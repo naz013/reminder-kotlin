@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
@@ -256,7 +257,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             builder.setSmallIcon(R.drawable.ic_call_nv_white)
         }
         if (Module.isLollipop) {
-            builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
+            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         }
         if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this)

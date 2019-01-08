@@ -382,7 +382,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             val reminder = fragment?.prepare()
             if (reminder != null) {
                 Timber.d("save: %s", reminder)
-                viewModel.saveAndStartReminder(reminder)
+                viewModel.saveAndStartReminder(reminder, isEditing)
             }
         }
     }

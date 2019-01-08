@@ -20,7 +20,6 @@ import com.elementary.tasks.core.views.ActionView
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_reminder_location.*
 import timber.log.Timber
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -116,9 +115,7 @@ class LocationFragment : RadiusTypeFragment() {
             reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
             return null
         }
-        val places = ArrayList<Place>()
-        places.add(Place(radiusView.radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
-        reminder.places = places
+        reminder.places = listOf(Place(radiusView.radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
         reminder.target = number
         reminder.type = type
         reminder.exportToCalendar = false

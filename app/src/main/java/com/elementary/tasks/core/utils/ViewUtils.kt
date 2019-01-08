@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PorterDuff
@@ -13,7 +12,6 @@ import android.view.*
 import android.view.animation.*
 import android.widget.ScrollView
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -160,20 +158,6 @@ object ViewUtils {
         }
     }
 
-    @ColorInt
-    fun getColor(context: Context, @ColorRes resource: Int): Int {
-        return try {
-            if (Module.isMarshmallow) {
-                context.resources.getColor(resource, null)
-            } else {
-                context.resources.getColor(resource)
-            }
-        } catch (e: Resources.NotFoundException) {
-            0
-        }
-
-    }
-
     fun slideInUp(context: Context, view: View) {
         val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
         view.startAnimation(animation)
@@ -215,23 +199,6 @@ object ViewUtils {
         view.visibility = View.GONE
     }
 
-    fun show(view: View) {
-        val fadeIn = AlphaAnimation(0f, 1f)
-        fadeIn.interpolator = DecelerateInterpolator()
-        fadeIn.startOffset = 400
-        fadeIn.duration = 400
-        view.animation = fadeIn
-        view.visibility = View.VISIBLE
-    }
-
-    fun hide(view: View) {
-        val fadeOut = AlphaAnimation(1f, 0f)
-        fadeOut.interpolator = AccelerateInterpolator() //and this
-        fadeOut.duration = 400
-        view.animation = fadeOut
-        view.visibility = View.INVISIBLE
-    }
-
     fun showOver(view: View) {
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.interpolator = OvershootInterpolator()
@@ -246,60 +213,6 @@ object ViewUtils {
         fadeIn.duration = 300
         view.animation = fadeIn
         view.visibility = View.GONE
-    }
-
-    fun show(context: Context, v: View, callback: AnimationCallback?) {
-        val scaleUp = AnimationUtils.loadAnimation(context, R.anim.scale_zoom)
-        scaleUp.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                callback?.onAnimationFinish(1)
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {
-
-            }
-        })
-        v.startAnimation(scaleUp)
-        v.visibility = View.VISIBLE
-    }
-
-    fun hide(context: Context, v: View, callback: AnimationCallback?) {
-        val scaleDown = AnimationUtils.loadAnimation(context, R.anim.scale_zoom_out)
-        scaleDown.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                callback?.onAnimationFinish(0)
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {
-
-            }
-        })
-        v.startAnimation(scaleDown)
-        v.visibility = View.GONE
-    }
-
-    fun showReveal(v: View) {
-        val fadeIn = AlphaAnimation(0f, 1f)
-        fadeIn.interpolator = AccelerateDecelerateInterpolator()
-        fadeIn.duration = 300
-        v.animation = fadeIn
-        v.visibility = View.VISIBLE
-    }
-
-    fun hideReveal(v: View) {
-        val fadeIn = AlphaAnimation(1f, 0f)
-        fadeIn.interpolator = AccelerateDecelerateInterpolator()
-        fadeIn.duration = 300
-        v.animation = fadeIn
-        v.visibility = View.GONE
     }
 
     fun expand(v: View) {
@@ -344,9 +257,5 @@ object ViewUtils {
         // 1dp/ms
         a.duration = (initialHeight / v.context.resources.displayMetrics.density).toInt().toLong()
         v.startAnimation(a)
-    }
-
-    interface AnimationCallback {
-        fun onAnimationFinish(code: Int)
     }
 }

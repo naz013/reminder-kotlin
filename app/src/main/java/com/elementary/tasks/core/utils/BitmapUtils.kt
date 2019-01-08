@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import com.elementary.tasks.core.views.TextDrawable
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.util.*
@@ -95,6 +94,14 @@ object BitmapUtils {
                 .buildRound(init, COLORS[Random().nextInt(COLORS.size)])
     }
 
+    fun getDescriptor(drawable: Drawable): BitmapDescriptor {
+        val canvas = Canvas()
+        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        canvas.setBitmap(bitmap)
+        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        drawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 
     @Throws(FileNotFoundException::class)
     fun decodeUriToBitmap(context: Context, selectedImage: Uri): Bitmap {

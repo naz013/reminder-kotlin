@@ -66,7 +66,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
         }
     }
 
-    fun saveAndStartReminder(reminder: Reminder) {
+    fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
         postInProgress(true)
         launchDefault {
             if (reminder.groupUuId == "") {
@@ -78,6 +78,14 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 }
             }
             appDb.reminderDao().insert(reminder)
+            if (!isEdit) {
+                if (Reminder.isGpsType(reminder.type)) {
+                    val places = reminder.places
+                    if (places.isNotEmpty()) {
+                        appDb.placesDao().insert(places[0])
+                    }
+                }
+            }
             delay(250)
             EventControlFactory.getController(reminder).start()
             backupReminder(reminder.uuId)
