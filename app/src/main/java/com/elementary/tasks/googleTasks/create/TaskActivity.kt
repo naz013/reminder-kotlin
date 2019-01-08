@@ -332,13 +332,6 @@ class TaskActivity : ThemedActivity() {
         alert.show()
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (mItem != null && prefs.isAutoSaveEnabled) {
-            saveTask()
-        }
-    }
-
     private fun saveTask() {
         if (mIsLoading) return
         val taskName = editField.text.toString().trim()

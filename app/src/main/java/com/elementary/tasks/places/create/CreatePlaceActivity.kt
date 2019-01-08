@@ -175,15 +175,10 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     private fun deleteItem() {
-        if (mItem != null) {
-            viewModel.deletePlace(mItem!!)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (mItem != null && prefs.isAutoSaveEnabled) {
-            addPlace()
+        mItem.let {
+            if (it != null) {
+                viewModel.deletePlace(it)
+            }
         }
     }
 

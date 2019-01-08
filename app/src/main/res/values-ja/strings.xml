@@ -432,7 +432,6 @@
     <string name="figure">素子</string>
     <string name="scale">規模</string>
     <string name="text_is_empty">テキストが空です</string>
-    <string name="save_on_exit">終了時に保存</string>
     <string name="this_reminder_is_disabled">このアラームは無効です</string>
     <string name="would_you_like_to_enable_it">それを有効にしますか？</string>
     <string name="error">エラー</string>

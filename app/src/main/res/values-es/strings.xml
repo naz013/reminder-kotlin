@@ -431,7 +431,6 @@
     <string name="figure">Elemento</string>
     <string name="scale">Escala</string>
     <string name="text_is_empty">El texto está vacío</string>
-    <string name="save_on_exit">Guardar a la salida</string>
     <string name="this_reminder_is_disabled">Este recordatorio está deshabilitado</string>
     <string name="would_you_like_to_enable_it">¿Desea habilitarlo?</string>
     <string name="error">Error</string>

@@ -431,7 +431,6 @@
     <string name="figure">Element</string>
     <string name="scale">Scale</string>
     <string name="text_is_empty">Text is empty</string>
-    <string name="save_on_exit">Save on exit</string>
     <string name="this_reminder_is_disabled">This reminder is disabled</string>
     <string name="would_you_like_to_enable_it">Would you like to enable it?</string>
     <string name="error">Error</string>

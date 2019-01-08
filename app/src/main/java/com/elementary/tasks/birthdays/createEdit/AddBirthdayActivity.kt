@@ -211,13 +211,6 @@ class AddBirthdayActivity : ThemedActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (mBirthday != null && prefs.isAutoSaveEnabled) {
-            saveBirthday()
-        }
-    }
-
     private fun saveBirthday() {
         val contact = birthName.text.toString().trim()
         if (contact == "") {

@@ -267,6 +267,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     private fun initAutoCallPrefs() {
         autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
         autoCallPrefs.isChecked = prefs.isAutoCallEnabled
+        autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
     }
 
     private fun changeAutoLaunchPrefs() {
@@ -289,6 +290,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     private fun initAutoSmsPrefs() {
         silentSMSOptionPrefs.setOnClickListener { changeAutoSmsPrefs() }
         silentSMSOptionPrefs.isChecked = prefs.isAutoSmsEnabled
+        silentSMSOptionPrefs.isEnabled = prefs.isTelephonyAllowed
     }
 
     private fun changeUnlockPrefs() {

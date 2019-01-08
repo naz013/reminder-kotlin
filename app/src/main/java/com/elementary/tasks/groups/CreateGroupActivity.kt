@@ -151,13 +151,6 @@ class CreateGroupActivity : ThemedActivity() {
         viewModel.saveGroup(item, wasDefault)
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (mItem != null && prefs.isAutoSaveEnabled) {
-            saveGroup()
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_simple_save_action, menu)
         val groups = viewModel.allGroups.value ?: listOf()

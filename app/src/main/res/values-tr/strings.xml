@@ -431,7 +431,6 @@
     <string name="figure">Eleman</string>
     <string name="scale">Ölçek</string>
     <string name="text_is_empty">Metin boş</string>
-    <string name="save_on_exit">Çıkışta kaydet</string>
     <string name="this_reminder_is_disabled">Bu hatırlatıcı devre dışı</string>
     <string name="would_you_like_to_enable_it">Etkinleştirmek ister misiniz?</string>
     <string name="error">Hata</string>

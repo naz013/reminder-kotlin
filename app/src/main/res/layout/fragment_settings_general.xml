@@ -56,16 +56,5 @@
             app:prefs_secondary_text_on="@string/show_two_columns"
             app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/savePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_save_24px"
-            app:prefs_primary_text="@string/save_on_exit"
-            app:prefs_secondary_text_off="@string/save_on_exit_off_text"
-            app:prefs_secondary_text_on="@string/save_on_exit_on_text"
-            app:prefs_type="check_switch" />
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

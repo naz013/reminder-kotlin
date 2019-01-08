@@ -431,7 +431,6 @@
     <string name="figure">Елемент</string>
     <string name="scale">Розмір</string>
     <string name="text_is_empty">Текст порожній</string>
-    <string name="save_on_exit">Зберегти на виході</string>
     <string name="this_reminder_is_disabled">Це нагадування відключено</string>
     <string name="would_you_like_to_enable_it">Ви хочете, його увімкнути?</string>
     <string name="error">Помилка</string>
