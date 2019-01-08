@@ -41,30 +41,6 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/pinLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        app:boxBackgroundColor="@color/secondary_12"
-        app:boxCornerRadiusTopEnd="5dp"
-        app:boxCornerRadiusTopStart="5dp">
-
-        <androidx.emoji.widget.EmojiAppCompatEditText
-            android:id="@+id/pinField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/pin"
-            android:inputType="numberPassword"
-            android:maxLength="6"
-            android:maxLines="1"
-            android:textAppearance="?textAppearanceSubtitle1" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/fingerIcon"
         android:layout_width="50dp"
@@ -73,19 +49,13 @@
         android:layout_marginTop="24dp"
         app:srcCompat="@drawable/ic_twotone_fingerprint_secondary" />
 
-    <View
+    <com.elementary.tasks.core.views.PinCodeView
+        android:id="@+id/pinView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="32dp"
-        android:text="@string/log_in"
-        android:textAppearance="?textAppearanceButton" />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp" />
 
 </LinearLayout>

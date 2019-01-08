@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.FingerInitializer
@@ -41,28 +42,25 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
         if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
         else appNameBannerPro.visibility = View.GONE
 
-        initButtons()
+        pinView.callback = {
+            if (it.length == 6) {
+                tryLogin(it)
+            }
+        }
         FingerInitializer(this, this, this)
     }
 
-    private fun initButtons() {
-        loginButton.setOnClickListener { loginClick() }
-    }
 
-    private fun loginClick() {
-        val pin = pinField.text.toString().trim()
-
+    private fun tryLogin(pin: String) {
         if (pin.length < 6) {
-            pinLayout.error = getString(R.string.wrong_pin)
-            pinLayout.isErrorEnabled = true
+            Toast.makeText(this, R.string.wrong_pin, Toast.LENGTH_SHORT).show()
             return
         }
 
         if (pin == prefs.pinCode) {
             openApplication()
         } else {
-            pinLayout.error = getString(R.string.pin_not_match)
-            pinLayout.isErrorEnabled = true
+            Toast.makeText(this, R.string.pin_not_match, Toast.LENGTH_SHORT).show()
         }
     }
 
