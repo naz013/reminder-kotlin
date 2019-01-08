@@ -50,7 +50,11 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
                 tryLogin(it)
             }
         }
-        FingerInitializer(this, this, this)
+        if (prefs.useFingerprint) {
+            FingerInitializer(this, this, this)
+        } else {
+            fingerIcon.visibility = View.GONE
+        }
     }
 
     private fun tryLogin(pin: String) {
@@ -61,15 +65,19 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
         }
 
         if (pin == prefs.pinCode) {
-            if (isBack) {
-                setResult(Activity.RESULT_OK)
-                finish()
-            } else {
-                openApplication()
-            }
+            onSuccess()
         } else {
             Toast.makeText(this, R.string.pin_not_match, Toast.LENGTH_SHORT).show()
             pinView.clearPin()
+        }
+    }
+
+    private fun onSuccess() {
+        if (isBack) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            openApplication()
         }
     }
 
@@ -98,7 +106,7 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
 
     override fun onAuthenticated() {
         fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_green)
-        openApplication()
+        onSuccess()
     }
 
     override fun onError() {
