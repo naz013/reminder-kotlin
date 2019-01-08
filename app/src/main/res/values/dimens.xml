@@ -3,58 +3,20 @@
 
     <dimen name="drawable_circle_width">1dp</dimen>
 
-    <dimen name="about_app_title_size">20sp</dimen>
-    <dimen name="about_secondary_text_size">15sp</dimen>
-
-    <dimen name="view_margin_top">15dp</dimen>
-
-    <dimen name="widget_config_text_size">16sp</dimen>
-    <dimen name="widget_config_widget_size">60dp</dimen>
-    <dimen name="widget_config_margin">15dp</dimen>
-    <dimen name="widget_config_margin_top">10dp</dimen>
-
     <dimen name="create_margin">16dp</dimen>
-    <dimen name="checkbox_text_size">17sp</dimen>
     <dimen name="create_imagebutton_size">50dp</dimen>
-    <dimen name="create_text_size_normal">18sp</dimen>
-    <dimen name="create_text_size_primary">25sp</dimen>
-    <dimen name="create_text_size_secondary">20sp</dimen>
 
-    <dimen name="settings_text_size_primary">18sp</dimen>
-    <dimen name="settings_text_size_secondary">14sp</dimen>
     <dimen name="settings_view_size">25dp</dimen>
 
-    <dimen name="category_margin">16dp</dimen>
-
-    <dimen name="clouds_padding">10dp</dimen>
-    <dimen name="clouds_text_size">20sp</dimen>
-    <dimen name="clouds_margin_top">16dp</dimen>
     <dimen name="create_note_text_size">20sp</dimen>
     <dimen name="create_note_image_button_size">40dp</dimen>
-    <dimen name="create_note_text_size_secondary">20sp</dimen>
-    <dimen name="follow_margin">5dp</dimen>
-    <dimen name="follow_text_size_primary">21sp</dimen>
-    <dimen name="follow_text_size_header">13sp</dimen>
-    <dimen name="follow_button_text_size">15sp</dimen>
-    <dimen name="follow_text_size_normal">18sp</dimen>
-    <dimen name="follow_margin_top">5dp</dimen>
-    <dimen name="reminder_margin_top">10dp</dimen>
-    <dimen name="reminder_text_size_normal">20sp</dimen>
-    <dimen name="reminder_photo_size">175dp</dimen>
-    <dimen name="create_text_size_small">15sp</dimen>
-    <dimen name="reminder_preview_margin_top">15dp</dimen>
-    <dimen name="toolbar_elevation">3dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="dialog_toggle_size">35dp</dimen>
-    <dimen name="add_birthday_text_size_primary">20sp</dimen>
 
-    <dimen name="create_imagebutton_size_ext">60dp</dimen>
     <dimen name="grid_item_spacing">2dp</dimen>
     <dimen name="draw_tool_width">40dp</dimen>
     <dimen name="checkbox_padding">27dp</dimen>
     <dimen name="empty_image_size">128dp</dimen>
     <dimen name="empty_animation_size">188dp</dimen>
-    <dimen name="corner_radius">5dp</dimen>
 
 </resources>
