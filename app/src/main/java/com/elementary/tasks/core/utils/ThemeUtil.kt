@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
+import android.util.TypedValue
 import androidx.annotation.*
 import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
@@ -506,5 +507,24 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         const val THEME_DARK_3 = 8
         const val THEME_DARK_4 = 9
         const val THEME_PURE_BLACK = 10
+
+        @ColorInt
+        fun colorWithAlpha(@ColorInt color: Int, alpha: Int): Int {
+            val r = android.graphics.Color.red(color)
+            val g = android.graphics.Color.green(color)
+            val b = android.graphics.Color.blue(color)
+            return android.graphics.Color.argb(alpha, r, g, b)
+        }
+
+        fun getThemeSecondaryColor(context: Context): Int {
+            val colorAttr: Int = if (Module.isNougat1) {
+                android.R.attr.colorSecondary
+            } else {
+                context.resources.getIdentifier("colorSecondary", "attr", context.packageName)
+            }
+            val outValue = TypedValue()
+            context.theme.resolveAttribute(colorAttr, outValue, true)
+            return outValue.data
+        }
     }
 }

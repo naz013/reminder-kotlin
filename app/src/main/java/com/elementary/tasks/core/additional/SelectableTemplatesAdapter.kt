@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_message.view.*
 
 /**
@@ -55,7 +56,7 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
         fun bind(item: SmsTemplate) {
             itemView.messageView.text = item.title
             if (item.isSelected) {
-                itemView.bgView.setBackgroundResource(R.color.secondary_12)
+                itemView.bgView.setBackgroundColor(ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(itemView.context), 12))
             } else {
                 itemView.bgView.setBackgroundResource(android.R.color.transparent)
             }

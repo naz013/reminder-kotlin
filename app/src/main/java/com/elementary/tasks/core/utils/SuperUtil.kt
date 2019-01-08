@@ -69,7 +69,7 @@ object SuperUtil {
         }
         val intent = Intent(context, GeolocationService::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (Module.isO) {
+        if (Module.isOreo) {
             context.startForegroundService(intent)
         } else {
             context.startService(intent)

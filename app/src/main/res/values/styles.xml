@@ -378,8 +378,6 @@
     </style>
 
     <style name="PureBlack.Dialog" parent="Base.Dark.Dialog">
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorPrimary">@color/secondary</item>
         <item name="android:colorBackground">@color/pureBlack</item>
         <item name="android:popupBackground">@color/pureBlack</item>
         <item name="android:windowBackground">@color/pureBlack</item>

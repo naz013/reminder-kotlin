@@ -98,7 +98,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
     }
 
     private fun createChannels(context: Context) {
-        if (Module.isO) {
+        if (Module.isOreo) {
             val manager = getManager(context)
             if (manager != null) {
                 manager.createNotificationChannel(createReminderChannel(context))

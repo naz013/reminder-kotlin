@@ -5,7 +5,7 @@
 
     <stroke
         android:width="@dimen/drawable_circle_width"
-        android:color="@color/secondary" />
+        android:color="?colorSecondary" />
 
     <solid android:color="@android:color/transparent" />
 
