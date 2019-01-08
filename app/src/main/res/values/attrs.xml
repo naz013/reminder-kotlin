@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
+    <attr name="colorSecondary12" format="color" />
+
     <declare-styleable name="PrefsView">
         <attr name="prefs_primary_text" format="string" />
         <attr name="prefs_primary_text_color" format="color" />
