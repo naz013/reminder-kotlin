@@ -1,5 +1,7 @@
 package com.elementary.tasks.navigation.settings
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
@@ -10,6 +12,7 @@ import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
 import com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment
 import com.elementary.tasks.navigation.settings.location.LocationSettingsFragment
 import com.elementary.tasks.navigation.settings.other.OtherSettingsFragment
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment
 import com.elementary.tasks.navigation.settings.voice.VoiceSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -52,9 +55,29 @@ class SettingsFragment : BaseSettingsFragment() {
         exportSettings.setOnClickListener { callback?.openFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
         calendarSettings.setOnClickListener { callback?.openFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
         birthdaysSettings.setOnClickListener { callback?.openFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
-        securitySettings.setOnClickListener { callback?.openFragment(SecuritySettingsFragment(), getString(R.string.security)) }
+        securitySettings.setOnClickListener { askPin() }
         testsScreen.setOnClickListener { callback?.openFragment(TestsFragment(), "Tests") }
     }
 
+    private fun askPin() {
+        if (prefs.hasPinCode) {
+            startActivityForResult(Intent(context!!, PinLoginActivity::class.java)
+                    .putExtra(PinLoginActivity.ARG_BACK, true), 1233)
+        } else {
+            openSecurity()
+        }
+    }
+
     override fun getTitle(): String = getString(R.string.action_settings)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1233 && resultCode == RESULT_OK) {
+            openSecurity()
+        }
+    }
+
+    private fun openSecurity() {
+        callback?.openFragment(SecuritySettingsFragment(), getString(R.string.security))
+    }
 }
