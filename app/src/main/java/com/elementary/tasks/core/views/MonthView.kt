@@ -109,8 +109,9 @@ class MonthView : View, View.OnTouchListener {
 
     private fun init(context: Context) {
         this.mContext = context
-        this.mTouchColor = ContextCompat.getColor(context, R.color.secondary_12)
-        this.gradientColors = intArrayOf(Color.TRANSPARENT, ContextCompat.getColor(context, R.color.secondary_90), Color.TRANSPARENT)
+        val colorSecondary = ThemeUtil.getThemeSecondaryColor(context)
+        this.mTouchColor = ThemeUtil.colorWithAlpha(colorSecondary, 12)
+        this.gradientColors = intArrayOf(Color.TRANSPARENT, ThemeUtil.colorWithAlpha(colorSecondary, 90), Color.TRANSPARENT)
 
         this.borderPaint = Paint()
         this.borderPaint.style = Paint.Style.STROKE

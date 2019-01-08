@@ -37,10 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:boxBackgroundColor="@color/secondary_12"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp">
+                android:layout_marginEnd="16dp">
 
                 <androidx.emoji.widget.EmojiAppCompatEditText
                     android:id="@+id/birthName"
@@ -127,10 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="12dp"
-                    app:boxBackgroundColor="@color/secondary_12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
+                    android:layout_marginStart="12dp">
 
                     <com.elementary.tasks.core.views.PhoneAutoCompleteView
                         android:id="@+id/numberView"

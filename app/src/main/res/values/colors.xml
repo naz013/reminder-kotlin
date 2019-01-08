@@ -38,9 +38,8 @@
     <color name="pureBlack">#000000</color>
     <color name="pureBlackDark">#000000</color>
 
-    <color name="secondary">#3d5afe</color>
-    <color name="secondary_90">#e63d5afe</color>
-    <color name="secondary_12">#1E3d5afe</color>
+    <color name="secondary">#ff1744</color>
+    <color name="secondary_12">#1Eff1744</color>
 
     <color name="whitePrimary">#FFFFFF</color>
     <color name="whitePrimary30">#4DFFFFFF</color>

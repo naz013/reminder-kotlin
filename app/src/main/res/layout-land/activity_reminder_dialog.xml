@@ -216,7 +216,7 @@
                     android:padding="8dp"
                     android:textAllCaps="true"
                     android:textAppearance="?textAppearanceButton"
-                    android:textColor="@color/secondary"
+                    android:textColor="?colorSecondary"
                     tools:text="@string/make_call" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -228,7 +228,7 @@
                     android:padding="8dp"
                     android:textAllCaps="true"
                     android:textAppearance="?textAppearanceButton"
-                    android:textColor="@color/secondary"
+                    android:textColor="?colorSecondary"
                     android:visibility="gone"
                     tools:text="@string/send_sms" />
 

@@ -28,10 +28,10 @@ object Module {
     val isPro: Boolean
         get() = BuildConfig.IS_PRO
 
-    val isP: Boolean
+    val isPie: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
 
-    val isO: Boolean
+    val isOreo: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
     val isLollipop: Boolean
@@ -42,6 +42,9 @@ object Module {
 
     val isNougat: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+
+    val isNougat1: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 
     val isKitkat: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT

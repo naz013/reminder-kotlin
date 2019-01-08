@@ -51,7 +51,7 @@ object Permissions {
     const val FOREGROUND = Manifest.permission.FOREGROUND_SERVICE
 
     fun checkForeground(context: Context): Boolean {
-        if (Module.isP) {
+        if (Module.isPie) {
             if (ContextCompat.checkSelfPermission(context, FOREGROUND) != PackageManager.PERMISSION_GRANTED) {
                 return false
             }
