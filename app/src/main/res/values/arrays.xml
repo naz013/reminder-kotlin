@@ -61,37 +61,6 @@
         <item>@string/weeks_before</item>
     </string-array>
 
-    <string-array name="color_list">
-        <item>@string/red</item>
-        <item>@string/purple</item>
-        <item>@string/green_light</item>
-        <item>@string/green</item>
-        <item>@string/blue_light</item>
-        <item>@string/blue</item>
-        <item>@string/yellow</item>
-        <item>@string/orange</item>
-        <item>@string/cyan</item>
-        <item>@string/pink</item>
-        <item>@string/dark_green</item>
-        <item>@string/amber</item>
-        <item>@string/transparent</item>
-    </string-array>
-
-    <string-array name="month_list">
-        <item>@string/january</item>
-        <item>@string/february</item>
-        <item>@string/march</item>
-        <item>@string/april</item>
-        <item>@string/may</item>
-        <item>@string/june</item>
-        <item>@string/july</item>
-        <item>@string/august</item>
-        <item>@string/september</item>
-        <item>@string/october</item>
-        <item>@string/november</item>
-        <item>@string/december</item>
-    </string-array>
-
     <array name="com_google_android_gms_fonts_certs">
         <item>@array/com_google_android_gms_fonts_certs_dev</item>
         <item>@array/com_google_android_gms_fonts_certs_prod</item>
