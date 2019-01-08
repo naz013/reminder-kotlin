@@ -51,11 +51,15 @@ class PinCodeView : LinearLayout, View.OnClickListener {
             updateTimeView()
         }
         deleteButton.setOnLongClickListener {
-            pinString = ""
-            updateTimeView()
+            clearPin()
             true
         }
         initButtons()
+        updateTimeView()
+    }
+
+    fun clearPin() {
+        pinString = ""
         updateTimeView()
     }
 

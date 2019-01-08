@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation.settings.security
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -34,9 +35,11 @@ import kotlinx.android.synthetic.main.activity_pin_login.*
 class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, FingerprintHelper.Callback {
 
     private var fingerprintHelper: FingerprintHelper? = null
+    private var isBack = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isBack = intent.getBooleanExtra(ARG_BACK, false)
         setContentView(R.layout.activity_pin_login)
 
         if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
@@ -50,17 +53,23 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
         FingerInitializer(this, this, this)
     }
 
-
     private fun tryLogin(pin: String) {
         if (pin.length < 6) {
             Toast.makeText(this, R.string.wrong_pin, Toast.LENGTH_SHORT).show()
+            pinView.clearPin()
             return
         }
 
         if (pin == prefs.pinCode) {
-            openApplication()
+            if (isBack) {
+                setResult(Activity.RESULT_OK)
+                finish()
+            } else {
+                openApplication()
+            }
         } else {
             Toast.makeText(this, R.string.pin_not_match, Toast.LENGTH_SHORT).show()
+            pinView.clearPin()
         }
     }
 
@@ -99,5 +108,9 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
     override fun onDestroy() {
         super.onDestroy()
         fingerprintHelper?.stopListening()
+    }
+
+    companion object {
+        const val ARG_BACK = "arg_back"
     }
 }
