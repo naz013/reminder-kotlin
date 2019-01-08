@@ -8,6 +8,8 @@
 }
 
 -dontwarn com.google.errorprone.annotations.*
+-dontwarn java.lang.ClassValue
+-keep class java.lang.ClassValue { *; }
 
 -dontwarn okio.**
 -dontwarn okhttp3.**
