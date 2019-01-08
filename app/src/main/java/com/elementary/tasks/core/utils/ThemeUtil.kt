@@ -412,43 +412,67 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return adjustAlpha(getColor(color), opacity)
     }
 
+    private object Color {
+        const val RED = 0
+        const val PINK = 1
+        const val PURPLE = 2
+        const val DEEP_PURPLE = 3
+        const val INDIGO = 4
+        const val BLUE = 5
+        const val LIGHT_BLUE = 6
+        const val CYAN = 7
+        const val TEAL = 8
+        const val GREEN = 9
+        const val LIGHT_GREEN = 10
+        const val LIME = 11
+        const val YELLOW = 12
+        const val AMBER = 13
+        const val ORANGE = 14
+        const val DEEP_ORANGE = 15
+    }
+
     @ColorInt
     fun colorsForSlider(): IntArray {
-        return if (Module.isPro) {
-            intArrayOf(
-                    getColor(R.color.redAccent),
-                    getColor(R.color.purpleAccent),
-                    getColor(R.color.greenLightAccent),
-                    getColor(R.color.greenAccent),
-                    getColor(R.color.blueLightAccent),
-                    getColor(R.color.blueAccent),
-                    getColor(R.color.yellowAccent),
-                    getColor(R.color.orangeAccent),
-                    getColor(R.color.cyanAccent),
-                    getColor(R.color.pinkAccent),
-                    getColor(R.color.tealAccent),
-                    getColor(R.color.amberAccent),
-                    getColor(R.color.purpleDeepAccent),
-                    getColor(R.color.orangeDeepAccent),
-                    getColor(R.color.limeAccent),
-                    getColor(R.color.indigoAccent)
-            )
-        } else {
-            intArrayOf(
-                    getColor(R.color.redAccent),
-                    getColor(R.color.purpleAccent),
-                    getColor(R.color.greenLightAccent),
-                    getColor(R.color.greenAccent),
-                    getColor(R.color.blueLightAccent),
-                    getColor(R.color.blueAccent),
-                    getColor(R.color.yellowAccent),
-                    getColor(R.color.orangeAccent),
-                    getColor(R.color.cyanAccent),
-                    getColor(R.color.pinkAccent),
-                    getColor(R.color.tealAccent),
-                    getColor(R.color.amberAccent)
-            )
-        }
+        return intArrayOf(
+                getColor(R.color.redAccent),
+                getColor(R.color.pinkAccent),
+                getColor(R.color.purpleAccent),
+                getColor(R.color.purpleDeepAccent),
+                getColor(R.color.indigoAccent),
+                getColor(R.color.blueAccent),
+                getColor(R.color.blueLightAccent),
+                getColor(R.color.cyanAccent),
+                getColor(R.color.tealAccent),
+                getColor(R.color.greenAccent),
+                getColor(R.color.greenLightAccent),
+                getColor(R.color.limeAccent),
+                getColor(R.color.yellowAccent),
+                getColor(R.color.amberAccent),
+                getColor(R.color.orangeAccent),
+                getColor(R.color.orangeDeepAccent)
+        )
+    }
+
+    @ColorInt
+    fun accentColorsForSlider(): IntArray {
+        return intArrayOf(
+                getColor(R.color.secondaryRed),
+                getColor(R.color.secondaryPink),
+                getColor(R.color.secondaryPurple),
+                getColor(R.color.secondaryPurpleDeep),
+                getColor(R.color.secondaryIndigo),
+                getColor(R.color.secondaryBlue),
+                getColor(R.color.secondaryBlueLight),
+                getColor(R.color.secondaryCyan),
+                getColor(R.color.secondaryTeal),
+                getColor(R.color.secondaryGreen),
+                getColor(R.color.secondaryGreenLight),
+                getColor(R.color.secondaryLime),
+                getColor(R.color.secondaryYellow),
+                getColor(R.color.secondaryAmber),
+                getColor(R.color.secondaryOrange),
+                getColor(R.color.secondaryOrangeDeep)
+        )
     }
 
     @DrawableRes
@@ -472,25 +496,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> R.drawable.ic_balloons
             else -> R.drawable.ic_bell_illustration
         }
-    }
-
-    private object Color {
-        const val RED = 0
-        const val PURPLE = 1
-        const val LIGHT_GREEN = 2
-        const val GREEN = 3
-        const val LIGHT_BLUE = 4
-        const val BLUE = 5
-        const val YELLOW = 6
-        const val ORANGE = 7
-        const val CYAN = 8
-        const val PINK = 9
-        const val TEAL = 10
-        const val AMBER = 11
-        const val DEEP_PURPLE = 12
-        const val DEEP_ORANGE = 13
-        const val LIME = 14
-        const val INDIGO = 15
     }
 
     data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
