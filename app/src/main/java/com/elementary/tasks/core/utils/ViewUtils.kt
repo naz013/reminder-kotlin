@@ -56,6 +56,14 @@ object ViewUtils {
         return true
     }
 
+    fun navIcon(context: Context, isDark: Boolean): Drawable? {
+        return if (isDark) {
+            ContextCompat.getDrawable(context, R.drawable.ic_new_menu_big_white)
+        } else {
+            ContextCompat.getDrawable(context, R.drawable.ic_new_menu_big)
+        }
+    }
+
     fun backIcon(context: Context, isDark: Boolean): Drawable? {
         return tintIcon(context, R.drawable.ic_twotone_arrow_back_24px, isDark)
     }
