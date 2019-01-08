@@ -33,13 +33,15 @@ class EventEditService : IntentService("EventEditService") {
         Timber.d("onHandleIntent: $id, isReminder $isReminder")
         if (id != 0) {
             if (isReminder) {
-                startActivity(Intent(applicationContext, CreateReminderActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(Constants.INTENT_ID, id))
+                CreateReminderActivity.openLogged(applicationContext,
+                        Intent(applicationContext, CreateReminderActivity::class.java)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                .putExtra(Constants.INTENT_ID, id))
             } else {
-                startActivity(Intent(applicationContext, AddBirthdayActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(Constants.INTENT_ID, id))
+                AddBirthdayActivity.openLogged(applicationContext,
+                        Intent(applicationContext, AddBirthdayActivity::class.java)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                .putExtra(Constants.INTENT_ID, id))
             }
         }
         stopSelf()

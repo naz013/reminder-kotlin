@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.createEdit
 
 import android.app.Activity
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.reminder.createEdit.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_reminder.*
@@ -50,6 +52,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private var fragment: TypeFragment? = null
 
     private var isEditing: Boolean = false
+    private var mIsLogged = false
     override var reminder: Reminder = Reminder()
         private set
     override var defGroup: ReminderGroup? = null
@@ -77,8 +80,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun hasGpsPermission(code: Int): Boolean {
-        if (!Permissions.checkPermission(this@CreateReminderActivity, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(this@CreateReminderActivity, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+        if (!Permissions.checkPermission(this, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
             return false
         }
         return true
@@ -86,11 +89,15 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_reminder)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         initActionBar()
         initNavigation()
         loadReminder(savedInstanceState)
+        if (prefs.hasPinCode && !mIsLogged) {
+            PinLoginActivity.verify(this)
+        }
     }
 
     private fun openScreen(position: Int) {
@@ -107,11 +114,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             APP -> replaceFragment(ApplicationFragment())
             MONTH -> replaceFragment(MonthFragment())
             SHOP -> replaceFragment(ShopFragment())
-            EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
+            EMAIL -> if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
                 replaceFragment(EmailFragment())
             } else {
                 navSpinner.setSelection(DATE)
-                Permissions.requestPermission(this@CreateReminderActivity, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)
+                Permissions.requestPermission(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)
             }
             GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
                 replaceFragment(PlacesFragment())
@@ -399,7 +406,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PinLoginActivity.REQ_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            }
+        } else if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val matches = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (matches != null) {
                 val model = conversationViewModel.findResults(matches)
@@ -569,7 +580,18 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         private const val MENU_ITEM_DELETE = 12
         private const val CONTACTS_REQUEST_E = 501
         private const val FILE_REQUEST = 323
-        private const val TAG = "CreateReminderActivity"
+
         private const val ARG_ITEM = "arg_item"
+        private const val ARG_LOGGED = "arg_logged"
+
+        fun openLogged(context: Context, intent: Intent? = null) {
+            if (intent == null) {
+                context.startActivity(Intent(context, CreateReminderActivity::class.java)
+                        .putExtra(ARG_LOGGED, true))
+            } else {
+                intent.putExtra(ARG_LOGGED, true)
+                context.startActivity(intent)
+            }
+        }
     }
 }

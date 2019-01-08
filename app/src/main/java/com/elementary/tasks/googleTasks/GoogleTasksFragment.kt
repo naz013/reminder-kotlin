@@ -219,7 +219,7 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
     private fun addNewTask() {
         val currentList = currentTaskList() ?: defaultGoogleTaskList ?: return
-        startActivity(Intent(context, TaskActivity::class.java)
+        TaskActivity.openLogged(context!!, Intent(context, TaskActivity::class.java)
                 .putExtra(Constants.INTENT_ID, currentList.listId)
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
     }

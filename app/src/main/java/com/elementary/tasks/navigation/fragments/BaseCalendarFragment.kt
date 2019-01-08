@@ -173,15 +173,15 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
 
     private fun addReminder() {
         if (isAdded && activity != null) {
-            activity?.startActivityForResult(Intent(context, CreateReminderActivity::class.java)
-                    .putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE)
+            CreateReminderActivity.openLogged(activity!!, Intent(context, CreateReminderActivity::class.java)
+                    .putExtra(Constants.INTENT_DATE, dateMills))
         }
     }
 
     private fun addBirthday() {
         if (isAdded && activity != null) {
-            activity?.startActivityForResult(Intent(context, AddBirthdayActivity::class.java)
-                    .putExtra(Constants.INTENT_DATE, dateMills), BD_CODE)
+            AddBirthdayActivity.openLogged(activity!!, Intent(context, AddBirthdayActivity::class.java)
+                    .putExtra(Constants.INTENT_DATE, dateMills))
         }
     }
 

@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.lists
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -142,7 +141,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { startActivity(Intent(activity!!, CreateReminderActivity::class.java)) }
+        fab.setOnClickListener { CreateReminderActivity.openLogged(context!!) }
         fab.setOnLongClickListener {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true

@@ -115,7 +115,7 @@ class NotePreviewActivity : ThemedActivity() {
 
     private fun editReminder() {
         if (mReminder != null) {
-            startActivity(Intent(this, CreateReminderActivity::class.java)
+            CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
                     .putExtra(Constants.INTENT_ID, mReminder?.uuId))
         }
     }
@@ -158,7 +158,7 @@ class NotePreviewActivity : ThemedActivity() {
     private fun editNote() {
         val noteWithImages = mNote
         if (noteWithImages != null) {
-            startActivity(Intent(this, CreateNoteActivity::class.java)
+            CreateNoteActivity.openLogged(this, Intent(this, CreateNoteActivity::class.java)
                     .putExtra(Constants.INTENT_ID, noteWithImages.note?.key))
         }
     }

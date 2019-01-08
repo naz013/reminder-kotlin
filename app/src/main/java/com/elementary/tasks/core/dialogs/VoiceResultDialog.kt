@@ -39,7 +39,7 @@ class VoiceResultDialog : BaseDialog() {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
         val viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, id)).get(ReminderViewModel::class.java)
-        viewModel.reminder.observe(this, Observer{ reminder ->
+        viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showReminder(reminder)
             }
@@ -63,8 +63,9 @@ class VoiceResultDialog : BaseDialog() {
         alert.setCancelable(true)
         alert.setNegativeButton(R.string.edit) { dialogInterface, _ ->
             dialogInterface.dismiss()
-            startActivity(Intent(this@VoiceResultDialog, CreateReminderActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, reminder.uniqueId))
+            CreateReminderActivity.openLogged(this,
+                    Intent(this@VoiceResultDialog, CreateReminderActivity::class.java)
+                            .putExtra(Constants.INTENT_ID, reminder.uniqueId))
             finish()
         }
         alert.setPositiveButton(R.string.ok) { dialog, _ ->

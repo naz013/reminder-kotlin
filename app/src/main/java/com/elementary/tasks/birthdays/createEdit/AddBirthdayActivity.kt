@@ -3,6 +3,7 @@ package com.elementary.tasks.birthdays.createEdit
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -20,6 +21,7 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_add_birthday.*
 import java.io.IOException
 import java.text.ParseException
@@ -54,6 +56,7 @@ class AddBirthdayActivity : ThemedActivity() {
     private var number: String = ""
     private var mBirthday: Birthday? = null
     private var date: Long = 0
+    private var mIsLogged = false
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -71,6 +74,7 @@ class AddBirthdayActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_add_birthday)
         initActionBar()
         container.visibility = View.GONE
@@ -91,6 +95,9 @@ class AddBirthdayActivity : ThemedActivity() {
         pickContact.setOnClickListener { pickContact() }
 
         loadBirthday()
+        if (prefs.hasPinCode && !mIsLogged) {
+            PinLoginActivity.verify(this, PinLoginActivity.REQ_CODE)
+        }
     }
 
     private fun initActionBar() {
@@ -272,6 +279,10 @@ class AddBirthdayActivity : ThemedActivity() {
                 }
                 numberView.setText(number)
             }
+        } else if (requestCode == PinLoginActivity.REQ_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            }
         }
     }
 
@@ -291,6 +302,17 @@ class AddBirthdayActivity : ThemedActivity() {
     companion object {
         private const val MENU_ITEM_DELETE = 12
         private const val CONTACT_PERM = 102
+        private const val ARG_LOGGED = "arg_logged"
+
+        fun openLogged(context: Context, intent: Intent? = null) {
+            if (intent == null) {
+                context.startActivity(Intent(context, AddBirthdayActivity::class.java)
+                        .putExtra(ARG_LOGGED, true))
+            } else {
+                intent.putExtra(ARG_LOGGED, true)
+                context.startActivity(intent)
+            }
+        }
 
         fun createBirthDate(day: Int, month: Int, year: Int): String {
             val monthStr: String = if (month < 9) {

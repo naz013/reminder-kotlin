@@ -202,11 +202,11 @@ class ConversationActivity : ThemedActivity() {
                 when (action) {
                     Action.BIRTHDAY -> {
                         stopView()
-                        startActivity(Intent(this, AddBirthdayActivity::class.java))
+                        AddBirthdayActivity.openLogged(this)
                     }
                     Action.REMINDER -> {
                         stopView()
-                        startActivity(Intent(this, CreateReminderActivity::class.java))
+                        CreateReminderActivity.openLogged(this)
                     }
                     Action.VOLUME -> {
                         stopView()
