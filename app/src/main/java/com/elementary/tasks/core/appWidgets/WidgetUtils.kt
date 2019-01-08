@@ -113,37 +113,6 @@ object WidgetUtils {
     }
 
     @DrawableRes
-    fun getDrawable(code: Int): Int {
-        var drawable = 0
-        when (code) {
-            0 -> drawable = R.drawable.rectangle_stroke_red
-            1 -> drawable = R.drawable.rectangle_stroke_purple
-            2 -> drawable = R.drawable.rectangle_stroke_light_green
-            3 -> drawable = R.drawable.rectangle_stroke_green
-            4 -> drawable = R.drawable.rectangle_stroke_light_blue
-            5 -> drawable = R.drawable.rectangle_stroke_blue
-            6 -> drawable = R.drawable.rectangle_stroke_yellow
-            7 -> drawable = R.drawable.rectangle_stroke_orange
-            8 -> drawable = R.drawable.rectangle_stroke_cyan
-            9 -> drawable = R.drawable.rectangle_stroke
-            10 -> drawable = R.drawable.rectangle_stroke_teal
-            11 -> drawable = R.drawable.rectangle_stroke_amber
-            12 -> drawable = R.drawable.rectangle_stroke_transparent
-            else -> if (Module.isPro) {
-                when (code) {
-                    13 -> drawable = R.drawable.rectangle_stroke_deep_purple
-                    14 -> drawable = R.drawable.rectangle_stroke_deep_orange
-                    15 -> drawable = R.drawable.rectangle_stroke_lime
-                    16 -> drawable = R.drawable.rectangle_stroke_indigo
-                }
-            } else {
-                drawable = R.drawable.rectangle_stroke_blue
-            }
-        }
-        return drawable
-    }
-
-    @DrawableRes
     fun newWidgetBg(code: Int): Int {
         return when (code) {
             0 -> R.drawable.widget_bg_transparent

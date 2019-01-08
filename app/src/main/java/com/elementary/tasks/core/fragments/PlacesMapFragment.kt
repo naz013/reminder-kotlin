@@ -2,6 +2,7 @@ package com.elementary.tasks.core.fragments
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -9,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -22,10 +21,7 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
@@ -37,6 +33,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_places_map.*
+import kotlinx.android.synthetic.main.view_color_slider.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,6 +68,7 @@ class PlacesMapFragment : BaseMapFragment() {
     private var isDark = false
     private var mRadius = -1
     private var markerStyle = -1
+    private var mMarkerStyle: Drawable? = null
     private var mLat: Double = 0.0
     private var mLng: Double = 0.0
 
@@ -89,7 +87,6 @@ class PlacesMapFragment : BaseMapFragment() {
         setMyLocation()
         googleMap.setOnMapClickListener {
             hideLayers()
-            hideStyles()
         }
         mCallback?.onMapReady()
     }
@@ -132,9 +129,6 @@ class PlacesMapFragment : BaseMapFragment() {
             return places
         }
 
-    private val isMarkersVisible: Boolean
-        get() = styleCard.visibility == View.VISIBLE
-
     private val isLayersVisible: Boolean
         get() = layersContainer.visibility == View.VISIBLE
 
@@ -154,7 +148,7 @@ class PlacesMapFragment : BaseMapFragment() {
         this.markerStyle = markerStyle
     }
 
-    fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
+    private fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
         var t = title
         if (mMap != null && pos != null) {
             if (pos.latitude == 0.0 && pos.longitude == 0.0) return
@@ -171,7 +165,7 @@ class PlacesMapFragment : BaseMapFragment() {
             mMap?.addMarker(MarkerOptions()
                     .position(pos)
                     .title(t)
-                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
+                    .icon(BitmapUtils.getDescriptor(mMarkerStyle!!))
                     .draggable(clear))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             val strokeWidth = 3f
@@ -197,8 +191,9 @@ class PlacesMapFragment : BaseMapFragment() {
         }
     }
 
-    fun recreateStyle(style: Int) {
+    private fun recreateStyle(style: Int) {
         markerStyle = style
+        createStyleDrawable()
         if (mMap != null) {
             addMarkers()
         }
@@ -229,10 +224,6 @@ class PlacesMapFragment : BaseMapFragment() {
                 hideLayers()
                 false
             }
-            isMarkersVisible -> {
-                hideStyles()
-                false
-            }
             else -> true
         }
     }
@@ -261,6 +252,8 @@ class PlacesMapFragment : BaseMapFragment() {
         mapView.getMapAsync(mMapCallback)
 
         initViews()
+        createStyleDrawable()
+
         cardSearch.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
                 hideKeyboard()
@@ -271,13 +264,42 @@ class PlacesMapFragment : BaseMapFragment() {
         }
     }
 
+    private fun showStyleDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.style_of_marker))
+
+        val bind = layoutInflater.inflate(R.layout.view_color_slider, null, false)
+        bind.colorSlider.setColors(themeUtil.colorsForSlider())
+        bind.colorSlider.setSelection(prefs.markerStyle)
+        builder.setView(bind)
+
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            prefs.markerStyle = bind.colorSlider.selectedItem
+            recreateStyle(prefs.markerStyle)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
+    }
+
+    private fun createStyleDrawable() {
+        mMarkerStyle = DrawableHelper.withContext(context!!)
+                .withDrawable(R.drawable.ic_twotone_place_24px)
+                .withColor(themeUtil.getNoteLightColor(markerStyle))
+                .tint()
+                .get()
+    }
+
     private fun initViews() {
         placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         LinearSnapHelper().attachToRecyclerView(placesList)
 
         placesListCard.visibility = View.GONE
-        styleCard.visibility = View.GONE
-
         layersContainer.visibility = View.GONE
 
         zoomCard.setOnClickListener { zoomClick() }
@@ -308,39 +330,11 @@ class PlacesMapFragment : BaseMapFragment() {
         if (!isZoom) {
             zoomCard.visibility = View.GONE
         }
-        loadMarkers()
     }
 
     private fun hideKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         imm?.hideSoftInputFromWindow(cardSearch.windowToken, 0)
-    }
-
-    private fun loadMarkers() {
-        groupOne.removeAllViewsInLayout()
-        groupTwo.removeAllViewsInLayout()
-        groupThree.removeAllViewsInLayout()
-        for (i in 0 until ThemeUtil.NUM_OF_MARKERS) {
-            val ib = ImageButton(context)
-            ib.setBackgroundResource(android.R.color.transparent)
-            ib.setImageResource(themeUtil.getMarkerStyle(i))
-            ib.id = i + ThemeUtil.NUM_OF_MARKERS
-            ib.setOnClickListener{
-                recreateStyle(ib.id - ThemeUtil.NUM_OF_MARKERS)
-                hideStyles()
-            }
-            val params = LinearLayout.LayoutParams(
-                    MeasureUtils.dp2px(context!!, 35),
-                    MeasureUtils.dp2px(context!!, 35))
-            val px = MeasureUtils.dp2px(context!!, 2)
-            params.setMargins(px, px, px, px)
-            ib.layoutParams = params
-            when {
-                i < 5 -> groupOne.addView(ib)
-                i < 10 -> groupTwo.addView(ib)
-                else -> groupThree.addView(ib)
-            }
-        }
     }
 
     private fun setMyLocation() {
@@ -411,21 +405,10 @@ class PlacesMapFragment : BaseMapFragment() {
 
     private fun toggleMarkers() {
         if (isLayersVisible) hideLayers()
-        if (isMarkersVisible) {
-            hideStyles()
-        } else {
-            styleCard.visibility = View.VISIBLE
-        }
-    }
-
-    private fun hideStyles() {
-        if (isMarkersVisible) {
-            styleCard.visibility = View.GONE
-        }
+        showStyleDialog()
     }
 
     private fun toggleLayers() {
-        if (isMarkersVisible) hideStyles()
         if (isLayersVisible) {
             hideLayers()
         } else {

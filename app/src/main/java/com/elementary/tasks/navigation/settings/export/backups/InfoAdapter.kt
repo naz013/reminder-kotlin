@@ -8,11 +8,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.chart.PieSlice
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.export.BackupsFragment
 import kotlinx.android.synthetic.main.list_item_backup_info.view.*
 import java.io.File
@@ -108,13 +108,13 @@ class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((Bac
             var slice = PieSlice()
             val usTitle = String.format(binding.context.getString(R.string.used_x), used.toString())
             slice.title = usTitle
-            slice.color = ViewUtils.getColor(binding.context, R.color.redPrimary)
+            slice.color = ContextCompat.getColor(binding.context, R.color.redPrimary)
             slice.value = used
             binding.usedSizeGraph.addSlice(slice)
             slice = PieSlice()
             val avTitle = String.format(binding.context.getString(R.string.available_x), free.toString())
             slice.title = avTitle
-            slice.color = ViewUtils.getColor(binding.context, R.color.greenPrimary)
+            slice.color = ContextCompat.getColor(binding.context, R.color.greenPrimary)
             slice.value = free
             binding.usedSizeGraph.addSlice(slice)
             binding.usedSpace.text = String.format(binding.context.getString(R.string.used_x),

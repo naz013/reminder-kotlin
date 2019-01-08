@@ -147,17 +147,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             }
         }
 
-    val markerStyle: Int
-        @DrawableRes
-        get() {
-            return if (Module.isPro) {
-                val loaded = prefs.markerStyle
-                getMarkerStyle(loaded)
-            } else {
-                R.drawable.ic_location_pointer_blue
-            }
-        }
-
     val styleName: Int
         @StringRes
         get() {
@@ -221,73 +210,12 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return ContextCompat.getColor(context, color)
     }
 
-    @ColorRes
-    @JvmOverloads
-    fun colorAccent(code: Int = prefs.appThemeColor): Int {
-        val color: Int
-        if (isDark) {
-            when (code) {
-                Color.RED -> color = R.color.indigoAccent
-                Color.PURPLE -> color = R.color.amberAccent
-                Color.LIGHT_GREEN -> color = R.color.pinkAccent
-                Color.GREEN -> color = R.color.purpleAccent
-                Color.LIGHT_BLUE -> color = R.color.yellowAccent
-                Color.BLUE -> color = R.color.redAccent
-                Color.YELLOW -> color = R.color.redAccent
-                Color.ORANGE -> color = R.color.greenAccent
-                Color.CYAN -> color = R.color.purpleDeepAccent
-                Color.PINK -> color = R.color.blueLightAccent
-                Color.TEAL -> color = R.color.pinkAccent
-                Color.AMBER -> color = R.color.blueAccent
-                else -> color = if (Module.isPro) {
-                    when (code) {
-                        Color.DEEP_PURPLE -> R.color.greenAccent
-                        Color.DEEP_ORANGE -> R.color.purpleAccent
-                        Color.LIME -> R.color.redAccent
-                        Color.INDIGO -> R.color.pinkAccent
-                        else -> R.color.redAccent
-                    }
-                } else {
-                    R.color.redAccent
-                }
-            }
-        } else {
-            when (code) {
-                Color.RED -> color = R.color.indigoAccent
-                Color.PURPLE -> color = R.color.amberAccent
-                Color.LIGHT_GREEN -> color = R.color.purpleDeepAccent
-                Color.GREEN -> color = R.color.cyanAccent
-                Color.LIGHT_BLUE -> color = R.color.pinkAccent
-                Color.BLUE -> color = R.color.yellowAccent
-                Color.YELLOW -> color = R.color.cyanAccent
-                Color.ORANGE -> color = R.color.pinkAccent
-                Color.CYAN -> color = R.color.redAccent
-                Color.PINK -> color = R.color.cyanAccent
-                Color.TEAL -> color = R.color.redAccent
-                Color.AMBER -> color = R.color.indigoAccent
-                else -> color = if (Module.isPro) {
-                    when (code) {
-                        Color.DEEP_PURPLE -> R.color.greenLightAccent
-                        Color.DEEP_ORANGE -> R.color.purpleDeepAccent
-                        Color.LIME -> R.color.purpleAccent
-                        Color.INDIGO -> R.color.pinkAccent
-                        else -> R.color.yellowAccent
-                    }
-                } else {
-                    R.color.yellowAccent
-                }
-            }
-        }
-        return color
-    }
-
     @ColorInt
     fun colorBirthdayCalendar(): Int {
         return getNoteLightColor(prefs.birthdayColor)
     }
 
     @ColorRes
-    @JvmOverloads
     fun colorPrimary(code: Int = prefs.appThemeColor): Int {
         val color: Int
         when (code) {
@@ -326,68 +254,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     @ColorInt
     fun colorCurrentCalendar(): Int {
         return getNoteLightColor(prefs.todayColor)
-    }
-
-    @DrawableRes
-    fun getIndicator(color: Int): Int {
-        val drawable: Int
-        when (color) {
-            Color.RED -> drawable = R.drawable.drawable_red
-            Color.PURPLE -> drawable = R.drawable.drawable_purple
-            Color.LIGHT_GREEN -> drawable = R.drawable.drawable_green_light
-            Color.GREEN -> drawable = R.drawable.drawable_green
-            Color.LIGHT_BLUE -> drawable = R.drawable.drawable_blue_light
-            Color.BLUE -> drawable = R.drawable.drawable_blue
-            Color.YELLOW -> drawable = R.drawable.drawable_yellow
-            Color.ORANGE -> drawable = R.drawable.drawable_orange
-            Color.CYAN -> drawable = R.drawable.drawable_cyan
-            Color.PINK -> drawable = R.drawable.drawable_pink
-            Color.TEAL -> drawable = R.drawable.drawable_teal
-            Color.AMBER -> drawable = R.drawable.drawable_amber
-            else -> drawable = if (Module.isPro) {
-                when (color) {
-                    Color.DEEP_PURPLE -> R.drawable.drawable_deep_purple
-                    Color.DEEP_ORANGE -> R.drawable.drawable_deep_orange
-                    Color.LIME -> R.drawable.drawable_lime
-                    Color.INDIGO -> R.drawable.drawable_indigo
-                    else -> R.drawable.drawable_cyan
-                }
-            } else {
-                R.drawable.drawable_cyan
-            }
-        }
-        return drawable
-    }
-
-    @ColorRes
-    fun colorPrimaryDark(code: Int): Int {
-        val color: Int
-        when (code) {
-            Color.RED -> color = R.color.redPrimaryDark
-            Color.PURPLE -> color = R.color.purplePrimaryDark
-            Color.LIGHT_GREEN -> color = R.color.greenLightPrimaryDark
-            Color.GREEN -> color = R.color.greenPrimaryDark
-            Color.LIGHT_BLUE -> color = R.color.blueLightPrimaryDark
-            Color.BLUE -> color = R.color.bluePrimaryDark
-            Color.YELLOW -> color = R.color.yellowPrimaryDark
-            Color.ORANGE -> color = R.color.orangePrimaryDark
-            Color.CYAN -> color = R.color.cyanPrimaryDark
-            Color.PINK -> color = R.color.pinkPrimaryDark
-            Color.TEAL -> color = R.color.tealPrimaryDark
-            Color.AMBER -> color = R.color.amberPrimaryDark
-            else -> color = if (Module.isPro) {
-                when (code) {
-                    Color.DEEP_PURPLE -> R.color.purpleDeepPrimaryDark
-                    Color.DEEP_ORANGE -> R.color.orangeDeepPrimaryDark
-                    Color.LIME -> R.color.limePrimaryDark
-                    Color.INDIGO -> R.color.indigoPrimaryDark
-                    else -> R.color.cyanPrimaryDark
-                }
-            } else {
-                R.color.cyanPrimaryDark
-            }
-        }
-        return color
     }
 
     fun getMarkerRadiusStyle(color: Int): Marker {
@@ -466,39 +332,9 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return Marker(fillColor, strokeColor)
     }
 
-    @DrawableRes
-    fun getMarkerStyle(code: Int): Int {
-        val color: Int
-        when (code) {
-            Color.RED -> color = R.drawable.ic_location_pointer_red
-            Color.PURPLE -> color = R.drawable.ic_location_pointer_purple
-            Color.LIGHT_GREEN -> color = R.drawable.ic_location_pointer_green_light
-            Color.GREEN -> color = R.drawable.ic_location_pointer_green
-            Color.LIGHT_BLUE -> color = R.drawable.ic_location_pointer_blue_light
-            Color.BLUE -> color = R.drawable.ic_location_pointer_blue
-            Color.YELLOW -> color = R.drawable.ic_location_pointer_yellow
-            Color.ORANGE -> color = R.drawable.ic_location_pointer_orange
-            Color.CYAN -> color = R.drawable.ic_location_pointer_cyan
-            Color.PINK -> color = R.drawable.ic_location_pointer_pink
-            Color.TEAL -> color = R.drawable.ic_location_pointer_teal
-            Color.AMBER -> color = R.drawable.ic_location_pointer_amber
-            Color.DEEP_PURPLE -> color = R.drawable.ic_location_pointer_purple_deep
-            Color.DEEP_ORANGE -> color = R.drawable.ic_location_pointer_orange_deep
-            Color.INDIGO -> color = R.drawable.ic_location_pointer_indigo
-            Color.LIME -> color = R.drawable.ic_location_pointer_lime
-            else -> color = R.drawable.ic_location_pointer_blue
-        }
-        return color
-    }
-
     @ColorRes
     fun getCategoryColor(code: Int): Int {
         return colorPrimary(code)
-    }
-
-    @ColorInt
-    fun getNoteColor(code: Int): Int {
-        return getColor(colorPrimary(code))
     }
 
     private fun adjustAlpha(color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
@@ -656,11 +492,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         const val INDIGO = 15
     }
 
-    class Marker internal constructor(@param:ColorRes @field:ColorRes
-                                      @get:ColorRes
-                                      val fillColor: Int, @param:ColorRes @field:ColorRes
-                                      @get:ColorRes
-                                      val strokeColor: Int)
+    data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
 
     companion object {
         const val THEME_AUTO = 0
@@ -674,31 +506,5 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         const val THEME_DARK_3 = 8
         const val THEME_DARK_4 = 9
         const val THEME_PURE_BLACK = 10
-        const val NUM_OF_MARKERS = 16
-
-        @DrawableRes
-        fun getMarkerStyle(code: Int): Int {
-            val color: Int
-            when (code) {
-                Color.RED -> color = R.drawable.ic_location_pointer_red
-                Color.PURPLE -> color = R.drawable.ic_location_pointer_purple
-                Color.LIGHT_GREEN -> color = R.drawable.ic_location_pointer_green_light
-                Color.GREEN -> color = R.drawable.ic_location_pointer_green
-                Color.LIGHT_BLUE -> color = R.drawable.ic_location_pointer_blue_light
-                Color.BLUE -> color = R.drawable.ic_location_pointer_blue
-                Color.YELLOW -> color = R.drawable.ic_location_pointer_yellow
-                Color.ORANGE -> color = R.drawable.ic_location_pointer_orange
-                Color.CYAN -> color = R.drawable.ic_location_pointer_cyan
-                Color.PINK -> color = R.drawable.ic_location_pointer_pink
-                Color.TEAL -> color = R.drawable.ic_location_pointer_teal
-                Color.AMBER -> color = R.drawable.ic_location_pointer_amber
-                Color.DEEP_PURPLE -> color = R.drawable.ic_location_pointer_purple_deep
-                Color.DEEP_ORANGE -> color = R.drawable.ic_location_pointer_orange_deep
-                Color.INDIGO -> color = R.drawable.ic_location_pointer_indigo
-                Color.LIME -> color = R.drawable.ic_location_pointer_lime
-                else -> color = R.drawable.ic_location_pointer_blue
-            }
-            return color
-        }
     }
 }

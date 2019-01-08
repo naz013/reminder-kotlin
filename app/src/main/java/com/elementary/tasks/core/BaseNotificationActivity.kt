@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
@@ -257,7 +258,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             wearableNotificationBuilder.setContentTitle(summary)
             wearableNotificationBuilder.setContentText(secondaryText)
             if (Module.isLollipop) {
-                wearableNotificationBuilder.color = ViewUtils.getColor(this, R.color.bluePrimary)
+                wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
             }
             wearableNotificationBuilder.setOngoing(false)
             wearableNotificationBuilder.setOnlyAlertOnce(true)

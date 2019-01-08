@@ -77,16 +77,16 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is VoiceHolder -> holder.bind(mData[position].`object` as String)
-            is VoiceResponseHolder -> holder.bind(mData[position].`object` as String)
-            is ReminderHolder -> holder.setData(mData[position].`object` as Reminder)
-            is NoteHolder -> holder.setData(mData[position].`object` as NoteWithImages)
-            is GroupHolder -> holder.setData(mData[position].`object` as ReminderGroup)
+            is VoiceHolder -> holder.bind(mData[position].content as String)
+            is VoiceResponseHolder -> holder.bind(mData[position].content as String)
+            is ReminderHolder -> holder.setData(mData[position].content as Reminder)
+            is NoteHolder -> holder.setData(mData[position].content as NoteWithImages)
+            is GroupHolder -> holder.setData(mData[position].content as ReminderGroup)
             is BirthdayHolder -> {
-                holder.setData(mData[position].`object` as Birthday)
+                holder.setData(mData[position].content as Birthday)
             }
-            is ShoppingHolder -> holder.setData(mData[position].`object` as Reminder)
-            is AskHolder -> holder.setAskAction(mData[position].`object` as AskAction)
+            is ShoppingHolder -> holder.setData(mData[position].content as Reminder)
+            is AskHolder -> holder.setAskAction(mData[position].content as AskAction)
         }
     }
 
@@ -118,15 +118,11 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         init {
             itemView.replyYes.setOnClickListener {
                 removeFirst()
-                if (askAction != null) {
-                    askAction!!.onYes()
-                }
+                askAction?.onYes()
             }
             itemView.replyNo.setOnClickListener {
                 removeFirst()
-                if (askAction != null) {
-                    askAction!!.onNo()
-                }
+                askAction?.onNo()
             }
             itemView.replyNo.setBackgroundResource(R.drawable.rectangle_stroke_blue)
             itemView.replyYes.setBackgroundResource(R.drawable.rectangle_stroke_blue)
@@ -172,7 +168,7 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
 
     private fun addMoreItemsToList(position: Int) {
         val reply = mData[position]
-        val container = reply.`object` as Container<*>
+        val container = reply.content as Container<*>
         when {
             container.type is ReminderGroup -> {
                 mData.removeAt(position)

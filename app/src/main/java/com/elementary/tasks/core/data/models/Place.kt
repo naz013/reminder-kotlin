@@ -28,9 +28,7 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-@TypeConverters(
-        ListStringTypeConverter::class
-)
+@TypeConverters(ListStringTypeConverter::class)
 data class Place(
         var radius: Int = 0,
         var marker: Int = 0,

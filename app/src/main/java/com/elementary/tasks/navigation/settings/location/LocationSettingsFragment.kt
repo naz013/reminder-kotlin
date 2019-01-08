@@ -7,11 +7,13 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.list.PlacesFragment
 import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_location.*
+import kotlinx.android.synthetic.main.view_color_slider.view.*
 import java.util.*
 
 /**
@@ -68,12 +70,40 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initMarkerStylePrefs() {
-        markerStylePrefs.setOnClickListener { callback?.openFragment(MarkerStyleFragment(), getString(R.string.style_of_marker)) }
+        markerStylePrefs.setOnClickListener { showStyleDialog() }
         showMarkerStyle()
     }
 
+    private fun showStyleDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.style_of_marker))
+
+        val bind = layoutInflater.inflate(R.layout.view_color_slider, null, false)
+        bind.colorSlider.setColors(themeUtil.colorsForSlider())
+        bind.colorSlider.setSelection(prefs.markerStyle)
+        builder.setView(bind)
+
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            prefs.markerStyle = bind.colorSlider.selectedItem
+            dialog.dismiss()
+            showMarkerStyle()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
+    }
+
     private fun showMarkerStyle() {
-        markerStylePrefs.setViewResource(themeUtil.markerStyle)
+        val pointer = DrawableHelper.withContext(context!!)
+                .withDrawable(R.drawable.ic_twotone_place_24px)
+                .withColor(themeUtil.getNoteLightColor(prefs.markerStyle))
+                .tint()
+                .get()
+        markerStylePrefs.setViewDrawable(pointer)
     }
 
     private fun initMapTypePrefs() {

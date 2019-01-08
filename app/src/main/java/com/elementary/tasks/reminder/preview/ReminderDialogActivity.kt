@@ -14,6 +14,7 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -789,7 +790,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         builder.setContentText(appName)
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-            builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
+            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
@@ -855,7 +856,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         builder.setContentText(appName)
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-            builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
+            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
@@ -919,7 +920,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         builder.setContentText(appName)
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-            builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
+            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }

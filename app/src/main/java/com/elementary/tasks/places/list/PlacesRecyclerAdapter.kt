@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_place.view.*
 
 /**
@@ -34,10 +34,14 @@ class PlacesRecyclerAdapter : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolde
 
     var actionsListener: ActionsListener<Place>? = null
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : BaseHolder(itemView) {
         fun bind(item: Place) {
             itemView.textView.text = item.name
-            itemView.markerImage.setImageResource(ThemeUtil.getMarkerStyle(item.marker))
+            DrawableHelper.withContext(itemView.context)
+                    .withDrawable(R.drawable.ic_twotone_place_24px)
+                    .withColor(themeUtil.getNoteLightColor(item.marker))
+                    .tint()
+                    .applyTo(itemView.markerImage)
         }
 
         init {
