@@ -431,7 +431,6 @@
     <string name="figure">एलिमेंट</string>
     <string name="scale">स्केल</string>
     <string name="text_is_empty">पाठ खाली है</string>
-    <string name="save_on_exit">बाहर निकलें पर सहेजें</string>
     <string name="this_reminder_is_disabled">यह अनुस्मारक अक्षम है</string>
     <string name="would_you_like_to_enable_it">क्या आप इसे सक्षम करना चाहेंगे?</string>
     <string name="error">त्रुटि</string>

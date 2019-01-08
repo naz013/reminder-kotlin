@@ -431,7 +431,6 @@
     <string name="figure">Element</string>
     <string name="scale">Rahmen</string>
     <string name="text_is_empty">Text ist leer</string>
-    <string name="save_on_exit">Speichern Sie bei Ausfahrt</string>
     <string name="this_reminder_is_disabled">Diese Erinnerung ist deaktiviert</string>
     <string name="would_you_like_to_enable_it">Möchten Sie es aktivieren?</string>
     <string name="error">Fehler</string>

@@ -335,13 +335,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun closeScreen() {
-        if (prefs.isAutoSaveEnabled) {
-            if (!reminder.isActive) {
-                askAboutEnabling()
-            } else {
-                save()
-            }
-        } else if (isEditing) {
+        if (isEditing) {
             if (!reminder.isActive) {
                 viewModel.resumeReminder(reminder)
             }

@@ -28,7 +28,6 @@ object PrefsConstants {
     const val APP_THEME_COLOR = "theme_color"
     const val DRIVE_USER = "ggl_user"
     const val TASKS_USER = "gtl_user"
-    const val SCREEN = "screen"
     const val MAP_TYPE = "new_map_type"
     const val MAP_STYLE = "new_map_style"
     const val LOCATION_RADIUS = "radius"
@@ -105,7 +104,6 @@ object PrefsConstants {
     const val RATE_COUNT = "rate_count"
     const val USER_LOGGED = "user_logged"
     const val LIVE_CONVERSATION = "live_conversation"
-    const val AUTO_SAVE = "auto_save"
     const val REMEMBER_NOTE_COLOR = "remember_note_color"
     const val LAST_NOTE_COLOR = "last_note_color"
     const val NOTE_COLOR_OPACITY = "note_color_opacity"
@@ -126,7 +124,6 @@ object PrefsConstants {
     const val LAST_LIST = "last_list"
     const val NOTES_ORDER = "notes_ordering"
     const val NOTES_LIST_STYLE = "notes_style"
-    const val TASKS_ORDER = "tasks_ordering"
     const val RATE_SHOW = "show_rate"
     const val APP_RUNS_COUNT = "app_runs"
 

@@ -431,7 +431,6 @@
     <string name="scale">缩放比</string>
     <string name="figure">元素</string>
     <string name="text_is_empty">文本为空</string>
-    <string name="save_on_exit">退出时保存</string>
     <string name="this_reminder_is_disabled">此提醒已禁用</string>
     <string name="would_you_like_to_enable_it">您想启用它吗？</string>
     <string name="google_integration">谷歌集成</string>

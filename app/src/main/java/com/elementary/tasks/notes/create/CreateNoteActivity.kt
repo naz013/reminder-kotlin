@@ -607,14 +607,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (mItem != null && prefs.isAutoSaveEnabled) {
-            saveNote()
-            finish()
-        }
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {

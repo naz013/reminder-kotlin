@@ -150,13 +150,6 @@ class TaskListActivity : ThemedActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (mItem != null && prefs.isAutoSaveEnabled) {
-            saveTaskList()
-        }
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {

@@ -64,10 +64,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.MARKER_STYLE)
         set(value) = putInt(PrefsConstants.MARKER_STYLE, value)
 
-    var screenOrientation: Int
-        get() = getInt(PrefsConstants.SCREEN)
-        set(value) = putInt(PrefsConstants.SCREEN, value)
-
     var todayColor: Int
         get() = getInt(PrefsConstants.TODAY_COLOR)
         set(value) = putInt(PrefsConstants.TODAY_COLOR, value)
@@ -139,10 +135,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
     var hourFormat: Int
         get() = getInt(PrefsConstants.TIME_FORMAT)
         set(value) = putInt(PrefsConstants.TIME_FORMAT, value)
-
-    var isAutoSaveEnabled: Boolean
-        get() = getBoolean(PrefsConstants.AUTO_SAVE)
-        set(value) = putBoolean(PrefsConstants.AUTO_SAVE, value)
 
     var isCalendarEnabled: Boolean
         get() = getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)

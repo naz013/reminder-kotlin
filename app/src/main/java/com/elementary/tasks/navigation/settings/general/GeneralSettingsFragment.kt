@@ -53,7 +53,6 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
         initAppTheme()
         init24TimePrefs()
-        initSavePrefs()
         initLanguagePrefs()
         initHomePage()
         initColsPrefs()
@@ -65,7 +64,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeColsPrefs() {
-        val b = savePrefs.isChecked
+        val b = twoColsPrefs.isChecked
         prefs.isTwoColsEnabled = !b
         twoColsPrefs.isChecked = !b
     }
@@ -129,17 +128,6 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
         dialog.setOnCancelListener { mItemSelect = 0 }
         dialog.setOnDismissListener { mItemSelect = 0 }
         dialog.show()
-    }
-
-    private fun initSavePrefs() {
-        savePrefs.isChecked = prefs.isAutoSaveEnabled
-        savePrefs.setOnClickListener { changeSavePrefs() }
-    }
-
-    private fun changeSavePrefs() {
-        val b = savePrefs.isChecked
-        prefs.isAutoSaveEnabled = !b
-        savePrefs.isChecked = !b
     }
 
     private fun init24TimePrefs() {
