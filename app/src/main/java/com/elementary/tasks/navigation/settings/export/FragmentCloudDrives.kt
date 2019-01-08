@@ -259,6 +259,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             AppDb.getAppDatabase(context!!).googleTaskListsDao().deleteAll()
             withUIContext {
                 updatesHelper.updateTasksWidget()
+                callback?.refreshMenu()
                 updateProgress(false)
                 checkGoogleStatus()
             }
