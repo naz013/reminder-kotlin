@@ -109,6 +109,7 @@
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
+        <item name="colorSecondary12">@color/secondary_12</item>
     </style>
 
     <style name="Base.Dark" parent="Theme.MaterialComponents.NoActionBar">
@@ -131,6 +132,7 @@
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
+        <item name="colorSecondary12">@color/secondary_12</item>
     </style>
 
     <style name="PureWhite" parent="Base.Light">
