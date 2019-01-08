@@ -127,7 +127,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.navigationIcon = ViewUtils.tintIcon(this, R.drawable.ic_twotone_menu_24px, isDark)
+        toolbar.navigationIcon = ViewUtils.tintIcon(this, R.drawable.ic_new_menu, isDark)
         toolbar.setNavigationOnClickListener { onDrawerClick() }
     }
 
@@ -213,7 +213,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (this.fragment is BaseSettingsFragment) {
             toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
         } else {
-            toolbar.navigationIcon = ViewUtils.tintIcon(this, R.drawable.ic_twotone_menu_24px, isDark)
+            toolbar.navigationIcon = ViewUtils.tintIcon(this, R.drawable.ic_new_menu, isDark)
         }
     }
 
