@@ -675,7 +675,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun editReminder() {
         doActions({ it.stop() }, {
-            startActivity(Intent(this, CreateReminderActivity::class.java).putExtra(Constants.INTENT_ID, it.uuId))
+            CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, it.uuId))
             finish()
         })
     }

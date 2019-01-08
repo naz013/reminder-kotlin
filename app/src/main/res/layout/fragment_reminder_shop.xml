@@ -18,7 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginEnd="16dp"
+            app:boxBackgroundColor="?colorSecondary12"
+            app:boxCornerRadiusTopEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp">
 
             <androidx.emoji.widget.EmojiAppCompatEditText
                 android:id="@+id/taskSummary"
@@ -71,7 +74,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                app:boxBackgroundColor="?colorSecondary12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/shopEdit"

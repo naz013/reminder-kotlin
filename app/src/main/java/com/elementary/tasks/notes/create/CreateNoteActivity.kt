@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.create
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.app.TimePickerDialog
@@ -38,6 +39,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
@@ -82,6 +84,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private var mFontStyle = 9
     private var mEditPosition = -1
     private var isBgDark = false
+    private var mIsLogged = false
 
     private lateinit var viewModel: NoteViewModel
     private val mAdapter = ImagesGridAdapter()
@@ -182,6 +185,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isBgDark = isDark
+        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_note)
 
         photoSelectionUtil = PhotoSelectionUtil(this, this)
@@ -206,6 +210,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         updateTextStyle()
         updateTextColors()
         updateIcons()
+
+        if (prefs.hasPinCode && !mIsLogged) {
+            PinLoginActivity.verify(this)
+        }
     }
 
     private fun initColor() {
@@ -660,9 +668,13 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         photoSelectionUtil.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            when (requestCode) {
-                EDIT_CODE -> if (mEditPosition != -1) {
+        if (requestCode == PinLoginActivity.REQ_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            }
+        } else if (requestCode == EDIT_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (mEditPosition != -1) {
                     saveEditedImage()
                 }
             }
@@ -788,10 +800,20 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     companion object {
-
         const val MENU_ITEM_DELETE = 12
         private const val EDIT_CODE = 11223
         private const val AUDIO_CODE = 255000
         private const val SEND_CODE = 25501
+        private const val ARG_LOGGED = "arg_logged"
+
+        fun openLogged(context: Context, intent: Intent? = null) {
+            if (intent == null) {
+                context.startActivity(Intent(context, CreateNoteActivity::class.java)
+                        .putExtra(ARG_LOGGED, true))
+            } else {
+                intent.putExtra(ARG_LOGGED, true)
+                context.startActivity(intent)
+            }
+        }
     }
 }

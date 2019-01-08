@@ -1,7 +1,10 @@
 package com.elementary.tasks.googleTasks.create
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +25,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_create_google_task.*
 import kotlinx.android.synthetic.main.view_progress.*
 import java.util.*
@@ -59,6 +63,7 @@ class TaskActivity : ThemedActivity() {
     private var action: String = ""
     private var isReminder = false
     private var isDate = false
+    private var mIsLogged = false
 
     private var mItem: GoogleTask? = null
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -89,6 +94,7 @@ class TaskActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_google_task)
         initToolbar()
         initFields()
@@ -114,6 +120,9 @@ class TaskActivity : ThemedActivity() {
             initViewModel(tmp, "")
         }
         switchDate()
+        if (prefs.hasPinCode && !mIsLogged) {
+            PinLoginActivity.verify(this)
+        }
     }
 
     private fun updateProgress(b: Boolean) {
@@ -461,9 +470,28 @@ class TaskActivity : ThemedActivity() {
         super.onBackPressed()
     }
 
-    companion object {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PinLoginActivity.REQ_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            }
+        }
+    }
 
+    companion object {
         private const val MENU_ITEM_DELETE = 12
         private const val MENU_ITEM_MOVE = 14
+        private const val ARG_LOGGED = "arg_logged"
+
+        fun openLogged(context: Context, intent: Intent? = null) {
+            if (intent == null) {
+                context.startActivity(Intent(context, TaskActivity::class.java)
+                        .putExtra(ARG_LOGGED, true))
+            } else {
+                intent.putExtra(ARG_LOGGED, true)
+                context.startActivity(intent)
+            }
+        }
     }
 }

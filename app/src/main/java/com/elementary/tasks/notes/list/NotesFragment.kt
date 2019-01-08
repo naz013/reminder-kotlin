@@ -164,7 +164,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { startActivity(Intent(activity!!, CreateNoteActivity::class.java)) }
+        fab.setOnClickListener { CreateNoteActivity.openLogged(context!!) }
         fab.setOnLongClickListener {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
@@ -231,7 +231,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
                 1 -> shareNote(note)
                 2 -> showInStatusBar(note)
                 3 -> selectColor(note)
-                4 -> context?.startActivity(Intent(context, CreateNoteActivity::class.java)
+                4 -> CreateNoteActivity.openLogged(context!!, Intent(context, CreateNoteActivity::class.java)
                         .putExtra(Constants.INTENT_ID, note.getKey()))
                 5 -> viewModel.deleteNote(note)
             }

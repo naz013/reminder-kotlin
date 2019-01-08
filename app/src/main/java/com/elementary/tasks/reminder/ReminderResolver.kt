@@ -69,8 +69,9 @@ class ReminderResolver(
     }
 
     private fun editReminder(view: View, reminder: Reminder) {
-        view.context.startActivity(Intent(view.context, CreateReminderActivity::class.java)
-                .putExtra(Constants.INTENT_ID, reminder.uuId))
+        CreateReminderActivity.openLogged(view.context,
+                Intent(view.context, CreateReminderActivity::class.java)
+                        .putExtra(Constants.INTENT_ID, reminder.uuId))
     }
 
     private fun switchReminder(reminder: Reminder) {

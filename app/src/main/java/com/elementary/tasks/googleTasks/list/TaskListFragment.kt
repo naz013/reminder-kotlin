@@ -110,7 +110,7 @@ class TaskListFragment : Fragment() {
                 showResult(it)
             }
         })
-        viewModel.googleTasks.observe(this, Observer{ googleTasks ->
+        viewModel.googleTasks.observe(this, Observer { googleTasks ->
             if (googleTasks != null) {
                 showTasks(googleTasks)
             }
@@ -118,7 +118,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun showResult(commands: Commands) {
-        when(commands) {
+        when (commands) {
             Commands.FAILED -> {
                 Toast.makeText(context!!, getString(R.string.failed_to_update_task), Toast.LENGTH_SHORT).show()
             }
@@ -166,7 +166,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun editTask(googleTask: GoogleTask) {
-        startActivity(Intent(activity, TaskActivity::class.java)
+        TaskActivity.openLogged(context!!, Intent(activity, TaskActivity::class.java)
                 .putExtra(Constants.INTENT_ID, googleTask.taskId)
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
     }

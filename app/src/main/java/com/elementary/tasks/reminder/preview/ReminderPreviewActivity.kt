@@ -161,9 +161,10 @@ class ReminderPreviewActivity : ThemedActivity() {
             val binding = GoogleTaskHolder(dataContainer, null)
             binding.bind(task, mapOf())
             binding.itemView.setOnClickListener {
-                startActivity(Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
-                        .putExtra(Constants.INTENT_ID, task.taskId)
-                        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
+                TaskActivity.openLogged(this@ReminderPreviewActivity,
+                        Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
+                                .putExtra(Constants.INTENT_ID, task.taskId)
+                                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
             }
             this.dataContainer.addView(binding.itemView)
         }
@@ -432,7 +433,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     private fun editReminder() {
         val reminder = this.reminder
         if (reminder != null) {
-            startActivity(Intent(this, CreateReminderActivity::class.java)
+            CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
                     .putExtra(Constants.INTENT_ID, reminder.uuId))
         }
     }

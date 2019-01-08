@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays.list
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -116,7 +115,7 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
     }
 
     private fun addPlace() {
-        startActivity(Intent(context, AddBirthdayActivity::class.java))
+        AddBirthdayActivity.openLogged(context!!)
     }
 
     private fun initViewModel() {

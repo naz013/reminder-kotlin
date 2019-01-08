@@ -120,5 +120,11 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
 
     companion object {
         const val ARG_BACK = "arg_back"
+        const val REQ_CODE = 1233
+
+        fun verify(activity: Activity, code: Int = REQ_CODE) {
+            activity.startActivityForResult(Intent(activity, PinLoginActivity::class.java)
+                    .putExtra(ARG_BACK, true), code)
+        }
     }
 }

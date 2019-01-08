@@ -20,7 +20,10 @@
             android:id="@+id/nameLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:boxBackgroundColor="?colorSecondary12"
+            app:boxCornerRadiusTopEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/quickNote"

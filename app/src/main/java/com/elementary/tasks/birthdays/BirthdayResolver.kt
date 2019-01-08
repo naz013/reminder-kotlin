@@ -33,7 +33,7 @@ class BirthdayResolver(private val deleteAction: (birthday: Birthday) -> Unit ) 
     }
 
     private fun openBirthday(view: View, birthday: Birthday) {
-        view.context.startActivity(Intent(view.context, AddBirthdayActivity::class.java)
+        AddBirthdayActivity.openLogged(view.context, Intent(view.context, AddBirthdayActivity::class.java)
                 .putExtra(Constants.INTENT_ID, birthday.uuId))
     }
 }
