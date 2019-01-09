@@ -37,17 +37,22 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             val appTheme = prefs.appTheme
             val isDark = appTheme > THEME_LIGHT_4
             if (appTheme == THEME_AUTO) {
-                val calendar = Calendar.getInstance()
-                val mTime = System.currentTimeMillis()
-                calendar.timeInMillis = mTime
-                calendar.set(Calendar.HOUR_OF_DAY, 8)
-                calendar.set(Calendar.MINUTE, 0)
-                val min = calendar.timeInMillis
-                calendar.set(Calendar.HOUR_OF_DAY, 19)
-                val max = calendar.timeInMillis
-                return mTime !in min..max
+                return isNight
             }
             return isDark
+        }
+
+    val isNight: Boolean
+        get() {
+            val calendar = Calendar.getInstance()
+            val mTime = System.currentTimeMillis()
+            calendar.timeInMillis = mTime
+            calendar.set(Calendar.HOUR_OF_DAY, 8)
+            calendar.set(Calendar.MINUTE, 0)
+            val min = calendar.timeInMillis
+            calendar.set(Calendar.HOUR_OF_DAY, 19)
+            val max = calendar.timeInMillis
+            return mTime !in min..max
         }
 
     val styleWithAccent: Int
@@ -390,6 +395,23 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         )
     }
 
+    @ColorInt
+    fun themeColorsForSlider(): IntArray {
+        return intArrayOf(
+                getColor(if (isNight) R.color.darkBg1 else R.color.lightBg1),
+                getColor(R.color.pureWhite),
+                getColor(R.color.lightBg1),
+                getColor(R.color.lightBg2),
+                getColor(R.color.lightBg3),
+                getColor(R.color.lightBg4),
+                getColor(R.color.darkBg1),
+                getColor(R.color.darkBg2),
+                getColor(R.color.darkBg3),
+                getColor(R.color.darkBg4),
+                getColor(R.color.pureBlack)
+        )
+    }
+
     private fun getStyleColorName(code: Int): String {
         return when (code) {
             Color.RED -> "Red"
@@ -410,6 +432,26 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Color.DEEP_ORANGE -> "OrangeDeep"
             else -> "Red"
         }
+    }
+
+    fun accentNames(): List<String> {
+        return listOf(
+                context.getString(R.string.red),
+                context.getString(R.string.pink),
+                context.getString(R.string.purple),
+                context.getString(R.string.dark_purple),
+                context.getString(R.string.indigo),
+                context.getString(R.string.blue),
+                context.getString(R.string.blue_light),
+                context.getString(R.string.cyan),
+                context.getString(R.string.teal),
+                context.getString(R.string.green),
+                context.getString(R.string.green_light),
+                context.getString(R.string.lime),
+                context.getString(R.string.yellow),
+                context.getString(R.string.amber),
+                context.getString(R.string.orange),
+                context.getString(R.string.dark_orange))
     }
 
     @DrawableRes

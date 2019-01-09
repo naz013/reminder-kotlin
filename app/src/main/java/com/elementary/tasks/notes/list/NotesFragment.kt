@@ -272,14 +272,10 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
     }
 
     private fun selectColor(note: NoteWithImages) {
-        var items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber))
-        if (Module.isPro) {
-            items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
-        }
-        dialogues.showLCAM(context!!, { item ->
-            note.note?.color = item
+        dialogues.showColorDialog(activity!!, note.getColor(), getString(R.string.color), themeUtil.colorsForSlider()) {
+            note.note?.color = it
             viewModel.saveNote(note)
-        }, *items)
+        }
     }
 
     private fun refreshView(count: Int) {

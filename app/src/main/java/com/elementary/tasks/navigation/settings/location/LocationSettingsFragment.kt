@@ -13,7 +13,6 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.list.PlacesFragment
 import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_location.*
-import kotlinx.android.synthetic.main.view_color_slider.view.*
 import java.util.*
 
 /**
@@ -75,26 +74,11 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showStyleDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.style_of_marker))
-
-        val bind = layoutInflater.inflate(R.layout.view_color_slider, null, false)
-        bind.colorSlider.setColors(themeUtil.colorsForSlider())
-        bind.colorSlider.setSelection(prefs.markerStyle)
-        builder.setView(bind)
-
-        builder.setPositiveButton(R.string.save) { dialog, _ ->
-            prefs.markerStyle = bind.colorSlider.selectedItem
-            dialog.dismiss()
+        dialogues.showColorDialog(activity!!, prefs.markerStyle,
+                getString(R.string.style_of_marker), themeUtil.colorsForSlider()) {
+            prefs.markerStyle = it
             showMarkerStyle()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showMarkerStyle() {

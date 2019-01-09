@@ -24,6 +24,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/bgTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -32,11 +33,13 @@
             android:textAppearance="?textAppearanceCaption"
             android:textColor="?colorSecondary" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/themes_list"
-            android:layout_marginTop="16dp"
+        <com.github.naz013.colorslider.ColorSlider
+            android:id="@+id/colorSliderBg"
             android:layout_width="match_parent"
-            android:layout_height="156dp" />
+            android:layout_height="40dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"

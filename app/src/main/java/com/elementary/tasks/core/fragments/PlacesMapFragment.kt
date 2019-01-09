@@ -21,7 +21,10 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.BitmapUtils
+import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
@@ -33,7 +36,6 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_places_map.*
-import kotlinx.android.synthetic.main.view_color_slider.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -265,26 +267,15 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun showStyleDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.style_of_marker))
-
-        val bind = layoutInflater.inflate(R.layout.view_color_slider, null, false)
-        bind.colorSlider.setColors(themeUtil.colorsForSlider())
-        bind.colorSlider.setSelection(prefs.markerStyle)
-        builder.setView(bind)
-
-        builder.setPositiveButton(R.string.save) { dialog, _ ->
-            prefs.markerStyle = bind.colorSlider.selectedItem
-            recreateStyle(prefs.markerStyle)
-            dialog.dismiss()
+        dialogues.showColorDialog(
+                activity!!,
+                prefs.markerStyle,
+                getString(R.string.style_of_marker),
+                themeUtil.colorsForSlider()
+        ) {
+            prefs.markerStyle = it
+            recreateStyle(it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun createStyleDrawable() {
