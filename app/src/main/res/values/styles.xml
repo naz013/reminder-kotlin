@@ -8,6 +8,14 @@
         <item name="android:tint">@color/pureBlack</item>
     </style>
 
+    <style name="ActionOverflowButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/whitePrimary</item>
+    </style>
+
+    <style name="BackButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">@color/whitePrimary</item>
+    </style>
+
     <style name="ToolbarTextStyle" parent="Text.H6">
     </style>
 
@@ -104,6 +112,45 @@
         <item name="colorSecondary12">@color/secondary_12</item>
     </style>
 
+    <style name="Base.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
+        <item name="textAppearanceHeadline1">@style/Text.H1</item>
+        <item name="textAppearanceHeadline2">@style/Text.H2</item>
+        <item name="textAppearanceHeadline3">@style/Text.H3</item>
+        <item name="textAppearanceHeadline4">@style/Text.H4</item>
+        <item name="textAppearanceHeadline5">@style/Text.H5</item>
+        <item name="textAppearanceHeadline6">@style/Text.H6</item>
+        <item name="textAppearanceSubtitle1">@style/Text.Sub1</item>
+        <item name="textAppearanceSubtitle2">@style/Text.Sub2</item>
+        <item name="textAppearanceBody1">@style/Text.Body1</item>
+        <item name="textAppearanceBody2">@style/Text.Body2</item>
+        <item name="textAppearanceCaption">@style/Text.Caption</item>
+        <item name="textAppearanceButton">@style/Text.Button</item>
+        <item name="textAppearanceOverline">@style/Text.Overline</item>
+        <item name="android:spinnerItemStyle">@style/Text.Body1</item>
+        <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
+        <item name="colorSecondary12">@color/secondary_12</item>
+    </style>
+
+    <style name="PureWhite" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
+        <item name="android:windowBackground">@color/pureWhite</item>
+        <item name="android:colorBackground">@color/pureWhite</item>
+        <item name="materialCardViewStyle">@style/PureWhite.Card</item>
+        <item name="popupMenuStyle">@style/PureWhite.PopupMenu</item>
+    </style>
+
+    <style name="PureWhite.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/pureWhite</item>
+    </style>
+
+    <style name="PureWhite.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/pureWhite</item>
+    </style>
+
     <style name="Light1" parent="Base.Light">
         <item name="colorPrimaryDark">@color/lightPrimaryDark1</item>
         <item name="android:windowBackground">@color/lightPrimary1</item>
@@ -120,9 +167,147 @@
         <item name="cardBackgroundColor">@color/lightBg1</item>
     </style>
 
+    <style name="Light2" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark2</item>
+        <item name="android:windowBackground">@color/lightPrimary2</item>
+        <item name="android:colorBackground">@color/lightPrimary2</item>
+        <item name="materialCardViewStyle">@style/Light2.Card</item>
+        <item name="popupMenuStyle">@style/Light2.PopupMenu</item>
+    </style>
+
+    <style name="Light2.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary2</item>
+    </style>
+
+    <style name="Light2.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/lightBg2</item>
+    </style>
+
+    <style name="Light3" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark3</item>
+        <item name="android:windowBackground">@color/lightPrimary3</item>
+        <item name="android:colorBackground">@color/lightPrimary3</item>
+        <item name="materialCardViewStyle">@style/Light3.Card</item>
+        <item name="popupMenuStyle">@style/Light3.PopupMenu</item>
+    </style>
+
+    <style name="Light3.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary3</item>
+    </style>
+
+    <style name="Light3.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/lightBg3</item>
+    </style>
+
+    <style name="Light4" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimaryDark4</item>
+        <item name="android:windowBackground">@color/lightPrimary4</item>
+        <item name="android:colorBackground">@color/lightPrimary4</item>
+        <item name="materialCardViewStyle">@style/Light4.Card</item>
+        <item name="popupMenuStyle">@style/Light4.PopupMenu</item>
+    </style>
+
+    <style name="Light4.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/lightPrimary4</item>
+    </style>
+
+    <style name="Light4.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/lightBg4</item>
+    </style>
+
+    <style name="Dark1" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimary1</item>
+        <item name="android:windowBackground">@color/darkPrimary1</item>
+        <item name="android:colorBackground">@color/darkPrimary1</item>
+        <item name="materialCardViewStyle">@style/Dark1.Card</item>
+        <item name="popupMenuStyle">@style/Dark1.PopupMenu</item>
+    </style>
+
+    <style name="Dark1.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary1</item>
+    </style>
+
+    <style name="Dark1.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/darkBg1</item>
+    </style>
+
+    <style name="Dark2" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimary2</item>
+        <item name="android:windowBackground">@color/darkPrimary2</item>
+        <item name="android:colorBackground">@color/darkPrimary2</item>
+        <item name="materialCardViewStyle">@style/Dark2.Card</item>
+        <item name="popupMenuStyle">@style/Dark2.PopupMenu</item>
+    </style>
+
+    <style name="Dark2.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary2</item>
+    </style>
+
+    <style name="Dark2.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/darkBg2</item>
+    </style>
+
+    <style name="Dark3" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimary3</item>
+        <item name="android:windowBackground">@color/darkPrimary3</item>
+        <item name="android:colorBackground">@color/darkPrimary3</item>
+        <item name="materialCardViewStyle">@style/Dark3.Card</item>
+        <item name="popupMenuStyle">@style/Dark3.PopupMenu</item>
+    </style>
+
+    <style name="Dark3.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary3</item>
+    </style>
+
+    <style name="Dark3.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/darkBg3</item>
+    </style>
+
+    <style name="Dark4" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/darkPrimary4</item>
+        <item name="android:windowBackground">@color/darkPrimary4</item>
+        <item name="android:colorBackground">@color/darkPrimary4</item>
+        <item name="materialCardViewStyle">@style/Dark4.Card</item>
+        <item name="popupMenuStyle">@style/Dark4.PopupMenu</item>
+    </style>
+
+    <style name="Dark4.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/darkPrimary4</item>
+    </style>
+
+    <style name="Dark4.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/darkBg4</item>
+    </style>
+
+    <style name="PureBlack" parent="Base.Dark">
+        <item name="colorPrimaryDark">@color/pureBlackDark</item>
+        <item name="android:windowBackground">@color/pureBlack</item>
+        <item name="android:colorBackground">@color/pureBlack</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
+        <item name="materialCardViewStyle">@style/PureBlack.Card</item>
+        <item name="popupMenuStyle">@style/PureBlack.PopupMenu</item>
+    </style>
+
+    <style name="PureBlack.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/pureBlack</item>
+    </style>
+
+    <style name="PureBlack.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/pureBlack</item>
+    </style>
+
     <style name="Base.Light.Dialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
+    </style>
+
+    <style name="PureWhite.Dialog" parent="Base.Light.Dialog">
+        <item name="colorBackgroundFloating">@color/pureWhite</item>
+        <item name="scrimBackground">@color/pureWhite</item>
+        <item name="android:colorBackground">@color/pureWhite</item>
+        <item name="android:popupBackground">@color/pureWhite</item>
+        <item name="android:windowBackground">@color/pureWhite</item>
     </style>
 
     <style name="Light1.Dialog" parent="Base.Light.Dialog">
@@ -133,4 +318,70 @@
         <item name="android:windowBackground">@color/lightPrimary1</item>
     </style>
 
+    <style name="Light2.Dialog" parent="Base.Light.Dialog">
+        <item name="colorBackgroundFloating">@color/lightPrimary2</item>
+        <item name="scrimBackground">@color/lightPrimary2</item>
+        <item name="android:colorBackground">@color/lightPrimary2</item>
+        <item name="android:popupBackground">@color/lightPrimary2</item>
+        <item name="android:windowBackground">@color/lightPrimary2</item>
+    </style>
+
+    <style name="Light3.Dialog" parent="Base.Light.Dialog">
+        <item name="colorBackgroundFloating">@color/lightPrimary3</item>
+        <item name="scrimBackground">@color/lightPrimary3</item>
+        <item name="android:colorBackground">@color/lightPrimary3</item>
+        <item name="android:popupBackground">@color/lightPrimary3</item>
+        <item name="android:windowBackground">@color/lightPrimary3</item>
+    </style>
+
+    <style name="Light4.Dialog" parent="Base.Light.Dialog">
+        <item name="colorBackgroundFloating">@color/lightPrimary4</item>
+        <item name="scrimBackground">@color/lightPrimary4</item>
+        <item name="android:colorBackground">@color/lightPrimary4</item>
+        <item name="android:popupBackground">@color/lightPrimary4</item>
+        <item name="android:windowBackground">@color/lightPrimary4</item>
+    </style>
+
+    <style name="Base.Dark.Dialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
+    </style>
+
+    <style name="Dark1.Dialog" parent="Base.Dark.Dialog">
+        <item name="colorBackgroundFloating">@color/darkPrimary1</item>
+        <item name="scrimBackground">@color/darkPrimary1</item>
+        <item name="android:colorBackground">@color/darkPrimary1</item>
+        <item name="android:popupBackground">@color/darkPrimary1</item>
+        <item name="android:windowBackground">@color/darkPrimary1</item>
+    </style>
+
+    <style name="Dark2.Dialog" parent="Base.Dark.Dialog">
+        <item name="colorBackgroundFloating">@color/darkPrimary2</item>
+        <item name="scrimBackground">@color/darkPrimary2</item>
+        <item name="android:colorBackground">@color/darkPrimary2</item>
+        <item name="android:popupBackground">@color/darkPrimary2</item>
+        <item name="android:windowBackground">@color/darkPrimary2</item>
+    </style>
+
+    <style name="Dark3.Dialog" parent="Base.Dark.Dialog">
+        <item name="colorBackgroundFloating">@color/darkPrimary3</item>
+        <item name="scrimBackground">@color/darkPrimary3</item>
+        <item name="android:colorBackground">@color/darkPrimary3</item>
+        <item name="android:popupBackground">@color/darkPrimary3</item>
+        <item name="android:windowBackground">@color/darkPrimary3</item>
+    </style>
+
+    <style name="Dark4.Dialog" parent="Base.Dark.Dialog">
+        <item name="colorBackgroundFloating">@color/darkPrimary4</item>
+        <item name="scrimBackground">@color/darkPrimary4</item>
+        <item name="android:colorBackground">@color/darkPrimary4</item>
+        <item name="android:popupBackground">@color/darkPrimary4</item>
+        <item name="android:windowBackground">@color/darkPrimary4</item>
+    </style>
+
+    <style name="PureBlack.Dialog" parent="Base.Dark.Dialog">
+        <item name="android:colorBackground">@color/pureBlack</item>
+        <item name="android:popupBackground">@color/pureBlack</item>
+        <item name="android:windowBackground">@color/pureBlack</item>
+    </style>
 </resources>

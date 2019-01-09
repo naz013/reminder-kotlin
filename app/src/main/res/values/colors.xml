@@ -36,6 +36,7 @@
     <color name="darkBg4">#424242</color>
 
     <color name="pureBlack">#000000</color>
+    <color name="pureBlackDark">#000000</color>
 
     <color name="secondary">#ff1744</color>
     <color name="secondary_12">#1Eff1744</color>
@@ -45,6 +46,7 @@
 
     <color name="material_grey">#303030</color>
     <color name="material_grey_dialog">#424242</color>
+    <color name="material_white">#fafafa</color>
     <color name="material_divider">#b6b6b6</color>
 
     <color name="redPrimary">#F44336</color>
@@ -128,35 +130,51 @@
     <color name="orangeDeepAccent">#FF6E40</color>
 
     <color name="secondaryRed">#ff1744</color>
+    <color name="secondaryRed12">#1Eff1744</color>
 
     <color name="secondaryPink">#f50057</color>
+    <color name="secondaryPink12">#1Ef50057</color>
 
     <color name="secondaryPurple">#d500f9</color>
+    <color name="secondaryPurple12">#1Ed500f9</color>
 
     <color name="secondaryPurpleDeep">#651fff</color>
+    <color name="secondaryPurpleDeep12">#1E651fff</color>
 
     <color name="secondaryIndigo">#3d5afe</color>
+    <color name="secondaryIndigo12">#1E3d5afe</color>
 
     <color name="secondaryBlue">#2979ff</color>
+    <color name="secondaryBlue12">#1E2979ff</color>
 
     <color name="secondaryBlueLight">#00b0ff</color>
+    <color name="secondaryBlueLight12">#1E00b0ff</color>
 
     <color name="secondaryCyan">#00e5ff</color>
+    <color name="secondaryCyan12">#1E00e5ff</color>
 
     <color name="secondaryTeal">#1de9b6</color>
+    <color name="secondaryTeal12">#1E1de9b6</color>
 
     <color name="secondaryGreen">#00e676</color>
+    <color name="secondaryGreen12">#1E00e676</color>
 
     <color name="secondaryGreenLight">#76ff03</color>
+    <color name="secondaryGreenLight12">#1E76ff03</color>
 
     <color name="secondaryLime">#c6ff00</color>
+    <color name="secondaryLime12">#1Ec6ff00</color>
 
     <color name="secondaryYellow">#ffea00</color>
+    <color name="secondaryYellow12">#1Effea00</color>
 
     <color name="secondaryAmber">#ffc400</color>
+    <color name="secondaryAmber12">#1Effc400</color>
 
     <color name="secondaryOrange">#ff9100</color>
+    <color name="secondaryOrange12">#1Eff9100</color>
 
     <color name="secondaryOrangeDeep">#ff3d00</color>
+    <color name="secondaryOrangeDeep12">#1Eff3d00</color>
 
 </resources>
