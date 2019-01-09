@@ -592,5 +592,15 @@
     <string name="security">Güvenlik</string>
     <string name="show_notification_about_left_distance">Kalan mesafe hakkındaki bildirimi göster</string>
     <string name="do_not_show_notification">Bildirim gösterme</string>
+    <string name="hide_future_events">Gelecekteki etkinlikleri gizle</string>
+    <string name="do_not_remind_about_birthdays">Doğum günlerini hatırlatmayın</string>
+    <string name="show_reminder_about_birthdays">Doğum günleriyle ilgili hatırlatıcıları göster</string>
+    <string name="birthdays_in_home_screen_widget">Ana ekran widget\'ında doğum günleri</string>
+    <string name="show_when_available_birthdays">Yaklaşan müsait doğum günlerini göster</string>
+    <string name="retrieve_birthdays_from_contacts">Kişilerden doğum günlerini al</string>
+    <string name="use_only_my_birthdays">Yalnızca benim tarafımdan eklenen doğum günlerini kullanın</string>
+    <string name="do_not_scan_contacts">Kişileri tarama</string>
+    <string name="automatically_check_for_new_birthdays">Kişilerde doğum günleri olup olmadığını otomatik olarak kontrol et</string>
+    <string name="specify_own_configuration">Kendi yapılandırmasını belirt</string>
 
 </resources>

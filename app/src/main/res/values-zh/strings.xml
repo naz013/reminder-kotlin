@@ -592,5 +592,15 @@
     <string name="security">安全</string>
     <string name="show_notification_about_left_distance">显示有关剩余距离的通知</string>
     <string name="do_not_show_notification">不要显示通知</string>
+    <string name="hide_future_events">隐藏未来事件</string>
+    <string name="do_not_remind_about_birthdays">不要提醒生日</string>
+    <string name="show_reminder_about_birthdays">显示有关生日的提醒</string>
+    <string name="birthdays_in_home_screen_widget">主屏幕小部件中的生日</string>
+    <string name="show_when_available_birthdays">显示即将到来的生日</string>
+    <string name="retrieve_birthdays_from_contacts">从联系人中检索生日</string>
+    <string name="use_only_my_birthdays">仅使用我添加的生日</string>
+    <string name="do_not_scan_contacts">不要扫描联系人</string>
+    <string name="automatically_check_for_new_birthdays">自动检查联系人中是否有生日</string>
+    <string name="specify_own_configuration">指定自己的配置</string>
 
 </resources>

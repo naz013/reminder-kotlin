@@ -592,5 +592,15 @@
     <string name="security">Segurança</string>
     <string name="show_notification_about_left_distance">Mostrar notificação sobre a distância restante</string>
     <string name="do_not_show_notification">Não mostrar notificação</string>
+    <string name="hide_future_events">Ocultar eventos futuros</string>
+    <string name="do_not_remind_about_birthdays">Não lembre sobre aniversários</string>
+    <string name="show_reminder_about_birthdays">Mostrar lembretes sobre aniversários</string>
+    <string name="birthdays_in_home_screen_widget">Aniversários no widget da tela inicial</string>
+    <string name="retrieve_birthdays_from_contacts">Recuperar aniversários de contatos</string>
+    <string name="show_when_available_birthdays">Mostrar quando disponíveis próximos aniversários</string>
+    <string name="use_only_my_birthdays">Use apenas aniversários adicionados por mim</string>
+    <string name="do_not_scan_contacts">Não digitalizar contatos</string>
+    <string name="automatically_check_for_new_birthdays">Verificar automaticamente se há aniversários em contatos</string>
+    <string name="specify_own_configuration">Especifique a configuração própria</string>
 
 </resources>

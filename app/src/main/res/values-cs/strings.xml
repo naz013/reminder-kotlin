@@ -592,5 +592,15 @@
     <string name="security">Bezpečnostní</string>
     <string name="show_notification_about_left_distance">Zobrazit oznámení o zbývající vzdálenosti</string>
     <string name="do_not_show_notification">Nezobrazovat oznámení</string>
+    <string name="hide_future_events">Skrýt budoucí události</string>
+    <string name="do_not_remind_about_birthdays">Nepřipomínejte na narozeniny</string>
+    <string name="show_reminder_about_birthdays">Zobrazit připomenutí o narozeninách</string>
+    <string name="birthdays_in_home_screen_widget">Narozeniny v widgetu domovské obrazovky</string>
+    <string name="show_when_available_birthdays">Ukažte, kdy jsou k dispozici blížící se narozeniny</string>
+    <string name="retrieve_birthdays_from_contacts">Získejte narozeniny z kontaktů</string>
+    <string name="use_only_my_birthdays">Používejte pouze narozeniny, které jsem přidal</string>
+    <string name="do_not_scan_contacts">Neskenujte kontakty</string>
+    <string name="automatically_check_for_new_birthdays">Automaticky zkontrolovat, zda jsou v kontaktech narozeniny</string>
+    <string name="specify_own_configuration">Zadejte vlastní konfiguraci</string>
 
 </resources>

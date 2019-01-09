@@ -592,5 +592,15 @@
     <string name="security">Securitate</string>
     <string name="show_notification_about_left_distance">Afișați notificarea despre distanța rămasă</string>
     <string name="do_not_show_notification">Nu afișați notificarea</string>
+    <string name="hide_future_events">Ascundeți evenimentele viitoare</string>
+    <string name="do_not_remind_about_birthdays">Nu vă amintiți despre zilele de naștere</string>
+    <string name="show_reminder_about_birthdays">Afișați mementouri despre zilele de naștere</string>
+    <string name="birthdays_in_home_screen_widget">Zile de naștere în widget-ul de pe ecranul de pornire</string>
+    <string name="show_when_available_birthdays">Afișați când viitoarele zile de naștere disponibile</string>
+    <string name="retrieve_birthdays_from_contacts">Preluați zilele de naștere din contacte</string>
+    <string name="use_only_my_birthdays">Utilizați doar zile de naștere adăugate de mine</string>
+    <string name="do_not_scan_contacts">Nu scanați contactele</string>
+    <string name="automatically_check_for_new_birthdays">Verificați automat dacă există zile de naștere în contacte</string>
+    <string name="specify_own_configuration">Specificați configurația proprie</string>
 
 </resources>
