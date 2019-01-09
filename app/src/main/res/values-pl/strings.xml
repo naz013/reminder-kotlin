@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ignoruj typ okna</string>
     <string name="use_default_window_type">Użyj domyślnego typu okna</string>
     <string name="use_window_type_specified_in_event">Użyj typu okna określonego w zdarzeniu</string>
+    <string name="show_notifications_on_wear_devices">Pokaż powiadomienia na urządzeniach Wear OS</string>
+    <string name="show_notification_until_screen_is_open">Pokaż powiadomienie, dopóki ekran wydarzenia nie zostanie otwarty</string>
+    <string name="permanent_notification_icon">Stała ikona powiadomienia</string>
+    <string name="hide_icon">Ukryj ikonę</string>
+    <string name="always_showing">Zawsze pokazuję</string>
+    <string name="hidden">Ukryty</string>
+    <string name="play_melody_in_silent_mode">Graj melodię, gdy telefon jest w trybie cichym</string>
+    <string name="do_not_play_melody_in_silent_mode">Nie odtwarzaj melodii, gdy telefon jest w trybie cichym</string>
+    <string name="repeat_melody_when_it_ends">Powtarzaj melodię po jej zakończeniu</string>
+    <string name="do_not_repeat_melody">Nie powtarzaj melodii</string>
+    <string name="use_app_loudness_level">Użyj poziomu głośności aplikacji</string>
+    <string name="use_system_loudness_level">Użyj poziomu głośności systemu</string>
+    <string name="use_selected_loudness_level">Użyj wybranego poziomu głośności</string>
+    <string name="slowly_increase_loudness_level">Powoli zwiększ poziom głośności</string>
+    <string name="spell_event_summary">Opowiedz podsumowanie wydarzenia zamiast grać melodię</string>
+    <string name="play_melody">Graj melodię</string>
+    <string name="make_call_auto">Wykonuj połączenia telefoniczne automatycznie</string>
+    <string name="make_call_manually">Wykonuj połączenia telefoniczne ręcznie</string>
+    <string name="send_messages_manually">Wysyłaj wiadomości ręcznie</string>
+    <string name="send_messages_auto">Wysyłaj wiadomości automatycznie</string>
+    <string name="open_applications_manually">Otwórz aplikacje ręcznie</string>
+    <string name="open_applications_auto">Otwórz aplikacje automatycznie</string>
 
 </resources>

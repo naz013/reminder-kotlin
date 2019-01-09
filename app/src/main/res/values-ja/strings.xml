@@ -555,5 +555,27 @@
     <string name="ignore_window_type">ウィンドウの種類を無視</string>
     <string name="use_default_window_type">デフォルトのウィンドウタイプを使用</string>
     <string name="use_window_type_specified_in_event">イベントで指定されたウィンドウタイプを使用</string>
+    <string name="show_notifications_on_wear_devices">Wear OSデバイスに通知を表示する</string>
+    <string name="show_notification_until_screen_is_open">イベント画面が開くまで通知を表示する</string>
+    <string name="permanent_notification_icon">恒久通知アイコン</string>
+    <string name="hide_icon">非表示のアイコン</string>
+    <string name="always_showing">常に見せる</string>
+    <string name="hidden">隠れた</string>
+    <string name="play_melody_in_silent_mode">サイレントモードで電話をかけたときにメロディを再生する</string>
+    <string name="do_not_play_melody_in_silent_mode">サイレントモードのときはメロディを鳴らしません</string>
+    <string name="repeat_melody_when_it_ends">終わったらメロディを繰り返す</string>
+    <string name="do_not_repeat_melody">メロディを繰り返さないで</string>
+    <string name="use_app_loudness_level">アプリケーションの音量レベルを使用する</string>
+    <string name="use_system_loudness_level">システム音量レベルを使用する</string>
+    <string name="use_selected_loudness_level">選択した音量レベルを使用</string>
+    <string name="slowly_increase_loudness_level">音量レベルをゆっくり上げる</string>
+    <string name="spell_event_summary">メロディを演奏する代わりにイベントの概要を言う</string>
+    <string name="play_melody">メロディを演奏する</string>
+    <string name="make_call_auto">自動的に電話をかける</string>
+    <string name="make_call_manually">手動で電話をかける</string>
+    <string name="send_messages_manually">メッセージを手動で送信する</string>
+    <string name="send_messages_auto">メッセージを自動的に送信する</string>
+    <string name="open_applications_manually">手動でアプリケーションを開く</string>
+    <string name="open_applications_auto">アプリケーションを自動的に開く</string>
 
 </resources>

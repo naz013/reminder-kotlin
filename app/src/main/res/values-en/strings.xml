@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ignore window type</string>
     <string name="use_default_window_type">Use default window type</string>
     <string name="use_window_type_specified_in_event">Use window type specified in event</string>
+    <string name="show_notifications_on_wear_devices">Show notifications on Wear OS devices</string>
+    <string name="show_notification_until_screen_is_open">Show notification until event screen is open</string>
+    <string name="permanent_notification_icon">Permanent notification icon</string>
+    <string name="hide_icon">Hide icon</string>
+    <string name="always_showing">Always showing</string>
+    <string name="hidden">Hidden</string>
+    <string name="play_melody_in_silent_mode">Play melody when phone in silent mode</string>
+    <string name="do_not_play_melody_in_silent_mode">Do not play melody when phone in silent mode</string>
+    <string name="repeat_melody_when_it_ends">Repeat melody when it ends</string>
+    <string name="do_not_repeat_melody">Do not repeat melody</string>
+    <string name="use_app_loudness_level">Use application loudness level</string>
+    <string name="use_system_loudness_level">Use system loudness level</string>
+    <string name="use_selected_loudness_level">Use selected loudness level</string>
+    <string name="slowly_increase_loudness_level">Slowly increase loudness level</string>
+    <string name="spell_event_summary">Say event summary instead of playing melody</string>
+    <string name="play_melody">Play melody</string>
+    <string name="make_call_auto">Make phone calls automatically</string>
+    <string name="make_call_manually">Make phone calls manually</string>
+    <string name="send_messages_manually">Send messages manually</string>
+    <string name="send_messages_auto">Send messages automatically</string>
+    <string name="open_applications_manually">Open applications manually</string>
+    <string name="open_applications_auto">Open applications automatically</string>
 
 </resources>

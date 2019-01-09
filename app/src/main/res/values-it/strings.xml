@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ignora il tipo di finestra</string>
     <string name="use_default_window_type">Usa il tipo di finestra predefinito</string>
     <string name="use_window_type_specified_in_event">Usa il tipo di finestra specificato nell\'evento</string>
+    <string name="show_notifications_on_wear_devices">Mostra le notifiche sui dispositivi Wear OS</string>
+    <string name="show_notification_until_screen_is_open">Mostra notifica fino a quando la schermata dell\'evento è aperta</string>
+    <string name="permanent_notification_icon">Icona di notifica permanente</string>
+    <string name="hide_icon">Nascondi icona</string>
+    <string name="always_showing">Mostra sempre</string>
+    <string name="hidden">Nascosto</string>
+    <string name="play_melody_in_silent_mode">Riproduci la melodia quando il telefono è in modalità silenziosa</string>
+    <string name="do_not_play_melody_in_silent_mode">Non suonare la melodia quando il telefono è in modalità silenziosa</string>
+    <string name="repeat_melody_when_it_ends">Ripeti la melodia quando finisce</string>
+    <string name="do_not_repeat_melody">Non ripetere la melodia</string>
+    <string name="use_app_loudness_level">Usa il livello di volume dell\'applicazione</string>
+    <string name="use_system_loudness_level">Usa il livello di volume del sistema</string>
+    <string name="use_selected_loudness_level">Usa il livello di volume selezionato</string>
+    <string name="slowly_increase_loudness_level">Aumentare lentamente il volume</string>
+    <string name="spell_event_summary">Pronuncia il riepilogo degli eventi invece di suonare la melodia</string>
+    <string name="play_melody">Suona la melodia</string>
+    <string name="make_call_auto">Effettua chiamate telefoniche automaticamente</string>
+    <string name="make_call_manually">Effettua chiamate telefoniche manualmente</string>
+    <string name="send_messages_manually">Invia messaggi manualmente</string>
+    <string name="send_messages_auto">Invia messaggi automaticamente</string>
+    <string name="open_applications_manually">Apri le applicazioni manualmente</string>
+    <string name="open_applications_auto">Apri automaticamente le applicazioni</string>
 
 </resources>

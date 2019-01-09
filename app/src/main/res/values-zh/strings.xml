@@ -554,5 +554,27 @@
     <string name="ignore_window_type">忽略窗口类型</string>
     <string name="use_default_window_type">使用默认窗口类型</string>
     <string name="use_window_type_specified_in_event">使用事件中指定的窗口类型</string>
+    <string name="show_notifications_on_wear_devices">在Wear OS设备上显示通知</string>
+    <string name="show_notification_until_screen_is_open">在事件屏幕打开之前显示通知</string>
+    <string name="permanent_notification_icon">永久通知图标</string>
+    <string name="hide_icon">隐藏图标</string>
+    <string name="always_showing">总是表现出来</string>
+    <string name="hidden">隐</string>
+    <string name="play_melody_in_silent_mode">手机处于静音模式时播放旋律</string>
+    <string name="do_not_play_melody_in_silent_mode">手机处于静音模式时，请勿播放旋律</string>
+    <string name="repeat_melody_when_it_ends">结束时重复旋律</string>
+    <string name="do_not_repeat_melody">不要重复旋律</string>
+    <string name="use_app_loudness_level">使用应用程序响度级别</string>
+    <string name="use_system_loudness_level">使用系统响度级别</string>
+    <string name="use_selected_loudness_level">使用选定的响度级别</string>
+    <string name="slowly_increase_loudness_level">慢慢增加响度级别</string>
+    <string name="spell_event_summary">说事件摘要而不是播放旋律</string>
+    <string name="play_melody">播放旋律</string>
+    <string name="make_call_auto">自动拨打电话</string>
+    <string name="make_call_manually">手动拨打电话</string>
+    <string name="send_messages_manually">手动发送消息</string>
+    <string name="send_messages_auto">自动发送消息</string>
+    <string name="open_applications_manually">手动打开应用程序</string>
+    <string name="open_applications_auto">自动打开应用程序</string>
 
 </resources>

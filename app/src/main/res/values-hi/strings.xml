@@ -554,5 +554,27 @@
     <string name="ignore_window_type">विंडो प्रकार पर ध्यान न दें</string>
     <string name="use_default_window_type">डिफ़ॉल्ट विंडो प्रकार का उपयोग करें</string>
     <string name="use_window_type_specified_in_event">घटना में निर्दिष्ट विंडो प्रकार का उपयोग करें</string>
+    <string name="show_notifications_on_wear_devices">पहनें ओएस उपकरणों पर सूचनाएं दिखाएं</string>
+    <string name="show_notification_until_screen_is_open">ईवेंट स्क्रीन खुले रहने तक अधिसूचना दिखाएं</string>
+    <string name="permanent_notification_icon">स्थायी अधिसूचना आइकन</string>
+    <string name="hide_icon">ऑइकन छुपायें</string>
+    <string name="always_showing">हमेशा दिखा रहा है</string>
+    <string name="hidden">छिपा हुआ</string>
+    <string name="play_melody_in_silent_mode">फोन को साइलेंट मोड में चलाएं</string>
+    <string name="do_not_play_melody_in_silent_mode">जब साइलेंट मोड में फोन हो तो मेलोडी न बजाएं</string>
+    <string name="repeat_melody_when_it_ends">जब यह समाप्त हो जाए तब राग दोहराएं</string>
+    <string name="do_not_repeat_melody">राग मत दोहराओ</string>
+    <string name="use_app_loudness_level">एप्लिकेशन लाउडनेस स्तर का उपयोग करें</string>
+    <string name="use_system_loudness_level">सिस्टम लाउडनेस स्तर का उपयोग करें</string>
+    <string name="use_selected_loudness_level">चयनित लाउडनेस स्तर का उपयोग करें</string>
+    <string name="slowly_increase_loudness_level">धीरे-धीरे जोर का स्तर बढ़ाएं</string>
+    <string name="spell_event_summary">सॉरी खेलने के बजाय ईवेंट सारांश कहें</string>
+    <string name="play_melody">राग बजाओ</string>
+    <string name="make_call_auto">स्वचालित रूप से फ़ोन कॉल करें</string>
+    <string name="make_call_manually">फोन कॉल मैन्युअल करें</string>
+    <string name="send_messages_manually">संदेश स्वयं भेजें</string>
+    <string name="send_messages_auto">संदेश स्वचालित रूप से भेजें</string>
+    <string name="open_applications_manually">मैन्युअल रूप से एप्लिकेशन खोलें</string>
+    <string name="open_applications_auto">एप्लिकेशन स्वचालित रूप से खोलें</string>
 
 </resources>

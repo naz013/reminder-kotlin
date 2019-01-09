@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ignorer le type de fenêtre</string>
     <string name="use_default_window_type">Utiliser le type de fenêtre par défaut</string>
     <string name="use_window_type_specified_in_event">Utiliser le type de fenêtre spécifié dans l\'événement</string>
+    <string name="show_notifications_on_wear_devices">Afficher les notifications sur les périphériques Wear OS</string>
+    <string name="show_notification_until_screen_is_open">Afficher la notification jusqu\'à ce que l\'écran de l\'événement soit ouvert</string>
+    <string name="permanent_notification_icon">Icône de notification permanente</string>
+    <string name="hide_icon">Icône cachée</string>
+    <string name="always_showing">Toujours montrer</string>
+    <string name="hidden">Caché</string>
+    <string name="play_melody_in_silent_mode">Jouer la mélodie lorsque le téléphone est en mode silencieux</string>
+    <string name="do_not_play_melody_in_silent_mode">Ne pas jouer de mélodie lorsque le téléphone est en mode silencieux</string>
+    <string name="repeat_melody_when_it_ends">Répéter la mélodie à la fin</string>
+    <string name="do_not_repeat_melody">Ne pas répéter la mélodie</string>
+    <string name="use_app_loudness_level">Utiliser le niveau de son de l\'application</string>
+    <string name="use_system_loudness_level">Utiliser le niveau sonore du système</string>
+    <string name="use_selected_loudness_level">Utiliser le niveau de volume sélectionné</string>
+    <string name="slowly_increase_loudness_level">Augmenter lentement le niveau de sonie</string>
+    <string name="spell_event_summary">Dites le résumé de l\'événement au lieu de jouer la mélodie</string>
+    <string name="play_melody">Jouer la mélodie</string>
+    <string name="make_call_auto">Faire des appels téléphoniques automatiquement</string>
+    <string name="make_call_manually">Faire des appels téléphoniques manuellement</string>
+    <string name="send_messages_manually">Envoyer des messages manuellement</string>
+    <string name="send_messages_auto">Envoyer des messages automatiquement</string>
+    <string name="open_applications_manually">Ouvrir les applications manuellement</string>
+    <string name="open_applications_auto">Ouvrir les applications automatiquement</string>
 
 </resources>

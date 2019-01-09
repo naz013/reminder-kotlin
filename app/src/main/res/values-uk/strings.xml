@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ігнорувати тип вікна</string>
     <string name="use_default_window_type">Використовувати тип вікна за умовчанням</string>
     <string name="use_window_type_specified_in_event">Використовувати тип вікна, вказаний у події</string>
+    <string name="show_notifications_on_wear_devices">Показувати сповіщення на пристроях ОС Wear</string>
+    <string name="show_notification_until_screen_is_open">Показувати сповіщення, доки не відкриється екран подій</string>
+    <string name="permanent_notification_icon">Піктограма постійного сповіщення</string>
+    <string name="hide_icon">Сховати значок</string>
+    <string name="always_showing">Завжди показується</string>
+    <string name="hidden">Приховано</string>
+    <string name="play_melody_in_silent_mode">Відтворити мелодію, коли телефон перебуває в беззвучному режимі</string>
+    <string name="do_not_play_melody_in_silent_mode">Не відтворювати мелодію, коли телефон перебуває в беззвучному режимі</string>
+    <string name="repeat_melody_when_it_ends">Повторіть мелодію, коли вона закінчиться</string>
+    <string name="do_not_repeat_melody">Не повторювати мелодію</string>
+    <string name="use_app_loudness_level">Використовувати рівень гучності програми</string>
+    <string name="use_system_loudness_level">Використовувати рівень гучності системи</string>
+    <string name="use_selected_loudness_level">Використовувати вибраний рівень гучності</string>
+    <string name="slowly_increase_loudness_level">Повільно підвищувати рівень гучності</string>
+    <string name="spell_event_summary">Скажіть підсумок події замість відтворення мелодії</string>
+    <string name="play_melody">Відтворити мелодію</string>
+    <string name="make_call_auto">Здійснюйте телефонні дзвінки автоматично</string>
+    <string name="make_call_manually">Здійснюйте телефонні дзвінки вручну</string>
+    <string name="send_messages_manually">Надсилати повідомлення вручну</string>
+    <string name="send_messages_auto">Надсилати повідомлення автоматично</string>
+    <string name="open_applications_manually">Відкривати програми вручну</string>
+    <string name="open_applications_auto">Відкривати програми автоматично</string>
 
 </resources>
