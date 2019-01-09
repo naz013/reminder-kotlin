@@ -6,8 +6,12 @@ import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
+import com.elementary.tasks.core.additional.FollowReminderActivity
+import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.missedCalls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import kotlinx.android.synthetic.main.fragment_settings_tests.*
 import java.util.*
@@ -39,6 +43,19 @@ class TestsFragment : BaseSettingsFragment() {
 
         birthdayDialogWindow.setOnClickListener { openBirthdayScreen() }
         reminderDialogWindow.setOnClickListener { openReminderScreen() }
+
+        missedCallWindow.setOnClickListener {
+            MissedCallDialogActivity.mockTest(context!!,
+                    MissedCall(number = "2454548", dateTime = System.currentTimeMillis()))
+        }
+
+        quickSmsWindow.setOnClickListener {
+            QuickSmsActivity.openScreen(context!!, "2454548")
+        }
+
+        afterCallWindow.setOnClickListener {
+            FollowReminderActivity.mockScreen(context!!, "2454548", System.currentTimeMillis())
+        }
     }
 
     private fun openReminderScreen() {
