@@ -294,7 +294,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         else buttonAttachment?.hide()
 
         val contactPhoto = contactPhoto
-        contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
+        contactPhoto.borderColor = themeUtil.getNoteLightColor()
         contactPhoto.visibility = View.GONE
 
         todoList.layoutManager = LinearLayoutManager(this)

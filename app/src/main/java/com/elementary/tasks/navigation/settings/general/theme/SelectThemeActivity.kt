@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -44,6 +45,12 @@ class SelectThemeActivity : ThemedActivity() {
         toolbar.title = getString(R.string.theme_color)
         toolbar.navigationIcon = ViewUtils.backIcon(this, false)
 
+        colorSlider.setColors(themeUtil.accentColorsForSlider())
+        colorSlider.setSelection(prefs.appThemeColor)
+        colorSlider.setListener { position, _ ->
+            prefs.appThemeColor = position
+            prefs.isUiChanged = true
+        }
         initList()
         addThemes()
     }
@@ -110,7 +117,8 @@ class SelectThemeActivity : ThemedActivity() {
     }
 
     private fun initList() {
-        themes_list.layoutManager = GridLayoutManager(this, 3)
+        themes_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        LinearSnapHelper().attachToRecyclerView(themes_list)
         adapter.selectedListener = {
             onColorSelect(it)
             saveColor(it.id)

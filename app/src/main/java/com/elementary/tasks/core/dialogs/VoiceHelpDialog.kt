@@ -32,7 +32,6 @@ class VoiceHelpDialog : BaseDialog() {
         val alert = dialogues.getDialog(this)
         alert.setTitle(getString(R.string.help))
         val wv = WebView(this)
-        wv.setBackgroundColor(themeUtil.backgroundStyle)
         val localeCheck = Locale.getDefault().toString().toLowerCase()
         val url = when {
             localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"

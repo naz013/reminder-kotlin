@@ -54,7 +54,6 @@ class CropFragment : BitmapFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        background.setBackgroundColor(themeUtil.backgroundStyle)
         initControls()
     }
 

@@ -28,7 +28,7 @@ abstract class ThemedActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(themeUtil.style)
+        setTheme(themeUtil.styleWithAccent)
         isDark = themeUtil.isDark
     }
 

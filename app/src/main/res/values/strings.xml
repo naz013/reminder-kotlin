@@ -662,5 +662,6 @@
     <string name="update_additional_parameters">Update additional parameters</string>
     <string name="allow_phone_call_and_sms_func">Allow phone call and SMS functionality</string>
     <string name="hide_that_functionality">Hide that functionality</string>
+    <string name="accent">Accent</string>
 
 </resources>

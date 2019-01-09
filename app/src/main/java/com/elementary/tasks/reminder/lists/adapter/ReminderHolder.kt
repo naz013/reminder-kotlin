@@ -73,7 +73,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
     }
 
     private fun loadGroup(reminder: Reminder) {
-        val colorStateList = ColorStateList.valueOf(themeUtil.getColor(themeUtil.getCategoryColor(reminder.groupColor)))
+        val colorStateList = ColorStateList.valueOf(themeUtil.getCategoryColor(reminder.groupColor))
         itemView.chipPriority.chipStrokeColor = colorStateList
         itemView.chipType.chipStrokeColor = colorStateList
         itemView.chipGroup.chipStrokeColor = colorStateList

@@ -83,7 +83,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_missed_dialog)
 
-        contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
+        contactPhoto.borderColor = themeUtil.getNoteLightColor()
         contactPhoto.visibility = View.GONE
 
         initButtons()

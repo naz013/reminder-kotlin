@@ -89,7 +89,7 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     }
 
     private fun loadGroup(reminder: Reminder) {
-        val colorStateList = ColorStateList.valueOf(themeUtil.getColor(themeUtil.getCategoryColor(reminder.groupColor)))
+        val colorStateList = ColorStateList.valueOf(themeUtil.getCategoryColor(reminder.groupColor))
         itemView.chipPriority.chipStrokeColor = colorStateList
         itemView.chipType.chipStrokeColor = colorStateList
         itemView.chipGroup.chipStrokeColor = colorStateList

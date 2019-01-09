@@ -1,4 +1,1963 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- PureWhite -->
+
+    <style name="PureWhite.Red" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="PureWhite.Pink" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="PureWhite.Purple" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="PureWhite.PurpleDeep" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="PureWhite.Indigo" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="PureWhite.Blue" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="PureWhite.LightBlue" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="PureWhite.Cyan" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="PureWhite.Teal" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="PureWhite.Green" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="PureWhite.LightGreen" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="PureWhite.Lime" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="PureWhite.Yellow" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="PureWhite.Amber" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="PureWhite.Orange" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="PureWhite.OrangeDeep" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light1 -->
+
+    <style name="Light1.Red" parent="Light1">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light1.Pink" parent="Light1">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light1.Purple" parent="Light1">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light1.PurpleDeep" parent="Light1">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light1.Indigo" parent="Light1">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light1.Blue" parent="Light1">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light1.LightBlue" parent="Light1">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light1.Cyan" parent="Light1">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light1.Teal" parent="Light1">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light1.Green" parent="Light1">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light1.LightGreen" parent="Light1">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light1.Lime" parent="Light1">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light1.Yellow" parent="Light1">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light1.Amber" parent="Light1">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light1.Orange" parent="Light1">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light1.OrangeDeep" parent="Light1">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light2 -->
+
+    <style name="Light2.Red" parent="Light2">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light2.Pink" parent="Light2">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light2.Purple" parent="Light2">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light2.PurpleDeep" parent="Light2">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light2.Indigo" parent="Light2">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light2.Blue" parent="Light2">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light2.LightBlue" parent="Light2">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light2.Cyan" parent="Light2">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light2.Teal" parent="Light2">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light2.Green" parent="Light2">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light2.LightGreen" parent="Light2">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light2.Lime" parent="Light2">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light2.Yellow" parent="Light2">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light2.Amber" parent="Light2">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light2.Orange" parent="Light2">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light2.OrangeDeep" parent="Light2">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light3 -->
+
+    <style name="Light3.Red" parent="Light3">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light3.Pink" parent="Light3">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light3.Purple" parent="Light3">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light3.PurpleDeep" parent="Light3">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light3.Indigo" parent="Light3">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light3.Blue" parent="Light3">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light3.LightBlue" parent="Light3">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light3.Cyan" parent="Light3">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light3.Teal" parent="Light3">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light3.Green" parent="Light3">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light3.LightGreen" parent="Light3">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light3.Lime" parent="Light3">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light3.Yellow" parent="Light3">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light3.Amber" parent="Light3">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light3.Orange" parent="Light3">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light3.OrangeDeep" parent="Light3">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light4 -->
+
+    <style name="Light4.Red" parent="Light4">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light4.Pink" parent="Light4">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light4.Purple" parent="Light4">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light4.PurpleDeep" parent="Light4">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light4.Indigo" parent="Light4">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light4.Blue" parent="Light4">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light4.LightBlue" parent="Light4">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light4.Cyan" parent="Light4">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light4.Teal" parent="Light4">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light4.Green" parent="Light4">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light4.LightGreen" parent="Light4">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light4.Lime" parent="Light4">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light4.Yellow" parent="Light4">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light4.Amber" parent="Light4">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light4.Orange" parent="Light4">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light4.OrangeDeep" parent="Light4">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark1 -->
+
+    <style name="Dark1.Red" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark1.Pink" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark1.Purple" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark1.PurpleDeep" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark1.Indigo" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark1.Blue" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark1.LightBlue" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark1.Cyan" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark1.Teal" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark1.Green" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark1.LightGreen" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark1.Lime" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark1.Yellow" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark1.Amber" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark1.Orange" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark1.OrangeDeep" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark2 -->
+
+    <style name="Dark2.Red" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark2.Pink" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark2.Purple" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark2.PurpleDeep" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark2.Indigo" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark2.Blue" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark2.LightBlue" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark2.Cyan" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark2.Teal" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark2.Green" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark2.LightGreen" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark2.Lime" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark2.Yellow" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark2.Amber" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark2.Orange" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark2.OrangeDeep" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark3 -->
+
+    <style name="Dark3.Red" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark3.Pink" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark3.Purple" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark3.PurpleDeep" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark3.Indigo" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark3.Blue" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark3.LightBlue" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark3.Cyan" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark3.Teal" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark3.Green" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark3.LightGreen" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark3.Lime" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark3.Yellow" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark3.Amber" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark3.Orange" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark3.OrangeDeep" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark4 -->
+
+    <style name="Dark4.Red" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark4.Pink" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark4.Purple" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark4.PurpleDeep" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark4.Indigo" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark4.Blue" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark4.LightBlue" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark4.Cyan" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark4.Teal" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark4.Green" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark4.LightGreen" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark4.Lime" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark4.Yellow" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark4.Amber" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark4.Orange" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark4.OrangeDeep" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- PureBlack -->
+
+    <style name="PureBlack.Red" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="PureBlack.Pink" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="PureBlack.Purple" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="PureBlack.PurpleDeep" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="PureBlack.Indigo" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="PureBlack.Blue" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="PureBlack.LightBlue" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="PureBlack.Cyan" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="PureBlack.Teal" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="PureBlack.Green" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="PureBlack.LightGreen" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="PureBlack.Lime" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="PureBlack.Yellow" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="PureBlack.Amber" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="PureBlack.Orange" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="PureBlack.OrangeDeep" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- PureWhite.Dialog -->
+
+    <style name="PureWhite.Dialog.Red" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Pink" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Purple" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.PurpleDeep" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Indigo" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Blue" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.LightBlue" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Cyan" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Teal" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Green" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.LightGreen" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Lime" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Yellow" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Amber" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.Orange" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="PureWhite.Dialog.OrangeDeep" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light1.Dialog -->
+
+    <style name="Light1.Dialog.Red" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light1.Dialog.Pink" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light1.Dialog.Purple" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light1.Dialog.PurpleDeep" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light1.Dialog.Indigo" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light1.Dialog.Blue" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light1.Dialog.LightBlue" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light1.Dialog.Cyan" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light1.Dialog.Teal" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light1.Dialog.Green" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light1.Dialog.LightGreen" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light1.Dialog.Lime" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light1.Dialog.Yellow" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light1.Dialog.Amber" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light1.Dialog.Orange" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light1.Dialog.OrangeDeep" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light2.Dialog -->
+
+    <style name="Light2.Dialog.Red" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light2.Dialog.Pink" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light2.Dialog.Purple" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light2.Dialog.PurpleDeep" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light2.Dialog.Indigo" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light2.Dialog.Blue" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light2.Dialog.LightBlue" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light2.Dialog.Cyan" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light2.Dialog.Teal" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light2.Dialog.Green" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light2.Dialog.LightGreen" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light2.Dialog.Lime" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light2.Dialog.Yellow" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light2.Dialog.Amber" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light2.Dialog.Orange" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light2.Dialog.OrangeDeep" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light3.Dialog -->
+
+    <style name="Light3.Dialog.Red" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light3.Dialog.Pink" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light3.Dialog.Purple" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light3.Dialog.PurpleDeep" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light3.Dialog.Indigo" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light3.Dialog.Blue" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light3.Dialog.LightBlue" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light3.Dialog.Cyan" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light3.Dialog.Teal" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light3.Dialog.Green" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light3.Dialog.LightGreen" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light3.Dialog.Lime" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light3.Dialog.Yellow" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light3.Dialog.Amber" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light3.Dialog.Orange" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light3.Dialog.OrangeDeep" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Light4.Dialog -->
+
+    <style name="Light4.Dialog.Red" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Light4.Dialog.Pink" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Light4.Dialog.Purple" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Light4.Dialog.PurpleDeep" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Light4.Dialog.Indigo" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Light4.Dialog.Blue" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Light4.Dialog.LightBlue" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Light4.Dialog.Cyan" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Light4.Dialog.Teal" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Light4.Dialog.Green" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Light4.Dialog.LightGreen" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Light4.Dialog.Lime" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Light4.Dialog.Yellow" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Light4.Dialog.Amber" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Light4.Dialog.Orange" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Light4.Dialog.OrangeDeep" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark1.Dialog -->
+
+    <style name="Dark1.Dialog.Red" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Pink" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Purple" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark1.Dialog.PurpleDeep" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Indigo" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Blue" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark1.Dialog.LightBlue" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Cyan" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Teal" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Green" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark1.Dialog.LightGreen" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Lime" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Yellow" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Amber" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark1.Dialog.Orange" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark1.Dialog.OrangeDeep" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark2 -->
+
+    <style name="Dark2.Dialog.Red" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Pink" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Purple" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark2.Dialog.PurpleDeep" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Indigo" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Blue" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark2.Dialog.LightBlue" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Cyan" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Teal" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Green" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark2.Dialog.LightGreen" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Lime" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Yellow" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Amber" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark2.Dialog.Orange" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark2.Dialog.OrangeDeep" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark3.Dialog -->
+
+    <style name="Dark3.Dialog.Red" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Pink" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Purple" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark3.Dialog.PurpleDeep" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Indigo" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Blue" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark3.Dialog.LightBlue" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Cyan" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Teal" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Green" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark3.Dialog.LightGreen" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Lime" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Yellow" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Amber" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark3.Dialog.Orange" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark3.Dialog.OrangeDeep" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- Dark4.Dialog -->
+
+    <style name="Dark4.Dialog.Red" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Pink" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Purple" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Dark4.Dialog.PurpleDeep" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Indigo" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Blue" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Dark4.Dialog.LightBlue" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Cyan" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Teal" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Green" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Dark4.Dialog.LightGreen" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Lime" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Yellow" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Amber" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Dark4.Dialog.Orange" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Dark4.Dialog.OrangeDeep" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <!-- PureBlack.Dialog -->
+
+    <style name="PureBlack.Dialog.Red" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Pink" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Purple" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.PurpleDeep" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Indigo" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Blue" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.LightBlue" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Cyan" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Teal" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Green" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.LightGreen" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Lime" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Yellow" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Amber" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.Orange" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.OrangeDeep" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
 </resources>

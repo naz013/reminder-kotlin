@@ -267,7 +267,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
-        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getColor(themeUtil.colorPrimary()))
+        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getNoteLightColor())
         getManager(context)?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
     }
 

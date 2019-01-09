@@ -159,7 +159,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         buttonCall.setOnClickListener { makeCall() }
         buttonSms.setOnClickListener { sendSMS() }
 
-        contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
+        contactPhoto.borderColor = themeUtil.getNoteLightColor()
         contactPhoto.visibility = View.GONE
 
         initViewModel(key)
