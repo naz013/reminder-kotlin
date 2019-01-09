@@ -42,7 +42,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             return isDark
         }
 
-    val isNight: Boolean
+    private val isNight: Boolean
         get() {
             val calendar = Calendar.getInstance()
             val mTime = System.currentTimeMillis()
@@ -398,16 +398,16 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     @ColorInt
     fun themeColorsForSlider(): IntArray {
         return intArrayOf(
-                getColor(if (isNight) R.color.darkBg1 else R.color.lightBg1),
+                getColor(if (isNight) R.color.darkPrimary1 else R.color.lightPrimary1),
                 getColor(R.color.pureWhite),
-                getColor(R.color.lightBg1),
-                getColor(R.color.lightBg2),
-                getColor(R.color.lightBg3),
-                getColor(R.color.lightBg4),
-                getColor(R.color.darkBg1),
-                getColor(R.color.darkBg2),
-                getColor(R.color.darkBg3),
-                getColor(R.color.darkBg4),
+                getColor(R.color.lightPrimary1),
+                getColor(R.color.lightPrimary2),
+                getColor(R.color.lightPrimary3),
+                getColor(R.color.lightPrimary4),
+                getColor(R.color.darkPrimary1),
+                getColor(R.color.darkPrimary2),
+                getColor(R.color.darkPrimary3),
+                getColor(R.color.darkPrimary4),
                 getColor(R.color.pureBlack)
         )
     }
