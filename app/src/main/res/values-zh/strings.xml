@@ -532,5 +532,27 @@
     <string name="silver">银</string>
     <string name="retro">复古</string>
     <string name="aubergine">茄子</string>
+    <string name="disable_folding_reminder_window">禁用智能折叠提醒窗口</string>
+    <string name="months">个月</string>
+    <string name="app_not_found">应用程序未找到</string>
+    <string name="lowest">最低</string>
+    <string name="low">低</string>
+    <string name="high">高</string>
+    <string name="highest">最高</string>
+    <string name="not_selected">未选中的</string>
+    <string name="select_phone_number">选择电话号码</string>
+    <string name="applications_not_found">找不到应用程序</string>
+    <string name="leaving_place">离开这个地方</string>
+    <string name="entering_place">到达的地方</string>
+    <string name="priority_lowest">最低</string>
+    <string name="priority_low">低</string>
+    <string name="priority_high">高</string>
+    <string name="priority_highest">最高</string>
+    <string name="priority_normal">正常</string>
+    <string name="use_24_hour_format">使用24小时时间格式</string>
+    <string name="use_12_hour_format">使用12小时时间格式</string>
+    <string name="ignore_window_type">忽略窗口类型</string>
+    <string name="use_default_window_type">使用默认窗口类型</string>
+    <string name="use_window_type_specified_in_event">使用事件中指定的窗口类型</string>
 
 </resources>

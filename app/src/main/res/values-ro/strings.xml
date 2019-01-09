@@ -532,5 +532,27 @@
     <string name="silver">Argint</string>
     <string name="retro">Retro</string>
     <string name="aubergine">Aubergine</string>
+    <string name="disable_folding_reminder_window">Dezactivați plierea inteligentă a ferestrei de memento</string>
+    <string name="months">luni</string>
+    <string name="app_not_found">Aplicatia nu a fost gasita</string>
+    <string name="lowest">Cel mai mic</string>
+    <string name="low">Scăzut</string>
+    <string name="high">Înalt</string>
+    <string name="highest">Cel mai inalt</string>
+    <string name="not_selected">Nu a fost ales</string>
+    <string name="select_phone_number">Selectați numărul de telefon</string>
+    <string name="applications_not_found">Aplicațiile nu au fost găsite</string>
+    <string name="leaving_place">Lăsând locul</string>
+    <string name="entering_place">Sosind la loc</string>
+    <string name="priority_lowest">Cel mai mic</string>
+    <string name="priority_low">Scăzut</string>
+    <string name="priority_high">Înalt</string>
+    <string name="priority_highest">Cel mai inalt</string>
+    <string name="priority_normal">Normal</string>
+    <string name="use_24_hour_format">Utilizați formatul pentru 24 de ore</string>
+    <string name="use_12_hour_format">Utilizați format de timp de 12 ore</string>
+    <string name="ignore_window_type">Ignorați tipul ferestrei</string>
+    <string name="use_default_window_type">Utilizați tipul de fereastră implicit</string>
+    <string name="use_window_type_specified_in_event">Utilizați tipul ferestrei specificat în eveniment</string>
 
 </resources>

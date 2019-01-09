@@ -532,5 +532,27 @@
     <string name="silver">Срібло</string>
     <string name="retro">Ретро</string>
     <string name="aubergine">Баклажан</string>
+    <string name="disable_folding_reminder_window">Вимкнути інтелектуальне складання вікна нагадування</string>
+    <string name="months">місяців</string>
+    <string name="app_not_found">Програму не знайдено</string>
+    <string name="lowest">Найнижчий</string>
+    <string name="low">Низький</string>
+    <string name="high">Високий</string>
+    <string name="highest">Найвищий</string>
+    <string name="not_selected">Не вибрано</string>
+    <string name="select_phone_number">Виберіть номер телефону</string>
+    <string name="applications_not_found">Програми не знайдено</string>
+    <string name="leaving_place">Залишаючи місце</string>
+    <string name="entering_place">Прибуття на місце</string>
+    <string name="priority_lowest">Найнижчий</string>
+    <string name="priority_low">Низький</string>
+    <string name="priority_high">Високий</string>
+    <string name="priority_highest">Найвищий</string>
+    <string name="priority_normal">Звичайний</string>
+    <string name="use_24_hour_format">Використовуйте 24-годинний формат часу</string>
+    <string name="use_12_hour_format">Використовуйте 12-годинний формат часу</string>
+    <string name="ignore_window_type">Ігнорувати тип вікна</string>
+    <string name="use_default_window_type">Використовувати тип вікна за умовчанням</string>
+    <string name="use_window_type_specified_in_event">Використовувати тип вікна, вказаний у події</string>
 
 </resources>

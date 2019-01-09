@@ -532,4 +532,26 @@
     <string name="silver">Silver</string>
     <string name="retro">Retro</string>
     <string name="aubergine">Aubergine</string>
+    <string name="disable_folding_reminder_window">Disable intelligent folding of reminder window</string>
+    <string name="months">months</string>
+    <string name="app_not_found">Application not found</string>
+    <string name="lowest">Lowest</string>
+    <string name="low">Low</string>
+    <string name="high">High</string>
+    <string name="highest">Highest</string>
+    <string name="not_selected">Not selected</string>
+    <string name="select_phone_number">Select phone number</string>
+    <string name="applications_not_found">Applications not found</string>
+    <string name="leaving_place">Leaving the place</string>
+    <string name="entering_place">Arriving to place</string>
+    <string name="priority_lowest">Lowest</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_high">High</string>
+    <string name="priority_highest">Highest</string>
+    <string name="priority_normal">Normal</string>
+    <string name="use_24_hour_format">Use 24 hour time format</string>
+    <string name="use_12_hour_format">Use 12 hour time format</string>
+    <string name="ignore_window_type">Ignore window type</string>
+    <string name="use_default_window_type">Use default window type</string>
+    <string name="use_window_type_specified_in_event">Use window type specified in event</string>
 </resources>

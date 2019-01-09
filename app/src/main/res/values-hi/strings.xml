@@ -532,5 +532,27 @@
     <string name="silver">चांदी</string>
     <string name="retro">रेट्रो</string>
     <string name="aubergine">बैंगन</string>
+    <string name="disable_folding_reminder_window">अनुस्मारक विंडो के बुद्धिमान तह को अक्षम करें</string>
+    <string name="months">महीने</string>
+    <string name="app_not_found">आवेदन नहीं मिला</string>
+    <string name="lowest">सबसे कम</string>
+    <string name="low">कम</string>
+    <string name="high">उच्च</string>
+    <string name="highest">उच्चतम</string>
+    <string name="not_selected">नहीं चुने गए</string>
+    <string name="select_phone_number">फ़ोन नंबर चुनें</string>
+    <string name="applications_not_found">आवेदन नहीं मिले</string>
+    <string name="leaving_place">जगह छोड़कर</string>
+    <string name="entering_place">स्थान पर पहुँचना</string>
+    <string name="priority_highest">उच्चतम</string>
+    <string name="priority_high">उच्च</string>
+    <string name="priority_low">कम</string>
+    <string name="priority_lowest">सबसे कम</string>
+    <string name="priority_normal">साधारण</string>
+    <string name="use_24_hour_format">24 घंटे के समय प्रारूप का उपयोग करें</string>
+    <string name="use_12_hour_format">12 घंटे के समय प्रारूप का उपयोग करें</string>
+    <string name="ignore_window_type">विंडो प्रकार पर ध्यान न दें</string>
+    <string name="use_default_window_type">डिफ़ॉल्ट विंडो प्रकार का उपयोग करें</string>
+    <string name="use_window_type_specified_in_event">घटना में निर्दिष्ट विंडो प्रकार का उपयोग करें</string>
 
 </resources>

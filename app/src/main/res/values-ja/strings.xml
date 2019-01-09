@@ -533,5 +533,27 @@
     <string name="silver">銀</string>
     <string name="retro">レトロ</string>
     <string name="aubergine">茄子</string>
+    <string name="disable_folding_reminder_window">通知ウィンドウのインテリジェントな折りたたみを無効にする</string>
+    <string name="months">月</string>
+    <string name="app_not_found">アプリケーションは見つかりませんでした</string>
+    <string name="lowest">最低</string>
+    <string name="low">低い</string>
+    <string name="high">高い</string>
+    <string name="highest">最高</string>
+    <string name="not_selected">選択されていません</string>
+    <string name="select_phone_number">電話番号を選択</string>
+    <string name="applications_not_found">アプリケーションが見つかりません</string>
+    <string name="leaving_place">場所を離れる</string>
+    <string name="entering_place">場所に到着</string>
+    <string name="priority_lowest">最低</string>
+    <string name="priority_low">低い</string>
+    <string name="priority_high">高い</string>
+    <string name="priority_highest">最高</string>
+    <string name="priority_normal">普通</string>
+    <string name="use_24_hour_format">24時間形式を使用する</string>
+    <string name="use_12_hour_format">12時間形式を使用する</string>
+    <string name="ignore_window_type">ウィンドウの種類を無視</string>
+    <string name="use_default_window_type">デフォルトのウィンドウタイプを使用</string>
+    <string name="use_window_type_specified_in_event">イベントで指定されたウィンドウタイプを使用</string>
 
 </resources>

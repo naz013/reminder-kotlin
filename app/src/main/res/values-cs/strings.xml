@@ -532,5 +532,27 @@
     <string name="silver">Stříbrný</string>
     <string name="retro">Retro</string>
     <string name="aubergine">Lilek</string>
+    <string name="disable_folding_reminder_window">Zakázat inteligentní skládání okna připomenutí</string>
+    <string name="months">měsíců</string>
+    <string name="app_not_found">Aplikace nebyla nalezena</string>
+    <string name="lowest">Nejnižší</string>
+    <string name="low">Nízký</string>
+    <string name="high">Vysoký</string>
+    <string name="highest">Nejvyšší</string>
+    <string name="not_selected">Nevybraný</string>
+    <string name="select_phone_number">Vyberte telefonní číslo</string>
+    <string name="applications_not_found">Aplikace nebyly nalezeny</string>
+    <string name="leaving_place">Odchod z místa</string>
+    <string name="entering_place">Příjezd na místo</string>
+    <string name="priority_highest">Nejvyšší</string>
+    <string name="priority_high">Vysoký</string>
+    <string name="priority_low">Nízký</string>
+    <string name="priority_lowest">Nejnižší</string>
+    <string name="priority_normal">Normální</string>
+    <string name="use_24_hour_format">Používejte 24hodinový formát času</string>
+    <string name="use_12_hour_format">Používejte 12hodinový formát času</string>
+    <string name="ignore_window_type">Ignorovat typ okna</string>
+    <string name="use_default_window_type">Použijte výchozí typ okna</string>
+    <string name="use_window_type_specified_in_event">Použijte typ okna specifikovaný v události</string>
 
 </resources>
