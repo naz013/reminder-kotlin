@@ -576,5 +576,21 @@
     <string name="send_messages_auto">Odesílání zpráv automaticky</string>
     <string name="open_applications_manually">Otevřete aplikace ručně</string>
     <string name="open_applications_auto">Otevřete aplikace automaticky</string>
+    <string name="show_led_indication">Zobrazení indikace LED</string>
+    <string name="do_not_show_led_indication">Nezobrazovat indikaci LED</string>
+    <string name="do_no_repeat_event_notification">Neopakujte oznámení o událostech</string>
+    <string name="repeat_event_notification_when_no_action">Opakujte upozornění na událost, pokud žádná akce uživatele</string>
+    <string name="allow_folding_event_window">Povolit skládání okna událostí</string>
+    <string name="create_reminders_for_missed_calls">Vytvořte si připomenutí zmeškaných hovorů</string>
+    <string name="show_event_screen_after_phone_call">Zobrazit obrazovku vytvoření události po telefonickém hovoru</string>
+    <string name="last_color">Poslední barva</string>
+    <string name="do_not_remember_last_color">Nepamatuji si poslední použitou barvu</string>
+    <string name="export">Vývozní</string>
+    <string name="backup">Zálohování</string>
+    <string name="show_voice_control_screen">Zobrazit obrazovku hlasového ovládání</string>
+    <string name="show_simple_voice_popup">Zobrazit jednoduché hlasové ovládání</string>
+    <string name="security">Bezpečnostní</string>
+    <string name="show_notification_about_left_distance">Zobrazit oznámení o zbývající vzdálenosti</string>
+    <string name="do_not_show_notification">Nezobrazovat oznámení</string>
 
 </resources>

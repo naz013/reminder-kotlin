@@ -576,5 +576,21 @@
     <string name="send_messages_auto">Trimiteți mesajele în mod automat</string>
     <string name="open_applications_manually">Deschideți aplicațiile manual</string>
     <string name="open_applications_auto">Deschideți aplicațiile în mod automat</string>
+    <string name="show_led_indication">Afișați indicația LED</string>
+    <string name="do_not_show_led_indication">Nu afișați indicația LED</string>
+    <string name="do_no_repeat_event_notification">Nu repetați notificarea evenimentului</string>
+    <string name="repeat_event_notification_when_no_action">Repetarea notificării evenimentului atunci când nu este efectuată nicio acțiune de către utilizator</string>
+    <string name="allow_folding_event_window">Permiteți deschiderea ferestrei evenimentului</string>
+    <string name="create_reminders_for_missed_calls">Creați mementouri despre apelurile pierdute</string>
+    <string name="show_event_screen_after_phone_call">Afișați ecranul de creare a evenimentelor după apelul telefonic</string>
+    <string name="last_color">Ultima culoare</string>
+    <string name="do_not_remember_last_color">Nu-mi amintesc ultima culoare folosită</string>
+    <string name="export">Export</string>
+    <string name="backup">Backup</string>
+    <string name="show_voice_control_screen">Afișați ecranul de control vocal</string>
+    <string name="show_simple_voice_popup">Afișați un popup simplu de control vocal</string>
+    <string name="security">Securitate</string>
+    <string name="show_notification_about_left_distance">Afișați notificarea despre distanța rămasă</string>
+    <string name="do_not_show_notification">Nu afișați notificarea</string>
 
 </resources>

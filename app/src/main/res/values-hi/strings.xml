@@ -576,5 +576,21 @@
     <string name="send_messages_auto">संदेश स्वचालित रूप से भेजें</string>
     <string name="open_applications_manually">मैन्युअल रूप से एप्लिकेशन खोलें</string>
     <string name="open_applications_auto">एप्लिकेशन स्वचालित रूप से खोलें</string>
+    <string name="show_led_indication">एलईडी संकेत दिखाओ</string>
+    <string name="do_not_show_led_indication">एलईडी संकेत नहीं दिखा</string>
+    <string name="do_no_repeat_event_notification">ईवेंट सूचना को न दोहराएं</string>
+    <string name="repeat_event_notification_when_no_action">कोई उपयोगकर्ता कार्रवाई नहीं होने पर घटना की सूचना दोहराएं</string>
+    <string name="allow_folding_event_window">तह घटना खिड़की की अनुमति दें</string>
+    <string name="create_reminders_for_missed_calls">मिस्ड कॉल के बारे में अनुस्मारक बनाएँ</string>
+    <string name="show_event_screen_after_phone_call">फ़ोन कॉल के बाद ईवेंट निर्माण स्क्रीन दिखाएं</string>
+    <string name="last_color">अंतिम रंग</string>
+    <string name="do_not_remember_last_color">आखिरी इस्तेमाल किया रंग याद नहीं है</string>
+    <string name="export">निर्यात</string>
+    <string name="backup">बैकअप</string>
+    <string name="show_voice_control_screen">आवाज नियंत्रण स्क्रीन दिखाएं</string>
+    <string name="show_simple_voice_popup">सरल आवाज नियंत्रण पॉपअप दिखाएं</string>
+    <string name="security">सुरक्षा</string>
+    <string name="show_notification_about_left_distance">शेष दूरी के बारे में अधिसूचना दिखाएं</string>
+    <string name="do_not_show_notification">अधिसूचना न दिखाएं</string>
 
 </resources>

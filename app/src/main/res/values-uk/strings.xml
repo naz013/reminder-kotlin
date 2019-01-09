@@ -576,5 +576,21 @@
     <string name="send_messages_auto">Надсилати повідомлення автоматично</string>
     <string name="open_applications_manually">Відкривати програми вручну</string>
     <string name="open_applications_auto">Відкривати програми автоматично</string>
+    <string name="show_led_indication">Показувати світлодіодну індикацію</string>
+    <string name="do_not_show_led_indication">Не показувати світлодіодну індикацію</string>
+    <string name="do_no_repeat_event_notification">Не повторюват сповіщення про подію</string>
+    <string name="repeat_event_notification_when_no_action">Повторювати сповіщення про подію, коли немає дій від користувача</string>
+    <string name="allow_folding_event_window">Дозволити складання вікна події</string>
+    <string name="create_reminders_for_missed_calls">Створюdfnb нагадування про пропущені дзвінки</string>
+    <string name="show_event_screen_after_phone_call">Показувати екран створення події після телефонного дзвінка</string>
+    <string name="last_color">Останній колір</string>
+    <string name="do_not_remember_last_color">Не запам\'ятовувати останній використаний колір</string>
+    <string name="export">Експорт</string>
+    <string name="backup">Резервне копіювання</string>
+    <string name="show_voice_control_screen">Показати екран керування голосом</string>
+    <string name="show_simple_voice_popup">Показувати просте вікно керування голосом</string>
+    <string name="security">Безпека</string>
+    <string name="show_notification_about_left_distance">Показувати сповіщення про решту відстані</string>
+    <string name="do_not_show_notification">Не показувати сповіщення</string>
 
 </resources>

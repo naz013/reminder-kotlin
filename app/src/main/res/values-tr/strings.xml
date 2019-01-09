@@ -576,5 +576,21 @@
     <string name="send_messages_auto">Mesajları otomatik gönder</string>
     <string name="open_applications_manually">Uygulamaları manuel olarak aç</string>
     <string name="open_applications_auto">Uygulamaları otomatik olarak aç</string>
+    <string name="show_led_indication">LED göstergesini göster</string>
+    <string name="do_not_show_led_indication">LED göstergesini gösterme</string>
+    <string name="do_no_repeat_event_notification">Etkinlik bildirimini tekrarlama</string>
+    <string name="repeat_event_notification_when_no_action">Kullanıcı işlemi olmadığında olay bildirimini tekrarla</string>
+    <string name="allow_folding_event_window">Katlanan etkinlik penceresine izin ver</string>
+    <string name="create_reminders_for_missed_calls">Cevapsız çağrılar hakkında hatırlatıcı oluşturma</string>
+    <string name="show_event_screen_after_phone_call">Telefon görüşmesinden sonra etkinlik oluşturma ekranını göster</string>
+    <string name="last_color">Son renk</string>
+    <string name="do_not_remember_last_color">Son kullanılan rengi hatırlamıyorum</string>
+    <string name="export">Ihracat</string>
+    <string name="backup">Yedekleme</string>
+    <string name="show_voice_control_screen">Sesli kontrol ekranını göster</string>
+    <string name="show_simple_voice_popup">Basit ses kontrolü açılır penceresini göster</string>
+    <string name="security">Güvenlik</string>
+    <string name="show_notification_about_left_distance">Kalan mesafe hakkındaki bildirimi göster</string>
+    <string name="do_not_show_notification">Bildirim gösterme</string>
 
 </resources>
