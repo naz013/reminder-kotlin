@@ -127,6 +127,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         cardBinding.buttonNo.setOnClickListener {
             cardBinding.buttonNo.isEnabled = false
             cardBinding.buttonYes.isEnabled = false
+            noteViewModel.saveNote(item)
             addNotificationCard(item)
         }
         cardBinding.noteReminderCard.visibility = View.GONE
@@ -157,7 +158,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
 
         noteViewModel.saveNote(item, reminder)
-        hideNoteView()
+        addNotificationCard(item)
     }
 
     private fun addNotificationCard(item: NoteWithImages) {
