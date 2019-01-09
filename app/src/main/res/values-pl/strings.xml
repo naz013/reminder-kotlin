@@ -532,5 +532,27 @@
     <string name="silver">Srebrny</string>
     <string name="retro">Retro</string>
     <string name="aubergine">Bakłażan</string>
+    <string name="disable_folding_reminder_window">Wyłącz inteligentne składanie okna przypomnienia</string>
+    <string name="months">miesięcy</string>
+    <string name="app_not_found">Aplikacja nie znaleziona</string>
+    <string name="lowest">Najniższy</string>
+    <string name="low">Niska</string>
+    <string name="high">Wysoki</string>
+    <string name="highest">Najwyższy</string>
+    <string name="not_selected">Nie zaznaczone</string>
+    <string name="select_phone_number">Wybierz numer telefonu</string>
+    <string name="applications_not_found">Nie znaleziono aplikacji</string>
+    <string name="leaving_place">Opuszczając to miejsce</string>
+    <string name="entering_place">Przybycie na miejsce</string>
+    <string name="priority_highest">Najwyższy</string>
+    <string name="priority_high">Wysoki</string>
+    <string name="priority_low">Niska</string>
+    <string name="priority_lowest">Najniższy</string>
+    <string name="priority_normal">Normalna</string>
+    <string name="use_24_hour_format">Użyj formatu 24-godzinnego</string>
+    <string name="use_12_hour_format">Użyj formatu 12-godzinnego</string>
+    <string name="ignore_window_type">Ignoruj typ okna</string>
+    <string name="use_default_window_type">Użyj domyślnego typu okna</string>
+    <string name="use_window_type_specified_in_event">Użyj typu okna określonego w zdarzeniu</string>
 
 </resources>

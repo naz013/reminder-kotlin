@@ -532,5 +532,27 @@
     <string name="silver">Gümüş</string>
     <string name="retro">Retro</string>
     <string name="aubergine">Patlıcan</string>
+    <string name="disable_folding_reminder_window">Hatırlatma penceresinin akıllı katlanmasını devre dışı bırakın</string>
+    <string name="months">ay</string>
+    <string name="app_not_found">Uygulama bulunamadı</string>
+    <string name="lowest">En düşük</string>
+    <string name="low">Düşük</string>
+    <string name="high">Yüksek</string>
+    <string name="highest">En yüksek</string>
+    <string name="not_selected">Seçili değil</string>
+    <string name="select_phone_number">Telefon numarası seç</string>
+    <string name="applications_not_found">Uygulamalar bulunamadı</string>
+    <string name="leaving_place">Yer bırakarak</string>
+    <string name="entering_place">Yerine gelme</string>
+    <string name="priority_highest">En yüksek</string>
+    <string name="priority_high">Yüksek</string>
+    <string name="priority_low">Düşük</string>
+    <string name="priority_lowest">En düşük</string>
+    <string name="priority_normal">Normal</string>
+    <string name="use_24_hour_format">24 saat formatını kullan</string>
+    <string name="use_12_hour_format">12 saatlik zaman formatını kullan</string>
+    <string name="ignore_window_type">Pencere türünü yoksay</string>
+    <string name="use_default_window_type">Varsayılan pencere türünü kullan</string>
+    <string name="use_window_type_specified_in_event">Olayda belirtilen pencere türünü kullanın</string>
 
 </resources>
