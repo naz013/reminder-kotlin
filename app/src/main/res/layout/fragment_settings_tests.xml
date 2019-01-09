@@ -30,5 +30,32 @@
             app:prefs_primary_text="Open Reminder Screen"
             app:prefs_type="none" />
 
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/missedCallWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Open Missed Screen"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/quickSmsWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Open Quick SMS Screen"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/afterCallWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_isTest="true"
+            app:prefs_primary_text="Open After Call Screen"
+            app:prefs_type="none" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

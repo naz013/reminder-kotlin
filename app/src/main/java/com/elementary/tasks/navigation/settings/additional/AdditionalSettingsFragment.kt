@@ -6,13 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.additional.FollowReminderActivity
-import com.elementary.tasks.core.additional.QuickSmsActivity
-import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.missedCalls.MissedCallDialogActivity
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_additional.*
@@ -36,7 +32,6 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class AdditionalSettingsFragment : BaseSettingsFragment() {
 
     override fun layoutRes(): Int = R.layout.fragment_settings_additional
@@ -53,19 +48,6 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         initMessagesPrefs()
         followReminderPrefs.setOnClickListener { changeFollowPrefs() }
         followReminderPrefs.isChecked = prefs.isFollowReminderEnabled
-
-        missedCallWindow.setOnClickListener {
-            MissedCallDialogActivity.mockTest(context!!,
-                    MissedCall(number = "2454548", dateTime = System.currentTimeMillis()))
-        }
-
-        quickSmsWindow.setOnClickListener {
-            QuickSmsActivity.openScreen(context!!, "2454548")
-        }
-
-        afterCallWindow.setOnClickListener {
-            FollowReminderActivity.mockScreen(context!!, "2454548", System.currentTimeMillis())
-        }
     }
 
     private fun initMessagesPrefs() {
