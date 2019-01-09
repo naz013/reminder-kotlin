@@ -44,6 +44,7 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
 
     private val mData = ArrayList<Reply>()
     var mCallback: (() -> Unit)? = null
+    private var hasPartial = false
 
     @Inject
     lateinit var language: Language
@@ -52,12 +53,36 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         ReminderApp.appComponent.inject(this)
     }
 
-    fun addReply(reply: Reply?) {
-        if (reply != null) {
-            mData.add(0, reply)
-            notifyItemInserted(0)
+    fun removePartial() {
+        if (hasPartial) {
+            mData.removeAt(0)
+            notifyItemRemoved(0)
             notifyItemRangeChanged(0, mData.size)
             mCallback?.invoke()
+        }
+        hasPartial = false
+    }
+
+    fun addReply(reply: Reply?, isPartial: Boolean = false) {
+        if (reply != null) {
+            if (!isPartial) {
+                hasPartial = false
+                mData.add(0, reply)
+                notifyItemInserted(0)
+                notifyItemRangeChanged(0, mData.size)
+                mCallback?.invoke()
+            } else {
+                if (hasPartial) {
+                    mData[0] = reply
+                    notifyItemChanged(0)
+                } else {
+                    hasPartial = true
+                    mData.add(0, reply)
+                    notifyItemInserted(0)
+                    notifyItemRangeChanged(0, mData.size)
+                    mCallback?.invoke()
+                }
+            }
         }
     }
 
@@ -124,8 +149,6 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
                 removeFirst()
                 askAction?.onNo()
             }
-            itemView.replyNo.setBackgroundResource(R.drawable.rectangle_stroke_blue)
-            itemView.replyYes.setBackgroundResource(R.drawable.rectangle_stroke_blue)
             itemView.replyNo.text = language.getLocalized(itemView.context, R.string.no)
             itemView.replyYes.text = language.getLocalized(itemView.context, R.string.yes)
         }
