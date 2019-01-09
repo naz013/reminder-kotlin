@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Игнорировать тип окна</string>
     <string name="use_default_window_type">Использовать тип окна по умолчанию</string>
     <string name="use_window_type_specified_in_event">Использовать тип окна, указанный в событии</string>
+    <string name="show_notifications_on_wear_devices">Показывать уведомления на устройствах Wear OS</string>
+    <string name="show_notification_until_screen_is_open">Показать уведомление, пока не откроется экран событий</string>
+    <string name="permanent_notification_icon">Значок постоянного уведомления</string>
+    <string name="hide_icon">Скрытая иконка</string>
+    <string name="always_showing">Всегда показываю</string>
+    <string name="hidden">Скрыто</string>
+    <string name="play_melody_in_silent_mode">Воспроизведение мелодии, когда телефон в беззвучном режиме</string>
+    <string name="do_not_play_melody_in_silent_mode">Не воспроизводить мелодию, когда телефон в беззвучном режиме</string>
+    <string name="repeat_melody_when_it_ends">Повторите мелодию, когда она заканчивается</string>
+    <string name="do_not_repeat_melody">Не повторяй мелодию</string>
+    <string name="use_app_loudness_level">Использовать уровень громкости приложения</string>
+    <string name="use_system_loudness_level">Использовать уровень громкости системы</string>
+    <string name="use_selected_loudness_level">Использовать выбранный уровень громкости</string>
+    <string name="slowly_increase_loudness_level">Медленно увеличивайте уровень громкости</string>
+    <string name="spell_event_summary">Скажите сводку событий вместо того, чтобы играть мелодию</string>
+    <string name="play_melody">Играть мелодию</string>
+    <string name="make_call_auto">Совершать телефонные звонки автоматически</string>
+    <string name="make_call_manually">Звоните по телефону вручную</string>
+    <string name="send_messages_manually">Отправлять сообщения вручную</string>
+    <string name="send_messages_auto">Отправлять сообщения автоматически</string>
+    <string name="open_applications_manually">Открывать приложения вручную</string>
+    <string name="open_applications_auto">Открывать приложения автоматически</string>
 
 </resources>

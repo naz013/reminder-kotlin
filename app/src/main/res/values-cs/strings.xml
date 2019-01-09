@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ignorovat typ okna</string>
     <string name="use_default_window_type">Použijte výchozí typ okna</string>
     <string name="use_window_type_specified_in_event">Použijte typ okna specifikovaný v události</string>
+    <string name="show_notifications_on_wear_devices">Zobrazit oznámení o zařízeních Wear OS</string>
+    <string name="show_notification_until_screen_is_open">Zobrazit oznámení, dokud není obrazovka události otevřená</string>
+    <string name="permanent_notification_icon">Trvalá ikona oznámení</string>
+    <string name="hide_icon">Skrytá ikona</string>
+    <string name="always_showing">Vždy se zobrazuje</string>
+    <string name="hidden">Skrytý</string>
+    <string name="play_melody_in_silent_mode">Přehrávejte melodii při telefonu v tichém režimu</string>
+    <string name="do_not_play_melody_in_silent_mode">Při telefonu v tichém režimu nepřehrávejte melodii</string>
+    <string name="repeat_melody_when_it_ends">Po skončení melodie opakujte</string>
+    <string name="do_not_repeat_melody">Neopakujte melodii</string>
+    <string name="use_app_loudness_level">Použijte úroveň hlasitosti aplikace</string>
+    <string name="use_system_loudness_level">Používejte hlasitost systému</string>
+    <string name="use_selected_loudness_level">Použijte vybranou úroveň hlasitosti</string>
+    <string name="slowly_increase_loudness_level">Pomalu zvyšujte hlasitost</string>
+    <string name="spell_event_summary">Řekněte souhrn událostí namísto přehrávání melodie</string>
+    <string name="play_melody">Přehrávejte melodii</string>
+    <string name="make_call_auto">Telefonujte automaticky</string>
+    <string name="make_call_manually">Telefonické hovory provádějte ručně</string>
+    <string name="send_messages_manually">Odesílání zpráv ručně</string>
+    <string name="send_messages_auto">Odesílání zpráv automaticky</string>
+    <string name="open_applications_manually">Otevřete aplikace ručně</string>
+    <string name="open_applications_auto">Otevřete aplikace automaticky</string>
 
 </resources>

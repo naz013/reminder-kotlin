@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Fenstertyp ignorieren</string>
     <string name="use_default_window_type">Verwenden Sie den Standardfenstertyp</string>
     <string name="use_window_type_specified_in_event">Verwenden Sie den in event angegebenen Fenstertyp</string>
+    <string name="show_notifications_on_wear_devices">Benachrichtigungen auf Wear OS-Geräten anzeigen</string>
+    <string name="show_notification_until_screen_is_open">Benachrichtigung anzeigen, bis der Ereignisbildschirm geöffnet ist</string>
+    <string name="permanent_notification_icon">Symbol für permanente Benachrichtigung</string>
+    <string name="hide_icon">Icon verbergen</string>
+    <string name="always_showing">Immer zeigen</string>
+    <string name="hidden">Versteckt</string>
+    <string name="play_melody_in_silent_mode">Melodie abspielen, wenn das Telefon stumm geschaltet ist</string>
+    <string name="do_not_play_melody_in_silent_mode">Spielen Sie keine Melodie, wenn das Telefon stumm geschaltet ist</string>
+    <string name="repeat_melody_when_it_ends">Melodie wiederholen, wenn sie endet</string>
+    <string name="do_not_repeat_melody">Melodie nicht wiederholen</string>
+    <string name="use_app_loudness_level">Verwenden Sie die Lautstärke der Anwendung</string>
+    <string name="use_system_loudness_level">Verwenden Sie die Lautstärke des Systems</string>
+    <string name="use_selected_loudness_level">Verwenden Sie die ausgewählte Lautstärke</string>
+    <string name="slowly_increase_loudness_level">Erhöhen Sie langsam die Lautstärke</string>
+    <string name="spell_event_summary">Sagen Sie die Ereigniszusammenfassung, anstatt Melodie zu spielen</string>
+    <string name="play_melody">Melodie abspielen</string>
+    <string name="make_call_auto">Telefonieren Sie automatisch</string>
+    <string name="make_call_manually">Manuell telefonieren</string>
+    <string name="send_messages_manually">Nachrichten manuell senden</string>
+    <string name="send_messages_auto">Nachrichten automatisch senden</string>
+    <string name="open_applications_manually">Anwendungen manuell öffnen</string>
+    <string name="open_applications_auto">Anwendungen automatisch öffnen</string>
 
 </resources>

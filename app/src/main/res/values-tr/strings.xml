@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Pencere türünü yoksay</string>
     <string name="use_default_window_type">Varsayılan pencere türünü kullan</string>
     <string name="use_window_type_specified_in_event">Olayda belirtilen pencere türünü kullanın</string>
+    <string name="show_notifications_on_wear_devices">Wear OS cihazlarında bildirimleri gösterme</string>
+    <string name="show_notification_until_screen_is_open">Etkinlik ekranı açılıncaya kadar bildirimi göster</string>
+    <string name="permanent_notification_icon">Kalıcı bildirim simgesi</string>
+    <string name="hide_icon">Simgeyi gizle</string>
+    <string name="always_showing">Her zaman gösteren</string>
+    <string name="hidden">Gizli</string>
+    <string name="play_melody_in_silent_mode">Telefon sessiz moddayken melodiyi çal</string>
+    <string name="do_not_play_melody_in_silent_mode">Telefon sessiz moddayken melodi çalmayın</string>
+    <string name="repeat_melody_when_it_ends">Bitince melodiyi tekrarla</string>
+    <string name="do_not_repeat_melody">Melodi tekrar etmeyin</string>
+    <string name="use_app_loudness_level">Uygulama ses seviyesini kullan</string>
+    <string name="use_system_loudness_level">Sistem ses seviyesini kullanın</string>
+    <string name="use_selected_loudness_level">Seçilen ses seviyesini kullan</string>
+    <string name="slowly_increase_loudness_level">Ses seviyesini yavaşça arttır</string>
+    <string name="spell_event_summary">Melodi çalmak yerine etkinlik özeti deyin</string>
+    <string name="play_melody">Melodi çal</string>
+    <string name="make_call_auto">Telefon görüşmelerini otomatik olarak yapın</string>
+    <string name="make_call_manually">Telefon görüşmelerini manuel olarak yapın</string>
+    <string name="send_messages_manually">Mesajları manuel olarak gönder</string>
+    <string name="send_messages_auto">Mesajları otomatik gönder</string>
+    <string name="open_applications_manually">Uygulamaları manuel olarak aç</string>
+    <string name="open_applications_auto">Uygulamaları otomatik olarak aç</string>
 
 </resources>

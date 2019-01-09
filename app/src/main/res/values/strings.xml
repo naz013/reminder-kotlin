@@ -559,7 +559,6 @@
     <string name="hide_icon">Hide icon</string>
     <string name="always_showing">Always showing</string>
     <string name="hidden">Hidden</string>
-    <string name="play_melody_in_silent_mode">Play melody when phone in silent mode</string>
     <string name="do_not_play_melody_in_silent_mode">Do not play melody when phone in silent mode</string>
     <string name="repeat_melody_when_it_ends">Repeat melody when it ends</string>
     <string name="do_not_repeat_melody">Do not repeat melody</string>
@@ -567,7 +566,7 @@
     <string name="use_system_loudness_level">Use system loudness level</string>
     <string name="use_selected_loudness_level">Use selected loudness level</string>
     <string name="slowly_increase_loudness_level">Slowly increase loudness level</string>
-    <string name="spell_event_summary">Spell event summary instead playing melody</string>
+    <string name="spell_event_summary">Say event summary instead of playing melody</string>
     <string name="play_melody">Play melody</string>
     <string name="make_call_auto">Make phone calls automatically</string>
     <string name="make_call_manually">Make phone calls manually</string>
@@ -617,7 +616,7 @@
     <string name="recent_places">recent places</string>
     <string name="found_places">found places</string>
     <string name="repeat_every">Repeat every</string>
-    <string name="pro">PRO</string>
+    <string name="pro" translatable="false">PRO</string>
     <string name="new_tasks_list">New tasks list</string>
     <string name="failed_to_update_task">Failed to update task</string>
     <string name="details">Details</string>
@@ -630,7 +629,7 @@
     <string name="do_not_use_fingerprint_to_login">Do not use fingerprint to login</string>
     <string name="allow_fingerprint_login">Allow fingerprint login</string>
     <string name="fingerprint">Fingerprint</string>
-    <string name="pin">PIN</string>
+    <string name="pin" translatable="false">PIN</string>
     <string name="repeat_pin">Repeat PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
     <string name="pin_not_match">PIN not match</string>
@@ -663,5 +662,6 @@
     <string name="hide_that_functionality">Hide that functionality</string>
     <string name="accent">Accent</string>
     <string name="app_not_found">Application not found</string>
+    <string name="play_melody_in_silent_mode">Play melody when phone in silent mode</string>
 
 </resources>

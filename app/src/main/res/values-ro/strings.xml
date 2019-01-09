@@ -554,5 +554,27 @@
     <string name="ignore_window_type">Ignorați tipul ferestrei</string>
     <string name="use_default_window_type">Utilizați tipul de fereastră implicit</string>
     <string name="use_window_type_specified_in_event">Utilizați tipul ferestrei specificat în eveniment</string>
+    <string name="show_notifications_on_wear_devices">Afișați notificări pe dispozitivele Wear OS</string>
+    <string name="show_notification_until_screen_is_open">Afișați notificarea până când ecranul evenimentului este deschis</string>
+    <string name="permanent_notification_icon">Pictogramă de notificare permanentă</string>
+    <string name="hide_icon">Ascunde icoana</string>
+    <string name="always_showing">Arată întotdeauna</string>
+    <string name="hidden">Ascuns</string>
+    <string name="play_melody_in_silent_mode">Redați melodia când telefonul este în modul silențios</string>
+    <string name="do_not_play_melody_in_silent_mode">Nu redați melodia când telefonul este în modul silențios</string>
+    <string name="repeat_melody_when_it_ends">Repetați melodia când se termină</string>
+    <string name="do_not_repeat_melody">Nu repetați melodia</string>
+    <string name="use_app_loudness_level">Utilizați nivelul luminozității aplicației</string>
+    <string name="use_system_loudness_level">Utilizați nivelul sonor al sistemului</string>
+    <string name="use_selected_loudness_level">Utilizați nivelul de zgomot selectat</string>
+    <string name="slowly_increase_loudness_level">Creșteți încet nivelul de zgomot</string>
+    <string name="spell_event_summary">Scrieți rezumatul evenimentului în loc să redați melodia</string>
+    <string name="play_melody">Redați melodia</string>
+    <string name="make_call_auto">Efectuați automat apeluri telefonice</string>
+    <string name="make_call_manually">Efectuați apeluri telefonic manual</string>
+    <string name="send_messages_manually">Trimiteți mesaje manual</string>
+    <string name="send_messages_auto">Trimiteți mesajele în mod automat</string>
+    <string name="open_applications_manually">Deschideți aplicațiile manual</string>
+    <string name="open_applications_auto">Deschideți aplicațiile în mod automat</string>
 
 </resources>
