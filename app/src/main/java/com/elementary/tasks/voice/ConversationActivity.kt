@@ -10,6 +10,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
 import androidx.lifecycle.Observer
@@ -60,6 +61,7 @@ class ConversationActivity : ThemedActivity() {
     private lateinit var viewModel: ConversationViewModel
     private var tts: TextToSpeech? = null
     private var isTtsReady: Boolean = false
+    private var isListening: Boolean = false
     private var mAskAction: AskAction? = null
     private val handler = Handler(Looper.getMainLooper())
 
@@ -87,13 +89,6 @@ class ConversationActivity : ThemedActivity() {
         }
 
         override fun onRmsChanged(f: Float) {
-            var v = f
-            v *= 2000
-            var db = 0.0
-            if (v > 1) {
-                db = 20 * Math.log10(v.toDouble())
-            }
-            recordingView.setVolume(db.toFloat())
         }
 
         override fun onBufferReceived(bytes: ByteArray) {
@@ -102,16 +97,17 @@ class ConversationActivity : ThemedActivity() {
 
         override fun onEndOfSpeech() {
             Timber.d("onEndOfSpeech: ")
-
+            isListening = false
         }
 
         override fun onError(i: Int) {
             Timber.d("onError: $i")
+            isListening = false
             showSilentMessage()
         }
 
         override fun onResults(bundle: Bundle?) {
-            recordingView.loading()
+            isListening = false
             if (bundle == null) {
                 showSilentMessage()
                 return
@@ -120,7 +116,10 @@ class ConversationActivity : ThemedActivity() {
         }
 
         override fun onPartialResults(bundle: Bundle) {
-            Timber.d("onPartialResults: ")
+            val list = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+            if (list != null && list.isNotEmpty()) {
+                mAdapter.addReply(Reply(Reply.REPLY, list[0]), true)
+            }
         }
 
         override fun onEvent(i: Int, bundle: Bundle) {
@@ -160,7 +159,6 @@ class ConversationActivity : ThemedActivity() {
             performResult(model, suggestion)
         } else {
             stopView()
-            mAdapter.addReply(Reply(Reply.REPLY, list[0]))
             addResponse(getLocalized(R.string.can_not_recognize_your_command))
         }
     }
@@ -179,7 +177,8 @@ class ConversationActivity : ThemedActivity() {
 
     private fun stopView() {
         releaseSpeech()
-        recordingView.stop()
+        recordingView.visibility = View.GONE
+        micButton.visibility = View.VISIBLE
     }
 
     private fun addObjectResponse(reply: Reply) {
@@ -191,7 +190,7 @@ class ConversationActivity : ThemedActivity() {
         if (mAskAction != null) {
             mAdapter.removeAsk()
         }
-        mAdapter.addReply(Reply(Reply.REPLY, s.toLowerCase()))
+//        mAdapter.addReply(Reply(Reply.REPLY, s.toLowerCase()))
         Timber.d("performResult: $model")
         val actionType = model.type
         when (actionType) {
@@ -484,9 +483,12 @@ class ConversationActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversation)
-        recordingView.setOnClickListener { micClick() }
+        micButton.setOnClickListener { micClick() }
+        recordingView.setOnClickListener {
+            stopView()
+            mAdapter.removePartial()
+        }
         settingsButton.setOnClickListener { showSettingsPopup() }
-        backButton.setOnClickListener { onBackPressed() }
         initList()
         checkTts()
         initViewModel()
@@ -591,10 +593,12 @@ class ConversationActivity : ThemedActivity() {
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.packageName)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         speech = SpeechRecognizer.createSpeechRecognizer(this)
         speech?.setRecognitionListener(mRecognitionListener)
         speech?.startListening(recognizerIntent)
+        isListening = true
     }
 
     private fun micClick() {
@@ -602,12 +606,13 @@ class ConversationActivity : ThemedActivity() {
             Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
             return
         }
-        if (recordingView.isWorking) {
+        if (isListening) {
             speech?.stopListening()
             stopView()
             return
         }
-        recordingView.start()
+        recordingView.visibility = View.VISIBLE
+        micButton.visibility = View.INVISIBLE
         initRecognizer()
     }
 
@@ -635,6 +640,7 @@ class ConversationActivity : ThemedActivity() {
             }
         } catch (ignored: IllegalArgumentException) {
         }
+        isListening = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

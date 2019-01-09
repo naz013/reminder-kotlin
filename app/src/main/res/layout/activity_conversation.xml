@@ -2,50 +2,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/micLayout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/conversationList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <com.haozhang.lib.AnimatedRecordingView
-                android:id="@+id/recordingView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/micButton"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_centerHorizontal="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="24dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_microphone_black"
+                app:tint="?colorSecondary" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/settingsButton"
                 android:layout_width="56dp"
-                android:layout_height="match_parent"
+                android:layout_height="56dp"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:background="?selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_twotone_settings_24px"
                 app:tint="?android:textColorPrimary" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/backButton"
-                android:layout_width="56dp"
-                android:layout_height="match_parent"
-                android:background="?selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
-                app:tint="?android:textColorPrimary" />
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/recordingView"
+                android:layout_width="match_parent"
+                android:layout_height="112dp"
+                android:layout_marginStart="56dp"
+                android:layout_marginEnd="56dp"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/material_wave_loading" />
 
         </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/conversationList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/micLayout"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+    </LinearLayout>
 </RelativeLayout>
