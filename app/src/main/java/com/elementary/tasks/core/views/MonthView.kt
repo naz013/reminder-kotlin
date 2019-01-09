@@ -126,7 +126,7 @@ class MonthView : View, View.OnTouchListener {
         } else {
             Color.BLACK
         }
-        this.mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(prefs.todayColor))
+        this.mTodayColor = themeUtil.getNoteLightColor(prefs.todayColor)
         this.paint.typeface = ResourcesCompat.getFont(context, R.font.merriweathersans_regular)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()

@@ -50,103 +50,61 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             return isDark
         }
 
-    val style: Int
+    val styleWithAccent: Int
         @StyleRes
-        get() = if (Module.isPro) {
-                when (prefs.appTheme) {
-                    THEME_AUTO -> {
-                        if (isDark) {
-                            R.style.Dark1
-                        } else {
-                            R.style.Light1
-                        }
-                    }
-                    THEME_PURE_BLACK -> R.style.PureBlack
-                    THEME_PURE_WHITE -> R.style.PureWhite
-                    THEME_LIGHT_1 -> R.style.Light1
-                    THEME_LIGHT_2 -> R.style.Light2
-                    THEME_LIGHT_3 -> R.style.Light3
-                    THEME_LIGHT_4 -> R.style.Light4
-                    THEME_DARK_1 -> R.style.Dark1
-                    THEME_DARK_2 -> R.style.Dark2
-                    THEME_DARK_3 -> R.style.Dark3
-                    THEME_DARK_4 -> R.style.Dark4
-                    else -> {
-                        R.style.Light1
-                    }
-                }
-            } else {
-            when (prefs.appTheme) {
-                THEME_AUTO -> {
-                    if (isDark) {
-                        R.style.Dark1
-                    } else {
-                        R.style.Light1
-                    }
-                }
-                THEME_LIGHT_1 -> R.style.Light1
-                THEME_DARK_1 -> R.style.Dark1
-                else -> {
-                    R.style.Light1
+        get() = when (prefs.appTheme) {
+            THEME_AUTO -> {
+                if (isDark) {
+                    addAccent("Dark1")
+                } else {
+                    addAccent("Light1")
                 }
             }
+            THEME_PURE_BLACK -> addAccent("PureBlack")
+            THEME_PURE_WHITE -> addAccent("PureWhite")
+            THEME_LIGHT_1 -> addAccent("Light1")
+            THEME_LIGHT_2 -> addAccent("Light2")
+            THEME_LIGHT_3 -> addAccent("Light3")
+            THEME_LIGHT_4 -> addAccent("Light4")
+            THEME_DARK_1 -> addAccent("Dark1")
+            THEME_DARK_2 -> addAccent("Dark2")
+            THEME_DARK_3 -> addAccent("Dark3")
+            THEME_DARK_4 -> addAccent("Dark4")
+            else -> addAccent("Light1")
+        }
+
+    private val styleDialogWithAccent: Int
+        @StyleRes
+        get() = when (prefs.appTheme) {
+            THEME_AUTO -> {
+                if (isDark) {
+                    addAccent("Dark1.Dialog")
+                } else {
+                    addAccent("Light1.Dialog")
+                }
             }
+            THEME_PURE_BLACK -> addAccent("PureBlack.Dialog")
+            THEME_PURE_WHITE -> addAccent("PureWhite.Dialog")
+            THEME_LIGHT_1 -> addAccent("Light1.Dialog")
+            THEME_LIGHT_2 -> addAccent("Light2.Dialog")
+            THEME_LIGHT_3 -> addAccent("Light3.Dialog")
+            THEME_LIGHT_4 -> addAccent("Light4.Dialog")
+            THEME_DARK_1 -> addAccent("Dark1.Dialog")
+            THEME_DARK_2 -> addAccent("Dark2.Dialog")
+            THEME_DARK_3 -> addAccent("Dark3.Dialog")
+            THEME_DARK_4 -> addAccent("Dark4.Dialog")
+            else -> addAccent("Light1.Dialog")
+        }
+
+    @StyleRes
+    private fun addAccent(base: String): Int {
+        val color = getStyleColorName(prefs.appThemeColor)
+        return context.resources.getIdentifier("$base.$color", "style", context.packageName)
+    }
 
     val dialogStyle: Int
         @StyleRes
-        get() = if (Module.isPro) {
-            when (prefs.appTheme) {
-                THEME_AUTO -> {
-                    if (isDark) {
-                        R.style.Dark1_Dialog
-                    } else {
-                        R.style.Light1_Dialog
-                    }
-                }
-                THEME_PURE_BLACK -> R.style.PureBlack_Dialog
-                THEME_PURE_WHITE -> R.style.PureWhite_Dialog
-                THEME_LIGHT_1 -> R.style.Light1_Dialog
-                THEME_LIGHT_2 -> R.style.Light2_Dialog
-                THEME_LIGHT_3 -> R.style.Light3_Dialog
-                THEME_LIGHT_4 -> R.style.Light4_Dialog
-                THEME_DARK_1 -> R.style.Dark1_Dialog
-                THEME_DARK_2 -> R.style.Dark2_Dialog
-                THEME_DARK_3 -> R.style.Dark3_Dialog
-                THEME_DARK_4 -> R.style.Dark4_Dialog
-                else -> {
-                    R.style.Light1_Dialog
-                }
-            }
-        } else {
-            when (prefs.appTheme) {
-                THEME_AUTO -> {
-                    if (isDark) {
-                        R.style.Dark1_Dialog
-                    } else {
-                        R.style.Light1_Dialog
-                    }
-                }
-                THEME_LIGHT_1 -> R.style.Light1_Dialog
-                THEME_DARK_1 -> R.style.Dark1_Dialog
-                else -> {
-                    R.style.Light1_Dialog
-                }
-            }
-        }
-
-    val backgroundStyle: Int
-        @ColorInt
-        get() {
-            return if (isDark) {
-                if (prefs.appTheme == THEME_PURE_BLACK) {
-                    getColor(R.color.pureBlack)
-                } else {
-                    getColor(R.color.material_grey)
-                }
-            } else {
-                getColor(R.color.material_white)
-            }
-        }
+        get() = styleDialogWithAccent
 
     val styleName: Int
         @StringRes
@@ -214,37 +172,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     @ColorInt
     fun colorBirthdayCalendar(): Int {
         return getNoteLightColor(prefs.birthdayColor)
-    }
-
-    @ColorRes
-    fun colorPrimary(code: Int = prefs.appThemeColor): Int {
-        val color: Int
-        when (code) {
-            Color.RED -> color = R.color.redPrimary
-            Color.PURPLE -> color = R.color.purplePrimary
-            Color.LIGHT_GREEN -> color = R.color.greenLightPrimary
-            Color.GREEN -> color = R.color.greenPrimary
-            Color.LIGHT_BLUE -> color = R.color.blueLightPrimary
-            Color.BLUE -> color = R.color.bluePrimary
-            Color.YELLOW -> color = R.color.yellowPrimary
-            Color.ORANGE -> color = R.color.orangePrimary
-            Color.CYAN -> color = R.color.cyanPrimary
-            Color.PINK -> color = R.color.pinkPrimary
-            Color.TEAL -> color = R.color.tealPrimary
-            Color.AMBER -> color = R.color.amberPrimary
-            else -> color = if (Module.isPro) {
-                when (code) {
-                    Color.DEEP_PURPLE -> R.color.purpleDeepPrimary
-                    Color.DEEP_ORANGE -> R.color.orangeDeepPrimary
-                    Color.LIME -> R.color.limePrimary
-                    Color.INDIGO -> R.color.indigoPrimary
-                    else -> R.color.cyanPrimary
-                }
-            } else {
-                R.color.cyanPrimary
-            }
-        }
-        return color
     }
 
     @ColorInt
@@ -333,9 +260,9 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return Marker(fillColor, strokeColor)
     }
 
-    @ColorRes
+    @ColorInt
     fun getCategoryColor(code: Int): Int {
-        return colorPrimary(code)
+        return getNoteLightColor(code)
     }
 
     private fun adjustAlpha(color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
@@ -351,7 +278,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     }
 
     @ColorInt
-    fun getNoteLightColor(code: Int): Int {
+    fun getNoteLightColor(code: Int = prefs.appThemeColor): Int {
         val color: Int
         when (code) {
             Color.RED -> color = R.color.redAccent
@@ -366,17 +293,11 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Color.PINK -> color = R.color.pinkAccent
             Color.TEAL -> color = R.color.tealAccent
             Color.AMBER -> color = R.color.amberAccent
-            else -> color = if (Module.isPro) {
-                when (code) {
-                    Color.DEEP_PURPLE -> R.color.purpleDeepAccent
-                    Color.DEEP_ORANGE -> R.color.orangeDeepAccent
-                    Color.LIME -> R.color.limeAccent
-                    Color.INDIGO -> R.color.indigoAccent
-                    else -> R.color.blueAccent
-                }
-            } else {
-                R.color.blueAccent
-            }
+            Color.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+            Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+            Color.LIME -> color = R.color.limeAccent
+            Color.INDIGO -> color = R.color.indigoAccent
+            else -> color = R.color.blueAccent
         }
         return getColor(color)
     }
@@ -397,17 +318,11 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Color.PINK -> color = R.color.pinkAccent
             Color.TEAL -> color = R.color.tealAccent
             Color.AMBER -> color = R.color.amberAccent
-            else -> color = if (Module.isPro) {
-                when (code) {
-                    Color.DEEP_PURPLE -> R.color.purpleDeepAccent
-                    Color.DEEP_ORANGE -> R.color.orangeDeepAccent
-                    Color.LIME -> R.color.limeAccent
-                    Color.INDIGO -> R.color.indigoAccent
-                    else -> R.color.blueAccent
-                }
-            } else {
-                R.color.blueAccent
-            }
+            Color.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+            Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+            Color.LIME -> color = R.color.limeAccent
+            Color.INDIGO -> color = R.color.indigoAccent
+            else -> color = R.color.blueAccent
         }
         return adjustAlpha(getColor(color), opacity)
     }
@@ -473,6 +388,28 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                 getColor(R.color.secondaryOrange),
                 getColor(R.color.secondaryOrangeDeep)
         )
+    }
+
+    private fun getStyleColorName(code: Int): String {
+        return when (code) {
+            Color.RED -> "Red"
+            Color.PINK -> "Pink"
+            Color.PURPLE -> "Purple"
+            Color.DEEP_PURPLE -> "PurpleDeep"
+            Color.INDIGO -> "Indigo"
+            Color.BLUE -> "Blue"
+            Color.LIGHT_BLUE -> "LightBlue"
+            Color.CYAN -> "Cyan"
+            Color.TEAL -> "Teal"
+            Color.GREEN -> "Green"
+            Color.LIGHT_GREEN -> "LightGreen"
+            Color.LIME -> "Lime"
+            Color.YELLOW -> "Yellow"
+            Color.AMBER -> "Amber"
+            Color.ORANGE -> "Orange"
+            Color.DEEP_ORANGE -> "OrangeDeep"
+            else -> "Red"
+        }
     }
 
     @DrawableRes
