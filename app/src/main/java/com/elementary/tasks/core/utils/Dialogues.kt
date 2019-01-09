@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import kotlinx.android.synthetic.main.view_color_slider.view.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,6 +37,28 @@ import javax.inject.Singleton
  */
 @Singleton
 class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
+
+    fun showColorDialog(activity: Activity, current: Int, title: String,
+                        colors: IntArray = themeUtil.colorsForSlider(),
+                        onDone: (Int) -> Unit) {
+        val builder = getDialog(activity)
+        builder.setTitle(title)
+        val bind = LayoutInflater.from(activity).inflate(R.layout.view_color_slider, null, false)
+        bind.colorSlider.setColors(colors)
+        bind.colorSlider.setSelection(current)
+        builder.setView(bind)
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            val selected = bind.colorSlider.selectedItem
+            dialog.dismiss()
+            onDone.invoke(selected)
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity)
+    }
 
     fun showRadiusDialog(activity: Activity, current: Int, listener: OnValueSelectedListener<Int>) {
         val builder = getDialog(activity)

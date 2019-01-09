@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_calendar.*
-import kotlinx.android.synthetic.main.view_color_slider.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -72,23 +70,9 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
-        val builder = dialogues.getDialog(context!!)
-        val layout = layoutInflater.inflate(R.layout.view_color_slider, null, false)
-        builder.setView(layout)
-        val slider = layout.colorSlider
-        slider.setColors(themeUtil.colorsForSlider())
-        slider.setSelection(current)
-        builder.setTitle(title)
-        builder.setPositiveButton(R.string.save) { d, _ ->
-            onSave.invoke(slider.selectedItem)
-            d.dismiss()
+        dialogues.showColorDialog(activity!!, current, title, themeUtil.colorsForSlider()) {
+            onSave.invoke(it)
         }
-        builder.setNegativeButton(R.string.cancel) { d, _ ->
-            d.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun initFirstDayPrefs() {

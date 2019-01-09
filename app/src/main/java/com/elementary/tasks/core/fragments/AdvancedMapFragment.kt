@@ -30,7 +30,6 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
-import kotlinx.android.synthetic.main.view_color_slider.view.*
 import timber.log.Timber
 
 /**
@@ -155,7 +154,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             if (markerRadius == -1) {
                 markerRadius = prefs.radius
             }
-            if (!Module.isPro  && markerStyle != DEF_MARKER_STYLE) {
+            if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
                 this.markerStyle = DEF_MARKER_STYLE
             } else {
                 this.markerStyle = markerStyle
@@ -194,7 +193,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             if (markerTitle == "" || markerTitle.matches("".toRegex()))
                 markerTitle = lastPos!!.toString()
             mListener?.placeChanged(lastPos!!, markerTitle)
-            if (!Module.isPro  && markerStyle != DEF_MARKER_STYLE) {
+            if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
                 markerStyle = DEF_MARKER_STYLE
                 createStyleDrawable()
             }
@@ -380,26 +379,15 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun showStyleDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.style_of_marker))
-
-        val bind = layoutInflater.inflate(R.layout.view_color_slider, null, false)
-        bind.colorSlider.setColors(themeUtil.colorsForSlider())
-        bind.colorSlider.setSelection(prefs.markerStyle)
-        builder.setView(bind)
-
-        builder.setPositiveButton(R.string.save) { dialog, _ ->
-            prefs.markerStyle = bind.colorSlider.selectedItem
-            recreateStyle(prefs.markerStyle)
-            dialog.dismiss()
+        dialogues.showColorDialog(
+                activity!!,
+                prefs.markerStyle,
+                getString(R.string.style_of_marker),
+                themeUtil.colorsForSlider()
+        ) {
+            prefs.markerStyle = it
+            recreateStyle(it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     fun setOnMarkerClick(onMarkerClickListener: GoogleMap.OnMarkerClickListener?) {

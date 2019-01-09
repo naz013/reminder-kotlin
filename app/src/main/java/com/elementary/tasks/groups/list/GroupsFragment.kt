@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -71,11 +74,9 @@ class GroupsFragment : BaseNavigationFragment() {
     }
 
     private fun changeColor(reminderGroup: ReminderGroup) {
-        var items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber))
-        if (Module.isPro) {
-            items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
+        dialogues.showColorDialog(activity!!, reminderGroup.groupColor, getString(R.string.color), themeUtil.colorsForSlider()) {
+            viewModel.changeGroupColor(reminderGroup, it)
         }
-        dialogues.showLCAM(context!!, { item -> viewModel.changeGroupColor(reminderGroup, item) }, *items)
     }
 
     private fun initGroupsList() {

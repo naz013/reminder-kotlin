@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -35,15 +33,22 @@ import java.util.*
  */
 class SelectThemeActivity : ThemedActivity() {
 
-    private val adapter = ThemesAdapter()
+    private lateinit var themes: List<Theme>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        themes = createThemes()
+
         setContentView(R.layout.activity_select_theme)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.title = getString(R.string.theme_color)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, false)
+        initToolbar()
+
+        colorSliderBg.setColors(themeUtil.themeColorsForSlider())
+        colorSliderBg.setSelection(prefs.appTheme)
+        colorSliderBg.setListener { position, _ ->
+            prefs.appTheme = position
+            prefs.isUiChanged = true
+            onColorSelect(themes[position])
+        }
 
         colorSlider.setColors(themeUtil.accentColorsForSlider())
         colorSlider.setSelection(prefs.appThemeColor)
@@ -51,46 +56,42 @@ class SelectThemeActivity : ThemedActivity() {
             prefs.appThemeColor = position
             prefs.isUiChanged = true
         }
-        initList()
-        addThemes()
+
+        onColorSelect(themes[prefs.appTheme])
     }
 
-    private fun addThemes() {
+    private fun initToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbar.title = getString(R.string.theme_color)
+        toolbar.navigationIcon = ViewUtils.backIcon(this, false)
+    }
+
+    private fun createThemes(): List<Theme> {
         val loaded = prefs.appTheme
-        val list = mutableListOf<Theme>()
-        list.add(autoTheme(loaded))
-        list.add(Theme(ThemeUtil.THEME_PURE_WHITE, loaded == ThemeUtil.THEME_PURE_WHITE, !Module.isPro, NAMES[0],
-                toColor(R.color.pureWhite), toColor(R.color.pureWhite), toColor(R.color.pureWhite)))
-
-        list.add(Theme(ThemeUtil.THEME_LIGHT_1, loaded == ThemeUtil.THEME_LIGHT_1, false, NAMES[1],
-                toColor(R.color.lightPrimaryDark1), toColor(R.color.lightPrimary1), toColor(R.color.lightBg1)))
-
-        list.add(Theme(ThemeUtil.THEME_LIGHT_2, loaded == ThemeUtil.THEME_LIGHT_2, false, NAMES[2],
-                toColor(R.color.lightPrimaryDark2), toColor(R.color.lightPrimary2), toColor(R.color.lightBg2)))
-
-        list.add(Theme(ThemeUtil.THEME_LIGHT_3, loaded == ThemeUtil.THEME_LIGHT_3, false, NAMES[3],
-                toColor(R.color.lightPrimaryDark3), toColor(R.color.lightPrimary3), toColor(R.color.lightBg3)))
-
-        list.add(Theme(ThemeUtil.THEME_LIGHT_4, loaded == ThemeUtil.THEME_LIGHT_4, false, NAMES[4],
-                toColor(R.color.lightPrimaryDark4), toColor(R.color.lightPrimary4), toColor(R.color.lightBg4)))
-
-        list.add(Theme(ThemeUtil.THEME_DARK_1, loaded == ThemeUtil.THEME_DARK_1, true, NAMES[5],
-                toColor(R.color.darkPrimaryDark1), toColor(R.color.darkPrimary1), toColor(R.color.darkBg1)))
-
-        list.add(Theme(ThemeUtil.THEME_DARK_2, loaded == ThemeUtil.THEME_DARK_2, true, NAMES[6],
-                toColor(R.color.darkPrimaryDark2), toColor(R.color.darkPrimary2), toColor(R.color.darkBg2)))
-
-        list.add(Theme(ThemeUtil.THEME_DARK_3, loaded == ThemeUtil.THEME_DARK_3, true, NAMES[7],
-                toColor(R.color.darkPrimaryDark3), toColor(R.color.darkPrimary3), toColor(R.color.darkBg3)))
-
-        list.add(Theme(ThemeUtil.THEME_DARK_4, loaded == ThemeUtil.THEME_DARK_4, true, NAMES[8],
-                toColor(R.color.darkPrimaryDark4), toColor(R.color.darkPrimary4), toColor(R.color.darkBg4)))
-
-        list.add(Theme(ThemeUtil.THEME_PURE_BLACK, loaded == ThemeUtil.THEME_PURE_BLACK, true, NAMES[9],
-                toColor(R.color.pureBlack), toColor(R.color.pureBlack), toColor(R.color.pureBlack)))
-
-        adapter.setThemes(list)
-        themes_list.smoothScrollToPosition(loaded)
+        return listOf(
+                autoTheme(loaded),
+                Theme(ThemeUtil.THEME_PURE_WHITE, loaded == ThemeUtil.THEME_PURE_WHITE, !Module.isPro, NAMES[0],
+                        toColor(R.color.pureWhite), toColor(R.color.pureWhite), toColor(R.color.pureWhite)),
+                Theme(ThemeUtil.THEME_LIGHT_1, loaded == ThemeUtil.THEME_LIGHT_1, false, NAMES[1],
+                        toColor(R.color.lightPrimaryDark1), toColor(R.color.lightPrimary1), toColor(R.color.lightBg1)),
+                Theme(ThemeUtil.THEME_LIGHT_2, loaded == ThemeUtil.THEME_LIGHT_2, false, NAMES[2],
+                        toColor(R.color.lightPrimaryDark2), toColor(R.color.lightPrimary2), toColor(R.color.lightBg2)),
+                Theme(ThemeUtil.THEME_LIGHT_3, loaded == ThemeUtil.THEME_LIGHT_3, false, NAMES[3],
+                        toColor(R.color.lightPrimaryDark3), toColor(R.color.lightPrimary3), toColor(R.color.lightBg3)),
+                Theme(ThemeUtil.THEME_LIGHT_4, loaded == ThemeUtil.THEME_LIGHT_4, false, NAMES[4],
+                        toColor(R.color.lightPrimaryDark4), toColor(R.color.lightPrimary4), toColor(R.color.lightBg4)),
+                Theme(ThemeUtil.THEME_DARK_1, loaded == ThemeUtil.THEME_DARK_1, true, NAMES[5],
+                        toColor(R.color.darkPrimaryDark1), toColor(R.color.darkPrimary1), toColor(R.color.darkBg1)),
+                Theme(ThemeUtil.THEME_DARK_2, loaded == ThemeUtil.THEME_DARK_2, true, NAMES[6],
+                        toColor(R.color.darkPrimaryDark2), toColor(R.color.darkPrimary2), toColor(R.color.darkBg2)),
+                Theme(ThemeUtil.THEME_DARK_3, loaded == ThemeUtil.THEME_DARK_3, true, NAMES[7],
+                        toColor(R.color.darkPrimaryDark3), toColor(R.color.darkPrimary3), toColor(R.color.darkBg3)),
+                Theme(ThemeUtil.THEME_DARK_4, loaded == ThemeUtil.THEME_DARK_4, true, NAMES[8],
+                        toColor(R.color.darkPrimaryDark4), toColor(R.color.darkPrimary4), toColor(R.color.darkBg4)),
+                Theme(ThemeUtil.THEME_PURE_BLACK, loaded == ThemeUtil.THEME_PURE_BLACK, true, NAMES[9],
+                        toColor(R.color.pureBlack), toColor(R.color.pureBlack), toColor(R.color.pureBlack))
+        )
     }
 
     private fun autoTheme(loaded: Int): Theme {
@@ -116,21 +117,6 @@ class SelectThemeActivity : ThemedActivity() {
         return ContextCompat.getColor(this, res)
     }
 
-    private fun initList() {
-        themes_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        LinearSnapHelper().attachToRecyclerView(themes_list)
-        adapter.selectedListener = {
-            onColorSelect(it)
-            saveColor(it.id)
-        }
-        themes_list.adapter = adapter
-    }
-
-    private fun saveColor(code: Int) {
-        prefs.appTheme = code
-        prefs.isUiChanged = true
-    }
-
     override fun onBackPressed() {
         updateNotification()
         finish()
@@ -153,6 +139,7 @@ class SelectThemeActivity : ThemedActivity() {
     }
 
     private fun onColorSelect(theme: Theme) {
+        bgTitle.text = getString(R.string.background) + " - " + theme.name
         toolbar.setBackgroundColor(theme.barColor)
         if (Module.isLollipop) {
             window.statusBarColor = theme.barColor

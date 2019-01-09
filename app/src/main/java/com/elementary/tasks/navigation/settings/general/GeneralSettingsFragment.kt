@@ -37,9 +37,10 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     private val currentTheme: String
         get() {
             val theme = prefs.appTheme
+            val accent = themeUtil.accentNames()[prefs.appThemeColor]
             return when (theme) {
-                ThemeUtil.THEME_AUTO -> getString(R.string.auto)
-                else -> SelectThemeActivity.NAMES[theme - 1]
+                ThemeUtil.THEME_AUTO -> getString(R.string.auto) + " ($accent)"
+                else -> SelectThemeActivity.NAMES[theme - 1] + " ($accent)"
             }
         }
 
