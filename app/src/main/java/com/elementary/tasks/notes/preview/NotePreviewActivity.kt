@@ -94,6 +94,9 @@ class NotePreviewActivity : ThemedActivity() {
         viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showReminder(reminder)
+            } else {
+                this.mReminder = null
+                reminderContainer.visibility = View.GONE
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -213,6 +216,8 @@ class NotePreviewActivity : ThemedActivity() {
             val dateTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime, prefs.is24HourFormatEnabled)
             reminderTime.text = dateTime
             reminderContainer.visibility = View.VISIBLE
+        } else {
+            reminderContainer.visibility = View.GONE
         }
     }
 
