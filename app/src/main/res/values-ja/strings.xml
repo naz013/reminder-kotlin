@@ -593,5 +593,15 @@
     <string name="security">セキュリティ</string>
     <string name="show_notification_about_left_distance">残り距離に関する通知を表示</string>
     <string name="do_not_show_notification">通知を表示しない</string>
+    <string name="hide_future_events">今後の予定を隠す</string>
+    <string name="do_not_remind_about_birthdays">誕生日を思い出させない</string>
+    <string name="show_reminder_about_birthdays">誕生日に関するリマインダーを表示する</string>
+    <string name="birthdays_in_home_screen_widget">ホーム画面ウィジェットの誕生日</string>
+    <string name="show_when_available_birthdays">次の誕生日があれば表示する</string>
+    <string name="retrieve_birthdays_from_contacts">連絡先から誕生日を取得する</string>
+    <string name="use_only_my_birthdays">自分が追加した誕生日のみを使用する</string>
+    <string name="do_not_scan_contacts">連絡先をスキャンしない</string>
+    <string name="automatically_check_for_new_birthdays">連絡先に誕生日があるかどうかを自動的に確認</string>
+    <string name="specify_own_configuration">独自の設定を指定</string>
 
 </resources>

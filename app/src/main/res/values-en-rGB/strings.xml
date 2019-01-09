@@ -592,4 +592,14 @@
     <string name="security">Security</string>
     <string name="show_notification_about_left_distance">Show notification about remaining distance</string>
     <string name="do_not_show_notification">Do not show notification</string>
+    <string name="hide_future_events">Hide future events</string>
+    <string name="do_not_remind_about_birthdays">Do not remind about birthdays</string>
+    <string name="show_reminder_about_birthdays">Show reminders about birthdays</string>
+    <string name="birthdays_in_home_screen_widget">Birthdays in home screen widget</string>
+    <string name="show_when_available_birthdays">Show when available upcoming birthdays</string>
+    <string name="retrieve_birthdays_from_contacts">Retrieve birthdays from contacts</string>
+    <string name="use_only_my_birthdays">Use only birthdays added by me</string>
+    <string name="do_not_scan_contacts">Do not scan contacts</string>
+    <string name="automatically_check_for_new_birthdays">Automatically check if there is birthdays in contacts</string>
+    <string name="specify_own_configuration">Specify own configuration</string>
 </resources>

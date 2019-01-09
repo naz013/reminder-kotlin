@@ -592,5 +592,15 @@
     <string name="security">सुरक्षा</string>
     <string name="show_notification_about_left_distance">शेष दूरी के बारे में अधिसूचना दिखाएं</string>
     <string name="do_not_show_notification">अधिसूचना न दिखाएं</string>
+    <string name="hide_future_events">भविष्य की घटनाओं को छिपाएं</string>
+    <string name="do_not_remind_about_birthdays">जन्मदिन के बारे में याद न दिलाएं</string>
+    <string name="show_reminder_about_birthdays">जन्मदिन के बारे में अनुस्मारक दिखाएं</string>
+    <string name="birthdays_in_home_screen_widget">होम स्क्रीन विजेट में जन्मदिन</string>
+    <string name="show_when_available_birthdays">आगामी जन्मदिन उपलब्ध होने पर दिखाएं</string>
+    <string name="retrieve_birthdays_from_contacts">संपर्कों से जन्मदिन प्राप्त करें</string>
+    <string name="use_only_my_birthdays">मेरे द्वारा जोड़े गए केवल जन्मदिन का उपयोग करें</string>
+    <string name="do_not_scan_contacts">संपर्कों को स्कैन न करें</string>
+    <string name="automatically_check_for_new_birthdays">संपर्कों में जन्मदिन है तो स्वचालित रूप से जांचें</string>
+    <string name="specify_own_configuration">स्वयं के कॉन्फ़िगरेशन को निर्दिष्ट करें</string>
 
 </resources>

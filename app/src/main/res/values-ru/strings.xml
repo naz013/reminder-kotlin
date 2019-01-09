@@ -592,5 +592,15 @@
     <string name="security">Безопасность</string>
     <string name="show_notification_about_left_distance">Показать уведомление об оставшемся расстоянии</string>
     <string name="do_not_show_notification">Не показывать уведомление</string>
+    <string name="hide_future_events">Скрыть будущие события</string>
+    <string name="do_not_remind_about_birthdays">Не напоминать о днях рождения</string>
+    <string name="show_reminder_about_birthdays">Показать напоминания о днях рождения</string>
+    <string name="birthdays_in_home_screen_widget">Дни рождения в виджете главного экрана</string>
+    <string name="show_when_available_birthdays">Показать когда будут доступны ближайшие дни рождения</string>
+    <string name="retrieve_birthdays_from_contacts">Получить дни рождения из контактов</string>
+    <string name="use_only_my_birthdays">Используйте только дни рождения, добавленные мной</string>
+    <string name="do_not_scan_contacts">Не сканировать контакты</string>
+    <string name="automatically_check_for_new_birthdays">Автоматически проверять, есть ли дни рождения в контактах</string>
+    <string name="specify_own_configuration">Укажите собственную конфигурацию</string>
 
 </resources>
