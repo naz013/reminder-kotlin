@@ -576,5 +576,21 @@
     <string name="send_messages_auto">Enviar mensajes automáticamente</string>
     <string name="open_applications_manually">Abrir aplicaciones manualmente</string>
     <string name="open_applications_auto">Abrir aplicaciones automáticamente</string>
+    <string name="show_led_indication">Mostrar indicación LED</string>
+    <string name="do_not_show_led_indication">No mostrar indicación LED</string>
+    <string name="do_no_repeat_event_notification">No repetir la notificación de eventos.</string>
+    <string name="repeat_event_notification_when_no_action">Repita la notificación de eventos cuando no hay acción del usuario.</string>
+    <string name="allow_folding_event_window">Permitir ventana de evento plegable</string>
+    <string name="create_reminders_for_missed_calls">Crear recordatorios sobre llamadas perdidas</string>
+    <string name="show_event_screen_after_phone_call">Mostrar pantalla de creación de eventos después de una llamada telefónica</string>
+    <string name="last_color">Ultimo color</string>
+    <string name="do_not_remember_last_color">No recuerdo el último color usado.</string>
+    <string name="export">Exportar</string>
+    <string name="backup">Apoyo</string>
+    <string name="show_voice_control_screen">Mostrar pantalla de control de voz</string>
+    <string name="show_simple_voice_popup">Mostrar simple control de voz emergente</string>
+    <string name="security">Seguridad</string>
+    <string name="show_notification_about_left_distance">Mostrar notificación sobre la distancia restante</string>
+    <string name="do_not_show_notification">No mostrar notificación</string>
 
 </resources>

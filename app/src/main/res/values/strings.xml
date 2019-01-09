@@ -582,14 +582,13 @@
     <string name="create_reminders_for_missed_calls">Create reminders about missed calls</string>
     <string name="show_event_screen_after_phone_call">Show event creation screen after phone call</string>
     <string name="last_color">Last color</string>
-    <string name="do_not_remember_last_color">Do not remember last used note color</string>
+    <string name="do_not_remember_last_color">Do not remember last used color</string>
     <string name="export">Export</string>
     <string name="backup">Backup</string>
     <string name="show_voice_control_screen">Show voice control screen</string>
     <string name="show_simple_voice_popup">Show simple voice control popup</string>
     <string name="security">Security</string>
-    <string name="show_notification_about_left_distance">Show notification about left distance</string>
-    <string name="do_not_show_notification">Do not show notification</string>
+    <string name="show_notification_about_left_distance">Show notification about remaining distance</string>
     <string name="hide_future_events">Hide future events</string>
     <string name="do_not_remind_about_birthdays">Do not remind about birthdays</string>
     <string name="show_reminder_about_birthdays">Show reminders about birthdays</string>
@@ -663,5 +662,6 @@
     <string name="accent">Accent</string>
     <string name="app_not_found">Application not found</string>
     <string name="play_melody_in_silent_mode">Play melody when phone in silent mode</string>
+    <string name="do_not_show_notification">Do not show notification</string>
 
 </resources>

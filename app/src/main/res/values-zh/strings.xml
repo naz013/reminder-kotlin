@@ -576,5 +576,21 @@
     <string name="send_messages_auto">自动发送消息</string>
     <string name="open_applications_manually">手动打开应用程序</string>
     <string name="open_applications_auto">自动打开应用程序</string>
+    <string name="show_led_indication">显示LED指示</string>
+    <string name="do_not_show_led_indication">不要显示LED指示</string>
+    <string name="do_no_repeat_event_notification">不要重复事件通知</string>
+    <string name="repeat_event_notification_when_no_action">没有用户操作时重复事件通知</string>
+    <string name="allow_folding_event_window">允许折叠事件窗口</string>
+    <string name="create_reminders_for_missed_calls">创建有关未接来电的提醒</string>
+    <string name="show_event_screen_after_phone_call">通过电话后显示活动创建屏幕</string>
+    <string name="last_color">最后的颜色</string>
+    <string name="do_not_remember_last_color">不记得上次使用的颜色了</string>
+    <string name="export">出口</string>
+    <string name="backup">备用</string>
+    <string name="show_voice_control_screen">显示语音控制屏幕</string>
+    <string name="show_simple_voice_popup">显示简单的语音控制弹出窗口</string>
+    <string name="security">安全</string>
+    <string name="show_notification_about_left_distance">显示有关剩余距离的通知</string>
+    <string name="do_not_show_notification">不要显示通知</string>
 
 </resources>

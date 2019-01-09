@@ -577,5 +577,21 @@
     <string name="send_messages_auto">メッセージを自動的に送信する</string>
     <string name="open_applications_manually">手動でアプリケーションを開く</string>
     <string name="open_applications_auto">アプリケーションを自動的に開く</string>
+    <string name="show_led_indication">LED表示を見せる</string>
+    <string name="do_not_show_led_indication">LED表示をしない</string>
+    <string name="do_no_repeat_event_notification">イベント通知を繰り返さない</string>
+    <string name="repeat_event_notification_when_no_action">ユーザー操作がないときにイベント通知を繰り返す</string>
+    <string name="allow_folding_event_window">折りたたみイベントウィンドウを許可する</string>
+    <string name="create_reminders_for_missed_calls">不在着信に関する通知を作成する</string>
+    <string name="show_event_screen_after_phone_call">通話後にイベント作成画面を表示する</string>
+    <string name="last_color">最後の色</string>
+    <string name="do_not_remember_last_color">最後に使用した色を覚えていない</string>
+    <string name="export">輸出する</string>
+    <string name="backup">バックアップ</string>
+    <string name="show_voice_control_screen">音声コントロール画面を表示する</string>
+    <string name="show_simple_voice_popup">簡単な音声コントロールポップアップを表示する</string>
+    <string name="security">セキュリティ</string>
+    <string name="show_notification_about_left_distance">残り距離に関する通知を表示</string>
+    <string name="do_not_show_notification">通知を表示しない</string>
 
 </resources>

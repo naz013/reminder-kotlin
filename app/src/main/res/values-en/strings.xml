@@ -576,5 +576,21 @@
     <string name="send_messages_auto">Send messages automatically</string>
     <string name="open_applications_manually">Open applications manually</string>
     <string name="open_applications_auto">Open applications automatically</string>
+    <string name="show_led_indication">Show LED indication</string>
+    <string name="do_not_show_led_indication">Do not show LED indication</string>
+    <string name="do_no_repeat_event_notification">Do not repeat event notification</string>
+    <string name="repeat_event_notification_when_no_action">Repeat event notification when no user action</string>
+    <string name="allow_folding_event_window">Allow folding event window</string>
+    <string name="create_reminders_for_missed_calls">Create reminders about missed calls</string>
+    <string name="show_event_screen_after_phone_call">Show event creation screen after phone call</string>
+    <string name="last_color">Last color</string>
+    <string name="do_not_remember_last_color">Do not remember last used color</string>
+    <string name="export">Export</string>
+    <string name="backup">Backup</string>
+    <string name="show_voice_control_screen">Show voice control screen</string>
+    <string name="show_simple_voice_popup">Show simple voice control popup</string>
+    <string name="security">Security</string>
+    <string name="show_notification_about_left_distance">Show notification about remaining distance</string>
+    <string name="do_not_show_notification">Do not show notification</string>
 
 </resources>
