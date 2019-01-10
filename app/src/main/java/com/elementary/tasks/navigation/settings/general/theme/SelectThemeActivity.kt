@@ -119,6 +119,13 @@ class SelectThemeActivity : ThemedActivity() {
         return ContextCompat.getColor(this, res)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (prefs.isSbNotificationEnabled && prefs.isUiChanged) {
+            notifier.showReminderPermanent()
+        }
+    }
+
     override fun onBackPressed() {
         updateNotification()
         finish()
