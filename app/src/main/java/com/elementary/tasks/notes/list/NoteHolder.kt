@@ -54,6 +54,11 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         itemView.imagesContainer.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.noteImage.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        if (listener == null) {
+            itemView.button_more.visibility = View.INVISIBLE
+        } else {
+            itemView.button_more.visibility = View.VISIBLE
+        }
     }
 
     fun setData(item: NoteWithImages) {

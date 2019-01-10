@@ -38,4 +38,8 @@ class Container<V>(list: List<V>?) {
             }
         }
     }
+
+    override fun toString(): String {
+        return "Container of -> $type, size -> ${list.size}"
+    }
 }

@@ -190,7 +190,6 @@ class ConversationActivity : ThemedActivity() {
         if (mAskAction != null) {
             mAdapter.removeAsk()
         }
-//        mAdapter.addReply(Reply(Reply.REPLY, s.toLowerCase()))
         Timber.d("performResult: $model")
         val actionType = model.type
         when (actionType) {
