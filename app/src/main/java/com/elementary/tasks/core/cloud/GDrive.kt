@@ -9,14 +9,17 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
-import com.google.api.services.tasks.TasksScopes
 import timber.log.Timber
 import java.io.FileOutputStream
 import java.io.IOException
@@ -41,7 +44,6 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class GDrive private constructor(context: Context) {
 
     private var driveService: Drive? = null
@@ -53,20 +55,50 @@ class GDrive private constructor(context: Context) {
     @Inject
     lateinit var backupTool: BackupTool
 
+    var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
         private set
 
     init {
         ReminderApp.appComponent.inject(this)
 
-        val user = prefs.driveUser
-        if (user.matches(".*@.*".toRegex())) {
-            val credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(DriveScopes.DRIVE, TasksScopes.TASKS))
-            credential.selectedAccountName = user
-            val mJsonFactory = GsonFactory.getDefaultInstance()
-            val mTransport = AndroidHttp.newCompatibleTransport()
-            driveService = Drive.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build()
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(Scope(DriveScopes.DRIVE))
+                .build()
+        val client = GoogleSignIn.getClient(context, signInOptions)
+        client.silentSignIn().addOnSuccessListener {
+            Timber.d("GDrive: silent -> ${it.email}")
+            val credential = GoogleAccountCredential.usingOAuth2(
+                    context, Collections.singleton(DriveScopes.DRIVE))
+            val account = it.account
+            Timber.d("GDrive: account -> $account")
+            credential.selectedAccount = account
+            driveService = Drive.Builder(
+                    AndroidHttp.newCompatibleTransport(),
+                    GsonFactory(),
+                    credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build()
             isLogged = true
+            statusObserver?.invoke(true)
+        }.addOnFailureListener {
+            val credential = GoogleAccountCredential.usingOAuth2(
+                    context, Collections.singleton(DriveScopes.DRIVE))
+            val gam = GoogleAccountManager(context)
+            val user = prefs.driveUser
+            Timber.d("GDrive: user -> $user")
+            val account = GoogleSignIn.getLastSignedInAccount(context)?.account ?: gam.getAccountByName(user)
+            Timber.d("GDrive: account -> $account")
+            credential.selectedAccount = account
+            driveService = Drive.Builder(
+                    AndroidHttp.newCompatibleTransport(),
+                    GsonFactory(),
+                    credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build()
+            isLogged = true
+            statusObserver?.invoke(true)
         }
     }
 
@@ -74,6 +106,7 @@ class GDrive private constructor(context: Context) {
         prefs.driveUser = Prefs.DRIVE_USER_NONE
         driveService = null
         isLogged = false
+        statusObserver?.invoke(false)
         instance = null
     }
 

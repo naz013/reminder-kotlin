@@ -82,6 +82,9 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         updateProgress(false)
         mDropbox = DropboxLogin(activity!!, mDropboxCallback)
         mGoogleLogin = GoogleLogin(activity!!, prefs)
+        mGoogleLogin.googleStatus = {
+            checkGoogleStatus()
+        }
         initDropboxButton()
         initGoogleDriveButton()
         initGoogleTasksButton()
@@ -301,6 +304,11 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         super.onBackStackResume()
         mDropbox.checkDropboxStatus()
         checkGoogleStatus()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mGoogleLogin.googleStatus = null
     }
 
     override fun getTitle(): String = getString(R.string.cloud_services)
