@@ -12,7 +12,10 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.UserRecoverableAuthException
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.AccountPicker
+import com.google.android.gms.common.api.Scope
 import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.tasks.TasksScopes
@@ -48,6 +51,8 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     private var mTasksCallback: TasksCallback? = null
     private var isDriveLogin = false
 
+    var googleStatus: ((Boolean) -> Unit)? = null
+
     var isGoogleDriveLogged = false
         private set
         get() {
@@ -63,6 +68,15 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     fun logOutDrive() {
         mGoogleDrive?.logOut()
         mGoogleDrive = null
+
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(Scope(DriveScopes.DRIVE))
+                .build()
+        val client = GoogleSignIn.getClient(activity, signInOptions)
+        client.signOut().addOnSuccessListener {
+            googleStatus?.invoke(false)
+        }
     }
 
     fun logOutTasks() {
@@ -73,7 +87,13 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     fun loginDrive(loginCallback: DriveCallback) {
         isDriveLogin = true
         mDriveCallback = loginCallback
-        askIntent()
+
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(Scope(DriveScopes.DRIVE))
+                .build()
+        val client = GoogleSignIn.getClient(activity, signInOptions)
+        activity.startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
     }
 
     private fun askIntent() {
@@ -159,7 +179,10 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_AUTHORIZATION && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_SIGN_IN && resultCode == RESULT_OK) {
+            if (data != null) handleSignInResult(data)
+            else sendFail()
+        } else if (requestCode == REQUEST_AUTHORIZATION && resultCode == RESULT_OK) {
             mAccountName = data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
             val gam = GoogleAccountManager(activity)
             getAndUseAuthTokenInAsyncTask(gam.getAccountByName(mAccountName))
@@ -176,11 +199,28 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         }
     }
 
+    private fun handleSignInResult(result: Intent) {
+        GoogleSignIn.getSignedInAccountFromIntent(result)
+                .addOnSuccessListener { googleAccount ->
+                    Timber.d("Signed in as ${googleAccount.email}")
+                    finishLogin(googleAccount.account?.name ?: "")
+                }
+                .addOnFailureListener { sendFail() }
+    }
+
     private fun finishLogin(account: String) {
+        Timber.d("finishLogin: $account")
+        if (account.isEmpty()) {
+            sendFail()
+            return
+        }
         if (isDriveLogin) {
             mGoogleDrive?.logOut()
             prefs.driveUser = account
             mGoogleDrive = GDrive.getInstance(activity)
+            mGoogleDrive?.statusObserver = {
+                googleStatus?.invoke(it)
+            }
             mDriveCallback?.onResult(mGoogleDrive, mGoogleDrive?.isLogged == true)
         } else {
             mGoogleTasks?.logOut()
@@ -206,6 +246,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
 
         private const val REQUEST_AUTHORIZATION = 1
         private const val REQUEST_ACCOUNT_PICKER = 3
+        private const val REQUEST_CODE_SIGN_IN = 4
         private const val RT_CODE = "rt"
     }
 }

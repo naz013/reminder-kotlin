@@ -50,11 +50,15 @@ android {
         }
     }
     packagingOptions {
-        exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/proguard/androidx-annotations.pro'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
     }
     buildTypes {
         release {
@@ -94,17 +98,15 @@ dependencies {
     implementation('com.google.apis:google-api-services-calendar:v3-rev355-1.25.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.api-client:google-api-client-android:1.25.0') {
-        exclude module: 'httpclient'
-    }
-    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
-        exclude module: 'httpclient'
-    }
     implementation('com.google.apis:google-api-services-tasks:v1-rev55-1.25.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.http-client:google-http-client-gson:1.25.0') {
-        exclude module: 'httpclient'
+    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+    implementation('com.google.api-client:google-api-client-android:1.26.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
+        exclude group: 'org.apache.httpcomponents'
     }
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
@@ -148,10 +150,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
     kapt 'androidx.room:room-compiler:2.0.0'
 
-    implementation 'com.google.android.gms:play-services-auth-base:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation ('com.google.firebase:firebase-config:16.0.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
