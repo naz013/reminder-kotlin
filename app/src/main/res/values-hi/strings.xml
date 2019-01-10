@@ -635,5 +635,32 @@
     <string name="pin_not_match">पिन मैच नहीं हुआ</string>
     <string name="old_pin">पुराना पिन</string>
     <string name="disable_pin">पिन अक्षम करें</string>
+    <string name="acc_open_attachment">आसक्ति खोलें</string>
+    <string name="acc_resend_message">संदेश को फिर से भेजें</string>
+    <string name="start_screen">होम स्क्रीन</string>
+    <string name="quick_buttons">त्वरित बटन</string>
+    <string name="list_item_background">सूची आइटम की पृष्ठभूमि</string>
+    <string name="you_not_logged_to_google_tasks">आपने Google कार्य में प्रवेश नहीं किया है</string>
+    <string name="header_background">हेडर की पृष्ठभूमि</string>
+    <string name="do_no_show_notifications_on_wear_devices">पहनें ओएस पर सूचनाएं न दिखाएं</string>
+    <string name="do_not_create_reminder">रिमाइंडर न बनाएं</string>
+    <string name="do_not_show_in_home_screen_widget">होम स्क्रीन विजेट में न दिखाएं</string>
+    <string name="do_not_show_permanent_notification">स्थायी अधिसूचना न दिखाएं</string>
+    <string name="do_not_show_after_calls">कॉल के बाद ईवेंट निर्माण स्क्रीन न दिखाएं</string>
+    <string name="colums_in_lists">क्षैतिज होने पर सूचियों में कॉलम</string>
+    <string name="show_one_column">एक कॉलम दिखाएं</string>
+    <string name="show_two_columns">दो कॉलम दिखाएं</string>
+    <string name="silent_channel">मूक चैनल</string>
+    <string name="channel_for_silent_notifiations">मौन सूचनाओं के लिए चैनल</string>
+    <string name="backup_my_data">मेरे डेटा के कॉपी रखें</string>
+    <string name="sync_data_now">अब डेटा सिंक करें</string>
+    <string name="attachment">आसक्ति</string>
+    <string name="before_time">समय से पहलेे</string>
+    <string name="priority">प्राथमिकता</string>
+    <string name="update_additional_parameters">अतिरिक्त मापदंडों को अपडेट करें</string>
+    <string name="allow_phone_call_and_sms_func">फोन कॉल और एसएमएस की कार्यक्षमता की अनुमति दें</string>
+    <string name="hide_that_functionality">उस कार्यक्षमता को छिपाएं</string>
+    <string name="accent">उच्चारण</string>
+    <string name="living_coral">लिविंग कोरल</string>
 
 </resources>

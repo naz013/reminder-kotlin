@@ -635,5 +635,32 @@
     <string name="pin_not_match">PIN eşleşmiyor</string>
     <string name="old_pin">Eski PIN</string>
     <string name="disable_pin">PIN\'i devre dışı bırak</string>
+    <string name="acc_open_attachment">Eki aç</string>
+    <string name="acc_resend_message">Mesajı tekrar gönder</string>
+    <string name="start_screen">Ana ekran</string>
+    <string name="quick_buttons">Hızlı düğmeler</string>
+    <string name="list_item_background">Liste öğesinin arka planı</string>
+    <string name="you_not_logged_to_google_tasks">Google Görevlerine giriş yapmadınız</string>
+    <string name="header_background">Başlığın arka planı</string>
+    <string name="do_no_show_notifications_on_wear_devices">Wear OS\'de bildirimler gösterme</string>
+    <string name="do_not_create_reminder">Hatırlatma oluşturmayın</string>
+    <string name="do_not_show_in_home_screen_widget">Ana ekran widget\'ında gösterme</string>
+    <string name="do_not_show_permanent_notification">Kalıcı bildirim gösterme</string>
+    <string name="do_not_show_after_calls">Çağrılardan sonra etkinlik oluşturma ekranını gösterme</string>
+    <string name="colums_in_lists">Yatay olduğunda listelerdeki sütunlar</string>
+    <string name="show_one_column">Bir sütunu göster</string>
+    <string name="show_two_columns">İki sütunu göster</string>
+    <string name="silent_channel">Sessiz kanal</string>
+    <string name="channel_for_silent_notifiations">Sessiz bildirimler için kanal</string>
+    <string name="backup_my_data">Verimi yedekle</string>
+    <string name="sync_data_now">Verileri şimdi senkronize et</string>
+    <string name="attachment">Ek dosya</string>
+    <string name="before_time">Zamanından önce</string>
+    <string name="priority">Öncelik</string>
+    <string name="update_additional_parameters">Ek parametreleri güncelle</string>
+    <string name="allow_phone_call_and_sms_func">Telefon görüşmesi ve SMS işlevselliğine izin ver</string>
+    <string name="hide_that_functionality">Bu işlevselliği gizle</string>
+    <string name="accent">Aksan</string>
+    <string name="living_coral">Yaşayan Mercan</string>
 
 </resources>

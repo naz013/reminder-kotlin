@@ -635,5 +635,32 @@
     <string name="pin_not_match">PIN nie pasuje</string>
     <string name="old_pin">Stary PIN</string>
     <string name="disable_pin">Wyłącz PIN</string>
+    <string name="acc_open_attachment">Otwórz załącznik</string>
+    <string name="acc_resend_message">Wyślij ponownie wiadomość</string>
+    <string name="start_screen">Ekran główny</string>
+    <string name="quick_buttons">Szybkie przyciski</string>
+    <string name="list_item_background">Tło elementu listy</string>
+    <string name="you_not_logged_to_google_tasks">Nie zalogowałeś się do Google Tasks</string>
+    <string name="header_background">Tło nagłówka</string>
+    <string name="do_no_show_notifications_on_wear_devices">Nie pokazuj powiadomień na Wear OS</string>
+    <string name="do_not_create_reminder">Nie twórz przypomnień</string>
+    <string name="do_not_show_in_home_screen_widget">Nie wyświetlaj w widżecie ekranu głównego</string>
+    <string name="do_not_show_permanent_notification">Nie pokazuj stałego powiadomienia</string>
+    <string name="do_not_show_after_calls">Nie pokazuj ekranu tworzenia zdarzeń po połączeniach</string>
+    <string name="colums_in_lists">Kolumny na listach, gdy są poziome</string>
+    <string name="show_one_column">Pokaż jedną kolumnę</string>
+    <string name="show_two_columns">Pokaż dwie kolumny</string>
+    <string name="silent_channel">Cichy kanał</string>
+    <string name="channel_for_silent_notifiations">Kanał dla cichych powiadomień</string>
+    <string name="backup_my_data">Utwórz kopię zapasową moich danych</string>
+    <string name="sync_data_now">Synchronizuj dane teraz</string>
+    <string name="attachment">Przywiązanie</string>
+    <string name="before_time">Przed czasem</string>
+    <string name="priority">Priorytet</string>
+    <string name="update_additional_parameters">Zaktualizuj dodatkowe parametry</string>
+    <string name="allow_phone_call_and_sms_func">Zezwalaj na funkcje połączeń telefonicznych i SMS-ów</string>
+    <string name="hide_that_functionality">Ukryj tę funkcję</string>
+    <string name="accent">Akcent</string>
+    <string name="living_coral">Żyjący koral</string>
 
 </resources>

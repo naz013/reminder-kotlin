@@ -635,5 +635,32 @@
     <string name="pin_not_match">Le code PIN ne correspond pas</string>
     <string name="old_pin">Ancien code PIN</string>
     <string name="disable_pin">Désactiver le code PIN</string>
+    <string name="acc_open_attachment">Pièce jointe ouverte</string>
+    <string name="acc_resend_message">Renvoyer le message</string>
+    <string name="start_screen">Écran d\'accueil</string>
+    <string name="quick_buttons">Boutons rapides</string>
+    <string name="list_item_background">Fond de l\'élément de liste</string>
+    <string name="you_not_logged_to_google_tasks">Vous n\'êtes pas connecté à Google Tasks</string>
+    <string name="header_background">Fond d\'en-tête</string>
+    <string name="do_no_show_notifications_on_wear_devices">Ne pas afficher les notifications sur Wear OS</string>
+    <string name="do_not_create_reminder">Ne pas créer de rappel</string>
+    <string name="do_not_show_in_home_screen_widget">Ne pas afficher dans le widget de l\'écran d\'accueil</string>
+    <string name="do_not_show_permanent_notification">Ne pas afficher de notification permanente</string>
+    <string name="do_not_show_after_calls">Ne pas afficher l\'écran de création d\'événement après les appels</string>
+    <string name="colums_in_lists">Colonnes dans les listes horizontales</string>
+    <string name="show_one_column">Afficher une colonne</string>
+    <string name="show_two_columns">Afficher deux colonnes</string>
+    <string name="silent_channel">Canal silencieux</string>
+    <string name="channel_for_silent_notifiations">Canal pour les notifications silencieuses</string>
+    <string name="backup_my_data">Sauvegarder mes données</string>
+    <string name="sync_data_now">Synchroniser les données maintenant</string>
+    <string name="attachment">Attachement</string>
+    <string name="before_time">Avant l\'heure</string>
+    <string name="priority">Priorité</string>
+    <string name="update_additional_parameters">Mettre à jour des paramètres supplémentaires</string>
+    <string name="allow_phone_call_and_sms_func">Autoriser les appels téléphoniques et les fonctionnalités SMS</string>
+    <string name="hide_that_functionality">Cacher cette fonctionnalité</string>
+    <string name="accent">Accent</string>
+    <string name="living_coral">Corail vivant</string>
 
 </resources>

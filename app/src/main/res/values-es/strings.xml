@@ -635,5 +635,32 @@
     <string name="pin_not_match">PIN no coincide</string>
     <string name="old_pin">PIN antiguo</string>
     <string name="disable_pin">Desactivar PIN</string>
+    <string name="acc_open_attachment">Abrir archivo adjunto</string>
+    <string name="acc_resend_message">Reenviar mensaje</string>
+    <string name="start_screen">Pantalla de inicio</string>
+    <string name="quick_buttons">Botones rápidos</string>
+    <string name="list_item_background">Fondo del elemento de la lista</string>
+    <string name="you_not_logged_to_google_tasks">No has iniciado sesión en Google Tasks</string>
+    <string name="header_background">Fondo del encabezado</string>
+    <string name="do_no_show_notifications_on_wear_devices">No mostrar notificaciones en Wear OS</string>
+    <string name="do_not_create_reminder">No crear recordatorio</string>
+    <string name="do_not_show_in_home_screen_widget">No mostrar en el widget de la pantalla de inicio</string>
+    <string name="do_not_show_permanent_notification">No mostrar notificación permanente.</string>
+    <string name="do_not_show_after_calls">No mostrar la pantalla de creación de eventos después de las llamadas</string>
+    <string name="colums_in_lists">Columnas en listas cuando horizontal</string>
+    <string name="show_one_column">Mostrar una columna</string>
+    <string name="show_two_columns">Mostrar dos columnas</string>
+    <string name="silent_channel">Canal silencioso</string>
+    <string name="channel_for_silent_notifiations">Canal para notificaciones silenciosas.</string>
+    <string name="backup_my_data">Respalda mi información</string>
+    <string name="sync_data_now">Sincronizar datos ahora</string>
+    <string name="attachment">Adjunto archivo</string>
+    <string name="before_time">Antes de tiempo</string>
+    <string name="priority">Prioridad</string>
+    <string name="update_additional_parameters">Actualizar parámetros adicionales</string>
+    <string name="allow_phone_call_and_sms_func">Permitir llamadas telefónicas y funcionalidad SMS.</string>
+    <string name="hide_that_functionality">Ocultar esa funcionalidad</string>
+    <string name="accent">Acento</string>
+    <string name="living_coral">Coral vivo</string>
 
 </resources>
