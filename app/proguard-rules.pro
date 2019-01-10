@@ -41,3 +41,47 @@
 -dontwarn sun.misc.**
 
 -keep class kotlinx.coroutines.experimental.android.AndroidExceptionPreHandler { *; }
+
+# Suppress notes on LicensingServices
+-dontnote **.ILicensingService
+
+# Suppress warnings on sun.misc.Unsafe
+-dontnote sun.misc.Unsafe
+-dontwarn sun.misc.Unsafe
+
+-dontwarn java.lang.invoke.*
+
+# Platform calls Class.forName on types which do not exist on Android to determine platform.
+-dontnote retrofit2.Platform
+# Platform used when running on RoboVM on iOS. Will not be used at runtime.
+-dontnote retrofit2.Platform$IOS$MainThreadExecutor
+# Platform used when running on Java 8 VMs. Will not be used at runtime.
+-dontwarn retrofit2.Platform$Java8
+# Retain generic type information for use by reflection by converters and adapters.
+-keepattributes Signature
+# Retain declared checked exceptions for use by a Proxy instance.
+-keepattributes Exceptions
+
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.AppGlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+-dontwarn org.hamcrest.**
+-dontwarn android.test.**
+-dontwarn android.support.test.**
+
+-keep class org.hamcrest.** {
+   *;
+}
+
+-keep class org.junit.** { *; }
+-dontwarn org.junit.**
+
+-keep class junit.** { *; }
+-dontwarn junit.**
+
+-keep class sun.misc.** { *; }
+-dontwarn sun.misc.**
