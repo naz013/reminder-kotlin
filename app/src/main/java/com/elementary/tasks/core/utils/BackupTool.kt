@@ -81,7 +81,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         } else {
             Timber.d("Couldn't find external storage!")
         }
@@ -143,7 +142,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         } else {
             Timber.d("Couldn't find external storage!")
         }
@@ -205,7 +203,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         } else {
             Timber.d("Couldn't find external storage!")
         }
@@ -248,7 +245,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         } else {
             Timber.d("Couldn't find external storage!")
         }
@@ -360,7 +356,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         } else {
             Timber.d("Couldn't find external storage!")
         }
@@ -372,9 +367,9 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         var reminder: Reminder? = null
         try {
             reminder = Gson().fromJson(readFileToJson(cr, name), Reminder::class.java)
-        } catch (ignored: IllegalStateException) {
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
-
         return reminder
     }
 
@@ -392,34 +387,45 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    fun getNote(cr: ContentResolver, name: Uri): NoteWithImages? {
+    fun getNote(cr: ContentResolver, uri: Uri): NoteWithImages? {
+        Timber.d("getNote: $uri")
         try {
-            val weakNote = WeakReference(Gson().fromJson(readFileToJson(cr, name), OldNote::class.java))
-            val note = weakNote.get() ?: return null
+            val weakNote = WeakReference(Gson().fromJson(readFileToJson(cr, uri), OldNote::class.java))
+            val oldNote = weakNote.get() ?: return null
             val noteWithImages = NoteWithImages()
-            noteWithImages.note = Note(note)
-            noteWithImages.images = note.images
+            oldNote.images.forEach {
+                it.noteId = oldNote.key
+            }
+            noteWithImages.note = Note(oldNote)
+            noteWithImages.images = oldNote.images
             return noteWithImages
         } catch (e: Exception) {
+            e.printStackTrace()
             return null
         }
     }
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getNote(filePath: String?, json: String?): NoteWithImages? {
+        Timber.d("getNote: $filePath, $json")
         if (filePath != null && MemoryUtil.isSdPresent) {
-            val weakNote = WeakReference(Gson().fromJson(readFileToJson(filePath), OldNote::class.java))
-            val note = weakNote.get() ?: return null
+            val oldNote = Gson().fromJson(readFileToJson(filePath), OldNote::class.java) ?: return null
             val noteWithImages = NoteWithImages()
-            noteWithImages.note = Note(note)
-            noteWithImages.images = note.images
+            oldNote.images.forEach {
+                it.noteId = oldNote.key
+            }
+            noteWithImages.note = Note(oldNote)
+            noteWithImages.images = oldNote.images
             return noteWithImages
         } else if (json != null) {
             val weakNote = WeakReference(Gson().fromJson(json, OldNote::class.java))
-            val note = weakNote.get() ?: return null
+            val oldNote = weakNote.get() ?: return null
             val noteWithImages = NoteWithImages()
-            noteWithImages.note = Note(note)
-            noteWithImages.images = note.images
+            oldNote.images.forEach {
+                it.noteId = oldNote.key
+            }
+            noteWithImages.note = Note(oldNote)
+            noteWithImages.images = oldNote.images
             return noteWithImages
         } else {
             return null
@@ -484,6 +490,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
                 jsonData.clear()
                 file
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         } else {

@@ -32,8 +32,8 @@ data class Note(
         var color: Int = 0,
         var style: Int = 0,
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
-        var opacity: Int = 100
-) {
+        var opacity: Int = 100) {
+
     @Ignore
     constructor(oldNote: OldNote) : this() {
         this.color = oldNote.color
@@ -41,5 +41,6 @@ data class Note(
         this.date = oldNote.date
         this.style = oldNote.style
         this.uniqueId = oldNote.uniqueId
+        this.summary = oldNote.summary
     }
 }

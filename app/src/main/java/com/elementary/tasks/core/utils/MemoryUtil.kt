@@ -33,7 +33,6 @@ import java.util.Locale
 object MemoryUtil {
 
     const val DIR_SD = "backup"
-    private const val DIR_IMAGE_CACHE = "img"
     private const val DIR_PREFS = "preferences"
     const val DIR_NOTES_SD = "notes"
     const val DIR_GROUP_SD = "groups"
@@ -128,9 +127,6 @@ object MemoryUtil {
     val dropboxPrefsDir: File?
         get() = getDir(DIR_PREFERENCES_SD_DBX_TMP)
 
-    val imageCacheDir: File?
-        get() = getDir(DIR_IMAGE_CACHE)
-
     val parent: File?
         get() = getDir("")
 
@@ -186,9 +182,11 @@ object MemoryUtil {
         output64.close()
         inputStream.close()
         val res = total.toString()
-        return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]"))
+        return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
+            Timber.d("readFileToJson: $res")
             res
-        else {
+        } else {
+            Timber.d("readFileToJson: Bad JSON")
             throw IOException("Bad JSON")
         }
     }
@@ -210,13 +208,15 @@ object MemoryUtil {
             output64.close()
             inputStream.close()
             val res = total.toString()
-            return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]"))
+            return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
+                Timber.d("readFileToJson: $res")
                 res
-            else {
+            } else {
+                Timber.d("readFileToJson: Bad JSON")
                 throw IOException("Bad JSON")
             }
         } catch (e: Exception) {
-            throw IOException("No write permission")
+            throw IOException("No read permission")
         }
     }
 

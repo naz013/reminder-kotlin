@@ -355,13 +355,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun loadNote() {
-        val intent = intent
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
-        if (intent.data != null) {
-            val filePath = intent.getStringExtra(Constants.FILE_PICKED)
-            val name = intent.data
-            loadNoteFromFile(filePath, name)
+        val data = intent.data
+        if (data != null) {
+            val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
+            loadNoteFromFile(filePath, data)
         }
     }
 
@@ -413,15 +412,15 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
     }
 
-    private fun loadNoteFromFile(filePath: String, name: Uri?) {
+    private fun loadNoteFromFile(filePath: String, uri: Uri?) {
         try {
-            mItem = if (name != null) {
-                val scheme = name.scheme
+            mItem = if (uri != null) {
+                val scheme = uri.scheme
                 if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    backupTool.getNote(cr, name)
+                    backupTool.getNote(cr, uri)
                 } else {
-                    backupTool.getNote(name.path, null)
+                    backupTool.getNote(uri.path, null)
                 }
             } else {
                 backupTool.getNote(filePath, null)
