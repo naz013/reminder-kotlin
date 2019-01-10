@@ -30,7 +30,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lowest"
+                android:text="@string/priority_lowest"
                 android:textAppearance="?textAppearanceBody2" />
 
             <com.google.android.material.chip.Chip
@@ -38,7 +38,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/low"
+                android:text="@string/priority_low"
                 android:textAppearance="?textAppearanceBody2" />
 
             <com.google.android.material.chip.Chip
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/normal"
+                android:text="@string/priority_normal"
                 android:textAppearance="?textAppearanceBody2" />
 
             <com.google.android.material.chip.Chip
@@ -55,7 +55,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/high"
+                android:text="@string/priority_high"
                 android:textAppearance="?textAppearanceBody2" />
 
             <com.google.android.material.chip.Chip
@@ -63,7 +63,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/highest"
+                android:text="@string/priority_highest"
                 android:textAppearance="?textAppearanceBody2" />
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
