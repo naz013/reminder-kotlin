@@ -309,29 +309,34 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     }
 
     @ColorInt
-    fun getNoteLightColor(code: Int, opacity: Int): Int {
+    fun getSecondaryColor(code: Int = prefs.appThemeColor): Int {
         val color: Int
         when (code) {
-            Color.RED -> color = R.color.redAccent
-            Color.PURPLE -> color = R.color.purpleAccent
-            Color.LIGHT_GREEN -> color = R.color.greenLightAccent
-            Color.GREEN -> color = R.color.greenAccent
-            Color.LIGHT_BLUE -> color = R.color.blueLightAccent
-            Color.BLUE -> color = R.color.blueAccent
-            Color.YELLOW -> color = R.color.yellowAccent
-            Color.ORANGE -> color = R.color.orangeAccent
-            Color.CYAN -> color = R.color.cyanAccent
-            Color.PINK -> color = R.color.pinkAccent
-            Color.TEAL -> color = R.color.tealAccent
-            Color.AMBER -> color = R.color.amberAccent
-            Color.DEEP_PURPLE -> color = R.color.purpleDeepAccent
-            Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
-            Color.LIME -> color = R.color.limeAccent
-            Color.INDIGO -> color = R.color.indigoAccent
+            Color.RED -> color = R.color.secondaryRed
+            Color.PURPLE -> color = R.color.secondaryPurple
+            Color.LIGHT_GREEN -> color = R.color.secondaryGreenLight
+            Color.GREEN -> color = R.color.secondaryGreen
+            Color.LIGHT_BLUE -> color = R.color.secondaryBlueLight
+            Color.BLUE -> color = R.color.secondaryBlue
+            Color.YELLOW -> color = R.color.secondaryYellow
+            Color.ORANGE -> color = R.color.secondaryOrange
+            Color.CYAN -> color = R.color.secondaryCyan
+            Color.PINK -> color = R.color.secondaryPink
+            Color.TEAL -> color = R.color.secondaryTeal
+            Color.AMBER -> color = R.color.secondaryAmber
+            Color.DEEP_PURPLE -> color = R.color.secondaryPurpleDeep
+            Color.DEEP_ORANGE -> color = R.color.secondaryOrangeDeep
+            Color.LIME -> color = R.color.secondaryLime
+            Color.INDIGO -> color = R.color.secondaryIndigo
             Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
-            else -> color = R.color.blueAccent
+            else -> color = R.color.secondaryBlue
         }
-        return adjustAlpha(getColor(color), opacity)
+        return getColor(color)
+    }
+
+    @ColorInt
+    fun getNoteLightColor(code: Int, opacity: Int): Int {
+        return adjustAlpha(getNoteLightColor(code), opacity)
     }
 
     private object Color {
