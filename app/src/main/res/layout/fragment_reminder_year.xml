@@ -125,7 +125,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp" />
 
                     <com.elementary.tasks.core.views.DividerView
@@ -178,7 +178,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp" />
 
                     <com.elementary.tasks.core.views.DividerView
@@ -208,7 +208,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="16dp" />
 
                     <com.elementary.tasks.core.views.DividerView
@@ -238,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
@@ -251,15 +251,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp" />
-
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                        android:layout_marginRight="16dp" />
 
                     <com.elementary.tasks.core.views.TuneExtraView
                         android:id="@+id/tuneExtraView"
