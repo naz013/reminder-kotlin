@@ -177,4 +177,6 @@
     <color name="secondaryOrangeDeep">#ff3d00</color>
     <color name="secondaryOrangeDeep12">#1Eff3d00</color>
 
+    <color name="secondaryLivingCoral">#FA7268</color>
+    <color name="secondaryLivingCoral12">#1EFA7268</color>
 </resources>
