@@ -635,5 +635,32 @@
     <string name="pin_not_match">PIN não coincide</string>
     <string name="old_pin">PIN antigo</string>
     <string name="disable_pin">Desativar PIN</string>
+    <string name="acc_open_attachment">Anexo aberto</string>
+    <string name="acc_resend_message">Reenviar mensagem</string>
+    <string name="start_screen">Tela inicial</string>
+    <string name="quick_buttons">Botões rápidos</string>
+    <string name="list_item_background">Fundo do item da lista</string>
+    <string name="you_not_logged_to_google_tasks">Você não está logado no Google Tasks</string>
+    <string name="header_background">Fundo do cabeçalho</string>
+    <string name="do_no_show_notifications_on_wear_devices">Não mostrar notificações no SO Wear</string>
+    <string name="do_not_create_reminder">Não crie lembrete</string>
+    <string name="do_not_show_in_home_screen_widget">Não mostrar no widget da tela inicial</string>
+    <string name="do_not_show_permanent_notification">Não mostrar notificação permanente</string>
+    <string name="do_not_show_after_calls">Não mostrar tela de criação de eventos após as chamadas</string>
+    <string name="colums_in_lists">Colunas em listas quando horizontal</string>
+    <string name="show_one_column">Mostrar uma coluna</string>
+    <string name="show_two_columns">Mostrar duas colunas</string>
+    <string name="silent_channel">Canal silencioso</string>
+    <string name="channel_for_silent_notifiations">Canal para notificações silenciosas</string>
+    <string name="backup_my_data">Fazer back-up dos meus dados</string>
+    <string name="sync_data_now">Sincronizar dados agora</string>
+    <string name="attachment">Anexo</string>
+    <string name="before_time">Antes do tempo</string>
+    <string name="priority">Prioridade</string>
+    <string name="update_additional_parameters">Atualizar parâmetros adicionais</string>
+    <string name="allow_phone_call_and_sms_func">Permitir chamadas telefônicas e funcionalidade SMS</string>
+    <string name="hide_that_functionality">Ocultar essa funcionalidade</string>
+    <string name="accent">Sotaque</string>
+    <string name="living_coral">Coral vivo</string>
 
 </resources>

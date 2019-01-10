@@ -635,5 +635,32 @@
     <string name="pin_not_match">Codul PIN nu se potrivește</string>
     <string name="old_pin">Cod PIN vechi</string>
     <string name="disable_pin">Dezactivați codul PIN</string>
+    <string name="acc_open_attachment">Deschide atașamentul</string>
+    <string name="acc_resend_message">Retrimiteți mesajul</string>
+    <string name="start_screen">Ecranul de start</string>
+    <string name="quick_buttons">Butoane rapide</string>
+    <string name="list_item_background">Contextul elementului din listă</string>
+    <string name="you_not_logged_to_google_tasks">Nu v-ați conectat la Sarcini Google</string>
+    <string name="header_background">Fundalul antetului</string>
+    <string name="do_no_show_notifications_on_wear_devices">Nu afișați notificări pe sistemul de operare Wear</string>
+    <string name="do_not_create_reminder">Nu creați memento</string>
+    <string name="do_not_show_in_home_screen_widget">Nu se afișează în widgetul de pe ecranul de întâmpinare</string>
+    <string name="do_not_show_permanent_notification">Nu afișați notificarea permanentă</string>
+    <string name="do_not_show_after_calls">Nu afișați ecranul de creare a evenimentelor după apeluri</string>
+    <string name="colums_in_lists">Coloane în liste atunci când sunt orizontale</string>
+    <string name="show_one_column">Afișați o coloană</string>
+    <string name="show_two_columns">Afișați două coloane</string>
+    <string name="silent_channel">Canal silențios</string>
+    <string name="channel_for_silent_notifiations">Canal pentru notificări silențioase</string>
+    <string name="backup_my_data">Copiați-mi datele</string>
+    <string name="sync_data_now">Sincronizați acum datele</string>
+    <string name="attachment">Atașament</string>
+    <string name="before_time">Înainte de timp</string>
+    <string name="priority">Prioritate</string>
+    <string name="update_additional_parameters">Actualizați parametrii suplimentari</string>
+    <string name="allow_phone_call_and_sms_func">Permiteți funcția de telefon și SMS</string>
+    <string name="hide_that_functionality">Ascundeți acea funcționalitate</string>
+    <string name="accent">Accent</string>
+    <string name="living_coral">Living Coral</string>
 
 </resources>

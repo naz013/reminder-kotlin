@@ -635,5 +635,32 @@
     <string name="pin_not_match">PIN-код не співпадає</string>
     <string name="old_pin">Старий PIN-код</string>
     <string name="disable_pin">Вимкнути PIN-код</string>
+    <string name="acc_open_attachment">Відкрити вкладення</string>
+    <string name="acc_resend_message">Повторно надіслати повідомлення</string>
+    <string name="start_screen">Домашній екран</string>
+    <string name="quick_buttons">Швидкі кнопки</string>
+    <string name="list_item_background">Фон елемента списку</string>
+    <string name="you_not_logged_to_google_tasks">Ви не ввійшли в Завдання Google</string>
+    <string name="header_background">Фон заголовка</string>
+    <string name="do_no_show_notifications_on_wear_devices">Не показувати сповіщення на ОС Wear</string>
+    <string name="do_not_create_reminder">Не створювати нагадування</string>
+    <string name="do_not_show_in_home_screen_widget">Не показувати у віджеті головного екрана</string>
+    <string name="do_not_show_permanent_notification">Не показувати постійне сповіщення</string>
+    <string name="do_not_show_after_calls">Не показувати екран створення події після дзвінків</string>
+    <string name="colums_in_lists">Стовпці у списках, якщо вони горизонтальні</string>
+    <string name="show_one_column">Показати один стовпець</string>
+    <string name="show_two_columns">Показати два стовпці</string>
+    <string name="silent_channel">Безшумний канал</string>
+    <string name="channel_for_silent_notifiations">Канал для сповіщень</string>
+    <string name="backup_my_data">Резервне копіювання моїх даних</string>
+    <string name="sync_data_now">Синхронізувати дані зараз</string>
+    <string name="attachment">Додаток</string>
+    <string name="before_time">Раніше часу</string>
+    <string name="priority">Пріоритет</string>
+    <string name="update_additional_parameters">Оновлення додаткових параметрів</string>
+    <string name="allow_phone_call_and_sms_func">Дозволити функцію телефонного дзвінка та SMS</string>
+    <string name="hide_that_functionality">Приховати цей функціонал</string>
+    <string name="accent">Акцент</string>
+    <string name="living_coral">Живий корал</string>
 
 </resources>

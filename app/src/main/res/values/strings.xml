@@ -632,13 +632,12 @@
     <string name="old_pin">Old PIN</string>
     <string name="disable_pin">Disable PIN</string>
     <string name="acc_open_attachment">Open attachment</string>
-    <string name="acc_resend_message">Resend message</string>
-    <string name="start_screen">Start screen</string>
+    <string name="start_screen">Home screen</string>
     <string name="quick_buttons">Quick buttons</string>
-    <string name="list_item_background">List item background</string>
+    <string name="list_item_background">Background of list item</string>
     <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
-    <string name="header_background">Header background</string>
-    <string name="do_no_show_notifications_on_wear_devices">Do not show notifications on Wear devices</string>
+    <string name="header_background">Background of header</string>
+    <string name="do_no_show_notifications_on_wear_devices">Do not show notifications on Wear OS</string>
     <string name="do_not_create_reminder">Do not create reminder</string>
     <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
     <string name="do_not_show_permanent_notification">Do not show permanent notification</string>
@@ -648,7 +647,6 @@
     <string name="show_two_columns">Show two columns</string>
     <string name="silent_channel">Silent channel</string>
     <string name="channel_for_silent_notifiations">Channel for silent notifications</string>
-    <string name="backup_my_data">Backup my data</string>
     <string name="sync_data_now">Sync data now</string>
     <string name="attachment">Attachment</string>
     <string name="before_time">Before time</string>
@@ -664,5 +662,7 @@
     <string name="living_coral">Living Coral</string>
     <string name="with_reminder">With reminder</string>
     <string name="change_pin">Change PIN</string>
+    <string name="acc_resend_message">Resend message</string>
+    <string name="backup_my_data">Backup my data</string>
 
 </resources>
