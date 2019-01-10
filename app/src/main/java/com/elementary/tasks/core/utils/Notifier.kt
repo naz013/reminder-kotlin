@@ -196,7 +196,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
     fun showReminderPermanent() {
         Timber.d("showReminderPermanent: ")
         val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
-        val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
+        val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_SILENT)
         builder.setAutoCancel(false)
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
