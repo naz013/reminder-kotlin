@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.data.models
 
-import androidx.room.PrimaryKey
-import com.elementary.tasks.core.utils.SuperUtil
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -22,37 +20,30 @@ import com.google.gson.annotations.SerializedName
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class OldNote() {
+data class OldNote(
+        @SerializedName("summary")
+        var summary: String = "",
+        @SerializedName("key")
+        var key: String = "",
+        @SerializedName("date")
+        var date: String = "",
+        @SerializedName("color")
+        var color: Int = 0,
+        @SerializedName("style")
+        var style: Int = 0,
+        @SerializedName("images")
+        var images: List<ImageFile> = ArrayList(),
+        @SerializedName("uniqueId")
+        var uniqueId: Int = 0) {
 
-    @SerializedName("summary")
-    var summary: String = ""
-    @SerializedName("key")
-    @PrimaryKey
-    var key: String = ""
-    @SerializedName("date")
-    var date: String = ""
-    @SerializedName("color")
-    var color: Int = 0
-    @SerializedName("style")
-    var style: Int = 0
-    @SerializedName("images")
-    var images: List<ImageFile> = ArrayList()
-    @SerializedName("uniqueId")
-    var uniqueId: Int = 0
-
-    constructor(noteWithImages: NoteWithImages): this() {
+    constructor(noteWithImages: NoteWithImages) : this() {
         this.images = noteWithImages.images
         val note = noteWithImages.note ?: return
-
         this.uniqueId = note.uniqueId
         this.style = note.style
         this.color = note.color
         this.date = note.date
         this.key = note.key
         this.summary = note.summary
-    }
-
-    override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, Note::class.java)
     }
 }

@@ -29,6 +29,7 @@ data class ImageFile(
         @SerializedName("image")
         @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
         var image: ByteArray? = null,
+        @SerializedName("noteId")
         var noteId: String = "") {
 
     @PrimaryKey(autoGenerate = true)
