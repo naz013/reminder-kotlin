@@ -302,6 +302,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
             Color.LIME -> color = R.color.limeAccent
             Color.INDIGO -> color = R.color.indigoAccent
+            Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
             else -> color = R.color.blueAccent
         }
         return getColor(color)
@@ -327,6 +328,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
             Color.LIME -> color = R.color.limeAccent
             Color.INDIGO -> color = R.color.indigoAccent
+            Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
             else -> color = R.color.blueAccent
         }
         return adjustAlpha(getColor(color), opacity)
@@ -349,6 +351,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         const val AMBER = 13
         const val ORANGE = 14
         const val DEEP_ORANGE = 15
+        const val LIVING_CORAL = 16
     }
 
     @ColorInt
@@ -391,7 +394,8 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                 getColor(R.color.secondaryYellow),
                 getColor(R.color.secondaryAmber),
                 getColor(R.color.secondaryOrange),
-                getColor(R.color.secondaryOrangeDeep)
+                getColor(R.color.secondaryOrangeDeep),
+                getColor(R.color.secondaryLivingCoral)
         )
     }
 
@@ -430,6 +434,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             Color.AMBER -> "Amber"
             Color.ORANGE -> "Orange"
             Color.DEEP_ORANGE -> "OrangeDeep"
+            Color.LIVING_CORAL -> "LivingCoral"
             else -> "Red"
         }
     }
@@ -451,7 +456,8 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                 context.getString(R.string.yellow),
                 context.getString(R.string.amber),
                 context.getString(R.string.orange),
-                context.getString(R.string.dark_orange))
+                context.getString(R.string.dark_orange),
+                context.getString(R.string.living_coral))
     }
 
     @DrawableRes

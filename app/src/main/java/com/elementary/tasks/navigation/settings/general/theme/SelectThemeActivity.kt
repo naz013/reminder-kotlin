@@ -43,19 +43,21 @@ class SelectThemeActivity : ThemedActivity() {
         initToolbar()
 
         colorSliderBg.setColors(themeUtil.themeColorsForSlider())
-        colorSliderBg.setSelection(prefs.appTheme)
         colorSliderBg.setListener { position, _ ->
             prefs.appTheme = position
             prefs.isUiChanged = true
             onColorSelect(themes[position])
         }
+        colorSliderBg.setSelection(prefs.appTheme)
 
         colorSlider.setColors(themeUtil.accentColorsForSlider())
-        colorSlider.setSelection(prefs.appThemeColor)
-        colorSlider.setListener { position, _ ->
+        colorSlider.setListener { position, color ->
             prefs.appThemeColor = position
             prefs.isUiChanged = true
+            bgTitle.setTextColor(color)
+            accentTitle.setTextColor(color)
         }
+        colorSlider.setSelection(prefs.appThemeColor)
 
         onColorSelect(themes[prefs.appTheme])
     }

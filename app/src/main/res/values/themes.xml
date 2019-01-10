@@ -99,6 +99,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="PureWhite.LivingCoral" parent="PureWhite">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Light1 -->
 
     <style name="Light1.Red" parent="Light1">
@@ -195,6 +201,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Light1.LivingCoral" parent="Light1">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Light2 -->
@@ -295,6 +307,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Light2.LivingCoral" parent="Light2">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Light3 -->
 
     <style name="Light3.Red" parent="Light3">
@@ -391,6 +409,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Light3.LivingCoral" parent="Light3">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Light4 -->
@@ -491,6 +515,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Light4.LivingCoral" parent="Light4">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Dark1 -->
 
     <style name="Dark1.Red" parent="Dark1">
@@ -587,6 +617,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Dark1.LivingCoral" parent="Dark1">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Dark2 -->
@@ -687,6 +723,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Dark2.LivingCoral" parent="Dark2">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Dark3 -->
 
     <style name="Dark3.Red" parent="Dark3">
@@ -783,6 +825,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Dark3.LivingCoral" parent="Dark3">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Dark4 -->
@@ -883,6 +931,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Dark4.LivingCoral" parent="Dark4">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- PureBlack -->
 
     <style name="PureBlack.Red" parent="PureBlack">
@@ -979,6 +1033,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="PureBlack.LivingCoral" parent="PureBlack">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- PureWhite.Dialog -->
@@ -1079,6 +1139,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="PureWhite.Dialog.LivingCoral" parent="PureWhite.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Light1.Dialog -->
 
     <style name="Light1.Dialog.Red" parent="Light1.Dialog">
@@ -1175,6 +1241,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Light1.Dialog.LivingCoral" parent="Light1.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Light2.Dialog -->
@@ -1275,6 +1347,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Light2.Dialog.LivingCoral" parent="Light2.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Light3.Dialog -->
 
     <style name="Light3.Dialog.Red" parent="Light3.Dialog">
@@ -1371,6 +1449,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Light3.Dialog.LivingCoral" parent="Light3.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Light4.Dialog -->
@@ -1471,6 +1555,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Light4.Dialog.LivingCoral" parent="Light4.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Dark1.Dialog -->
 
     <style name="Dark1.Dialog.Red" parent="Dark1.Dialog">
@@ -1567,6 +1657,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Dark1.Dialog.LivingCoral" parent="Dark1.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Dark2 -->
@@ -1667,6 +1763,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Dark2.Dialog.LivingCoral" parent="Dark2.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- Dark3.Dialog -->
 
     <style name="Dark3.Dialog.Red" parent="Dark3.Dialog">
@@ -1763,6 +1865,12 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Dark3.Dialog.LivingCoral" parent="Dark3.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 
     <!-- Dark4.Dialog -->
@@ -1863,6 +1971,12 @@
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
     </style>
 
+    <style name="Dark4.Dialog.LivingCoral" parent="Dark4.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
     <!-- PureBlack.Dialog -->
 
     <style name="PureBlack.Dialog.Red" parent="PureBlack.Dialog">
@@ -1959,5 +2073,11 @@
         <item name="colorSecondary">@color/secondaryOrangeDeep</item>
         <item name="colorPrimary">@color/secondaryOrangeDeep</item>
         <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="PureBlack.Dialog.LivingCoral" parent="PureBlack.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
 </resources>
