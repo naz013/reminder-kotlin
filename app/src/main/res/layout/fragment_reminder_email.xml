@@ -48,7 +48,7 @@
             app:boxCornerRadiusTopEnd="5dp"
             app:boxCornerRadiusTopStart="5dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/subject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             app:boxCornerRadiusTopEnd="5dp"
             app:boxCornerRadiusTopStart="5dp">
 
-            <androidx.emoji.widget.EmojiAppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/taskSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

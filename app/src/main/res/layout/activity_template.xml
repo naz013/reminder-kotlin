@@ -36,7 +36,7 @@
         app:counterEnabled="true"
         app:counterMaxLength="120">
 
-        <androidx.emoji.widget.EmojiAppCompatEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

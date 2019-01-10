@@ -28,14 +28,14 @@ import java.util.*
 @Entity
 class ReminderGroup {
 
-    @SerializedName("groupTitle")
+    @SerializedName("title")
     var groupTitle: String = ""
-    @SerializedName("groupUuId")
+    @SerializedName("uuId")
     @PrimaryKey
     var groupUuId: String = ""
     @SerializedName("color")
     var groupColor: Int = 0
-    @SerializedName("groupDateTime")
+    @SerializedName("dateTime")
     var groupDateTime: String = ""
     @SerializedName("isDefaultGroup")
     var isDefaultGroup: Boolean = false
