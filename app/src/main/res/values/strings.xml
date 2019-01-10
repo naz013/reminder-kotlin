@@ -601,7 +601,6 @@
     <string name="use_settings_for_reminders">Use settings for reminders</string>
     <string name="new_place">New place</string>
     <string name="edit_place">Edit place</string>
-    <string name="with_reminder">With reminder</string>
     <string name="select_place">Select place</string>
     <string name="create_template">Create template</string>
     <string name="edit_template">Edit template</string>
@@ -615,7 +614,7 @@
     <string name="found_places">found places</string>
     <string name="repeat_every">Repeat every</string>
     <string name="pro" translatable="false">PRO</string>
-    <string name="new_tasks_list">New tasks list</string>
+    <string name="new_tasks_list">Create tasks list</string>
     <string name="failed_to_update_task">Failed to update task</string>
     <string name="details">Details</string>
     <string name="edit_task_list">Edit task list</string>
@@ -623,9 +622,8 @@
     <string name="do_not_use_pin_protection">Do not use PIN protection</string>
     <string name="protect_application_with_pin">Protect application with PIN</string>
     <string name="add_pin">Add PIN</string>
-    <string name="change_pin">Change PIN</string>
     <string name="do_not_use_fingerprint_to_login">Do not use fingerprint to login</string>
-    <string name="allow_fingerprint_login">Allow fingerprint login</string>
+    <string name="allow_fingerprint_login">Allow login with fingerprint</string>
     <string name="fingerprint">Fingerprint</string>
     <string name="pin" translatable="false">PIN</string>
     <string name="repeat_pin">Repeat PIN</string>
@@ -664,5 +662,7 @@
     <string name="do_not_show_notification">Do not show notification</string>
     <string name="do_not_remind_about_birthdays">Do not remind about birthdays</string>
     <string name="living_coral">Living Coral</string>
+    <string name="with_reminder">With reminder</string>
+    <string name="change_pin">Change PIN</string>
 
 </resources>
