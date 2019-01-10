@@ -820,7 +820,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             builder.priority = NotificationCompat.PRIORITY_LOW
         } else {
             builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-            builder.priority = NotificationCompat.PRIORITY_MAX
+            builder.priority = priority()
             if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
                             (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
                 val soundUri = soundUri
@@ -873,6 +873,17 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
     }
 
+    private fun priority(): Int {
+        val priority = mReminder?.priority ?: 2
+        return when (priority) {
+            0 -> NotificationCompat.PRIORITY_MIN
+            1 -> NotificationCompat.PRIORITY_LOW
+            2 -> NotificationCompat.PRIORITY_DEFAULT
+            3 -> NotificationCompat.PRIORITY_HIGH
+            else -> NotificationCompat.PRIORITY_MAX
+        }
+    }
+
     private fun showTTSNotification(activityClass: Activity) {
         Timber.d("showTTSNotification: ")
         val builder: NotificationCompat.Builder
@@ -881,7 +892,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             builder.priority = NotificationCompat.PRIORITY_LOW
         } else {
             builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-            builder.priority = NotificationCompat.PRIORITY_MAX
+            builder.priority = priority()
             if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
                             (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
                 playDefaultMelody()
