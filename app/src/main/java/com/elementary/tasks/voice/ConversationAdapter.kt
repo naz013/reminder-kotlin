@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.list_item_ask.view.*
 import kotlinx.android.synthetic.main.list_item_show_reply.view.*
 import kotlinx.android.synthetic.main.list_item_simple_reply.view.*
 import kotlinx.android.synthetic.main.list_item_simple_response.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -192,6 +193,7 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
     private fun addMoreItemsToList(position: Int) {
         val reply = mData[position]
         val container = reply.content as Container<*>
+        Timber.d("addMoreItemsToList: $container")
         when {
             container.type is ReminderGroup -> {
                 mData.removeAt(position)
@@ -203,10 +205,10 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
                 notifyItemRangeChanged(0, mData.size)
                 mCallback?.invoke()
             }
-            container.type is Note -> {
+            container.type is NoteWithImages -> {
                 mData.removeAt(position)
                 notifyItemRemoved(position)
-                for (item in (container as Container<Note>).list) {
+                for (item in (container as Container<NoteWithImages>).list) {
                     mData.add(0, Reply(Reply.NOTE, item))
                     notifyItemInserted(0)
                 }
