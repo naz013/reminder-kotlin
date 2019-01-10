@@ -137,7 +137,7 @@
                     app:boxCornerRadiusTopEnd="5dp"
                     app:boxCornerRadiusTopStart="5dp">
 
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/cardSearch"
                         android:textAppearance="?textAppearanceSubtitle2"
                         android:layout_width="match_parent"
