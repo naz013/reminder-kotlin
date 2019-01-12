@@ -8,6 +8,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
@@ -89,8 +90,10 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mDriveCallback = loginCallback
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
                 .requestScopes(Scope(DriveScopes.DRIVE))
+                .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
+                .requestEmail()
                 .build()
         val client = GoogleSignIn.getClient(activity, signInOptions)
         activity.startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
@@ -204,8 +207,18 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
                 .addOnSuccessListener { googleAccount ->
                     Timber.d("Signed in as ${googleAccount.email}")
                     finishLogin(googleAccount.account?.name ?: "")
+//                    testSync()
                 }
-                .addOnFailureListener { sendFail() }
+                .addOnFailureListener {
+                    Timber.d("handleSignInResult: ${it.message}")
+                    sendFail()
+                }
+    }
+
+    private fun testSync() {
+        launchIo {
+            GDrive.getInstance(activity)?.saveRemindersToDrive()
+        }
     }
 
     private fun finishLogin(account: String) {
