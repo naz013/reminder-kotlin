@@ -9,9 +9,6 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.Scope
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -61,44 +58,20 @@ class GDrive private constructor(context: Context) {
 
     init {
         ReminderApp.appComponent.inject(this)
-
-        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(Scope(DriveScopes.DRIVE))
-                .build()
-        val client = GoogleSignIn.getClient(context, signInOptions)
-        client.silentSignIn().addOnSuccessListener {
-            Timber.d("GDrive: silent -> ${it.email}")
-            val credential = GoogleAccountCredential.usingOAuth2(
-                    context, Collections.singleton(DriveScopes.DRIVE))
-            val account = it.account
-            Timber.d("GDrive: account -> $account")
-            credential.selectedAccount = account
-            driveService = Drive.Builder(
-                    AndroidHttp.newCompatibleTransport(),
-                    GsonFactory(),
-                    credential)
-                    .setApplicationName(APPLICATION_NAME)
-                    .build()
-            isLogged = true
-            statusObserver?.invoke(true)
-        }.addOnFailureListener {
-            val credential = GoogleAccountCredential.usingOAuth2(
-                    context, Collections.singleton(DriveScopes.DRIVE))
-            val gam = GoogleAccountManager(context)
-            val user = prefs.driveUser
+        val user = prefs.driveUser
+        if (user.matches(".*@.*".toRegex())) {
             Timber.d("GDrive: user -> $user")
-            val account = GoogleSignIn.getLastSignedInAccount(context)?.account ?: gam.getAccountByName(user)
-            Timber.d("GDrive: account -> $account")
-            credential.selectedAccount = account
-            driveService = Drive.Builder(
-                    AndroidHttp.newCompatibleTransport(),
-                    GsonFactory(),
-                    credential)
+
+            val credential = GoogleAccountCredential.usingOAuth2(
+                    context, Collections.singleton(DriveScopes.DRIVE))
+            credential.selectedAccountName = user
+            driveService = Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
                     .setApplicationName(APPLICATION_NAME)
                     .build()
             isLogged = true
             statusObserver?.invoke(true)
+        } else {
+            logOut()
         }
     }
 
@@ -887,7 +860,7 @@ class GDrive private constructor(context: Context) {
     }
 
     companion object {
-        private const val APPLICATION_NAME = "Reminder/6.0"
+        const val APPLICATION_NAME = "Reminder/6.0"
         private const val FOLDER_NAME = "Reminder"
 
         private var instance: GDrive? = null
