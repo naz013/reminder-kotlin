@@ -19,6 +19,7 @@ import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
 import kotlinx.android.synthetic.main.fragment_flext_cal.*
+import org.apache.commons.lang3.StringUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -113,7 +114,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
     }
 
     private fun updateMenuTitles(mills: Long): String {
-        val monthTitle = DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString()
+        val monthTitle = StringUtils.capitalize(DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString())
         callback?.onTitleChange(monthTitle)
         return monthTitle
     }

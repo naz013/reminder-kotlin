@@ -54,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:clickable="false"
-                app:chipSpacing="8dp"
+                app:chipSpacingHorizontal="4dp"
+                app:chipSpacingVertical="0dp"
                 app:layout_constraintEnd_toStartOf="@+id/button_more"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -78,14 +79,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"
-                    android:enabled="false"
                     android:textAppearance="?textAppearanceBody2"
                     android:textColor="?android:textColorPrimary"
                     android:textColorLink="?android:textColorPrimary"
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
                     app:chipSurfaceColor="?android:colorBackground"
-                    tools:text="Group" />
+                    tools:text="Test" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPriority"
@@ -99,7 +99,7 @@
                     app:chipStrokeColor="@color/redPrimary"
                     app:chipStrokeWidth="1dp"
                     app:chipSurfaceColor="?android:colorBackground"
-                    tools:text="High" />
+                    tools:text="Test" />
 
             </com.google.android.material.chip.ChipGroup>
 
