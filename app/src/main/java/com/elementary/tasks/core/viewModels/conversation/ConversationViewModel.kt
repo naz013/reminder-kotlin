@@ -13,6 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
@@ -310,7 +311,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         launchDefault {
             appDb.notesDao().insert(note)
         }
-        updatesHelper.updateNotesWidget()
+        UpdatesHelper.updateNotesWidget(getApplication())
         if (showToast) {
             Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()
         }

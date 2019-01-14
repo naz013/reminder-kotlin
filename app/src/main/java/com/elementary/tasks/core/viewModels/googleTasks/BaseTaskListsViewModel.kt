@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -84,7 +85,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
                     withUIContext {
                         postInProgress(false)
                         postCommand(Commands.UPDATED)
-                        updatesHelper.updateTasksWidget()
+                        UpdatesHelper.updateTasksWidget(getApplication())
                     }
                 } catch (e: IOException) {
                     withUIContext {

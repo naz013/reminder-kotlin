@@ -23,8 +23,6 @@ import java.util.List;
 
 public class Recognizer {
 
-    private static final String TAG = "Recognizer";
-
     private String[] times;
     private WorkerInterface worker;
     private ContactsInterface contactsInterface;

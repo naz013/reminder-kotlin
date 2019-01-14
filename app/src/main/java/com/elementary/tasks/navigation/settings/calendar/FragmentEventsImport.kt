@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
@@ -317,7 +318,7 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
             if (result == 0) Toast.makeText(mContext, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show()
             if (result > 0) {
                 Toast.makeText(mContext, result.toString() + " " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
-                updatesHelper.updateCalendarWidget()
+                UpdatesHelper.updateCalendarWidget(context!!)
                 notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
             }
         }

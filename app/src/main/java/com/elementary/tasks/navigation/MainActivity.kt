@@ -54,7 +54,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
-    @Inject
     lateinit var remotePrefs: RemotePrefs
     @Inject
     lateinit var buttonObservable: GlobalButtonObservable
@@ -75,6 +74,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        remotePrefs = RemotePrefs(this)
         setContentView(R.layout.activity_main)
         initActionBar()
         initNavigation()

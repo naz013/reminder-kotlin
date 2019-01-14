@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive
@@ -26,7 +25,6 @@ import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -51,8 +49,6 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     private lateinit var mDropbox: DropboxLogin
     private lateinit var mGoogleLogin: GoogleLogin
 
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
     private val mDropboxCallback = object : DropboxLogin.LoginCallback {
         override fun onSuccess(b: Boolean) {
             if (b) {
@@ -62,10 +58,6 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             }
             callback?.refreshMenu()
         }
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     private fun showErrorDialog() {
@@ -209,7 +201,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             }
 
             withUIContext {
-                updatesHelper.updateTasksWidget()
+                UpdatesHelper.updateTasksWidget(context!!)
                 updateProgress(false)
             }
         }
@@ -261,7 +253,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
             AppDb.getAppDatabase(context!!).googleTasksDao().deleteAll()
             AppDb.getAppDatabase(context!!).googleTaskListsDao().deleteAll()
             withUIContext {
-                updatesHelper.updateTasksWidget()
+                UpdatesHelper.updateTasksWidget(context!!)
                 callback?.refreshMenu()
                 updateProgress(false)
                 checkGoogleStatus()

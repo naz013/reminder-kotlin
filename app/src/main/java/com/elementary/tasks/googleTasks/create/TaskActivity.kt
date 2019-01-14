@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
@@ -29,7 +28,6 @@ import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_create_google_task.*
 import kotlinx.android.synthetic.main.view_progress.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -83,13 +81,6 @@ class TaskActivity : ThemedActivity() {
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
         timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
-    }
-
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -462,7 +453,7 @@ class TaskActivity : ThemedActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        updatesHelper.updateTasksWidget()
+        UpdatesHelper.updateTasksWidget(this)
     }
 
     override fun onBackPressed() {

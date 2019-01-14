@@ -122,7 +122,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             syncButton.setOnClickListener {
                 syncButton.isEnabled = false
                 progressView.visibility = View.VISIBLE
-                SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool), updatesHelper, { progress ->
+                SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool), { progress ->
                     progressMessageView.text = progress
                 }, {
                     progressView.visibility = View.INVISIBLE

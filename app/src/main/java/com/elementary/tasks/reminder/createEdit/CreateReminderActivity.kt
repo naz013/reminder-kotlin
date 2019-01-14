@@ -60,8 +60,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     override var canExportToCalendar: Boolean = false
 
     @Inject
-    lateinit var updatesHelper: UpdatesHelper
-    @Inject
     lateinit var backupTool: BackupTool
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
@@ -508,8 +506,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun onDestroy() {
         super.onDestroy()
-        updatesHelper.updateWidget()
-        updatesHelper.updateCalendarWidget()
+        UpdatesHelper.updateWidget(this)
+        UpdatesHelper.updateCalendarWidget(this)
     }
 
     override fun onBackPressed() {

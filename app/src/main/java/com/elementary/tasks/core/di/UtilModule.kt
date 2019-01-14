@@ -2,7 +2,6 @@ package com.elementary.tasks.core.di
 
 import android.app.Application
 import com.backdoor.engine.Recognizer
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -47,18 +46,6 @@ class UtilModule {
     @Singleton
     fun providesPrefs(application: Application): Prefs {
         return Prefs(application)
-    }
-
-    @Provides
-    @Singleton
-    fun providesRemotePrefs(application: Application): RemotePrefs {
-        return RemotePrefs(application)
-    }
-
-    @Provides
-    @Singleton
-    fun providesUpdatesHelper(application: Application): UpdatesHelper {
-        return UpdatesHelper(application)
     }
 
     @Provides

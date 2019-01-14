@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.appWidgets.calendar.CalendarWidget
 import com.elementary.tasks.core.appWidgets.events.EventsWidget
-import com.elementary.tasks.core.appWidgets.notes.NotesWidget
 import com.elementary.tasks.core.appWidgets.googleTasks.TasksWidget
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.elementary.tasks.core.appWidgets.notes.NotesWidget
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -29,21 +27,20 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class UpdatesHelper @Inject constructor(private val context: Context) {
+object UpdatesHelper {
 
-    fun updateWidget() {
+    fun updateWidget(context: Context) {
         val intent = Intent(context, EventsWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
         val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, EventsWidget::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         context.sendBroadcast(intent)
-        updateCalendarWidget()
-        updateTasksWidget()
+        updateCalendarWidget(context)
+        updateTasksWidget(context)
     }
 
-    fun updateNotesWidget() {
+    fun updateNotesWidget(context: Context) {
         val intent = Intent(context, NotesWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
@@ -52,7 +49,7 @@ class UpdatesHelper @Inject constructor(private val context: Context) {
         context.sendBroadcast(intent)
     }
 
-    fun updateCalendarWidget() {
+    fun updateCalendarWidget(context: Context) {
         val intent = Intent(context, CalendarWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
@@ -61,7 +58,7 @@ class UpdatesHelper @Inject constructor(private val context: Context) {
         context.sendBroadcast(intent)
     }
 
-    fun updateTasksWidget() {
+    fun updateTasksWidget(context: Context) {
         val intent = Intent(context, TasksWidget::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 

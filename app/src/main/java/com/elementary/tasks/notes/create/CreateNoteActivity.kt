@@ -98,8 +98,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     @Inject
     lateinit var backupTool: BackupTool
     @Inject
-    lateinit var updatesHelper: UpdatesHelper
-    @Inject
     lateinit var imagesSingleton: ImagesSingleton
 
     private val mRecognitionListener = object : RecognitionListener {
@@ -377,8 +375,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> {
-                        updatesHelper.updateNotesWidget()
-                        updatesHelper.updateWidget()
+                        UpdatesHelper.updateNotesWidget(this)
+                        UpdatesHelper.updateWidget(this)
                         finish()
                     }
                     else -> {

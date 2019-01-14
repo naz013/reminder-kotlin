@@ -43,8 +43,6 @@ abstract class BaseFragment : Fragment() {
     @Inject
     lateinit var buttonObservable: GlobalButtonObservable
     @Inject
-    lateinit var language: Language
-    @Inject
     lateinit var notifier: Notifier
 
     var isDark = false

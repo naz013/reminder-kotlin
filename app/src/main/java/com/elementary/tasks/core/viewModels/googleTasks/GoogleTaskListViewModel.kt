@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -92,7 +93,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
                         withUIContext {
                             postInProgress(false)
                             postCommand(Commands.UPDATED)
-                            updatesHelper.updateTasksWidget()
+                            UpdatesHelper.updateTasksWidget(getApplication())
                         }
                     } else {
                         val googleTasks = ArrayList<GoogleTask>()
@@ -110,7 +111,7 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
                         withUIContext {
                             postInProgress(false)
                             postCommand(Commands.UPDATED)
-                            updatesHelper.updateTasksWidget()
+                            UpdatesHelper.updateTasksWidget(getApplication())
                         }
                     }
                 }

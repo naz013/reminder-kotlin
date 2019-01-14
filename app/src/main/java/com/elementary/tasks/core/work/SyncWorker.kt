@@ -11,8 +11,7 @@ import com.elementary.tasks.groups.GroupsUtil
 
 object SyncWorker {
 
-    fun sync(context: Context, ioHelper: IoHelper, updatesHelper: UpdatesHelper,
-             progress: (String) -> Unit, onEnd: () -> Unit) {
+    fun sync(context: Context, ioHelper: IoHelper, progress: (String) -> Unit, onEnd: () -> Unit) {
         launchIo {
             withUIContext { progress. invoke(context.getString(R.string.syncing_groups))}
             ioHelper.restoreGroup(true)
@@ -49,8 +48,8 @@ object SyncWorker {
             ioHelper.backupSettings()
 
             withUIContext {
-                updatesHelper.updateWidget()
-                updatesHelper.updateNotesWidget()
+                UpdatesHelper.updateWidget(context)
+                UpdatesHelper.updateNotesWidget(context)
                 onEnd.invoke()
             }
         }

@@ -7,7 +7,6 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -16,7 +15,6 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import kotlinx.android.synthetic.main.activity_create_task_list.*
 import kotlinx.android.synthetic.main.view_progress.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,13 +39,6 @@ class TaskListActivity : ThemedActivity() {
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mItem: GoogleTaskList? = null
     private var mIsLoading = false
-
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,7 +189,7 @@ class TaskListActivity : ThemedActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        updatesHelper.updateTasksWidget()
+        UpdatesHelper.updateTasksWidget(this)
     }
 
     override fun onBackPressed() {
