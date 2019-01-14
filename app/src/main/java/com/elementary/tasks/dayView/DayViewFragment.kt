@@ -22,6 +22,7 @@ import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.dayView.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import kotlinx.android.synthetic.main.fragment_day_view.*
+import org.apache.commons.lang3.StringUtils
 import java.util.*
 
 /**
@@ -113,7 +114,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
     private fun updateMenuTitles(): String {
         val mills = if (dateMills != 0L) dateMills else System.currentTimeMillis()
-        val monthTitle = DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString()
+        val monthTitle = StringUtils.capitalize(DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString())
         callback?.onTitleChange(monthTitle)
         return monthTitle
     }
