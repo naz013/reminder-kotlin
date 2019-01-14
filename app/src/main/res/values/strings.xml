@@ -664,5 +664,6 @@
     <string name="change_pin">Change PIN</string>
     <string name="acc_resend_message">Resend message</string>
     <string name="backup_my_data">Backup my data</string>
+    <string name="missed_call">Missed Call</string>
 
 </resources>
