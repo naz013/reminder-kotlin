@@ -71,7 +71,7 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/buttonCall"
+                android:id="@+id/buttonAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/action_button_rounded"
@@ -79,20 +79,7 @@
                 android:textAllCaps="true"
                 android:textAppearance="?textAppearanceButton"
                 android:textColor="?colorSecondary"
-                tools:text="@string/make_call" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/buttonSms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/action_button_rounded"
-                android:padding="8dp"
-                android:textAllCaps="true"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?colorSecondary"
-                android:visibility="gone"
-                tools:text="@string/send_sms" />
+                android:text="@string/make_call" />
 
         </LinearLayout>
     </LinearLayout>

@@ -4,10 +4,7 @@ import android.app.IntentService
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import com.elementary.tasks.ReminderApp
-
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
-import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -27,14 +24,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarUpdateMinusService : IntentService("CalendarUpdateService") {
-
-    @Inject lateinit var updatesHelper: UpdatesHelper
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onHandleIntent(intent: Intent?) {
         val action = intent?.getIntExtra("actionMinus", 0) ?: ""
@@ -56,7 +46,7 @@ class CalendarUpdateMinusService : IntentService("CalendarUpdateService") {
             }
             editor.putInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetId, year)
             editor.apply()
-            updatesHelper.updateCalendarWidget()
+            UpdatesHelper.updateCalendarWidget(applicationContext)
             stopSelf()
         } else {
             stopSelf()

@@ -7,8 +7,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -28,8 +26,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class RemotePrefs @Inject constructor(private val context: Context) {
+class RemotePrefs(context: Context) {
 
     private val mFirebaseRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 

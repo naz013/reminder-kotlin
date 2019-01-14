@@ -2,16 +2,13 @@ package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
-import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
-import com.google.api.services.tasks.model.TaskLists
-import java.io.IOException
-import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -59,7 +56,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                 withUIContext {
                     postInProgress(false)
                     postCommand(Commands.UPDATED)
-                    updatesHelper.updateTasksWidget()
+                    UpdatesHelper.updateTasksWidget(getApplication())
                 }
             }
         }

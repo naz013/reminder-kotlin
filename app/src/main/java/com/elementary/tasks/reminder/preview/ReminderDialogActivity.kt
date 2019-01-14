@@ -223,7 +223,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             repeater.cancelAlarm(this, id)
             discardNotification(id)
         }
-        buttonCall.setOnClickListener { call() }
+        buttonAction.setOnClickListener { call() }
     }
 
     override fun onResume() {
@@ -334,13 +334,11 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 contactNumber.text = reminder.target
 
                 contactBlock.visibility = View.VISIBLE
-                buttonCall.text = getString(R.string.make_call)
+                buttonAction.text = getString(R.string.make_call)
                 if (prefs.isTelephonyAllowed) {
-                    buttonCall.visibility = View.VISIBLE
-                    buttonSms.visibility = View.VISIBLE
+                    buttonAction.visibility = View.VISIBLE
                 } else {
-                    buttonCall.visibility = View.INVISIBLE
-                    buttonSms.visibility = View.INVISIBLE
+                    buttonAction.visibility = View.INVISIBLE
                 }
             } else {
                 if (Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
@@ -357,8 +355,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 contactNumber.text = reminder.target
 
                 contactBlock.visibility = View.VISIBLE
-                buttonCall.text = getString(R.string.make_call)
-
+                buttonAction.text = getString(R.string.make_call)
+                buttonAction.visibility = View.VISIBLE
                 if (TextUtils.isEmpty(summary)) {
                     messageView.visibility = View.GONE
                     someView.visibility = View.GONE
@@ -386,12 +384,11 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
                 contactName.text = name
                 contactNumber.text = reminder.target
+                buttonAction.text = getString(R.string.send)
                 if (prefs.isTelephonyAllowed) {
-                    buttonCall.visibility = View.VISIBLE
-                    buttonSms.visibility = View.VISIBLE
+                    buttonAction.visibility = View.VISIBLE
                 } else {
-                    buttonCall.visibility = View.INVISIBLE
-                    buttonSms.visibility = View.INVISIBLE
+                    buttonAction.visibility = View.INVISIBLE
                 }
             } else {
                 remText.setText(R.string.skype_chat)
@@ -405,16 +402,17 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             }
             if (!prefs.isAutoSmsEnabled) {
                 contactBlock.visibility = View.VISIBLE
-                buttonCall.text = getString(R.string.send)
-                buttonCall.contentDescription = getString(R.string.acc_button_send_message)
+                buttonAction.text = getString(R.string.send)
+                buttonAction.contentDescription = getString(R.string.acc_button_send_message)
+                buttonAction.visibility = View.VISIBLE
             } else {
                 contactBlock.visibility = View.INVISIBLE
+                buttonAction.visibility = View.INVISIBLE
                 buttonDelay.hide()
                 buttonDelayFor.hide()
             }
             container.visibility = View.VISIBLE
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
-            buttonCall.contentDescription = getString(R.string.acc_button_send_message)
             remText.setText(R.string.e_mail)
             val conID = Contacts.getIdFromMail(reminder.target, this)
             if (conID != 0) {
@@ -445,7 +443,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             subjectContainer.visibility = View.VISIBLE
 
             contactBlock.visibility = View.VISIBLE
-            buttonCall.text = getString(R.string.send)
+            buttonAction.text = getString(R.string.send)
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
             val packageManager = packageManager
             var applicationInfo: ApplicationInfo? = null
@@ -462,8 +460,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             contactName.text = nameA
             contactNumber.text = reminder.target
             contactBlock.visibility = View.VISIBLE
-            buttonCall.text = getString(R.string.open)
-            buttonCall.contentDescription = getString(R.string.acc_button_open_application)
+            buttonAction.text = getString(R.string.open)
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)) {
             val label = summary + "\n\n" + reminder.target
             remText.text = summary
@@ -472,8 +469,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             contactName.text = reminder.target
             contactNumber.text = reminder.target
             contactBlock.visibility = View.VISIBLE
-            buttonCall.text = getString(R.string.open)
-            buttonCall.contentDescription = getString(R.string.acc_button_open_link_in_browser)
+            buttonAction.text = getString(R.string.open)
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP)) {
             remText.text = summary
             remText.contentDescription = summary
@@ -769,10 +765,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         showNotification()
         remText.text = getString(R.string.error_sending)
         remText.contentDescription = getString(R.string.error_sending)
-        buttonCall.text = getString(R.string.retry)
-        buttonCall.contentDescription = getString(R.string.acc_button_retry_to_send_message)
-        if (buttonCall.visibility == View.GONE) {
-            buttonCall.visibility = View.VISIBLE
+        buttonAction.text = getString(R.string.retry)
+        if (buttonAction.visibility == View.INVISIBLE) {
+            buttonAction.visibility = View.VISIBLE
         }
     }
 

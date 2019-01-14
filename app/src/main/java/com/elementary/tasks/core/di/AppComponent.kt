@@ -45,6 +45,7 @@ import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -136,6 +137,7 @@ interface AppComponent {
     fun inject(fragment: EventsListFragment)
     fun inject(fragment: TaskListFragment)
     fun inject(fragment: ExportSettingsFragment)
+    fun inject(fragment: BaseSettingsFragment)
 
     fun inject(repeatView: RepeatView)
     fun inject(monthView: MonthView)

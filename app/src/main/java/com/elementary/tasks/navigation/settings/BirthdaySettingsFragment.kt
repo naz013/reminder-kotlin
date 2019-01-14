@@ -13,6 +13,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -221,8 +222,8 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         val isChecked = widgetShowPrefs.isChecked
         widgetShowPrefs.isChecked = !isChecked
         prefs.isBirthdayInWidgetEnabled = !isChecked
-        updatesHelper.updateCalendarWidget()
-        updatesHelper.updateWidget()
+        UpdatesHelper.updateCalendarWidget(context!!)
+        UpdatesHelper.updateWidget(context!!)
     }
 
     private fun initBirthdayReminderPrefs() {

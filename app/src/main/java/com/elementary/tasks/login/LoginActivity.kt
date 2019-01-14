@@ -61,8 +61,6 @@ class LoginActivity : ThemedActivity() {
     private var dropboxLogin: DropboxLogin? = null
 
     @Inject
-    lateinit var updatesHelper: UpdatesHelper
-    @Inject
     lateinit var backupTool: BackupTool
 
     init {
@@ -138,8 +136,8 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun finishRestoring() {
-        updatesHelper.updateWidget()
-        updatesHelper.updateNotesWidget()
+        UpdatesHelper.updateWidget(this)
+        UpdatesHelper.updateNotesWidget(this)
         showProgress(null)
         openApplication()
     }

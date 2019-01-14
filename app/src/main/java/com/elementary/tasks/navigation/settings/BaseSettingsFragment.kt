@@ -1,6 +1,9 @@
 package com.elementary.tasks.navigation.settings
 
+import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,5 +23,12 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+abstract class BaseSettingsFragment : BaseNavigationFragment() {
 
-abstract class BaseSettingsFragment : BaseNavigationFragment()
+    @Inject
+    lateinit var language: Language
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+}

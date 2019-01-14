@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings
 
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.utils.CalendarUtils
 import javax.inject.Inject
 
@@ -25,8 +24,6 @@ import javax.inject.Inject
  */
 abstract class BaseCalendarFragment : BaseSettingsFragment() {
 
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
     @Inject
     lateinit var calendarUtils: CalendarUtils
 
