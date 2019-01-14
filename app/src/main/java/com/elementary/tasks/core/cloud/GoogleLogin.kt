@@ -71,8 +71,8 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mGoogleDrive = null
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
                 .requestEmail()
-                .requestScopes(Scope(DriveScopes.DRIVE))
                 .build()
         val client = GoogleSignIn.getClient(activity, signInOptions)
         client.signOut().addOnSuccessListener {
@@ -90,8 +90,6 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mDriveCallback = loginCallback
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope(DriveScopes.DRIVE))
-                .requestScopes(Scope(DriveScopes.DRIVE_FILE))
                 .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
                 .requestEmail()
                 .build()
@@ -207,7 +205,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
                 .addOnSuccessListener { googleAccount ->
                     Timber.d("Signed in as ${googleAccount.email}")
                     finishLogin(googleAccount.account?.name ?: "")
-//                    testSync()
+                    testSync()
                 }
                 .addOnFailureListener {
                     Timber.d("handleSignInResult: ${it.message}")

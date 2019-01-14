@@ -36,4 +36,11 @@ object GroupsUtil {
         dao.insert(ReminderGroup(context.getString(R.string.personal), random.nextInt(16)))
         return def.groupUuId
     }
+
+    fun mapAll(appDb: AppDb): Map<String, ReminderGroup> {
+        val list = appDb.reminderGroupDao().all()
+        val map = mutableMapOf<String, ReminderGroup>()
+        for (group in list) map[group.groupUuId] = group
+        return map
+    }
 }

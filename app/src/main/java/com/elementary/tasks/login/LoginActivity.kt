@@ -26,6 +26,7 @@ import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -100,6 +101,7 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun loadDataFromDropbox() {
+        prefs.isBackupEnabled = true
         showProgress(getString(R.string.please_wait))
         launchDefault {
             val drive = Dropbox()
@@ -175,6 +177,7 @@ class LoginActivity : ThemedActivity() {
             Permissions.requestPermission(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
             return
         }
+        prefs.isBackupEnabled = true
         showProgress(getString(R.string.please_wait))
         launchDefault {
             withUIContext { showProgress(getString(R.string.syncing_groups)) }
@@ -187,7 +190,7 @@ class LoginActivity : ThemedActivity() {
 
             withUIContext { showProgress(getString(R.string.syncing_reminders)) }
             try {
-                backupTool.importReminders(this@LoginActivity)
+                backupTool.importReminders()
             } catch (ignored: IOException) {
             }
 
@@ -233,10 +236,12 @@ class LoginActivity : ThemedActivity() {
                 item.groupUuId = defUiID
                 dao.insert(item)
             }
+            BackupDataWorker.schedule()
         }
     }
 
     private fun loadDataFromGoogle() {
+        prefs.isBackupEnabled = true
         showProgress(getString(R.string.please_wait))
         launchDefault {
             val drive = GDrive.getInstance(this@LoginActivity)
@@ -342,6 +347,7 @@ class LoginActivity : ThemedActivity() {
 
                 override fun onResult(v: GDrive?, isLogged: Boolean) {
                     if (isLogged) loadDataFromGoogle()
+                    else showLoginError()
                 }
 
                 override fun onFail() {

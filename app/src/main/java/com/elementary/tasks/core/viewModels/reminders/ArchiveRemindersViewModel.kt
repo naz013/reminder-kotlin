@@ -36,7 +36,7 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
     var events: LiveData<List<Reminder>>
 
     init {
-        events = appDb.reminderDao().loadByRemoved(true)
+        events = appDb.reminderDao().loadNotRemoved(true)
     }
 
     fun deleteAll(data: List<Reminder>) {
