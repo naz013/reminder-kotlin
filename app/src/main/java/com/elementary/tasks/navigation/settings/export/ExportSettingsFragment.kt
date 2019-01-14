@@ -2,11 +2,7 @@ package com.elementary.tasks.navigation.settings.export
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.CheckedTextView
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -67,16 +63,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     private val currentPosition: Int
         get() {
-            var position = 0
-            val id = prefs.calendarId
-            for (i in mDataList.indices) {
-                val item = mDataList[i]
-                if (item.id == id) {
-                    position = i
-                    break
-                }
-            }
-            return position
+            return findPosition(mDataList)
         }
 
     init {
@@ -107,6 +94,18 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
         }
         backupsPrefs.setDependentView(backupDataPrefs)
+    }
+
+    private fun findPosition(list: List<CalendarUtils.CalendarItem>): Int {
+        if (list.isEmpty()) return -1
+        val id = prefs.calendarId
+        for (i in list.indices) {
+            val item = list[i]
+            if (item.id == id) {
+                return i
+            }
+        }
+        return -1
     }
 
     private fun initBackupPrefs() {
@@ -272,6 +271,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     private fun initSelectCalendarPrefs() {
         selectCalendarPrefs.setOnClickListener { showSelectCalendarDialog() }
         selectCalendarPrefs.setDependentView(exportToCalendarPrefs)
+        showCurrentCalendar()
     }
 
     private fun initEventDurationPrefs() {
@@ -349,29 +349,34 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         if (mDataList.isEmpty()) {
             return false
         }
+        val names = mDataList.map { it.name }.toTypedArray()
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.choose_calendar)
-        builder.setSingleChoiceItems(object : ArrayAdapter<CalendarUtils.CalendarItem>(context!!,
-                android.R.layout.simple_list_item_single_choice) {
-            override fun getCount(): Int {
-                return mDataList.size
-            }
-
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                var cView = convertView
-                if (cView == null) {
-                    cView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_single_choice, parent, false)
-                }
-                val tvName = cView!!.findViewById<CheckedTextView>(android.R.id.text1)
-                tvName.text = mDataList[position].name
-                return cView
-            }
-        }, currentPosition) { dialogInterface, i ->
-            dialogInterface.dismiss()
-            prefs.calendarId = mDataList[i].id
+        mItemSelect = currentPosition
+        builder.setSingleChoiceItems(names, mItemSelect) { _, i ->
+            mItemSelect = i
+        }
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            prefs.calendarId = mDataList[mItemSelect].id
+            dialog.dismiss()
+            showCurrentCalendar()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
         }
         builder.create().show()
         return true
+    }
+
+    private fun showCurrentCalendar() {
+        val calendars = calendarUtils.getCalendarsList()
+        val pos = findPosition(calendars)
+        if (calendars.isNotEmpty() && pos != -1) {
+            val name = calendars[pos].name
+            selectCalendarPrefs.setDetailText(name)
+        } else {
+            selectCalendarPrefs.setDetailText(null)
+        }
     }
 
     private fun initExportToCalendarPrefs() {
