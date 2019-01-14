@@ -60,28 +60,19 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/selectNumber"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/acc_select_number_from_contacts"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_contacts_24px"
-                    app:tint="?android:textColorPrimary" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/numberLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="-4dp"
+                    android:layout_marginBottom="-8dp"
                     app:boxBackgroundColor="?colorSecondary12"
                     app:boxCornerRadiusTopEnd="5dp"
                     app:boxCornerRadiusTopStart="5dp">
@@ -89,14 +80,28 @@
                     <com.elementary.tasks.core.views.PhoneAutoCompleteView
                         android:id="@+id/numberView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:ems="10"
                         android:hint="@string/phone"
                         android:inputType="text|phone"
+                        android:lines="1"
                         android:maxLines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:singleLine="true"
                         android:textAppearance="?textAppearanceSubtitle2" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/selectNumber"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    app:backgroundTint="?colorSecondary"
+                    android:contentDescription="@string/acc_select_number_from_contacts"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_contacts_24px"
+                    app:tint="@color/whitePrimary" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
