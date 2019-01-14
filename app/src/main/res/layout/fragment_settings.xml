@@ -63,7 +63,6 @@
             app:prefs_divider_bottom="true"
             app:prefs_icon="@drawable/ic_twotone_lock_24px"
             app:prefs_primary_text="@string/security"
-            app:prefs_pro="true"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
