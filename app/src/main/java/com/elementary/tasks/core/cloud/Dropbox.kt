@@ -16,6 +16,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.groups.GroupsUtil
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.*
@@ -622,21 +623,33 @@ class Dropbox {
         try {
             val result = api.files().listFolder(dbxFolder) ?: return
             val dao = appDb.reminderDao()
+            val groups = GroupsUtil.mapAll(appDb)
+            val defGroup = appDb.reminderGroupDao().defaultGroup() ?: groups.values.first()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
                 val cloudFile = dbxFolder + fileName
                 downloadFile(localFile, cloudFile)
                 val reminder = backupTool.getReminder(localFile.toString(), null)
-                if (reminder == null || reminder.isRemoved || !reminder.isActive) {
+                if (reminder == null) {
+                    deleteReminder(fileName)
                     continue
                 }
+                if (!groups.containsKey(reminder.groupUuId)) {
+                    reminder.apply {
+                        this.groupTitle = defGroup.groupTitle
+                        this.groupUuId = defGroup.groupUuId
+                        this.groupColor = defGroup.groupColor
+                    }
+                }
                 dao.insert(reminder)
-                val control = EventControlFactory.getController(reminder)
-                if (control.canSkip()) {
-                    control.next()
-                } else {
-                    control.start()
+                if (reminder.isActive && !reminder.isRemoved) {
+                    val control = EventControlFactory.getController(reminder)
+                    if (control.canSkip()) {
+                        control.next()
+                    } else {
+                        control.start()
+                    }
                 }
                 if (deleteFile) {
                     if (localFile.exists()) {

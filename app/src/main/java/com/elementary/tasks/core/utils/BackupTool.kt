@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import com.elementary.tasks.ReminderApp
@@ -11,6 +10,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
 import com.elementary.tasks.core.utils.MemoryUtil.writeFile
+import com.elementary.tasks.groups.GroupsUtil
 import com.google.gson.Gson
 import timber.log.Timber
 import java.io.File
@@ -307,32 +307,35 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    fun importReminders(mContext: Context) {
+    fun importReminders() {
         val dir = MemoryUtil.remindersDir
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                val defaultGroup = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
+                val groups = GroupsUtil.mapAll(appDb)
+                val defGroup = appDb.reminderGroupDao().defaultGroup() ?: groups.values.first()
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         val reminder = getReminder(file.toString(), null) ?: continue
-                        if (reminder.isRemoved || !reminder.isActive) {
+                        if (TextUtils.isEmpty(reminder.uuId)) {
+                            file.delete()
                             continue
                         }
-                        if (TextUtils.isEmpty(reminder.summary) ||
-                                TextUtils.isEmpty(reminder.eventTime) ||
-                                TextUtils.isEmpty(reminder.uuId)) {
-                            continue
+                        if (!groups.containsKey(reminder.groupUuId)) {
+                            reminder.apply {
+                                this.groupTitle = defGroup.groupTitle
+                                this.groupUuId = defGroup.groupUuId
+                                this.groupColor = defGroup.groupColor
+                            }
                         }
-                        if (AppDb.getAppDatabase(mContext).reminderGroupDao().getById(reminder.groupUuId) == null && defaultGroup != null) {
-                            reminder.groupUuId = defaultGroup.groupUuId
-                        }
-                        AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)
-                        val control = EventControlFactory.getController(reminder)
-                        if (control.canSkip()) {
-                            control.next()
-                        } else {
-                            control.start()
+                        appDb.reminderDao().insert(reminder)
+                        if (reminder.isActive && !reminder.isRemoved) {
+                            val control = EventControlFactory.getController(reminder)
+                            if (control.canSkip()) {
+                                control.next()
+                            } else {
+                                control.start()
+                            }
                         }
                     }
                 }

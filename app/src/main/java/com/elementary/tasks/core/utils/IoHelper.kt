@@ -22,7 +22,7 @@ import com.elementary.tasks.core.cloud.GDrive
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class IoHelper(private val context: Context, private val prefs: Prefs, private val backupTool: BackupTool) {
+class IoHelper(context: Context, private val prefs: Prefs, private val backupTool: BackupTool) {
 
     private val isConnected: Boolean = SuperUtil.isConnected(context)
     private val mDrive: GDrive? = GDrive.getInstance(context)
@@ -105,7 +105,7 @@ class IoHelper(private val context: Context, private val prefs: Prefs, private v
      */
     fun restoreReminder(delete: Boolean) {
         try {
-            backupTool.importReminders(context)
+            backupTool.importReminders()
         } catch (e: Exception) {
             e.printStackTrace()
         }

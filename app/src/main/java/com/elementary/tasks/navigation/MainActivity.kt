@@ -245,7 +245,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onScrollUpdate(y: Int) {
-        Timber.d("onScrollUpdate: %s", y)
         appBar.isSelected = y > 0
     }
 
