@@ -8,9 +8,8 @@ import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ImageFile
+import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.fragment_image.view.*
-import uk.co.senab.photoview.PhotoView
-import uk.co.senab.photoview.PhotoViewAttacher
 
 class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter() {
 
@@ -26,8 +25,6 @@ class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter(
         val binding = LayoutInflater.from(container.context).inflate(R.layout.fragment_image, container, false)
         val imageView = binding.iv_photo
         loadPhoto(imageView, position)
-        val mAttacher = PhotoViewAttacher(imageView)
-        mAttacher.scaleType = ImageView.ScaleType.CENTER_INSIDE
         container.addView(binding)
         return binding
     }

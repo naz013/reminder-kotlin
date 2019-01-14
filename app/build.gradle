@@ -183,6 +183,7 @@ dependencies {
     implementation 'com.github.naz013:ColorSlider:1.0.3'
     implementation 'com.airbnb.android:lottie:2.8.0'
     implementation 'co.revely:gradient:1.0.1'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.16.0'
