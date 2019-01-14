@@ -11,12 +11,9 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.dialog_about_layout.view.*
+import kotlinx.android.synthetic.main.dialog_about.view.*
 import kotlinx.android.synthetic.main.fragment_settings_other.*
 import java.util.*
 
@@ -174,7 +171,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     private fun showAboutDialog() {
         val builder = dialogues.getDialog(context!!)
-        val binding = LayoutInflater.from(context).inflate(R.layout.dialog_about_layout, null)
+        val binding = LayoutInflater.from(context).inflate(R.layout.dialog_about, null)
         val name: String = if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
         binding.appName.text = name.toUpperCase()
         binding.translators_list.text = translators
@@ -187,7 +184,9 @@ class OtherSettingsFragment : BaseSettingsFragment() {
         }
 
         builder.setView(binding)
-        builder.create().show()
+        val dialog = builder.create()
+        dialog.show()
+        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
