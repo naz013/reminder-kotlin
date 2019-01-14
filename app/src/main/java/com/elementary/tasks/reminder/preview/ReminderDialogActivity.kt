@@ -301,12 +301,12 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         remText.text = ""
 
-        if (!TextUtils.isEmpty(reminder.eventTime) && Reminder.isGpsType(reminder.type)) {
+        if (!TextUtils.isEmpty(reminder.eventTime) && !Reminder.isGpsType(reminder.type)) {
             reminder_time.text = TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime),
                     prefs.is24HourFormatEnabled, false)
-            reminder_time.visibility = View.VISIBLE
+            timeBlock.visibility = View.VISIBLE
         } else {
-            reminder_time.visibility = View.GONE
+            timeBlock.visibility = View.GONE
         }
 
         if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {

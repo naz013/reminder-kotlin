@@ -110,24 +110,48 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/remind_me"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:textColor="?colorSecondary"
+                android:textAppearance="?textAppearanceCaption" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/remText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:textAppearance="?textAppearanceHeadline5"
                 tools:text="Task summary" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/reminder_time"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/timeBlock"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:textAppearance="?textAppearanceHeadline6"
-                tools:text="Date and time" />
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/date_and_time"
+                    android:textAppearance="?textAppearanceCaption"
+                    android:textColor="?colorSecondary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/reminder_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textAppearance="?textAppearanceHeadline6"
+                    tools:text="Date and time" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/container"
@@ -138,80 +162,63 @@
                 android:layout_marginEnd="16dp"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/actionDirect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:text="@string/to"
+                    android:textColor="?colorSecondary"
+                    android:textAppearance="?textAppearanceCaption" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/actionDirect"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/to"
-                        android:textAppearance="?textAppearanceBody1" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/contactInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold"
-                        tools:text="some@mail.com" />
-
-                </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/contactInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceSubtitle1"
+                    android:textStyle="bold"
+                    tools:text="some@mail.com" />
 
                 <LinearLayout
                     android:id="@+id/subjectContainer"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/subjectDirect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/subject"
-                        android:textAppearance="?textAppearanceBody1" />
+                        android:layout_marginTop="8dp"
+                        android:textColor="?colorSecondary"
+                        android:textAppearance="?textAppearanceCaption" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/subjectView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:textAppearance="?textAppearanceBody2"
+                        android:textAppearance="?textAppearanceSubtitle1"
                         android:textStyle="bold"
                         tools:text="Subject" />
 
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/someView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:text="@string/message"
+                    android:textColor="?colorSecondary"
+                    android:textAppearance="?textAppearanceCaption" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/someView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/message"
-                        android:textAppearance="?textAppearanceBody1" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/messageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold"
-                        tools:text="Hello!" />
-
-                </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/messageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceSubtitle1"
+                    android:textStyle="bold"
+                    tools:text="Hello!" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -232,7 +239,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -241,6 +247,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/acc_button_ok"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_twotone_done_24px" />
@@ -250,6 +258,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/acc_button_cancel"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
@@ -262,6 +272,8 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/acc_resend_message"
             android:tint="@color/whitePrimary"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_twotone_refresh_24px" />
 
@@ -272,6 +284,8 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/acc_open_attachment"
             android:tint="@color/whitePrimary"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:visibility="visible"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_twotone_attachment_24px" />
@@ -283,7 +297,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -293,6 +306,8 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/acc_button_snooze"
             android:tint="@color/whitePrimary"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_twotone_snooze_24px" />
 
@@ -304,13 +319,17 @@
             android:contentDescription="@string/acc_button_snooze_for"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             app:srcCompat="@drawable/ic_twotone_more_horiz_24px" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonNotification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/acc_button_move_to_status_bar"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
@@ -321,6 +340,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/acc_button_edit"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
