@@ -60,8 +60,9 @@ class ConversationActivity : ThemedActivity() {
     private val mAdapter = ConversationAdapter()
     private lateinit var viewModel: ConversationViewModel
     private var tts: TextToSpeech? = null
-    private var isTtsReady: Boolean = false
-    private var isListening: Boolean = false
+    private var isTtsReady = false
+    private var isListening = false
+    private var isRotated = false
     private var mAskAction: AskAction? = null
     private val handler = Handler(Looper.getMainLooper())
 
@@ -72,8 +73,10 @@ class ConversationActivity : ThemedActivity() {
                 Timber.d("This Language is not supported")
             } else {
                 isTtsReady = true
-                addResponse(getLocalized(R.string.hi_how_can_i_help_you))
-                postMicClick({ micClick() })
+                if (!isRotated) {
+                    addResponse(getLocalized(R.string.hi_how_can_i_help_you))
+                    postMicClick({ micClick() })
+                }
             }
         } else {
             Timber.d("Initialization Failed!")
@@ -118,7 +121,7 @@ class ConversationActivity : ThemedActivity() {
         override fun onPartialResults(bundle: Bundle) {
             val list = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (list != null && list.isNotEmpty()) {
-                mAdapter.addReply(Reply(Reply.REPLY, list[0]), true)
+                viewModel.addReply(Reply(Reply.REPLY, list[0]), true)
             }
         }
 
@@ -127,7 +130,54 @@ class ConversationActivity : ThemedActivity() {
         }
     }
 
-    private fun postMicClick(action: () -> Unit, time: Long = 2500) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isRotated = savedInstanceState != null
+        setContentView(R.layout.activity_conversation)
+        micButton.setOnClickListener { micClick() }
+        recordingView.setOnClickListener {
+            stopView()
+            viewModel.removePartial()
+        }
+        settingsButton.setOnClickListener { showSettingsPopup() }
+        initList()
+        checkTts()
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        viewModel.result.observe(this, Observer { commands ->
+            if (commands != null) {
+                when (commands) {
+                    Commands.TRASH_CLEARED -> {
+                        stopView()
+                        addResponse(getLocalized(R.string.trash_was_cleared))
+                    }
+                    Commands.DELETED -> {
+                        stopView()
+                        addResponse(getLocalized(R.string.all_reminders_were_disabled))
+                    }
+                    else -> {
+                    }
+                }
+            }
+        })
+        viewModel.shoppingLists.observe(this, Observer { reminders -> if (reminders != null) showShoppingLists(reminders) })
+        viewModel.notes.observe(this, Observer { list -> if (list != null) showNotes(list) })
+        viewModel.activeReminders.observe(this, Observer { list -> if (list != null) showActiveReminders(list) })
+        viewModel.enabledReminders.observe(this, Observer { list -> if (list != null) showEnabledReminders(list) })
+        viewModel.birthdays.observe(this, Observer { birthdays -> if (birthdays != null) showBirthdays(birthdays) })
+        viewModel.replies.observe(this, Observer {
+            if (it != null) {
+                mAdapter.submitList(it)
+                conversationList.scrollToPosition(0)
+                Timber.d("initViewModel: $it")
+            }
+        })
+    }
+
+    private fun postMicClick(action: () -> Unit, time: Long = 1500) {
         handler.postDelayed({ action.invoke() }, time)
     }
 
@@ -147,16 +197,14 @@ class ConversationActivity : ThemedActivity() {
             return
         }
         var model: Model? = null
-        var suggestion: String? = null
         for (s in list) {
-            suggestion = s
             model = viewModel.findSuggestion(s)
             if (model != null) {
                 break
             }
         }
-        if (model != null && suggestion != null) {
-            performResult(model, suggestion)
+        if (model != null) {
+            performResult(model)
         } else {
             stopView()
             addResponse(getLocalized(R.string.can_not_recognize_your_command))
@@ -166,7 +214,7 @@ class ConversationActivity : ThemedActivity() {
     private fun performAnswer(answer: Model) {
         stopView()
         if (mAskAction != null) {
-            mAdapter.removeAsk()
+            viewModel.removeAsk()
             if (answer.action == Action.YES) {
                 mAskAction?.onYes()
             } else if (answer.action == Action.NO) {
@@ -183,12 +231,12 @@ class ConversationActivity : ThemedActivity() {
 
     private fun addObjectResponse(reply: Reply) {
         stopView()
-        mAdapter.addReply(reply)
+        viewModel.addReply(reply)
     }
 
-    private fun performResult(model: Model, s: String) {
+    private fun performResult(model: Model) {
         if (mAskAction != null) {
-            mAdapter.removeAsk()
+            viewModel.removeAsk()
         }
         Timber.d("performResult: $model")
         val actionType = model.type
@@ -254,7 +302,16 @@ class ConversationActivity : ThemedActivity() {
                 addResponse(getLocalized(R.string.found) + " " + items.list.size + " " + getLocalized(R.string.shopping_lists))
             }
             addReminderObject(items.list.removeAt(0))
-            if (!items.isEmpty) addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            if (!items.isEmpty) {
+                addMoreAction()
+                addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            }
+        }
+    }
+
+    private fun addMoreAction() {
+        mAdapter.showMore = {
+            viewModel.addMoreItemsToList(it)
         }
     }
 
@@ -270,7 +327,10 @@ class ConversationActivity : ThemedActivity() {
                         " " + items.list.size + " " + getLocalized(R.string.birthdays))))
             }
             addObjectResponse(Reply(Reply.BIRTHDAY, items.list.removeAt(0)))
-            if (!items.isEmpty) addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            if (!items.isEmpty) {
+                addMoreAction()
+                addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            }
         }
     }
 
@@ -286,7 +346,10 @@ class ConversationActivity : ThemedActivity() {
                         getLocalized(R.string.reminders))
             }
             addReminderObject(items.list.removeAt(0))
-            if (!items.isEmpty) addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            if (!items.isEmpty) {
+                addMoreAction()
+                addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            }
         }
     }
 
@@ -302,7 +365,10 @@ class ConversationActivity : ThemedActivity() {
                         " " + items.list.size + " " + getLocalized(R.string.groups))))
             }
             addObjectResponse(Reply(Reply.GROUP, items.list.removeAt(0)))
-            if (!items.isEmpty) addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            if (!items.isEmpty) {
+                addMoreAction()
+                addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            }
         }
     }
 
@@ -318,7 +384,10 @@ class ConversationActivity : ThemedActivity() {
                         " " + items.list.size + " " + getLocalized(R.string.notes))))
             }
             addObjectResponse(Reply(Reply.NOTE, items.list.removeAt(0)))
-            if (!items.isEmpty) addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            if (!items.isEmpty) {
+                addMoreAction()
+                addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            }
         }
     }
 
@@ -334,7 +403,10 @@ class ConversationActivity : ThemedActivity() {
                         getLocalized(R.string.reminders))
             }
             addReminderObject(items.list.removeAt(0))
-            if (!items.isEmpty) addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            if (!items.isEmpty) {
+                addMoreAction()
+                addObjectResponse(Reply(Reply.SHOW_MORE, items))
+            }
         }
     }
 
@@ -351,7 +423,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.group_created))
         val item = viewModel.createGroup(model)
         addObjectResponse(Reply(Reply.GROUP, item))
-        postMicClick({ askGroupAction(item) }, 1500)
+        postMicClick({ askGroupAction(item) }, 500)
     }
 
     private fun noteAction(model: Model) {
@@ -359,7 +431,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.note_created))
         val item = viewModel.createNote(model.summary)
         addObjectResponse(Reply(Reply.NOTE, item))
-        postMicClick({ askNoteAction(item) }, 1500)
+        postMicClick({ askNoteAction(item) }, 500)
     }
 
     private fun reminderAction(model: Model) {
@@ -370,10 +442,10 @@ class ConversationActivity : ThemedActivity() {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
                     TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale, language) +
                     ". " + getLocalized(R.string.would_you_like_to_save_it))
-            postMicClick({ askReminderAction(reminder, false) }, 8000)
+            postMicClick({ askReminderAction(reminder, false) }, 6000)
         } else {
             addResponse(getLocalized(R.string.reminder_created))
-            postMicClick({ askReminderAction(reminder, true) }, 1000)
+            postMicClick({ askReminderAction(reminder, true) }, 500)
         }
     }
 
@@ -392,7 +464,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        postMicClick({ this.micClick() }, 2000)
+        postMicClick({ this.micClick() }, 1000)
     }
 
     private fun askReminderAction(reminder: Reminder, ask: Boolean) {
@@ -410,7 +482,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        postMicClick({ this.micClick() }, 2000)
+        postMicClick({ this.micClick() }, 1000)
     }
 
     private fun askNoteAction(note: Note) {
@@ -420,7 +492,7 @@ class ConversationActivity : ThemedActivity() {
                 viewModel.saveNote(note, false, false)
                 addResponse(getLocalized(R.string.note_saved))
                 if (prefs.isNoteReminderEnabled) {
-                    postMicClick({ askQuickReminder(note) }, 2000)
+                    postMicClick({ askQuickReminder(note) }, 1000)
                 } else {
                     mAskAction = null
                 }
@@ -432,7 +504,7 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        postMicClick({ this.micClick() }, 2000)
+        postMicClick({ this.micClick() }, 1000)
     }
 
     private fun askQuickReminder(note: Note) {
@@ -458,17 +530,18 @@ class ConversationActivity : ThemedActivity() {
             }
         }
         addAskReply()
-        postMicClick({ this.micClick() }, 2000)
+        postMicClick({ this.micClick() }, 1000)
     }
 
     private fun addAskReply() {
-        if (mAskAction != null)
-            mAdapter.addReply(Reply(Reply.ASK, createAsk(mAskAction!!)))
+        if (mAskAction != null) {
+            viewModel.addReply(Reply(Reply.ASK, createAsk(mAskAction!!)))
+        }
     }
 
     private fun addResponse(message: String) {
         playTts(message)
-        mAdapter.addReply(Reply(Reply.RESPONSE, message))
+        viewModel.addReply(Reply(Reply.RESPONSE, message))
     }
 
     private fun disableReminders() {
@@ -477,45 +550,6 @@ class ConversationActivity : ThemedActivity() {
 
     private fun clearTrash() {
         viewModel.emptyTrash(false)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_conversation)
-        micButton.setOnClickListener { micClick() }
-        recordingView.setOnClickListener {
-            stopView()
-            mAdapter.removePartial()
-        }
-        settingsButton.setOnClickListener { showSettingsPopup() }
-        initList()
-        checkTts()
-        initViewModel()
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
-        viewModel.result.observe(this, Observer { commands ->
-            if (commands != null) {
-                when (commands) {
-                    Commands.TRASH_CLEARED -> {
-                        stopView()
-                        addResponse(getLocalized(R.string.trash_was_cleared))
-                    }
-                    Commands.DELETED -> {
-                        stopView()
-                        addResponse(getLocalized(R.string.all_reminders_were_disabled))
-                    }
-                    else -> {
-                    }
-                }
-            }
-        })
-        viewModel.shoppingLists.observe(this, Observer { reminders -> if (reminders != null) showShoppingLists(reminders) })
-        viewModel.notes.observe(this, Observer { list -> if (list != null) showNotes(list) })
-        viewModel.activeReminders.observe(this, Observer { list -> if (list != null) showActiveReminders(list) })
-        viewModel.enabledReminders.observe(this, Observer { list -> if (list != null) showEnabledReminders(list) })
-        viewModel.birthdays.observe(this, Observer { birthdays -> if (birthdays != null) showBirthdays(birthdays) })
     }
 
     private fun showSettingsPopup() {
@@ -583,7 +617,6 @@ class ConversationActivity : ThemedActivity() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
         conversationList.layoutManager = layoutManager
-        mAdapter.mCallback = { conversationList.scrollToPosition(0) }
         conversationList.adapter = mAdapter
     }
 
@@ -687,11 +720,13 @@ class ConversationActivity : ThemedActivity() {
         return object : AskAction {
             override fun onYes() {
                 stopView()
+                viewModel.removeFirst()
                 askAction.onYes()
             }
 
             override fun onNo() {
                 stopView()
+                viewModel.removeFirst()
                 askAction.onNo()
             }
         }
