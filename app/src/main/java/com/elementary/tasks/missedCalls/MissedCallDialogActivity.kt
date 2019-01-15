@@ -88,7 +88,16 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
         initButtons()
 
+        if (savedInstanceState != null) {
+            isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
+        }
+
         initViewModel()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(ARG_IS_ROTATED, true)
+        super.onSaveInstanceState(outState)
     }
 
     private fun initButtons() {
@@ -232,6 +241,9 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showMissedReminder(name: String?) {
+        if (isScreenResumed) {
+            return
+        }
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(name)
         builder.setAutoCancel(false)
@@ -287,6 +299,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     companion object {
         private const val ARG_TEST = "arg_test"
+        private const val ARG_IS_ROTATED = "arg_rotated"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val CALL_PERM = 612
 
