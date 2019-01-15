@@ -662,5 +662,8 @@
     <string name="hide_that_functionality">Bu işlevselliği gizle</string>
     <string name="accent">Aksan</string>
     <string name="living_coral">Yaşayan Mercan</string>
+    <string name="backup_data_now">Verileri şimdi yedekle</string>
+    <string name="missed_call">Cevapsız arama</string>
+    <string name="select_date_in_future">Gelecekte tarih seçin</string>
 
 </resources>

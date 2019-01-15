@@ -666,6 +666,6 @@
     <string name="backup_my_data">Backup my data</string>
     <string name="missed_call">Missed Call</string>
     <string name="select_date_in_future">Select date in future</string>
-    <string name="backup_data_now">Backup data now</string>
+    <string name="backup_data_now">Make backup of data now</string>
 
 </resources>

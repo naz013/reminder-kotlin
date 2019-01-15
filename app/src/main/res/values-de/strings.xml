@@ -662,5 +662,8 @@
     <string name="hide_that_functionality">Diese Funktionalität ausblenden</string>
     <string name="accent">Akzent</string>
     <string name="living_coral">Lebende Koralle</string>
+    <string name="backup_data_now">Machen Sie jetzt ein Backup der Daten</string>
+    <string name="missed_call">Verpasster Anruf</string>
+    <string name="select_date_in_future">Datum in Zukunft auswählen</string>
 
 </resources>

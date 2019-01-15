@@ -662,5 +662,8 @@
     <string name="hide_that_functionality">उस कार्यक्षमता को छिपाएं</string>
     <string name="accent">उच्चारण</string>
     <string name="living_coral">लिविंग कोरल</string>
+    <string name="backup_data_now">अब डेटा का बैकअप बनाएं</string>
+    <string name="missed_call">मिस कॉल</string>
+    <string name="select_date_in_future">भविष्य में तारीख का चयन करें</string>
 
 </resources>
