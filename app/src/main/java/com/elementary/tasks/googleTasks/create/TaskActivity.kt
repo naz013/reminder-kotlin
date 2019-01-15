@@ -101,11 +101,15 @@ class TaskActivity : ThemedActivity() {
         mMonth = calendar.get(Calendar.MONTH)
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val tmp = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        var tmp = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         action = intent.getStringExtra(TasksConstants.INTENT_ACTION) ?: ""
         if (action == "") action = TasksConstants.CREATE
 
         if (action == TasksConstants.CREATE) {
+            if (savedInstanceState != null) {
+                tmp = savedInstanceState.getString(ARG_LIST, "")
+                updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
+            }
             initViewModel("", tmp)
         } else {
             initViewModel(tmp, "")
@@ -114,6 +118,12 @@ class TaskActivity : ThemedActivity() {
         if (prefs.hasPinCode && !mIsLogged) {
             PinLoginActivity.verify(this)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(ARG_LIST, listId)
+        outState.putBoolean(ARG_LOADING, mIsLoading)
+        super.onSaveInstanceState(outState)
     }
 
     private fun updateProgress(b: Boolean) {
@@ -148,7 +158,7 @@ class TaskActivity : ThemedActivity() {
             }
         })
         viewModel.googleTaskLists.observe(this, Observer{ googleTaskLists ->
-            if (googleTaskLists != null && listId != "") {
+            if (googleTaskLists != null) {
                 selectCurrent(googleTaskLists)
             }
         })
@@ -474,6 +484,8 @@ class TaskActivity : ThemedActivity() {
         private const val MENU_ITEM_DELETE = 12
         private const val MENU_ITEM_MOVE = 14
         private const val ARG_LOGGED = "arg_logged"
+        private const val ARG_LIST = "arg_list"
+        private const val ARG_LOADING = "arg_loading"
 
         fun openLogged(context: Context, intent: Intent? = null) {
             if (intent == null) {
