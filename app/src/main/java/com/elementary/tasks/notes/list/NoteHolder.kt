@@ -49,10 +49,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
 
     init {
         ReminderApp.appComponent.inject(this)
-        itemView.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.imagesView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.imagesContainer.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.noteImage.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.bgView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
         if (listener == null) {
             itemView.button_more.visibility = View.INVISIBLE
