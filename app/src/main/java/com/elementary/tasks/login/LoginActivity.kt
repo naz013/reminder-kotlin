@@ -389,7 +389,7 @@ class LoginActivity : ThemedActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.privacy_policy))
         val webView = WebView(this)
-        webView.loadUrl("https://craysoftware.wordpress.com/privacy-policy/")
+        webView.loadUrl(Constants.WEB_URL + "privacy-policy")
         builder.setView(webView)
         builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()

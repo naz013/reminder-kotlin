@@ -44,12 +44,5 @@ object Constants {
     const val ACTION_REQUEST_CAMERA = 112
     const val SELECTED_CONTACT_NAME = "selected_name"
     const val SELECTED_APPLICATION = "selected_application"
-    const val ORDER_DATE_A_Z = "date_az"
-    const val ORDER_DATE_Z_A = "date_za"
-    const val ORDER_COMPLETED_A_Z = "completed_az"
-    const val ORDER_COMPLETED_Z_A = "completed_za"
-    const val ORDER_DEFAULT = "default"
-    const val ORDER_NAME_A_Z = "name_az"
-    const val ORDER_NAME_Z_A = "name_za"
-    const val WEB_URL = "https://craysoftware.wordpress.com/"
+    const val WEB_URL = "https://www.hummingbirdrr.com/"
 }
