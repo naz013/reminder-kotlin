@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/birthday"
+        android:textAppearance="?textAppearanceHeadline4"
+        app:fontFamily="@font/lobster_regular" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contactPhoto"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@string/acc_contact_photo"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:civ_border_width="0dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline6"
+                tools:text="User Name" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/userNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline5"
+                tools:text="1234567890" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/userYears"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:text="Task summary" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="96dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCall"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="1"
+            android:elevation="4dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="20dp"
+            android:singleLine="true"
+            android:text="@string/make_call"
+            android:textAllCaps="true"
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="@color/pureBlack"
+            android:textSize="14sp"
+            android:visibility="visible"
+            app:backgroundTint="?colorSecondary"
+            app:cornerRadius="32dp"
+            tools:targetApi="lollipop" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/buttonOk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/acc_button_ok"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_twotone_done_24px" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSms"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="1"
+            android:elevation="4dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="20dp"
+            android:singleLine="true"
+            android:text="@string/send_sms"
+            android:textAllCaps="true"
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="@color/pureBlack"
+            android:textSize="14sp"
+            android:visibility="visible"
+            app:backgroundTint="?colorSecondary"
+            app:cornerRadius="32dp"
+            tools:targetApi="lollipop" />
+
+    </LinearLayout>
+</LinearLayout>
