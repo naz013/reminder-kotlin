@@ -208,8 +208,16 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         initButtons()
 
-        buttonRefresh.hide()
+        if (savedInstanceState != null) {
+            isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
+        }
+
         initViewModel(id)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(ARG_IS_ROTATED, true)
+        super.onSaveInstanceState(outState)
     }
 
     private fun initButtons() {
@@ -224,6 +232,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             discardNotification(id)
         }
         buttonAction.setOnClickListener { call() }
+        buttonRefresh.hide()
     }
 
     override fun onResume() {
@@ -799,6 +808,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showReminderNotification(activity: Activity) {
+        if (isScreenResumed) {
+            return
+        }
         Timber.d("showReminderNotification: $id")
         val notificationIntent = Intent(this, activity.javaClass)
         notificationIntent.putExtra(Constants.INTENT_ID, id)
@@ -876,6 +888,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showTTSNotification(activityClass: Activity) {
+        if (isScreenResumed) {
+            return
+        }
         Timber.d("showTTSNotification: ")
         val builder: NotificationCompat.Builder
         if (isScreenResumed) {
@@ -992,6 +1007,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         private const val SMS_PERM = 613
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
+        private const val ARG_IS_ROTATED = "arg_rotated"
 
         fun mockTest(context: Context, reminder: Reminder) {
             val intent = Intent(context, ReminderDialogActivity::class.java)
