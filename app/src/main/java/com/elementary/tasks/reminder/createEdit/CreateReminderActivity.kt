@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.speech.RecognizerIntent
 import android.view.Menu
 import android.view.MenuItem
@@ -15,8 +14,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -159,8 +156,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun loadReminder(savedInstanceState: Bundle?) {
-        val intent = intent
-        val id = getIntent().getStringExtra(Constants.INTENT_ID) ?: ""
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
         initViewModel(id)
         when {
@@ -374,15 +370,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_create_reminder, menu)
-        val micIcon = ContextCompat.getDrawable(this, R.drawable.ic_twotone_mic_24px)
-        if (isDark) {
-            val white = ContextCompat.getColor(this, R.color.whitePrimary)
-            DrawableCompat.setTint(micIcon!!, white)
-        } else {
-            val black = ContextCompat.getColor(this, R.color.pureBlack)
-            DrawableCompat.setTint(micIcon!!, black)
-        }
-        menu.getItem(0)?.icon = micIcon
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDark)
         if (isEditing) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
@@ -502,13 +490,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        var state = outState
-        if (state == null) {
-            state = Bundle()
-        }
-        state.putSerializable(ARG_ITEM, reminder)
-        super.onSaveInstanceState(state, outPersistentState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(ARG_ITEM, reminder)
+        super.onSaveInstanceState(outState)
     }
 
     private class SpinnerItem internal constructor(val title: String)
