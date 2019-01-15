@@ -201,18 +201,18 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
     }
 
     private fun play() {
-        if (!mSound!!.isPlaying) {
+        if (mSound?.isPlaying == false) {
             if (playerLayout.visibility == View.GONE) {
-                ViewUtils.expand(playerLayout)
+                playerLayout.visibility = View.VISIBLE
             }
-            if (mSound!!.isPaused && mSound!!.isSameFile(mFilePath)) {
+            if (mSound?.isPaused == true && mSound?.isSameFile(mFilePath) == true) {
                 mSound?.resume()
             } else {
                 mSound?.play(mFilePath)
                 currentMelody.text = mFileName
             }
         } else {
-            if (mSound!!.isSameFile(mFilePath)) {
+            if (mSound?.isSameFile(mFilePath) == true) {
                 return
             }
             mSound?.play(mFilePath)
@@ -221,16 +221,16 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
     }
 
     private fun pause() {
-        if (mSound!!.isPlaying) {
+        if (mSound?.isPlaying == true) {
             mSound?.pause()
         }
     }
 
     private fun stop() {
-        if (mSound!!.isPlaying) {
+        if (mSound?.isPlaying == true) {
             mSound?.stop(true)
         }
-        ViewUtils.collapse(playerLayout)
+        playerLayout.visibility = View.VISIBLE
     }
 
     private fun loadFileList() {

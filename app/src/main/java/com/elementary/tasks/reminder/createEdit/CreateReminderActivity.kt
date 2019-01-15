@@ -494,9 +494,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun setFullScreenMode(b: Boolean) {
         if (b) {
-            ViewUtils.collapse(appBar)
+            appBar.visibility = View.GONE
         } else {
-            ViewUtils.expand(appBar)
+            appBar.visibility = View.VISIBLE
         }
     }
 

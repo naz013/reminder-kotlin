@@ -479,7 +479,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         mReminder = reminder
         if (reminder != null) {
             setDateTime(reminder.eventTime)
-            ViewUtils.expand(remindContainer)
+            remindContainer.visibility = View.VISIBLE
         }
     }
 
