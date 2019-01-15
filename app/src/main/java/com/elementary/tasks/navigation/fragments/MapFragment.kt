@@ -1,9 +1,7 @@
 package com.elementary.tasks.navigation.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,25 +59,7 @@ class MapFragment : BaseNavigationFragment() {
         false
     }
 
-    private fun showClickedPlace(position: Int, reminder: Reminder) {
-        val maxPointer = reminder.places.size - 1
-        if (position != clickedPosition) {
-            pointer = 0
-        } else {
-            if (pointer == maxPointer) {
-                pointer = 0
-            } else {
-                pointer++
-            }
-        }
-        clickedPosition = position
-        val place = reminder.places[pointer]
-        mGoogleMap?.moveCamera(LatLng(place.latitude, place.longitude), 0, 0, 0, MeasureUtils.dp2px(context!!, 192))
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_events_map, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_events_map
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -90,7 +70,7 @@ class MapFragment : BaseNavigationFragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel::class.java)
-        viewModel.events.observe(this, Observer{ reminders ->
+        viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null && mGoogleMap != null) {
                 showData(reminders)
             }
@@ -102,10 +82,10 @@ class MapFragment : BaseNavigationFragment() {
                 false, false, false, themeUtil.isDark)
         map.setCallback(mReadyCallback)
         map.setOnMarkerClick(mOnMarkerClick)
-        fragmentManager!!.beginTransaction()
-                .replace(R.id.fragment_container, map)
-                .addToBackStack(null)
-                .commit()
+        fragmentManager?.beginTransaction()
+                ?.replace(R.id.fragment_container, map)
+                ?.addToBackStack(null)
+                ?.commit()
         mGoogleMap = map
     }
 
@@ -123,6 +103,22 @@ class MapFragment : BaseNavigationFragment() {
         }
         recyclerView.adapter = mAdapter
         reloadView()
+    }
+
+    private fun showClickedPlace(position: Int, reminder: Reminder) {
+        val maxPointer = reminder.places.size - 1
+        if (position != clickedPosition) {
+            pointer = 0
+        } else {
+            if (pointer == maxPointer) {
+                pointer = 0
+            } else {
+                pointer++
+            }
+        }
+        clickedPosition = position
+        val place = reminder.places[pointer]
+        mGoogleMap?.moveCamera(LatLng(place.latitude, place.longitude), 0, 0, 0, MeasureUtils.dp2px(context!!, 192))
     }
 
     override fun getTitle(): String = getString(R.string.map)
