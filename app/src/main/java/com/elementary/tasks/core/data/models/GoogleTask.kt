@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.api.services.tasks.model.Task
+import java.io.Serializable
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -42,7 +43,7 @@ data class GoogleTask(
         var status: String = "",
         var uuId: String = "",
         var hidden: Int = 0
-) {
+): Serializable {
 
     @Ignore
     constructor(item: GoogleTask) : this() {

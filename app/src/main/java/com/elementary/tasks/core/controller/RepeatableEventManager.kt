@@ -1,12 +1,18 @@
 package com.elementary.tasks.core.controller
 
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.googleTasks.work.SaveNewTaskWorker
+import com.google.gson.Gson
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,14 +42,18 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
     protected fun export() {
         if (reminder.exportToTasks) {
             val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            val mItem = GoogleTask()
-            mItem.listId = ""
-            mItem.status = GTasks.TASKS_NEED_ACTION
-            mItem.title = reminder.summary
-            mItem.dueDate = due
-            mItem.notes = context.getString(R.string.from_reminder)
-            mItem.uuId = reminder.uuId
-            // TODO: 23.06.2018 Add export to GTasks Tasks work via WorkManager
+            val googleTask = GoogleTask()
+            googleTask.listId = ""
+            googleTask.status = GTasks.TASKS_NEED_ACTION
+            googleTask.title = reminder.summary
+            googleTask.dueDate = due
+            googleTask.notes = context.getString(R.string.from_reminder)
+            googleTask.uuId = reminder.uuId
+            val work = OneTimeWorkRequest.Builder(SaveNewTaskWorker::class.java)
+                    .setInputData(Data.Builder().putString(Constants.INTENT_JSON, Gson().toJson(googleTask)).build())
+                    .addTag(reminder.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
         if (reminder.exportToCalendar) {
             if (prefs.isStockCalendarEnabled) {
