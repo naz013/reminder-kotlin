@@ -27,6 +27,7 @@ object Constants {
     const val NONE = "none"
     const val DEFAULT = "defaut"
     const val INTENT_ID = "item_id"
+    const val INTENT_JSON = "item_json"
     const val INTENT_IDS = "item_ids"
     const val INTENT_POSITION = "item_position"
     const val INTENT_DELETE = "item_delete"
