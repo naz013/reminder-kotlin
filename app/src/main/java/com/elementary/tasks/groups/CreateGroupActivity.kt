@@ -57,7 +57,17 @@ class CreateGroupActivity : ThemedActivity() {
         setContentView(R.layout.activity_create_group)
         initActionBar()
         colorSlider.setColors(themeUtil.colorsForSlider())
+
+        if (savedInstanceState != null) {
+            colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
+        }
+
         loadGroup()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(ARG_COLOR, colorSlider.selectedItem)
+        super.onSaveInstanceState(outState)
     }
 
     private fun initActionBar() {
@@ -128,7 +138,7 @@ class CreateGroupActivity : ThemedActivity() {
     }
 
     private fun saveGroup() {
-        val text = nameInput.text.toString().trim { it <= ' ' }
+        val text = nameInput.text.toString().trim()
         if (text.isEmpty()) {
             nameLayout.error = getString(R.string.must_be_not_empty)
             nameLayout.isErrorEnabled = true
@@ -183,7 +193,7 @@ class CreateGroupActivity : ThemedActivity() {
     }
 
     companion object {
-
         private const val MENU_ITEM_DELETE = 12
+        private const val ARG_COLOR = "arg_color"
     }
 }
