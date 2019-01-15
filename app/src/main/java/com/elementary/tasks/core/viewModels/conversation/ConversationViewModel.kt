@@ -24,6 +24,8 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.voice.Container
+import com.elementary.tasks.voice.Reply
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -63,11 +65,107 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     private var _birthdays = MutableLiveData<List<Birthday>>()
     var birthdays: LiveData<List<Birthday>> = _birthdays
 
+    private var _replies = MutableLiveData<List<Reply>>()
+    var replies: LiveData<List<Reply>> = _replies
+    private val mReplies = mutableListOf<Reply>()
+    private var hasPartial = false
+
     @Inject
     lateinit var recognizer: Recognizer
 
     init {
         ReminderApp.appComponent.inject(this)
+    }
+
+    fun addMoreItemsToList(position: Int) {
+        val reply = mReplies[position]
+        val container = reply.content as Container<*>
+        Timber.d("addMoreItemsToList: $container")
+        when {
+            container.type is ReminderGroup -> {
+                mReplies.removeAt(position)
+                for (item in container.list) {
+                    mReplies.add(0, Reply(Reply.GROUP, item))
+                }
+                _replies.postValue(mReplies)
+            }
+            container.type is NoteWithImages -> {
+                mReplies.removeAt(position)
+                for (item in container.list) {
+                    mReplies.add(0, Reply(Reply.NOTE, item))
+                }
+                _replies.postValue(mReplies)
+            }
+            container.type is Reminder -> {
+                mReplies.removeAt(position)
+                addRemindersToList(container)
+                _replies.postValue(mReplies)
+            }
+            container.type is Birthday -> {
+                mReplies.removeAt(position)
+                val reversed = ArrayList(container.list)
+                reversed.reverse()
+                for (item in reversed) {
+                    mReplies.add(0, Reply(Reply.BIRTHDAY, item))
+                }
+                _replies.postValue(mReplies)
+            }
+        }
+    }
+
+    private fun addRemindersToList(container: Container<*>) {
+        val reversed = ArrayList((container as Container<Reminder>).list)
+        reversed.reverse()
+        for (item in reversed) {
+            if (item.viewType == Reminder.REMINDER) {
+                mReplies.add(0, Reply(Reply.REMINDER, item))
+            } else {
+                mReplies.add(0, Reply(Reply.SHOPPING, item))
+            }
+        }
+    }
+
+    fun removeFirst() {
+        mReplies.removeAt(0)
+        _replies.postValue(mReplies)
+    }
+
+    fun removeAsk() {
+        for (i in 1 until mReplies.size) {
+            val reply = mReplies[i]
+            if (reply.viewType == Reply.ASK) {
+                mReplies.removeAt(i)
+                _replies.postValue(mReplies)
+                break
+            }
+        }
+    }
+
+    fun removePartial() {
+        if (hasPartial) {
+            mReplies.removeAt(0)
+            _replies.postValue(mReplies)
+        }
+        hasPartial = false
+    }
+
+    fun addReply(reply: Reply?, isPartial: Boolean = false) {
+        if (reply != null) {
+            if (!isPartial) {
+                hasPartial = false
+                mReplies.add(0, reply)
+                _replies.postValue(mReplies)
+            } else {
+                if (hasPartial) {
+                    mReplies[0].content = reply.content
+                    _replies.postValue(mReplies)
+                } else {
+                    hasPartial = true
+                    mReplies.add(0, reply)
+                    _replies.postValue(mReplies)
+                }
+            }
+        }
     }
 
     fun getNotes() {

@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdayHolder
-import com.elementary.tasks.core.data.models.*
+import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
@@ -19,10 +22,8 @@ import kotlinx.android.synthetic.main.list_item_show_reply.view.*
 import kotlinx.android.synthetic.main.list_item_simple_reply.view.*
 import kotlinx.android.synthetic.main.list_item_simple_response.view.*
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
-@Suppress("UNCHECKED_CAST")
 /**
  * Copyright 2017 Nazar Suhovich
  *
@@ -43,10 +44,7 @@ import javax.inject.Inject
  */
 class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDiffCallback()) {
 
-    private val mData = ArrayList<Reply>()
-    var mCallback: (() -> Unit)? = null
-    private var hasPartial = false
-
+    var showMore: ((Int) -> Unit)? = null
     @Inject
     lateinit var language: Language
 
@@ -54,35 +52,13 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         ReminderApp.appComponent.inject(this)
     }
 
-    fun removePartial() {
-        if (hasPartial) {
-            mData.removeAt(0)
-            notifyItemRemoved(0)
-            notifyItemRangeChanged(0, mData.size)
-            mCallback?.invoke()
-        }
-        hasPartial = false
-    }
-
-    fun addReply(reply: Reply?, isPartial: Boolean = false) {
-        if (reply != null) {
-            if (!isPartial) {
-                hasPartial = false
-                mData.add(0, reply)
-                notifyItemInserted(0)
-                notifyItemRangeChanged(0, mData.size)
-                mCallback?.invoke()
-            } else {
-                if (hasPartial) {
-                    mData[0] = reply
-                    notifyItemChanged(0)
-                } else {
-                    hasPartial = true
-                    mData.add(0, reply)
-                    notifyItemInserted(0)
-                    notifyItemRangeChanged(0, mData.size)
-                    mCallback?.invoke()
-                }
+    override fun submitList(list: List<Reply>?) {
+        Timber.d("submitList: $list")
+        val oldSize = itemCount
+        super.submitList(list)
+        if (!list.isNullOrEmpty()) {
+            if (oldSize == list.size) {
+                notifyItemChanged(0)
             }
         }
     }
@@ -103,37 +79,21 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is VoiceHolder -> holder.bind(mData[position].content as String)
-            is VoiceResponseHolder -> holder.bind(mData[position].content as String)
-            is ReminderHolder -> holder.setData(mData[position].content as Reminder)
-            is NoteHolder -> holder.setData(mData[position].content as NoteWithImages)
-            is GroupHolder -> holder.setData(mData[position].content as ReminderGroup)
+            is VoiceHolder -> holder.bind(getItem(position).content as String)
+            is VoiceResponseHolder -> holder.bind(getItem(position).content as String)
+            is ReminderHolder -> holder.setData(getItem(position).content as Reminder)
+            is NoteHolder -> holder.setData(getItem(position).content as NoteWithImages)
+            is GroupHolder -> holder.setData(getItem(position).content as ReminderGroup)
             is BirthdayHolder -> {
-                holder.setData(mData[position].content as Birthday)
+                holder.setData(getItem(position).content as Birthday)
             }
-            is ShoppingHolder -> holder.setData(mData[position].content as Reminder)
-            is AskHolder -> holder.setAskAction(mData[position].content as AskAction)
+            is ShoppingHolder -> holder.setData(getItem(position).content as Reminder)
+            is AskHolder -> holder.setAskAction(getItem(position).content as AskAction)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return mData[position].viewType
-    }
-
-    override fun getItemCount(): Int {
-        return mData.size
-    }
-
-    fun removeAsk() {
-        for (i in 1 until mData.size) {
-            val reply = mData[i]
-            if (reply.viewType == Reply.ASK) {
-                mData.removeAt(i)
-                notifyItemRemoved(i)
-                notifyItemRangeChanged(0, mData.size)
-                break
-            }
-        }
+        return getItem(position).viewType
     }
 
     private inner class AskHolder(parent: ViewGroup) :
@@ -143,11 +103,9 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
 
         init {
             itemView.replyYes.setOnClickListener {
-                removeFirst()
                 askAction?.onYes()
             }
             itemView.replyNo.setOnClickListener {
-                removeFirst()
                 askAction?.onNo()
             }
             itemView.replyNo.text = language.getLocalized(itemView.context, R.string.no)
@@ -157,12 +115,6 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         internal fun setAskAction(askAction: AskAction) {
             this.askAction = askAction
         }
-    }
-
-    private fun removeFirst() {
-        mData.removeAt(0)
-        notifyItemRemoved(0)
-        notifyItemRangeChanged(0, mData.size)
     }
 
     private inner class VoiceHolder(parent: ViewGroup) :
@@ -182,71 +134,14 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
     private inner class ShowMoreHolder(parent: ViewGroup) :
             RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_show_reply)) {
         init {
-            itemView.replyText.setOnClickListener { addMoreItemsToList(adapterPosition) }
+            itemView.replyText.setOnClickListener {
+                showMore?.invoke(adapterPosition)
+                showMore = null
+            }
         }
     }
 
     private fun inflate(parent: ViewGroup, res: Int): View {
         return LayoutInflater.from(parent.context).inflate(res, parent, false)
-    }
-
-    private fun addMoreItemsToList(position: Int) {
-        val reply = mData[position]
-        val container = reply.content as Container<*>
-        Timber.d("addMoreItemsToList: $container")
-        when {
-            container.type is ReminderGroup -> {
-                mData.removeAt(position)
-                notifyItemRemoved(position)
-                for (item in (container as Container<ReminderGroup>).list) {
-                    mData.add(0, Reply(Reply.GROUP, item))
-                    notifyItemInserted(0)
-                }
-                notifyItemRangeChanged(0, mData.size)
-                mCallback?.invoke()
-            }
-            container.type is NoteWithImages -> {
-                mData.removeAt(position)
-                notifyItemRemoved(position)
-                for (item in (container as Container<NoteWithImages>).list) {
-                    mData.add(0, Reply(Reply.NOTE, item))
-                    notifyItemInserted(0)
-                }
-                notifyItemRangeChanged(0, mData.size)
-                mCallback?.invoke()
-            }
-            container.type is Reminder -> {
-                mData.removeAt(position)
-                notifyItemRemoved(position)
-                addRemindersToList(container)
-                notifyItemRangeChanged(0, mData.size)
-                mCallback?.invoke()
-            }
-            container.type is Birthday -> {
-                mData.removeAt(position)
-                notifyItemRemoved(position)
-                val reversed = ArrayList((container as Container<Birthday>).list)
-                reversed.reverse()
-                for (item in reversed) {
-                    mData.add(0, Reply(Reply.BIRTHDAY, item))
-                    notifyItemInserted(0)
-                }
-                notifyItemRangeChanged(0, mData.size)
-                mCallback?.invoke()
-            }
-        }
-    }
-
-    private fun addRemindersToList(container: Container<*>) {
-        val reversed = ArrayList((container as Container<Reminder>).list)
-        reversed.reverse()
-        for (item in reversed) {
-            if (item.viewType == Reminder.REMINDER) {
-                mData.add(0, Reply(Reply.REMINDER, item))
-            } else {
-                mData.add(0, Reply(Reply.SHOPPING, item))
-            }
-            notifyItemInserted(0)
-        }
     }
 }
