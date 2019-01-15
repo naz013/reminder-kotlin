@@ -162,7 +162,16 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         contactPhoto.borderColor = themeUtil.getNoteLightColor()
         contactPhoto.visibility = View.GONE
 
+        if (savedInstanceState != null) {
+            isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
+        }
+
         initViewModel(key)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(ARG_IS_ROTATED, true)
+        super.onSaveInstanceState(outState)
     }
 
     private fun initViewModel(id: String) {
@@ -245,6 +254,9 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     private fun showNotification(years: Int, name: String) {
+        if (isScreenResumed) {
+            return
+        }
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years))
@@ -357,6 +369,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         private const val SMS_PERM = 613
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
+        private const val ARG_IS_ROTATED = "arg_rotated"
 
         fun mockTest(context: Context, birthday: Birthday) {
             val intent = Intent(context, ShowBirthdayActivity::class.java)
