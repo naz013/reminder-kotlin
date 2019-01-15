@@ -58,19 +58,20 @@ class DateFragment : RepeatableTypeFragment() {
                 Reminder.BY_DATE_SMS
             }
         }
+        Timber.d("prepare: $type")
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
-        reminder.target = number
-        reminder.type = type
-        reminder.startTime = reminder.eventTime
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
+        reminder.target = number
+        reminder.type = type
+        reminder.startTime = reminder.eventTime
         return reminder
     }
 
