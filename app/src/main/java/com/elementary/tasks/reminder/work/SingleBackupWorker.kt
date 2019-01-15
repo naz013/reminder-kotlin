@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.launchIo
 import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
@@ -22,7 +23,9 @@ class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
             val db = AppDb.getAppDatabase(applicationContext)
             val reminder = db.reminderDao().getById(uuId)
             if (reminder != null) {
-                cacheFiles(uuId + FileConfig.FILE_NAME_REMINDER, Gson().toJson(reminder))
+                launchIo {
+                    cacheFiles(uuId + FileConfig.FILE_NAME_REMINDER, Gson().toJson(reminder))
+                }
             }
         }
         return Result.SUCCESS
