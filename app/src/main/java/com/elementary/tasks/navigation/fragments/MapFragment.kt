@@ -152,11 +152,11 @@ class MapFragment : BaseNavigationFragment() {
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
-            recyclerView.visibility = View.VISIBLE
-            emptyItem.visibility = View.GONE
+            recyclerView?.visibility = View.VISIBLE
+            emptyItem?.visibility = View.GONE
         } else {
-            recyclerView.visibility = View.GONE
-            emptyItem.visibility = View.VISIBLE
+            recyclerView?.visibility = View.GONE
+            emptyItem?.visibility = View.VISIBLE
         }
     }
 }
