@@ -38,14 +38,12 @@ import timber.log.Timber
 class ApplicationFragment : RepeatableTypeFragment() {
 
     private var selectedPackage: String? = null
-
     private val type: Int
         get() = if (application.isChecked) {
             Reminder.BY_DATE_APP
         } else {
             Reminder.BY_DATE_LINK
         }
-
     private val appName: String
         get() {
             val packageManager = context!!.packageManager
@@ -54,7 +52,6 @@ class ApplicationFragment : RepeatableTypeFragment() {
                 applicationInfo = packageManager.getApplicationInfo(selectedPackage, 0)
             } catch (ignored: PackageManager.NameNotFoundException) {
             }
-
             return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
         }
 
@@ -69,7 +66,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
                 return null
             }
         } else {
-            number = urlField.text.toString().trim { it <= ' ' }
+            number = urlField.text.toString().trim()
             if (TextUtils.isEmpty(number) || number.matches(".*https?://".toRegex())) {
                 reminderInterface.showSnackbar(getString(R.string.you_dont_insert_link))
                 return null

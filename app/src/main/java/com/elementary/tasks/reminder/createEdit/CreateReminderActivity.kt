@@ -53,6 +53,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private var isEditing: Boolean = false
     private var mIsLogged = false
+    private var mIsSaving = false
     override var reminder: Reminder = Reminder()
         private set
     override var defGroup: ReminderGroup? = null
@@ -77,14 +78,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         ReminderApp.appComponent.inject(this)
     }
 
-    private fun hasGpsPermission(code: Int): Boolean {
-        if (!Permissions.checkPermission(this, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
-            return false
-        }
-        return true
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
@@ -96,6 +89,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         if (prefs.hasPinCode && !mIsLogged) {
             PinLoginActivity.verify(this)
         }
+    }
+
+    private fun hasGpsPermission(code: Int): Boolean {
+        if (!Permissions.checkPermission(this, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+            return false
+        }
+        return true
     }
 
     private fun openScreen(position: Int) {
@@ -133,7 +134,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer { reminder ->
-            if (reminder != null) {
+            if (reminder != null && !mIsSaving) {
                 editReminder(reminder)
             }
         })
@@ -360,26 +361,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         }
     }
 
-    private fun askAboutEnabling() {
-        val builder = dialogues.getDialog(this)
-        builder.setTitle(R.string.this_reminder_is_disabled)
-        builder.setMessage(R.string.would_you_like_to_enable_it)
-        builder.setPositiveButton(R.string.yes) { dialog, _ ->
-            dialog.dismiss()
-            save()
-        }
-        builder.setNegativeButton(R.string.no) { dialog, _ ->
-            dialog.dismiss()
-            setResult(Activity.RESULT_OK)
-            finish()
-        }
-        builder.create().show()
-    }
-
     private fun save() {
         if (fragment != null) {
             val reminder = fragment?.prepare()
             if (reminder != null) {
+                mIsSaving = true
                 Timber.d("save: %s", reminder)
                 viewModel.saveAndStartReminder(reminder, isEditing)
             }
