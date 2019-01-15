@@ -11,6 +11,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import kotlinx.android.synthetic.main.activity_create_task_list.*
@@ -49,7 +50,18 @@ class TaskListActivity : ThemedActivity() {
         initActionBar()
         colorSlider.setColors(themeUtil.colorsForSlider())
 
+        if (savedInstanceState != null) {
+            colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
+            updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
+        }
+
         initViewModel(intent.getStringExtra(Constants.INTENT_ID) ?: "")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(ARG_COLOR, colorSlider.selectedItem)
+        outState.putBoolean(ARG_LOADING, mIsLoading)
+        super.onSaveInstanceState(outState)
     }
 
     private fun updateProgress(b: Boolean) {
@@ -66,11 +78,7 @@ class TaskListActivity : ThemedActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
         toolbar.setTitle(R.string.new_tasks_list)
     }
 
@@ -198,7 +206,8 @@ class TaskListActivity : ThemedActivity() {
     }
 
     companion object {
-
         private const val MENU_ITEM_DELETE = 12
+        private const val ARG_COLOR = "arg_color"
+        private const val ARG_LOADING = "arg_loading"
     }
 }
