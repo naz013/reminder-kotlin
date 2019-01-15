@@ -10,6 +10,7 @@ import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
@@ -65,6 +66,23 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         get() {
             return findPosition(mDataList)
         }
+    private val onSyncEnd: () -> Unit = {
+        progressView.visibility = View.INVISIBLE
+        syncButton.isEnabled = true
+        backupButton.isEnabled = true
+    }
+    private val onMessage: (String) -> Unit = {
+        progressMessageView.text = it
+    }
+    private val onProgress: (Boolean) -> Unit = {
+        if (it) {
+            syncButton.isEnabled = false
+            backupButton.isEnabled = false
+            progressView.visibility = View.VISIBLE
+        } else {
+            onSyncEnd.invoke()
+        }
+    }
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -96,6 +114,12 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         backupsPrefs.setDependentView(backupDataPrefs)
     }
 
+    override fun onResume() {
+        super.onResume()
+        initSyncButton()
+        initBackupButton()
+    }
+
     private fun findPosition(list: List<CalendarUtils.CalendarItem>): Int {
         if (list.isEmpty()) return -1
         val id = prefs.calendarId
@@ -112,6 +136,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         backupDataPrefs.isChecked = prefs.isBackupEnabled
         backupDataPrefs.setOnClickListener { changeBackupPrefs() }
         initSyncButton()
+        initBackupButton()
     }
 
     private fun initSyncButton() {
@@ -119,17 +144,32 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             syncButton.isEnabled = true
             syncButton.visibility = View.VISIBLE
             syncButton.setOnClickListener {
-                syncButton.isEnabled = false
-                progressView.visibility = View.VISIBLE
-                SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool), { progress ->
-                    progressMessageView.text = progress
-                }, {
-                    progressView.visibility = View.INVISIBLE
-                    syncButton.isEnabled = true
-                })
+                onProgress.invoke(true)
+                SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool))
             }
+
+            SyncWorker.listener = onProgress
+            SyncWorker.onEnd = onSyncEnd
+            SyncWorker.progress = onMessage
         } else {
             syncButton.visibility = View.GONE
+        }
+    }
+
+    private fun initBackupButton() {
+        if (prefs.isBackupEnabled) {
+            backupButton.isEnabled = true
+            backupButton.visibility = View.VISIBLE
+            backupButton.setOnClickListener {
+                onProgress.invoke(true)
+                BackupWorker.backup(context!!, IoHelper(context!!, prefs, backupTool))
+            }
+
+            BackupWorker.listener = onProgress
+            BackupWorker.onEnd = onSyncEnd
+            BackupWorker.progress = onMessage
+        } else {
+            backupButton.visibility = View.GONE
         }
     }
 
@@ -138,6 +178,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         backupDataPrefs.isChecked = !isChecked
         prefs.isBackupEnabled = !isChecked
         initSyncButton()
+        initBackupButton()
     }
 
     private fun initClearDataPrefs() {
