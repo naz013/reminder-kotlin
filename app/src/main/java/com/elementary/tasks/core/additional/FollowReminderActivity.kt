@@ -161,9 +161,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         initTomorrowTime()
         initNextBusinessTime()
 
-        if (savedInstanceState == null) {
-            initViewModel()
-        }
+        initViewModel()
     }
 
     private fun initViewModel() {
