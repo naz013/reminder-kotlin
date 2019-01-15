@@ -38,6 +38,10 @@ object TimeCount {
         return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis()
     }
 
+    fun isCurrent(millis: Long): Boolean {
+        return millis > System.currentTimeMillis()
+    }
+
     fun generateNextTimer(reminder: Reminder, isNew: Boolean): Long {
         val hours = reminder.hours
         val fromHour = reminder.from

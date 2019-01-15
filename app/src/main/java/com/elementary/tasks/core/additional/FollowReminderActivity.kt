@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.SpinnerAdapter
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -124,7 +125,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         val receivedDate = intent.getLongExtra(Constants.SELECTED_TIME, 0)
         mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
-        val name = Contacts.getNameFromNumber(mNumber, this@FollowReminderActivity)
+        val name = Contacts.getNameFromNumber(mNumber, this)
         setContentView(R.layout.activity_follow)
 
         val c = Calendar.getInstance()
@@ -160,7 +161,9 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         initTomorrowTime()
         initNextBusinessTime()
 
-        initViewModel()
+        if (savedInstanceState == null) {
+            initViewModel()
+        }
     }
 
     private fun initViewModel() {
@@ -284,8 +287,8 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun saveDateTask() {
-        val text = textField.text.toString().trim { it <= ' ' }
-        if (text.matches("".toRegex()) && typeMessage.isChecked) {
+        val text = textField.text.toString().trim()
+        if (text == "") {
             textLayout.error = getString(R.string.must_be_not_empty)
             textLayout.isErrorEnabled = true
             return
@@ -293,6 +296,11 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         val type = type
         setUpTimes()
         val due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
+        if (!TimeCount.isCurrent(due)) {
+            Toast.makeText(this, getString(R.string.select_date_in_future), Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val reminder = Reminder()
         val def = defGroup
         if (def != null) {
