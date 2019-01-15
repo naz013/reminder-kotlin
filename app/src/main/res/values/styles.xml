@@ -1,5 +1,9 @@
 <resources>
 
+    <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name ="android:windowBackground"> @drawable/splash_bg</item>
+    </style>
+
     <style name="ActionOverflowButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/pureBlack</item>
     </style>
