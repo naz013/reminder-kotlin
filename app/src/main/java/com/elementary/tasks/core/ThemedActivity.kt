@@ -26,9 +26,13 @@ abstract class ThemedActivity : AppCompatActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
+    open protected fun applyTheme(): Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(themeUtil.styleWithAccent)
+        if (applyTheme()) {
+            setTheme(themeUtil.styleWithAccent)
+        }
         isDark = themeUtil.isDark
     }
 

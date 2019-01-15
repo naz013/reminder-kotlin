@@ -71,8 +71,10 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
@@ -80,8 +82,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="content" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:host="*" />
@@ -94,8 +98,10 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
@@ -103,8 +109,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="content" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:host="*" />
@@ -121,8 +129,10 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
@@ -130,8 +140,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="content" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:host="*" />
@@ -143,8 +155,10 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
@@ -152,8 +166,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:mimeType="application/octet-stream" />
@@ -165,8 +181,10 @@
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
@@ -174,8 +192,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:mimeType="application/octet-stream" />
@@ -185,8 +205,10 @@
         <activity android:name=".birthdays.createEdit.AddBirthdayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
@@ -194,8 +216,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:mimeType="application/octet-stream" />
@@ -230,7 +254,8 @@
         <activity android:name=".notes.editor.ImageEditActivity" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
-            android:name=".core.SplashScreen">
+            android:name=".core.SplashScreen"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -439,6 +464,8 @@
         <activity android:name=".intro.IntroActivity" />
         <activity android:name=".intro.GoogleFixActivity" />
 
-        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
     </application>
 </manifest>
