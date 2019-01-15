@@ -662,5 +662,8 @@
     <string name="hide_that_functionality">Скрыть эту функциональность</string>
     <string name="accent">Акцент</string>
     <string name="living_coral">Живой коралл</string>
+    <string name="backup_data_now">Сделайть резервную копию данных сейчас</string>
+    <string name="missed_call">Пропущенный звонок</string>
+    <string name="select_date_in_future">Выберите дату в будущем</string>
 
 </resources>

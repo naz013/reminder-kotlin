@@ -662,5 +662,8 @@
     <string name="hide_that_functionality">隐藏该功能</string>
     <string name="accent">口音</string>
     <string name="living_coral">活珊瑚</string>
+    <string name="backup_data_now">立即备份数据</string>
+    <string name="missed_call">未接来电</string>
+    <string name="select_date_in_future">将来选择日期</string>
 
 </resources>

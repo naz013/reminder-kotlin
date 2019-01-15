@@ -662,5 +662,8 @@
     <string name="hide_that_functionality">Hide that functionality</string>
     <string name="accent">Accent</string>
     <string name="living_coral">Living Coral</string>
+    <string name="backup_data_now">Make backup of data now</string>
+    <string name="missed_call">Missed Call</string>
+    <string name="select_date_in_future">Select date in future</string>
 
 </resources>
