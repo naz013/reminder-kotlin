@@ -268,10 +268,10 @@ class MonthFragment : RepeatableTypeFragment() {
 
     private fun changeUi(b: Boolean) {
         if (b) {
-            ViewUtils.collapse(day_view)
+            day_view.visibility = View.GONE
             mDay = 0
         } else {
-            ViewUtils.expand(day_view)
+            day_view.visibility = View.VISIBLE
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
             mDay = calendar.get(Calendar.DAY_OF_MONTH)

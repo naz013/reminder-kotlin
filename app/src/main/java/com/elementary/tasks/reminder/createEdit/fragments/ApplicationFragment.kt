@@ -131,11 +131,11 @@ class ApplicationFragment : RepeatableTypeFragment() {
         urlLayout.visibility = View.GONE
         application.setOnCheckedChangeListener { _, b ->
             if (!b) {
-                ViewUtils.collapse(applicationLayout)
-                ViewUtils.expand(urlLayout)
+                applicationLayout.visibility = View.GONE
+                urlLayout.visibility = View.VISIBLE
             } else {
-                ViewUtils.collapse(urlLayout)
-                ViewUtils.expand(applicationLayout)
+                urlLayout.visibility = View.GONE
+                applicationLayout.visibility = View.VISIBLE
             }
         }
         initPropertyFields()
