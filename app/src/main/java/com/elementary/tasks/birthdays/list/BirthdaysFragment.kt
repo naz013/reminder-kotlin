@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.list.filters.SearchModifier
+import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
@@ -44,7 +46,7 @@ import kotlinx.android.synthetic.main.fragment_places.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
+class BirthdaysFragment : BaseNavigationFragment(), (List<Birthday>) -> Unit {
 
     private lateinit var viewModel: BirthdaysViewModel
     private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> viewModel.deleteBirthday(birthday) })
@@ -53,7 +55,8 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
-    private val filterController = BirthdayFilterController(this)
+    private val sortModifier = SortModifier(null, null)
+    private val filterController = SearchModifier(sortModifier, this)
 
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
@@ -158,7 +161,7 @@ class BirthdaysFragment : BaseNavigationFragment(), FilterCallback<Birthday> {
         }
     }
 
-    override fun onChanged(result: List<Birthday>) {
+    override fun invoke(result: List<Birthday>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         refreshView(result.size)

@@ -43,13 +43,12 @@ abstract class BaseMapFragment : Fragment() {
         ReminderApp.appComponent.inject(this)
     }
 
-    @JvmOverloads
     protected fun setStyle(map: GoogleMap, mapType: Int = mMapType) {
         mMapType = mapType
         map.setMapStyle(null)
         if (mapType == 3) {
-            val res = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(
-                    activity!!, themeUtil.mapStyleJson))
+            val ctx = context ?: return
+            val res = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.mapStyleJson))
             if (!res) {
                 map.mapType = mapType
             }
