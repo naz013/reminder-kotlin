@@ -10,7 +10,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.TimeUtil
-import timber.log.Timber
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -139,7 +138,6 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Timber.d("onBindViewHolder: $position")
         val item = getItem(position)
         if (holder is ReminderHolder) {
             holder.setData(item)
