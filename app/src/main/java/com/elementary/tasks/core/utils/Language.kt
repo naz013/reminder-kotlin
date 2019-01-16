@@ -114,6 +114,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         locales.add(context.getString(R.string.english) + " (" + EN + ")")
         locales.add(context.getString(R.string.russian) + " (" + RU + ")")
         locales.add(context.getString(R.string.ukrainian) + " (" + UK + ")")
+        locales.add(context.getString(R.string.german) + " (" + DE + ") (BETA)")
         return locales
     }
 
@@ -144,6 +145,7 @@ class Language @Inject constructor(private val prefs: Prefs){
             0 -> ENGLISH
             1 -> RUSSIAN
             2 -> UKRAINIAN
+            3 -> GERMAN
             else -> ENGLISH
         }
     }
@@ -153,6 +155,7 @@ class Language @Inject constructor(private val prefs: Prefs){
             0 -> EN
             1 -> RU
             2 -> UK
+            3 -> DE
             else -> EN
         }
     }
@@ -243,5 +246,6 @@ class Language @Inject constructor(private val prefs: Prefs){
         private const val EN = "en-US"
         private const val RU = "ru-RU"
         private const val UK = "uk-UA"
+        private const val DE = "de-DE"
     }
 }

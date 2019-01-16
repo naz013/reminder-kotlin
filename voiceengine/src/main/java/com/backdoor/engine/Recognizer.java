@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,17 +21,25 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class Recognizer {
 
     private String[] times;
     private WorkerInterface worker;
     private ContactsInterface contactsInterface;
+    public static Locale locale = Locale.getDefault();
 
     private Recognizer(String[] times, String locale, ContactsInterface contactsInterface) {
         this.times = times;
         this.contactsInterface = contactsInterface;
+        this.updateLocale(locale);
+    }
+
+    public void updateLocale(String locale) {
         worker = WorkerFactory.getWorker(locale);
+    }
+
+    public void setLocale(Locale locale) {
+        Recognizer.locale = locale;
     }
 
     public Model parse(String string) {
@@ -106,6 +115,7 @@ public class Recognizer {
         long repeat = 0;
         if (repeating = worker.hasRepeat(keyStr)) {
             keyStr = worker.clearRepeat(keyStr);
+            System.out.println("parse: has repeat -> " + keyStr);
             repeat = worker.getDaysRepeat(keyStr);
             if (repeat != 0) {
                 keyStr = worker.clearDaysRepeat(keyStr);

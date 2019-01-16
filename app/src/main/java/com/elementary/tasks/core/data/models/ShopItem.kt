@@ -1,11 +1,9 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-
-import java.util.UUID
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -54,6 +52,6 @@ class ShopItem : Serializable {
     }
 
     override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, ShopItem::class.java)
+        return "ShopItem(summary='$summary', isDeleted=$isDeleted, isChecked=$isChecked, uuId='$uuId', createTime='$createTime')"
     }
 }

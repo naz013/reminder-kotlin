@@ -15,7 +15,6 @@ package com.backdoor.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class WorkerFactory {
 
     static WorkerInterface getWorker(String locale) {
@@ -25,6 +24,8 @@ class WorkerFactory {
             return new UkLocale();
         } else if (locale.matches(Locale.RU)) {
             return new RuLocale();
+        } else if (locale.matches(Locale.DE)) {
+            return new DeLocale();
         } else return new EnLocale();
     }
 }

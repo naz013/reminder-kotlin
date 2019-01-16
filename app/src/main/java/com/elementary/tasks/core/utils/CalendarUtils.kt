@@ -9,7 +9,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
-import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
@@ -179,22 +178,9 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
         return list
     }
 
-    class EventItem(val title: String, val description: String, val rrule: String, private val rDate: String, val calendarID: Int,
-                    val allDay: Int, val dtStart: Long, val dtEnd: Long, val id: Long) {
+    data class EventItem(val title: String, val description: String, val rrule: String,
+                         private val rDate: String, val calendarID: Int, val allDay: Int,
+                         val dtStart: Long, val dtEnd: Long, val id: Long)
 
-        fun getrDate(): String {
-            return rDate
-        }
-
-        override fun toString(): String {
-            return ObjectUtil.getObjectPrint(this, EventItem::class.java)
-        }
-    }
-
-    class CalendarItem(val name: String, val id: Int) {
-
-        override fun toString(): String {
-            return ObjectUtil.getObjectPrint(this, CalendarItem::class.java)
-        }
-    }
+    data class CalendarItem(val name: String, val id: Int)
 }

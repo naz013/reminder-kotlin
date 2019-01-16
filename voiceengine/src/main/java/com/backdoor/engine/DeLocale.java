@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,16 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class EnLocale extends Worker {
+class DeLocale extends Worker {
 
     @Override
     protected String[] getWeekdays() {
-        return new String[]{"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+        return new String[]{"sonntag", "montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag"};
     }
 
     @Override
     public boolean hasCalendar(String input) {
-        return input.matches(".*calendar.*");
+        return input.matches(".*kalender.*");
     }
 
     @Override
@@ -42,8 +41,11 @@ class EnLocale extends Worker {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
-            if (string.matches(".*calendar.*")) {
+            if (string.matches(".*kalender.*")) {
                 parts[i] = "";
+                if (i > 0 && parts[i - 1].toLowerCase().equalsIgnoreCase("zum")) {
+                    parts[i - 1] = "";
+                }
                 break;
             }
         }
@@ -86,7 +88,7 @@ class EnLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("on") && !part.matches("at"))
+            if (!part.matches("zum"))
                 sb.append(" ").append(part);
         }
         return sb.toString().trim();
@@ -132,7 +134,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasRepeat(String input) {
-        return input.matches(".*every.*");
+        return input.matches(".*jeden.*");
     }
 
     @Override
@@ -140,7 +142,7 @@ class EnLocale extends Worker {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*every.*")) {
+            if (part.matches(".*jeden.*")) {
                 parts[i] = "";
                 break;
             }
@@ -150,7 +152,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasTomorrow(String input) {
-        return input.matches(".*tomorrow.*");
+        return input.matches(".*morgen.*");
     }
 
     @Override
@@ -158,7 +160,7 @@ class EnLocale extends Worker {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*tomorrow.*")) {
+            if (part.matches(".*morgen.*")) {
                 parts[i] = "";
                 break;
             }
@@ -186,7 +188,7 @@ class EnLocale extends Worker {
             String part = parts[i];
             if (part.matches("text")) {
                 try {
-                    if (parts[i - 1].matches("with")) {
+                    if (parts[i - 1].matches("mit")) {
                         parts[i - 1] = "";
                     }
                 } catch (IndexOutOfBoundsException ignored) {
@@ -200,8 +202,8 @@ class EnLocale extends Worker {
 
     @Override
     public Action getMessageType(String input) {
-        if (input.matches(".*message.*")) return Action.MESSAGE;
-        else if (input.matches(".*letter.*")) return Action.MAIL;
+        if (input.matches(".*nachricht.*")) return Action.MESSAGE;
+        else if (input.matches(".*brief.*") || input.matches(".*buchstabe.*")) return Action.MAIL;
         return null;
     }
 
@@ -214,7 +216,7 @@ class EnLocale extends Worker {
             if (type != null) {
                 parts[i] = "";
                 int nextIndex = i + 1;
-                if (nextIndex < parts.length && parts[nextIndex].matches("to")) {
+                if (nextIndex < parts.length && parts[nextIndex].matches("an")) {
                     parts[nextIndex] = "";
                 }
                 break;
@@ -225,16 +227,10 @@ class EnLocale extends Worker {
 
     @Override
     public Ampm getAmpm(String input) {
-        if (input.matches(".*morning.*")) return Ampm.MORNING;
-        if (input.matches(".*evening.*")) return Ampm.EVENING;
-        if (input.matches(".*noon.*")) return Ampm.NOON;
-        if (input.matches(".*night.*")) return Ampm.NIGHT;
-        if (input.matches(".*a m.*")) return Ampm.MORNING;
-        if (input.matches(".*a.m..*")) return Ampm.MORNING;
-        if (input.matches(".*am.*")) return Ampm.MORNING;
-        if (input.matches(".*p m.*")) return Ampm.EVENING;
-        if (input.matches(".*p.m..*")) return Ampm.EVENING;
-        if (input.matches(".*pm.*")) return Ampm.EVENING;
+        if (input.matches(".*morgen.*")) return Ampm.MORNING;
+        if (input.matches(".*abend.*")) return Ampm.EVENING;
+        if (input.matches(".*mittag.*")) return Ampm.NOON;
+        if (input.matches(".*nacht.*")) return Ampm.NIGHT;
         return null;
     }
 
@@ -277,10 +273,19 @@ class EnLocale extends Worker {
             if (hasHours(part) != -1) {
                 int index = hasHours(part);
                 parts[i] = "";
+                boolean hourSuccess = false;
                 try {
                     Integer.parseInt(parts[i - index]);
+                    hourSuccess = true;
                     parts[i - index] = "";
                 } catch (NumberFormatException ignored) {
+                }
+                if (hourSuccess) {
+                    try {
+                        Integer.parseInt(parts[i + 1]);
+                        parts[i + 1] = "";
+                    } catch (Exception ignored) {
+                    }
                 }
             }
             if (hasMinutes(part) != -1) {
@@ -304,32 +309,32 @@ class EnLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("at")) sb.append(" ").append(part);
+            if (!part.matches("bei")) sb.append(" ").append(part);
         }
-        return sb.toString().trim();
+        return sb.toString().trim().replace("um", "");
     }
 
     @Override
     protected int getMonth(String input) {
         int res = -1;
-        if (input.contains("january")) res = 0;
-        if (input.contains("february")) res = 1;
-        if (input.contains("march")) res = 2;
+        if (input.contains("januar")) res = 0;
+        if (input.contains("februar")) res = 1;
+        if (input.contains("märz")) res = 2;
         if (input.contains("april")) res = 3;
-        if (input.contains("may")) res = 4;
-        if (input.contains("june")) res = 5;
-        if (input.contains("july")) res = 6;
+        if (input.contains("mai")) res = 4;
+        if (input.contains("juni")) res = 5;
+        if (input.contains("juli")) res = 6;
         if (input.contains("august")) res = 7;
         if (input.contains("september")) res = 8;
-        if (input.contains("october")) res = 9;
+        if (input.contains("oktober")) res = 9;
         if (input.contains("november")) res = 10;
-        if (input.contains("december")) res = 11;
+        if (input.contains("dezember")) res = 11;
         return res;
     }
 
     @Override
     public boolean hasCall(String input) {
-        return input.matches(".*call.*");
+        return input.matches(".*anruf.*");
     }
 
     @Override
@@ -348,7 +353,7 @@ class EnLocale extends Worker {
     @Override
     public boolean isTimer(String input) {
         input = " " + input + " ";
-        return input.matches(".*after.*") || input.matches(".* in .*");
+        return input.matches(".*nach.*") || input.matches(".*nach dem.*") || input.matches(".* in .*");
     }
 
     @Override
@@ -361,7 +366,7 @@ class EnLocale extends Worker {
                 break;
             }
         }
-        return clipStrings(parts);
+        return clipStrings(parts).trim();
     }
 
     @Override
@@ -374,8 +379,8 @@ class EnLocale extends Worker {
             if (month != -1) {
                 int integer;
                 try {
-                    integer = Integer.parseInt(parts[i + 1]);
-                    parts[i + 1] = "";
+                    integer = Integer.parseInt(parts[i - 1]);
+                    parts[i - 1] = "";
                 } catch (NumberFormatException | IndexOutOfBoundsException e) {
                     integer = 1;
                 }
@@ -389,12 +394,12 @@ class EnLocale extends Worker {
             }
         }
         res.set(mills);
-        return clipStrings(parts);
+        return clipStrings(parts).replace("am", "");
     }
 
     @Override
     public boolean hasSender(String input) {
-        return input.matches(".*send.*");
+        return input.matches(".*senden.*");
     }
 
     @Override
@@ -412,31 +417,31 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasNote(String input) {
-        return input.contains("note");
+        return input.contains("notiz");
     }
 
     @Override
     public String clearNote(String input) {
-        input = input.replace("note", "");
+        input = input.replace("notiz", "");
         return input.trim();
     }
 
     @Override
     public boolean hasAction(String input) {
-        return input.startsWith("open") || input.matches(".*help.*")
-                || input.matches(".*adjust.*") || input.matches(".*report.*") ||
-                input.matches(".*change.*");
+        return input.startsWith("öffnen") || input.matches(".*hilfe.*")
+                || input.matches(".*einstellen.*") || input.matches(".*bericht.*") ||
+                input.matches(".*verändern.*");
     }
 
     @Override
     public Action getAction(String input) {
-        if (input.matches(".*help.*")) {
+        if (input.matches(".*hilfe.*")) {
             return Action.HELP;
-        } else if (input.matches(".*loudness.*") || input.matches(".*volume.*")) {
+        } else if (input.matches(".*lautstärke.*") || input.matches(".*volumen.*")) {
             return Action.VOLUME;
-        } else if (input.matches(".*settings.*")) {
+        } else if (input.matches(".*einstellungen.*")) {
             return Action.SETTINGS;
-        } else if (input.matches(".*report.*")) {
+        } else if (input.matches(".*bericht.*")) {
             return Action.REPORT;
         } else {
             return Action.APP;
@@ -445,31 +450,31 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasEvent(String input) {
-        return input.startsWith("new") || input.startsWith("add");
+        return input.startsWith("neu") || input.startsWith("hinzufügen") || input.startsWith("addieren");
     }
 
     @Override
     public Action getEvent(String input) {
-        if (input.matches(".*birthday.*")) {
+        if (input.matches(".*geburtstag.*")) {
             return Action.BIRTHDAY;
-        } else if (input.matches(".*reminder.*")) {
+        } else if (input.matches(".*erinnerung.*") || input.matches(".*mahnung.*")) {
             return Action.REMINDER;
         } else return Action.NO_EVENT;
     }
 
     @Override
     public boolean hasEmptyTrash(String input) {
-        return input.matches(".*empty trash.*");
+        return input.matches(".*klar trash.*");
     }
 
     @Override
     public boolean hasDisableReminders(String input) {
-        return input.matches(".*disable reminder.*");
+        return input.matches(".*erinnerung deaktivieren.*");
     }
 
     @Override
     public boolean hasGroup(String input) {
-        return input.matches(".*add group.*");
+        return input.matches(".*gruppe hinzufügen.*");
     }
 
     @Override
@@ -478,7 +483,7 @@ class EnLocale extends Worker {
         String[] parts = input.split("\\s");
         boolean st = false;
         for (String s : parts) {
-            if (s.matches(".*group.*")) {
+            if (s.matches(".*gruppe.*")) {
                 st = true;
                 continue;
             }
@@ -492,23 +497,33 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasToday(String input) {
-        return input.matches(".*today.*");
+        return input.matches(".*heute.*");
     }
 
     @Override
     public boolean hasAfterTomorrow(String input) {
-        return input.matches(".*after tomorrow.*");
+        return input.matches(".*übermorgen.*") || input.matches(".*nach morgen.*");
+    }
+
+    @Override
+    public String clearAfterTomorrow(String input) {
+        if (input.matches(".*übermorgen.*")) {
+            return input.replace("übermorgen", "");
+        } else if (input.matches(".*nach morgen.*")) {
+            return input.replace("nach morgen", "");
+        } else {
+            return input;
+        }
     }
 
     @Override
     protected String getAfterTomorrow() {
-        return "after tomorrow";
+        return "übermorgen";
     }
 
     @Override
     protected int hasHours(String input) {
-        if (input.matches(".*hour.*") || input.matches(".*o'clock.*")
-                || input.matches(".*am.*") || input.matches(".*pm.*")) return 1;
+        if (input.matches(".*stunde.*") || input.matches("uhr.*")) return 1;
         return -1;
     }
 
@@ -520,33 +535,33 @@ class EnLocale extends Worker {
 
     @Override
     protected boolean hasSeconds(String input) {
-        return input.matches(".*second.*");
+        return input.matches(".*zweite.*");
     }
 
     @Override
     protected boolean hasDays(String input) {
-        return input.matches(".* day.*");
+        return input.matches(".*tag.*");
     }
 
     @Override
     protected boolean hasWeeks(String input) {
-        return input.matches(".*week.*");
+        return input.matches(".*woche.*");
     }
 
     @Override
     protected boolean hasMonth(String input) {
-        return input.matches(".*month.*");
+        return input.matches(".*monat.*");
     }
 
     @Override
     public boolean hasAnswer(String input) {
         input = " " + input + " ";
-        return input.matches(".* (yes|yeah|no) .*");
+        return input.matches(".* (ja|nein|kein|nicht) .*");
     }
 
     @Override
     public Action getAnswer(String input) {
-        if (input.matches(".* ?(yes|yeah) ?.*")) {
+        if (input.matches(".* ?(ja) ?.*")) {
             return Action.YES;
         }
         return Action.NO;
@@ -554,7 +569,7 @@ class EnLocale extends Worker {
 
     @Override
     protected float findFloat(String input) {
-        if (input.matches("half")) {
+        if (input.matches("halb")) {
             return 0.5f;
         } else {
             return -1;
@@ -562,76 +577,131 @@ class EnLocale extends Worker {
     }
 
     @Override
+    public String replaceNumbers(String input) {
+        return super.replaceNumbers(splitNumbers(input));
+    }
+
+    private String splitNumbers(String input) {
+        String[] parts = input.split("\\s");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (hasNumber(part) != -1 && (part.contains("und") || part.contains("ein")  || part.contains("in"))) {
+                part = part.replace("und", " ");
+                part = part.replace("ein", " ");
+                part = part.replace("in", " ");
+                parts[i] = part;
+            }
+        }
+        System.out.println("splitNumbers: in -> " + input);
+        input = clipStrings(parts);
+        System.out.println("splitNumbers: out -> " + input);
+        return input;
+    }
+
+    @Override
     protected String clearFloats(String input) {
-        if (input.contains("and a half")) {
-            return input.replace("and a half", "");
+        if (input.contains(".*einhalb.*")) {
+            return input.replace("einhalb", "");
         }
-        if (input.contains("and half")) {
-            return input.replace("and half", "");
+        if (input.contains("und eine halbe")) {
+            return input.replace("und eine halbe", "");
         }
-        if (input.contains(" half an ")) {
-            return input.replace("half an", "");
+        if (input.contains("halbe")) {
+            return input.replace("halbe", "");
         }
-        if (input.contains(" in half ")) {
-            return input.replace("in half", "");
+        if (input.contains("halb")) {
+            return input.replace("halb", "");
         }
         return input;
+    }
+
+    private float hasNumber(String input) {
+        float number = -1;
+        if (input.contains("zero") || input.contains("null")) number = 0;
+        else if (input.matches("ein(e|es|er|s)?") || input.contains("zuerst") || input.matches("erste.*")) number = 1;
+        else if (input.contains("zwei") || input.matches("zweite.*")) number = 2;
+        else if (input.contains("drei") || input.matches("dritte.*")) number = 3;
+        else if (input.contains("vier") || input.matches("vierte.*")) number = 4;
+        else if (input.contains("fünf") || input.matches("fünfte.*")) number = 5;
+        else if (input.contains("sechs") || input.matches("sechste.*")) number = 6;
+        else if (input.contains("sieben") || input.matches("siebte.*")) number = 7;
+        else if (input.contains("acht") || input.matches("achte.*")) number = 8;
+        else if (input.contains("neun") || input.matches("neunte.*")) number = 9;
+        else if (input.contains("zehn") || input.matches("zehnte.*")) number = 10;
+        else if (input.contains("elf") || input.matches("elfte.*")) number = 11;
+        else if (input.contains("zwölf") || input.matches("zwölfte.*")) number = 12;
+        else if (input.contains("dreizehn") || input.matches("dreizehnte.*")) number = 13;
+        else if (input.contains("vierzehn") || input.matches("vierzehnte.*")) number = 14;
+        else if (input.contains("fünfzehn") || input.matches("fünfzehnte.*")) number = 15;
+        else if (input.contains("sechzehn") || input.matches("sechzehnte.*")) number = 16;
+        else if (input.contains("siebzehn") || input.matches("siebzehnte.*")) number = 17;
+        else if (input.contains("achtzehn") || input.matches("achtzehnte.*")) number = 18;
+        else if (input.contains("neunzehn") || input.matches("neunzehnte.*")) number = 19;
+        else if (input.contains("zwanzig") || input.contains("zwanzigste")) number = 20;
+        else if (input.contains("dreißig") || input.contains("dreißigste")) number = 30;
+        else if (input.contains("vierzig") || input.contains("vierzigste")) number = 40;
+        else if (input.contains("fünfzig") || input.contains("fünfzigste")) number = 50;
+        else if (input.contains("sechzig") || input.contains("sechzigste")) number = 60;
+        else if (input.contains("siebzig") || input.contains("siebzigste")) number = 70;
+        else if (input.contains("achtzig") || input.contains("achtzigste")) number = 80;
+        else if (input.contains("neunzig") || input.contains("neunzigste")) number = 90;
+        return number;
     }
 
     @Override
     protected float findNumber(String input) {
         float number = -1;
-        if (input.matches("zero") || input.matches("nil")) number = 0;
-        if (input.matches("one") || input.matches("first")) number = 1;
-        if (input.matches("two") || input.matches("second")) number = 2;
-        if (input.matches("three") || input.matches("third")) number = 3;
-        if (input.matches("four") || input.matches("fourth")) number = 4;
-        if (input.matches("five") || input.matches("fifth")) number = 5;
-        if (input.matches("six") || input.matches("sixth")) number = 6;
-        if (input.matches("seven") || input.matches("seventh")) number = 7;
-        if (input.matches("eight") || input.matches("eighth")) number = 8;
-        if (input.matches("nine") || input.matches("ninth")) number = 9;
-        if (input.matches("ten") || input.matches("tenth")) number = 10;
-        if (input.matches("eleven") || input.matches("eleventh")) number = 11;
-        if (input.matches("twelve") || input.matches("twelfth")) number = 12;
-        if (input.matches("thirteen") || input.matches("thirteenth")) number = 13;
-        if (input.matches("fourteen") || input.matches("fourteenth")) number = 14;
-        if (input.matches("fifteen") || input.matches("fifteenth")) number = 15;
-        if (input.matches("sixteen") || input.matches("sixteenth")) number = 16;
-        if (input.matches("seventeen") || input.matches("seventeenth")) number = 17;
-        if (input.matches("eighteen") || input.matches("eighteenth")) number = 18;
-        if (input.matches("nineteen") || input.matches("nineteenth")) number = 19;
-        if (input.matches("twenty") || input.matches("twentieth")) number = 20;
-        if (input.matches("thirty") || input.matches("thirtieth")) number = 30;
-        if (input.matches("forty") || input.matches("fortieth")) number = 40;
-        if (input.matches("fifty") || input.matches("fiftieth")) number = 50;
-        if (input.matches("sixty") || input.matches("sixtieth")) number = 60;
-        if (input.matches("seventy") || input.matches("seventieth")) number = 70;
-        if (input.matches("eighty") || input.matches("eightieth")) number = 80;
-        if (input.matches("ninety") || input.matches("ninetieth")) number = 90;
+        if (input.matches("zero") || input.matches("null")) number = 0;
+        else if (input.matches("ein(e|es|er|s)?") || input.matches("zuerst") || input.matches("erste.*")) number = 1;
+        else if (input.matches("zwei") || input.matches("zweite.*")) number = 2;
+        else if (input.matches("drei") || input.matches("dritte.*")) number = 3;
+        else if (input.matches("vier") || input.matches("vierte.*")) number = 4;
+        else if (input.matches("fünf") || input.matches("fünfte.*")) number = 5;
+        else if (input.matches("sechs") || input.matches("sechste.*")) number = 6;
+        else if (input.matches("sieben") || input.matches("siebte.*")) number = 7;
+        else if (input.matches("acht") || input.matches("achte.*")) number = 8;
+        else if (input.matches("neun") || input.matches("neunte.*")) number = 9;
+        else if (input.matches("zehn") || input.matches("zehnte.*")) number = 10;
+        else if (input.matches("elf") || input.matches("elfte.*")) number = 11;
+        else if (input.matches("zwölf") || input.matches("zwölfte.*")) number = 12;
+        else if (input.matches("dreizehn") || input.matches("dreizehnte.*")) number = 13;
+        else if (input.matches("vierzehn") || input.matches("vierzehnte.*")) number = 14;
+        else if (input.matches("fünfzehn") || input.matches("fünfzehnte.*")) number = 15;
+        else if (input.matches("sechzehn") || input.matches("sechzehnte.*")) number = 16;
+        else if (input.matches("siebzehn") || input.matches("siebzehnte.*")) number = 17;
+        else if (input.matches("achtzehn") || input.matches("achtzehnte.*")) number = 18;
+        else if (input.matches("neunzehn") || input.matches("neunzehnte.*")) number = 19;
+        else if (input.matches("zwanzig") || input.matches("zwanzigste")) number = 20;
+        else if (input.matches("dreißig") || input.matches("dreißigste")) number = 30;
+        else if (input.matches("vierzig") || input.matches("vierzigste")) number = 40;
+        else if (input.matches("fünfzig") || input.matches("fünfzigste")) number = 50;
+        else if (input.matches("sechzig") || input.matches("sechzigste")) number = 60;
+        else if (input.matches("siebzig") || input.matches("siebzigste")) number = 70;
+        else if (input.matches("achtzig") || input.matches("achtzigste")) number = 80;
+        else if (input.matches("neunzig") || input.matches("neunzigste")) number = 90;
         return number;
     }
 
     @Override
     public boolean hasShowAction(String input) {
-        return input.matches(".*show.*");
+        return input.matches(".*show.*") || input.matches(".*zeigen.*");
     }
 
     @Override
     public Action getShowAction(String input) {
-        if (input.matches(".*birthdays.*")) {
+        if (input.matches(".*geburtstage.*")) {
             return Action.BIRTHDAYS;
-        } else if (input.matches(".*active reminders.*")) {
+        } else if (input.matches(".*aktive erinnerungen.*")) {
             return Action.ACTIVE_REMINDERS;
-        } else if (input.matches(".*reminders.*")) {
+        } else if (input.matches(".*erinnerungen.*")) {
             return Action.REMINDERS;
-        } else if (input.matches(".*events.*")) {
+        } else if (input.matches(".*veranstaltungen.*")) {
             return Action.EVENTS;
-        } else if (input.matches(".*notes.*")) {
+        } else if (input.matches(".*notizen.*")) {
             return Action.NOTES;
-        } else if (input.matches(".*groups.*")) {
+        } else if (input.matches(".*gruppen.*")) {
             return Action.GROUPS;
-        } else if (input.matches(".*shopping lists?.*")) {
+        } else if (input.matches(".*Einkaufslisten?.*")) {
             return Action.SHOP_LISTS;
         }
         return null;
@@ -639,6 +709,6 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasNextModifier(String input) {
-        return input.matches(".*next.*");
+        return input.matches(".*nächste.*");
     }
 }
