@@ -6,11 +6,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 abstract class Worker implements WorkerInterface {
-
-    protected static final String TAG = "Worker";
 
     /**
      * Millisecond constants.
@@ -21,14 +18,16 @@ abstract class Worker implements WorkerInterface {
     protected final static long HALF_DAY = HOUR * 12;
     protected final static long DAY = HALF_DAY * 2;
 
+    protected SimpleDateFormat[] getHourFormats() {
+        return new SimpleDateFormat[] {
+                new SimpleDateFormat("HH mm", Recognizer.locale),
+                new SimpleDateFormat("HH:mm", Recognizer.locale)
+        };
+    }
 
-    protected static final SimpleDateFormat[] dateTaskFormats = {
-            new SimpleDateFormat("HH mm", Locale.getDefault()),
-            new SimpleDateFormat("HH:mm", Locale.getDefault())
-    };
-
-    protected static SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    protected static final SimpleDateFormat simpleDate = new SimpleDateFormat("d MMMM yyyy, HH:mm", Locale.getDefault());
+    protected SimpleDateFormat getHourFormat() {
+        return new SimpleDateFormat("HH:mm",Recognizer.locale);
+    }
 
     static int getNumberOfSelectedWeekdays(List<Integer> days) {
         int count = 0;
@@ -113,7 +112,7 @@ abstract class Worker implements WorkerInterface {
             }
         }
         String out = clipStrings(parts);
-        System.out.println("out: " + out + ", " + res);
+        System.out.println("getMultiplier: out -> " + out + ", res -> " + res.get());
         return out;
     }
 
@@ -136,7 +135,7 @@ abstract class Worker implements WorkerInterface {
 
     @Override
     public String replaceNumbers(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split("\\s+");
         float allNumber = 0;
         int beginIndex = -1;
         for (int i = 0; i < parts.length; i++) {
@@ -157,7 +156,7 @@ abstract class Worker implements WorkerInterface {
                 }
             }
         }
-        System.out.println("before: " + Arrays.toString(parts));
+        System.out.println("replaceNumbers: parts -> " + Arrays.toString(parts));
         if (beginIndex != -1 && allNumber != 0) {
             String[] newP = new String[parts.length + 1];
             for (int i = 0; i < parts.length; i++) {
@@ -172,19 +171,19 @@ abstract class Worker implements WorkerInterface {
             }
             parts = newP;
         }
-        System.out.println("after " + Arrays.toString(parts));
+        System.out.println("replaceNumbers: after parts -> " + Arrays.toString(parts));
         String out = clipStrings(parts);
         out = clearFloats(out);
-        System.out.println("replaceNumbers: " + out);
+        System.out.println("replaceNumbers: out -> " + out);
         return out;
     }
 
     protected abstract String clearFloats(String input);
 
     protected String clipStrings(String[] parts) {
-        String out = "";
-        for (String s : parts) out = out + " " + s;
-        return out;
+        StringBuilder out = new StringBuilder();
+        for (String s : parts) out.append(" ").append(s);
+        return out.toString().trim().replaceAll("\\s{2,}", " ");
     }
 
     protected abstract float findFloat(String input);
@@ -194,7 +193,7 @@ abstract class Worker implements WorkerInterface {
         System.out.println("getTime: " + ampm + ", input " + input);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
-        String[] parts = input.split("\\s");
+        String[] parts = input.split("\\s+");
         float h = -1;
         float m = -1;
         float reserveHour = 0;
@@ -203,8 +202,11 @@ abstract class Worker implements WorkerInterface {
             if (hasHours(part) != -1) {
                 int index = hasHours(part);
                 float integer;
+                boolean hourSuccess = false;
                 try {
                     integer = Float.parseFloat(parts[i - index]);
+                    hourSuccess = true;
+                    parts[i - index] = "";
                 } catch (NumberFormatException e) {
                     integer = 1;
                 }
@@ -212,7 +214,13 @@ abstract class Worker implements WorkerInterface {
                     integer += 12;
                 }
                 h = integer;
-                parts[i - index] = "";
+                if (hourSuccess) {
+                    try {
+                        m = Integer.parseInt(parts[i + 1]);
+                        parts[i + 1] = "";
+                    } catch (Exception ignored) {
+                    }
+                }
             }
             if (hasMinutes(part) != -1) {
                 int index = hasMinutes(part);
@@ -266,17 +274,18 @@ abstract class Worker implements WorkerInterface {
         if (calendar.getTimeInMillis() == 0 && ampm != null) {
             calendar.setTimeInMillis(System.currentTimeMillis());
             try {
+                SimpleDateFormat hourFormat = getHourFormat();
                 if (ampm == Ampm.MORNING) {
-                    calendar.setTime(mFormat.parse(times[0]));
+                    calendar.setTime(hourFormat.parse(times[0]));
                 }
                 if (ampm == Ampm.NOON) {
-                    calendar.setTime(mFormat.parse(times[1]));
+                    calendar.setTime(hourFormat.parse(times[1]));
                 }
                 if (ampm == Ampm.EVENING) {
-                    calendar.setTime(mFormat.parse(times[2]));
+                    calendar.setTime(hourFormat.parse(times[2]));
                 }
                 if (ampm == Ampm.NIGHT) {
-                    calendar.setTime(mFormat.parse(times[3]));
+                    calendar.setTime(hourFormat.parse(times[3]));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();

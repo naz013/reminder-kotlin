@@ -17,7 +17,6 @@ import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.contacts.ContactsActivity
@@ -138,10 +137,6 @@ object SuperUtil {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             context.startActivity(intent)
         })
-    }
-
-    fun getObjectPrint(o: Any, clazz: Class<*>): String {
-        return ObjectUtil.getObjectPrint(o, clazz)
     }
 
     fun selectContact(activity: Activity, requestCode: Int) {

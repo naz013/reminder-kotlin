@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -26,8 +27,8 @@ import java.util.TimeZone;
 
 public class TimeUtil {
 
-    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", java.util.Locale.getDefault());
-    public static final String GMT = "GMT";
+    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US);
+    private static final String GMT = "GMT";
 
     public static String getGmtFromDateTime(long date){
         Calendar calendar = Calendar.getInstance();

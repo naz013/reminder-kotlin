@@ -121,7 +121,10 @@ class ConversationActivity : ThemedActivity() {
         override fun onPartialResults(bundle: Bundle) {
             val list = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (list != null && list.isNotEmpty()) {
-                viewModel.addReply(Reply(Reply.REPLY, list[0]), true)
+                val text = list[0]
+                if (text.isNotBlank()) {
+                    viewModel.addReply(Reply(Reply.REPLY, text), true)
+                }
             }
         }
 
@@ -577,8 +580,7 @@ class ConversationActivity : ThemedActivity() {
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locales = language.getLanguages(this)
-        val adapter = ArrayAdapter(this,
-                android.R.layout.simple_list_item_single_choice, locales)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, locales)
         val language = prefs.voiceLocale
         builder.setSingleChoiceItems(adapter, language) { _, which ->
             if (which != -1) {

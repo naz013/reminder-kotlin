@@ -98,6 +98,15 @@ public class Model {
 
     @Override
     public String toString() {
-        return ObjectUtil.getObjectPrint(this, Model.class);
+        return "Model{" +
+                "target='" + target + '\'' +
+                ", summary='" + summary + '\'' +
+                ", dateTime='" + dateTime + '\'' +
+                ", repeatInterval=" + repeatInterval +
+                ", type=" + type +
+                ", weekdays=" + weekdays +
+                ", action=" + action +
+                ", hasCalendar=" + hasCalendar +
+                '}';
     }
 }

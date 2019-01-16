@@ -15,9 +15,9 @@ package com.backdoor.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class Locale {
     public static final String EN = "en-US";
     public static final String RU = "ru-RU";
     public static final String UK = "uk-UA";
+    public static final String DE = "de-DE";
 }

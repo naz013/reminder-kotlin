@@ -1,11 +1,8 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.SuperUtil
-
-import java.util.UUID
-
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,6 +34,6 @@ class CalendarEvent(var reminderId: String, var event: String, var eventId: Long
     }
 
     override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, CalendarEvent::class.java)
+        return "CalendarEvent(reminderId='$reminderId', event='$event', eventId=$eventId, uuId='$uuId')"
     }
 }

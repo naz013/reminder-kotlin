@@ -72,9 +72,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     @Inject
     lateinit var recognizer: Recognizer
+    @Inject
+    lateinit var language: Language
 
     init {
         ReminderApp.appComponent.inject(this)
+
+        recognizer.updateLocale(language.getLanguage(prefs.voiceLocale))
     }
 
     fun addMoreItemsToList(position: Int) {

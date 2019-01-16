@@ -106,6 +106,8 @@ class UkLocale extends Worker {
                     integer = Integer.parseInt(parts[i - 1]);
                 } catch (NumberFormatException e) {
                     integer = 1;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    integer = 0;
                 }
                 return integer * DAY;
             }
@@ -261,7 +263,7 @@ class UkLocale extends Worker {
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
-            for (SimpleDateFormat format : dateTaskFormats) {
+            for (SimpleDateFormat format : getHourFormats()) {
                 Date date;
                 try {
                     date = format.parse(time);

@@ -26,7 +26,20 @@ public class WorkerTest {
             "tomorrow at 15 30 check mail",
             "after tomorrow at 15 30 check mail",
             "on may 30 at 15 30 check mail",
+            "on may twenty second at 15 30 check mail",
+            "every sunday at 15 30 check mail",
             "after five minutes check mail"
+    };
+
+    private static final String[] TEST_DE = new String[]{
+            "in zweieinhalb Stunden Posteingang lesen",
+            "in sechs Minuten und eine halbe lese Post",
+            "in sechseinhalb Sekunden lese Post",
+            "morgen um 15 30 lese Post",
+            "nach morgen um 15 30 lese Post",
+            "am 30 Mai um 15 Uhr 30 lese Post",
+            "jeden Sonntag um 15 30 lese Post",
+            "Nach sechs Minuten lese Post"
     };
 
     private static final String[] TEST_UK = new String[]{
@@ -52,31 +65,52 @@ public class WorkerTest {
     };
 
     @Test
-    public void replaceNumbers() throws Exception {
+    public void replaceNumbers() {
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.EN).setTimes(null).build();
         for (String in : TEST) {
             Model out = recognizer.parse(in);
-            System.out.print(out);
+            System.out.println(out);
         }
     }
 
     @Test
-    public void checkUk() throws Exception {
+    public void checkDe() {
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.DE).setTimes(null).build();
+        System.out.println("GMT " + TimeUtil.getGmtFromDateTime(System.currentTimeMillis()));
+        for (String in : TEST_DE) {
+            System.out.println("Input " + in);
+            Model out = recognizer.parse(in);
+            System.out.println("Output " + out);
+        }
+    }
+
+    @Test
+    public void checkEn() {
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.EN).setTimes(null).build();
+        for (String in : TEST) {
+            System.out.println("Input " + in);
+            Model out = recognizer.parse(in);
+            System.out.println("Output " + out);
+        }
+    }
+
+    @Test
+    public void checkUk() {
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.UK).setTimes(null).build();
         for (String in : TEST_UK) {
             System.out.println("Input " + in);
             Model out = recognizer.parse(in);
-            System.out.print(out);
+            System.out.println("Output " + out);
         }
     }
 
     @Test
-    public void checkRu() throws Exception {
+    public void checkRu() {
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.RU).setTimes(null).build();
         for (String in : TEST_RU) {
             System.out.println("Input " + in);
             Model out = recognizer.parse(in);
-            System.out.print(out);
+            System.out.println("Output " + out);
         }
     }
 }

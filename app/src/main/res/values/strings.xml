@@ -481,7 +481,6 @@
     <string name="hi_how_can_i_help_you">Hi, how can I help you?</string>
     <string name="did_you_say_something">Did you say something?</string>
     <string name="can_not_recognize_your_command">Can not recognize your command</string>
-    <string name="this_command_not_supported_on_that_screen">This command not supported on that screen</string>
     <string name="no_shopping_lists_found">No shopping lists found</string>
     <string name="found_one_shopping_list">Found one shopping list</string>
     <string name="found">Found</string>
@@ -667,5 +666,6 @@
     <string name="missed_call">Missed Call</string>
     <string name="select_date_in_future">Select date in future</string>
     <string name="backup_data_now">Make backup of data now</string>
+    <string name="this_command_not_supported_on_that_screen">This command not supported on that screen</string>
 
 </resources>
