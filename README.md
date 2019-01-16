@@ -1,6 +1,6 @@
 # Reminder - TODO & Task manager
 
-<img src="https://github.com/naz013/Reminder/raw/master/res/app_icon.png" width="100" alt="Reminder">
+<img src="https://github.com/naz013/reminder-kotlin/raw/master/res/app_icon.png" width="100" alt="Reminder">
 
 Powerful task manager and reminder.
 
@@ -11,18 +11,18 @@ Powerful task manager and reminder.
 Screenshots
 
 <p float="left">
-  <img src="https://github.com/naz013/Reminder/raw/master/res/reminder_scr.jpg" width="300" />
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr1.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/reminder_scr.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr1.jpg" width="300" />
 </p>
 
 <p float="left">
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr2.jpg" width="300" />
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr3.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr2.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr3.jpg" width="300" />
 </p>
 
 <p float="left">
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr4.jpg" width="300" />
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr5.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr4.jpg" width="300" />
+  <img src="https://github.com/naz013/reminder-kotlin/raw/master/res/scr5.jpg" width="300" />
 </p>
 
 # Contributions are welcome.
@@ -30,7 +30,7 @@ Screenshots
 License
 -------
 
-    Copyright 2018 Nazar Suhovich
+    Copyright 2019 Nazar Suhovich
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
