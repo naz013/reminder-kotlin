@@ -18,6 +18,7 @@ package com.backdoor.engine;
 class WorkerFactory {
 
     static WorkerInterface getWorker(String locale) {
+        System.out.println("getWorker: " + locale);
         if (locale.matches(Locale.EN)) {
             return new EnLocale();
         } else if (locale.matches(Locale.UK)) {
@@ -26,6 +27,8 @@ class WorkerFactory {
             return new RuLocale();
         } else if (locale.matches(Locale.DE)) {
             return new DeLocale();
+        } else if (locale.matches(Locale.ES)) {
+            return new EsLocale();
         } else return new EnLocale();
     }
 }

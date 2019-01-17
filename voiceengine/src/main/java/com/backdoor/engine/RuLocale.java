@@ -39,7 +39,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearCalendar(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches(".*календарь.*")) {
@@ -53,7 +53,7 @@ class RuLocale extends Worker {
     @Override
     public List<Integer> getWeekDays(String input) {
         int[] array = {0, 0, 0, 0, 0, 0, 0};
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (int i = 0; i < weekDays.length; i++) {
@@ -71,7 +71,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearWeekDays(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         String[] weekDays = getWeekdays();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -82,7 +82,7 @@ class RuLocale extends Worker {
                 }
             }
         }
-        parts = clipStrings(parts).split("\\s");
+        parts = clipStrings(parts).split(WHITESPACES);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
@@ -93,7 +93,7 @@ class RuLocale extends Worker {
 
     @Override
     public long getDaysRepeat(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasDays(part)) {
@@ -113,7 +113,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearDaysRepeat(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasDays(part)) {
@@ -136,7 +136,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearRepeat(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches(".*кажд.*")) {
@@ -154,7 +154,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearTomorrow(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches(".*завтра.*")) {
@@ -167,7 +167,7 @@ class RuLocale extends Worker {
 
     @Override
     public String getMessage(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         StringBuilder sb = new StringBuilder();
         boolean isStart = false;
         for (String part : parts) {
@@ -180,7 +180,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearMessage(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches("текст(ом)?")) {
@@ -205,7 +205,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearMessageType(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             Action type = getMessageType(part);
@@ -228,7 +228,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearAmpm(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (getAmpm(part) != null) {
@@ -259,7 +259,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearTime(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasHours(part) != -1) {
@@ -288,7 +288,7 @@ class RuLocale extends Worker {
             String time = matcher.group().trim();
             input = input.replace(time, "");
         }
-        parts = input.split("\\s");
+        parts = input.split(WHITESPACES);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
@@ -322,7 +322,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearCall(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches(".*звонить.*")) {
@@ -340,7 +340,7 @@ class RuLocale extends Worker {
 
     @Override
     public String cleanTimer(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (isTimer(part)) {
@@ -358,7 +358,7 @@ class RuLocale extends Worker {
 
     @Override
     public String clearSender(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches(".*отправ.*")) {
@@ -434,7 +434,7 @@ class RuLocale extends Worker {
     @Override
     public String clearGroup(String input) {
         StringBuilder sb = new StringBuilder();
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         boolean st = false;
         for (String s : parts) {
             if (s.matches(".*групп.*")) {
@@ -505,7 +505,7 @@ class RuLocale extends Worker {
     @Override
     public String getDate(String input, Long res) {
         long mills = 0;
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             int month = getMonth(part);
@@ -555,7 +555,7 @@ class RuLocale extends Worker {
         if (input.contains("с половиной")) {
             input = input.replace("с половиной", "");
         }
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String s = parts[i];
             if (s.contains("полтор") || s.matches("половин*.")) {

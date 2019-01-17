@@ -31,6 +31,18 @@ public class WorkerTest {
             "after five minutes check mail"
     };
 
+    private static final String[] TEST_ES = new String[]{
+            "en dos horas y media leer bandeja de entrada",
+            "En cinco minutos y medio revisar el correo",
+            "en cinco segundos y medio consultar el correo",
+            "mañana a las 15 30 verifique el correo",
+            "después de mañana a las 15 30 verifique el correo",
+            "el 30 de mayo a las 15 30 cheque por correo",
+            "el veinte de mayo a las 15 30 cheque",
+            "Todos los domingos a las 15 30 cheque correo",
+            "después de cinco minutos revisar el correo"
+    };
+
     private static final String[] TEST_DE = new String[]{
             "in zweieinhalb Stunden Posteingang lesen",
             "in sechs Minuten und eine halbe lese Post",
@@ -70,6 +82,17 @@ public class WorkerTest {
         for (String in : TEST) {
             Model out = recognizer.parse(in);
             System.out.println(out);
+        }
+    }
+
+    @Test
+    public void checkEs() {
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.ES).setTimes(null).build();
+        System.out.println("GMT " + TimeUtil.getGmtFromDateTime(System.currentTimeMillis()));
+        for (String in : TEST_ES) {
+            System.out.println("Input " + in);
+            Model out = recognizer.parse(in);
+            System.out.println("Output " + out);
         }
     }
 

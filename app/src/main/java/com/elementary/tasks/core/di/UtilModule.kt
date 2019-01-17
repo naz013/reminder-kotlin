@@ -87,7 +87,7 @@ class UtilModule {
     @Provides
     @Singleton
     fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {
-        val lang = language.getLanguage(prefs.voiceLocale)
+        val lang = language.getVoiceLanguage(prefs.voiceLocale)
         val morning = prefs.morningTime
         val day = prefs.noonTime
         val evening = prefs.eveningTime

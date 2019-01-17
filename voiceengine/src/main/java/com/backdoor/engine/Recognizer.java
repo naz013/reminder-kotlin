@@ -35,6 +35,7 @@ public class Recognizer {
     }
 
     public void updateLocale(String locale) {
+        System.out.println("updateLocale: " + locale);
         worker = WorkerFactory.getWorker(locale);
     }
 
