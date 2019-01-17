@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class EnLocale extends Worker {
 
     @Override
@@ -39,7 +38,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearCalendar(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
             if (string.matches(".*calendar.*")) {
@@ -53,7 +52,7 @@ class EnLocale extends Worker {
     @Override
     public List<Integer> getWeekDays(String input) {
         int[] array = {0, 0, 0, 0, 0, 0, 0};
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (int i = 0; i < weekDays.length; i++) {
@@ -71,7 +70,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearWeekDays(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         String[] weekDays = getWeekdays();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -82,7 +81,7 @@ class EnLocale extends Worker {
                 }
             }
         }
-        parts = clipStrings(parts).split("\\s");
+        parts = clipStrings(parts).split(WHITESPACES);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
@@ -94,7 +93,7 @@ class EnLocale extends Worker {
 
     @Override
     public long getDaysRepeat(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasDays(part)) {
@@ -114,7 +113,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearDaysRepeat(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasDays(part)) {
@@ -137,7 +136,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearRepeat(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches(".*every.*")) {
@@ -150,15 +149,15 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasTomorrow(String input) {
-        return input.matches(".*tomorrow.*");
+        return input.matches(".*tomorrow.*") || input.matches(".*next day.*");
     }
 
     @Override
     public String clearTomorrow(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*tomorrow.*")) {
+            if (part.matches(".*tomorrow.*") || part.matches(".*next day.*")) {
                 parts[i] = "";
                 break;
             }
@@ -168,7 +167,7 @@ class EnLocale extends Worker {
 
     @Override
     public String getMessage(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         StringBuilder sb = new StringBuilder();
         boolean isStart = false;
         for (String part : parts) {
@@ -181,7 +180,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearMessage(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches("text")) {
@@ -207,7 +206,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearMessageType(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             Action type = getMessageType(part);
@@ -226,21 +225,21 @@ class EnLocale extends Worker {
     @Override
     public Ampm getAmpm(String input) {
         if (input.matches(".*morning.*")) return Ampm.MORNING;
-        if (input.matches(".*evening.*")) return Ampm.EVENING;
-        if (input.matches(".*noon.*")) return Ampm.NOON;
-        if (input.matches(".*night.*")) return Ampm.NIGHT;
-        if (input.matches(".*a m.*")) return Ampm.MORNING;
-        if (input.matches(".*a.m..*")) return Ampm.MORNING;
-        if (input.matches(".*am.*")) return Ampm.MORNING;
-        if (input.matches(".*p m.*")) return Ampm.EVENING;
-        if (input.matches(".*p.m..*")) return Ampm.EVENING;
-        if (input.matches(".*pm.*")) return Ampm.EVENING;
+        else if (input.matches(".*evening.*")) return Ampm.EVENING;
+        else if (input.matches(".*noon.*")) return Ampm.NOON;
+        else if (input.matches(".*night.*")) return Ampm.NIGHT;
+        else if (input.matches(".*a m.*")) return Ampm.MORNING;
+        else if (input.matches(".*a.m..*")) return Ampm.MORNING;
+        else if (input.matches(".*am.*")) return Ampm.MORNING;
+        else if (input.matches(".*p m.*")) return Ampm.EVENING;
+        else if (input.matches(".*p.m..*")) return Ampm.EVENING;
+        else if (input.matches(".*pm.*")) return Ampm.EVENING;
         return null;
     }
 
     @Override
     public String clearAmpm(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (getAmpm(part) != null) {
@@ -271,7 +270,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearTime(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasHours(part) != -1) {
@@ -300,7 +299,7 @@ class EnLocale extends Worker {
             String time = matcher.group().trim();
             input = input.replace(time, "");
         }
-        parts = input.split("\\s");
+        parts = input.split(WHITESPACES);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
@@ -313,17 +312,17 @@ class EnLocale extends Worker {
     protected int getMonth(String input) {
         int res = -1;
         if (input.contains("january")) res = 0;
-        if (input.contains("february")) res = 1;
-        if (input.contains("march")) res = 2;
-        if (input.contains("april")) res = 3;
-        if (input.contains("may")) res = 4;
-        if (input.contains("june")) res = 5;
-        if (input.contains("july")) res = 6;
-        if (input.contains("august")) res = 7;
-        if (input.contains("september")) res = 8;
-        if (input.contains("october")) res = 9;
-        if (input.contains("november")) res = 10;
-        if (input.contains("december")) res = 11;
+        else if (input.contains("february")) res = 1;
+        else if (input.contains("march")) res = 2;
+        else if (input.contains("april")) res = 3;
+        else if (input.contains("may")) res = 4;
+        else if (input.contains("june")) res = 5;
+        else if (input.contains("july")) res = 6;
+        else if (input.contains("august")) res = 7;
+        else if (input.contains("september")) res = 8;
+        else if (input.contains("october")) res = 9;
+        else if (input.contains("november")) res = 10;
+        else if (input.contains("december")) res = 11;
         return res;
     }
 
@@ -334,7 +333,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearCall(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (hasCall(part)) {
@@ -353,7 +352,7 @@ class EnLocale extends Worker {
 
     @Override
     public String cleanTimer(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
             if (isTimer(string)) {
@@ -367,7 +366,7 @@ class EnLocale extends Worker {
     @Override
     public String getDate(String input, Long res) {
         long mills = 0;
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             int month = getMonth(part);
@@ -399,7 +398,7 @@ class EnLocale extends Worker {
 
     @Override
     public String clearSender(String input) {
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
             if (hasSender(string)) {
@@ -423,9 +422,11 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasAction(String input) {
-        return input.startsWith("open") || input.matches(".*help.*")
-                || input.matches(".*adjust.*") || input.matches(".*report.*") ||
-                input.matches(".*change.*");
+        return input.startsWith("open")
+                || input.matches(".*help.*")
+                || input.matches(".*adjust.*")
+                || input.matches(".*report.*")
+                || input.matches(".*change.*");
     }
 
     @Override
@@ -445,7 +446,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasEvent(String input) {
-        return input.startsWith("new") || input.startsWith("add");
+        return input.startsWith("new") || input.startsWith("add") || input.startsWith("create");
     }
 
     @Override
@@ -475,7 +476,7 @@ class EnLocale extends Worker {
     @Override
     public String clearGroup(String input) {
         StringBuilder sb = new StringBuilder();
-        String[] parts = input.split("\\s");
+        String[] parts = input.split(WHITESPACES);
         boolean st = false;
         for (String s : parts) {
             if (s.matches(".*group.*")) {

@@ -73,7 +73,7 @@ class ConversationActivity : ThemedActivity() {
                 Timber.d("This Language is not supported")
             } else {
                 isTtsReady = true
-                if (!isRotated) {
+                if (!isRotated || mAdapter.itemCount == 0) {
                     addResponse(getLocalized(R.string.hi_how_can_i_help_you))
                     postMicClick({ micClick() })
                 }
@@ -589,6 +589,7 @@ class ConversationActivity : ThemedActivity() {
         }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             dialog.dismiss()
+            viewModel.clearConversation()
             recreate()
         }
         val dialog = builder.create()

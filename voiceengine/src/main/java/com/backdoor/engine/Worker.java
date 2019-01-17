@@ -18,6 +18,9 @@ abstract class Worker implements WorkerInterface {
     protected final static long HALF_DAY = HOUR * 12;
     protected final static long DAY = HALF_DAY * 2;
 
+    protected final static String WHITESPACES = "\\s+";
+    protected final static String WHITESPACE = "\\s";
+
     protected SimpleDateFormat[] getHourFormats() {
         return new SimpleDateFormat[] {
                 new SimpleDateFormat("HH mm", Recognizer.locale),

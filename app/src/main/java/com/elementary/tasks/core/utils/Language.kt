@@ -115,6 +115,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         locales.add(context.getString(R.string.russian) + " (" + RU + ")")
         locales.add(context.getString(R.string.ukrainian) + " (" + UK + ")")
         locales.add(context.getString(R.string.german) + " (" + DE + ") (BETA)")
+        locales.add(context.getString(R.string.spanish) + " (" + ES + ") (BETA)")
         return locales
     }
 
@@ -146,6 +147,7 @@ class Language @Inject constructor(private val prefs: Prefs){
             1 -> RUSSIAN
             2 -> UKRAINIAN
             3 -> GERMAN
+            4 -> SPANISH
             else -> ENGLISH
         }
     }
@@ -156,7 +158,19 @@ class Language @Inject constructor(private val prefs: Prefs){
             1 -> RU
             2 -> UK
             3 -> DE
+            4 -> ES
             else -> EN
+        }
+    }
+
+    fun getVoiceLanguage(code: Int): String {
+        return when (code) {
+            0 -> com.backdoor.engine.Locale.EN
+            1 -> com.backdoor.engine.Locale.RU
+            2 -> com.backdoor.engine.Locale.UK
+            3 -> com.backdoor.engine.Locale.DE
+            4 -> com.backdoor.engine.Locale.ES
+            else -> com.backdoor.engine.Locale.EN
         }
     }
 
@@ -247,5 +261,6 @@ class Language @Inject constructor(private val prefs: Prefs){
         private const val RU = "ru-RU"
         private const val UK = "uk-UA"
         private const val DE = "de-DE"
+        private const val ES = "es-ES"
     }
 }

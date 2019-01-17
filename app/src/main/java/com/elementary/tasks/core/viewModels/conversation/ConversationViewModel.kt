@@ -77,8 +77,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     init {
         ReminderApp.appComponent.inject(this)
-
-        recognizer.updateLocale(language.getLanguage(prefs.voiceLocale))
+        clearConversation()
     }
 
     fun addMoreItemsToList(position: Int) {
@@ -452,6 +451,12 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             if (showToast) {
                 Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()
             }
+    }
+
+    fun clearConversation() {
+        recognizer.updateLocale(language.getVoiceLanguage(prefs.voiceLocale))
+        mReplies.clear()
+        _replies.postValue(mReplies)
     }
 
     inner class ContactHelper : ContactsInterface {
