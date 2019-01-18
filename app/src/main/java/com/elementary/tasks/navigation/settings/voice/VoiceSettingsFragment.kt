@@ -26,9 +26,9 @@ import kotlinx.android.synthetic.main.fragment_settings_voice.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class VoiceSettingsFragment : BaseSettingsFragment() {
 
+    private var mItemSelect: Int = 0
     override fun layoutRes(): Int = R.layout.fragment_settings_voice
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,18 +66,20 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
 
     private fun showLanguageDialog() {
         val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locales = language.getLanguages(context!!)
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, locales)
-        val language = prefs.voiceLocale
-        builder.setSingleChoiceItems(adapter, language) { _, which ->
-            if (which != -1) {
-                prefs.voiceLocale = which
-            }
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, locales)
+        mItemSelect = prefs.voiceLocale
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            mItemSelect = which
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.voiceLocale = mItemSelect
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
         val dialog = builder.create()
         dialog.setOnDismissListener { showLanguage() }
         dialog.show()

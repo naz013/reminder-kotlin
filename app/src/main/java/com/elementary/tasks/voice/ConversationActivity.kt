@@ -16,9 +16,9 @@ import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.backdoor.engine.Model
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
-import com.backdoor.engine.Model
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.ThemedActivity
@@ -65,6 +65,7 @@ class ConversationActivity : ThemedActivity() {
     private var isRotated = false
     private var mAskAction: AskAction? = null
     private val handler = Handler(Looper.getMainLooper())
+    private var mItemSelected: Int = 0
 
     private val mTextToSpeechListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
@@ -577,20 +578,21 @@ class ConversationActivity : ThemedActivity() {
 
     private fun showLanguageDialog() {
         val builder = dialogues.getDialog(this)
-        builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locales = language.getLanguages(this)
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, locales)
-        val language = prefs.voiceLocale
-        builder.setSingleChoiceItems(adapter, language) { _, which ->
-            if (which != -1) {
-                prefs.voiceLocale = which
-            }
+        mItemSelected = prefs.voiceLocale
+        builder.setSingleChoiceItems(adapter, mItemSelected) { _, which ->
+            mItemSelected = which
         }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.voiceLocale = mItemSelected
             dialog.dismiss()
             viewModel.clearConversation()
             recreate()
+        }
+        builder.setNegativeButton(getLocalized(R.string.cancel)) { dialog, _ ->
+            dialog.dismiss()
         }
         val dialog = builder.create()
         dialog.show()
