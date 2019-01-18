@@ -13,7 +13,6 @@ android {
         targetSdkVersion 28
         versionCode 210
         versionName '7.0'
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -86,10 +85,6 @@ android {
 }
 
 dependencies {
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha3', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
     implementation('com.google.apis:google-api-services-calendar:v3-rev355-1.25.0') {
         exclude module: 'httpclient'
     }
@@ -149,12 +144,12 @@ dependencies {
     }
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation 'com.tuyenmonkey:mkloader:1.4.0'
     implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation 'com.evernote:android-job:1.2.5'
-    kapt 'com.github.bumptech.glide:compiler:4.7.1'
+    kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.google.code.gson:gson:2.8.4'
@@ -172,11 +167,6 @@ dependencies {
     implementation 'com.airbnb.android:lottie:2.8.0'
     implementation 'co.revely:gradient:1.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.16.0'
-    androidTestImplementation 'org.testng:testng:6.9.6'
-    androidTestImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

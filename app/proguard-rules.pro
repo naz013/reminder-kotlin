@@ -1,11 +1,17 @@
+-verbose
+-allowaccessmodification
+-assumevalues class android.os.Build$VERSION {
+    int SDK_INT return 19..2147483647;
+}
+
 # ServiceLoader support
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 # Most of volatile fields are updated with AFU and should not be mangled
--keepclassmembernames class kotlinx.** {
-    volatile <fields>;
-}
+#-keepclassmembernames class kotlinx.** {
+#    volatile <fields>;
+#}
 
 -dontwarn com.google.errorprone.annotations.*
 -dontwarn java.lang.ClassValue
@@ -24,6 +30,11 @@
 -dontwarn android.support.v8.**
 -dontwarn android.support.design.**
 -dontwarn okio.**
+-dontwarn org.mockito.**
+-dontwarn sun.reflect.**
+-dontwarn android.test.**
+-dontwarn android.net.**
+-dontwarn junit.framework.**
 
 -dontnote android.net.http.**
 -dontnote org.apache.http.**
