@@ -1,4 +1,6 @@
-package com.backdoor.engine;
+package com.backdoor.engine.lang;
+
+import com.backdoor.engine.misc.Locale;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -15,20 +17,22 @@ package com.backdoor.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class WorkerFactory {
+public class WorkerFactory {
 
-    static WorkerInterface getWorker(String locale) {
+    public static WorkerInterface getWorker(String locale) {
         System.out.println("getWorker: " + locale);
         if (locale.matches(Locale.EN)) {
-            return new EnLocale();
+            return new EnWorker();
         } else if (locale.matches(Locale.UK)) {
-            return new UkLocale();
+            return new UkWorker();
         } else if (locale.matches(Locale.RU)) {
-            return new RuLocale();
+            return new RuWorker();
         } else if (locale.matches(Locale.DE)) {
-            return new DeLocale();
+            return new DeWorker();
         } else if (locale.matches(Locale.ES)) {
-            return new EsLocale();
-        } else return new EnLocale();
+            return new EsWorker();
+        } else if (locale.matches(Locale.PT)) {
+            return new PtWorker();
+        } else return new EnWorker();
     }
 }

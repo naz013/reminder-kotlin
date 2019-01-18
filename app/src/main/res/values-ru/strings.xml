@@ -665,5 +665,6 @@
     <string name="backup_data_now">Сделайть резервную копию данных сейчас</string>
     <string name="missed_call">Пропущенный звонок</string>
     <string name="select_date_in_future">Выберите дату в будущем</string>
+    <string name="portuguese">Португальский</string>
 
 </resources>

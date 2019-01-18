@@ -665,5 +665,6 @@
     <string name="would_you_like_to_add_reminder">Möchten Sie eine Erinnerung hinzufügen?</string>
     <string name="note_saved_without_reminder">Notiz ohne Erinnerung gespeichert</string>
     <string name="trash_was_cleared">Der Müll wurde gelöscht</string>
+    <string name="portuguese">Portugiesisch</string>
 
 </resources>

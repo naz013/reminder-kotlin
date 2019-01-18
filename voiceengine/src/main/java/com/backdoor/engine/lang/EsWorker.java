@@ -1,4 +1,8 @@
-package com.backdoor.engine;
+package com.backdoor.engine.lang;
+
+import com.backdoor.engine.misc.Action;
+import com.backdoor.engine.misc.Ampm;
+import com.backdoor.engine.misc.Long;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2019 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +28,16 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EnLocale extends Worker {
+class EsWorker extends Worker {
 
     @Override
     protected String[] getWeekdays() {
-        return new String[]{"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+        return new String[]{"domin", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"};
     }
 
     @Override
     public boolean hasCalendar(String input) {
-        return input.matches(".*calendar.*");
+        return input.matches(".*calendario.*");
     }
 
     @Override
@@ -41,8 +45,11 @@ class EnLocale extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
-            if (string.matches(".*calendar.*")) {
+            if (string.matches(".*calendario.*")) {
                 parts[i] = "";
+                if (i > 0 && parts[i - 1].toLowerCase().equalsIgnoreCase("al")) {
+                    parts[i - 1] = "";
+                }
                 break;
             }
         }
@@ -85,7 +92,7 @@ class EnLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("on") && !part.matches("at"))
+            if (!part.matches("los"))
                 sb.append(" ").append(part);
         }
         return sb.toString().trim();
@@ -131,7 +138,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasRepeat(String input) {
-        return input.matches(".*every.*");
+        return input.matches(".*cada.*") || input.matches(".*todos.*");
     }
 
     @Override
@@ -139,7 +146,7 @@ class EnLocale extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*every.*")) {
+            if (part.matches(".*todos.*") || part.matches(".*cada.*")) {
                 parts[i] = "";
                 break;
             }
@@ -149,7 +156,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasTomorrow(String input) {
-        return input.matches(".*tomorrow.*") || input.matches(".*next day.*");
+        return input.matches(".*mañana.*") || input.matches(".*(día )?siguiente.*");
     }
 
     @Override
@@ -157,7 +164,7 @@ class EnLocale extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*tomorrow.*") || part.matches(".*next day.*")) {
+            if (part.matches(".*mañana.*") || part.matches(".*(día )?siguiente.*")) {
                 parts[i] = "";
                 break;
             }
@@ -172,7 +179,7 @@ class EnLocale extends Worker {
         boolean isStart = false;
         for (String part : parts) {
             if (isStart) sb.append(" ").append(part);
-            if (part.matches("text"))
+            if (part.matches("texto"))
                 isStart = true;
         }
         return sb.toString().trim();
@@ -183,9 +190,9 @@ class EnLocale extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches("text")) {
+            if (part.matches("texto")) {
                 try {
-                    if (parts[i - 1].matches("with")) {
+                    if (parts[i - 1].matches("con( el)?")) {
                         parts[i - 1] = "";
                     }
                 } catch (IndexOutOfBoundsException ignored) {
@@ -199,8 +206,8 @@ class EnLocale extends Worker {
 
     @Override
     public Action getMessageType(String input) {
-        if (input.matches(".*message.*")) return Action.MESSAGE;
-        else if (input.matches(".*letter.*")) return Action.MAIL;
+        if (input.matches(".*(un )?mensaje.*")) return Action.MESSAGE;
+        else if (input.matches(".*carta.*")) return Action.MAIL;
         return null;
     }
 
@@ -213,7 +220,7 @@ class EnLocale extends Worker {
             if (type != null) {
                 parts[i] = "";
                 int nextIndex = i + 1;
-                if (nextIndex < parts.length && parts[nextIndex].matches("to")) {
+                if (nextIndex < parts.length && parts[nextIndex].matches("al")) {
                     parts[nextIndex] = "";
                 }
                 break;
@@ -224,16 +231,11 @@ class EnLocale extends Worker {
 
     @Override
     public Ampm getAmpm(String input) {
-        if (input.matches(".*morning.*")) return Ampm.MORNING;
-        else if (input.matches(".*evening.*")) return Ampm.EVENING;
-        else if (input.matches(".*noon.*")) return Ampm.NOON;
-        else if (input.matches(".*night.*")) return Ampm.NIGHT;
-        else if (input.matches(".*a m.*")) return Ampm.MORNING;
-        else if (input.matches(".*a.m..*")) return Ampm.MORNING;
-        else if (input.matches(".*am.*")) return Ampm.MORNING;
-        else if (input.matches(".*p m.*")) return Ampm.EVENING;
-        else if (input.matches(".*p.m..*")) return Ampm.EVENING;
-        else if (input.matches(".*pm.*")) return Ampm.EVENING;
+        if (input.matches(".*mañana.*") || input.matches(".*madrugada.*")
+                || input.matches(".*matutino.*")  || input.matches(".*mañanero.*")) return Ampm.MORNING;
+        else if (input.matches(".*vespertino.*")) return Ampm.EVENING;
+        else if (input.matches(".*(de )?mediodía.*")) return Ampm.NOON;
+        else if (input.matches(".*(de )?noche.*")) return Ampm.NIGHT;
         return null;
     }
 
@@ -276,10 +278,19 @@ class EnLocale extends Worker {
             if (hasHours(part) != -1) {
                 int index = hasHours(part);
                 parts[i] = "";
+                boolean hourSuccess = false;
                 try {
                     Integer.parseInt(parts[i - index]);
+                    hourSuccess = true;
                     parts[i - index] = "";
                 } catch (NumberFormatException ignored) {
+                }
+                if (hourSuccess) {
+                    try {
+                        Integer.parseInt(parts[i + 1]);
+                        parts[i + 1] = "";
+                    } catch (Exception ignored) {
+                    }
                 }
             }
             if (hasMinutes(part) != -1) {
@@ -303,7 +314,7 @@ class EnLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("at")) sb.append(" ").append(part);
+            if (!part.matches("(a )?las")) sb.append(" ").append(part);
         }
         return sb.toString().trim();
     }
@@ -311,24 +322,24 @@ class EnLocale extends Worker {
     @Override
     protected int getMonth(String input) {
         int res = -1;
-        if (input.contains("january")) res = 0;
-        else if (input.contains("february")) res = 1;
-        else if (input.contains("march")) res = 2;
-        else if (input.contains("april")) res = 3;
-        else if (input.contains("may")) res = 4;
-        else if (input.contains("june")) res = 5;
-        else if (input.contains("july")) res = 6;
-        else if (input.contains("august")) res = 7;
-        else if (input.contains("september")) res = 8;
-        else if (input.contains("october")) res = 9;
-        else if (input.contains("november")) res = 10;
-        else if (input.contains("december")) res = 11;
+        if (input.contains("enero")) res = 0;
+        else if (input.contains("febrero")) res = 1;
+        else if (input.contains("marzo") || input.contains("marcha")) res = 2;
+        else if (input.contains("abril")) res = 3;
+        else if (input.contains("mayo")) res = 4;
+        else if (input.contains("junio")) res = 5;
+        else if (input.contains("julio")) res = 6;
+        else if (input.contains("agosto")) res = 7;
+        else if (input.contains("septiembre") || input.contains("setiembre")) res = 8;
+        else if (input.contains("octubre")) res = 9;
+        else if (input.contains("noviembre")) res = 10;
+        else if (input.contains("diciembre")) res = 11;
         return res;
     }
 
     @Override
     public boolean hasCall(String input) {
-        return input.matches(".*call.*");
+        return input.matches(".*llamada.*");
     }
 
     @Override
@@ -347,7 +358,7 @@ class EnLocale extends Worker {
     @Override
     public boolean isTimer(String input) {
         input = " " + input + " ";
-        return input.matches(".*after.*") || input.matches(".* in .*");
+        return input.matches(".*después.*") || input.matches(".* en .*");
     }
 
     @Override
@@ -360,7 +371,7 @@ class EnLocale extends Worker {
                 break;
             }
         }
-        return clipStrings(parts);
+        return clipStrings(parts).trim();
     }
 
     @Override
@@ -373,8 +384,8 @@ class EnLocale extends Worker {
             if (month != -1) {
                 int integer;
                 try {
-                    integer = Integer.parseInt(parts[i + 1]);
-                    parts[i + 1] = "";
+                    integer = Integer.parseInt(parts[i - 1]);
+                    parts[i - 1] = "";
                 } catch (NumberFormatException | IndexOutOfBoundsException e) {
                     integer = 1;
                 }
@@ -393,7 +404,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasSender(String input) {
-        return input.matches(".*send.*");
+        return input.matches(".*enviar.*");
     }
 
     @Override
@@ -411,33 +422,33 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasNote(String input) {
-        return input.contains("note");
+        return input.contains("nota");
     }
 
     @Override
     public String clearNote(String input) {
-        input = input.replace("note", "");
+        input = input.replace("nota", "");
         return input.trim();
     }
 
     @Override
     public boolean hasAction(String input) {
-        return input.startsWith("open")
-                || input.matches(".*help.*")
-                || input.matches(".*adjust.*")
-                || input.matches(".*report.*")
-                || input.matches(".*change.*");
+        return input.startsWith("abierta") || input.startsWith("abierto")
+                || input.matches(".*ayuda.*")
+                || input.matches(".*ajustar.*") || input.matches(".*modificar.*")
+                || input.matches(".*informe.*") ||
+                input.matches(".*cambio.*");
     }
 
     @Override
     public Action getAction(String input) {
-        if (input.matches(".*help.*")) {
+        if (input.matches(".*ayuda.*")) {
             return Action.HELP;
-        } else if (input.matches(".*loudness.*") || input.matches(".*volume.*")) {
+        } else if (input.matches(".*lo chillón.*") || input.matches(".*volumen.*")) {
             return Action.VOLUME;
-        } else if (input.matches(".*settings.*")) {
+        } else if (input.matches(".*ajustes.*")) {
             return Action.SETTINGS;
-        } else if (input.matches(".*report.*")) {
+        } else if (input.matches(".*informe.*")) {
             return Action.REPORT;
         } else {
             return Action.APP;
@@ -446,31 +457,32 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasEvent(String input) {
-        return input.startsWith("new") || input.startsWith("add") || input.startsWith("create");
+        return input.startsWith("nueva") || input.startsWith("nuevo") || input.startsWith("añadir")
+                || input.startsWith("crear");
     }
 
     @Override
     public Action getEvent(String input) {
-        if (input.matches(".*birthday.*")) {
+        if (input.matches(".*(el )?cumpleaños.*")) {
             return Action.BIRTHDAY;
-        } else if (input.matches(".*reminder.*")) {
+        } else if (input.matches(".*(el )?recordatorio.*")) {
             return Action.REMINDER;
         } else return Action.NO_EVENT;
     }
 
     @Override
     public boolean hasEmptyTrash(String input) {
-        return input.matches(".*empty trash.*");
+        return input.matches(".*papelera vacía.*");
     }
 
     @Override
     public boolean hasDisableReminders(String input) {
-        return input.matches(".*disable reminder.*");
+        return input.matches(".*deshabilitar el recordatorio.*");
     }
 
     @Override
     public boolean hasGroup(String input) {
-        return input.matches(".*add group.*");
+        return input.matches(".*añadir grupo.*");
     }
 
     @Override
@@ -479,7 +491,7 @@ class EnLocale extends Worker {
         String[] parts = input.split(WHITESPACES);
         boolean st = false;
         for (String s : parts) {
-            if (s.matches(".*group.*")) {
+            if (s.matches(".*(el )?grupo.*")) {
                 st = true;
                 continue;
             }
@@ -493,69 +505,79 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasToday(String input) {
-        return input.matches(".*today.*");
+        return input.matches(".*(los )?hoy.*");
     }
 
     @Override
     public boolean hasAfterTomorrow(String input) {
-        return input.matches(".*after tomorrow.*");
+        return input.matches(".*pasado mañana.*") || input.matches(".*después de mañana.*");
+    }
+
+    @Override
+    public String clearAfterTomorrow(String input) {
+        if (input.matches(".*pasado mañana.*")) {
+            return input.replace("pasado mañana", "");
+        } else if (input.matches(".*después de mañana.*")) {
+            return input.replace("después de mañana", "");
+        } else {
+            return input;
+        }
     }
 
     @Override
     protected String getAfterTomorrow() {
-        return "after tomorrow";
+        return "pasado mañana";
     }
 
     @Override
     protected int hasHours(String input) {
-        if (input.matches(".*hour.*") || input.matches(".*o'clock.*")
-                || input.matches(".*am.*") || input.matches(".*pm.*")) return 1;
+        if (input.matches(".*(la )?hora.*") || input.matches("en punto.*")) return 1;
         return -1;
     }
 
     @Override
     protected int hasMinutes(String input) {
-        if (input.matches(".*minute.*")) return 1;
+        if (input.matches(".*(el )?minutos?.*")) return 1;
         return -1;
     }
 
     @Override
     protected boolean hasSeconds(String input) {
-        return input.matches(".*second.*");
+        return input.matches(".*(el |la )?segundos?.*");
     }
 
     @Override
     protected boolean hasDays(String input) {
-        return input.matches(".* day.*");
+        return input.matches(".*(el )?día.*") || input.matches(".*(el )?dia.*");
     }
 
     @Override
     protected boolean hasWeeks(String input) {
-        return input.matches(".*week.*");
+        return input.matches(".*(la )?semanas?.*");
     }
 
     @Override
     protected boolean hasMonth(String input) {
-        return input.matches(".*month.*");
+        return input.matches(".*(el )?mes(es)?.*");
     }
 
     @Override
     public boolean hasAnswer(String input) {
         input = " " + input + " ";
-        return input.matches(".* (yes|yeah|no) .*");
+        return input.matches(".* (sí|si|no) .*");
     }
 
     @Override
     public Action getAnswer(String input) {
-        if (input.matches(".* ?(yes|yeah) ?.*")) {
-            return Action.YES;
+        if (input.matches(".* ?(no) ?.*")) {
+            return Action.NO;
         }
-        return Action.NO;
+        return Action.YES;
     }
 
     @Override
     protected float findFloat(String input) {
-        if (input.matches("half")) {
+        if (input.matches("(la )?mitad") || input.matches("(el )?medio?a?")) {
             return 0.5f;
         } else {
             return -1;
@@ -564,17 +586,17 @@ class EnLocale extends Worker {
 
     @Override
     protected String clearFloats(String input) {
-        if (input.contains("and a half")) {
-            return input.replace("and a half", "");
+        if (input.contains("y media")) {
+            return input.replace("y media", "");
         }
-        if (input.contains("and half")) {
-            return input.replace("and half", "");
+        if (input.contains("y medio")) {
+            return input.replace("y medio", "");
         }
-        if (input.contains(" half an ")) {
-            return input.replace("half an", "");
+        if (input.contains("media")) {
+            return input.replace("media", "");
         }
-        if (input.contains(" in half ")) {
-            return input.replace("in half", "");
+        if (input.contains("medio")) {
+            return input.replace("medio", "");
         }
         return input;
     }
@@ -582,57 +604,57 @@ class EnLocale extends Worker {
     @Override
     protected float findNumber(String input) {
         float number = -1;
-        if (input.matches("zero") || input.matches("nil")) number = 0;
-        if (input.matches("one") || input.matches("first")) number = 1;
-        if (input.matches("two") || input.matches("second")) number = 2;
-        if (input.matches("three") || input.matches("third")) number = 3;
-        if (input.matches("four") || input.matches("fourth")) number = 4;
-        if (input.matches("five") || input.matches("fifth")) number = 5;
-        if (input.matches("six") || input.matches("sixth")) number = 6;
-        if (input.matches("seven") || input.matches("seventh")) number = 7;
-        if (input.matches("eight") || input.matches("eighth")) number = 8;
-        if (input.matches("nine") || input.matches("ninth")) number = 9;
-        if (input.matches("ten") || input.matches("tenth")) number = 10;
-        if (input.matches("eleven") || input.matches("eleventh")) number = 11;
-        if (input.matches("twelve") || input.matches("twelfth")) number = 12;
-        if (input.matches("thirteen") || input.matches("thirteenth")) number = 13;
-        if (input.matches("fourteen") || input.matches("fourteenth")) number = 14;
-        if (input.matches("fifteen") || input.matches("fifteenth")) number = 15;
-        if (input.matches("sixteen") || input.matches("sixteenth")) number = 16;
-        if (input.matches("seventeen") || input.matches("seventeenth")) number = 17;
-        if (input.matches("eighteen") || input.matches("eighteenth")) number = 18;
-        if (input.matches("nineteen") || input.matches("nineteenth")) number = 19;
-        if (input.matches("twenty") || input.matches("twentieth")) number = 20;
-        if (input.matches("thirty") || input.matches("thirtieth")) number = 30;
-        if (input.matches("forty") || input.matches("fortieth")) number = 40;
-        if (input.matches("fifty") || input.matches("fiftieth")) number = 50;
-        if (input.matches("sixty") || input.matches("sixtieth")) number = 60;
-        if (input.matches("seventy") || input.matches("seventieth")) number = 70;
-        if (input.matches("eighty") || input.matches("eightieth")) number = 80;
-        if (input.matches("ninety") || input.matches("ninetieth")) number = 90;
+        if (input.matches("cero") || input.matches("nulo")) number = 0;
+        else if (input.matches("un([ao])?") || input.matches("primer([ao])?")) number = 1;
+        else if (input.matches("dos") || input.matches("segund([ao])?")) number = 2;
+        else if (input.matches("(los )?tres") || input.matches("tercer([ao])?")) number = 3;
+        else if (input.matches("cuatro") || input.matches("cuart([ao])?")) number = 4;
+        else if (input.matches("(los )?cinco") || input.matches("quint([ao])?")) number = 5;
+        else if (input.matches("(los )?seis") || input.matches("sext([ao])?")) number = 6;
+        else if (input.matches("(los )?siete") || input.matches("séptim([ao])?")) number = 7;
+        else if (input.matches("(los )?ocho") || input.matches("octav([ao])?")) number = 8;
+        else if (input.matches("(el )?nueve") || input.matches("noven([ao])?")) number = 9;
+        else if (input.matches("(los )?diez") || input.matches("décim([ao])?")) number = 10;
+        else if (input.matches("(el )?once") || input.matches("undécim([ao])?")) number = 11;
+        else if (input.matches("(los )?doce") || input.matches("duodécim([ao])?")) number = 12;
+        else if (input.matches("(los )?trece") || input.matches("decimotercer([ao])?")) number = 13;
+        else if (input.matches("(los )?catorce") || input.matches("decimocuart([ao])?")) number = 14;
+        else if (input.matches("(los )?quince") || input.matches("decimoquint([ao])?")) number = 15;
+        else if (input.matches("(el )?dieciséis") || input.matches("decimosext([ao])?")) number = 16;
+        else if (input.matches("(los )?diecisiete") || input.matches("decimoséptim([ao])?")) number = 17;
+        else if (input.matches("(los )?dieciocho") || input.matches("decimoctav([ao])?")) number = 18;
+        else if (input.matches("(el )?diecinueve") || input.matches("decimonoven([ao])?")) number = 19;
+        else if (input.matches("(los )?veinte") || input.matches("vigésim([ao])?")) number = 20;
+        else if (input.matches("(los )?treinta") || input.matches("trigésim([ao])?")) number = 30;
+        else if (input.matches("(los )?cuarenta") || input.matches("cuadragésim([ao])?")) number = 40;
+        else if (input.matches("(los )?cincuenta") || input.matches("quincuagésim([ao])?")) number = 50;
+        else if (input.matches("(las )?sesenta") || input.matches("sexagésim([ao])?")) number = 60;
+        else if (input.matches("(los )?setenta") || input.matches("septuagésim([ao])?")) number = 70;
+        else if (input.matches("(los )?ochenta") || input.matches("diecioch([ao])?")) number = 80;
+        else if (input.matches("(la )?noventa") || input.matches("nonagésim([ao])?")) number = 90;
         return number;
     }
 
     @Override
     public boolean hasShowAction(String input) {
-        return input.matches(".*show.*");
+        return input.matches(".*mostrar.*");
     }
 
     @Override
     public Action getShowAction(String input) {
-        if (input.matches(".*birthdays.*")) {
+        if (input.matches(".*cumpleaños.*")) {
             return Action.BIRTHDAYS;
-        } else if (input.matches(".*active reminders.*")) {
+        } else if (input.matches(".*recordatorios activos.*")) {
             return Action.ACTIVE_REMINDERS;
-        } else if (input.matches(".*reminders.*")) {
+        } else if (input.matches(".*(el )?recordatorios.*")) {
             return Action.REMINDERS;
-        } else if (input.matches(".*events.*")) {
+        } else if (input.matches(".*eventos.*")) {
             return Action.EVENTS;
-        } else if (input.matches(".*notes.*")) {
+        } else if (input.matches(".*(las )?notas.*")) {
             return Action.NOTES;
-        } else if (input.matches(".*groups.*")) {
+        } else if (input.matches(".*grupos.*")) {
             return Action.GROUPS;
-        } else if (input.matches(".*shopping lists?.*")) {
+        } else if (input.matches(".*lista de (la )?compra.*") || input.matches(".*listas de compras.*")) {
             return Action.SHOP_LISTS;
         }
         return null;
@@ -640,6 +662,6 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasNextModifier(String input) {
-        return input.matches(".*next.*");
+        return input.matches(".*siguiente.*") || input.matches(".*próximo.*");
     }
 }

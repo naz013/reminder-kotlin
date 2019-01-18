@@ -665,5 +665,6 @@
     <string name="backup_data_now">Verileri şimdi yedekle</string>
     <string name="missed_call">Cevapsız arama</string>
     <string name="select_date_in_future">Gelecekte tarih seçin</string>
+    <string name="portuguese">Portekizce</string>
 
 </resources>

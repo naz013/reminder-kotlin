@@ -636,5 +636,35 @@
     <string name="backup_data_now">Hacer copia de seguridad de los datos ahora</string>
     <string name="missed_call">Llamada perdida</string>
     <string name="select_date_in_future">Seleccionar fecha en el futuro</string>
+    <string name="hi_how_can_i_help_you">¿Hola, como puedo ayudarte?</string>
+    <string name="did_you_say_something">¿Dijiste algo?</string>
+    <string name="can_not_recognize_your_command">No puedo reconocer tu orden</string>
+    <string name="no_shopping_lists_found">No se encontraron listas de compras</string>
+    <string name="found_one_shopping_list">Encontré una lista de compras</string>
+    <string name="found">Encontró</string>
+    <string name="shopping_lists">listas de compras</string>
+    <string name="no_birthdays_found">No se encontraron cumpleaños</string>
+    <string name="found_one_birthday">Encontré un cumpleaños</string>
+    <string name="no_reminders_found">No se encontraron recordatorios</string>
+    <string name="found_one_reminder">Encontré un recordatorio</string>
+    <string name="reminders">recordatorios</string>
+    <string name="no_groups_found">No se encontraron grupos</string>
+    <string name="found_one_group">Encontrado un grupo</string>
+    <string name="no_notes_found">No se encontraron notas</string>
+    <string name="found_one_note">Encontré una nota</string>
+    <string name="group_created">Grupo creado</string>
+    <string name="note_created">Nota creada</string>
+    <string name="would_you_like_to_save_it">¿Te gustaría guardarlo?</string>
+    <string name="group_saved">Grupo guardado</string>
+    <string name="group_canceled">Grupo cancelado</string>
+    <string name="reminder_saved">Recordatorio guardado</string>
+    <string name="reminder_canceled">Recordatorio cancelado</string>
+    <string name="note_saved">Nota guardada</string>
+    <string name="note_canceled">Nota cancelada</string>
+    <string name="would_you_like_to_add_reminder">¿Te gustaría añadir un recordatorio?</string>
+    <string name="note_saved_without_reminder">Nota guardada sin recordatorio</string>
+    <string name="trash_was_cleared">La basura fue limpiada</string>
+    <string name="this_command_not_supported_on_that_screen">Este comando no es compatible en esa pantalla.</string>
+    <string name="portuguese">Portugués</string>
 
 </resources>

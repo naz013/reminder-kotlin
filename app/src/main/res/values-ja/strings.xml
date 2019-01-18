@@ -666,5 +666,6 @@
     <string name="backup_data_now">今すぐデータをバックアップする</string>
     <string name="missed_call">不在着信</string>
     <string name="select_date_in_future">将来の日付を選択</string>
+    <string name="portuguese">ポルトガル語</string>
 
 </resources>

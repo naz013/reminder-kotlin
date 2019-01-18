@@ -665,5 +665,6 @@
     <string name="backup_data_now">Faire une sauvegarde des données maintenant</string>
     <string name="missed_call">Appel manqué</string>
     <string name="select_date_in_future">Choisir la date dans le futur</string>
+    <string name="portuguese">Portugais</string>
 
 </resources>

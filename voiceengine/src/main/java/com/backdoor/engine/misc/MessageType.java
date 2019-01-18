@@ -1,4 +1,4 @@
-package com.backdoor.engine;
+package com.backdoor.engine.misc;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -16,7 +16,7 @@ package com.backdoor.engine;
  * limitations under the License.
  */
 
-public interface ContactsInterface {
-    ContactOutput findEmail(String input);
-    ContactOutput findNumber(String input);
+public enum MessageType {
+    SMS,
+    EMAIL
 }

@@ -1,5 +1,9 @@
 package com.backdoor.engine;
 
+import com.backdoor.engine.misc.Locale;
+import com.backdoor.engine.misc.TimeUtil;
+
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -28,7 +32,20 @@ public class WorkerTest {
             "on may 30 at 15 30 check mail",
             "on may twenty second at 15 30 check mail",
             "every sunday at 15 30 check mail",
-            "after five minutes check mail"
+            "after five minutes check mail",
+            "after ten hours call to Mary"
+    };
+
+    private static final String[] TEST_PT = new String[]{
+            "em duas horas e meia, leia a caixa de entrada",
+            "em cinco minutos e meio cheque mail",
+            "em cinco segundos e meio verificar mail",
+            "amanhã às 15 30 cheque correio",
+            "depois de amanhã às 15 30 check mail",
+            "no dia 30 de maio, às 15h30, verifique a correspondência",
+            "em maio de vinte e dois em 15 30 check mail",
+            "todos os domingos às 15 30 cheque correio",
+            "depois de cinco minutos verifique o correio"
     };
 
     private static final String[] TEST_ES = new String[]{
@@ -76,6 +93,11 @@ public class WorkerTest {
             "в 20:40 проверить почту"
     };
 
+    @Before
+    public void before() {
+        System.out.println("GMT " + TimeUtil.getGmtFromDateTime(System.currentTimeMillis()));
+    }
+
     @Test
     public void replaceNumbers() {
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.EN).setTimes(null).build();
@@ -86,9 +108,18 @@ public class WorkerTest {
     }
 
     @Test
+    public void checkPt() {
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.PT).setTimes(null).build();
+        for (String in : TEST_PT) {
+            System.out.println("Input " + in);
+            Model out = recognizer.parse(in);
+            System.out.println("Output " + out);
+        }
+    }
+
+    @Test
     public void checkEs() {
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.ES).setTimes(null).build();
-        System.out.println("GMT " + TimeUtil.getGmtFromDateTime(System.currentTimeMillis()));
         for (String in : TEST_ES) {
             System.out.println("Input " + in);
             Model out = recognizer.parse(in);
@@ -99,7 +130,6 @@ public class WorkerTest {
     @Test
     public void checkDe() {
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.DE).setTimes(null).build();
-        System.out.println("GMT " + TimeUtil.getGmtFromDateTime(System.currentTimeMillis()));
         for (String in : TEST_DE) {
             System.out.println("Input " + in);
             Model out = recognizer.parse(in);

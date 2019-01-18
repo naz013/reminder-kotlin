@@ -16,8 +16,8 @@ import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.backdoor.engine.Action
-import com.backdoor.engine.ActionType
+import com.backdoor.engine.misc.Action
+import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.Model
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
