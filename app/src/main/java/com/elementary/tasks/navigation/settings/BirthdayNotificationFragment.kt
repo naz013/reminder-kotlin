@@ -31,7 +31,6 @@ import java.io.File
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class BirthdayNotificationFragment : BaseSettingsFragment() {
 
     private var mItemSelect: Int = 0
@@ -167,13 +166,15 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
 
     private fun showTtsLocaleDialog() {
         val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locale = prefs.birthdayTtsLocale
         mItemSelect = language.getLocalePosition(locale)
         builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             saveTtsLocalePrefs()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
             dialog.dismiss()
         }
         val dialog = builder.create()

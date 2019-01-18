@@ -173,7 +173,6 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun showLedColorDialog() {
         val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(false)
         builder.setTitle(getString(R.string.led_color))
         val colors = LED.getAllNames(context!!)
         val adapter = ArrayAdapter(context!!,
@@ -183,6 +182,9 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             prefs.ledColor = mItemSelect
             showLedColor()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
             dialog.dismiss()
         }
         val dialog = builder.create()
@@ -317,13 +319,15 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun showTtsLocaleDialog() {
         val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locale = prefs.ttsLocale
         mItemSelect = language.getLocalePosition(locale)
         builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             saveTtsLocalePrefs()
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
             dialog.dismiss()
         }
         val dialog = builder.create()
