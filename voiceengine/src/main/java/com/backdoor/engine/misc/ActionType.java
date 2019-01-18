@@ -1,4 +1,4 @@
-package com.backdoor.engine;
+package com.backdoor.engine.misc;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -15,9 +15,14 @@ package com.backdoor.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-enum Ampm {
-    MORNING,
-    NOON,
-    EVENING,
-    NIGHT
+
+public enum ActionType {
+    REMINDER,
+    NOTE,
+    BIRTHDAYS,
+    GROUP,
+    ANSWER,
+    SHOW,
+    DELETE,
+    ACTION
 }

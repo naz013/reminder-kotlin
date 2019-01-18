@@ -488,7 +488,6 @@
     <string name="no_birthdays_found">No birthdays found</string>
     <string name="found_one_birthday">Found one birthday</string>
     <string name="no_reminders_found">No reminders found</string>
-    <string name="found_one_reminder">Found one reminder</string>
     <string name="reminders">reminders</string>
     <string name="no_groups_found">No groups found</string>
     <string name="found_one_group">Found one group</string>
@@ -667,5 +666,7 @@
     <string name="select_date_in_future">Select date in future</string>
     <string name="backup_data_now">Make backup of data now</string>
     <string name="this_command_not_supported_on_that_screen">This command not supported on that screen</string>
+    <string name="portuguese">Portuguese</string>
+    <string name="found_one_reminder">Found one reminder</string>
 
 </resources>

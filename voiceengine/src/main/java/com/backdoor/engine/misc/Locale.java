@@ -1,4 +1,4 @@
-package com.backdoor.engine;
+package com.backdoor.engine.misc;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,4 +21,5 @@ public class Locale {
     public static final String UK = "uk-UA";
     public static final String DE = "de-DE";
     public static final String ES = "es-ES";
+    public static final String PT = "pt-PT";
 }

@@ -665,5 +665,6 @@
     <string name="backup_data_now">Proveďte zálohování dat</string>
     <string name="missed_call">Zmeškaný hovor</string>
     <string name="select_date_in_future">V budoucnu vyberte datum</string>
+    <string name="portuguese">Portugalština</string>
 
 </resources>

@@ -34,7 +34,6 @@ class Language @Inject constructor(private val prefs: Prefs){
     /**
      * Holder locale for tts.
      *
-     * @param context application context.
      * @param isBirth flag for birthdays.
      * @return Locale
      */
@@ -56,6 +55,7 @@ class Language @Inject constructor(private val prefs: Prefs){
             RUSSIAN -> res = Locale("ru", "")
             SPANISH -> res = Locale("es", "")
             UKRAINIAN -> res = Locale("uk", "")
+            PORTUGUESE -> res = Locale("pt", "")
         }
         return res
     }
@@ -64,7 +64,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         return setLocale(context, getScreenLanguage(prefs.appLanguage))
     }
 
-    fun setLocale(context: Context, locale: Locale): Context {
+    private fun setLocale(context: Context, locale: Locale): Context {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             updateResources(context, locale)
         } else updateResourcesLegacy(context, locale)
@@ -116,6 +116,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         locales.add(context.getString(R.string.ukrainian) + " (" + UK + ")")
         locales.add(context.getString(R.string.german) + " (" + DE + ") (BETA)")
         locales.add(context.getString(R.string.spanish) + " (" + ES + ") (BETA)")
+        locales.add(context.getString(R.string.portuguese) + " (" + PT + ") (BETA)")
         return locales
     }
 
@@ -148,6 +149,7 @@ class Language @Inject constructor(private val prefs: Prefs){
             2 -> UKRAINIAN
             3 -> GERMAN
             4 -> SPANISH
+            5 -> PORTUGUESE
             else -> ENGLISH
         }
     }
@@ -159,33 +161,36 @@ class Language @Inject constructor(private val prefs: Prefs){
             2 -> UK
             3 -> DE
             4 -> ES
+            5 -> PT
             else -> EN
         }
     }
 
     fun getVoiceLanguage(code: Int): String {
         return when (code) {
-            0 -> com.backdoor.engine.Locale.EN
-            1 -> com.backdoor.engine.Locale.RU
-            2 -> com.backdoor.engine.Locale.UK
-            3 -> com.backdoor.engine.Locale.DE
-            4 -> com.backdoor.engine.Locale.ES
-            else -> com.backdoor.engine.Locale.EN
+            0 -> com.backdoor.engine.misc.Locale.EN
+            1 -> com.backdoor.engine.misc.Locale.RU
+            2 -> com.backdoor.engine.misc.Locale.UK
+            3 -> com.backdoor.engine.misc.Locale.DE
+            4 -> com.backdoor.engine.misc.Locale.ES
+            5 -> com.backdoor.engine.misc.Locale.PT
+            else -> com.backdoor.engine.misc.Locale.EN
         }
     }
 
     fun getLocaleByPosition(position: Int): String {
         var locale = Language.ENGLISH
         if (position == 0) locale = Language.ENGLISH
-        if (position == 1) locale = Language.FRENCH
-        if (position == 2) locale = Language.GERMAN
-        if (position == 3) locale = Language.ITALIAN
-        if (position == 4) locale = Language.JAPANESE
-        if (position == 5) locale = Language.KOREAN
-        if (position == 6) locale = Language.POLISH
-        if (position == 7) locale = Language.RUSSIAN
-        if (position == 8) locale = Language.SPANISH
-        if (position == 9 && Module.isJellyMR2) locale = Language.UKRAINIAN
+        else if (position == 1) locale = Language.FRENCH
+        else if (position == 2) locale = Language.GERMAN
+        else if (position == 3) locale = Language.ITALIAN
+        else if (position == 4) locale = Language.JAPANESE
+        else if (position == 5) locale = Language.KOREAN
+        else if (position == 6) locale = Language.POLISH
+        else if (position == 7) locale = Language.RUSSIAN
+        else if (position == 8) locale = Language.SPANISH
+        else if (position == 9) locale = Language.PORTUGUESE
+        else if (position == 10 && Module.isJellyMR2) locale = Language.UKRAINIAN
         return locale
     }
 
@@ -212,8 +217,10 @@ class Language @Inject constructor(private val prefs: Prefs){
             mItemSelect = 7
         } else if (locale.matches(Language.SPANISH.toRegex())) {
             mItemSelect = 8
-        } else if (locale.matches(Language.UKRAINIAN.toRegex()) && Module.isJellyMR2) {
+        } else if (locale.matches(Language.PORTUGUESE.toRegex())) {
             mItemSelect = 9
+        } else if (locale.matches(Language.UKRAINIAN.toRegex()) && Module.isJellyMR2) {
+            mItemSelect = 10
         }
         return mItemSelect
     }
@@ -228,19 +235,20 @@ class Language @Inject constructor(private val prefs: Prefs){
         return names
     }
 
-    fun getLocaleNames(mContext: Context): List<String> {
+    fun getLocaleNames(context: Context): List<String> {
         val names = ArrayList<String>()
-        names.add(mContext.getString(R.string.english))
-        names.add(mContext.getString(R.string.french))
-        names.add(mContext.getString(R.string.german))
-        names.add(mContext.getString(R.string.italian))
-        names.add(mContext.getString(R.string.japanese))
-        names.add(mContext.getString(R.string.korean))
-        names.add(mContext.getString(R.string.polish))
-        names.add(mContext.getString(R.string.russian))
-        names.add(mContext.getString(R.string.spanish))
+        names.add(context.getString(R.string.english))
+        names.add(context.getString(R.string.french))
+        names.add(context.getString(R.string.german))
+        names.add(context.getString(R.string.italian))
+        names.add(context.getString(R.string.japanese))
+        names.add(context.getString(R.string.korean))
+        names.add(context.getString(R.string.polish))
+        names.add(context.getString(R.string.russian))
+        names.add(context.getString(R.string.spanish))
+        names.add(context.getString(R.string.portuguese))
         if (Module.isJellyMR2) {
-            names.add(mContext.getString(R.string.ukrainian))
+            names.add(context.getString(R.string.ukrainian))
         }
         return names
     }
@@ -256,11 +264,13 @@ class Language @Inject constructor(private val prefs: Prefs){
         const val RUSSIAN = "ru"
         const val SPANISH = "es"
         const val UKRAINIAN = "uk"
+        const val PORTUGUESE = "pt"
 
         private const val EN = "en-US"
         private const val RU = "ru-RU"
         private const val UK = "uk-UA"
         private const val DE = "de-DE"
         private const val ES = "es-ES"
+        private const val PT = "pt-PT"
     }
 }

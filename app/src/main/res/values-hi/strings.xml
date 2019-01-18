@@ -665,5 +665,6 @@
     <string name="backup_data_now">अब डेटा का बैकअप बनाएं</string>
     <string name="missed_call">मिस कॉल</string>
     <string name="select_date_in_future">भविष्य में तारीख का चयन करें</string>
+    <string name="portuguese">पुर्तगाली</string>
 
 </resources>

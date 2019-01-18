@@ -1,4 +1,8 @@
-package com.backdoor.engine;
+package com.backdoor.engine.lang;
+
+import com.backdoor.engine.misc.Ampm;
+import com.backdoor.engine.misc.Long;
+import com.backdoor.engine.Recognizer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-abstract class Worker implements WorkerInterface {
+public abstract class Worker implements WorkerInterface {
 
     /**
      * Millisecond constants.
@@ -16,7 +20,7 @@ abstract class Worker implements WorkerInterface {
     protected final static long MINUTE = 60 * SECOND;
     protected final static long HOUR = MINUTE * 60;
     protected final static long HALF_DAY = HOUR * 12;
-    protected final static long DAY = HALF_DAY * 2;
+    public final static long DAY = HALF_DAY * 2;
 
     protected final static String WHITESPACES = "\\s+";
     protected final static String WHITESPACE = "\\s";
@@ -32,7 +36,7 @@ abstract class Worker implements WorkerInterface {
         return new SimpleDateFormat("HH:mm",Recognizer.locale);
     }
 
-    static int getNumberOfSelectedWeekdays(List<Integer> days) {
+    public static int getNumberOfSelectedWeekdays(List<Integer> days) {
         int count = 0;
         for (int i = 0; i < days.size(); i++) {
             if (days.get(i) == 1) {

@@ -1,4 +1,4 @@
-package com.backdoor.engine;
+package com.backdoor.engine.misc;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -16,13 +16,47 @@ package com.backdoor.engine;
  * limitations under the License.
  */
 
-public enum ActionType {
+public enum Action {
+    /**
+     * Reminder actions
+     */
+    WEEK,
+    WEEK_CALL,
+    WEEK_SMS,
+    CALL,
+    MESSAGE,
+    MAIL,
+    DATE,
+
+    /**
+     * App actions
+     */
+    SETTINGS,
+    APP,
+    VOLUME,
+    HELP,
     REMINDER,
-    NOTE,
-    BIRTHDAYS,
-    GROUP,
-    ANSWER,
+    BIRTHDAY,
+    REPORT,
+    DISABLE,
     SHOW,
-    DELETE,
-    ACTION
+    TRASH,
+    NO_EVENT,
+
+    /**
+     * Answer actions
+     */
+    YES,
+    NO,
+
+    /**
+     * Show actions
+     */
+    GROUPS,
+    NOTES,
+    ACTIVE_REMINDERS,
+    REMINDERS,
+    BIRTHDAYS,
+    SHOP_LISTS,
+    EVENTS
 }

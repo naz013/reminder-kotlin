@@ -1,4 +1,4 @@
-package com.backdoor.engine;
+package com.backdoor.engine.misc;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -15,48 +15,20 @@ package com.backdoor.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class ContactOutput {
+    private final String output;
+    private final String number;
 
-public enum Action {
-    /**
-     * Reminder actions
-     */
-    WEEK,
-    WEEK_CALL,
-    WEEK_SMS,
-    CALL,
-    MESSAGE,
-    MAIL,
-    DATE,
+    public ContactOutput(String output, String number) {
+        this.output = output;
+        this.number = number;
+    }
 
-    /**
-     * App actions
-     */
-    SETTINGS,
-    APP,
-    VOLUME,
-    HELP,
-    REMINDER,
-    BIRTHDAY,
-    REPORT,
-    DISABLE,
-    SHOW,
-    TRASH,
-    NO_EVENT,
+    public String getOutput() {
+        return output;
+    }
 
-    /**
-     * Answer actions
-     */
-    YES,
-    NO,
-
-    /**
-     * Show actions
-     */
-    GROUPS,
-    NOTES,
-    ACTIVE_REMINDERS,
-    REMINDERS,
-    BIRTHDAYS,
-    SHOP_LISTS,
-    EVENTS
+    public String getNumber() {
+        return number;
+    }
 }
