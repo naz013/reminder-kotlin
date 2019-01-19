@@ -17,7 +17,8 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.list_item_call.view.*
 
-class CallHolder(itemView: View, val isDark: Boolean, private val is24: Boolean, callback: ((Int) -> Unit)?) : RecyclerView.ViewHolder(itemView) {
+class CallHolder(itemView: View, val isDark: Boolean, private val is24: Boolean, private val lang: Int,
+                 callback: ((Int) -> Unit)?) : RecyclerView.ViewHolder(itemView) {
     fun bind(callsItem: CallsItem) {
         if (callsItem.name == null) {
             itemView.itemName.text = callsItem.number
@@ -72,6 +73,6 @@ class CallHolder(itemView: View, val isDark: Boolean, private val is24: Boolean,
     }
 
     private fun loadDate(textView: AppCompatTextView, date: Long) {
-        textView.text = TimeUtil.getSimpleDateTime(date, is24)
+        textView.text = TimeUtil.getSimpleDateTime(date, is24, lang)
     }
 }

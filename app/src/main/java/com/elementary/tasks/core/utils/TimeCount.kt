@@ -107,24 +107,24 @@ object TimeCount {
         }
     }
 
-    fun getRemaining(context: Context, dateTime: String?, delay: Int): String {
+    fun getRemaining(context: Context, dateTime: String?, delay: Int, lang: Int): String {
         if (TextUtils.isEmpty(dateTime)) {
-            return getRemaining(context, 0)
+            return getRemaining(context, 0, lang)
         }
         val time = TimeUtil.getDateTimeFromGmt(dateTime)
-        return getRemaining(context, time + delay * MINUTE)
+        return getRemaining(context, time + delay * MINUTE, lang)
     }
 
-    fun getRemaining(context: Context, eventTime: Long): String {
+    fun getRemaining(context: Context, eventTime: Long, lang: Int = 0): String {
         val difference = eventTime - System.currentTimeMillis()
         val days = difference / DAY
         var hours = (difference - DAY * days) / HOUR
         var minutes = (difference - DAY * days - HOUR * hours) / MINUTE
         hours = if (hours < 0) -hours else hours
         val result = StringBuilder()
-        val lang = Locale.getDefault().toString().toLowerCase()
+        val language = Language.getScreenLanguage(lang).toString().toLowerCase()
         if (difference > DAY) {
-            if (lang.startsWith("uk") || lang.startsWith("ru")) {
+            if (language.startsWith("uk") || language.startsWith("ru")) {
                 var last = days
                 while (last > 10) {
                     last -= 10
@@ -145,7 +145,7 @@ object TimeCount {
             }
         } else if (difference > HOUR) {
             hours += days * 24
-            if (lang.startsWith("uk") || lang.startsWith("ru")) {
+            if (language.startsWith("uk") || language.startsWith("ru")) {
                 var last = hours
                 while (last > 10) {
                     last -= 10
@@ -166,7 +166,7 @@ object TimeCount {
             }
         } else if (difference > MINUTE) {
             minutes += hours * 60
-            if (lang.startsWith("uk") || lang.startsWith("ru")) {
+            if (language.startsWith("uk") || language.startsWith("ru")) {
                 var last = minutes
                 while (last > 10) {
                     last -= 10
@@ -281,8 +281,8 @@ object TimeCount {
             val cl = Calendar.getInstance()
             cl.timeInMillis = timeLong
             val mTime = cl.time
-            date = TimeUtil.DATE_FORMAT.format(mTime)
-            time = TimeUtil.getTime(mTime, prefs.is24HourFormatEnabled)
+            date = TimeUtil.date(prefs.appLanguage).format(mTime)
+            time = TimeUtil.getTime(mTime, prefs.is24HourFormatEnabled, prefs.appLanguage)
         }
         return arrayOf(date, time)
     }

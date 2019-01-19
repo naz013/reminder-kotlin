@@ -57,7 +57,7 @@ class SkypeFragment : RepeatableTypeFragment() {
         reminder.target = number
         reminder.type = type
         reminder.startTime = reminder.eventTime
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null

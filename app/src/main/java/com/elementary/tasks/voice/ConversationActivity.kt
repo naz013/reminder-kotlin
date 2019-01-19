@@ -273,7 +273,7 @@ class ConversationActivity : ThemedActivity() {
             ActionType.ANSWER -> performAnswer(model)
             ActionType.SHOW -> {
                 stopView()
-                Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true, true)}")
+                Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true)}")
                 val action = model.action
                 when (action) {
                     Action.REMINDERS -> viewModel.getReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))

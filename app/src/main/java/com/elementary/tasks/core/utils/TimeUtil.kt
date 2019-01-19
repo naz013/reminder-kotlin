@@ -4,9 +4,7 @@ import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.os.Build
 import android.text.TextUtils
-import androidx.annotation.ColorRes
 import com.elementary.tasks.R
 import hirondelle.date4j.DateTime
 import java.text.DateFormat
@@ -32,35 +30,47 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object TimeUtil {
 
     private const val GMT = "GMT"
 
     val BIRTH_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private val FORMAT_24 = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-    private val TIME_STAMP_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault())
-    private val FORMAT_12 = SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault())
-    val FULL_DATE_FORMAT = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
-    private val FULL_DATE_TIME_24 = SimpleDateFormat("EEE, dd MMM yyyy HH:mm", Locale.getDefault())
-    private val FULL_DATE_TIME_12 = SimpleDateFormat("EEE, dd MMM yyyy K:mm a", Locale.getDefault())
-    val DATE_FORMAT = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-    private val TIME_24 = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val TIME_12 = SimpleDateFormat("K:mm a", Locale.getDefault())
-    val SIMPLE_DATE = SimpleDateFormat("d MMMM", Locale.getDefault())
-    private val SIMPLE_DATE_TIME = SimpleDateFormat("d MMMM, HH:mm", Locale.getDefault())
-    private val SIMPLE_DATE_TIME_12 = SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault())
+    val BIRTH_FORMAT = SimpleDateFormat("dd|MM", Locale.US)
+    private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
+    private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+    private val TIME_24 = SimpleDateFormat("HH:mm", Locale.US)
 
-    private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault())
-    private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
-    val birthFormat = SimpleDateFormat("dd|MM", Locale.getDefault())
-    private val MONTH_YEAR_FORMAT = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+    fun localizedDateFormat(pattern: String, lang: Int = 0): SimpleDateFormat = SimpleDateFormat(pattern, Language.getScreenLanguage(lang))
 
-    private val DAY_FORMAT = SimpleDateFormat("dd", Locale.getDefault())
-    private val MONTH_FORMAT = SimpleDateFormat("MMM", Locale.getDefault())
-    private val YEAR_FORMAT = SimpleDateFormat("yyyy", Locale.getDefault())
+    fun dateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm", lang)
 
-    fun getPlaceDateTimeFromGmt(dateTime: String?): DMY {
+    fun dateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, K:mm a", lang)
+
+    fun fullDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy", lang)
+
+    fun fullDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy HH:mm", lang)
+
+    fun fullDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy K:mm a", lang)
+
+    fun time24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("HH:mm", lang)
+
+    fun time12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("K:mm a", lang)
+
+    fun simpleDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM", lang)
+
+    fun simpleDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, HH:mm", lang)
+
+    fun simpleDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, K:mm a", lang)
+
+    fun date(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy", lang)
+
+    fun day(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd", lang)
+
+    fun month(lang: Int = 0): SimpleDateFormat = localizedDateFormat("MMM", lang)
+
+    fun year(lang: Int = 0): SimpleDateFormat = localizedDateFormat("yyyy", lang)
+
+    fun getPlaceDateTimeFromGmt(dateTime: String?, lang: Int = 0): DMY {
         var date: Date
 
         try {
@@ -79,9 +89,9 @@ object TimeUtil {
         var year = ""
 
         try {
-            day = DAY_FORMAT.format(date)
-            month = MONTH_FORMAT.format(date)
-            year = YEAR_FORMAT.format(date)
+            day = TimeUtil.day(lang).format(date)
+            month = TimeUtil.month(lang).format(date)
+            year = TimeUtil.year(lang).format(date)
         } catch (e: ParseException) {
             e.printStackTrace()
         } catch (e: NumberFormatException) {
@@ -108,9 +118,9 @@ object TimeUtil {
             FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
             val date = FIRE_DATE_FORMAT.parse(gmt)
             return if (prefs.is24HourFormatEnabled) {
-                FORMAT_24.format(date)
+                dateTime24(prefs.appLanguage).format(date)
             } else {
-                FORMAT_12.format(date)
+                dateTime12(prefs.appLanguage).format(date)
             }
         } catch (e: ParseException) {
             e.printStackTrace()
@@ -140,16 +150,6 @@ object TimeUtil {
     fun showDatePicker(context: Context, theme: Int, prefs: Prefs,
                        year: Int, month: Int, dayOfMonth: Int, listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
         val dialog = DatePickerDialog(context, theme, listener, year, month, dayOfMonth)
-        if (Module.isLollipop) {
-            dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
-        }
-        dialog.show()
-        return dialog
-    }
-
-    fun showDatePicker(context: Context, prefs: Prefs, listener: DatePickerDialog.OnDateSetListener,
-                       year: Int, month: Int, dayOfMonth: Int): DatePickerDialog {
-        val dialog = DatePickerDialog(context, listener, year, month, dayOfMonth)
         if (Module.isLollipop) {
             dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
         }
@@ -191,12 +191,12 @@ object TimeUtil {
         return null
     }
 
-    fun getBirthdayTime(hour: Int, minute: Int): String {
+    fun getBirthdayTime(hour: Int, minute: Int, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
-        return TIME_24.format(calendar.time)
+        return time24(lang).format(calendar.time)
     }
 
     fun getBirthdayTime(time: String?): Long {
@@ -284,17 +284,13 @@ object TimeUtil {
         return calendar.timeInMillis
     }
 
-    fun getFullDateTime(date: Long, is24: Boolean, isLog: Boolean): String {
+    fun getFullDateTime(date: Long, is24: Boolean, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date
-        return if (isLog) {
-            TIME_STAMP_FORMAT.format(calendar.time)
+        return if (is24) {
+            fullDateTime24(lang).format(calendar.time)
         } else {
-            if (is24) {
-                FULL_DATE_TIME_24.format(calendar.time)
-            } else {
-                FULL_DATE_TIME_12.format(calendar.time)
-            }
+            fullDateTime12(lang).format(calendar.time)
         }
     }
 
@@ -320,16 +316,7 @@ object TimeUtil {
         return format.format(calendar.time)
     }
 
-    fun getFullDateTime(date: String?): String {
-        if (TextUtils.isEmpty(date)) {
-            return "No event time"
-        }
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = getDateTimeFromGmt(date)
-        return TIME_STAMP_FORMAT.format(calendar.time)
-    }
-
-    fun getRealDateTime(gmt: String?, delay: Int, is24: Boolean): String {
+    fun getRealDateTime(gmt: String?, delay: Int, is24: Boolean, lang: Int = 0): String {
         if (TextUtils.isEmpty(gmt)) {
             return ""
         }
@@ -348,13 +335,13 @@ object TimeUtil {
         }
 
         return if (is24) {
-            FULL_DATE_TIME_24.format(calendar.time)
+            fullDateTime24(lang).format(calendar.time)
         } else {
-            FULL_DATE_TIME_12.format(calendar.time)
+            fullDateTime12(lang).format(calendar.time)
         }
     }
 
-    fun getDateTimeFromGmt(dateTime: String?, is24: Boolean): String {
+    fun getDateTimeFromGmt(dateTime: String?, is24: Boolean, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         try {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
@@ -369,46 +356,40 @@ object TimeUtil {
         }
 
         return if (is24) {
-            FULL_DATE_TIME_24.format(calendar.time)
+            fullDateTime24(lang).format(calendar.time)
         } else {
-            FULL_DATE_TIME_12.format(calendar.time)
+            fullDateTime12(lang).format(calendar.time)
         }
     }
 
-    fun getSimpleDate(gmtDate: String?): String {
-        return getSimpleDate(getDateTimeFromGmt(gmtDate))
+    fun getSimpleDate(gmtDate: String?, lang: Int = 0): String {
+        return getSimpleDate(getDateTimeFromGmt(gmtDate), lang)
     }
 
-    fun getSimpleDate(date: Long): String {
+    fun getSimpleDate(date: Long, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date
-        return SIMPLE_DATE.format(calendar.time)
+        return simpleDate(lang).format(calendar.time)
     }
 
-    fun getMonthYear(date: Long): String {
+    fun getDate(date: Long, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date
-        return MONTH_YEAR_FORMAT.format(calendar.time)
+        return date(lang).format(calendar.time)
     }
 
-    fun getDate(date: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = date
-        return DATE_FORMAT.format(calendar.time)
-    }
-
-    fun getSimpleDateTime(date: Long, is24: Boolean): String {
+    fun getSimpleDateTime(date: Long, is24: Boolean, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date
         return if (is24) {
-            SIMPLE_DATE_TIME.format(calendar.time)
+            simpleDateTime24(lang).format(calendar.time)
         } else {
-            SIMPLE_DATE_TIME_12.format(calendar.time)
+            simpleDateTime12(lang).format(calendar.time)
         }
     }
 
-    fun getDate(date: Date): String {
-        return FULL_DATE_FORMAT.format(date)
+    fun getGoogleTaskDate(date: Date, lang: Int = 0): String {
+        return fullDate(lang).format(date)
     }
 
     fun getDate(date: Date, format: DateFormat): String {
@@ -426,7 +407,6 @@ object TimeUtil {
         } catch (e: ArrayIndexOutOfBoundsException) {
             null
         }
-
     }
 
     fun getAge(dateOfBirth: String?): Int {
@@ -454,19 +434,19 @@ object TimeUtil {
         return currentYear - yearOfBirth
     }
 
-    fun getDateTime(date: Date, is24: Boolean): String {
+    fun getDateTime(date: Date, is24: Boolean, lang: Int = 0): String {
         return if (is24) {
-            FORMAT_24.format(date)
+            dateTime24(lang).format(date)
         } else {
-            FORMAT_12.format(date)
+            dateTime12(lang).format(date)
         }
     }
 
-    fun getTime(date: Date, is24: Boolean): String {
+    fun getTime(date: Date, is24: Boolean, lang: Int = 0): String {
         return if (is24) {
-            TIME_24.format(date)
+            time24(lang).format(date)
         } else {
-            TIME_12.format(date)
+            time12(lang).format(date)
         }
     }
 
@@ -545,11 +525,11 @@ object TimeUtil {
         return "$hourStr:$minuteStr:$secondStr"
     }
 
-    fun getAgeFormatted(mContext: Context, date: String?): String {
+    fun getAgeFormatted(mContext: Context, date: String?, lang: Int = 0): String {
         val years = getAge(date)
         val result = StringBuilder()
-        val lang = Locale.getDefault().language.toLowerCase()
-        if (lang.startsWith("uk") || lang.startsWith("ru")) {
+        val language = Language.getScreenLanguage(lang).language.toLowerCase()
+        if (language.startsWith("uk") || language.startsWith("ru")) {
             var last = years.toLong()
             while (last > 10) {
                 last -= 10
@@ -571,11 +551,11 @@ object TimeUtil {
         return result.toString()
     }
 
-    fun getAgeFormatted(mContext: Context, date: Int): String {
+    fun getAgeFormatted(mContext: Context, date: Int, lang: Int = 0): String {
         val years = getAge(date)
         val result = StringBuilder()
-        val lang = Locale.getDefault().toString().toLowerCase()
-        if (lang.startsWith("uk") || lang.startsWith("ru")) {
+        val language = Language.getScreenLanguage(lang).toString().toLowerCase()
+        if (language.startsWith("uk") || language.startsWith("ru")) {
             var last = years.toLong()
             while (last > 10) {
                 last -= 10
@@ -595,14 +575,6 @@ object TimeUtil {
             }
         }
         return result.toString()
-    }
-
-    fun getColor(context: Context, @ColorRes res: Int): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.resources.getColor(res, null)
-        } else {
-            context.resources.getColor(res)
-        }
     }
 
     fun convertDateTimeToDate(dateTime: DateTime): Date {
@@ -632,7 +604,6 @@ object TimeUtil {
             } catch (e1: Exception) {
                 DateTime(year, javaMonth + 1, day - 1, 0, 0, 0, 0)
             }
-
         }
     }
 

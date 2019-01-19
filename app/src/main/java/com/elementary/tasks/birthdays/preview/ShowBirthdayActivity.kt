@@ -221,7 +221,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         } else {
             contactPhoto.visibility = View.GONE
         }
-        val years = TimeUtil.getAgeFormatted(this, birthday.date)
+        val years = TimeUtil.getAgeFormatted(this, birthday.date, prefs.appLanguage)
         userName.text = birthday.name
         userName.contentDescription = birthday.name
         userYears.text = years
@@ -259,7 +259,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         }
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(name)
-        builder.setContentText(TimeUtil.getAgeFormatted(this, years))
+        builder.setContentText(TimeUtil.getAgeFormatted(this, years, prefs.appLanguage))
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
             builder.color = ContextCompat.getColor(this, R.color.bluePrimary)

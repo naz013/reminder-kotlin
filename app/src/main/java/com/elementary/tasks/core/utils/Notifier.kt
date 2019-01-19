@@ -174,12 +174,12 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         builder.setContentTitle(context.getString(R.string.events))
         if (list.isNotEmpty()) {
             val item = list[0]
-            builder.setContentText(item.date + " | " + item.name + " | " + TimeUtil.getAgeFormatted(context, item.date))
+            builder.setContentText(item.date + " | " + item.name + " | " + TimeUtil.getAgeFormatted(context, item.date, prefs.appLanguage))
             if (list.size > 1) {
                 val stringBuilder = StringBuilder()
                 for (birthday in list) {
                     stringBuilder.append(birthday.date).append(" | ").append(birthday.name).append(" | ")
-                            .append(TimeUtil.getAgeFormatted(context, birthday.date))
+                            .append(TimeUtil.getAgeFormatted(context, birthday.date, prefs.appLanguage))
                     stringBuilder.append("\n")
                 }
                 builder.setStyle(NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()))

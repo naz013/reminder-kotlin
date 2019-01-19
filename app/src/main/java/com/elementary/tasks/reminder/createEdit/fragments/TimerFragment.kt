@@ -82,7 +82,7 @@ class TimerFragment : RepeatableTypeFragment() {
         val startTime = TimeCount.generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null

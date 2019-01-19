@@ -73,7 +73,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         dayHour = calendar.get(Calendar.HOUR_OF_DAY)
         dayMinute = calendar.get(Calendar.MINUTE)
-        dayTime.text = TimeUtil.getTime(calendar.time, is24)
+        dayTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
     }
 
     private fun initEveningTime() {
@@ -89,7 +89,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         eveningHour = calendar.get(Calendar.HOUR_OF_DAY)
         eveningMinute = calendar.get(Calendar.MINUTE)
-        eveningTime.text = TimeUtil.getTime(calendar.time, is24)
+        eveningTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
     }
 
     private fun initNightTime() {
@@ -106,7 +106,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         nightHour = calendar.get(Calendar.HOUR_OF_DAY)
         nightMinute = calendar.get(Calendar.MINUTE)
-        nightTime.text = TimeUtil.getTime(calendar.time, is24)
+        nightTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
     }
 
     private fun initMorningTime() {
@@ -123,7 +123,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         morningHour = calendar.get(Calendar.HOUR_OF_DAY)
         morningMinute = calendar.get(Calendar.MINUTE)
-        morningTime.text = TimeUtil.getTime(calendar.time, is24)
+        morningTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
     }
 
     override fun getTitle(): String = getString(R.string.time)
@@ -137,7 +137,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
             prefs.morningTime = time
-            morningTime.text = TimeUtil.getTime(calendar.time, is24)
+            morningTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
         })
     }
 
@@ -150,7 +150,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
             prefs.noonTime = time
-            dayTime.text = TimeUtil.getTime(calendar.time, is24)
+            dayTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
         })
     }
 
@@ -163,7 +163,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
             prefs.nightTime = time
-            nightTime.text = TimeUtil.getTime(calendar.time, is24)
+            nightTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
         })
     }
 
@@ -176,7 +176,7 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
             prefs.eveningTime = time
-            eveningTime.text = TimeUtil.getTime(calendar.time, is24)
+            eveningTime.text = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
         })
     }
 

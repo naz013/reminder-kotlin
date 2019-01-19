@@ -90,7 +90,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay)
+            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
         } else {
             itemView.remainingTime.text = ""
         }
@@ -121,7 +121,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
             itemView.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, model.places.size)
             return
         }
-        itemView.taskDate.text = TimeUtil.getRealDateTime(model.eventTime, model.delay, is24)
+        itemView.taskDate.text = TimeUtil.getRealDateTime(model.eventTime, model.delay, is24, prefs.appLanguage)
     }
 
     private fun loadCheck(item: Reminder?) {

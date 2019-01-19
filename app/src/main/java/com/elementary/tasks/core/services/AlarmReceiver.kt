@@ -53,7 +53,7 @@ class AlarmReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
-        Timber.d("onReceive: Action - $action, time - ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true)}")
+        Timber.d("onReceive: Action - $action, time - ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true)}")
         if (action == null) return
         val service = Intent(context, AlarmReceiver::class.java)
         context.startService(service)

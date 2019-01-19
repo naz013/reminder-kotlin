@@ -94,7 +94,7 @@ class YearFragment : RepeatableTypeFragment() {
 
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
@@ -138,7 +138,7 @@ class YearFragment : RepeatableTypeFragment() {
             reminderInterface.selectGroup()
         }
 
-        dateView.setDateFormat(TimeUtil.SIMPLE_DATE)
+        dateView.setDateFormat(TimeUtil.simpleDate(prefs.appLanguage))
         dateView.setEventListener(object : DateTimeView.OnSelectListener {
             override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
                 if (month == 1 && day > 28) {

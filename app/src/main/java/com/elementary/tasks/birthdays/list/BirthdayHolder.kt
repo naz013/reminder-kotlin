@@ -66,8 +66,8 @@ class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val li
         val is24 = prefs.is24HourFormatEnabled
         val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), fullDate)
         if (dateItem != null) {
-            textView.text = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.calendar.timeInMillis, is24, false),
-                    "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year))
+            textView.text = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.calendar.timeInMillis, is24, prefs.appLanguage),
+                    "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year, prefs.appLanguage))
         }
     }
 }

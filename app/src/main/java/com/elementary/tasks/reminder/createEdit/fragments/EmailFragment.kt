@@ -52,7 +52,7 @@ class EmailFragment : RepeatableTypeFragment() {
 
         reminder.type = Reminder.BY_DATE_EMAIL
         reminder.startTime = reminder.eventTime
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null

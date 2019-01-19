@@ -103,11 +103,7 @@ class AddBirthdayActivity : ThemedActivity() {
     private fun initActionBar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
     }
 
     private fun showBirthday(birthday: Birthday?) {

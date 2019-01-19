@@ -9,7 +9,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.utils.TimeUtil.birthFormat
+import com.elementary.tasks.core.utils.TimeUtil.BIRTH_FORMAT
 import com.elementary.tasks.missedCalls.MissedCallDialogActivity
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobManager
@@ -73,7 +73,7 @@ class EventJobService : Job() {
             val cal = Calendar.getInstance()
             cal.timeInMillis = System.currentTimeMillis()
             val mYear = cal.get(Calendar.YEAR)
-            val mDate = birthFormat.format(cal.time)
+            val mDate = BIRTH_FORMAT.format(cal.time)
             for (item in AppDb.getAppDatabase(context).birthdaysDao().all()) {
                 val year = item.showedYear
                 val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
@@ -90,7 +90,7 @@ class EventJobService : Job() {
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, day)
         calendar.timeInMillis = calendar.timeInMillis - AlarmManager.INTERVAL_DAY * daysBefore
-        return birthFormat.format(calendar.time)
+        return BIRTH_FORMAT.format(calendar.time)
     }
 
     private fun showBirthday(context: Context, item: Birthday) {
@@ -204,8 +204,8 @@ class EventJobService : Job() {
         fun enableReminder(reminder: Reminder?) {
             if (reminder == null) return
             var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            Timber.d("enableReminder: ${TimeUtil.getFullDateTime(due, true, true)}")
-            Timber.d("enableReminder: noe -> ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true)}")
+            Timber.d("enableReminder: ${TimeUtil.getFullDateTime(due, true)}")
+            Timber.d("enableReminder: noe -> ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true)}")
             if (due == 0L) {
                 return
             }

@@ -47,7 +47,7 @@ class WeekFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
         timeField.text = formattedTime
     }
 
@@ -103,7 +103,7 @@ class WeekFragment : RepeatableTypeFragment() {
         val startTime = TimeCount.getNextWeekdayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
@@ -117,9 +117,12 @@ class WeekFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect) }
+        timeField.setOnClickListener {
+            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
+                    prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect)
+        }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                prefs.is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled, prefs.appLanguage)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
@@ -261,7 +264,7 @@ class WeekFragment : RepeatableTypeFragment() {
             this.groupUuId = reminder.groupUuId
         }
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-                prefs.is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled, prefs.appLanguage)
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)
         }
