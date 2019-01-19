@@ -64,6 +64,7 @@ class SendFeedbackActivity : ThemedActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        toolbar.title = getString(R.string.feedback)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
