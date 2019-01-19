@@ -1,10 +1,7 @@
 package com.elementary.tasks.navigation.settings.calendar
 
 import android.app.AlarmManager
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -18,12 +15,11 @@ import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.fragment_settings_events_import.*
+import kotlinx.android.synthetic.main.view_progress.*
+import kotlinx.coroutines.Job
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -47,10 +43,11 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedChangeListener {
 
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()
+    private var mJob: Job? = null
 
     private val intervalPosition: Int
         get() {
@@ -72,7 +69,10 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button.setOnClickListener(this)
+        button.setOnClickListener{ importEvents() }
+
+        progressMessageView.text = getString(R.string.please_wait)
+        progressView.visibility = View.GONE
 
         syncInterval.setOnClickListener { showIntervalDialog() }
 
@@ -83,7 +83,6 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
 
     private fun showIntervalDialog() {
         val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
         builder.setTitle(getString(R.string.interval))
         val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
         builder.setSingleChoiceItems(items, intervalPosition) { _, item -> mItemSelect = item }
@@ -117,11 +116,11 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
     }
 
     private fun checkWriteCalendarPerm(): Boolean {
-        if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            return true
+        return if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            true
         } else {
             Permissions.requestPermission(activity!!, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR);
-            return false
+            false
         }
     }
 
@@ -140,7 +139,7 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
                 spinnerArray.add(item.name)
             }
         }
-        val spinnerArrayAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, spinnerArray)
+        val spinnerArrayAdapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, spinnerArray)
         eventCalendar.adapter = spinnerArrayAdapter
     }
 
@@ -157,12 +156,6 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
         } else {
             Permissions.requestPermission(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
             false
-        }
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.button -> importEvents()
         }
     }
 
@@ -185,7 +178,7 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
             prefs.calendarId = list[selectedPosition].id
         }
         prefs.eventsCalendar = list[selectedPosition].id
-        Import(context!!).execute(map)
+        import(map)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
@@ -196,8 +189,9 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
                 } else {
                     Permissions.requestPermission(activity!!, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
                 }
-            } else
+            } else {
                 autoCheck(false)
+            }
         }
     }
 
@@ -223,29 +217,25 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
         prefs.isAutoEventsCheckEnabled = isChecked
         syncInterval.isEnabled = isChecked
         val alarm = AlarmReceiver()
-        if (isChecked)
+        if (isChecked) {
             alarm.enableEventCheck(context!!)
-        else
+        } else {
             alarm.cancelEventCheck(context!!)
+        }
     }
 
-    private inner class Import constructor(private val mContext: Context) : AsyncTask<HashMap<String, Int>, Void, Int>() {
-        private var dialog: ProgressDialog? = null
-
-        override fun onPreExecute() {
-            super.onPreExecute()
-            dialog = ProgressDialog.show(mContext, null, getString(R.string.please_wait), true, false)
-        }
-
-        @SafeVarargs
-        override fun doInBackground(vararg params: HashMap<String, Int>): Int {
+    private fun import(map: HashMap<String, Int>) {
+        val ctx = context ?: return
+        button.isEnabled = false
+        progressView.visibility = View.VISIBLE
+        mJob = launchDefault {
             val currTime = System.currentTimeMillis()
             var eventsCount = 0
-            val map = params[0]
+            val appDb = AppDb.getAppDatabase(ctx)
             if (map.containsKey(EVENT_KEY)) {
                 val eventItems = calendarUtils.getEvents(map[EVENT_KEY]!!)
                 if (!eventItems.isEmpty()) {
-                    val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds()
+                    val list = appDb.calendarEventsDao().eventIds()
                     for (item in eventItems) {
                         val itemId = item.id
                         if (!list.contains(itemId)) {
@@ -270,7 +260,7 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
                                 }
                             }
                             val summary = item.title
-                            val group = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
+                            val group = appDb.reminderGroupDao().defaultGroup()
                             var categoryId = ""
                             if (group != null) {
                                 categoryId = group.groupUuId
@@ -280,7 +270,7 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
                             calendar.timeInMillis = dtStart
                             if (dtStart >= currTime) {
                                 eventsCount += 1
-                                saveReminder(itemId, summary, dtStart, repeat, categoryId)
+                                saveReminder(itemId, summary, dtStart, repeat, categoryId, appDb)
                             } else {
                                 if (repeat > 0) {
                                     do {
@@ -288,40 +278,45 @@ class FragmentEventsImport : BaseCalendarFragment(), View.OnClickListener, Compo
                                         dtStart = calendar.timeInMillis
                                     } while (dtStart < currTime)
                                     eventsCount += 1
-                                    saveReminder(itemId, summary, dtStart, repeat, categoryId)
+                                    saveReminder(itemId, summary, dtStart, repeat, categoryId, appDb)
                                 }
                             }
                         }
                     }
                 }
             }
-            return eventsCount
-        }
 
-        private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String) {
-            val reminder = Reminder()
-            reminder.type = Reminder.BY_DATE
-            reminder.repeatInterval = repeat
-            reminder.groupUuId = categoryId
-            reminder.summary = summary
-            reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
-            reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
-            AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)
-            EventControlFactory.getController(reminder).start()
-            val event = CalendarEvent(reminder.uuId, summary, itemId)
-            AppDb.getAppDatabase(mContext).calendarEventsDao().insert(event)
-        }
+            withUIContext {
+                button.isEnabled = true
+                progressView.visibility = View.GONE
 
-        override fun onPostExecute(result: Int) {
-            super.onPostExecute(result)
-            if (dialog != null && dialog!!.isShowing) dialog!!.dismiss()
-            if (result == 0) Toast.makeText(mContext, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show()
-            if (result > 0) {
-                Toast.makeText(mContext, result.toString() + " " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
-                UpdatesHelper.updateCalendarWidget(context!!)
-                notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+                if (eventsCount == 0) {
+                    Toast.makeText(ctx, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(ctx, "$eventsCount " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
+                    UpdatesHelper.updateCalendarWidget(ctx)
+                    notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+                }
             }
         }
+    }
+
+    private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String, appDb: AppDb) {
+        val reminder = Reminder()
+        reminder.type = Reminder.BY_DATE
+        reminder.repeatInterval = repeat
+        reminder.groupUuId = categoryId
+        reminder.summary = summary
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
+        reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
+        appDb.reminderDao().insert(reminder)
+        EventControlFactory.getController(reminder).start()
+        appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mJob?.cancel()
     }
 
     companion object {
