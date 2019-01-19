@@ -27,6 +27,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
@@ -288,9 +289,8 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                             context.startActivity(startActivityIntent)
                         }
                         Action.REPORT -> {
-                            val startActivityIntent = Intent(context, MainActivity::class.java)
-                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_feedback)
-                            context.startActivity(startActivityIntent)
+                            context.startActivity(Intent(context, SendFeedbackActivity::class.java)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         }
                     }
                 } else if (types == ActionType.NOTE) {
