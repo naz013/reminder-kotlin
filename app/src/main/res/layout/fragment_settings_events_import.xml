@@ -1,71 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+    android:animateLayoutChanges="true"
+    android:background="?android:colorBackground"
+    android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
+    <include
+        layout="@layout/view_progress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button">
+        android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/calendar"
+        android:textAppearance="?textAppearanceCaption"
+        android:textColor="?colorSecondary" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:textAppearance="?textAppearanceCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/calendar"
-                android:textColor="?colorSecondary" />
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/eventCalendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp" />
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/eventCalendar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="16dp" />
+    <com.elementary.tasks.core.views.DividerView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
-            <com.elementary.tasks.core.views.DividerView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp" />
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/autoCheck"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/check_automatically"
+        android:textAppearance="?textAppearanceButton" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/autoCheck"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/check_automatically"
-                android:textAppearance="?textAppearanceButton" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/syncInterval"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="16dp"
+        android:text="@string/interval"
+        android:textAppearance="?textAppearanceButton" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/syncInterval"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_margin="16dp"
-                android:text="@string/interval"
-                android:textAppearance="?textAppearanceButton" />
+    <com.elementary.tasks.core.views.DividerView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
-            <com.elementary.tasks.core.views.DividerView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
@@ -73,4 +72,4 @@
         android:text="@string/import_string"
         android:textAppearance="?textAppearanceButton" />
 
-</RelativeLayout>
+</LinearLayout>
