@@ -29,6 +29,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
+import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
@@ -559,6 +560,9 @@ class ConversationActivity : ThemedActivity() {
     private fun showSettingsPopup() {
         val popupMenu = PopupMenu(this, settingsButton)
         popupMenu.inflate(R.menu.activity_conversation)
+        popupMenu.menu.getItem(0).title = getLocalized(R.string.language)
+        popupMenu.menu.getItem(1).title = getLocalized(R.string.tell_about_event)
+        popupMenu.menu.getItem(2).title = getLocalized(R.string.feedback)
         popupMenu.menu.getItem(1).isChecked = prefs.isTellAboutEvent
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -568,6 +572,10 @@ class ConversationActivity : ThemedActivity() {
                 }
                 R.id.action_tell -> {
                     prefs.isTellAboutEvent = !prefs.isTellAboutEvent
+                    return@setOnMenuItemClickListener true
+                }
+                R.id.action_report -> {
+                    startActivity(Intent(this@ConversationActivity, SendFeedbackActivity::class.java))
                     return@setOnMenuItemClickListener true
                 }
             }

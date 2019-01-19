@@ -10,4 +10,8 @@
         android:checkable="true"
         android:title="@string/tell_about_event" />
 
+    <item
+        android:id="@+id/action_report"
+        android:title="@string/feedback" />
+
 </menu>
