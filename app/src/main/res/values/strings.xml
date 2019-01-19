@@ -668,5 +668,6 @@
     <string name="this_command_not_supported_on_that_screen">This command not supported on that screen</string>
     <string name="portuguese">Portuguese</string>
     <string name="found_one_reminder">Found one reminder</string>
+    <string name="clear_all_changes">Clear all changes</string>
 
 </resources>
