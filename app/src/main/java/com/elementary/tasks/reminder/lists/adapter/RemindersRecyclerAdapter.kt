@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
 /**
@@ -32,6 +33,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
 
     var actionsListener: ActionsListener<Reminder>? = null
+    var prefsProvider: (() -> Prefs)? = null
     private var isEditable = true
     var showHeader = true
     var data = listOf<Reminder>()
@@ -88,9 +90,10 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
     }
 
     private fun initLabel(listHeader: TextView, position: Int) {
+        val lang = prefsProvider?.invoke()?.appLanguage ?: 0
         val item = getItem(position)
         val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
-        var simpleDate = TimeUtil.getSimpleDate(due)
+        var simpleDate = TimeUtil.getSimpleDate(due, lang)
         var prevItem: Reminder? = null
         try {
             prevItem = getItem(position - 1)
@@ -108,15 +111,15 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
             simpleDate = context.getString(R.string.disabled)
             listHeader.text = simpleDate
             listHeader.visibility = View.VISIBLE
-        } else if (item.isActive && position > 0 && prevItem != null && simpleDate == TimeUtil.getSimpleDate(prevItem.eventTime)) {
+        } else if (item.isActive && position > 0 && prevItem != null && simpleDate == TimeUtil.getSimpleDate(prevItem.eventTime, lang)) {
             listHeader.visibility = View.GONE
         } else {
             if (due <= 0 || due < System.currentTimeMillis() - AlarmManager.INTERVAL_DAY) {
                 simpleDate = context.getString(R.string.permanent)
             } else {
-                if (simpleDate == TimeUtil.getSimpleDate(System.currentTimeMillis())) {
+                if (simpleDate == TimeUtil.getSimpleDate(System.currentTimeMillis(), lang)) {
                     simpleDate = context.getString(R.string.today)
-                } else if (simpleDate == TimeUtil.getSimpleDate(System.currentTimeMillis() + AlarmManager.INTERVAL_DAY)) {
+                } else if (simpleDate == TimeUtil.getSimpleDate(System.currentTimeMillis() + AlarmManager.INTERVAL_DAY, lang)) {
                     simpleDate = context.getString(R.string.tomorrow)
                 }
             }

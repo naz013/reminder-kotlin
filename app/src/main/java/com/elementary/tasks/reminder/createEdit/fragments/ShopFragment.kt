@@ -67,7 +67,7 @@ class ShopFragment : RepeatableTypeFragment() {
         if (attackDelay.isChecked) {
             val startTime = dateView.dateTime
             val time = TimeUtil.getGmtFromDateTime(startTime)
-            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
             if (!TimeCount.isCurrent(time)) {
                 Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
                 return null

@@ -125,7 +125,7 @@ class LocationFragment : RadiusTypeFragment() {
             val startTime = dateView.dateTime
             reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
             reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         } else {
             reminder.eventTime = ""
             reminder.startTime = ""

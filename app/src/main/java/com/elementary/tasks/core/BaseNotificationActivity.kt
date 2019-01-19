@@ -143,7 +143,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val current = instanceCount.incrementAndGet()
-        Timber.d("onCreate: $current, ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true)}")
+        Timber.d("onCreate: $current, ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true)}")
     }
 
     protected fun init() {

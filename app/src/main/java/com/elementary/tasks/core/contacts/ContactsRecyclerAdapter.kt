@@ -65,12 +65,13 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == ContactsActivity.CONTACT) {
-            ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false), themeUtil.isDark) {
+            ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false),
+                    themeUtil.isDark) {
                 performClick(it)
             }
         } else {
             CallHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_call, parent, false),
-                    themeUtil.isDark, prefs.is24HourFormatEnabled) {
+                    themeUtil.isDark, prefs.is24HourFormatEnabled, prefs.appLanguage) {
                 performClick(it)
             }
         }

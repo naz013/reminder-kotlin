@@ -85,9 +85,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         val resources = context.resources
         val configuration = resources.configuration
         configuration.locale = locale
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            configuration.setLayoutDirection(locale)
-        }
+        configuration.setLayoutDirection(locale)
         resources.updateConfiguration(configuration, resources.displayMetrics)
         return context
     }
@@ -118,28 +116,6 @@ class Language @Inject constructor(private val prefs: Prefs){
         locales.add(context.getString(R.string.spanish) + " (" + ES + ") (BETA)")
         locales.add(context.getString(R.string.portuguese) + " (" + PT + ") (BETA)")
         return locales
-    }
-
-    private fun getScreenLanguage(code: Int): Locale {
-        when (code) {
-            0 -> return Locale.getDefault()
-            1 -> return Locale.ENGLISH
-            2 -> return Locale.GERMAN
-            3 -> return Locale("es", "")
-            4 -> return Locale.FRENCH
-            5 -> return Locale.ITALIAN
-            6 -> return Locale("pt", "")
-            7 -> return Locale("pl", "")
-            8 -> return Locale("cs", "")
-            9 -> return Locale("ro", "")
-            10 -> return Locale("tr", "")
-            11 -> return Locale("uk", "")
-            12 -> return Locale("ru", "")
-            13 -> return Locale.JAPANESE
-            14 -> return Locale.CHINESE
-            15 -> return Locale("hi", "")
-            else -> return Locale.getDefault()
-        }
     }
 
     fun getTextLanguage(code: Int): String {
@@ -272,5 +248,27 @@ class Language @Inject constructor(private val prefs: Prefs){
         private const val DE = "de-DE"
         private const val ES = "es-ES"
         private const val PT = "pt-PT"
+
+        fun getScreenLanguage(code: Int): Locale {
+            when (code) {
+                0 -> return Locale.getDefault()
+                1 -> return Locale.ENGLISH
+                2 -> return Locale.GERMAN
+                3 -> return Locale("es", "")
+                4 -> return Locale.FRENCH
+                5 -> return Locale.ITALIAN
+                6 -> return Locale("pt", "")
+                7 -> return Locale("pl", "")
+                8 -> return Locale("cs", "")
+                9 -> return Locale("ro", "")
+                10 -> return Locale("tr", "")
+                11 -> return Locale("uk", "")
+                12 -> return Locale("ru", "")
+                13 -> return Locale.JAPANESE
+                14 -> return Locale.CHINESE
+                15 -> return Locale("hi", "")
+                else -> return Locale.getDefault()
+            }
+        }
     }
 }

@@ -325,7 +325,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
             timeView.visibility = View.VISIBLE
-            time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, false)
+            time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, prefs.appLanguage)
             when {
                 Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
                 Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> repeat.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
@@ -481,7 +481,7 @@ class ReminderPreviewActivity : ThemedActivity() {
                 hour = calendar.get(Calendar.HOUR_OF_DAY)
                 minute = calendar.get(Calendar.MINUTE)
                 list.add(tmp)
-                time.add(TimeUtil.getTime(calendar.time, is24))
+                time.add(TimeUtil.getTime(calendar.time, is24, prefs.appLanguage))
                 calendar.timeInMillis = tmp + AlarmManager.INTERVAL_HALF_HOUR
             }
         } while (hour != -1)

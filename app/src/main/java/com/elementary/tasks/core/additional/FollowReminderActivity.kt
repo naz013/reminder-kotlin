@@ -96,7 +96,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         c.set(Calendar.MONTH, monthOfYear)
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-        customDate.text = TimeUtil.DATE_FORMAT.format(c.time)
+        customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
     }
 
     private var mTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
@@ -107,7 +107,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
 
-        customTime.text = TimeUtil.getTime(c.time, mIs24Hour)
+        customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
     }
 
     private val type: Int
@@ -201,7 +201,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         }
         mNextWorkTime = c.timeInMillis
         val nextWorkingTime = nextWorkingTime
-        nextWorkingTime.text = TimeUtil.getDateTime(c.time, mIs24Hour)
+        nextWorkingTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
     }
 
     private fun initTomorrowTime() {
@@ -213,7 +213,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         mYear = c.get(Calendar.YEAR)
         mMonth = c.get(Calendar.MONTH)
         mDay = c.get(Calendar.DAY_OF_MONTH)
-        tomorrowTime.text = TimeUtil.getDateTime(c.time, mIs24Hour)
+        tomorrowTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
     }
 
     private fun initSpinner() {
@@ -223,8 +223,8 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private fun initCustomTime() {
         val c = Calendar.getInstance()
         c.timeInMillis = mCurrentTime
-        customDate.text = TimeUtil.DATE_FORMAT.format(c.time)
-        customTime.text = TimeUtil.getTime(c.time, mIs24Hour)
+        customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
+        customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
         mCustomHour = c.get(Calendar.HOUR_OF_DAY)
         mCustomMinute = c.get(Calendar.MINUTE)
         mCustomYear = c.get(Calendar.YEAR)

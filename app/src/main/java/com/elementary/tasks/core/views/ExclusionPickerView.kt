@@ -68,11 +68,11 @@ class ExclusionPickerView : LinearLayout {
             calendar.timeInMillis = System.currentTimeMillis()
             fromHour = calendar.get(Calendar.HOUR_OF_DAY)
             fromMinute = calendar.get(Calendar.MINUTE)
-            binding.from.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true)
+            binding.from.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true, lang())
             calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_HOUR * 3
             toHour = calendar.get(Calendar.HOUR_OF_DAY)
             toMinute = calendar.get(Calendar.MINUTE)
-            binding.to.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true)
+            binding.to.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true, lang())
             binding.from.setOnClickListener { fromTime(binding.from) }
             binding.to.setOnClickListener { toTime(binding.to) }
             initButtons(binding)
@@ -106,6 +106,8 @@ class ExclusionPickerView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         init(context)
     }
+
+    private fun lang(): Int = prefs?.appLanguage ?: 0
 
     fun setRangeHours(fromHour: String, toHour: String) {
         mFrom = fromHour
@@ -226,7 +228,7 @@ class ExclusionPickerView : LinearLayout {
             calendar.timeInMillis = System.currentTimeMillis()
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
-            textView.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true)
+            textView.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true, lang())
         }
         val themeUtil = themeUtil
         if (themeUtil != null) {
@@ -244,7 +246,7 @@ class ExclusionPickerView : LinearLayout {
             calendar.timeInMillis = System.currentTimeMillis()
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
-            textView.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true)
+            textView.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true, lang())
         }
         val themeUtil = themeUtil
         if (themeUtil != null) {

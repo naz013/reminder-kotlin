@@ -51,7 +51,7 @@ class MonthFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
         timeField.text = formattedTime
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -113,7 +113,7 @@ class MonthFragment : RepeatableTypeFragment() {
             reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true, true))
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
@@ -134,7 +134,7 @@ class MonthFragment : RepeatableTypeFragment() {
             TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect)
         }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                prefs.is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled, prefs.appLanguage)
 
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
@@ -297,7 +297,7 @@ class MonthFragment : RepeatableTypeFragment() {
             this.groupUuId = reminder.groupUuId
         }
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-                prefs.is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled, prefs.appLanguage)
         if (reminder.dayOfMonth == 0) {
             lastCheck.isChecked = true
         } else {

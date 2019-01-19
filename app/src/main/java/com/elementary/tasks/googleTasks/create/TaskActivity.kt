@@ -71,7 +71,7 @@ class TaskActivity : ThemedActivity() {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(year, monthOfYear, dayOfMonth)
-        dateField.text = TimeUtil.getDate(calendar.time)
+        dateField.text = TimeUtil.getGoogleTaskDate(calendar.time, prefs.appLanguage)
     }
 
     private var mTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
@@ -80,7 +80,7 @@ class TaskActivity : ThemedActivity() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
+        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,7 +177,7 @@ class TaskActivity : ThemedActivity() {
     private fun showReminder(reminder: Reminder) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-        timeField.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled)
+        timeField.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
         isReminder = true
     }
 
@@ -216,7 +216,7 @@ class TaskActivity : ThemedActivity() {
             mMonth = calendar.get(Calendar.MONTH)
             mDay = calendar.get(Calendar.DAY_OF_MONTH)
             isDate = true
-            dateField.text = TimeUtil.getDate(calendar.time)
+            dateField.text = TimeUtil.getGoogleTaskDate(calendar.time, prefs.appLanguage)
         }
         if (viewModel.googleTaskLists.value != null) {
             for (googleTaskList in viewModel.googleTaskLists.value!!) {

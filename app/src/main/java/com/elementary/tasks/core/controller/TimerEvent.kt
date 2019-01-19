@@ -54,7 +54,7 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
                 reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
                 time = calculateTime(false)
             }
-            Timber.d("next: ${TimeUtil.getFullDateTime(time, true, true)}")
+            Timber.d("next: ${TimeUtil.getFullDateTime(time, true)}")
             reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
             reminder.eventCount = reminder.eventCount + 1
             start()

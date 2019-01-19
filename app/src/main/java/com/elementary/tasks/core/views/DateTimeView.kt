@@ -47,7 +47,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private var isSingleMode = false
     private var mListener: OnSelectListener? = null
     var onDateChangeListener: OnDateChangeListener? = null
-    private var mDateFormat: DateFormat = TimeUtil.FULL_DATE_FORMAT
+    private var mDateFormat: DateFormat = TimeUtil.fullDate()
 
     private val mDateClick = View.OnClickListener{ selectDate() }
 
@@ -92,6 +92,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams = params
+        setDateFormat(TimeUtil.fullDate(prefs.appLanguage))
 
         dateField.setOnClickListener(mDateClick)
         timeField.setOnClickListener { selectTime() }
@@ -157,7 +158,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private fun updateTime(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormatEnabled)
+        timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
         mListener?.onTimeSelect(mills, mHour, mMinute)
         onDateChangeListener?.onChanged(dateTime)
     }

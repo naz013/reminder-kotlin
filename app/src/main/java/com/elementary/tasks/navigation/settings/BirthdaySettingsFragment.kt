@@ -250,7 +250,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     override fun getTitle(): String = getString(R.string.birthdays)
 
     override fun onTimeSet(timePicker: TimePicker, i: Int, i1: Int) {
-        prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
+        prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1, prefs.appLanguage)
         initBirthdayTimePrefs()
         if (prefs.isBirthdayReminderEnabled) {
             EventJobService.enableBirthdayAlarm(prefs)

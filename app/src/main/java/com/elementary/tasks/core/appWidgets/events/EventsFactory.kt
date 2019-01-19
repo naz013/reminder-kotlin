@@ -84,13 +84,13 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                     val calendar = Calendar.getInstance()
                     calendar.timeInMillis = eventTime
                     date = ReminderUtils.getRepeatString(mContext, prefs, item.weekdays)
-                    time = TimeUtil.getTime(calendar.time, is24)
+                    time = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
                 }
                 Reminder.isBase(type, Reminder.BY_MONTH) -> {
                     val calendar1 = Calendar.getInstance()
                     calendar1.timeInMillis = eventTime
-                    date = TimeUtil.DATE_FORMAT.format(calendar1.time)
-                    time = TimeUtil.getTime(calendar1.time, is24)
+                    date = TimeUtil.date(prefs.appLanguage).format(calendar1.time)
+                    time = TimeUtil.getTime(calendar1.time, is24, prefs.appLanguage)
                 }
                 Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> {
                     viewType = 2
@@ -236,7 +236,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             }
             rv.setTextViewText(R.id.taskDate, item.dayDate)
             rv.setTextViewText(R.id.taskTime, item.time)
-            rv.setTextViewText(R.id.leftTime, TimeCount.getRemaining(mContext, item.date))
+            rv.setTextViewText(R.id.leftTime, TimeCount.getRemaining(mContext, item.date, prefs.appLanguage))
 
             if (item.id != null) {
                 val fillInIntent = Intent()

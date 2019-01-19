@@ -149,7 +149,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         this.mMissedCall = missedCall
         var formattedTime = ""
         try {
-            formattedTime = TimeUtil.getTime(Date(missedCall.dateTime), prefs.is24HourFormatEnabled)
+            formattedTime = TimeUtil.getTime(Date(missedCall.dateTime), prefs.is24HourFormatEnabled, prefs.appLanguage)
         } catch (e: NullPointerException) {
             Timber.d("showInfo: ${e.message}")
         }

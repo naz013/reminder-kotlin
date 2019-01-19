@@ -173,7 +173,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        remindTime.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
+        remindTime.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
     }
 
     init {
@@ -532,8 +532,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         mYear = calendar.get(Calendar.YEAR)
         mHour = calendar.get(Calendar.HOUR_OF_DAY)
         mMinute = calendar.get(Calendar.MINUTE)
-        remindDate.text = TimeUtil.getDate(calendar.timeInMillis)
-        remindTime.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled)
+        remindDate.text = TimeUtil.getDate(calendar.timeInMillis, prefs.appLanguage)
+        remindTime.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
     }
 
     private fun createObject(): NoteWithImages? {

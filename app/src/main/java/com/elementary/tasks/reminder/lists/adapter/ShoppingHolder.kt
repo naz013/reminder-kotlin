@@ -106,7 +106,7 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay)
+            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
         } else {
             itemView.remainingTime.text = ""
         }
@@ -153,10 +153,9 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     }
 
     private fun loadShoppingDate(reminder: Reminder) {
-        val is24 = prefs.is24HourFormatEnabled
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
-            itemView.taskDate.text = TimeUtil.getFullDateTime(due, is24, false)
+            itemView.taskDate.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, prefs.appLanguage)
             itemView.taskDate.visibility = View.VISIBLE
             loadLeft(reminder)
         } else {

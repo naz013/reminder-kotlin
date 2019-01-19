@@ -52,7 +52,7 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
         fun bind(item: Place) {
             itemView.textView.text = item.name
 
-            val dmy = TimeUtil.getPlaceDateTimeFromGmt(item.dateTime)
+            val dmy = TimeUtil.getPlaceDateTimeFromGmt(item.dateTime, prefs.appLanguage)
             itemView.dayView.text = dmy.day
             itemView.monthYearView.text = "${dmy.month}\n${dmy.year}"
 

@@ -297,7 +297,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         if (!isMockedTest) {
             this.mControl = EventControlFactory.getController(reminder)
         }
-        Timber.d("showInfo: ${TimeUtil.getFullDateTime(reminder.eventTime)}")
+        Timber.d("showInfo: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime), true)}")
         if (reminder.attachmentFile != "") showAttachmentButton()
         else buttonAttachment?.hide()
 
@@ -312,7 +312,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         if (!TextUtils.isEmpty(reminder.eventTime) && !Reminder.isGpsType(reminder.type)) {
             reminder_time.text = TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime),
-                    prefs.is24HourFormatEnabled, false)
+                    prefs.is24HourFormatEnabled, prefs.appLanguage)
             timeBlock.visibility = View.VISIBLE
         } else {
             timeBlock.visibility = View.GONE
