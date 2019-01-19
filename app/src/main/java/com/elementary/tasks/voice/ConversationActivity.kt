@@ -77,7 +77,7 @@ class ConversationActivity : ThemedActivity() {
                 isTtsReady = true
                 if (!isRotated || mAdapter.itemCount == 0) {
                     addResponse(getLocalized(R.string.hi_how_can_i_help_you))
-                    postMicClick({ micClick() })
+                    postMicClick({ micClick() }, 2000)
                 }
             }
         } else {
