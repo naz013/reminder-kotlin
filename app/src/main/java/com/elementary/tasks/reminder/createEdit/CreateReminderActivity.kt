@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -165,6 +166,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             }
             id != "" -> {
                 isEditing = true
+                updateDefaultButton()
             }
             date != 0L -> {
                 reminder.type = Reminder.BY_DATE
@@ -234,6 +236,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun initNavigation() {
+        updateDefaultButton()
+
         val arrayAdapter = ArrayList<SpinnerItem>()
         arrayAdapter.add(SpinnerItem(getString(R.string.by_date)))
         arrayAdapter.add(SpinnerItem(getString(R.string.timer)))
@@ -252,6 +256,22 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         navSpinner.adapter = adapter
         navSpinner.onItemSelectedListener = mOnTypeSelectListener
         Timber.d("initNavigation: ")
+    }
+
+    private fun updateDefaultButton() {
+        buttonDefault.setOnLongClickListener {
+            Toast.makeText(this, getString(R.string.clear_all_changes), Toast.LENGTH_SHORT).show()
+            true
+        }
+        buttonDefault.setOnClickListener {
+            reminder = Reminder()
+            editReminder(reminder, false)
+        }
+        if (isEditing) {
+            buttonDefault.visibility = View.INVISIBLE
+        } else {
+            buttonDefault.visibility = View.VISIBLE
+        }
     }
 
     private fun initActionBar() {
