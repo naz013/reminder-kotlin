@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -312,16 +311,14 @@ class LocationFragment : RadiusTypeFragment() {
     }
 
     private fun selectContact() {
-        if (Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS)) {
+        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
             SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
-        } else {
-            Permissions.requestPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
-            val number = data!!.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
+            val number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
             actionView.number = number
         }
     }
@@ -329,12 +326,11 @@ class LocationFragment : RadiusTypeFragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            CONTACTS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
                 selectContact()
             }
-            CONTACTS_ACTION -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CONTACTS_ACTION -> if (Permissions.isAllGranted(grantResults)) {
                 actionView.setAction(true)
             }
         }

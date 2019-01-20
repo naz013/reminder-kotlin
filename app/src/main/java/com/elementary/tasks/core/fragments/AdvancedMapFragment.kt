@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.location.Address
@@ -270,6 +271,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     @Suppress("DEPRECATION")
+    @SuppressLint("MissingPermission")
     private fun moveToMyLocation() {
         if (!Permissions.ensurePermissions(activity!!, REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             return
@@ -452,10 +454,10 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun setMyLocation() {
         val context = activity ?: return
-        if (!Permissions.ensurePermissions(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-        } else {
+        if (Permissions.ensurePermissions(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             mMap?.isMyLocationEnabled = true
         }
     }
@@ -546,7 +548,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            REQ_LOC -> if (Permissions.isAllGranted(grantResults)D) {
+            REQ_LOC -> if (Permissions.isAllGranted(grantResults)) {
                 moveToMyLocation()
             }
             205 -> if (Permissions.isAllGranted(grantResults)) {

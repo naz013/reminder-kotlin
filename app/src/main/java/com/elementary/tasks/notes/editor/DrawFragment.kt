@@ -453,9 +453,8 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun showImagePickerDialog() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(activity!!, REQUEST_SD_CARD, Permissions.READ_EXTERNAL,
-                    Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS)
+        if (!Permissions.ensurePermissions(activity!!, REQUEST_SD_CARD, Permissions.READ_EXTERNAL,
+                        Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS)) {
             return
         }
         val builder = dialogues.getDialog(context!!)

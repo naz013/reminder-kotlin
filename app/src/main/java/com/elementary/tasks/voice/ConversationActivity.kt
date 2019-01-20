@@ -2,7 +2,6 @@ package com.elementary.tasks.voice
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -539,8 +538,9 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun addAskReply() {
-        if (mAskAction != null) {
-            viewModel.addReply(Reply(Reply.ASK, createAsk(mAskAction!!)))
+        val askAction = mAskAction
+        if (askAction != null) {
+            viewModel.addReply(Reply(Reply.ASK, createAsk(askAction)))
         }
     }
 
@@ -647,8 +647,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun micClick() {
-        if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
-            Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
+        if (!Permissions.ensurePermissions(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
             return
         }
         if (isListening) {
@@ -721,9 +720,8 @@ class ConversationActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            AUDIO_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            AUDIO_CODE -> if (Permissions.isAllGranted(grantResults)) {
                 micClick()
             }
         }

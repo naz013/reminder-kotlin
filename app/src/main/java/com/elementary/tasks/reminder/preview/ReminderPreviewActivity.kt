@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.os.Handler
@@ -100,8 +99,7 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun sendSMS(reminder: Reminder) {
         if (TextUtils.isEmpty(reminder.summary)) return
-        if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
-            Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS)
+        if (!Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS)) {
             return
         }
         val action = "SMS_SENT"
@@ -116,10 +114,8 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun makeCall(reminder: Reminder) {
-        if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
+        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(reminder.target, this)
-        } else {
-            Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE)
         }
     }
 
@@ -172,6 +168,7 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun showNote() {
         val note = mNote
+        //TODO: Add loading note to reminder preview
         if (note != null) {
             val binding = NoteHolder(dataContainer, null)
 //            binding.setData(note)
@@ -439,14 +436,16 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun removeReminder() {
+        val reminder = reminder
         if (reminder != null) {
-            viewModel.moveToTrash(reminder!!)
+            viewModel.moveToTrash(reminder)
         }
     }
 
     private fun makeCopy() {
+        val reminder = reminder
         if (reminder != null) {
-            val type = reminder!!.type
+            val type = reminder.type
             if (!Reminder.isGpsType(type) && !Reminder.isSame(type, Reminder.BY_TIME)) {
                 showDialog()
             }
@@ -572,13 +571,10 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
-        when (requestCode) {
-            CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fabClick()
-            }
-            SMS_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fabClick()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                CALL_PERM -> fabClick()
+                SMS_PERM -> fabClick()
             }
         }
     }

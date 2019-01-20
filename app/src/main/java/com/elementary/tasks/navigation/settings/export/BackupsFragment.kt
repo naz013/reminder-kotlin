@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.export
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
@@ -117,8 +116,7 @@ class BackupsFragment : BaseSettingsFragment() {
     }
 
     private fun loadUserInfo() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_EXTERNAL)) {
-            Permissions.requestPermission(activity!!, SD_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+        if (!Permissions.ensurePermissions(activity!!, SD_CODE, Permissions.READ_EXTERNAL)) {
             return
         }
         val list = ArrayList<Info>()
@@ -137,9 +135,8 @@ class BackupsFragment : BaseSettingsFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            SD_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            SD_CODE -> if (Permissions.isAllGranted(grantResults)) {
                 loadUserInfo()
             }
         }
@@ -250,22 +247,12 @@ class BackupsFragment : BaseSettingsFragment() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun addLocalData(list: MutableList<UserItem>) {
         val path = Environment.getExternalStorageDirectory()
         val stat = StatFs(path.path)
-        val blockSize: Long
-        val totalBlocks: Long
-        val availableBlocks: Long
-        if (Module.isJellyMR2) {
-            blockSize = stat.blockSizeLong
-            totalBlocks = stat.blockCountLong
-            availableBlocks = stat.availableBlocksLong
-        } else {
-            blockSize = stat.blockSize.toLong()
-            totalBlocks = stat.blockCount.toLong()
-            availableBlocks = stat.blockCount.toLong()
-        }
+        val blockSize = stat.blockSizeLong
+        val totalBlocks = stat.blockCountLong
+        val availableBlocks = stat.availableBlocksLong
         val totalSize = blockSize * totalBlocks
         val userItem = UserItem()
         userItem.quota = totalSize

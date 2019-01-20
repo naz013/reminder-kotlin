@@ -8,7 +8,6 @@ import android.content.ClipData
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.net.Uri
@@ -259,8 +258,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun micClick() {
-        if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
-            Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
+        if (!Permissions.ensurePermissions(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
             return
         }
         if (speech != null) {
@@ -494,8 +492,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun shareNote() {
-        if (!Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+        if (!Permissions.ensurePermissions(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         val note = createObject() ?: return
@@ -523,10 +520,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun setDateTime(eventTime: String?) {
         val calendar = Calendar.getInstance()
-        if (eventTime == null)
+        if (eventTime == null) {
             calendar.timeInMillis = System.currentTimeMillis()
-        else
+        } else {
             calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(eventTime)
+        }
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
         mMonth = calendar.get(Calendar.MONTH)
         mYear = calendar.get(Calendar.YEAR)
@@ -537,7 +535,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun createObject(): NoteWithImages? {
-        val text = taskMessage.text.toString().trim { it <= ' ' }
+        val text = taskMessage.text.toString().trim()
         val images = mAdapter.data
         if (TextUtils.isEmpty(text) && images.isEmpty()) {
             taskMessage.error = getString(R.string.must_be_not_empty)
@@ -764,14 +762,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         photoSelectionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            AUDIO_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                micClick()
-            }
-            SEND_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                shareNote()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                AUDIO_CODE -> micClick()
+                SEND_CODE -> shareNote()
             }
         }
     }

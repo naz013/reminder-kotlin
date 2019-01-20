@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.Menu
@@ -90,8 +89,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun hasGpsPermission(code: Int): Boolean {
-        if (!Permissions.checkPermission(this, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+        if (!Permissions.ensurePermissions(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             return false
         }
         return true
@@ -111,11 +109,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             APP -> replaceFragment(ApplicationFragment())
             MONTH -> replaceFragment(MonthFragment())
             SHOP -> replaceFragment(ShopFragment())
-            EMAIL -> if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+            EMAIL -> if (Permissions.ensurePermissions(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
                 replaceFragment(EmailFragment())
             } else {
                 navSpinner.setSelection(DATE)
-                Permissions.requestPermission(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)
             }
             GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
                 replaceFragment(PlacesFragment())
@@ -446,24 +443,23 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            CONTACTS_REQUEST_E -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CONTACTS_REQUEST_E -> if (Permissions.isAllGranted(grantResults)) {
                 navSpinner.setSelection(EMAIL)
             } else {
                 navSpinner.setSelection(DATE)
             }
-            GPS_PLACE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            GPS_PLACE -> if (Permissions.isAllGranted(grantResults)) {
                 navSpinner.setSelection(GPS_PLACE)
             } else {
                 navSpinner.setSelection(DATE)
             }
-            GPS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            GPS -> if (Permissions.isAllGranted(grantResults)) {
                 navSpinner.setSelection(GPS)
             } else {
                 navSpinner.setSelection(DATE)
             }
-            331 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            331 -> if (Permissions.isAllGranted(grantResults)) {
                 startActivityForResult(Intent(this, FileExplorerActivity::class.java)
                         .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST)
             }
@@ -501,7 +497,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun onBackPressed() {
-        if (fragment != null && fragment!!.onBackPressed()) {
+        if (fragment != null && fragment?.onBackPressed() == true) {
             closeScreen()
         }
     }

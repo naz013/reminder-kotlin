@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Build
 import com.elementary.tasks.R
 import java.util.*
@@ -90,21 +89,10 @@ class Language @Inject constructor(private val prefs: Prefs){
         return context
     }
 
-    @Suppress("DEPRECATION")
     fun getLocalized(context: Context, id: Int): String {
-        return if (Module.isJellyMR1) {
-            val configuration = Configuration(context.resources.configuration)
-            configuration.setLocale(Locale(getTextLanguage(prefs.voiceLocale)))
-            context.createConfigurationContext(configuration).resources.getString(id)
-        } else {
-            val standardResources = context.resources
-            val assets = standardResources.assets
-            val metrics = standardResources.displayMetrics
-            val config = Configuration(standardResources.configuration)
-            config.locale = Locale(getTextLanguage(prefs.voiceLocale))
-            val defaultResources = Resources(assets, metrics, config)
-            defaultResources.getString(id)
-        }
+        val configuration = Configuration(context.resources.configuration)
+        configuration.setLocale(Locale(getTextLanguage(prefs.voiceLocale)))
+        return context.createConfigurationContext(configuration).resources.getString(id)
     }
 
     fun getLanguages(context: Context): List<String> {
@@ -156,17 +144,19 @@ class Language @Inject constructor(private val prefs: Prefs){
 
     fun getLocaleByPosition(position: Int): String {
         var locale = Language.ENGLISH
-        if (position == 0) locale = Language.ENGLISH
-        else if (position == 1) locale = Language.FRENCH
-        else if (position == 2) locale = Language.GERMAN
-        else if (position == 3) locale = Language.ITALIAN
-        else if (position == 4) locale = Language.JAPANESE
-        else if (position == 5) locale = Language.KOREAN
-        else if (position == 6) locale = Language.POLISH
-        else if (position == 7) locale = Language.RUSSIAN
-        else if (position == 8) locale = Language.SPANISH
-        else if (position == 9) locale = Language.PORTUGUESE
-        else if (position == 10 && Module.isJellyMR2) locale = Language.UKRAINIAN
+        when (position) {
+            0 -> locale = Language.ENGLISH
+            1 -> locale = Language.FRENCH
+            2 -> locale = Language.GERMAN
+            3 -> locale = Language.ITALIAN
+            4 -> locale = Language.JAPANESE
+            5 -> locale = Language.KOREAN
+            6 -> locale = Language.POLISH
+            7 -> locale = Language.RUSSIAN
+            8 -> locale = Language.SPANISH
+            9 -> locale = Language.PORTUGUESE
+            10 -> locale = Language.UKRAINIAN
+        }
         return locale
     }
 
@@ -175,28 +165,18 @@ class Language @Inject constructor(private val prefs: Prefs){
             return 0
         }
         var mItemSelect = 0
-        if (locale.matches(Language.ENGLISH.toRegex())) {
-            mItemSelect = 0
-        } else if (locale.matches(Language.FRENCH.toRegex())) {
-            mItemSelect = 1
-        } else if (locale.matches(Language.GERMAN.toRegex())) {
-            mItemSelect = 2
-        } else if (locale.matches(Language.ITALIAN.toRegex())) {
-            mItemSelect = 3
-        } else if (locale.matches(Language.JAPANESE.toRegex())) {
-            mItemSelect = 4
-        } else if (locale.matches(Language.KOREAN.toRegex())) {
-            mItemSelect = 5
-        } else if (locale.matches(Language.POLISH.toRegex())) {
-            mItemSelect = 6
-        } else if (locale.matches(Language.RUSSIAN.toRegex())) {
-            mItemSelect = 7
-        } else if (locale.matches(Language.SPANISH.toRegex())) {
-            mItemSelect = 8
-        } else if (locale.matches(Language.PORTUGUESE.toRegex())) {
-            mItemSelect = 9
-        } else if (locale.matches(Language.UKRAINIAN.toRegex()) && Module.isJellyMR2) {
-            mItemSelect = 10
+        when {
+            locale.matches(Language.ENGLISH.toRegex()) -> mItemSelect = 0
+            locale.matches(Language.FRENCH.toRegex()) -> mItemSelect = 1
+            locale.matches(Language.GERMAN.toRegex()) -> mItemSelect = 2
+            locale.matches(Language.ITALIAN.toRegex()) -> mItemSelect = 3
+            locale.matches(Language.JAPANESE.toRegex()) -> mItemSelect = 4
+            locale.matches(Language.KOREAN.toRegex()) -> mItemSelect = 5
+            locale.matches(Language.POLISH.toRegex()) -> mItemSelect = 6
+            locale.matches(Language.RUSSIAN.toRegex()) -> mItemSelect = 7
+            locale.matches(Language.SPANISH.toRegex()) -> mItemSelect = 8
+            locale.matches(Language.PORTUGUESE.toRegex()) -> mItemSelect = 9
+            locale.matches(Language.UKRAINIAN.toRegex()) -> mItemSelect = 10
         }
         return mItemSelect
     }
@@ -223,9 +203,7 @@ class Language @Inject constructor(private val prefs: Prefs){
         names.add(context.getString(R.string.russian))
         names.add(context.getString(R.string.spanish))
         names.add(context.getString(R.string.portuguese))
-        if (Module.isJellyMR2) {
-            names.add(context.getString(R.string.ukrainian))
-        }
+        names.add(context.getString(R.string.ukrainian))
         return names
     }
 

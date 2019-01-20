@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.export
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
@@ -357,8 +356,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun changeExportToCalendarPrefs() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {
-            Permissions.requestPermission(activity!!, CALENDAR_CODE, Permissions.READ_CALENDAR)
+        if (!Permissions.ensurePermissions(activity!!, CALENDAR_CODE, Permissions.READ_CALENDAR)) {
             return
         }
         val isChecked = exportToCalendarPrefs.isChecked
@@ -371,12 +369,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun checkCalendarPerm(): Boolean {
-        return if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {
-            true
-        } else {
-            Permissions.requestPermission(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
-            false
-        }
+        return Permissions.ensurePermissions(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
     }
 
     private fun showSelectCalendarDialog(): Boolean {
@@ -425,12 +418,11 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            CALENDAR_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CALENDAR_CODE -> if (Permissions.isAllGranted(grantResults)) {
                 changeExportToCalendarPrefs()
             }
-            CALENDAR_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CALENDAR_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 showSelectCalendarDialog()
             }
         }

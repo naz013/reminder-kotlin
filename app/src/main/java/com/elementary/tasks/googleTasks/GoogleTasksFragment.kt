@@ -12,7 +12,6 @@ import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListsViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TaskListActivity
@@ -154,11 +153,7 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
         val pos = prefs.lastGoogleList
 
-        taskPagerAdapter = if (Module.isJellyMR1) {
-            TaskPagerAdapter(childFragmentManager, pages)
-        } else {
-            TaskPagerAdapter(fragmentManager!!, pages)
-        }
+        taskPagerAdapter = TaskPagerAdapter(childFragmentManager, pages)
         pager.offscreenPageLimit = 5
         pager.adapter = taskPagerAdapter
         pager.addOnPageChangeListener(mPageChangeListener)

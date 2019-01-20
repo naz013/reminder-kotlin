@@ -2,7 +2,6 @@ package com.elementary.tasks.notes.preview
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -239,8 +238,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun shareNote() {
-        if (!Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+        if (!Permissions.ensurePermissions(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         showProgress()
@@ -339,9 +337,8 @@ class NotePreviewActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            SEND_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            SEND_CODE -> if (Permissions.isAllGranted(grantResults)) {
                 shareNote()
             }
         }
