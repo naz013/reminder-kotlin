@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
+import androidx.legacy.content.WakefulBroadcastReceiver
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
@@ -21,7 +21,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseBroadcast : BroadcastReceiver() {
+abstract class BaseBroadcast : WakefulBroadcastReceiver() {
 
     @Inject
     lateinit var prefs: Prefs
