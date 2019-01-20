@@ -52,6 +52,7 @@ class MonthFragment : RepeatableTypeFragment() {
         c.set(Calendar.MINUTE, minute)
         val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
         timeField.text = formattedTime
+        calculateNextDate()
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         if (dayOfMonth > 28) {
@@ -62,6 +63,7 @@ class MonthFragment : RepeatableTypeFragment() {
         mMonth = monthOfYear
         mYear = year
         monthDayField.text = getZeroedInt(mDay)
+        calculateNextDate()
     }
 
     private val time: Long
@@ -173,8 +175,24 @@ class MonthFragment : RepeatableTypeFragment() {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
+
+        calculateNextDate()
+
         editReminder()
         showSelectedDay()
+    }
+
+    private fun calculateNextDate() {
+        val reminder = Reminder()
+        reminder.weekdays = listOf()
+        reminder.type = Reminder.BY_MONTH
+        reminder.dayOfMonth = mDay
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        if (reminder.repeatInterval <= 0) {
+            reminder.repeatInterval = 1
+        }
+        val startTime = TimeCount.getNextMonthDayTime(reminder)
+        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormatEnabled, prefs.appLanguage)
     }
 
     private fun initPropertyFields() {
@@ -278,11 +296,12 @@ class MonthFragment : RepeatableTypeFragment() {
             mYear = calendar.get(Calendar.YEAR)
             if (mDay > 28) mDay = 1
         }
+        calculateNextDate()
     }
 
     private fun updateTime(millis: Long): Date {
         val cal = Calendar.getInstance()
-        cal.timeInMillis = millis
+        cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
         mHour = cal.get(Calendar.HOUR_OF_DAY)
         mMinute = cal.get(Calendar.MINUTE)
         return cal.time
@@ -303,6 +322,7 @@ class MonthFragment : RepeatableTypeFragment() {
             mDay = reminder.dayOfMonth
             dayCheck.isChecked = true
         }
+        calculateNextDate()
         if (reminder.target != "") {
             actionView.setAction(true)
             actionView.number = reminder.target
