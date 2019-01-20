@@ -28,11 +28,10 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactHolder>() {
 
-    val data: MutableList<Any> = mutableListOf()
+    val data: MutableList<ContactItem> = mutableListOf()
     var clickListener: ((name: String, number: String) -> Unit)? = null
-    var type = ContactsActivity.CONTACT
 
     @Inject
     lateinit var themeUtil: ThemeUtil
@@ -43,62 +42,25 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         ReminderApp.appComponent.inject(this)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun setData(type: Int, data: List<Any>) {
-        if (this.type == type) {
-            this.type = type
-            val diffResult = if (type == ContactsActivity.CALL) {
-                DiffUtil.calculateDiff(CallDiffCallback(this.data as List<CallsItem>, data as List<CallsItem>))
-            } else {
-                DiffUtil.calculateDiff(ContactDiffCallback(this.data as List<ContactItem>, data as List<ContactItem>))
-            }
-            this.data.clear()
-            this.data.addAll(data)
-            diffResult.dispatchUpdatesTo(this)
-        } else {
-            this.type = type
-            this.data.clear()
-            this.data.addAll(data)
-            notifyDataSetChanged()
-        }
+    fun setData(data: List<ContactItem>) {
+        val diffResult = DiffUtil.calculateDiff(ContactDiffCallback(this.data as List<ContactItem>, data))
+        this.data.clear()
+        this.data.addAll(data)
+        diffResult.dispatchUpdatesTo(this)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == ContactsActivity.CONTACT) {
-            ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false),
-                    themeUtil.isDark) {
-                performClick(it)
-            }
-        } else {
-            CallHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_call, parent, false),
-                    themeUtil.isDark, prefs.is24HourFormatEnabled, prefs.appLanguage) {
-                performClick(it)
-            }
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
+        return ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false),
+                themeUtil.isDark) { performClick(it) }
     }
 
     private fun performClick(it: Int) {
         val item = data[it]
-        if (item is ContactItem) {
-            clickListener?.invoke(item.name, "")
-        } else if (item is CallsItem) {
-            clickListener?.invoke(if (item.name != null) item.name!! else "", item.number)
-        }
+        clickListener?.invoke(item.name, "")
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is ContactHolder -> {
-                holder.bind(data[position] as ContactItem)
-            }
-            is CallHolder -> {
-                holder.bind(data[position] as CallsItem)
-            }
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (data[position] is CallsItem) ContactsActivity.CALL else ContactsActivity.CONTACT
+    override fun onBindViewHolder(holder: ContactHolder, position: Int) {
+        holder.bind(data[position])
     }
 
     override fun getItemCount(): Int {
@@ -106,25 +68,6 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     internal class ContactDiffCallback(private var oldList: List<ContactItem>, private var newList: List<ContactItem>) : DiffUtil.Callback() {
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val p1 = oldList[oldItemPosition]
-            val p2 = newList[newItemPosition]
-            return p1.id == p2.id
-        }
-
-        override fun getOldListSize(): Int = oldList.size
-
-        override fun getNewListSize(): Int = newList.size
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val p1 = oldList[oldItemPosition]
-            val p2 = newList[newItemPosition]
-            return p1 == p2
-        }
-    }
-
-    internal class CallDiffCallback(private var oldList: List<CallsItem>, private var newList: List<CallsItem>) : DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             val p1 = oldList[oldItemPosition]

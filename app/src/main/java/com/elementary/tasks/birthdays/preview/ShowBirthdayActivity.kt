@@ -250,7 +250,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     private fun checkContactPermission(): Boolean {
-        return Permissions.checkPermission(this, Permissions.READ_CONTACTS, Permissions.READ_CALLS)
+        return Permissions.checkPermission(this, Permissions.READ_CONTACTS)
     }
 
     private fun showNotification(years: Int, name: String) {

@@ -24,7 +24,6 @@ import com.elementary.tasks.core.cloud.GDrive
  */
 class IoHelper(context: Context, private val prefs: Prefs, private val backupTool: BackupTool) {
 
-    private val isConnected: Boolean = SuperUtil.isConnected(context)
     private val mDrive: GDrive? = GDrive.getInstance(context)
     private val mDropbox: Dropbox = Dropbox()
 
@@ -43,13 +42,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
 
     fun backupSettings() {
         prefs.savePrefsBackup()
-        if (isConnected) {
-            mDropbox.uploadSettings()
-            try {
-                mDrive?.saveSettingsToDrive()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.uploadSettings()
+        try {
+            mDrive?.saveSettingsToDrive()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -58,12 +55,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
      */
     fun backupGroup() {
         backupTool.exportGroups()
-        if (isConnected) {
-            mDropbox.uploadGroups()
-            try {
-                mDrive?.saveGroupsToDrive()
-            } catch (e: Exception) {
-            }
+        mDropbox.uploadGroups()
+        try {
+            mDrive?.saveGroupsToDrive()
+        } catch (e: Exception) {
         }
     }
 
@@ -76,13 +71,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (isConnected) {
-            mDropbox.downloadGroups(delete)
-            try {
-                mDrive?.downloadGroups(delete)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.downloadGroups(delete)
+        try {
+            mDrive?.downloadGroups(delete)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -91,12 +84,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
      */
     fun backupReminder() {
         backupTool.exportReminders()
-        if (isConnected) {
-            mDropbox.uploadReminderByFileName(null)
-            try {
-                mDrive?.saveRemindersToDrive()
-            } catch (e: Exception) {
-            }
+        mDropbox.uploadReminderByFileName(null)
+        try {
+            mDrive?.saveRemindersToDrive()
+        } catch (e: Exception) {
         }
     }
 
@@ -109,13 +100,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (isConnected) {
-            mDropbox.downloadReminders(delete)
-            try {
-                mDrive?.downloadReminders(delete)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.downloadReminders(delete)
+        try {
+            mDrive?.downloadReminders(delete)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -124,12 +113,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
      */
     fun backupNote() {
         backupTool.exportNotes()
-        if (isConnected) {
-            mDropbox.uploadNotes()
-            try {
-                mDrive?.saveNotesToDrive()
-            } catch (e: Exception) {
-            }
+        mDropbox.uploadNotes()
+        try {
+            mDrive?.saveNotesToDrive()
+        } catch (e: Exception) {
         }
     }
 
@@ -142,13 +129,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (isConnected) {
-            mDropbox.downloadNotes(delete)
-            try {
-                mDrive?.downloadNotes(delete)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.downloadNotes(delete)
+        try {
+            mDrive?.downloadNotes(delete)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -157,12 +142,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
      */
     fun backupBirthday() {
         backupTool.exportBirthdays()
-        if (isConnected) {
-            mDropbox.uploadBirthdays()
-            try {
-                mDrive?.saveBirthdaysToDrive()
-            } catch (e: Exception) {
-            }
+        mDropbox.uploadBirthdays()
+        try {
+            mDrive?.saveBirthdaysToDrive()
+        } catch (e: Exception) {
         }
     }
 
@@ -175,13 +158,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (isConnected) {
-            mDropbox.downloadBirthdays(delete)
-            try {
-                mDrive?.downloadBirthdays(delete)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.downloadBirthdays(delete)
+        try {
+            mDrive?.downloadBirthdays(delete)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -190,12 +171,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
      */
     fun backupPlaces() {
         backupTool.exportPlaces()
-        if (isConnected) {
-            mDropbox.uploadPlaces()
-            try {
-                mDrive?.savePlacesToDrive()
-            } catch (e: Exception) {
-            }
+        mDropbox.uploadPlaces()
+        try {
+            mDrive?.savePlacesToDrive()
+        } catch (e: Exception) {
         }
     }
 
@@ -208,13 +187,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (isConnected) {
-            mDropbox.downloadPlaces(delete)
-            try {
-                mDrive?.downloadPlaces(delete)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.downloadPlaces(delete)
+        try {
+            mDrive?.downloadPlaces(delete)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -223,12 +200,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
      */
     fun backupTemplates() {
         backupTool.exportTemplates()
-        if (isConnected) {
-            mDropbox.uploadTemplates()
-            try {
-                mDrive?.saveTemplatesToDrive()
-            } catch (e: Exception) {
-            }
+        mDropbox.uploadTemplates()
+        try {
+            mDrive?.saveTemplatesToDrive()
+        } catch (e: Exception) {
         }
     }
 
@@ -241,13 +216,11 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (isConnected) {
-            mDropbox.downloadTemplates(delete)
-            try {
-                mDrive?.downloadTemplates(delete)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        mDropbox.downloadTemplates(delete)
+        try {
+            mDrive?.downloadTemplates(delete)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

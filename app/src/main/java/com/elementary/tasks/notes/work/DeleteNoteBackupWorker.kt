@@ -27,14 +27,11 @@ class DeleteNoteBackupWorker(context: Context, workerParams: WorkerParameters) :
 
     private fun deleteSingleFile(fileName: String) {
         deleteCacheFiles(fileName)
-        val isConnected = SuperUtil.isConnected(applicationContext)
-        if (isConnected) {
-            Dropbox().deleteNote(fileName)
-            try {
-                GDrive.getInstance(applicationContext)?.deleteNoteFileByName(fileName)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+        Dropbox().deleteNote(fileName)
+        try {
+            GDrive.getInstance(applicationContext)?.deleteNoteFileByName(fileName)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 

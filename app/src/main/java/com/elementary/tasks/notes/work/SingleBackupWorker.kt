@@ -38,14 +38,11 @@ class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
                 e.printStackTrace()
             }
         }
-        val isConnected = SuperUtil.isConnected(applicationContext)
-        if (isConnected) {
-            Dropbox().uploadNoteByFileName(fileName)
-            try {
-                GDrive.getInstance(applicationContext)?.saveNoteToDrive(File(dir, fileName).toString())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+        Dropbox().uploadNoteByFileName(fileName)
+        try {
+            GDrive.getInstance(applicationContext)?.saveNoteToDrive(File(dir, fileName).toString())
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 }

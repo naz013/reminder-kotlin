@@ -280,10 +280,10 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     private fun selectContact() {
-        if (Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS, Permissions.READ_CALLS)) {
+        if (Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS)) {
             SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
         } else {
-            Permissions.requestPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS, Permissions.READ_CALLS)
+            Permissions.requestPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS)
         }
     }
 

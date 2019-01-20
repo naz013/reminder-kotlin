@@ -38,11 +38,6 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             postCommand(Commands.FAILED)
             return
         }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-            return
-        }
         postInProgress(true)
         launchDefault {
             val def = googleTaskList.def
@@ -70,28 +65,23 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
             postCommand(Commands.FAILED)
             return
         }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-        } else {
-            postInProgress(true)
-            launchDefault {
-                try {
-                    if (googleTask.status == GTasks.TASKS_NEED_ACTION) {
-                        google.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask)
-                    } else {
-                        google.updateTaskStatus(GTasks.TASKS_NEED_ACTION, googleTask)
-                    }
-                    withUIContext {
-                        postInProgress(false)
-                        postCommand(Commands.UPDATED)
-                        UpdatesHelper.updateTasksWidget(getApplication())
-                    }
-                } catch (e: IOException) {
-                    withUIContext {
-                        postInProgress(false)
-                        postCommand(Commands.FAILED)
-                    }
+        postInProgress(true)
+        launchDefault {
+            try {
+                if (googleTask.status == GTasks.TASKS_NEED_ACTION) {
+                    google.updateTaskStatus(GTasks.TASKS_COMPLETE, googleTask)
+                } else {
+                    google.updateTaskStatus(GTasks.TASKS_NEED_ACTION, googleTask)
+                }
+                withUIContext {
+                    postInProgress(false)
+                    postCommand(Commands.UPDATED)
+                    UpdatesHelper.updateTasksWidget(getApplication())
+                }
+            } catch (e: IOException) {
+                withUIContext {
+                    postInProgress(false)
+                    postCommand(Commands.FAILED)
                 }
             }
         }

@@ -8,7 +8,6 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
@@ -55,11 +54,6 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     }
 
     fun sync() {
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-            return
-        }
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
             postCommand(Commands.FAILED)
@@ -126,11 +120,6 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
             postCommand(Commands.FAILED)
             return
         }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-            return
-        }
         postInProgress(true)
         launchDefault {
             google.insertTasksList(googleTaskList.title, googleTaskList.color)
@@ -144,11 +133,6 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            postCommand(Commands.FAILED)
-            return
-        }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
             postCommand(Commands.FAILED)
             return
         }

@@ -201,16 +201,14 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             launchDefault {
                 val gdx = GDrive.getInstance(context!!)
                 val dbx = Dropbox()
-                if (SuperUtil.isConnected(context!!)) {
-                    if (gdx != null) {
-                        try {
-                            gdx.clean()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+                if (gdx != null) {
+                    try {
+                        gdx.clean()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     }
-                    dbx.cleanFolder()
                 }
+                dbx.cleanFolder()
             }
         }
         val dialog = builder.create()

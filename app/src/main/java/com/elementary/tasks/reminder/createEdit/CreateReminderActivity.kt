@@ -339,20 +339,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun selectMelody() {
-        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+        if (Permissions.ensurePermissions(this,330, Permissions.READ_EXTERNAL)) {
             startActivityForResult(Intent(this, FileExplorerActivity::class.java),
                     Constants.REQUEST_CODE_SELECTED_MELODY)
-        } else {
-            Permissions.requestPermission(this, 330, Permissions.READ_EXTERNAL)
         }
     }
 
     override fun attachFile() {
-        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+        if (Permissions.ensurePermissions(this, 331, Permissions.READ_EXTERNAL)) {
             startActivityForResult(Intent(this, FileExplorerActivity::class.java)
                     .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST)
-        } else {
-            Permissions.requestPermission(this, 331, Permissions.READ_EXTERNAL)
         }
     }
 
