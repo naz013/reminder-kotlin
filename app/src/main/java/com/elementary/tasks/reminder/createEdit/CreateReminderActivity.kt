@@ -261,7 +261,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             true
         }
         buttonDefault.setOnClickListener {
+            val oldType = reminder.type
             reminder = Reminder()
+            reminder.type = oldType
             editReminder(reminder, false)
         }
         if (isEditing) {
