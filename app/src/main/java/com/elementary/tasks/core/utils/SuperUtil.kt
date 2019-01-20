@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.media.AudioManager
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.provider.Settings
 import android.speech.RecognizerIntent
@@ -27,7 +26,6 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import timber.log.Timber
 import java.io.UnsupportedEncodingException
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -143,10 +141,6 @@ object SuperUtil {
         activity.startActivityForResult(Intent(activity, ContactsActivity::class.java), requestCode)
     }
 
-    fun getAddress(currentLat: Double, currentLong: Double): String {
-        return String.format(Locale.getDefault(), "%.5f, %.5f", currentLat, currentLong)
-    }
-
     fun isGooglePlayServicesAvailable(a: Activity): Boolean {
         val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(a)
         return resultCode == ConnectionResult.SUCCESS
@@ -164,12 +158,6 @@ object SuperUtil {
         } else {
             true
         }
-    }
-
-    fun isConnected(context: Context): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val netInfo = cm.activeNetworkInfo
-        return netInfo != null && netInfo.isConnectedOrConnecting
     }
 
     fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {

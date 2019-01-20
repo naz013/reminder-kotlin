@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.additional
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -78,8 +77,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeFollowPrefs() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_PHONE_STATE)) {
-            Permissions.requestPermission(activity!!, FOLLOW, Permissions.READ_PHONE_STATE)
+        if (!Permissions.ensurePermissions(activity!!, FOLLOW, Permissions.READ_PHONE_STATE)) {
             return
         }
         val isChecked = followReminderPrefs.isChecked
@@ -88,8 +86,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeMissedPrefs() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_PHONE_STATE)) {
-            Permissions.requestPermission(activity!!, MISSED, Permissions.READ_PHONE_STATE)
+        if (!Permissions.ensurePermissions(activity!!, MISSED, Permissions.READ_PHONE_STATE)) {
             return
         }
         val isChecked = missedPrefs.isChecked
@@ -98,8 +95,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeQuickSmsPrefs() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_PHONE_STATE)) {
-            Permissions.requestPermission(activity!!, QUICK_SMS, Permissions.READ_PHONE_STATE)
+        if (!Permissions.ensurePermissions(activity!!, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
             return
         }
         val isChecked = quickSMSPrefs.isChecked
@@ -144,16 +140,11 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
-        when (requestCode) {
-            MISSED -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                changeMissedPrefs()
-            }
-            QUICK_SMS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                changeQuickSmsPrefs()
-            }
-            FOLLOW -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                changeFollowPrefs()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                MISSED -> changeMissedPrefs()
+                QUICK_SMS -> changeQuickSmsPrefs()
+                FOLLOW -> changeFollowPrefs()
             }
         }
     }

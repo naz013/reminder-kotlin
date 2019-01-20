@@ -43,7 +43,6 @@ object Permissions {
     const val CALL_PHONE = Manifest.permission.CALL_PHONE
     const val SEND_SMS = Manifest.permission.SEND_SMS
     const val MANAGE_DOCUMENTS = Manifest.permission.MANAGE_DOCUMENTS
-    const val READ_CALLS = Manifest.permission.READ_CALL_LOG
     const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
     const val BLUETOOTH = Manifest.permission.BLUETOOTH
     const val CAMERA = Manifest.permission.CAMERA
@@ -58,6 +57,41 @@ object Permissions {
             return true
         }
         return true
+    }
+
+    fun isAllGranted(grantResults: IntArray): Boolean {
+        if (grantResults.isEmpty()) {
+            return false
+        } else {
+            for (p in grantResults) {
+                if (p != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+            return true
+        }
+    }
+
+    fun isAnyGranted(grantResults: IntArray): Boolean {
+        if (grantResults.isEmpty()) {
+            return false
+        } else {
+            for (p in grantResults) {
+                if (p == PackageManager.PERMISSION_GRANTED) {
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
+    fun ensurePermissions(activity: Activity, requestCode: Int, vararg permissions: String): Boolean {
+        return if (checkPermission(activity, *permissions)) {
+            true
+        } else {
+            Permissions.requestPermission(activity, requestCode, *permissions)
+            false
+        }
     }
 
     fun checkPermission(a: Context, vararg permissions: String): Boolean {

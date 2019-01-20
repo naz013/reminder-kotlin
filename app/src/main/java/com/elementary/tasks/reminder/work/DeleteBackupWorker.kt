@@ -32,14 +32,11 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun deleteSingleFile(fileName: String) {
         deleteCacheFiles(fileName)
-        val isConnected = SuperUtil.isConnected(applicationContext)
-        if (isConnected) {
-            Dropbox().deleteReminder(fileName)
-            try {
-                GDrive.getInstance(applicationContext)?.deleteReminderFileByName(fileName)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+        Dropbox().deleteReminder(fileName)
+        try {
+            GDrive.getInstance(applicationContext)?.deleteReminderFileByName(fileName)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 

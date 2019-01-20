@@ -27,14 +27,11 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun deleteSingleFile(fileName: String) {
         deleteCacheFiles(fileName)
-        val isConnected = SuperUtil.isConnected(applicationContext)
-        if (isConnected) {
-            Dropbox().deleteBirthday(fileName)
-            try {
-                GDrive.getInstance(applicationContext)?.deleteBirthdayFileByName(fileName)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+        Dropbox().deleteBirthday(fileName)
+        try {
+            GDrive.getInstance(applicationContext)?.deleteBirthdayFileByName(fileName)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 

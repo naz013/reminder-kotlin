@@ -184,7 +184,6 @@ class BackupsFragment : BaseSettingsFragment() {
                 val dbx = Dropbox()
                 dbx.startSession()
                 val isLinked = dbx.isLinked
-                val isConnected = SuperUtil.isConnected(context)
                 for (file in params) {
                     if (file == null || !file.exists()) {
                         continue
@@ -199,13 +198,12 @@ class BackupsFragment : BaseSettingsFragment() {
                         }
                     }
                 }
-                if (isLinked && isConnected) {
+                if (isLinked) {
                     dbx.cleanFolder()
                 }
             } else if (type == Info.Google) {
                 val gdx = GDrive.getInstance(context)
                 val isLinked = gdx != null
-                val isConnected = SuperUtil.isConnected(context)
                 for (file in params) {
                     if (file == null || !file.exists()) {
                         continue
@@ -220,7 +218,7 @@ class BackupsFragment : BaseSettingsFragment() {
                         }
                     }
                 }
-                if (isLinked && isConnected && gdx != null) {
+                if (isLinked && gdx != null) {
                     try {
                         gdx.cleanFolder()
                     } catch (e: IOException) {
@@ -280,7 +278,7 @@ class BackupsFragment : BaseSettingsFragment() {
     private fun addDropboxData(list: MutableList<UserItem>) {
         val dbx = Dropbox()
         dbx.startSession()
-        if (dbx.isLinked && SuperUtil.isConnected(context!!)) {
+        if (dbx.isLinked) {
             val quota = dbx.userQuota()
             val quotaUsed = dbx.userQuotaNormal()
             val name = dbx.userName()
@@ -293,7 +291,7 @@ class BackupsFragment : BaseSettingsFragment() {
 
     private fun addGoogleData(list: MutableList<UserItem>) {
         val gdx = GDrive.getInstance(context!!)
-        if (gdx != null && SuperUtil.isConnected(context!!)) {
+        if (gdx != null) {
             val userItem = gdx.data
             if (userItem != null) {
                 userItem.kind = Info.Google

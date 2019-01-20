@@ -3,7 +3,6 @@ package com.elementary.tasks.core.contacts
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.CallLog
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +14,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_contacts_list.*
 import kotlinx.coroutines.Job
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,13 +36,13 @@ import kotlinx.coroutines.Job
  */
 class ContactsActivity : ThemedActivity() {
 
-    private var type = CONTACT
     private val adapter: ContactsRecyclerAdapter = ContactsRecyclerAdapter()
-    private val fullData: MutableList<Any> = mutableListOf()
+    private val fullData: MutableList<ContactItem> = mutableListOf()
     private var mLoader: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate: ")
         setContentView(R.layout.activity_contacts_list)
         loaderView.visibility = View.GONE
 
@@ -91,28 +91,21 @@ class ContactsActivity : ThemedActivity() {
         var q = query
         q = q.toLowerCase()
         if (q.isEmpty()) {
-            adapter.setData(type, fullData)
+            adapter.setData(fullData)
             return
         }
         launchDefault {
             val filtered = getFiltered(fullData.toList(), q)
-            withUIContext { adapter.setData(type, filtered) }
+            withUIContext { adapter.setData(filtered) }
         }
     }
 
-    private fun getFiltered(models: List<Any>, query: String): List<Any> {
-        val list = ArrayList<Any>()
+    private fun getFiltered(models: List<ContactItem>, query: String): List<ContactItem> {
+        val list = ArrayList<ContactItem>()
         for (model in models) {
-            if (model is ContactItem) {
-                val text = model.name.toLowerCase()
-                if (text.contains(query)) {
-                    list.add(model)
-                }
-            } else if (model is CallsItem) {
-                val text = model.numberName.toLowerCase()
-                if (text.contains(query)) {
-                    list.add(model)
-                }
+            val text = model.name.toLowerCase()
+            if (text.contains(query)) {
+                list.add(model)
             }
         }
         return list
@@ -185,17 +178,6 @@ class ContactsActivity : ThemedActivity() {
 
     private fun initActionBar() {
         backButton.setOnClickListener { onBackPressed() }
-        typeIcon.setOnClickListener { toggleList() }
-    }
-
-    private fun toggleList() {
-        if (type == CONTACT) {
-            type = CALL
-            loadCalls()
-        } else {
-            type = CONTACT
-            loadContacts()
-        }
     }
 
     private fun loadContacts() {
@@ -235,7 +217,6 @@ class ContactsActivity : ThemedActivity() {
             }
             withUIContext {
                 hideProgress()
-                typeIcon.setImageResource(R.drawable.ic_twotone_call_24px)
                 showContacts(mList)
             }
         }
@@ -254,78 +235,9 @@ class ContactsActivity : ThemedActivity() {
     private fun showContacts(list: MutableList<ContactItem>) {
         this.fullData.clear()
         this.fullData.addAll(list)
-        adapter.setData(type, list)
+        adapter.setData(list)
         contactsList.smoothScrollToPosition(0)
         refreshView()
-    }
-
-    private fun loadCalls() {
-        showProgress()
-        mLoader?.cancel()
-        mLoader = launchDefault {
-            val mList = mutableListOf<CallsItem>()
-            if (Permissions.checkPermission(this@ContactsActivity, Permissions.READ_CALLS)) {
-                val c = contentResolver.query(CallLog.Calls.CONTENT_URI, null, null,
-                        null, null)
-                mList.clear()
-                if (c != null) {
-                    val number = c.getColumnIndex(CallLog.Calls.NUMBER)
-                    val type = c.getColumnIndex(CallLog.Calls.TYPE)
-                    val date = c.getColumnIndex(CallLog.Calls.DATE)
-                    val nameIndex = c.getColumnIndex(CallLog.Calls.CACHED_NAME)
-                    while (c.moveToNext()) {
-                        val phoneNumber = c.getString(number)
-                        val callType = c.getString(type)
-                        val callDate = c.getString(date)
-                        val name = c.getString(nameIndex)
-                        val id = Contacts.getIdFromNumber(phoneNumber, this@ContactsActivity)
-                        var photo: String? = null
-                        if (id != 0L) {
-                            val uri = Contacts.getPhoto(id)
-                            if (uri != null) {
-                                photo = uri.toString()
-                            }
-                        }
-
-                        val data = CallsItem(name, phoneNumber, photo, java.lang.Long.valueOf(callDate), id, Integer.parseInt(callType))
-                        val pos = getPosition(data.date, mList)
-                        if (pos == -1) {
-                            mList.add(data)
-                        } else {
-                            mList.add(pos, data)
-                        }
-                    }
-                    c.close()
-                }
-            }
-            withUIContext {
-                hideProgress()
-                typeIcon.setImageResource(R.drawable.ic_twotone_perm_contact_calendar_24px)
-                showCalls(mList)
-            }
-        }
-    }
-
-    private fun showCalls(list: MutableList<CallsItem>) {
-        this.fullData.clear()
-        this.fullData.addAll(list)
-        adapter.setData(type, list)
-        contactsList.smoothScrollToPosition(0)
-        refreshView()
-    }
-
-    private fun getPosition(date: Long, list: List<CallsItem>): Int {
-        if (list.isEmpty()) {
-            return 0
-        }
-        var position = -1
-        for (data in list) {
-            if (date > data.date) {
-                position = list.indexOf(data)
-                break
-            }
-        }
-        return position
     }
 
     private fun getPosition(name: String, list: List<ContactItem>): Int {
@@ -367,10 +279,5 @@ class ContactsActivity : ThemedActivity() {
         val intent = Intent()
         setResult(RESULT_CANCELED, intent)
         finish()
-    }
-
-    companion object {
-        const val CONTACT = 0
-        const val CALL = 1
     }
 }

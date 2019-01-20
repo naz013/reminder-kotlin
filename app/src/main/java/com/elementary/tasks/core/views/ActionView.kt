@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views
 
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -98,9 +97,8 @@ class ActionView : LinearLayout, TextWatcher {
         callAction.isChecked = true
 
         actionCheck.setOnCheckedChangeListener { _, b ->
-            if (!Permissions.checkPermission(mActivity!!, Permissions.READ_CONTACTS)) {
+            if (!Permissions.ensurePermissions(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
                 actionCheck.isChecked = false
-                Permissions.requestPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)
                 return@setOnCheckedChangeListener
             }
             if (b) {
@@ -116,7 +114,7 @@ class ActionView : LinearLayout, TextWatcher {
     }
 
     private fun openAction() {
-        ViewUtils.showOver(actionBlock)
+        actionBlock.visibility = View.VISIBLE
         refreshState()
     }
 
@@ -152,9 +150,8 @@ class ActionView : LinearLayout, TextWatcher {
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            REQ_CONTACTS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            REQ_CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
                 actionCheck.isChecked = true
                 numberView.reloadContacts()
             }

@@ -105,9 +105,6 @@ class OtherSettingsFragment : BaseSettingsFragment() {
         if (!Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS)) {
             mDataList.add(Item(getString(R.string.read_contacts), Permissions.READ_CONTACTS))
         }
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_CALLS)) {
-            mDataList.add(Item(getString(R.string.call_history), Permissions.READ_CALLS))
-        }
         if (!Permissions.checkPermission(activity!!, Permissions.READ_EXTERNAL)) {
             mDataList.add(Item(getString(R.string.read_external_storage), Permissions.READ_EXTERNAL))
         }

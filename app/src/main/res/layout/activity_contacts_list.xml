@@ -52,6 +52,7 @@
                         android:layout_height="match_parent"
                         android:background="?selectableItemBackgroundBorderless"
                         android:scaleType="centerInside"
+                        android:visibility="invisible"
                         app:srcCompat="@drawable/ic_twotone_perm_contact_calendar_24px"
                         app:tint="?android:textColorPrimary" />
 

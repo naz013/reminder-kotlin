@@ -6,7 +6,6 @@ import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchIo
 import com.google.gson.Gson
 import java.io.IOException
@@ -19,9 +18,8 @@ class SaveNewTaskWorker(context: Context, workerParams: WorkerParameters) : Work
             val googleTask = Gson().fromJson<GoogleTask>(json, GoogleTask::class.java)
             if (googleTask != null) {
                 val google = GTasks.getInstance(applicationContext)
-                val isConnected = SuperUtil.isConnected(applicationContext)
                 launchIo {
-                    if (google != null && isConnected) {
+                    if (google != null) {
                         try {
                             google.insertTask(googleTask)
                         } catch (e: IOException) {

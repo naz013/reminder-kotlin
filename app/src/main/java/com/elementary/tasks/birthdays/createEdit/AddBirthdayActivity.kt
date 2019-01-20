@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
@@ -174,8 +173,7 @@ class AddBirthdayActivity : ThemedActivity() {
     }
 
     private fun checkContactPermission(code: Int): Boolean {
-        if (!Permissions.checkPermission(this, Permissions.READ_CONTACTS, Permissions.READ_CALLS)) {
-            Permissions.requestPermission(this, code, Permissions.READ_CONTACTS, Permissions.READ_CALLS)
+        if (!Permissions.ensurePermissions(this, code, Permissions.READ_CONTACTS)) {
             return false
         }
         return true
@@ -284,12 +282,11 @@ class AddBirthdayActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            101 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            101 -> if (Permissions.isAllGranted(grantResults)) {
                 SuperUtil.selectContact(this@AddBirthdayActivity, Constants.REQUEST_CODE_CONTACTS)
             }
-            CONTACT_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CONTACT_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 saveBirthday()
             }
         }

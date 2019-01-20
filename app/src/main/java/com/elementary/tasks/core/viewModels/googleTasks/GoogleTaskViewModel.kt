@@ -11,7 +11,6 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
@@ -76,11 +75,6 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             postCommand(Commands.FAILED)
             return
         }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-            return
-        }
         postInProgress(true)
         launchDefault {
             try {
@@ -105,11 +99,6 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             postCommand(Commands.FAILED)
             return
         }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-            return
-        }
         postInProgress(true)
         launchDefault {
             try {
@@ -131,11 +120,6 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            postCommand(Commands.FAILED)
-            return
-        }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
             postCommand(Commands.FAILED)
             return
         }
@@ -164,11 +148,6 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
             postCommand(Commands.FAILED)
             return
         }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
-            postCommand(Commands.FAILED)
-            return
-        }
         postInProgress(true)
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
@@ -192,11 +171,6 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
         val google = GTasks.getInstance(getApplication())
         if (google == null) {
-            postCommand(Commands.FAILED)
-            return
-        }
-        val isConnected = SuperUtil.isConnected(getApplication())
-        if (!isConnected) {
             postCommand(Commands.FAILED)
             return
         }
