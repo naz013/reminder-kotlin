@@ -64,7 +64,6 @@
             android:id="@+id/horizontalScrollView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -78,8 +77,8 @@
 
                 <ToggleButton
                     android:id="@+id/mondayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:background="@drawable/toggle_blue"
                     android:checked="true"
                     android:maxLines="1"
@@ -89,8 +88,8 @@
 
                 <ToggleButton
                     android:id="@+id/tuesdayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
@@ -100,8 +99,8 @@
 
                 <ToggleButton
                     android:id="@+id/wednesdayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
@@ -111,8 +110,8 @@
 
                 <ToggleButton
                     android:id="@+id/thursdayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
@@ -122,8 +121,8 @@
 
                 <ToggleButton
                     android:id="@+id/fridayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
@@ -133,8 +132,8 @@
 
                 <ToggleButton
                     android:id="@+id/saturdayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
@@ -144,8 +143,8 @@
 
                 <ToggleButton
                     android:id="@+id/sundayCheck"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/toggle_blue"
                     android:maxLines="1"
@@ -154,6 +153,16 @@
                     android:textOn="@string/sun" />
             </LinearLayout>
         </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/calculatedNextTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="?textAppearanceBody1"
+            tools:text="Tomorrow" />
 
         <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
             android:layout_width="match_parent"

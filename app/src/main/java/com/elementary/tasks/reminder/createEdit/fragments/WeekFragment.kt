@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -114,8 +115,20 @@ class WeekFragment : RepeatableTypeFragment() {
         return inflater.inflate(R.layout.fragment_reminder_weekdays, container, false)
     }
 
+    private val mCheckListener: CompoundButton.OnCheckedChangeListener =  CompoundButton.OnCheckedChangeListener { _, _ ->
+        calculateNextDate()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sundayCheck.setOnCheckedChangeListener(mCheckListener)
+        saturdayCheck.setOnCheckedChangeListener(mCheckListener)
+        fridayCheck.setOnCheckedChangeListener(mCheckListener)
+        thursdayCheck.setOnCheckedChangeListener(mCheckListener)
+        wednesdayCheck.setOnCheckedChangeListener(mCheckListener)
+        tuesdayCheck.setOnCheckedChangeListener(mCheckListener)
+        mondayCheck.setOnCheckedChangeListener(mCheckListener)
+
         timeField.setOnClickListener {
             TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
                     prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect)
@@ -154,10 +167,21 @@ class WeekFragment : RepeatableTypeFragment() {
         groupView.onGroupSelectListener = {
             reminderInterface.selectGroup()
         }
+        calculateNextDate()
 
         initScreenState()
         initPropertyFields()
         editReminder()
+    }
+
+    private fun calculateNextDate() {
+        val reminder = Reminder()
+        reminder.weekdays = days
+        reminder.type = Reminder.BY_WEEK
+        reminder.repeatInterval = 0
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        val startTime = TimeCount.getNextWeekdayTime(reminder)
+        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormatEnabled, prefs.appLanguage)
     }
 
     private fun initPropertyFields() {
@@ -239,7 +263,7 @@ class WeekFragment : RepeatableTypeFragment() {
 
     private fun updateTime(millis: Long): Date {
         val cal = Calendar.getInstance()
-        cal.timeInMillis = millis
+        cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
         mHour = cal.get(Calendar.HOUR_OF_DAY)
         mMinute = cal.get(Calendar.MINUTE)
         return cal.time
@@ -267,6 +291,7 @@ class WeekFragment : RepeatableTypeFragment() {
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)
         }
+        calculateNextDate()
         if (reminder.target != "") {
             actionView.setAction(true)
             actionView.number = reminder.target
