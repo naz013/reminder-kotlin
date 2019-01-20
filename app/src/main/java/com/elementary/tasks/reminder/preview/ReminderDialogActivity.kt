@@ -508,6 +508,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             buttonCancel.show()
         }
 
+        init()
+
         if (Reminder.isKind(reminder.type, Reminder.Kind.SMS) && isAutoEnabled) {
             sendSMS()
         } else if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) && isAutoCallEnabled) {

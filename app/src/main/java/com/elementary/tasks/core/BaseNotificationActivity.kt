@@ -41,7 +41,6 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Suppress("DEPRECATION")
 abstract class BaseNotificationActivity : ThemedActivity() {
 
     private var tts: TextToSpeech? = null
@@ -176,6 +175,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             isFull = isUnlockDevice
             isWake = isAwakeDevice
         }
+        Timber.d("setUpScreenOptions: $isFull, $isWake, $isGlobal")
         if (isFull) {
             runOnUiThread {
                 window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED

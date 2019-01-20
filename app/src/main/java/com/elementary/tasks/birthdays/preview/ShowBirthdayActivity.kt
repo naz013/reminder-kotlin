@@ -242,6 +242,8 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
                 buttonSms.visibility = View.INVISIBLE
             }
         }
+        init()
+
         showNotification(TimeUtil.getAge(birthday.date), birthday.name)
         if (isTtsEnabled) {
             startTts()
