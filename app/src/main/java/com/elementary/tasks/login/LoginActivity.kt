@@ -1,7 +1,6 @@
 package com.elementary.tasks.login
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
@@ -163,16 +162,13 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun loginToDropbox() {
-        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (Permissions.ensurePermissions(this, PERM_DROPBOX, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             dropboxLogin?.login()
-        } else {
-            Permissions.requestPermission(this, PERM_DROPBOX, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
         }
     }
 
     private fun restoreLocalData() {
-        if (!Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+        if (!Permissions.ensurePermissions(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         prefs.isBackupEnabled = true
@@ -336,7 +332,7 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun googleLoginClick() {
-        if (Permissions.checkPermission(this, Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+        if (Permissions.ensurePermissions(this, PERM, Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
             googleLogin?.loginDrive(object : GoogleLogin.DriveCallback {
                 override fun onProgress(isLoading: Boolean) {
@@ -352,9 +348,6 @@ class LoginActivity : ThemedActivity() {
                     showLoginError()
                 }
             })
-        } else {
-            Permissions.requestPermission(this, PERM, Permissions.GET_ACCOUNTS,
-                    Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
         }
     }
 
@@ -413,10 +406,12 @@ class LoginActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) googleLoginClick()
-            PERM_DROPBOX -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) loginToDropbox()
-            PERM_LOCAL -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) restoreLocalData()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                PERM -> googleLoginClick()
+                PERM_DROPBOX -> loginToDropbox()
+                PERM_LOCAL -> restoreLocalData()
+            }
         }
     }
 

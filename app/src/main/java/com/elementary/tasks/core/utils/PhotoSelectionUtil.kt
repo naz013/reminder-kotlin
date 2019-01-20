@@ -6,20 +6,15 @@ import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ContentValues
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-
 import com.elementary.tasks.R
-
+import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
-import timber.log.Timber
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -79,27 +74,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
     }
 
     private fun checkSdPermission(code: Int): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-                Permissions.requestPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-                false
-            } else {
-                true
-            }
-        }
-        return true
+        return Permissions.ensurePermissions(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
     }
 
     private fun checkCameraPermission(code: Int): Boolean {
-        if (Module.isNougat) {
-            return if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)) {
-                Permissions.requestPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)
-                false
-            } else {
-                true
-            }
-        }
-        return true
+        return Permissions.ensurePermissions(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)
     }
 
     private fun showPhoto(imageUri: Uri) {
@@ -154,15 +133,10 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.isEmpty()) {
-            return
-        }
-        when (requestCode) {
-            REQUEST_SD_CARD -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pickFromGallery()
-            }
-            REQUEST_CAMERA -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                takePhoto()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                REQUEST_SD_CARD -> pickFromGallery()
+                REQUEST_CAMERA -> takePhoto()
             }
         }
     }

@@ -66,7 +66,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         }
         builder.setContentTitle(content)
         val isWear = prefs.getBoolean(WEAR_NOTIFICATION)
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
@@ -81,7 +81,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             builder.setStyle(s)
         }
         getManager(context)?.notify(note.uniqueId, builder.build())
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             val wearableNotificationBuilder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
             wearableNotificationBuilder.setSmallIcon(R.drawable.ic_note_nv_white)
             wearableNotificationBuilder.setContentTitle(content)

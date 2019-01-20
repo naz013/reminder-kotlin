@@ -252,20 +252,18 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     protected fun showWearNotification(secondaryText: String) {
         Timber.d("showWearNotification: $secondaryText")
-        if (Module.isJellyMR2) {
-            val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-            wearableNotificationBuilder.setSmallIcon(R.drawable.ic_notification_nv_white)
-            wearableNotificationBuilder.setContentTitle(summary)
-            wearableNotificationBuilder.setContentText(secondaryText)
-            if (Module.isLollipop) {
-                wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-            }
-            wearableNotificationBuilder.setOngoing(false)
-            wearableNotificationBuilder.setOnlyAlertOnce(true)
-            wearableNotificationBuilder.setGroup("GROUP")
-            wearableNotificationBuilder.setGroupSummary(false)
-            Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
+        val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+        wearableNotificationBuilder.setSmallIcon(R.drawable.ic_notification_nv_white)
+        wearableNotificationBuilder.setContentTitle(summary)
+        wearableNotificationBuilder.setContentText(secondaryText)
+        if (Module.isLollipop) {
+            wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         }
+        wearableNotificationBuilder.setOngoing(false)
+        wearableNotificationBuilder.setOnlyAlertOnce(true)
+        wearableNotificationBuilder.setGroup("GROUP")
+        wearableNotificationBuilder.setGroupSummary(false)
+        Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
     }
 
     companion object {

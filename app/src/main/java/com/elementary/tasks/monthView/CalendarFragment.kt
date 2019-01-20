@@ -11,7 +11,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.monthView.MonthViewViewModel
 import com.elementary.tasks.dayView.DayViewFragment
@@ -109,7 +108,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
     }
 
     private fun initPager() {
-        dayPagerAdapter = MonthPagerAdapter(if (Module.isJellyMR2) childFragmentManager else fragmentManager!!)
+        dayPagerAdapter = MonthPagerAdapter(childFragmentManager)
         pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
     }
 
@@ -120,7 +119,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
     }
 
     private fun showCalendar() {
-        dayPagerAdapter = MonthPagerAdapter(if (Module.isJellyMR2) childFragmentManager else fragmentManager!!)
+        dayPagerAdapter = MonthPagerAdapter(childFragmentManager)
         pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
 
         val calendar = Calendar.getInstance()

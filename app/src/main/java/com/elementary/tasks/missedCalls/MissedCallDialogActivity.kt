@@ -2,7 +2,6 @@ package com.elementary.tasks.missedCalls
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -198,11 +197,9 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun makeCall() {
-        if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
+        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(mMissedCall!!.number, this@MissedCallDialogActivity)
             removeMissed()
-        } else {
-            Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE)
         }
     }
 
@@ -232,9 +229,8 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CALL_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 makeCall()
             }
         }
@@ -286,7 +282,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             builder.setVibrate(pattern)
         }
         val isWear = prefs.isWearEnabled
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)

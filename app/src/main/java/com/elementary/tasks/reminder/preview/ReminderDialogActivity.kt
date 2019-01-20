@@ -649,8 +649,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     private fun sendSMS() {
         val reminder = mReminder ?: return
         if (TextUtils.isEmpty(summary)) return
-        if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
-            Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS)
+        if (!Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS)) {
             return
         }
         showProgressDialog(getString(R.string.sending_message))
@@ -744,10 +743,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun makeCall() {
         val reminder = mReminder ?: return
-        if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
+        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(reminder.target, this)
-        } else {
-            Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE)
         }
     }
 
@@ -796,7 +793,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
         val isWear = prefs.isWearEnabled
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
@@ -865,7 +862,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
         val isWear = prefs.isWearEnabled
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
@@ -943,7 +940,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
         val isWear = prefs.isWearEnabled
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
@@ -969,12 +966,11 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CALL_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 makeCall()
             }
-            SMS_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            SMS_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 sendSMS()
             }
         }

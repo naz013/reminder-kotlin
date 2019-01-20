@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays.preview
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -281,7 +280,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             builder.setLights(ledColor, 500, 1000)
         }
         val isWear = prefs.isWearEnabled
-        if (isWear && Module.isJellyMR2) {
+        if (isWear) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
@@ -303,25 +302,21 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             removeFlags()
             finish()
         } else {
-            Toast.makeText(this@ShowBirthdayActivity, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun makeCall() {
-        if (Permissions.checkPermission(this, Permissions.CALL_PHONE) && mBirthday != null) {
-            TelephonyUtil.makeCall(mBirthday!!.number, this)
+        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE) && mBirthday != null) {
+            TelephonyUtil.makeCall(mBirthday?.number ?: "", this)
             updateBirthday(mBirthday)
-        } else {
-            Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE)
         }
     }
 
     private fun sendSMS() {
-        if (Permissions.checkPermission(this@ShowBirthdayActivity, Permissions.SEND_SMS) && mBirthday != null) {
-            TelephonyUtil.sendSms(mBirthday!!.number, this@ShowBirthdayActivity)
+        if (Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS) && mBirthday != null) {
+            TelephonyUtil.sendSms(mBirthday?.number ?: "", this)
             updateBirthday(mBirthday)
-        } else {
-            Permissions.requestPermission(this@ShowBirthdayActivity, SMS_PERM, Permissions.SEND_SMS)
         }
     }
 
@@ -352,13 +347,10 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
-        when (requestCode) {
-            CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                makeCall()
-            }
-            SMS_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                sendSMS()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                CALL_PERM -> makeCall()
+                SMS_PERM -> sendSMS()
             }
         }
     }

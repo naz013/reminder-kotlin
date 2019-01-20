@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.export
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -93,26 +92,18 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun googleTasksButtonClick() {
-        if (Permissions.checkPermission(activity!!,
+        if (Permissions.ensurePermissions(activity!!, 104,
                         Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
             switchGoogleTasksStatus()
-        } else {
-            Permissions.requestPermission(activity!!, 104,
-                    Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-                    Permissions.WRITE_EXTERNAL)
         }
     }
 
     private fun googleDriveButtonClick() {
-        if (Permissions.checkPermission(activity!!,
+        if (Permissions.ensurePermissions(activity!!, 103,
                         Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
             switchGoogleDriveStatus()
-        } else {
-            Permissions.requestPermission(activity!!, 103,
-                    Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-                    Permissions.WRITE_EXTERNAL)
         }
     }
 
@@ -268,13 +259,10 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
-        when (requestCode) {
-            103 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                switchGoogleDriveStatus()
-            }
-            104 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                switchGoogleTasksStatus()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                103 -> switchGoogleDriveStatus()
+                104 -> switchGoogleTasksStatus()
             }
         }
     }

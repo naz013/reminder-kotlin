@@ -22,7 +22,6 @@ import com.elementary.tasks.BuildConfig
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object Module {
 
     val isPro: Boolean
@@ -45,16 +44,4 @@ object Module {
 
     val isNougat1: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
-
-    val isKitkat: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-
-    val isJellyMR2: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-
-    val isJellyMR1: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-
-    val isJelly: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
 }

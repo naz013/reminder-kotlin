@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.KeyEvent
@@ -328,10 +328,9 @@ class PlacesMapFragment : BaseMapFragment() {
         imm?.hideSoftInputFromWindow(cardSearch.windowToken, 0)
     }
 
+    @SuppressLint("MissingPermission")
     private fun setMyLocation() {
-        if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
-        } else {
+        if (Permissions.ensurePermissions(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             mMap?.isMyLocationEnabled = true
         }
     }
@@ -467,14 +466,13 @@ class PlacesMapFragment : BaseMapFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            205 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            205 -> if (Permissions.isAllGranted(grantResults)) {
                 setMyLocation()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
             }
-            200 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            200 -> if (Permissions.isAllGranted(grantResults)) {
                 startTracking()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()

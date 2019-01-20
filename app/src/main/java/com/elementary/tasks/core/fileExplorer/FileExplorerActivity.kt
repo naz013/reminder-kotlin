@@ -2,7 +2,6 @@ package com.elementary.tasks.core.fileExplorer
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
@@ -144,10 +143,8 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
         initPlayer()
         initSearch()
         initButtons()
-        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+        if (Permissions.ensurePermissions(this, SD_CARD, Permissions.READ_EXTERNAL)) {
             loadFileList()
-        } else {
-            Permissions.requestPermission(this, SD_CARD, Permissions.READ_EXTERNAL)
         }
     }
 
@@ -350,9 +347,8 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            SD_CARD -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            SD_CARD -> if (Permissions.isAllGranted(grantResults)) {
                 loadFileList()
             } else {
                 setResult(Activity.RESULT_CANCELED)

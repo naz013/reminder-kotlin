@@ -108,7 +108,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
     }
 
     private fun initPager() {
-        dayPagerAdapter = DayPagerAdapter(if (Module.isJellyMR2) childFragmentManager else fragmentManager!!)
+        dayPagerAdapter = DayPagerAdapter(childFragmentManager)
         pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
     }
 

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -27,8 +26,6 @@ import androidx.core.content.ContextCompat
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-@TargetApi(Build.VERSION_CODES.M)
 object Permissions {
 
     const val READ_CONTACTS = Manifest.permission.READ_CONTACTS

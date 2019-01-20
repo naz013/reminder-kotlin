@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings
 
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
@@ -95,8 +94,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun scanForBirthdays() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS)) {
-            Permissions.requestPermission(activity!!, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)
+        if (!Permissions.ensurePermissions(activity!!, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
             return
         }
         val work = OneTimeWorkRequest.Builder(CheckBirthdaysWorker::class.java)
@@ -130,8 +128,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun changeContactsPrefs() {
-        if (!Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS)) {
-            Permissions.requestPermission(activity!!, CONTACTS_CODE, Permissions.READ_CONTACTS)
+        if (!Permissions.ensurePermissions(activity!!, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
             return
         }
         val isChecked = useContactsPrefs.isChecked
@@ -259,19 +256,17 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            CONTACTS_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            CONTACTS_CODE -> if (Permissions.isAllGranted(grantResults)) {
                 changeContactsPrefs()
             }
-            BIRTHDAYS_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            BIRTHDAYS_CODE -> if (Permissions.isAllGranted(grantResults)) {
                 scanForBirthdays()
             }
         }
     }
 
     companion object {
-
         private const val CONTACTS_CODE = 302
         private const val BIRTHDAYS_CODE = 303
     }

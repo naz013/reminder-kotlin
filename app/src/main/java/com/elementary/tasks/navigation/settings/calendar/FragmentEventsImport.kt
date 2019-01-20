@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.calendar
 
 import android.app.AlarmManager
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -104,10 +103,8 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
             3 -> prefs.autoCheckInterval = 24
             4 -> prefs.autoCheckInterval = 48
         }
-        if (Permissions.checkPermission(context!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+        if (Permissions.ensurePermissions(activity!!, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
             startCheckService()
-        } else {
-            Permissions.requestPermission(activity!!, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
         }
     }
 
@@ -116,12 +113,7 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
     }
 
     private fun checkWriteCalendarPerm(): Boolean {
-        return if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            true
-        } else {
-            Permissions.requestPermission(activity!!, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR);
-            false
-        }
+        return Permissions.ensurePermissions(activity!!, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
     }
 
     private fun loadCalendars() {
@@ -151,12 +143,7 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
     override fun getTitle(): String = getString(R.string.import_events)
 
     private fun checkCalendarPerm(): Boolean {
-        return if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {
-            true
-        } else {
-            Permissions.requestPermission(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
-            false
-        }
+        return Permissions.ensurePermissions(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
     }
 
     private fun importEvents() {
@@ -184,10 +171,8 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         when (buttonView.id) {
             R.id.autoCheck -> if (isChecked) {
-                if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                if (Permissions.ensurePermissions(activity!!, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                     autoCheck(true)
-                } else {
-                    Permissions.requestPermission(activity!!, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
                 }
             } else {
                 autoCheck(false)
@@ -196,19 +181,13 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.isEmpty()) return
-        when (requestCode) {
-            101 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                autoCheck(true)
-            }
-            102 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                importEvents()
-            }
-            CALENDAR_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadCalendars()
-            }
-            AUTO_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCheckService()
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                101 -> autoCheck(true)
+                102 -> importEvents()
+                CALENDAR_PERM -> loadCalendars()
+                AUTO_PERM -> startCheckService()
             }
         }
     }

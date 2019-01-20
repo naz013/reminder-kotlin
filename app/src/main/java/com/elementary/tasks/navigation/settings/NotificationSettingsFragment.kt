@@ -75,9 +75,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         initIgnoreWindowTypePrefs()
         initSmartFold()
         initWearNotification()
-        if (!Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
-            Permissions.requestPermission(activity!!, PERM_SD, Permissions.READ_EXTERNAL)
-        }
+        Permissions.ensurePermissions(activity!!, PERM_SD, Permissions.READ_EXTERNAL)
     }
 
     private fun initSmartFold() {
@@ -370,13 +368,12 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         } else {
             openNotificationsSettings()
         }
-
     }
 
     private fun openNotificationsSettings() {
         if (Module.isNougat) {
             val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-            activity!!.startActivityForResult(intent, 1248)
+            activity?.startActivityForResult(intent, 1248)
         }
     }
 
@@ -588,8 +585,8 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         prefs.isSoundInSilentModeEnabled = !isChecked
         if (!SuperUtil.checkNotificationPermission(activity!!)) {
             SuperUtil.askNotificationPermission(activity!!, dialogues)
-        } else if (!Permissions.checkPermission(context!!, Permissions.BLUETOOTH)) {
-            Permissions.requestPermission(activity!!, PERM_BT, Permissions.BLUETOOTH)
+        } else {
+            Permissions.ensurePermissions(activity!!, PERM_BT, Permissions.BLUETOOTH)
         }
     }
 

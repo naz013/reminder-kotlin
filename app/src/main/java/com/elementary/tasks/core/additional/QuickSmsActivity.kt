@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.telephony.SmsManager
 import android.view.WindowManager
@@ -78,8 +77,7 @@ class QuickSmsActivity : ThemedActivity() {
     }
 
     private fun startSending() {
-        if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
-            Permissions.requestPermission(this, REQ_SMS, Permissions.SEND_SMS)
+        if (!Permissions.ensurePermissions(this, REQ_SMS, Permissions.SEND_SMS)) {
             return
         }
         val position = mAdapter.selectedPosition
@@ -127,9 +125,8 @@ class QuickSmsActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isEmpty()) return
         when (requestCode) {
-            REQ_SMS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            REQ_SMS -> if (Permissions.isAllGranted(grantResults)) {
                 startSending()
             }
         }
