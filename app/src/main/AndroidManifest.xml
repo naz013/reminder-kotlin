@@ -68,6 +68,7 @@
         <activity android:name=".navigation.MainActivity" />
         <activity
             android:name=".reminder.createEdit.CreateReminderActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -95,6 +96,7 @@
         <activity android:name="com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity" />
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -120,12 +122,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".core.additional.QuickSmsActivity" />
-        <activity android:name=".core.additional.FollowReminderActivity" />
+        <activity android:name=".core.additional.FollowReminderActivity"
+            android:windowSoftInputMode="stateUnchanged"/>
         <activity
             android:name=".core.fileExplorer.FileExplorerActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden" />
         <activity
             android:name=".groups.CreateGroupActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -152,6 +157,7 @@
         </activity>
         <activity
             android:name=".places.create.CreatePlaceActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -178,6 +184,7 @@
         </activity>
         <activity
             android:name=".notes.create.CreateNoteActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -202,7 +209,8 @@
                 <data android:pathPattern=".*\\.no2" />
             </intent-filter>
         </activity>
-        <activity android:name=".birthdays.createEdit.AddBirthdayActivity">
+        <activity android:name=".birthdays.createEdit.AddBirthdayActivity"
+            android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -230,13 +238,17 @@
         <activity android:name=".notes.preview.NotePreviewActivity" />
         <activity
             android:name=".googleTasks.create.TaskListActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden" />
         <activity
             android:name=".googleTasks.create.TaskActivity"
+            android:windowSoftInputMode="stateUnchanged"
             android:configChanges="keyboardHidden" />
-        <activity android:name=".core.contacts.ContactsActivity" />
+        <activity android:name=".core.contacts.ContactsActivity"
+            android:windowSoftInputMode="stateUnchanged"/>
         <activity android:name=".reminder.preview.ReminderDialogActivity" />
-        <activity android:name=".core.apps.ApplicationActivity" />
+        <activity android:name=".core.apps.ApplicationActivity"
+            android:windowSoftInputMode="stateUnchanged"/>
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".reminder.preview.FullscreenMapActivity" />
         <activity android:name=".missedCalls.MissedCallDialogActivity" />
