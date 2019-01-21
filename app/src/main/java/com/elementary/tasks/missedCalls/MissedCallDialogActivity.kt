@@ -65,9 +65,6 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     override val ledColor: Int
         get() = LED.getLED(prefs.ledColor)
 
-    override val isAwakeDevice: Boolean
-        get() = prefs.isDeviceAwakeEnabled
-
     override val isGlobal: Boolean
         get() = false
 

@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -10,10 +11,13 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.media.AudioManager
 import android.net.Uri
+import android.os.PowerManager
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.Base64
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
@@ -26,6 +30,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import timber.log.Timber
 import java.io.UnsupportedEncodingException
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,8 +50,68 @@ import java.io.UnsupportedEncodingException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object SuperUtil {
+
+    fun wakeDevice(activity: Activity, id: String = UUID.randomUUID().toString()): PowerManager.WakeLock {
+        val screenLock = (activity.getSystemService(Context.POWER_SERVICE) as PowerManager)
+                .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "reminder:ReminderAPPTAG:$id")
+        screenLock.acquire(10*60*1000L /*10 minutes*/)
+        return screenLock
+    }
+
+    fun unlockOff(activity: Activity, window: Window) {
+        Timber.d("unlockOff: ")
+        if (Module.isOreoMr1) {
+            activity.setShowWhenLocked(false)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+        }
+    }
+
+    fun unlockOn(activity: Activity, window: Window) {
+        Timber.d("unlockOn: ")
+        if (Module.isOreo) {
+            val keyguardManager = activity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
+            keyguardManager?.requestDismissKeyguard(activity, null)
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+        }
+    }
+
+    fun turnScreenOff(activity: Activity, window: Window, wakeLock: PowerManager.WakeLock? = null) {
+        Timber.d("turnScreenOff: ")
+        if (wakeLock?.isHeld == true) {
+            wakeLock.release()
+        }
+        if (Module.isOreoMr1) {
+            activity.setShowWhenLocked(false)
+            activity.setTurnScreenOn(false)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        }
+        unlockOff(activity, window)
+    }
+
+    fun turnScreenOn(activity: Activity, window: Window) {
+        Timber.d("turnScreenOn: ")
+        if (Module.isOreoMr1) {
+            activity.setTurnScreenOn(true)
+            activity.setShowWhenLocked(true)
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        }
+        unlockOn(activity, window)
+    }
 
     fun hasVolumePermission(context: Context): Boolean {
         if (Module.isNougat) {

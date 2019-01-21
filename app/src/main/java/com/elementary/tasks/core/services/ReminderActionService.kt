@@ -2,7 +2,6 @@ package com.elementary.tasks.core.services
 
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb

@@ -2,7 +2,6 @@ package com.elementary.tasks.core
 
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
@@ -11,7 +10,6 @@ import android.os.PowerManager
 import android.speech.tts.TextToSpeech
 import android.text.TextUtils
 import android.view.MotionEvent
-import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
@@ -44,6 +42,7 @@ import javax.inject.Inject
 abstract class BaseNotificationActivity : ThemedActivity() {
 
     private var tts: TextToSpeech? = null
+    private var mWakeLock: PowerManager.WakeLock? = null
     private var mSendDialog: ProgressDialog? = null
     @Inject
     lateinit var soundStackHolder: SoundStackHolder
@@ -94,8 +93,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     protected abstract val id: Int
 
     protected abstract val ledColor: Int
-
-    protected abstract val isAwakeDevice: Boolean
 
     protected abstract val isUnlockDevice: Boolean
 
@@ -168,34 +165,28 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         return super.onTouchEvent(event)
     }
 
-    private fun setUpScreenOptions() {
-        var isFull = prefs.isDeviceUnlockEnabled
-        var isWake = prefs.isDeviceAwakeEnabled
-        if (!isGlobal) {
-            isFull = isUnlockDevice
-            isWake = isAwakeDevice
-        }
-        Timber.d("setUpScreenOptions: $isFull, $isWake, $isGlobal")
-        if (isFull) {
-            runOnUiThread {
-                window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-            }
-        }
-        if (isWake) {
-            val screenLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(
-                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP, "reminder:ReminderAPPTAG")
-            screenLock.acquire(10*60*1000L /*10 minutes*/)
-            screenLock.release()
+    private fun canUnlockScreen(): Boolean {
+        return if (isGlobal) {
+            prefs.isDeviceUnlockEnabled
+        } else {
+            isUnlockDevice
         }
     }
 
+    private fun setUpScreenOptions() {
+        Timber.d("setUpScreenOptions: ${canUnlockScreen()}")
+        if (canUnlockScreen()) {
+            SuperUtil.turnScreenOn(this, window)
+            SuperUtil.unlockOn(this, window)
+        }
+        mWakeLock = SuperUtil.wakeDevice(this)
+    }
+
     protected fun removeFlags() {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+        if (canUnlockScreen()) {
+            SuperUtil.unlockOff(this, window)
+            SuperUtil.turnScreenOff(this, window, mWakeLock)
+        }
 
         if (tts != null) {
             tts?.stop()

@@ -160,14 +160,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             } else LED.getLED(0)
         }
 
-    override val isAwakeDevice: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var has = prefs.isDeviceAwakeEnabled
-            if (!isGlobal) has = reminder.awake
-            return has
-        }
-
     override val isGlobal: Boolean
         get() = mReminder != null && mReminder?.useGlobal ?: false
 
@@ -259,6 +251,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun initViewModel(id: String) {
+        Timber.d("initViewModel: $id")
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this,Observer { reminder ->
@@ -278,6 +271,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 }
             }
         })
+        lifecycle.addObserver(viewModel)
 
         if (id == "" && BuildConfig.DEBUG) {
             loadTest()
@@ -587,6 +581,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        lifecycle.removeObserver(viewModel)
         if (sentReceiver != null) {
             unregisterReceiver(sentReceiver)
         }
