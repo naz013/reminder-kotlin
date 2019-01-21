@@ -10,6 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Module
 import kotlinx.android.synthetic.main.list_item_note_image.view.*
 import java.util.*
 
@@ -70,15 +71,14 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
             if (isEditable) {
                 itemView.removeButton.visibility = View.VISIBLE
                 itemView.removeButton.setOnClickListener { removeImage(adapterPosition) }
-//                if (actionsListener != null && Module.isPro) {
-//                    itemView.editButton.visibility = View.VISIBLE
-//                    itemView.editButton.setBackgroundResource(themeUtil.indicator)
-//                    itemView.editButton.setOnClickListener { view ->
-//                        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
-//                    }
-//                } else {
+                if (actionsListener != null && Module.isPro) {
+                    itemView.editButton.visibility = View.VISIBLE
+                    itemView.editButton.setOnClickListener { view ->
+                        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
+                    }
+                } else {
                     itemView.editButton.visibility = View.GONE
-//                }
+                }
             } else {
                 itemView.removeButton.visibility = View.GONE
                 itemView.editButton.visibility = View.GONE
