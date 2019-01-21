@@ -427,7 +427,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.group_created))
         val item = viewModel.createGroup(model)
         addObjectResponse(Reply(Reply.GROUP, item))
-        postMicClick({ askGroupAction(item) }, 500)
+        postMicClick({ askGroupAction(item) }, 1000)
     }
 
     private fun noteAction(model: Model) {
@@ -435,7 +435,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.note_created))
         val item = viewModel.createNote(model.summary)
         addObjectResponse(Reply(Reply.NOTE, item))
-        postMicClick({ askNoteAction(item) }, 500)
+        postMicClick({ askNoteAction(item) }, 1000)
     }
 
     private fun reminderAction(model: Model) {
@@ -446,10 +446,10 @@ class ConversationActivity : ThemedActivity() {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
                     TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale, language) +
                     ". " + getLocalized(R.string.would_you_like_to_save_it))
-            postMicClick({ askReminderAction(reminder, false) }, 6000)
+            postMicClick({ askReminderAction(reminder, false) }, 7000)
         } else {
             addResponse(getLocalized(R.string.reminder_created))
-            postMicClick({ askReminderAction(reminder, true) }, 500)
+            postMicClick({ askReminderAction(reminder, true) }, 1000)
         }
     }
 
