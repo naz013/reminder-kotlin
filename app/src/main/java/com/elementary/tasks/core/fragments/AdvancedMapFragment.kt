@@ -65,7 +65,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     var isFullscreen = false
     private var isDark = false
     private var markerTitle: String = ""
-    private var markerRadius = -1
+    var markerRadius = -1
     var markerStyle = -1
         private set
     private var mMarkerStyle: Drawable? = null
@@ -113,11 +113,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         this.mCallback = callback
     }
 
-    fun setMarkerRadius(markerRadius: Int) {
-        this.markerRadius = markerRadius
-    }
-
-    fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
+    fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int = markerRadius) {
         var t = title
         if (mMap != null && pos != null) {
             markerRadius = radius
@@ -184,7 +180,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
     }
 
-    fun recreateMarker(radius: Int) {
+    fun recreateMarker(radius: Int = markerRadius) {
         markerRadius = radius
         if (markerRadius == -1)
             markerRadius = prefs.radius
@@ -378,6 +374,21 @@ class AdvancedMapFragment : BaseMapFragment() {
         })
     }
 
+    private fun showRadiusDialog() {
+        dialogues.showRadiusDialog(
+                activity!!,
+                markerRadius,
+                object : Dialogues.OnValueSelectedListener<Int> {
+                    override fun onSelected(t: Int) {
+                        recreateMarker(t)
+                    }
+
+                    override fun getTitle(t: Int): String {
+                        return getString(R.string.radius_x_meters, t.toString())
+                    }
+                })
+    }
+
     private fun showStyleDialog() {
         dialogues.showColorDialog(
                 activity!!,
@@ -422,6 +433,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             moveToMyLocation()
         }
         markersCard.setOnClickListener { toggleMarkers() }
+        radiusCard.setOnClickListener { toggleRadius() }
         backCard.setOnClickListener {
             restoreScaleButton()
             mListener?.onBackClick()
@@ -492,6 +504,11 @@ class AdvancedMapFragment : BaseMapFragment() {
     private fun toggleMarkers() {
         if (isLayersVisible) hideLayers()
         showStyleDialog()
+    }
+
+    private fun toggleRadius() {
+        if (isLayersVisible) hideLayers()
+        showRadiusDialog()
     }
 
     private fun toggleLayers() {

@@ -37,7 +37,6 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class PlacesFragment : RadiusTypeFragment() {
 
     private var mPlacesMap: PlacesMapFragment? = null
@@ -61,7 +60,7 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     override fun recreateMarker() {
-        mPlacesMap?.recreateMarker(radiusView.radius)
+        mPlacesMap?.recreateMarker()
     }
 
     override fun prepare(): Reminder? {
@@ -134,7 +133,7 @@ class PlacesFragment : RadiusTypeFragment() {
                 mPlacesMap?.selectMarkers(reminderInterface.reminder.places)
             }
         })
-        placesMap.setRadius(prefs.radius)
+        placesMap.markerRadius = prefs.radius
         placesMap.setMarkerStyle(prefs.markerStyle)
         fragmentManager!!.beginTransaction()
                 .replace(mapFrame.id, placesMap)
@@ -173,7 +172,6 @@ class PlacesFragment : RadiusTypeFragment() {
             reminderInterface.selectGroup()
         }
 
-        radiusView.setRadiusValue(prefs.radius)
         mapButton.setOnClickListener { toggleMap() }
 
         initPropertyFields()
