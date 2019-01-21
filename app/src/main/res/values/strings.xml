@@ -669,5 +669,9 @@
     <string name="portuguese">Portuguese</string>
     <string name="found_one_reminder">Found one reminder</string>
     <string name="clear_all_changes">Clear all changes</string>
+    <string name="download">Download</string>
+    <string name="from_url">From Url</string>
+    <string name="wrong_url">Wrong Url</string>
+    <string name="failed_to_download">Failed to download</string>
 
 </resources>
