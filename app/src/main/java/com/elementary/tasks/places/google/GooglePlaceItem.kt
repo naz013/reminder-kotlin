@@ -20,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class GooglePlaceItem {
     var name: String = ""
     var id: String = ""
@@ -29,6 +28,14 @@ class GooglePlaceItem {
     var position: LatLng? = null
     var isSelected: Boolean = false
     var types: List<String> = listOf()
+    val latitude: Double
+        get() {
+            return position?.latitude ?: 0.0
+        }
+    val longitude: Double
+        get() {
+            return position?.longitude ?: 0.0
+        }
 
     constructor() {
         isSelected = false

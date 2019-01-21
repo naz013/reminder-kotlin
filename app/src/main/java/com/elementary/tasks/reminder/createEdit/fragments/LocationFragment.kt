@@ -72,18 +72,17 @@ class LocationFragment : RadiusTypeFragment() {
             val jPlace = reminder.places[0]
             val latitude = jPlace.latitude
             val longitude = jPlace.longitude
-            radiusView.setRadiusValue(jPlace.radius)
             if (mAdvancedMapFragment != null) {
-                mAdvancedMapFragment?.setMarkerRadius(radiusView.radius)
+                mAdvancedMapFragment?.markerRadius = jPlace.radius
                 lastPos = LatLng(latitude, longitude)
-                mAdvancedMapFragment?.addMarker(lastPos, text, true, true, radiusView.radius)
+                mAdvancedMapFragment?.addMarker(lastPos, text, true, true)
                 toggleMap()
             }
         }
     }
 
     override fun recreateMarker() {
-        mAdvancedMapFragment?.recreateMarker(radiusView.radius)
+        mAdvancedMapFragment?.recreateMarker()
     }
 
     override fun prepare(): Reminder? {
@@ -114,7 +113,8 @@ class LocationFragment : RadiusTypeFragment() {
             reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
             return null
         }
-        reminder.places = listOf(Place(radiusView.radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
+        val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
+        reminder.places = listOf(Place(radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
         reminder.target = number
         reminder.type = type
         reminder.exportToCalendar = false
@@ -195,8 +195,6 @@ class LocationFragment : RadiusTypeFragment() {
             reminderInterface.selectGroup()
         }
 
-        radiusView.setRadiusValue(prefs.radius)
-
         clearButton.setOnClickListener { addressField.setText("") }
         mapButton.setOnClickListener { toggleMap() }
         addressField.setOnItemClickListener { _, _, position, _ ->
@@ -206,7 +204,7 @@ class LocationFragment : RadiusTypeFragment() {
             val pos = LatLng(lat, lon)
             var title: String? = taskSummary.text.toString().trim()
             if (title != null && title.matches("".toRegex())) title = pos.toString()
-            mAdvancedMapFragment?.addMarker(pos, title, true, true, radiusView.radius)
+            mAdvancedMapFragment?.addMarker(pos, title, true, true)
         }
 
         initPropertyFields()

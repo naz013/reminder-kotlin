@@ -21,10 +21,7 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.BitmapUtils
-import com.elementary.tasks.core.utils.DrawableHelper
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
@@ -68,7 +65,7 @@ class PlacesMapFragment : BaseMapFragment() {
     private var isZoom = true
     var isFullscreen = false
     private var isDark = false
-    private var mRadius = -1
+    var markerRadius = -1
     private var markerStyle = -1
     private var mMarkerStyle: Drawable? = null
     private var mLat: Double = 0.0
@@ -96,7 +93,7 @@ class PlacesMapFragment : BaseMapFragment() {
         override fun onResponse(call: Call<PlacesResponse>, response: Response<PlacesResponse>) {
             if (response.code() == PlacesApi.OK) {
                 val places = ArrayList<GooglePlaceItem>()
-                for (place in response.body()?.results!!) {
+                for (place in response.body()?.results ?: listOf()) {
                     places.add(PlaceParser.getDetails(place))
                 }
                 spinnerArray = places
@@ -122,8 +119,8 @@ class PlacesMapFragment : BaseMapFragment() {
                 for (model in spinnerArray) {
                     if (model.isSelected) {
                         if (model.position != null) {
-                            places.add(Place(mRadius, markerStyle, model.position!!.latitude,
-                                    model.position!!.longitude, model.name, model.address, model.types))
+                            places.add(Place(markerRadius, markerStyle, model.latitude,
+                                    model.longitude, model.name, model.address, model.types))
                         }
                     }
                 }
@@ -142,21 +139,17 @@ class PlacesMapFragment : BaseMapFragment() {
         this.mCallback = callback
     }
 
-    fun setRadius(mRadius: Int) {
-        this.mRadius = mRadius
-    }
-
     fun setMarkerStyle(markerStyle: Int) {
         this.markerStyle = markerStyle
     }
 
-    private fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
+    private fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int = markerRadius) {
         var t = title
         if (mMap != null && pos != null) {
             if (pos.latitude == 0.0 && pos.longitude == 0.0) return
-            mRadius = radius
-            if (mRadius == -1) {
-                mRadius = prefs.radius
+            markerRadius = radius
+            if (markerRadius == -1) {
+                markerRadius = prefs.radius
             }
             if (clear) {
                 mMap?.clear()
@@ -173,7 +166,7 @@ class PlacesMapFragment : BaseMapFragment() {
             val strokeWidth = 3f
             mMap?.addCircle(CircleOptions()
                     .center(pos)
-                    .radius(mRadius.toDouble())
+                    .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
                     .fillColor(themeUtil.getColor(marker.fillColor))
                     .strokeColor(themeUtil.getColor(marker.strokeColor)))
@@ -183,10 +176,10 @@ class PlacesMapFragment : BaseMapFragment() {
         }
     }
 
-    fun recreateMarker(radius: Int) {
-        mRadius = radius
-        if (mRadius == -1) {
-            mRadius = prefs.radius
+    fun recreateMarker(radius: Int = markerRadius) {
+        markerRadius = radius
+        if (markerRadius == -1) {
+            markerRadius = prefs.radius
         }
         if (mMap != null) {
             addMarkers()
@@ -247,7 +240,7 @@ class PlacesMapFragment : BaseMapFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mRadius = prefs.radius
+        markerRadius = prefs.radius
         isDark = themeUtil.isDark
 
         mapView.onCreate(savedInstanceState)
@@ -278,6 +271,21 @@ class PlacesMapFragment : BaseMapFragment() {
         }
     }
 
+    private fun showRadiusDialog() {
+        dialogues.showRadiusDialog(
+                activity!!,
+                markerRadius,
+                object : Dialogues.OnValueSelectedListener<Int> {
+                    override fun onSelected(t: Int) {
+                        recreateMarker(t)
+                    }
+
+                    override fun getTitle(t: Int): String {
+                        return getString(R.string.radius_x_meters, t.toString())
+                    }
+                })
+    }
+
     private fun createStyleDrawable() {
         mMarkerStyle = DrawableHelper.withContext(context!!)
                 .withDrawable(R.drawable.ic_twotone_place_24px)
@@ -296,6 +304,7 @@ class PlacesMapFragment : BaseMapFragment() {
         zoomCard.setOnClickListener { zoomClick() }
         layersCard.setOnClickListener { toggleLayers() }
         markersCard.setOnClickListener { toggleMarkers() }
+        radiusCard.setOnClickListener { toggleRadius() }
         cardClear.setOnClickListener { loadPlaces() }
         backCard.setOnClickListener {
             restoreScaleButton()
@@ -388,9 +397,14 @@ class PlacesMapFragment : BaseMapFragment() {
         mMap?.clear()
         if (spinnerArray.size > 0) {
             for (model in spinnerArray) {
-                addMarker(model.position, model.name, false, false, mRadius)
+                addMarker(model.position, model.name, false, false, markerRadius)
             }
         }
+    }
+
+    private fun toggleRadius() {
+        if (isLayersVisible) hideLayers()
+        showRadiusDialog()
     }
 
     private fun toggleMarkers() {

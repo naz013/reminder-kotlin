@@ -105,6 +105,27 @@
                 app:tint="?android:textColorPrimary" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/radiusCard"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:stateListAnimator="@animator/card_animator"
+            app:cardCornerRadius="5dp"
+            tools:targetApi="lollipop">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_track_changes_24px"
+                app:tint="?android:textColorPrimary" />
+
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <LinearLayout

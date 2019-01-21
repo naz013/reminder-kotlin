@@ -194,72 +194,72 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         val strokeColor: Int
         when (color) {
             Color.RED -> {
-                fillColor = R.color.red50
-                strokeColor = R.color.redPrimaryDark
+                fillColor = R.color.secondaryRed12
+                strokeColor = R.color.secondaryRed
             }
             Color.PURPLE -> {
-                fillColor = R.color.purple50
-                strokeColor = R.color.purplePrimaryDark
+                fillColor = R.color.secondaryPurple12
+                strokeColor = R.color.secondaryPurple
             }
             Color.LIGHT_GREEN -> {
-                fillColor = R.color.greenLight50
-                strokeColor = R.color.greenLightPrimaryDark
+                fillColor = R.color.secondaryGreenLight12
+                strokeColor = R.color.secondaryGreenLight
             }
             Color.GREEN -> {
-                fillColor = R.color.green50
-                strokeColor = R.color.greenPrimaryDark
+                fillColor = R.color.secondaryGreen12
+                strokeColor = R.color.secondaryGreen
             }
             Color.LIGHT_BLUE -> {
-                fillColor = R.color.blueLight50
-                strokeColor = R.color.blueLightPrimaryDark
+                fillColor = R.color.secondaryBlueLight12
+                strokeColor = R.color.secondaryBlueLight
             }
             Color.BLUE -> {
-                fillColor = R.color.blue50
-                strokeColor = R.color.bluePrimaryDark
+                fillColor = R.color.secondaryBlue12
+                strokeColor = R.color.secondaryBlue
             }
             Color.YELLOW -> {
-                fillColor = R.color.yellow50
-                strokeColor = R.color.yellowPrimaryDark
+                fillColor = R.color.secondaryYellow12
+                strokeColor = R.color.secondaryYellow
             }
             Color.ORANGE -> {
-                fillColor = R.color.orange50
-                strokeColor = R.color.orangePrimaryDark
+                fillColor = R.color.secondaryOrange12
+                strokeColor = R.color.secondaryOrange
             }
             Color.CYAN -> {
-                fillColor = R.color.cyan50
-                strokeColor = R.color.cyanPrimaryDark
+                fillColor = R.color.secondaryCyan12
+                strokeColor = R.color.secondaryCyan
             }
             Color.PINK -> {
-                fillColor = R.color.pink50
-                strokeColor = R.color.pinkPrimaryDark
+                fillColor = R.color.secondaryPink12
+                strokeColor = R.color.secondaryPink
             }
             Color.TEAL -> {
-                fillColor = R.color.teal50
-                strokeColor = R.color.tealPrimaryDark
+                fillColor = R.color.secondaryTeal12
+                strokeColor = R.color.secondaryTeal
             }
             Color.AMBER -> {
-                fillColor = R.color.amber50
-                strokeColor = R.color.amberPrimaryDark
+                fillColor = R.color.secondaryAmber12
+                strokeColor = R.color.secondaryAmber
             }
             Color.DEEP_PURPLE -> {
-                fillColor = R.color.purpleDeep50
-                strokeColor = R.color.purpleDeepPrimaryDark
+                fillColor = R.color.secondaryPurpleDeep12
+                strokeColor = R.color.secondaryPurpleDeep
             }
             Color.DEEP_ORANGE -> {
-                fillColor = R.color.orangeDeep50
-                strokeColor = R.color.orangeDeepPrimaryDark
+                fillColor = R.color.secondaryOrangeDeep12
+                strokeColor = R.color.secondaryOrangeDeep
             }
             Color.INDIGO -> {
-                fillColor = R.color.indigo50
-                strokeColor = R.color.indigoPrimaryDark
+                fillColor = R.color.secondaryIndigo12
+                strokeColor = R.color.secondaryIndigo
             }
             Color.LIME -> {
-                fillColor = R.color.lime50
-                strokeColor = R.color.limePrimaryDark
+                fillColor = R.color.secondaryLime12
+                strokeColor = R.color.secondaryLime
             }
             else -> {
-                fillColor = R.color.blue50
-                strokeColor = R.color.bluePrimaryDark
+                fillColor = R.color.secondaryBlue12
+                strokeColor = R.color.secondaryBlue
             }
         }
         return Marker(fillColor, strokeColor)
