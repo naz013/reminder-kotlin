@@ -217,7 +217,7 @@ object TimeCount {
     }
 
     fun getNextWeekdayTime(reminder: Reminder): Long {
-        val weekdays = reminder.weekdays ?: return 0
+        val weekdays = reminder.weekdays
         val beforeValue = reminder.remindBefore
         val cc = Calendar.getInstance()
         if (reminder.eventTime != "") {
@@ -248,15 +248,24 @@ object TimeCount {
         val cc = Calendar.getInstance()
         cc.timeInMillis = fromTime
         cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        while (cc.timeInMillis - beforeValue < System.currentTimeMillis() && cc.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
-            cc.set(Calendar.MONTH, cc.get(Calendar.MONTH) + reminder.repeatInterval.toInt())
+        cc.set(Calendar.SECOND, 0)
+        cc.set(Calendar.MILLISECOND, 0)
+        while (true) {
+            if (cc.get(Calendar.DAY_OF_MONTH) == dayOfMonth && cc.timeInMillis - beforeValue > System.currentTimeMillis()) {
+                break
+            }
+            cc.add(Calendar.MONTH, reminder.repeatInterval.toInt())
         }
+        cc.set(Calendar.SECOND, 0)
+        cc.set(Calendar.MILLISECOND, 0)
         return cc.timeInMillis
     }
 
     private fun getLastMonthDayTime(fromTime: Long, reminder: Reminder): Long {
         val cc = Calendar.getInstance()
         cc.timeInMillis = fromTime
+        cc.set(Calendar.SECOND, 0)
+        cc.set(Calendar.MILLISECOND, 0)
         while (true) {
             val lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
             cc.set(Calendar.DAY_OF_MONTH, lastDay)
