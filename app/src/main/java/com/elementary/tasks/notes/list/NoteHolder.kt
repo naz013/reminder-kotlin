@@ -41,17 +41,26 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
+class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
 
     @Inject
     lateinit var imagesSingleton: ImagesSingleton
+    var hasMore = true
+        set(value) {
+            field = value
+            updateMore()
+        }
 
     init {
         ReminderApp.appComponent.inject(this)
         itemView.bgView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-        if (listener == null) {
+        updateMore()
+    }
+
+    private fun updateMore() {
+        if (listener == null || !hasMore) {
             itemView.button_more.visibility = View.INVISIBLE
         } else {
             itemView.button_more.visibility = View.VISIBLE

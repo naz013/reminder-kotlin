@@ -2,7 +2,11 @@ package com.elementary.tasks.core.viewModels.reminders
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.elementary.tasks.core.data.models.GoogleTask
+import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.launchIo
 import timber.log.Timber
 
 /**
@@ -25,6 +29,11 @@ import timber.log.Timber
  */
 class ReminderViewModel private constructor(application: Application, id: String) : BaseRemindersViewModel(application) {
 
+    private val _note = MutableLiveData<NoteWithImages>()
+    val note: LiveData<NoteWithImages> = _note
+    private val _googleTask = MutableLiveData<Pair<GoogleTaskList?, GoogleTask?>>()
+    val googleTask: LiveData<Pair<GoogleTaskList?, GoogleTask?>> = _googleTask
+
     var reminder: LiveData<Reminder>
     private val mObserver = Observer<Reminder> {
         Timber.d("ReminderViewModel: $it")
@@ -33,6 +42,16 @@ class ReminderViewModel private constructor(application: Application, id: String
     init {
         reminder = appDb.reminderDao().loadById(id)
         reminder.observeForever(mObserver)
+    }
+
+    fun loadExtra(reminder: Reminder) {
+        launchIo {
+            _note.postValue(appDb.notesDao().getById(reminder.noteId))
+            val googleTask = appDb.googleTasksDao().getByReminderId(reminder.uuId)
+            if (googleTask != null) {
+                _googleTask.postValue(Pair(appDb.googleTaskListsDao().getById(googleTask.listId), googleTask))
+            }
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

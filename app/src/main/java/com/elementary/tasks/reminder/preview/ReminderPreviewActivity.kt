@@ -20,7 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -32,6 +33,7 @@ import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants
 import com.elementary.tasks.googleTasks.list.GoogleTaskHolder
 import com.elementary.tasks.notes.list.NoteHolder
+import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
@@ -65,12 +67,9 @@ class ReminderPreviewActivity : ThemedActivity() {
     private lateinit var viewModel: ReminderViewModel
 
     private val list = ArrayList<Long>()
-    private var mNote: Note? = null
-    private var mGoogleTask: GoogleTask? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
     private var reminder: Reminder? = null
     private var shoppingAdapter = ShopListRecyclerAdapter()
-
     private var mSendListener = { isSent: Boolean ->
         if (isSent) {
             finish()
@@ -138,6 +137,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showInfo(reminder)
+                viewModel.loadExtra(reminder)
             }
         })
         viewModel.result.observe(this, Observer { commands ->
@@ -149,35 +149,43 @@ class ReminderPreviewActivity : ThemedActivity() {
                 }
             }
         })
+        viewModel.googleTask.observe(this, Observer {
+            if (it != null) {
+                showTask(it)
+            }
+        })
+        viewModel.note.observe(this, Observer {
+            if (it != null) {
+                showNote(it)
+            }
+        })
     }
 
-    private fun showTask() {
-        val task = mGoogleTask
-        if (task != null) {
-            val binding = GoogleTaskHolder(dataContainer, null)
-            binding.bind(task, mapOf())
-            binding.itemView.setOnClickListener {
+    private fun showTask(pair: Pair<GoogleTaskList?, GoogleTask?>) {
+        val googleTask = pair.second ?: return
+        val googleTaskList = pair.first ?: return
+        val binding = GoogleTaskHolder(dataContainer) { _, _, listActions ->
+            if (listActions == ListActions.EDIT) {
                 TaskActivity.openLogged(this@ReminderPreviewActivity,
                         Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
-                                .putExtra(Constants.INTENT_ID, task.taskId)
+                                .putExtra(Constants.INTENT_ID, googleTask.taskId)
                                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
             }
-            this.dataContainer.addView(binding.itemView)
         }
+        binding.bind(googleTask, mapOf(Pair(googleTask.listId, googleTaskList)))
+        this.dataContainer.addView(binding.itemView)
     }
 
-    private fun showNote() {
-        val note = mNote
-        //TODO: Add loading note to reminder preview
-        if (note != null) {
-            val binding = NoteHolder(dataContainer, null)
-//            binding.setData(note)
-//            binding.itemView.setOnClickListener {
-//                startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
-//                        .putExtra(Constants.INTENT_ID, note.key))
-//            }
-//            this.dataContainer.addView(binding.itemView)
+    private fun showNote(note: NoteWithImages) {
+        val binding = NoteHolder(dataContainer) { _, _, listActions ->
+            if (listActions == ListActions.OPEN) {
+                startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
+                        .putExtra(Constants.INTENT_ID, note.getKey()))
+            }
         }
+        binding.hasMore = false
+        binding.setData(note)
+        this.dataContainer.addView(binding.itemView)
     }
 
     private fun showMapData(reminder: Reminder) {
