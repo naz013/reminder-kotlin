@@ -130,15 +130,6 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return ledColor
         }
 
-    override val isAwakeDevice: Boolean
-        get() {
-            var isWake = prefs.isDeviceAwakeEnabled
-            if (Module.isPro && !isGlobal) {
-                isWake = prefs.isBirthdayWakeEnabled
-            }
-            return isWake
-        }
-
     override val maxVolume: Int
         get() = prefs.loudness
 
@@ -146,7 +137,13 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         get() = prefs.isBirthdayGlobalEnabled
 
     override val isUnlockDevice: Boolean
-        get() = prefs.isDeviceUnlockEnabled
+        get() {
+            var isWake = prefs.isDeviceUnlockEnabled
+            if (Module.isPro && !isGlobal) {
+                isWake = prefs.isBirthdayWakeEnabled
+            }
+            return isWake
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

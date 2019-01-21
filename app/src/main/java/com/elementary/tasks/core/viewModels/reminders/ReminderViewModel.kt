@@ -1,12 +1,9 @@
 package com.elementary.tasks.core.viewModels.reminders
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
+import timber.log.Timber
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -29,9 +26,18 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 class ReminderViewModel private constructor(application: Application, id: String) : BaseRemindersViewModel(application) {
 
     var reminder: LiveData<Reminder>
+    private val mObserver = Observer<Reminder> {
+        Timber.d("ReminderViewModel: $it")
+    }
 
     init {
         reminder = appDb.reminderDao().loadById(id)
+        reminder.observeForever(mObserver)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        reminder.removeObserver(mObserver)
     }
 
     class Factory(private val application: Application, private val id: String) : ViewModelProvider.NewInstanceFactory() {

@@ -52,7 +52,7 @@ class TuneExtraView : LinearLayout {
             text.text = fromExtra(extra)
             onExtraUpdateListener?.invoke(extra)
         }
-    var dialogues: Dialogues?  = null
+    var dialogues: Dialogues? = null
 
     private val customizationView: View
         get() {

@@ -264,10 +264,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.TTS)
         set(value) = putBoolean(PrefsConstants.TTS, value)
 
-    var isDeviceAwakeEnabled: Boolean
-        get() = getBoolean(PrefsConstants.WAKE_STATUS)
-        set(value) = putBoolean(PrefsConstants.WAKE_STATUS, value)
-
     var isDeviceUnlockEnabled: Boolean
         get() = getBoolean(PrefsConstants.UNLOCK_DEVICE)
         set(value) = putBoolean(PrefsConstants.UNLOCK_DEVICE, value)

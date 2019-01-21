@@ -61,7 +61,6 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         initIncreasingLoudnessPrefs()
         initTtsPrefs()
         initTtsLocalePrefs()
-        initWakePrefs()
         initUnlockPrefs()
         initAutoSmsPrefs()
         initAutoLaunchPrefs()
@@ -302,17 +301,6 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     private fun initUnlockPrefs() {
         unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
         unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
-    }
-
-    private fun changeWakePrefs() {
-        val isChecked = wakeScreenOptionPrefs.isChecked
-        wakeScreenOptionPrefs.isChecked = !isChecked
-        prefs.isDeviceAwakeEnabled = !isChecked
-    }
-
-    private fun initWakePrefs() {
-        wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
-        wakeScreenOptionPrefs.isChecked = prefs.isDeviceAwakeEnabled
     }
 
     private fun showTtsLocaleDialog() {

@@ -30,6 +30,9 @@ object Module {
     val isPie: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
 
+    val isOreoMr1: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
+
     val isOreo: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
