@@ -24,7 +24,7 @@
         android:layout_margin="16dp"
         android:background="?selectableItemBackground"
         android:contentDescription="@string/acc_rotate_left"
-        app:srcCompat="@drawable/ic_rotate_left_black_24dp"
+        app:srcCompat="@drawable/ic_twotone_rotate_left_24px"
         app:tint="?colorSecondary" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -36,7 +36,7 @@
         android:layout_margin="16dp"
         android:background="?selectableItemBackground"
         android:contentDescription="@string/acc_rotate_right"
-        app:srcCompat="@drawable/ic_rotate_right_black_24dp"
+        app:srcCompat="@drawable/ic_twotone_rotate_right_24px"
         app:tint="?colorSecondary" />
 
 </RelativeLayout>
