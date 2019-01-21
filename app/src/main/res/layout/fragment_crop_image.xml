@@ -5,51 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <HorizontalScrollView
-        android:id="@+id/controlView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/rotateLeftButton"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginStart="16dp"
-                android:background="?selectableItemBackground"
-                android:contentDescription="@string/acc_rotate_left"
-                app:srcCompat="@drawable/ic_rotate_left_black_24dp"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/rotateRightButton"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="?selectableItemBackground"
-                android:contentDescription="@string/acc_rotate_right"
-                app:srcCompat="@drawable/ic_rotate_right_black_24dp"
-                app:tint="?android:textColorPrimary" />
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
     <com.theartofdev.edmodo.cropper.CropImageView
         android:id="@+id/cropImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/controlView"
         app:cropBackgroundColor="@color/whitePrimary30"
         app:cropBorderCornerColor="@android:color/transparent"
         app:cropBorderLineColor="@color/whitePrimary"
         app:cropBorderLineThickness="2dp"
         app:cropGuidelines="off"
         app:cropShape="rectangle" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/rotateLeftButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@string/acc_rotate_left"
+        app:srcCompat="@drawable/ic_rotate_left_black_24dp"
+        app:tint="?colorSecondary" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/rotateRightButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@string/acc_rotate_right"
+        app:srcCompat="@drawable/ic_rotate_right_black_24dp"
+        app:tint="?colorSecondary" />
 
 </RelativeLayout>
