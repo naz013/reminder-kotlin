@@ -421,10 +421,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
         markersCard.setOnClickListener { toggleMarkers() }
         radiusCard.setOnClickListener { toggleRadius() }
-        backCard.setOnClickListener {
-            restoreScaleButton()
-            mListener?.onBackClick()
-        }
+        backCard.setOnClickListener { invokeBack() }
 
         typeNormal.setOnClickListener {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
@@ -452,6 +449,11 @@ class AdvancedMapFragment : BaseMapFragment() {
         if (!isZoom) {
             zoomCard.visibility = View.GONE
         }
+    }
+
+    fun invokeBack() {
+        restoreScaleButton()
+        mListener?.onBackClick()
     }
 
     @SuppressLint("MissingPermission")

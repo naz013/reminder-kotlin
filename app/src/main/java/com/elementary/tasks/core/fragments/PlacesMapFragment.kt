@@ -296,10 +296,7 @@ class PlacesMapFragment : BaseMapFragment() {
         markersCard.setOnClickListener { toggleMarkers() }
         radiusCard.setOnClickListener { toggleRadius() }
         cardClear.setOnClickListener { loadPlaces() }
-        backCard.setOnClickListener {
-            restoreScaleButton()
-            mMapListener?.onBackClick()
-        }
+        backCard.setOnClickListener { invokeBack() }
 
         typeNormal.setOnClickListener {
             if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
@@ -320,6 +317,11 @@ class PlacesMapFragment : BaseMapFragment() {
         if (!isZoom) {
             zoomCard.visibility = View.GONE
         }
+    }
+
+    fun invokeBack() {
+        restoreScaleButton()
+        mMapListener?.onBackClick()
     }
 
     private fun hideKeyboard() {

@@ -54,8 +54,10 @@ class PlacesFragment : RadiusTypeFragment() {
                 map.isFullscreen = false
                 reminderInterface.setFullScreenMode(false)
             }
-            ViewUtils.fadeOutAnimation(mapContainer)
-            ViewUtils.fadeInAnimation(scrollView)
+            if (mapContainer.visibility == View.VISIBLE) {
+                ViewUtils.fadeOutAnimation(mapContainer)
+                ViewUtils.fadeInAnimation(scrollView)
+            }
         }
     }
 
@@ -67,14 +69,19 @@ class PlacesFragment : RadiusTypeFragment() {
         val reminder = super.prepare() ?: return null
         val map = mPlacesMap ?: return null
         var type = Reminder.BY_PLACES
-        val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(reminder.summary) && !isAction) {
+        val places = map.places
+        if (places.isEmpty()) {
+            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
+            return null
+        }
+        if (TextUtils.isEmpty(reminder.summary)) {
             taskLayout.error = getString(R.string.task_summary_is_empty)
             taskLayout.isErrorEnabled = true
+            map.invokeBack()
             return null
         }
         var number = ""
-        if (isAction) {
+        if (actionView.hasAction()) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
                 reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
@@ -86,11 +93,7 @@ class PlacesFragment : RadiusTypeFragment() {
                 Reminder.BY_PLACES_SMS
             }
         }
-        val places = map.places
-        if (places.isEmpty()) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
-            return null
-        }
+
         reminder.places = places
         reminder.target = number
         reminder.type = type

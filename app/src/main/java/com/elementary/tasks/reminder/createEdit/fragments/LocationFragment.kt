@@ -59,8 +59,10 @@ class LocationFragment : RadiusTypeFragment() {
                 map.isFullscreen = false
                 reminderInterface.setFullScreenMode(false)
             }
-            ViewUtils.fadeOutAnimation(mapContainer)
-            ViewUtils.fadeInAnimation(scrollView)
+            if (mapContainer.visibility == View.VISIBLE) {
+                ViewUtils.fadeOutAnimation(mapContainer)
+                ViewUtils.fadeInAnimation(scrollView)
+            }
         }
     }
 
@@ -89,14 +91,19 @@ class LocationFragment : RadiusTypeFragment() {
         val reminder = super.prepare() ?: return null
         val map = mAdvancedMapFragment ?: return null
         var type = if (enterCheck.isChecked) Reminder.BY_LOCATION else Reminder.BY_OUT
-        val isAction = actionView.hasAction()
-        if (TextUtils.isEmpty(reminder.summary) && !isAction) {
+        val pos = lastPos
+        if (pos == null) {
+            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
+            return null
+        }
+        if (TextUtils.isEmpty(reminder.summary)) {
             taskLayout.error = getString(R.string.task_summary_is_empty)
             taskLayout.isErrorEnabled = true
+            map.invokeBack()
             return null
         }
         var number = ""
-        if (isAction) {
+        if (actionView.hasAction()) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
                 reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
@@ -107,11 +114,6 @@ class LocationFragment : RadiusTypeFragment() {
             } else {
                 if (enterCheck.isChecked) Reminder.BY_LOCATION_SMS else Reminder.BY_OUT_SMS
             }
-        }
-        val pos = lastPos
-        if (pos == null) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
-            return null
         }
         val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
         reminder.places = listOf(Place(radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
@@ -151,10 +153,10 @@ class LocationFragment : RadiusTypeFragment() {
                 showPlaceOnMap()
             }
         })
-        fragmentManager!!.beginTransaction()
-                .replace(mapFrame.id, advancedMapFragment)
-                .addToBackStack(null)
-                .commit()
+        fragmentManager?.beginTransaction()
+                ?.replace(mapFrame.id, advancedMapFragment)
+                ?.addToBackStack(null)
+                ?.commit()
 
         this.mAdvancedMapFragment = advancedMapFragment
 
