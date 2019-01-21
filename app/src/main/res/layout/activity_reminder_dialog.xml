@@ -24,8 +24,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/contactPhoto"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/acc_contact_photo"
                 android:scaleType="centerCrop"
@@ -45,7 +45,6 @@
                     android:layout_gravity="start"
                     android:gravity="center"
                     android:textAppearance="?textAppearanceBody1"
-                    android:textColor="@color/whitePrimary"
                     tools:text="User Name" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -56,7 +55,6 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:textAppearance="?textAppearanceBody2"
-                    android:textColor="@color/whitePrimary"
                     tools:text="1234567890" />
 
             </LinearLayout>
