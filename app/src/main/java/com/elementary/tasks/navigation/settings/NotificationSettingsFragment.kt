@@ -259,8 +259,18 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun changeAutoCallPrefs() {
         val isChecked = autoCallPrefs.isChecked
-        autoCallPrefs.isChecked = !isChecked
-        prefs.isAutoCallEnabled = !isChecked
+        if (!isChecked) {
+            if (Permissions.ensurePermissions(activity!!, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
+                autoCallPrefs.isChecked = !isChecked
+                prefs.isAutoCallEnabled = !isChecked
+            } else {
+                autoCallPrefs.isChecked = isChecked
+                prefs.isAutoCallEnabled = isChecked
+            }
+        } else {
+            autoCallPrefs.isChecked = !isChecked
+            prefs.isAutoCallEnabled = !isChecked
+        }
     }
 
     private fun initAutoCallPrefs() {
@@ -282,8 +292,18 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun changeAutoSmsPrefs() {
         val isChecked = silentSMSOptionPrefs.isChecked
-        silentSMSOptionPrefs.isChecked = !isChecked
-        prefs.isAutoSmsEnabled = !isChecked
+        if (!isChecked) {
+            if (Permissions.ensurePermissions(activity!!, PERM_AUTO_SMS, Permissions.SEND_SMS)) {
+                silentSMSOptionPrefs.isChecked = !isChecked
+                prefs.isAutoSmsEnabled = !isChecked
+            } else {
+                silentSMSOptionPrefs.isChecked = isChecked
+                prefs.isAutoSmsEnabled = isChecked
+            }
+        } else {
+            silentSMSOptionPrefs.isChecked = !isChecked
+            prefs.isAutoSmsEnabled = !isChecked
+        }
     }
 
     private fun initAutoSmsPrefs() {
@@ -673,10 +693,22 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                PERM_AUTO_CALL -> changeAutoCallPrefs()
+                PERM_AUTO_SMS -> changeAutoSmsPrefs()
+            }
+        }
+    }
+
     companion object {
 
         private const val MELODY_CODE = 125
         private const val PERM_BT = 1425
         private const val PERM_SD = 1426
+        private const val PERM_AUTO_CALL = 1427
+        private const val PERM_AUTO_SMS = 1428
     }
 }
