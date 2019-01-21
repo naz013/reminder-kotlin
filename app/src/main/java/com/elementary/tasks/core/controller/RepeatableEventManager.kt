@@ -5,13 +5,16 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.googleTasks.work.SaveNewTaskWorker
+import com.elementary.tasks.googleTasks.work.UpdateTaskWorker
 import com.google.gson.Gson
 
 /**
@@ -32,7 +35,6 @@ import com.google.gson.Gson
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminder) {
 
     protected fun enableReminder() {
@@ -65,6 +67,25 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
         }
     }
 
+    private fun makeGoogleTaskDone() {
+        if (reminder.exportToTasks) {
+            launchIo {
+                val googleTask = AppDb.getAppDatabase(context).googleTasksDao().getByReminderId(reminder.uuId)
+                if (googleTask != null && googleTask.status == GTasks.TASKS_NEED_ACTION) {
+                    val work = OneTimeWorkRequest.Builder(UpdateTaskWorker::class.java)
+                            .setInputData(
+                                    Data.Builder()
+                                            .putString(Constants.INTENT_JSON, Gson().toJson(googleTask))
+                                            .putString(Constants.INTENT_STATUS, GTasks.TASKS_COMPLETE)
+                                            .build())
+                            .addTag(reminder.uuId)
+                            .build()
+                    WorkManager.getInstance().enqueue(work)
+                }
+            }
+        }
+    }
+
     override fun resume(): Boolean {
         if (reminder.isActive) {
             enableReminder()
@@ -82,6 +103,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
     override fun stop(): Boolean {
         reminder.isActive = false
         save()
+        makeGoogleTaskDone()
         return pause()
     }
 
