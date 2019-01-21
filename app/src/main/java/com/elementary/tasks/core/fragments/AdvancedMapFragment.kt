@@ -375,27 +375,14 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun showRadiusDialog() {
-        dialogues.showRadiusDialog(
-                activity!!,
-                markerRadius,
-                object : Dialogues.OnValueSelectedListener<Int> {
-                    override fun onSelected(t: Int) {
-                        recreateMarker(t)
-                    }
-
-                    override fun getTitle(t: Int): String {
-                        return getString(R.string.radius_x_meters, t.toString())
-                    }
-                })
+        dialogues.showRadiusBottomDialog(activity!!, markerRadius) {
+            recreateMarker(it)
+            return@showRadiusBottomDialog getString(R.string.radius_x_meters, it.toString())
+        }
     }
 
     private fun showStyleDialog() {
-        dialogues.showColorDialog(
-                activity!!,
-                prefs.markerStyle,
-                getString(R.string.style_of_marker),
-                themeUtil.colorsForSlider()
-        ) {
+        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, themeUtil.colorsForSlider()) {
             prefs.markerStyle = it
             recreateStyle(it)
         }

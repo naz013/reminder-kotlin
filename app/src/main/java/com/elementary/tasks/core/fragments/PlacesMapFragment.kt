@@ -21,7 +21,10 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.BitmapUtils
+import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
@@ -260,30 +263,17 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun showStyleDialog() {
-        dialogues.showColorDialog(
-                activity!!,
-                prefs.markerStyle,
-                getString(R.string.style_of_marker),
-                themeUtil.colorsForSlider()
-        ) {
+        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, themeUtil.colorsForSlider()) {
             prefs.markerStyle = it
             recreateStyle(it)
         }
     }
 
     private fun showRadiusDialog() {
-        dialogues.showRadiusDialog(
-                activity!!,
-                markerRadius,
-                object : Dialogues.OnValueSelectedListener<Int> {
-                    override fun onSelected(t: Int) {
-                        recreateMarker(t)
-                    }
-
-                    override fun getTitle(t: Int): String {
-                        return getString(R.string.radius_x_meters, t.toString())
-                    }
-                })
+        dialogues.showRadiusBottomDialog(activity!!, markerRadius) {
+            recreateMarker(it)
+            return@showRadiusBottomDialog getString(R.string.radius_x_meters, it.toString())
+        }
     }
 
     private fun createStyleDrawable() {
