@@ -1,16 +1,18 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.ActivityNotFoundException
-import android.content.ClipData
-import android.content.ContentValues
-import android.content.Intent
+import android.content.*
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Patterns
+import android.view.LayoutInflater
+import android.widget.Toast
 import com.elementary.tasks.R
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.view_url_field.view.*
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
@@ -34,20 +36,24 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PhotoSelectionUtil(private val activity: Activity, private val mCallback: UriCallback?) {
+class PhotoSelectionUtil(private val activity: Activity, private val dialogues: Dialogues, private val mCallback: UriCallback?) {
 
     private var imageUri: Uri? = null
 
     fun selectImage() {
-        val items = arrayOf<CharSequence>(activity.getString(R.string.gallery), activity.getString(R.string.take_a_shot))
-        val builder = AlertDialog.Builder(activity)
+        val items = arrayOf<CharSequence>(
+                activity.getString(R.string.gallery),
+                activity.getString(R.string.take_a_shot),
+                activity.getString(R.string.from_url)
+        )
+        val builder = dialogues.getDialog(activity)
         builder.setTitle(R.string.image)
         builder.setItems(items) { dialog, item ->
             dialog.dismiss()
-            if (item == 0) {
-                pickFromGallery()
-            } else {
-                takePhoto()
+            when (item) {
+                0 -> pickFromGallery()
+                1 -> takePhoto()
+                2 -> checkClipboard()
             }
         }
         builder.show()
@@ -155,8 +161,81 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
         }
     }
 
+    private fun checkClipboard() {
+        val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+                ?: return
+        if (clipboard.hasPrimaryClip()) {
+            val text = clipboard.primaryClip?.getItemAt(0)?.text
+            if (text != null && Patterns.WEB_URL.matcher(text).matches()) {
+                showClipboardDialog(text.toString())
+            } else {
+                showUrlDialog()
+            }
+        } else {
+            showUrlDialog()
+        }
+    }
+
+    private fun showUrlDialog() {
+        val builder = dialogues.getDialog(activity)
+        val view = LayoutInflater.from(activity).inflate(R.layout.view_url_field, null, false)
+        builder.setView(view)
+        builder.setPositiveButton(R.string.download) { dialog, _ ->
+            dialog.dismiss()
+            downloadUrl(view.urlField.text.toString().trim())
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    private fun showClipboardDialog(text: String) {
+        val builder = dialogues.getDialog(activity)
+        builder.setMessage(text)
+        builder.setPositiveButton(R.string.download) { dialog, _ ->
+            dialog.dismiss()
+            downloadUrl(text)
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+            showUrlDialog()
+        }
+        builder.create().show()
+    }
+
+    private fun downloadUrl(url: String) {
+        if (Patterns.WEB_URL.matcher(url).matches()) {
+            launchDefault {
+                try {
+                    val bitmap = Picasso.get()
+                            .load(url)
+                            .get()
+                    if (bitmap != null) {
+                        withUIContext {
+                            mCallback?.onBitmapReady(bitmap)
+                        }
+                    } else {
+                        withUIContext {
+                            Toast.makeText(activity, R.string.failed_to_download, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.d("downloadUrl: $e")
+                    withUIContext {
+                        Toast.makeText(activity, R.string.failed_to_download, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(activity, R.string.wrong_url, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     interface UriCallback {
         fun onImageSelected(uri: Uri?, clipData: ClipData?)
+
+        fun onBitmapReady(bitmap: Bitmap)
     }
 
     companion object {

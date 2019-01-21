@@ -185,7 +185,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_note)
 
-        photoSelectionUtil = PhotoSelectionUtil(this, this)
+        photoSelectionUtil = PhotoSelectionUtil(this, dialogues, this)
 
         initActionBar()
         initMenu()
@@ -678,17 +678,22 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun addImageFromUri(uri: Uri?) {
         if (uri == null) return
-        var bitmapImage: Bitmap? = null
-        try {
-            bitmapImage = BitmapUtils.decodeUriToBitmap(this, uri)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        }
+        launchDefault {
+            var bitmapImage: Bitmap? = null
+            try {
+                bitmapImage = BitmapUtils.decodeUriToBitmap(this@CreateNoteActivity, uri)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
 
-        if (bitmapImage != null) {
-            val outputStream = ByteArrayOutputStream()
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            mAdapter.addImage(ImageFile(outputStream.toByteArray()))
+            if (bitmapImage != null) {
+                val outputStream = ByteArrayOutputStream()
+                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                val imageFile = ImageFile(outputStream.toByteArray())
+                withUIContext {
+                    mAdapter.addImage(imageFile)
+                }
+            }
         }
     }
 
@@ -779,6 +784,17 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 if (!it.isEmpty()) {
                     mAdapter.addNextImages(it)
                 }
+            }
+        }
+    }
+
+    override fun onBitmapReady(bitmap: Bitmap) {
+        launchDefault {
+            val outputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            val imageFile = ImageFile(outputStream.toByteArray())
+            withUIContext {
+                mAdapter.addImage(imageFile)
             }
         }
     }
