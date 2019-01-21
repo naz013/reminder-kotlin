@@ -11,11 +11,11 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.view_color_slider.view.*
 import javax.inject.Inject
 import javax.inject.Singleton
-
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,6 +37,58 @@ import javax.inject.Singleton
  */
 @Singleton
 class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
+
+    fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = themeUtil.colorsForSlider(),
+                        onChange: (Int) -> Unit) {
+        val dialog = BottomSheetDialog(activity)
+        val b = LayoutInflater.from(activity).inflate(R.layout.view_color_slider, null, false)
+        b.colorSlider.setColors(colors)
+        b.colorSlider.setSelection(current)
+        b.colorSlider.setListener { i, _ ->
+            onChange.invoke(i)
+        }
+        dialog.setContentView(b)
+        dialog.show()
+    }
+
+    fun showRadiusBottomDialog(activity: Activity, current: Int, listener: (Int) -> String) {
+        val dialog = BottomSheetDialog(activity)
+        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_with_seek_and_title, null, false)
+        b.seekBar.max = MAX_DEF_RADIUS
+        if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
+            b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
+        }
+        if (current > MAX_RADIUS) {
+            b.seekBar.max = MAX_RADIUS
+        }
+        b.seekBar.max = current * 2
+        if (current == 0) {
+            b.seekBar.max = MAX_DEF_RADIUS
+        }
+        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                b.titleView.text = listener.invoke(progress)
+                val perc = progress.toFloat() / b.seekBar.max.toFloat() * 100f
+                if (perc > 95f && b.seekBar.max < MAX_RADIUS) {
+                    b.seekBar.max = (b.seekBar.max + (b.seekBar.max * 0.2)).toInt()
+                } else if (perc < 10f && b.seekBar.max > 5000) {
+                    b.seekBar.max = (b.seekBar.max - (b.seekBar.max * 0.2)).toInt()
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+            }
+        })
+        b.seekBar.progress = current
+        b.titleView.text = listener.invoke(current)
+        dialog.setContentView(b)
+        dialog.show()
+    }
 
     fun showColorDialog(activity: Activity, current: Int, title: String,
                         colors: IntArray = themeUtil.colorsForSlider(),
@@ -65,13 +117,12 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         builder.setTitle(R.string.radius)
         val b = LayoutInflater.from(activity).inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = MAX_DEF_RADIUS
-        while (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
-            b.seekBar.max = b.seekBar.max + 1000
+        if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
+            b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
         }
         if (current > MAX_RADIUS) {
             b.seekBar.max = MAX_RADIUS
         }
-        b.seekBar.max = current * 2
         if (current == 0) {
             b.seekBar.max = MAX_DEF_RADIUS
         }
@@ -80,9 +131,9 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
                 b.titleView.text = listener.getTitle(progress)
                 val perc = progress.toFloat() / b.seekBar.max.toFloat() * 100f
                 if (perc > 95f && b.seekBar.max < MAX_RADIUS) {
-                    b.seekBar.max = b.seekBar.max + 1000
-                } else if (perc < 15f && b.seekBar.max > 5000) {
-                    b.seekBar.max = b.seekBar.max - 1000
+                    b.seekBar.max = (b.seekBar.max + (b.seekBar.max * 0.2)).toInt()
+                } else if (perc < 10f && b.seekBar.max > 5000) {
+                    b.seekBar.max = (b.seekBar.max - (b.seekBar.max * 0.2)).toInt()
                 }
             }
 
