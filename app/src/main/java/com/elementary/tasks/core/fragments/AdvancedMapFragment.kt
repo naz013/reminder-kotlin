@@ -444,6 +444,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
         if (!isSearch) {
             searchCard.visibility = View.GONE
+            radiusCard.visibility = View.GONE
         }
         if (!isStyles || !Module.isPro) {
             markersCard.visibility = View.GONE
