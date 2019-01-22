@@ -13,9 +13,11 @@ import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.groups.GroupsUtil
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -640,6 +642,16 @@ class Dropbox {
                         this.groupTitle = defGroup.groupTitle
                         this.groupUuId = defGroup.groupUuId
                         this.groupColor = defGroup.groupColor
+                    }
+                }
+                if (!reminder.isActive || reminder.isRemoved) {
+                    reminder.isRemoved = true
+                    reminder.isActive = false
+                }
+                if (!Reminder.isGpsType(reminder.type) && !TimeCount.isCurrent(reminder.eventTime)) {
+                    if (!Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) || reminder.hasReminder) {
+                        reminder.isRemoved = true
+                        reminder.isActive = false
                     }
                 }
                 dao.insert(reminder)
