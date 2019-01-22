@@ -6,14 +6,7 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import android.text.SpannableStringBuilder
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.URLSpan
 import android.view.View
-import android.webkit.WebView
-import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -78,7 +71,6 @@ class LoginActivity : ThemedActivity() {
             }
         })
         initButtons()
-        initCheckbox()
     }
 
     private fun showProgress(message: String?) {
@@ -351,52 +343,11 @@ class LoginActivity : ThemedActivity() {
         }
     }
 
-    private fun initCheckbox() {
-        setViewHTML(terms_check_box, getString(R.string.i_accept))
-        terms_check_box.setOnCheckedChangeListener { _, b -> setEnabling(b) }
-        terms_check_box.isChecked = true
-    }
-
     private fun setEnabling(b: Boolean) {
         dropbox_button.isEnabled = b
         google_button.isEnabled = b
         local_button.isEnabled = b
         skip_button.isEnabled = b
-    }
-
-    private fun makeLinkClickable(strBuilder: SpannableStringBuilder, span: URLSpan) {
-        val start = strBuilder.getSpanStart(span)
-        val end = strBuilder.getSpanEnd(span)
-        val flags = strBuilder.getSpanFlags(span)
-        strBuilder.setSpan(object : ClickableSpan() {
-            override fun onClick(view: View) {
-                if (span.url.contains(TERMS_URL)) {
-                    openTermsScreen()
-                }
-            }
-        }, start, end, flags)
-        strBuilder.removeSpan(span)
-    }
-
-    private fun openTermsScreen() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.privacy_policy))
-        val webView = WebView(this)
-        webView.loadUrl(Constants.WEB_URL + "privacy-policy")
-        builder.setView(webView)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
-        builder.create().show()
-    }
-
-    private fun setViewHTML(text: CheckBox, html: String) {
-        val sequence = Html.fromHtml(html)
-        val strBuilder = SpannableStringBuilder(sequence)
-        val urls = strBuilder.getSpans(0, sequence.length, URLSpan::class.java)
-        for (span in urls) {
-            makeLinkClickable(strBuilder, span)
-        }
-        text.text = strBuilder
-        text.movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -420,6 +371,5 @@ class LoginActivity : ThemedActivity() {
         private const val PERM = 103
         private const val PERM_DROPBOX = 104
         private const val PERM_LOCAL = 105
-        private const val TERMS_URL = "termsopen.com"
     }
 }

@@ -255,6 +255,7 @@
         <activity android:name=".birthdays.preview.ShowBirthdayActivity" />
         <activity android:name=".navigation.settings.security.PinLoginActivity" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
+        <activity android:name=".intro.PrivacyPolicyActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpDialog"
             android:theme="@style/Light1.Dialog" />
