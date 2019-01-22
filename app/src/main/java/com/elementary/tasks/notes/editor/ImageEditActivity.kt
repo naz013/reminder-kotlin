@@ -3,6 +3,7 @@ package com.elementary.tasks.notes.editor
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
@@ -50,6 +51,7 @@ class ImageEditActivity : ThemedActivity(), EditInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_edit)
         initActionBar()
+        typeIcon.visibility = View.INVISIBLE
         typeIcon.setOnClickListener { toggleScreen() }
         backButton.setOnClickListener { closeScreen() }
         saveButton.setOnClickListener { saveImage() }
