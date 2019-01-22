@@ -3,9 +3,9 @@ package com.elementary.tasks.core.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
+import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.ImageFile
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -50,6 +50,10 @@ interface NotesDao {
     @Query("SELECT * FROM Note WHERE `key`=:id")
     fun getById(id: String): NoteWithImages?
 
+    @Transaction
+    @Query("SELECT * FROM ImageFile WHERE noteId=:id")
+    fun getImages(id: String): List<ImageFile>
+
     @Insert(onConflict = REPLACE)
     fun insert(imageFile: ImageFile)
 
@@ -58,10 +62,4 @@ interface NotesDao {
 
     @Delete
     fun delete(imageFile: ImageFile)
-
-    @Query("SELECT * FROM ImageFile WHERE id=:id")
-    fun getEditedImage(id: Int): ImageFile?
-
-    @Query("DELETE FROM ImageFile WHERE noteId=:noteId")
-    fun deleteAllImages(noteId: String)
 }

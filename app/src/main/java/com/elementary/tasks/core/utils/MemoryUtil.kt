@@ -183,7 +183,7 @@ object MemoryUtil {
         inputStream.close()
         val res = total.toString()
         return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-            Timber.d("readFileToJson: $res")
+//            Timber.d("readFileToJson: $res")
             res
         } else {
             Timber.d("readFileToJson: Bad JSON")
@@ -209,7 +209,7 @@ object MemoryUtil {
             inputStream.close()
             val res = total.toString()
             return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-                Timber.d("readFileToJson: $res")
+//                Timber.d("readFileToJson: $res")
                 res
             } else {
                 Timber.d("readFileToJson: Bad JSON")
@@ -231,7 +231,7 @@ object MemoryUtil {
     @Throws(IOException::class)
     fun writeFile(file: File, data: String?): String? {
         if (data == null) return null
-        Timber.d("writeFile: $data")
+//        Timber.d("writeFile: $data")
         try {
             val inputStream = ByteArrayInputStream(data.toByteArray())
             val buffer = ByteArray(8192)

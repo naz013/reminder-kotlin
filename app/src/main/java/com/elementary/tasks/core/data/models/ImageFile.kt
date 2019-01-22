@@ -54,6 +54,6 @@ data class ImageFile(
     }
 
     override fun toString(): String {
-        return "ImageFile(noteId='$noteId')"
+        return "ImageFile(noteId='$noteId', id=$id)"
     }
 }

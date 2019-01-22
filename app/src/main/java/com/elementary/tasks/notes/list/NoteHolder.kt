@@ -130,14 +130,18 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
 
     private fun loadImage(container: LinearLayout, item: NoteWithImages) {
         val images = item.images
+
         val imageView = container.findViewById<ImageView>(R.id.noteImage)
+        val horView = container.findViewById<LinearLayout>(R.id.imagesContainer)
+        horView.removeAllViewsInLayout()
+
         if (!images.isEmpty()) {
             imageView.visibility = View.VISIBLE
+            horView.visibility = View.VISIBLE
             val image = WeakReference(images[0])
             setImage(imageView, image.get()?.image)
             var index = 1
-            val horView = container.findViewById<LinearLayout>(R.id.imagesContainer)
-            horView.removeAllViewsInLayout()
+
             while (index < images.size) {
                 val imV = ImageView(container.context)
                 val params = LinearLayout.LayoutParams(MeasureUtils.dp2px(container.context, 128),
@@ -153,6 +157,7 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
         } else {
             imageView.setImageDrawable(null)
             imageView.visibility = View.GONE
+            horView.visibility = View.GONE
         }
     }
 }
