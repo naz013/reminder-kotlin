@@ -371,6 +371,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         viewModel.reminder.observe(this, Observer<Reminder> { this.showReminder(it) })
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
+                Timber.d("initViewModel: $commands")
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> {
                         UpdatesHelper.updateNotesWidget(this)
