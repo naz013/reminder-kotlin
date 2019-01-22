@@ -14,7 +14,8 @@ import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import com.elementary.tasks.reminder.work.SingleBackupWorker
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -69,25 +70,28 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     fun saveAndStartReminder(reminder: Reminder, isEdit: Boolean = true) {
         postInProgress(true)
         launchDefault {
-            if (reminder.groupUuId == "") {
-                val group = appDb.reminderGroupDao().defaultGroup()
-                if (group != null) {
-                    reminder.groupColor = group.groupColor
-                    reminder.groupTitle = group.groupTitle
-                    reminder.groupUuId = group.groupUuId
-                }
-            }
-            appDb.reminderDao().insert(reminder)
-            if (!isEdit) {
-                if (Reminder.isGpsType(reminder.type)) {
-                    val places = reminder.places
-                    if (places.isNotEmpty()) {
-                        appDb.placesDao().insert(places[0])
+            runBlocking {
+                Timber.d("saveAndStartReminder: save START")
+                if (reminder.groupUuId == "") {
+                    val group = appDb.reminderGroupDao().defaultGroup()
+                    if (group != null) {
+                        reminder.groupColor = group.groupColor
+                        reminder.groupTitle = group.groupTitle
+                        reminder.groupUuId = group.groupUuId
                     }
                 }
+                appDb.reminderDao().insert(reminder)
+                if (!isEdit) {
+                    if (Reminder.isGpsType(reminder.type)) {
+                        val places = reminder.places
+                        if (places.isNotEmpty()) {
+                            appDb.placesDao().insert(places[0])
+                        }
+                    }
+                }
+                EventControlFactory.getController(reminder).start()
+                Timber.d("saveAndStartReminder: save DONE")
             }
-            delay(250)
-            EventControlFactory.getController(reminder).start()
             backupReminder(reminder.uuId)
             withUIContext {
                 postInProgress(false)
@@ -99,31 +103,33 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     fun copyReminder(reminder: Reminder, time: Long, name: String) {
         postInProgress(true)
         launchDefault {
-            if (reminder.groupUuId == "") {
-                val group = appDb.reminderGroupDao().defaultGroup()
-                if (group != null) {
-                    reminder.groupColor = group.groupColor
-                    reminder.groupTitle = group.groupTitle
-                    reminder.groupUuId = group.groupUuId
+            runBlocking {
+                if (reminder.groupUuId == "") {
+                    val group = appDb.reminderGroupDao().defaultGroup()
+                    if (group != null) {
+                        reminder.groupColor = group.groupColor
+                        reminder.groupTitle = group.groupTitle
+                        reminder.groupUuId = group.groupUuId
+                    }
                 }
+                val newItem = reminder.copy()
+                newItem.summary = name
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = System.currentTimeMillis()
+                calendar.timeInMillis = time
+                val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                val minute = calendar.get(Calendar.MINUTE)
+                calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(newItem.eventTime)
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                while (calendar.timeInMillis < System.currentTimeMillis()) {
+                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                }
+                newItem.eventTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
+                newItem.startTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
+                appDb.reminderDao().insert(newItem)
+                EventControlFactory.getController(newItem).start()
             }
-            val newItem = reminder.copy()
-            newItem.summary = name
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
-            calendar.timeInMillis = time
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-            calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(newItem.eventTime)
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-            while (calendar.timeInMillis < System.currentTimeMillis()) {
-                calendar.add(Calendar.DAY_OF_MONTH, 1)
-            }
-            newItem.eventTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
-            newItem.startTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
-            appDb.reminderDao().insert(newItem)
-            EventControlFactory.getController(newItem).start()
             withUIContext { Toast.makeText(getApplication(), R.string.reminder_created, Toast.LENGTH_SHORT).show() }
         }
     }
@@ -174,9 +180,11 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     fun moveToTrash(reminder: Reminder) {
         postInProgress(true)
         launchDefault {
-            reminder.isRemoved = true
-            EventControlFactory.getController(reminder).stop()
-            appDb.reminderDao().insert(reminder)
+            runBlocking {
+                reminder.isRemoved = true
+                EventControlFactory.getController(reminder).stop()
+                appDb.reminderDao().insert(reminder)
+            }
             backupReminder(reminder.uuId)
             withUIContext {
                 postInProgress(false)
@@ -187,15 +195,19 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     }
 
     private fun backupReminder(uuId: String) {
+        Timber.d("backupReminder: start backup")
         startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
     }
 
     fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
         postInProgress(true)
         launchDefault {
-            EventControlFactory.getController(reminder).stop()
-            appDb.reminderDao().delete(reminder)
-            calendarUtils.deleteEvents(reminder.uniqueId)
+            runBlocking {
+                EventControlFactory.getController(reminder).stop()
+                appDb.reminderDao().delete(reminder)
+                calendarUtils.deleteEvents(reminder.uniqueId)
+            }
+
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
 
             withUIContext {

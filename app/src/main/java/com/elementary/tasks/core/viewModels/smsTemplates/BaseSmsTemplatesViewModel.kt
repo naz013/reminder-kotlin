@@ -8,6 +8,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.navigation.settings.additional.work.DeleteBackupWorker
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -32,7 +33,9 @@ abstract class BaseSmsTemplatesViewModel(application: Application) : BaseDbViewM
     fun deleteSmsTemplate(smsTemplate: SmsTemplate) {
         postInProgress(true)
         launchDefault {
-            appDb.smsTemplatesDao().delete(smsTemplate)
+            runBlocking {
+                appDb.smsTemplatesDao().delete(smsTemplate)
+            }
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
             withUIContext {
                 postInProgress(false)

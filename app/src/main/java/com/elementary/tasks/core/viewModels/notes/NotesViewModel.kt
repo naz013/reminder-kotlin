@@ -29,8 +29,4 @@ class NotesViewModel(application: Application) : BaseNotesViewModel(application)
     init {
         notes = appDb.notesDao().loadAll()
     }
-
-    fun reload() {
-
-    }
 }
