@@ -10,6 +10,7 @@ import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupWorker
+import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
@@ -136,6 +137,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         backupDataPrefs.setOnClickListener { changeBackupPrefs() }
         initSyncButton()
         initBackupButton()
+        initExportButton()
     }
 
     private fun initSyncButton() {
@@ -152,6 +154,26 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             SyncWorker.progress = onMessage
         } else {
             syncButton.visibility = View.GONE
+        }
+    }
+
+    private fun initExportButton() {
+        if (prefs.isBackupEnabled) {
+            exportButton.isEnabled = true
+            exportButton.visibility = View.VISIBLE
+            exportButton.setOnClickListener {
+                onProgress.invoke(true)
+                ExportAllDataWorker.export(context!!, IoHelper(context!!, prefs, backupTool))
+            }
+
+            ExportAllDataWorker.onEnd = {
+                if (it != null) {
+                    TelephonyUtil.sendFile(it, context!!)
+                }
+            }
+            BackupWorker.listener = onProgress
+        } else {
+            exportButton.visibility = View.GONE
         }
     }
 

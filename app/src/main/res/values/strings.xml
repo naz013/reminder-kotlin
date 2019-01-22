@@ -675,5 +675,6 @@
     <string name="failed_to_download">Failed to download</string>
     <string name="privacy_warming">To continue You need to accept Privacy Policy</string>
     <string name="restore_data">Restore data</string>
+    <string name="export_all_my_data">Export all my data</string>
 
 </resources>

@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
 import com.elementary.tasks.core.utils.MemoryUtil.writeFile
+import com.elementary.tasks.core.utils.MemoryUtil.writeFileNoEncryption
 import com.elementary.tasks.groups.GroupsUtil
 import com.google.gson.Gson
 import timber.log.Timber
@@ -42,6 +43,38 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
 
     init {
         ReminderApp.appComponent.inject(this)
+    }
+
+    fun exportAll(): File? {
+        val allData = AllData(
+                reminders = appDb.reminderDao().all(),
+                groups = appDb.reminderGroupDao().all(),
+                notes = appDb.notesDao().all().map { OldNote(it) },
+                places = appDb.placesDao().all(),
+                templates = appDb.smsTemplatesDao().all(),
+                birthdays = appDb.birthdaysDao().all()
+        )
+        return createAllDataFile(allData)
+    }
+
+    private fun createAllDataFile(item: AllData): File? {
+        val jsonData = WeakReference(Gson().toJson(item))
+        val file: File
+        val dir = MemoryUtil.mailDir
+        return if (dir != null) {
+            val exportFileName = TimeUtil.gmtDateTime + FileConfig.FILE_NAME_FULL_BACKUP
+            file = File(dir, exportFileName)
+            try {
+                writeFileNoEncryption(file, jsonData.get())
+                jsonData.clear()
+                file
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        } else {
+            null
+        }
     }
 
     fun exportTemplates() {
@@ -422,7 +455,8 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     fun getNote(filePath: String?, json: String?): NoteWithImages? {
         Timber.d("getNote: $filePath, $json")
         if (filePath != null && MemoryUtil.isSdPresent) {
-            val oldNote = Gson().fromJson(readFileToJson(filePath), OldNote::class.java) ?: return null
+            val oldNote = Gson().fromJson(readFileToJson(filePath), OldNote::class.java)
+                    ?: return null
             val noteWithImages = NoteWithImages()
             oldNote.images.forEach {
                 it.noteId = oldNote.key
@@ -510,4 +544,11 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
             null
         }
     }
+
+    data class AllData(val reminders: List<Reminder>,
+                       val groups: List<ReminderGroup>,
+                       val notes: List<OldNote>,
+                       val places: List<Place>,
+                       val templates: List<SmsTemplate>,
+                       val birthdays: List<Birthday>)
 }

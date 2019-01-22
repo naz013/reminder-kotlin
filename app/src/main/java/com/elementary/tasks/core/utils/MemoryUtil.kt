@@ -8,8 +8,7 @@ import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import timber.log.Timber
 import java.io.*
-
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -231,7 +230,6 @@ object MemoryUtil {
     @Throws(IOException::class)
     fun writeFile(file: File, data: String?): String? {
         if (data == null) return null
-//        Timber.d("writeFile: $data")
         try {
             val inputStream = ByteArrayInputStream(data.toByteArray())
             val buffer = ByteArray(8192)
@@ -250,6 +248,38 @@ object MemoryUtil {
             }
 
             output64.close()
+
+            if (file.exists()) {
+                file.delete()
+            }
+            val fw = FileWriter(file)
+            fw.write(output.toString())
+            fw.close()
+            output.close()
+        } catch (e: SecurityException) {
+            return null
+        }
+        return file.toString()
+    }
+
+    @Throws(IOException::class)
+    fun writeFileNoEncryption(file: File, data: String?): String? {
+        if (data == null) return null
+        try {
+            val inputStream = ByteArrayInputStream(data.toByteArray())
+            val buffer = ByteArray(8192)
+            var bytesRead: Int
+            val output = ByteArrayOutputStream()
+            try {
+                do {
+                    bytesRead = inputStream.read(buffer)
+                    if (bytesRead != -1) {
+                        output.write(buffer, 0, bytesRead)
+                    }
+                } while (bytesRead != -1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
 
             if (file.exists()) {
                 file.delete()

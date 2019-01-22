@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
+import java.io.File
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -26,6 +27,10 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
 
     private val mDrive: GDrive? = GDrive.getInstance(context)
     private val mDropbox: Dropbox = Dropbox()
+
+    fun exportAllToFile(): File? {
+        return backupTool.exportAll()
+    }
 
     /**
      * Create backup files for reminders, groups, birthdays and notes.
