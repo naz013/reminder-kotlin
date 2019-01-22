@@ -673,5 +673,7 @@
     <string name="from_url">From Url</string>
     <string name="wrong_url">Wrong Url</string>
     <string name="failed_to_download">Failed to download</string>
+    <string name="privacy_warming">To continue You need to accept Privacy Policy</string>
+    <string name="restore_data">Restore data</string>
 
 </resources>

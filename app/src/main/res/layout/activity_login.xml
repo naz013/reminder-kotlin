@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:text="@string/log_in"
+        android:text="@string/restore_data"
         android:textAppearance="?textAppearanceHeadline6" />
 
     <View
@@ -95,21 +95,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
         android:text="@string/skip"
         android:textAppearance="?textAppearanceButton" />
-
-    <CheckBox
-        android:id="@+id/terms_check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:checked="true"
-        android:text="@string/i_accept"
-        android:textColorLink="?android:textColorPrimary"
-        android:textSize="12sp" />
 
 </LinearLayout>
