@@ -666,5 +666,12 @@
     <string name="missed_call">Apel pierdut</string>
     <string name="select_date_in_future">Selectați data în viitor</string>
     <string name="portuguese">Portugheză</string>
+    <string name="clear_all_changes">Ștergeți toate modificările</string>
+    <string name="download">Descarca</string>
+    <string name="failed_to_download">Descărcarea nu a reușit</string>
+    <string name="from_url">Descărcați de pe link</string>
+    <string name="restore_data">Recuperarea datelor</string>
+    <string name="privacy_warming">Pentru a continua Trebuie să acceptați Politica de confidențialitate</string>
+    <string name="wrong_url">Link greșit</string>
 
 </resources>

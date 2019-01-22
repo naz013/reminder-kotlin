@@ -666,5 +666,12 @@
     <string name="trash_was_cleared">La basura fue limpiada</string>
     <string name="this_command_not_supported_on_that_screen">Este comando no es compatible en esa pantalla.</string>
     <string name="portuguese">Portugués</string>
+    <string name="clear_all_changes">Borrar todos los cambios</string>
+    <string name="download">Descargar</string>
+    <string name="failed_to_download">Error al descargar</string>
+    <string name="from_url">Descargar desde el enlace</string>
+    <string name="restore_data">Restaurar datos</string>
+    <string name="privacy_warming">Para continuar necesitas aceptar la política de privacidad</string>
+    <string name="wrong_url">Link incorrecto</string>
 
 </resources>

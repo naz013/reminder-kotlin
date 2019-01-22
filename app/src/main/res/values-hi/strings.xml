@@ -666,5 +666,12 @@
     <string name="missed_call">मिस कॉल</string>
     <string name="select_date_in_future">भविष्य में तारीख का चयन करें</string>
     <string name="portuguese">पुर्तगाली</string>
+    <string name="clear_all_changes">सभी परिवर्तन साफ़ करें</string>
+    <string name="download">डाउनलोड</string>
+    <string name="failed_to_download">डाउनलोड करने में विफल</string>
+    <string name="from_url">लिंक से डाउनलोड करें</string>
+    <string name="restore_data">डेटा पुनः स्थापित करें</string>
+    <string name="privacy_warming">जारी रखने के लिए आपको गोपनीयता नीति को स्वीकार करना होगा</string>
+    <string name="wrong_url">गलत लिंक</string>
 
 </resources>

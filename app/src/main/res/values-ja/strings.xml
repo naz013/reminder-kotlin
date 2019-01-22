@@ -667,5 +667,12 @@
     <string name="missed_call">不在着信</string>
     <string name="select_date_in_future">将来の日付を選択</string>
     <string name="portuguese">ポルトガル語</string>
+    <string name="clear_all_changes">すべての変更をクリア</string>
+    <string name="download">ダウンロード</string>
+    <string name="failed_to_download">ダウンロードに失敗しました</string>
+    <string name="from_url">リンクからダウンロード</string>
+    <string name="restore_data">データを復元する</string>
+    <string name="privacy_warming">続けるにはあなたはプライバシーポリシーに同意する必要があります</string>
+    <string name="wrong_url">間違ったリンク</string>
 
 </resources>
