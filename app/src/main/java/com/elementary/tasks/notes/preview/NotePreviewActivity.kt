@@ -222,9 +222,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun showImages(images: List<ImageFile>) {
-        if (!images.isEmpty()) {
-            mAdapter.setImages(images)
-        }
+        mAdapter.setImages(images)
     }
 
     private fun hideProgress() {
