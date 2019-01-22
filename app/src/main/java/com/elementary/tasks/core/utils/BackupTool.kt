@@ -328,6 +328,16 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
                                 this.groupColor = defGroup.groupColor
                             }
                         }
+                        if (!reminder.isActive || reminder.isRemoved) {
+                            reminder.isRemoved = true
+                            reminder.isActive = false
+                        }
+                        if (!Reminder.isGpsType(reminder.type) && !TimeCount.isCurrent(reminder.eventTime)) {
+                            if (!Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) || reminder.hasReminder) {
+                                reminder.isRemoved = true
+                                reminder.isActive = false
+                            }
+                        }
                         appDb.reminderDao().insert(reminder)
                         if (reminder.isActive && !reminder.isRemoved) {
                             val control = EventControlFactory.getController(reminder)
