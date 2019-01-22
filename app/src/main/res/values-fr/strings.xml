@@ -666,5 +666,12 @@
     <string name="missed_call">Appel manqué</string>
     <string name="select_date_in_future">Choisir la date dans le futur</string>
     <string name="portuguese">Portugais</string>
+    <string name="clear_all_changes">Effacer tous les changements</string>
+    <string name="download">Télécharger</string>
+    <string name="failed_to_download">Échec du téléchargement</string>
+    <string name="from_url">Télécharger depuis le lien</string>
+    <string name="restore_data">Restaurer les données</string>
+    <string name="privacy_warming">Pour continuer, vous devez accepter la politique de confidentialité.</string>
+    <string name="wrong_url">Mauvais lien</string>
 
 </resources>

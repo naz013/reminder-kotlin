@@ -670,8 +670,8 @@
     <string name="found_one_reminder">Found one reminder</string>
     <string name="clear_all_changes">Clear all changes</string>
     <string name="download">Download</string>
-    <string name="from_url">From Url</string>
-    <string name="wrong_url">Wrong Url</string>
+    <string name="from_url">Download from link</string>
+    <string name="wrong_url">Wrong link</string>
     <string name="failed_to_download">Failed to download</string>
     <string name="privacy_warming">To continue You need to accept Privacy Policy</string>
     <string name="restore_data">Restore data</string>

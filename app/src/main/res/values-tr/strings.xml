@@ -666,5 +666,12 @@
     <string name="missed_call">Cevapsız arama</string>
     <string name="select_date_in_future">Gelecekte tarih seçin</string>
     <string name="portuguese">Portekizce</string>
+    <string name="clear_all_changes">Tüm değişiklikleri temizle</string>
+    <string name="download">İndir</string>
+    <string name="failed_to_download">İndirme başarısız oldu</string>
+    <string name="from_url">Bağlantıdan indir</string>
+    <string name="restore_data">Verileri geri yükle</string>
+    <string name="privacy_warming">Devam etmek için Gizlilik Politikasını kabul etmeniz gerekiyor.</string>
+    <string name="wrong_url">Yanlış link</string>
 
 </resources>

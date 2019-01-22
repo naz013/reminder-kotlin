@@ -666,5 +666,12 @@
     <string name="missed_call">Missed Call</string>
     <string name="select_date_in_future">Select date in future</string>
     <string name="portuguese">Portuguese</string>
+    <string name="clear_all_changes">Clear all changes</string>
+    <string name="download">Download</string>
+    <string name="failed_to_download">Failed to download</string>
+    <string name="from_url">Download from link</string>
+    <string name="restore_data">Restore data</string>
+    <string name="privacy_warming">To continue You need to accept Privacy Policy</string>
+    <string name="wrong_url">Wrong link</string>
 
 </resources>

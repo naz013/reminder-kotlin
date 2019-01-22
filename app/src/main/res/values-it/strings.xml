@@ -666,5 +666,12 @@
     <string name="missed_call">Chiamata persa</string>
     <string name="select_date_in_future">Seleziona la data in futuro</string>
     <string name="portuguese">Portoghese</string>
+    <string name="clear_all_changes">Cancella tutte le modifiche</string>
+    <string name="download">Scaricare</string>
+    <string name="failed_to_download">Download non riuscito</string>
+    <string name="from_url">Scarica dal link</string>
+    <string name="restore_data">Ripristinare i dati</string>
+    <string name="privacy_warming">Per continuare È necessario accettare l\'informativa sulla privacy</string>
+    <string name="wrong_url">Link sbagliato</string>
 
 </resources>

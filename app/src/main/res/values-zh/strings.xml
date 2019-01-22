@@ -666,5 +666,12 @@
     <string name="missed_call">未接来电</string>
     <string name="select_date_in_future">将来选择日期</string>
     <string name="portuguese">葡萄牙语</string>
+    <string name="clear_all_changes">清除所有更改</string>
+    <string name="download">下载</string>
+    <string name="failed_to_download">无法下载</string>
+    <string name="from_url">从链接下载</string>
+    <string name="restore_data">恢复数据</string>
+    <string name="privacy_warming">要继续您需要接受隐私政策</string>
+    <string name="wrong_url">错误的链接</string>
 
 </resources>

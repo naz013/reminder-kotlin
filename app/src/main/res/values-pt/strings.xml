@@ -666,5 +666,12 @@
     <string name="trash_was_cleared">Lixeira foi apagada</string>
     <string name="this_command_not_supported_on_that_screen">Este comando não é suportado nessa tela</string>
     <string name="portuguese">Português</string>
+    <string name="clear_all_changes">Limpar todas as alterações</string>
+    <string name="download">Baixar</string>
+    <string name="failed_to_download">Falhou o download</string>
+    <string name="from_url">Baixe do link</string>
+    <string name="restore_data">Restaurar dados</string>
+    <string name="privacy_warming">Para continuar Você precisa aceitar a Política de Privacidade</string>
+    <string name="wrong_url">Link errado</string>
 
 </resources>

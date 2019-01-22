@@ -666,5 +666,12 @@
     <string name="missed_call">Пропущений виклик</string>
     <string name="select_date_in_future">Виберіть дату в майбутньому</string>
     <string name="portuguese">Португальська</string>
+    <string name="clear_all_changes">Очистити всі зміни</string>
+    <string name="download">Завантажити</string>
+    <string name="failed_to_download">Не вдалося завантажити</string>
+    <string name="from_url">Завантажити з посиланням</string>
+    <string name="restore_data">Відновлення даних</string>
+    <string name="privacy_warming">Для продовження Ви повинні прийняти Політику конфіденційності</string>
+    <string name="wrong_url">Неправильне посилання</string>
 
 </resources>

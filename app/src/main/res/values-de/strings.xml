@@ -666,5 +666,12 @@
     <string name="note_saved_without_reminder">Notiz ohne Erinnerung gespeichert</string>
     <string name="trash_was_cleared">Der Müll wurde gelöscht</string>
     <string name="portuguese">Portugiesisch</string>
+    <string name="clear_all_changes">Alle Änderungen löschen</string>
+    <string name="download">Herunterladen</string>
+    <string name="failed_to_download">Download fehlgeschlagen</string>
+    <string name="from_url">Download von link</string>
+    <string name="restore_data">Daten wiederherstellen</string>
+    <string name="privacy_warming">Um fortzufahren, müssen Sie die Datenschutzbestimmungen akzeptieren</string>
+    <string name="wrong_url">Falscher Link</string>
 
 </resources>
