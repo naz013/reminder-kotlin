@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -40,8 +41,10 @@ class MissedCallViewModel private constructor(application: Application, number: 
     fun deleteMissedCall(missedCall: MissedCall) {
         postInProgress(true)
         launchDefault {
-            appDb.missedCallsDao().delete(missedCall)
-            EventJobService.cancelMissedCall(missedCall.number)
+            runBlocking {
+                appDb.missedCallsDao().delete(missedCall)
+                EventJobService.cancelMissedCall(missedCall.number)
+            }
             withUIContext {
                 postInProgress(false)
                 postCommand(Commands.DELETED)

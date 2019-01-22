@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -42,10 +43,12 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
     fun deleteAll(data: List<Reminder>) {
         postInProgress(true)
         launchDefault {
-            data.asSequence().forEach {
-                EventControlFactory.getController(it).stop()
+            runBlocking {
+                data.forEach {
+                    EventControlFactory.getController(it).stop()
+                }
+                appDb.reminderDao().deleteAll(data)
             }
-            appDb.reminderDao().deleteAll(data)
             startWork(DeleteBackupWorker::class.java,
                     Data.Builder().putStringArray(Constants.INTENT_IDS, data.map { it.uuId }.toTypedArray()).build(),
                     "RM_WORK")

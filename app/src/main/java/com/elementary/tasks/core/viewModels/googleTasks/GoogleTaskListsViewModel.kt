@@ -9,6 +9,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -46,9 +47,11 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
         }
         postInProgress(true)
         launchDefault {
-            val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
-            appDb.googleTasksDao().deleteAll(googleTasks)
-            google.clearTaskList(googleTaskList.listId)
+            runBlocking {
+                val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
+                appDb.googleTasksDao().deleteAll(googleTasks)
+                google.clearTaskList(googleTaskList.listId)
+            }
             withUIContext {
                 postInProgress(false)
                 postCommand(Commands.UPDATED)

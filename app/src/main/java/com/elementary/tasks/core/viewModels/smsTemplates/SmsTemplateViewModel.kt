@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.places.work.SingleBackupWorker
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -40,7 +41,9 @@ class SmsTemplateViewModel private constructor(application: Application, key: St
     fun saveTemplate(smsTemplate: SmsTemplate) {
         postInProgress(true)
         launchDefault {
-            appDb.smsTemplatesDao().insert(smsTemplate)
+            runBlocking {
+                appDb.smsTemplatesDao().insert(smsTemplate)
+            }
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
             withUIContext {
                 postInProgress(false)
