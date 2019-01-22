@@ -59,6 +59,20 @@ object TelephonyUtil {
         }
     }
 
+    fun sendFile(file: File, context: Context) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_SUBJECT, file.name)
+        val uri = UriUtil.getUri(context, file)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        try {
+            context.startActivity(Intent.createChooser(intent, "Send email..."))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     fun sendMail(context: Context, email: String, subject: String,
                  message: String, filePath: String?) {
         val intent = Intent(Intent.ACTION_SEND)
