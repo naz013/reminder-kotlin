@@ -3,7 +3,7 @@
     <string name="app_name">"Нагадування"</string>
     <string name="app_name_pro">"Нагадування PRO"</string>
     <string name="action_settings">"Налаштування"</string>
-    <string name="copyright">2018© Назар Сухович</string>
+    <string name="copyright">2019 © Назар Сухович</string>
 
     <string name="cant_access_location_services">"Я не можу отримати доступ до послуг розташування!"</string>
     <string name="normal">"Звичайна"</string>
