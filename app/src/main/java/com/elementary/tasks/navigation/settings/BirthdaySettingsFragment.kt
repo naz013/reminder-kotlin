@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.TimePicker
 import android.widget.Toast
@@ -47,6 +48,7 @@ import java.util.*
 class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var viewModel: BirthdaysViewModel
+    private var mItemSelect: Int = 0
 
     private val onProgress: (Boolean) -> Unit = {
         if (it) {
@@ -77,11 +79,42 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         initNotificationPrefs()
         initViewModel()
         initScanButton()
+        initPriority()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ScanContactsWorker.unsubscribe()
+    }
+
+    private fun initPriority() {
+        priorityPrefs.setOnClickListener { showPriorityDialog() }
+        priorityPrefs.setDependentView(birthReminderPrefs)
+        showPriority()
+    }
+
+    private fun showPriorityDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.default_priority))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, priorityList())
+        mItemSelect = prefs.birthdayPriority
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            mItemSelect = which
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.birthdayPriority = mItemSelect
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.setOnDismissListener { showPriority() }
+        dialog.show()
+    }
+
+    private fun showPriority() {
+        priorityPrefs.setDetailText(priorityList()[prefs.birthdayPriority])
     }
 
     private fun initViewModel() {

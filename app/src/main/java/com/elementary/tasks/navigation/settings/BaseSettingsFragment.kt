@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation.settings
 
+import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -30,5 +31,15 @@ abstract class BaseSettingsFragment : BaseNavigationFragment() {
 
     init {
         ReminderApp.appComponent.inject(this)
+    }
+
+    protected fun priorityList(): Array<String> {
+        return arrayOf(
+                getString(R.string.priority_lowest),
+                getString(R.string.priority_low),
+                getString(R.string.priority_normal),
+                getString(R.string.priority_high),
+                getString(R.string.priority_highest)
+        )
     }
 }
