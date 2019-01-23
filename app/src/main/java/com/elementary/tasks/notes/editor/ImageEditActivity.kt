@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentTransaction
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
@@ -51,7 +52,7 @@ class ImageEditActivity : ThemedActivity(), EditInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_edit)
         initActionBar()
-        typeIcon.visibility = View.INVISIBLE
+        typeIcon.visibility = if (BuildConfig.DEBUG) View.VISIBLE else View.INVISIBLE
         typeIcon.setOnClickListener { toggleScreen() }
         backButton.setOnClickListener { closeScreen() }
         saveButton.setOnClickListener { saveImage() }

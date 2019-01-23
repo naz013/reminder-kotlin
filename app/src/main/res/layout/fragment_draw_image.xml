@@ -5,432 +5,74 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
-    <RelativeLayout
+    <com.elementary.tasks.core.drawing.DrawView
+        android:id="@+id/draw_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:background="?attr/colorAccent"
-        android:padding="1dp">
-
-        <com.elementary.tasks.core.drawing.DrawView
-            android:id="@+id/draw_view"
-            android:layout_width="match_parent"
-            android:layout_height="292dp"
-            android:layout_gravity="center" />
-
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
 
     <LinearLayout
-        android:id="@+id/prefsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?android:colorBackground"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:background="?colorSecondary12"
+        android:padding="8dp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/showPrefsButton"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="?attr/selectableItemBackground"
+            android:id="@+id/undoButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_keyboard_arrow_up_24px"
-            app:tint="?android:textColorPrimary" />
+            app:srcCompat="@drawable/ic_twotone_undo_24px"
+            app:tint="?colorSecondary" />
 
-        <LinearLayout
-            android:id="@+id/prefsContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/redoButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_redo_24px"
+            app:tint="?colorSecondary" />
 
-    </LinearLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/clearButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_cancel_24px"
+            app:tint="?colorSecondary" />
 
-    <ScrollView
-        android:id="@+id/draw_tools"
-        android:layout_width="@dimen/draw_tool_width"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/controlBox"
-        android:layout_alignParentEnd="true"
-        android:background="?android:colorBackground"
-        android:overScrollMode="ifContentScrolls"
-        android:paddingStart="8dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="16dp"
-        android:scrollbars="vertical">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/layersButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_twotone_layers_24px"
+            app:tint="?colorSecondary" />
 
-        <LinearLayout
-            android:id="@+id/tools_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/penButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_pen"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/fillToolButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_format_color_fill_24px"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imageButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_image_24px"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/textButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_text_fields_24px"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/lineButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_vector_line"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/rectangleButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_square_outline"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/circleButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_circle_outline"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ellipseButton"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/draw_tool_width"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_ellipse_vector_format"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/cubicBezierButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_vector_curve"
-                app:tint="?android:textColorPrimary" />
-
-        </LinearLayout>
-    </ScrollView>
-
-    <ScrollView
-        android:id="@+id/colorView"
-        android:layout_width="@dimen/draw_tool_width"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/controlBox"
-        android:layout_alignParentStart="true"
-        android:background="?android:colorBackground"
-        android:overScrollMode="ifContentScrolls"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:scrollbars="vertical">
-
-        <LinearLayout
-            android:id="@+id/colorGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorAmberButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_amber" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorBlueButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_blue" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorBlueLightButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_blue_light" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorCyanButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_cyan" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorDeepOrangeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_deep_orange" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorDeepPurpleButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_deep_purple" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorGreenButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_green" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorGreenLightButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_green_light" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorGreyButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_grey" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorIndigoButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_indigo" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorLimeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_lime" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorOrangeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_orange" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorPinkButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_pink" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorPurpleButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_purple" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorRedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_red" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorTealButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_teal" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorYellowButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_yellow" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorWhiteButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_white" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/colorBlackButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/tool_button_states"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/drawable_black" />
-
-        </LinearLayout>
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/controlBox"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/draw_tool_width"
-        android:background="?android:colorBackground"
-        android:orientation="horizontal"
-        android:paddingLeft="8dp"
-        android:paddingTop="8dp"
-        android:paddingRight="8dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/currentStrokeColorButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/drawable_amber" />
-
-        <HorizontalScrollView
-            android:id="@+id/controlView"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/draw_tool_width"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/undoButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/tool_button_states"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_undo_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/redoButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/tool_button_states"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_redo_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/clearButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/tool_button_states"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_cancel_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/layersButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_layers_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </LinearLayout>
-        </HorizontalScrollView>
+            app:srcCompat="@drawable/drawable_black" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/currentToolButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_pen"
-            app:tint="?android:textColorPrimary" />
+            app:tint="?colorSecondary" />
 
     </LinearLayout>
 </RelativeLayout>

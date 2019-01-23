@@ -185,7 +185,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_note)
 
-        photoSelectionUtil = PhotoSelectionUtil(this, dialogues, this)
+        photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
 
         initActionBar()
         initMenu()
