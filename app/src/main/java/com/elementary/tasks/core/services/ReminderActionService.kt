@@ -75,7 +75,7 @@ class ReminderActionService : BaseBroadcast() {
             Timber.d("start: ignore -> $ignore, event -> $reminder")
             if (prefs.applyDoNotDisturb(reminder.priority)) {
                 if (prefs.doNotDisturbAction == 0) {
-                    val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbTo, System.currentTimeMillis() - (TimeCount.MINUTE * 10))
+                    val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis() - (TimeCount.MINUTE * 10))
                     if (delayTime > 0) {
                         EventJobService.enableDelay(delayTime, id)
                     }
