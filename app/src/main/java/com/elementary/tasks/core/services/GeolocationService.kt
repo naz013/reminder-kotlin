@@ -11,10 +11,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
 import javax.inject.Inject
@@ -75,14 +72,16 @@ class GeolocationService : Service() {
     }
 
     private fun checkReminders(locationA: Location) {
-        for (reminder in AppDb.getAppDatabase(applicationContext).reminderDao().getAll(true, false)) {
-            if (Reminder.isGpsType(reminder.type)) {
-                checkDistance(locationA, reminder)
+        launchDefault {
+            for (reminder in AppDb.getAppDatabase(applicationContext).reminderDao().getAll(true, false)) {
+                if (Reminder.isGpsType(reminder.type)) {
+                    checkDistance(locationA, reminder)
+                }
             }
         }
     }
 
-    private fun checkDistance(locationA: Location, reminder: Reminder) {
+    private suspend fun checkDistance(locationA: Location, reminder: Reminder) {
         if (!TextUtils.isEmpty(reminder.eventTime)) {
             if (TimeCount.isCurrent(reminder.eventTime)) {
                 selectBranch(locationA, reminder)
@@ -92,7 +91,7 @@ class GeolocationService : Service() {
         }
     }
 
-    private fun selectBranch(locationA: Location, reminder: Reminder) {
+    private suspend fun selectBranch(locationA: Location, reminder: Reminder) {
         if (reminder.isNotificationShown) return
         when {
             Reminder.isBase(reminder.type, Reminder.BY_OUT) -> checkOut(locationA, reminder)
@@ -101,7 +100,7 @@ class GeolocationService : Service() {
         }
     }
 
-    private fun checkSimple(locationA: Location, reminder: Reminder) {
+    private suspend fun checkSimple(locationA: Location, reminder: Reminder) {
         val place = reminder.places[0]
         val locationB = Location("point B")
         locationB.latitude = place.latitude
@@ -115,7 +114,7 @@ class GeolocationService : Service() {
         }
     }
 
-    private fun checkPlaces(locationA: Location, reminder: Reminder) {
+    private suspend fun checkPlaces(locationA: Location, reminder: Reminder) {
         for (place in reminder.places) {
             val locationB = Location("point B")
             locationB.latitude = place.latitude
@@ -135,7 +134,7 @@ class GeolocationService : Service() {
         return radius
     }
 
-    private fun checkOut(locationA: Location, reminder: Reminder) {
+    private suspend fun checkOut(locationA: Location, reminder: Reminder) {
         val place = reminder.places[0]
         val locationB = Location("point B")
         locationB.latitude = place.latitude
@@ -158,19 +157,42 @@ class GeolocationService : Service() {
         }
     }
 
-    private fun showReminder(reminder: Reminder) {
+    private suspend fun showReminder(reminder: Reminder) {
         if (reminder.isNotificationShown) return
         reminder.isNotificationShown = true
         AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
-        application.startActivity(ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uuId))
+        var windowType = prefs.reminderType
+        val ignore = prefs.isIgnoreWindowType
+        if (!ignore) {
+            windowType = reminder.windowType
+        }
+        if (prefs.applyDoNotDisturb(reminder.priority)) {
+            if (prefs.doNotDisturbAction == 0) {
+                val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbTo, System.currentTimeMillis())
+                if (delayTime > 0) {
+                    reminder.eventTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis() + delayTime)
+                    AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
+                    EventJobService.enablePositionDelay(applicationContext, reminder.uuId)
+                }
+            }
+        } else {
+            withUIContext {
+                if (windowType == 0) {
+                    applicationContext.startActivity(ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uuId))
+                } else {
+                    ReminderUtils.showSimpleReminder(applicationContext, prefs, reminder.uuId)
+                }
+            }
+        }
     }
 
     private fun showNotification(roundedDistance: Int, reminder: Reminder) {
         if (!isNotificationEnabled) return
-        val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
+        val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SILENT)
         builder.setContentText(roundedDistance.toString())
         builder.setContentTitle(reminder.summary)
         builder.setContentText(roundedDistance.toString())
+        builder.priority = NotificationCompat.PRIORITY_LOW
         if (Module.isLollipop) {
             builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
         } else {

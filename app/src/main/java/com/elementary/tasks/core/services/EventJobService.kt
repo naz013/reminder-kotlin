@@ -54,8 +54,12 @@ class EventJobService : Job() {
                 val bundle = params.extras
                 when {
                     bundle.getBoolean(ARG_MISSED, false) -> {
-                        openMissedScreen(params.tag)
-                        enableMissedCall(prefs, params.tag)
+                        if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
+                            openMissedScreen(params.tag)
+                            enableMissedCall(prefs, params.tag)
+                        } else if (prefs.doNotDisturbAction == 0) {
+                            enableMissedCall(prefs, params.tag)
+                        }
                     }
                     bundle.getBoolean(ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
                     else -> start(context, params.tag)
@@ -68,8 +72,9 @@ class EventJobService : Job() {
     private fun birthdayAction(context: Context) {
         cancelBirthdayAlarm()
         enableBirthdayAlarm(prefs)
-        Thread {
+        launchDefault {
             val daysBefore = prefs.daysToBirthday
+            val applyDnd = prefs.applyDoNotDisturb(prefs.birthdayPriority)
             val cal = Calendar.getInstance()
             cal.timeInMillis = System.currentTimeMillis()
             val mYear = cal.get(Calendar.YEAR)
@@ -77,11 +82,13 @@ class EventJobService : Job() {
             for (item in AppDb.getAppDatabase(context).birthdaysDao().all()) {
                 val year = item.showedYear
                 val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
-                if (birthValue == mDate && year != mYear) {
-                    showBirthday(context, item)
+                if (!applyDnd && birthValue == mDate && year != mYear) {
+                    withUIContext {
+                        showBirthday(context, item)
+                    }
                 }
             }
-        }.start()
+        }
     }
 
     private fun getBirthdayValue(month: Int, day: Int, daysBefore: Int): String {
@@ -163,13 +170,16 @@ class EventJobService : Job() {
 
         fun enableDelay(time: Int, id: String) {
             val min = TimeCount.MINUTE
-            val due = System.currentTimeMillis() + min * time
-            val mills = due - System.currentTimeMillis()
-            if (due == 0L || mills <= 0) {
+            val millis = min * time
+            enableDelay(millis, id)
+        }
+
+        fun enableDelay(millis: Long, id: String) {
+            if (millis <= 0) {
                 return
             }
             JobRequest.Builder(id)
-                    .setExact(mills)
+                    .setExact(millis)
                     .setRequiresCharging(false)
                     .setRequiresDeviceIdle(false)
                     .setRequiresBatteryNotLow(false)

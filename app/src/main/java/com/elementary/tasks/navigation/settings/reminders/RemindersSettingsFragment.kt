@@ -1,12 +1,15 @@
 package com.elementary.tasks.navigation.settings.reminders
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_reminders.*
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -40,6 +43,88 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
 
         initDefaultPriority()
         initCompletedPrefs()
+        initDoNotDisturbPrefs()
+        initTimesPrefs()
+        initActionPrefs()
+        initIgnorePrefs()
+    }
+
+    private fun initIgnorePrefs() {
+        doNotDisturbIgnorePrefs.setOnClickListener { showIgnoreDialog() }
+        doNotDisturbIgnorePrefs.setDependentView(doNotDisturbPrefs)
+        showIgnore()
+    }
+
+    private fun showIgnore() {
+
+    }
+
+    private fun showIgnoreDialog() {
+
+    }
+
+    private fun initActionPrefs() {
+        doNotDisturbActionPrefs.setOnClickListener { showActionDialog() }
+        doNotDisturbActionPrefs.setDependentView(doNotDisturbPrefs)
+        showAction()
+    }
+
+    private fun showAction() {
+
+    }
+
+    private fun showActionDialog() {
+
+    }
+
+    private fun initTimesPrefs() {
+        doNotDisturbFromPrefs.setOnClickListener {
+            showTimeDialog(prefs.doNotDisturbFrom) { i, j ->
+                prefs.doNotDisturbFrom = TimeUtil.getBirthdayTime(i, j)
+                showFromTime()
+            }
+        }
+        doNotDisturbFromPrefs.setDependentView(doNotDisturbPrefs)
+
+        doNotDisturbToPrefs.setOnClickListener {
+            showTimeDialog(prefs.doNotDisturbTo) { i, j ->
+                prefs.doNotDisturbTo = TimeUtil.getBirthdayTime(i, j)
+                showToTime()
+            }
+        }
+        doNotDisturbToPrefs.setDependentView(doNotDisturbPrefs)
+
+        showFromTime()
+        showToTime()
+    }
+
+    private fun showTimeDialog(time: String, callback: (Int, Int) -> Unit) {
+        val calendar = TimeUtil.getBirthdayCalendar(time)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val min = calendar.get(Calendar.MINUTE)
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormat,
+                hour, min, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            callback.invoke(hourOfDay, minute)
+        })
+    }
+
+    private fun showToTime() {
+        doNotDisturbToPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbTo, prefs.is24HourFormat, prefs.appLanguage))
+    }
+
+    private fun showFromTime() {
+        doNotDisturbFromPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbFrom, prefs.is24HourFormat, prefs.appLanguage))
+    }
+
+    private fun initDoNotDisturbPrefs() {
+        doNotDisturbPrefs.setOnClickListener { changeDoNotDisturb() }
+        doNotDisturbPrefs.isChecked = prefs.isDoNotDisturbEnabled
+    }
+
+    private fun changeDoNotDisturb() {
+        val isChecked = doNotDisturbPrefs.isChecked
+        doNotDisturbPrefs.isChecked = !isChecked
+        prefs.isDoNotDisturbEnabled = !isChecked
     }
 
     private fun initDefaultPriority() {
