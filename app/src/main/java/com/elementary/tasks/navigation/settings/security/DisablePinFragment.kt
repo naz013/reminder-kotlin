@@ -33,6 +33,11 @@ class DisablePinFragment : BaseSettingsFragment() {
         pinField.addTextChangedListener(mTextWatcher)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        callback?.hideKeyboard()
+    }
+
     private fun savePin() {
         val old = pinField.text.toString().trim()
 
