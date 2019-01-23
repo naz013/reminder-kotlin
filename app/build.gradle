@@ -66,7 +66,8 @@ android {
         }
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.proApp
+            productFlavors.free.signingConfig signingConfigs.freeApp
+            productFlavors.pro.signingConfig signingConfigs.proApp
         }
     }
     compileOptions {
