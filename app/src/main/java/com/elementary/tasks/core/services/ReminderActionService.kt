@@ -5,9 +5,7 @@ import android.content.Intent
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
 
@@ -54,26 +52,41 @@ class ReminderActionService : BaseBroadcast() {
             val action = intent.action
             Timber.d("onReceive: $action")
             if (action != null) {
-                if (action.matches(ACTION_HIDE.toRegex())) {
-                    hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
-                } else if (action.matches(ACTION_RUN.toRegex())) {
-                    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-                    var windowType = prefs.reminderType
-                    val ignore = prefs.isIgnoreWindowType
-                    val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id)
-                    if (!ignore) {
-                        if (reminder != null) {
-                            windowType = reminder.windowType
-                        }
+                when {
+                    action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                    action.matches(ACTION_RUN.toRegex()) -> {
+                        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+                        resolveAction(context, id)
                     }
-                    Timber.d("start: ignore -> $ignore, event -> $reminder")
+                    else -> showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                }
+            }
+        }
+    }
+
+    private fun resolveAction(context: Context, id: String) {
+        launchDefault {
+            var windowType = prefs.reminderType
+            val ignore = prefs.isIgnoreWindowType
+            val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return@launchDefault
+            if (!ignore) {
+                windowType = reminder.windowType
+            }
+            Timber.d("start: ignore -> $ignore, event -> $reminder")
+            if (prefs.applyDoNotDisturb(reminder.priority)) {
+                if (prefs.doNotDisturbAction == 0) {
+                    val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbTo, System.currentTimeMillis() - (TimeCount.MINUTE * 10))
+                    if (delayTime > 0) {
+                        EventJobService.enableDelay(delayTime, id)
+                    }
+                }
+            } else {
+                withUIContext {
                     if (windowType == 0) {
                         context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
                     } else {
                         ReminderUtils.showSimpleReminder(context, prefs, id)
                     }
-                } else {
-                    showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                 }
             }
         }

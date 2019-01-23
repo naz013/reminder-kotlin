@@ -56,6 +56,14 @@
             app:prefs_type="text" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/doNotDisturbActionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/events_that_occured_during"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/doNotDisturbIgnorePrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -215,6 +215,18 @@ object TimeUtil {
         return ""
     }
 
+    fun millisToEndDnd(to: String?, current: Long): Long {
+        var toMillis = 0L
+        return toMillis - current
+    }
+
+    fun doNotDisturbRange(from: String?, to: String?): LongRange {
+        var fromMillis = 0L
+        var toMillis = 0L
+
+        return LongRange(fromMillis, toMillis)
+    }
+
     fun getBirthdayTime(time: String?): Long {
         val calendar = Calendar.getInstance()
         if (time != null) {
@@ -238,7 +250,6 @@ object TimeUtil {
             } catch (e: ArrayIndexOutOfBoundsException) {
                 e.printStackTrace()
             }
-
         }
         return calendar.timeInMillis
     }

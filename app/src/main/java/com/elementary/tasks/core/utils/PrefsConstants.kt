@@ -120,6 +120,8 @@ object PrefsConstants {
     const val ALLOW_SMS_AND_CALL = "allow_sms_and_call"
     const val MOVE_TO_TRASH = "move_to_trash"
     const val DEFAULT_PRIORITY = "default_priority"
+    const val BIRTHDAY_PRIORITY = "birthday_priority"
+    const val MISSED_CALL_PRIORITY = "missed_call_priority"
     const val UNLOCK_SCREEN_PRIORITY = "unlock_screen_priority"
     const val DO_NOT_DISTURB_ENABLED = "do_not_disturb_enabled"
     const val DO_NOT_DISTURB_FROM = "do_not_disturb_from"

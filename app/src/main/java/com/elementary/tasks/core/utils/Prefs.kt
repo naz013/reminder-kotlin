@@ -29,6 +29,20 @@ import javax.inject.Singleton
 @Singleton
 class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
+    fun applyDoNotDisturb(priority: Int): Boolean {
+        if (isDoNotDisturbEnabled) {
+            val range = TimeUtil.doNotDisturbRange(doNotDisturbFrom, doNotDisturbTo)
+            return if (range.contains(System.currentTimeMillis())) {
+                if (doNotDisturbIgnore == 5) {
+                    true
+                } else priority < doNotDisturbIgnore
+            } else {
+                false
+            }
+        }
+        return false
+    }
+
     var homePage: String
         get() = getString(PrefsConstants.HOME_PAGE)
         set(value) = putString(PrefsConstants.HOME_PAGE, value)
@@ -67,6 +81,14 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
     var defaultPriority: Int
         get() = getInt(PrefsConstants.DEFAULT_PRIORITY)
         set(value) = putInt(PrefsConstants.DEFAULT_PRIORITY, value)
+
+    var birthdayPriority: Int
+        get() = getInt(PrefsConstants.BIRTHDAY_PRIORITY)
+        set(value) = putInt(PrefsConstants.BIRTHDAY_PRIORITY, value)
+
+    var missedCallPriority: Int
+        get() = getInt(PrefsConstants.MISSED_CALL_PRIORITY)
+        set(value) = putInt(PrefsConstants.MISSED_CALL_PRIORITY, value)
 
     var unlockPriority: Int
         get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
@@ -542,6 +564,8 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             uiEd.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
             uiEd.putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
             uiEd.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
+            uiEd.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
+            uiEd.putInt(PrefsConstants.MISSED_CALL_PRIORITY, 2)
             uiEd.putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
             uiEd.putInt(PrefsConstants.APP_LANGUAGE, 0)
             uiEd.putInt(PrefsConstants.START_DAY, 1)
@@ -660,6 +684,12 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.DEFAULT_PRIORITY)) {
             putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
+        }
+        if (!hasKey(PrefsConstants.BIRTHDAY_PRIORITY)) {
+            putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
+        }
+        if (!hasKey(PrefsConstants.MISSED_CALL_PRIORITY)) {
+            putInt(PrefsConstants.MISSED_CALL_PRIORITY, 2)
         }
         if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER_TIME)) {
             putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "12:00")
