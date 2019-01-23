@@ -35,6 +35,7 @@ class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
         return if (reminder.hasReminder) {
             if (!TextUtils.isEmpty(reminder.eventTime) && TimeCount.isCurrent(reminder.eventTime)) {
                 reminder.isActive = true
+                reminder.isRemoved = false
                 super.save()
                 super.enableReminder()
                 true
@@ -43,6 +44,7 @@ class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
             }
         } else {
             reminder.isActive = true
+            reminder.isRemoved = false
             super.save()
             true
         }

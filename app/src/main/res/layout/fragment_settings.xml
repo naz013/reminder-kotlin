@@ -21,6 +21,15 @@
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/remindersSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/reminders_"
+            app:prefs_icon="@drawable/ic_twotone_alarm_24px"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/exportSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

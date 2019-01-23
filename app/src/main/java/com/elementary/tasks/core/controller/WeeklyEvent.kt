@@ -33,6 +33,7 @@ class WeeklyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     override fun start(): Boolean {
         if (TimeCount.isCurrent(reminder.eventTime)) {
             reminder.isActive = true
+            reminder.isRemoved = false
             super.save()
             super.enableReminder()
             super.export()

@@ -678,5 +678,8 @@
     <string name="export_all_my_data">Export all my data</string>
     <string name="no_new_birthdays">No new birthdays</string>
     <string name="scan_contacts">Scan contacts</string>
+    <string name="do_not_move">Do not move</string>
+    <string name="completed_reminders">Completed reminders</string>
+    <string name="reminders_">Reminders</string>
 
 </resources>

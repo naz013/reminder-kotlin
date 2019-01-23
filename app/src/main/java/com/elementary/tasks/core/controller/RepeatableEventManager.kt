@@ -102,6 +102,9 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
 
     override fun stop(): Boolean {
         reminder.isActive = false
+        if (prefs.moveCompleted) {
+            reminder.isRemoved = true
+        }
         save()
         makeGoogleTaskDone()
         return pause()

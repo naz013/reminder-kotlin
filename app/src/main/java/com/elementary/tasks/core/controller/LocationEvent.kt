@@ -36,6 +36,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
     override fun start(): Boolean {
         reminder.isActive = true
+        reminder.isRemoved = false
         super.save()
         return if (EventJobService.enablePositionDelay(context, reminder.uuId)) {
             true
@@ -48,6 +49,9 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     override fun stop(): Boolean {
         EventJobService.cancelReminder(reminder.uuId)
         reminder.isActive = false
+        if (prefs.moveCompleted) {
+            reminder.isRemoved = true
+        }
         super.save()
         notifier.hideNotification(reminder.uniqueId)
         stopTracking(false)
