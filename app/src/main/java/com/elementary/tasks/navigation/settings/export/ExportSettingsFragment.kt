@@ -70,6 +70,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         progressView.visibility = View.INVISIBLE
         syncButton.isEnabled = true
         backupButton.isEnabled = true
+        exportButton.isEnabled = true
     }
     private val onMessage: (String) -> Unit = {
         progressMessageView.text = it
@@ -78,6 +79,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         if (it) {
             syncButton.isEnabled = false
             backupButton.isEnabled = false
+            exportButton.isEnabled = false
             progressView.visibility = View.VISIBLE
         } else {
             onSyncEnd.invoke()
@@ -144,11 +146,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         if (prefs.isBackupEnabled) {
             syncButton.isEnabled = true
             syncButton.visibility = View.VISIBLE
-            syncButton.setOnClickListener {
-                onProgress.invoke(true)
-                SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool))
-            }
-
+            syncButton.setOnClickListener { syncClick() }
             SyncWorker.listener = onProgress
             SyncWorker.onEnd = onSyncEnd
             SyncWorker.progress = onMessage
@@ -157,15 +155,18 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         }
     }
 
+    private fun syncClick() {
+        if (Permissions.ensurePermissions(activity!!, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            onProgress.invoke(true)
+            SyncWorker.sync(context!!, IoHelper(context!!, prefs, backupTool))
+        }
+    }
+
     private fun initExportButton() {
         if (prefs.isBackupEnabled) {
             exportButton.isEnabled = true
             exportButton.visibility = View.VISIBLE
-            exportButton.setOnClickListener {
-                onProgress.invoke(true)
-                ExportAllDataWorker.export(context!!, IoHelper(context!!, prefs, backupTool))
-            }
-
+            exportButton.setOnClickListener { exportClick() }
             ExportAllDataWorker.onEnd = {
                 if (it != null) {
                     TelephonyUtil.sendFile(it, context!!)
@@ -177,20 +178,30 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         }
     }
 
+    private fun exportClick() {
+        if (Permissions.ensurePermissions(activity!!, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+            onProgress.invoke(true)
+            ExportAllDataWorker.export(context!!, IoHelper(context!!, prefs, backupTool))
+        }
+    }
+
     private fun initBackupButton() {
         if (prefs.isBackupEnabled) {
             backupButton.isEnabled = true
             backupButton.visibility = View.VISIBLE
-            backupButton.setOnClickListener {
-                onProgress.invoke(true)
-                BackupWorker.backup(context!!, IoHelper(context!!, prefs, backupTool))
-            }
-
+            backupButton.setOnClickListener { backupClick() }
             BackupWorker.listener = onProgress
             BackupWorker.onEnd = onSyncEnd
             BackupWorker.progress = onMessage
         } else {
             backupButton.visibility = View.GONE
+        }
+    }
+
+    private fun backupClick() {
+        if (Permissions.ensurePermissions(activity!!, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            onProgress.invoke(true)
+            BackupWorker.backup(context!!, IoHelper(context!!, prefs, backupTool))
         }
     }
 
@@ -441,12 +452,13 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            CALENDAR_CODE -> if (Permissions.isAllGranted(grantResults)) {
-                changeExportToCalendarPrefs()
-            }
-            CALENDAR_PERM -> if (Permissions.isAllGranted(grantResults)) {
-                showSelectCalendarDialog()
+        if (Permissions.isAllGranted(grantResults)) {
+            when (requestCode) {
+                CALENDAR_CODE -> changeExportToCalendarPrefs()
+                CALENDAR_PERM -> showSelectCalendarDialog()
+                PERM_BACKUP -> backupClick()
+                PERM_EXPORT -> exportClick()
+                PERM_SYNC -> syncClick()
             }
         }
     }
@@ -454,8 +466,10 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     override fun getTitle(): String = getString(R.string.export_and_sync)
 
     companion object {
-
         private const val CALENDAR_CODE = 124
         private const val CALENDAR_PERM = 500
+        private const val PERM_SYNC = 501
+        private const val PERM_BACKUP = 502
+        private const val PERM_EXPORT = 503
     }
 }
