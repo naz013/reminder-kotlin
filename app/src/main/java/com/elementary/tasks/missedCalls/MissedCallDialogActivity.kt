@@ -74,6 +74,12 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     override val maxVolume: Int
         get() = prefs.loudness
 
+    private val mMissedCallObserver: Observer<in MissedCall> = Observer { missedCall ->
+        if (missedCall != null) {
+            showInfo(missedCall)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         super.onCreate(savedInstanceState)
@@ -121,11 +127,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         val number = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(application, number))
                 .get(MissedCallViewModel::class.java)
-        viewModel.missedCall.observe(this, Observer { missedCall ->
-            if (missedCall != null) {
-                showInfo(missedCall)
-            }
-        })
+        viewModel.missedCall.observeForever(mMissedCallObserver)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
@@ -135,6 +137,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
                 }
             }
         })
+        lifecycle.addObserver(viewModel)
         if (number == "" && BuildConfig.DEBUG) {
             loadTest()
         }
@@ -181,6 +184,8 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.missedCall.removeObserver(mMissedCallObserver)
+        lifecycle.removeObserver(viewModel)
         removeFlags()
     }
 
@@ -210,6 +215,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     private fun removeMissed() {
         isEventShowed = true
+        viewModel.missedCall.removeObserver(mMissedCallObserver)
         val missedCall = mMissedCall
         if (missedCall != null) {
             viewModel.deleteMissedCall(missedCall)

@@ -145,6 +145,12 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return isWake
         }
 
+    private val mBirthdayObserver: Observer<in Birthday> = Observer { birthday ->
+        if (birthday != null) {
+            showBirthday(birthday)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
@@ -172,11 +178,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
-        viewModel.birthday.observe(this, Observer<Birthday>{ birthday ->
-            if (birthday != null) {
-                showBirthday(birthday)
-            }
-        })
+        viewModel.birthday.observeForever(mBirthdayObserver)
         viewModel.result.observe(this, Observer<Commands>{ commands ->
             if (commands != null) {
                 when (commands) {
@@ -186,6 +188,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
                 }
             }
         })
+        lifecycle.addObserver(viewModel)
         if (id == "" && BuildConfig.DEBUG) {
             loadTest()
         }
@@ -292,6 +295,8 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.birthday.removeObserver(mBirthdayObserver)
+        lifecycle.removeObserver(viewModel)
         removeFlags()
     }
 
@@ -325,6 +330,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     private fun updateBirthday(birthday: Birthday?) {
         isEventShowed = true
+        viewModel.birthday.removeObserver(mBirthdayObserver)
         if (birthday != null) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
