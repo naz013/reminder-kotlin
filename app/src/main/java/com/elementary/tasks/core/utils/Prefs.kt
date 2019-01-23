@@ -44,6 +44,34 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.USE_FINGERPRINT)
         set(value) = putBoolean(PrefsConstants.USE_FINGERPRINT, value)
 
+    var isDoNotDisturbEnabled: Boolean
+        get() = getBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, false)
+        set(value) = putBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, value)
+
+    var doNotDisturbFrom: String
+        get() = getString(PrefsConstants.DO_NOT_DISTURB_FROM)
+        set(value) = putString(PrefsConstants.DO_NOT_DISTURB_FROM, value)
+
+    var doNotDisturbTo: String
+        get() = getString(PrefsConstants.DO_NOT_DISTURB_TO)
+        set(value) = putString(PrefsConstants.DO_NOT_DISTURB_TO, value)
+
+    var doNotDisturbIgnore: Int
+        get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE)
+        set(value) = putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, value)
+
+    var doNotDisturbAction: Int
+        get() = getInt(PrefsConstants.DO_NOT_DISTURB_ACTION)
+        set(value) = putInt(PrefsConstants.DO_NOT_DISTURB_ACTION, value)
+
+    var defaultPriority: Int
+        get() = getInt(PrefsConstants.DEFAULT_PRIORITY)
+        set(value) = putInt(PrefsConstants.DEFAULT_PRIORITY, value)
+
+    var unlockPriority: Int
+        get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
+        set(value) = putInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY, value)
+
     var isTelephonyAllowed: Boolean
         get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
         set(value) = putBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, value)
@@ -509,8 +537,12 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             uiEd.putString(PrefsConstants.TIME_DAY, "12:0")
             uiEd.putString(PrefsConstants.TIME_EVENING, "19:0")
             uiEd.putString(PrefsConstants.TIME_NIGHT, "23:0")
+            uiEd.putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
+            uiEd.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
             uiEd.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
             uiEd.putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
+            uiEd.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
+            uiEd.putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
             uiEd.putInt(PrefsConstants.APP_LANGUAGE, 0)
             uiEd.putInt(PrefsConstants.START_DAY, 1)
             uiEd.putInt(PrefsConstants.DAYS_TO_BIRTHDAY, 0)
@@ -623,8 +655,20 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         if (!hasKey(PrefsConstants.START_DAY)) {
             putInt(PrefsConstants.START_DAY, 1)
         }
+        if (!hasKey(PrefsConstants.DO_NOT_DISTURB_IGNORE)) {
+            putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, 5)
+        }
+        if (!hasKey(PrefsConstants.DEFAULT_PRIORITY)) {
+            putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
+        }
         if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER_TIME)) {
             putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "12:00")
+        }
+        if (!hasKey(PrefsConstants.DO_NOT_DISTURB_FROM)) {
+            putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
+        }
+        if (!hasKey(PrefsConstants.DO_NOT_DISTURB_TO)) {
+            putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
         }
         if (!hasKey(PrefsConstants.TRACK_DISTANCE)) {
             putInt(PrefsConstants.TRACK_DISTANCE, 1)

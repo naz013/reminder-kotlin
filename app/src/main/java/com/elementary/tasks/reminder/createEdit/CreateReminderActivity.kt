@@ -77,6 +77,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        reminder.priority = prefs.defaultPriority
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_reminder)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false

@@ -119,6 +119,13 @@ object PrefsConstants {
     const val TWO_COLS = "two_cols"
     const val ALLOW_SMS_AND_CALL = "allow_sms_and_call"
     const val MOVE_TO_TRASH = "move_to_trash"
+    const val DEFAULT_PRIORITY = "default_priority"
+    const val UNLOCK_SCREEN_PRIORITY = "unlock_screen_priority"
+    const val DO_NOT_DISTURB_ENABLED = "do_not_disturb_enabled"
+    const val DO_NOT_DISTURB_FROM = "do_not_disturb_from"
+    const val DO_NOT_DISTURB_TO = "do_not_disturb_to"
+    const val DO_NOT_DISTURB_IGNORE = "do_not_disturb_ignore"
+    const val DO_NOT_DISTURB_ACTION = "do_not_disturb_action"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"
