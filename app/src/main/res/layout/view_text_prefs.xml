@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:colorBackground"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -15,16 +16,16 @@
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
             android:background="?selectableItemBackground"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_twotone_add_24px"
-                app:tint="?android:textColorPrimary"
-                android:layout_height="wrap_content" />
+                app:tint="?android:textColorPrimary" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -38,16 +39,16 @@
             android:id="@+id/fontButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
             android:background="?selectableItemBackground"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_twotone_text_fields_24px"
-                app:tint="?android:textColorPrimary"
-                android:layout_height="wrap_content" />
+                app:tint="?android:textColorPrimary" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"

@@ -36,16 +36,24 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PhotoSelectionUtil(private val activity: Activity, private val dialogues: Dialogues, private val mCallback: UriCallback?) {
+class PhotoSelectionUtil(private val activity: Activity, private val dialogues: Dialogues,
+                         private val urlSupported: Boolean = true, private val mCallback: UriCallback?) {
 
     private var imageUri: Uri? = null
 
     fun selectImage() {
-        val items = arrayOf<CharSequence>(
-                activity.getString(R.string.gallery),
-                activity.getString(R.string.take_a_shot),
-                activity.getString(R.string.from_url)
-        )
+        val items = if (urlSupported) {
+            arrayOf<CharSequence>(
+                    activity.getString(R.string.gallery),
+                    activity.getString(R.string.take_a_shot),
+                    activity.getString(R.string.from_url)
+            )
+        } else {
+            arrayOf<CharSequence>(
+                    activity.getString(R.string.gallery),
+                    activity.getString(R.string.take_a_shot)
+            )
+        }
         val builder = dialogues.getDialog(activity)
         builder.setTitle(R.string.image)
         builder.setItems(items) { dialog, item ->
@@ -65,7 +73,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
         }
         var intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (urlSupported && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "image/*"
@@ -138,7 +146,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
         return File(sd, File(directoryPictures, "Reminder").toString())
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
                 REQUEST_SD_CARD -> pickFromGallery()
