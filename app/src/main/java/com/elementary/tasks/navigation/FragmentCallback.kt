@@ -35,4 +35,6 @@ interface FragmentCallback {
     fun onMenuSelect(menu: Int)
 
     fun onScrollUpdate(y: Int)
+
+    fun hideKeyboard()
 }

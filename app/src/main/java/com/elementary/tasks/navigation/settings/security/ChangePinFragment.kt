@@ -37,6 +37,11 @@ class ChangePinFragment : BaseSettingsFragment() {
         pinOldField.addTextChangedListener(mTextWatcher)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        callback?.hideKeyboard()
+    }
+
     private fun savePin() {
         val old = pinOldField.text.toString().trim()
         val new = pinField.text.toString().trim()

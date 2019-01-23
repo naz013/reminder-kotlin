@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.speech.RecognizerIntent
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
@@ -251,6 +253,13 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onMenuSelect(menu: Int) {
         prevItem = menu
         nav_view.setCheckedItem(prevItem)
+    }
+
+    override fun hideKeyboard() {
+        val focus = window.currentFocus ?: return
+        val token = focus.windowToken ?: return
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.hideSoftInputFromWindow(token, 0)
     }
 
     private fun initNavigation() {
