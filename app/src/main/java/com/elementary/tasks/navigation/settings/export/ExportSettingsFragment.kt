@@ -120,6 +120,14 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         super.onResume()
         initSyncButton()
         initBackupButton()
+        initExportButton()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SyncWorker.unsubscribe()
+        BackupWorker.unsubscribe()
+        ExportAllDataWorker.unsubscribe()
     }
 
     private fun findPosition(list: List<CalendarUtils.CalendarItem>): Int {

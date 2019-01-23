@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
+import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
@@ -24,6 +23,7 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_birthdays_settings.*
+import kotlinx.android.synthetic.main.view_progress.*
 import java.util.*
 
 /**
@@ -48,6 +48,17 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
 
     private lateinit var viewModel: BirthdaysViewModel
 
+    private val onProgress: (Boolean) -> Unit = {
+        if (it) {
+            progressMessageView.text = getString(R.string.please_wait)
+            scanButton.isEnabled = false
+            progressView.visibility = View.VISIBLE
+        } else {
+            progressView.visibility = View.INVISIBLE
+            scanButton.isEnabled = true
+        }
+    }
+
     override fun layoutRes(): Int = R.layout.fragment_settings_birthdays_settings
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,9 +74,14 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         initBirthdayTimePrefs()
         initContactsPrefs()
         initContactsAutoPrefs()
-        initScanPrefs()
         initNotificationPrefs()
         initViewModel()
+        initScanButton()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ScanContactsWorker.unsubscribe()
     }
 
     private fun initViewModel() {
@@ -87,20 +103,32 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         birthdayNotificationPrefs.setDependentView(birthReminderPrefs)
     }
 
-    private fun initScanPrefs() {
-        contactsScanPrefs.setDependentView(useContactsPrefs)
-        contactsScanPrefs.setOnClickListener { scanForBirthdays() }
-        contactsScanPrefs.setDependentView(birthReminderPrefs)
+    private fun initScanButton() {
+        if (prefs.isContactBirthdaysEnabled) {
+            scanButton.isEnabled = true
+            scanButton.visibility = View.VISIBLE
+            scanButton.setOnClickListener { scanForBirthdays() }
+            ScanContactsWorker.onEnd = {
+                val message = if (it == 0) {
+                    getString(R.string.no_new_birthdays)
+                } else {
+                    getString(R.string.found) + " $it " + getString(R.string.birthdays)
+                }
+                Toast.makeText(context!!, message, Toast.LENGTH_SHORT).show()
+                onProgress.invoke(false)
+            }
+            ScanContactsWorker.listener = onProgress
+        } else {
+            scanButton.visibility = View.GONE
+        }
     }
 
     private fun scanForBirthdays() {
         if (!Permissions.ensurePermissions(activity!!, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
             return
         }
-        val work = OneTimeWorkRequest.Builder(CheckBirthdaysWorker::class.java)
-                .addTag("BD_CHECK_ONCE")
-                .build()
-        WorkManager.getInstance().enqueue(work)
+        onProgress.invoke(true)
+        ScanContactsWorker.scan(context!!)
     }
 
     private fun initContactsAutoPrefs() {
@@ -134,6 +162,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         val isChecked = useContactsPrefs.isChecked
         useContactsPrefs.isChecked = !isChecked
         prefs.isContactBirthdaysEnabled = !isChecked
+        initScanButton()
     }
 
     private fun initBirthdayTimePrefs() {

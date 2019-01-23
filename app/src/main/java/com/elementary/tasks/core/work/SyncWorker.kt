@@ -34,6 +34,12 @@ object SyncWorker {
         launchSync(context, ioHelper)
     }
 
+    fun unsubscribe() {
+        onEnd = null
+        listener = null
+        progress = null
+    }
+
     private fun launchSync(context: Context, ioHelper: IoHelper) {
         mJob = launchIo {
             notifyMsg(context.getString(R.string.syncing_groups))
