@@ -465,7 +465,9 @@ class AdvancedMapFragment : BaseMapFragment() {
         val map = mMap ?: return
         setMapType(map, type) {
             hideLayers()
-            showStyles()
+            if (type == GoogleMap.MAP_TYPE_TERRAIN) {
+                showStyles()
+            }
         }
     }
 
