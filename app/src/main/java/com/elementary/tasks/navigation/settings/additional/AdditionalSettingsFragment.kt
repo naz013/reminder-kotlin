@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings.additional
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
@@ -33,6 +34,8 @@ import java.util.*
  */
 class AdditionalSettingsFragment : BaseSettingsFragment() {
 
+    private var mItemSelect: Int = 0
+
     override fun layoutRes(): Int = R.layout.fragment_settings_additional
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,6 +50,37 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         initMessagesPrefs()
         followReminderPrefs.setOnClickListener { changeFollowPrefs() }
         followReminderPrefs.isChecked = prefs.isFollowReminderEnabled
+        initPriority()
+    }
+
+    private fun initPriority() {
+        priorityPrefs.setOnClickListener { showPriorityDialog() }
+        priorityPrefs.setDependentView(missedPrefs)
+        showPriority()
+    }
+
+    private fun showPriorityDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.default_priority))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, priorityList())
+        mItemSelect = prefs.missedCallPriority
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            mItemSelect = which
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.missedCallPriority = mItemSelect
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.setOnDismissListener { showPriority() }
+        dialog.show()
+    }
+
+    private fun showPriority() {
+        priorityPrefs.setDetailText(priorityList()[prefs.missedCallPriority])
     }
 
     private fun initMessagesPrefs() {
