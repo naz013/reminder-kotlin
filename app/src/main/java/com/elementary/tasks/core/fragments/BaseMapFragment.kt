@@ -63,6 +63,10 @@ abstract class BaseMapFragment : Fragment() {
         function?.invoke()
     }
 
+    protected fun refreshStyles(map: GoogleMap) {
+        setStyle(map, prefs.mapType)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mMapType = prefs.mapType
