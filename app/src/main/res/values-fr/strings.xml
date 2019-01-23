@@ -673,5 +673,8 @@
     <string name="restore_data">Restaurer les données</string>
     <string name="privacy_warming">Pour continuer, vous devez accepter la politique de confidentialité.</string>
     <string name="wrong_url">Mauvais lien</string>
+    <string name="export_all_my_data">Exporter toutes mes données</string>
+    <string name="scan_contacts">Scanner les contacts</string>
+    <string name="no_new_birthdays">Pas de nouveaux anniversaires</string>
 
 </resources>

@@ -673,5 +673,8 @@
     <string name="restore_data">Obnovte data</string>
     <string name="privacy_warming">Chcete-li pokračovat, musíte přijmout zásady ochrany osobních údajů</string>
     <string name="wrong_url">Špatný odkaz</string>
+    <string name="export_all_my_data">Exportovat všechna data</string>
+    <string name="scan_contacts">Skenování kontaktů</string>
+    <string name="no_new_birthdays">Žádné nové narozeniny</string>
 
 </resources>

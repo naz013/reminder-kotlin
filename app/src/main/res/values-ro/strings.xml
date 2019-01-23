@@ -673,5 +673,8 @@
     <string name="restore_data">Recuperarea datelor</string>
     <string name="privacy_warming">Pentru a continua Trebuie să acceptați Politica de confidențialitate</string>
     <string name="wrong_url">Link greșit</string>
+    <string name="export_all_my_data">Exportați toate datele mele</string>
+    <string name="scan_contacts">Scanați contactele</string>
+    <string name="no_new_birthdays">Nu există zile noi de naștere</string>
 
 </resources>

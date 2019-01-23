@@ -673,5 +673,8 @@
     <string name="restore_data">Восстановить данные</string>
     <string name="privacy_warming">Для продолжения Вам необходимо принять Политику конфиденциальности.</string>
     <string name="wrong_url">Неверная ссылка</string>
+    <string name="export_all_my_data">Экспортировать все мои данные</string>
+    <string name="scan_contacts">Сканирование контактов</string>
+    <string name="no_new_birthdays">Нет новых дней рождения</string>
 
 </resources>

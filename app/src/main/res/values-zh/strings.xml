@@ -673,5 +673,8 @@
     <string name="restore_data">恢复数据</string>
     <string name="privacy_warming">要继续您需要接受隐私政策</string>
     <string name="wrong_url">错误的链接</string>
+    <string name="export_all_my_data">导出我的所有数据</string>
+    <string name="scan_contacts">扫描联系人</string>
+    <string name="no_new_birthdays">没有新的生日</string>
 
 </resources>
