@@ -95,12 +95,15 @@ class AdvancedMapFragment : BaseMapFragment() {
     private val isLayersVisible: Boolean
         get() = layersContainer != null && layersContainer.visibility == View.VISIBLE
 
+    private val isStylesVisible: Boolean
+        get() = mapStyleContainer != null && mapStyleContainer.visibility == View.VISIBLE
+
     fun setSearchEnabled(enabled: Boolean) {
         if (cardSearch != null) {
             if (enabled) {
                 searchCard.visibility = View.VISIBLE
             } else {
-                searchCard.visibility = View.INVISIBLE
+                searchCard.visibility = View.GONE
             }
         }
     }
@@ -304,6 +307,10 @@ class AdvancedMapFragment : BaseMapFragment() {
                 hideLayers()
                 false
             }
+            isStylesVisible -> {
+                hideStyles()
+                false
+            }
             else -> true
         }
     }
@@ -417,24 +424,24 @@ class AdvancedMapFragment : BaseMapFragment() {
         layersCard.setOnClickListener { toggleLayers() }
         myCard.setOnClickListener {
             hideLayers()
+            hideStyles()
             moveToMyLocation()
         }
         markersCard.setOnClickListener { toggleMarkers() }
         radiusCard.setOnClickListener { toggleRadius() }
         backCard.setOnClickListener { invokeBack() }
 
-        typeNormal.setOnClickListener {
-            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
-        }
-        typeSatellite.setOnClickListener {
-            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
-        }
-        typeHybrid.setOnClickListener {
-            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
-        }
-        typeTerrain.setOnClickListener {
-            if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
-        }
+        typeNormal.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_NORMAL) }
+        typeSatellite.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_SATELLITE) }
+        typeHybrid.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_HYBRID) }
+        typeTerrain.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_TERRAIN) }
+
+        styleDay.setOnClickListener { styleClick(0) }
+        styleRetro.setOnClickListener { styleClick(1) }
+        styleSilver.setOnClickListener { styleClick(2) }
+        styleNight.setOnClickListener { styleClick(3) }
+        styleDark.setOnClickListener { styleClick(4) }
+        styleAubergine.setOnClickListener { styleClick(5) }
 
         if (!isBack) {
             backCard.visibility = View.GONE
@@ -449,6 +456,24 @@ class AdvancedMapFragment : BaseMapFragment() {
         if (!isZoom) {
             zoomCard.visibility = View.GONE
         }
+
+        hideStyles()
+        hideLayers()
+    }
+
+    private fun typeClick(type: Int) {
+        val map = mMap ?: return
+        setMapType(map, type) {
+            hideLayers()
+            showStyles()
+        }
+    }
+
+    private fun styleClick(style: Int) {
+        prefs.mapStyle = style
+        val map = mMap ?: return
+        refreshStyles(map)
+        hideStyles()
     }
 
     fun invokeBack() {
@@ -492,26 +517,46 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun toggleMarkers() {
-        if (isLayersVisible) hideLayers()
+        if (isLayersVisible) {
+            hideLayers()
+        }
+        if (isStylesVisible) {
+            hideStyles()
+        }
         showStyleDialog()
     }
 
     private fun toggleRadius() {
-        if (isLayersVisible) hideLayers()
+        if (isLayersVisible) {
+            hideLayers()
+        }
+        if (isStylesVisible) {
+            hideStyles()
+        }
         showRadiusDialog()
     }
 
+    private fun showStyles() {
+        mapStyleContainer.visibility = View.VISIBLE
+    }
+
     private fun toggleLayers() {
-        if (isLayersVisible) {
-            hideLayers()
-        } else {
-            layersContainer.visibility = View.VISIBLE
+        when {
+            isLayersVisible -> hideLayers()
+            isStylesVisible -> hideStyles()
+            else -> layersContainer.visibility = View.VISIBLE
         }
     }
 
     private fun hideLayers() {
         if (isLayersVisible) {
             layersContainer.visibility = View.GONE
+        }
+    }
+
+    private fun hideStyles() {
+        if (isStylesVisible) {
+            mapStyleContainer.visibility = View.GONE
         }
     }
 
