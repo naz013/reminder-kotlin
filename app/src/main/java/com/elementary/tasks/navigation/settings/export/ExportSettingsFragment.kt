@@ -200,6 +200,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         prefs.isBackupEnabled = !isChecked
         initSyncButton()
         initBackupButton()
+        initExportButton()
     }
 
     private fun initClearDataPrefs() {
