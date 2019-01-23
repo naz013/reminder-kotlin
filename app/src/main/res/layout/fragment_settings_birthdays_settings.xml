@@ -91,13 +91,22 @@
             app:prefs_secondary_text_on="@string/automatically_check_for_new_birthdays"
             app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/contactsScanPrefs"
+        <include
+            layout="@layout/view_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/scanButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/scan"
-            app:prefs_type="none" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/scan_contacts"
+            android:textAppearance="?textAppearanceButton" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

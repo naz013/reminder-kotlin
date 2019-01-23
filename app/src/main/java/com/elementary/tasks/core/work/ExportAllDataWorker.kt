@@ -15,13 +15,18 @@ object ExportAllDataWorker {
     var listener: ((Boolean) -> Unit)? = null
         set(value) {
             field = value
-            Timber.d("BackupWorker: $mJob")
+            Timber.d("ExportAllDataWorker: $mJob")
             value?.invoke(mJob != null)
         }
 
     fun export(context: Context, ioHelper: IoHelper) {
         mJob?.cancel()
         launchSync(context, ioHelper)
+    }
+
+    fun unsubscribe() {
+        onEnd = null
+        listener = null
     }
 
     private fun launchSync(context: Context, ioHelper: IoHelper) {
