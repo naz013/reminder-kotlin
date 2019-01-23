@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    android:background="?android:colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/completedPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_fiber_pin_24px"
+            app:prefs_primary_text="@string/completed_reminders"
+            app:prefs_secondary_text_off="@string/do_not_move"
+            app:prefs_secondary_text_on="@string/move_to_trash"
+            app:prefs_type="check_switch" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

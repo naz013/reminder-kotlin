@@ -118,6 +118,7 @@ object PrefsConstants {
     const val HOME_PAGE = "home_page"
     const val TWO_COLS = "two_cols"
     const val ALLOW_SMS_AND_CALL = "allow_sms_and_call"
+    const val MOVE_TO_TRASH = "move_to_trash"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

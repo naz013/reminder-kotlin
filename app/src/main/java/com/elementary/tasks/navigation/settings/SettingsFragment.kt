@@ -12,6 +12,7 @@ import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
 import com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment
 import com.elementary.tasks.navigation.settings.location.LocationSettingsFragment
 import com.elementary.tasks.navigation.settings.other.OtherSettingsFragment
+import com.elementary.tasks.navigation.settings.reminders.RemindersSettingsFragment
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment
 import com.elementary.tasks.navigation.settings.voice.VoiceSettingsFragment
@@ -55,6 +56,7 @@ class SettingsFragment : BaseSettingsFragment() {
         exportSettings.setOnClickListener { callback?.openFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
         calendarSettings.setOnClickListener { callback?.openFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
         birthdaysSettings.setOnClickListener { callback?.openFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
+        remindersSettings.setOnClickListener { callback?.openFragment(RemindersSettingsFragment(), getString(R.string.reminders_)) }
         securitySettings.setOnClickListener { askPin() }
         testsScreen.setOnClickListener { callback?.openFragment(TestsFragment(), "Tests") }
     }

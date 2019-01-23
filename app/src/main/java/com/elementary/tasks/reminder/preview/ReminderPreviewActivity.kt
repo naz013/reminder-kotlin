@@ -208,19 +208,6 @@ class ReminderPreviewActivity : ThemedActivity() {
         mGoogleMap?.moveCamera(LatLng(lat, lon), 0, 0, 0, 0)
     }
 
-//    private val mReadyCallback = object : ReadyListener {
-//        override fun onReady(`object`: Any?) {
-//            if (`object` == null) return
-//            if (`object` is Note) {
-//                mNote = `object`
-//                showNote()
-//            } else if (`object` is GoogleTask) {
-//                mGoogleTask = `object`
-//                showTask()
-//            }
-//        }
-//    }
-
     private fun showInfo(reminder: Reminder) {
         this.reminder = reminder
 

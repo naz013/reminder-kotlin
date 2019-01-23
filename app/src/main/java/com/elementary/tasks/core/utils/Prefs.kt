@@ -48,6 +48,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
         set(value) = putBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, value)
 
+    var moveCompleted: Boolean
+        get() = getBoolean(PrefsConstants.MOVE_TO_TRASH, false)
+        set(value) = putBoolean(PrefsConstants.MOVE_TO_TRASH, value)
+
     var appLanguage: Int
         get() = getInt(PrefsConstants.APP_LANGUAGE)
         set(value) = putInt(PrefsConstants.APP_LANGUAGE, value)
