@@ -673,5 +673,8 @@
     <string name="restore_data">Restore data</string>
     <string name="privacy_warming">To continue You need to accept Privacy Policy</string>
     <string name="wrong_url">Wrong link</string>
+    <string name="export_all_my_data">Export all my data</string>
+    <string name="scan_contacts">Scan contacts</string>
+    <string name="no_new_birthdays">No new birthdays</string>
 
 </resources>

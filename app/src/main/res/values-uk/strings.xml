@@ -673,5 +673,8 @@
     <string name="restore_data">Відновлення даних</string>
     <string name="privacy_warming">Для продовження Ви повинні прийняти Політику конфіденційності</string>
     <string name="wrong_url">Неправильне посилання</string>
+    <string name="export_all_my_data">Експортувати всі мої дані</string>
+    <string name="scan_contacts">Сканування контактів</string>
+    <string name="no_new_birthdays">Немає нових днів народжень</string>
 
 </resources>

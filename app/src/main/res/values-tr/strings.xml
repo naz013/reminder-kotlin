@@ -673,5 +673,8 @@
     <string name="restore_data">Verileri geri yükle</string>
     <string name="privacy_warming">Devam etmek için Gizlilik Politikasını kabul etmeniz gerekiyor.</string>
     <string name="wrong_url">Yanlış link</string>
+    <string name="export_all_my_data">Tüm verilerimi ver</string>
+    <string name="scan_contacts">Kişileri tara</string>
+    <string name="no_new_birthdays">Yeni doğum günü yok</string>
 
 </resources>

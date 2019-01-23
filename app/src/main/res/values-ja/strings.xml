@@ -674,5 +674,8 @@
     <string name="restore_data">データを復元する</string>
     <string name="privacy_warming">続けるにはあなたはプライバシーポリシーに同意する必要があります</string>
     <string name="wrong_url">間違ったリンク</string>
+    <string name="export_all_my_data">自分のデータをすべてエクスポートする</string>
+    <string name="scan_contacts">連絡先をスキャン</string>
+    <string name="no_new_birthdays">新しい誕生日はありません</string>
 
 </resources>

@@ -673,5 +673,8 @@
     <string name="restore_data">डेटा पुनः स्थापित करें</string>
     <string name="privacy_warming">जारी रखने के लिए आपको गोपनीयता नीति को स्वीकार करना होगा</string>
     <string name="wrong_url">गलत लिंक</string>
+    <string name="export_all_my_data">मेरा सारा डेटा निर्यात करें</string>
+    <string name="scan_contacts">संपर्कों को स्कैन करें</string>
+    <string name="no_new_birthdays">कोई नया जन्मदिन नहीं</string>
 
 </resources>
