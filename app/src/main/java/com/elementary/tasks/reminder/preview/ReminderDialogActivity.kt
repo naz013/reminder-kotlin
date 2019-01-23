@@ -250,17 +250,17 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         builder.create().show()
     }
 
+    private val mReminderObserver: Observer<in Reminder> = Observer { reminder ->
+        if (reminder != null) {
+            if (!isReminderShowed) showInfo(reminder)
+        }
+    }
+
     private fun initViewModel(id: String) {
         Timber.d("initViewModel: $id")
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
-        viewModel.reminder.observe(this,Observer { reminder ->
-            if (reminder != null) {
-                if (!isReminderShowed) showInfo(reminder)
-            } else {
-                Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show()
-            }
-        })
+        viewModel.reminder.observeForever(mReminderObserver)
         viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
@@ -272,7 +272,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             }
         })
         lifecycle.addObserver(viewModel)
-
         if (id == "" && BuildConfig.DEBUG) {
             loadTest()
         }
@@ -581,6 +580,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.reminder.removeObserver(mReminderObserver)
         lifecycle.removeObserver(viewModel)
         if (sentReceiver != null) {
             unregisterReceiver(sentReceiver)
@@ -975,6 +975,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun doActions(onControl: (EventControl) -> Unit, onEnd: (Reminder) -> Unit) {
         isReminderShowed = true
+        viewModel.reminder.removeObserver(mReminderObserver)
         val reminder = mReminder
         if (reminder == null) {
             removeFlags()
