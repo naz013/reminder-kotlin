@@ -50,7 +50,7 @@ class MonthFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
         timeField.text = formattedTime
         calculateNextDate()
     }
@@ -132,10 +132,10 @@ class MonthFragment : RepeatableTypeFragment() {
             TimeUtil.showDatePicker(activity!!, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateSelect)
         }
         timeField.setOnClickListener {
-            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect)
+            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, mTimeSelect)
         }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                prefs.is24HourFormatEnabled, prefs.appLanguage)
+                prefs.is24HourFormat, prefs.appLanguage)
 
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
@@ -192,7 +192,7 @@ class MonthFragment : RepeatableTypeFragment() {
             reminder.repeatInterval = 1
         }
         val startTime = TimeCount.getNextMonthDayTime(reminder)
-        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     private fun initPropertyFields() {
@@ -315,7 +315,7 @@ class MonthFragment : RepeatableTypeFragment() {
             this.groupUuId = reminder.groupUuId
         }
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-                prefs.is24HourFormatEnabled, prefs.appLanguage)
+                prefs.is24HourFormat, prefs.appLanguage)
         if (reminder.dayOfMonth == 0) {
             lastCheck.isChecked = true
         } else {

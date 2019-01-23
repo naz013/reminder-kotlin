@@ -167,7 +167,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
 
     private fun initBirthdayTimePrefs() {
         reminderTimePrefs.setOnClickListener { showTimeDialog() }
-        reminderTimePrefs.setValueText(prefs.birthdayTime)
+        reminderTimePrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.birthdayTime, prefs.is24HourFormat, prefs.appLanguage))
         reminderTimePrefs.setDependentView(birthReminderPrefs)
     }
 
@@ -175,7 +175,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         val calendar = TimeUtil.getBirthdayCalendar(prefs.birthdayTime)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
-        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, hour, minute, this)
+        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormat, hour, minute, this)
     }
 
     private fun initDaysToPrefs() {
@@ -276,7 +276,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     override fun getTitle(): String = getString(R.string.birthdays)
 
     override fun onTimeSet(timePicker: TimePicker, i: Int, i1: Int) {
-        prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1, prefs.appLanguage)
+        prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
         initBirthdayTimePrefs()
         if (prefs.isBirthdayReminderEnabled) {
             EventJobService.enableBirthdayAlarm(prefs)

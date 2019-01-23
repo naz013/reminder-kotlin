@@ -256,7 +256,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     private fun initPrefs() {
         mCalendar = prefs.isCalendarEnabled
         mStock = prefs.isStockCalendarEnabled
-        mIs24Hour = prefs.is24HourFormatEnabled
+        mIs24Hour = prefs.is24HourFormat
     }
 
     private fun getAfterMins(progress: Int): Int {
@@ -281,7 +281,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mCustomHour, mCustomMinute, mTimeCallBack)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mCustomHour, mCustomMinute, mTimeCallBack)
     }
 
     private fun saveDateTask() {

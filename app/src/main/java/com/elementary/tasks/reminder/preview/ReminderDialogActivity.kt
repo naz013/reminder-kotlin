@@ -305,7 +305,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         if (!TextUtils.isEmpty(reminder.eventTime) && !Reminder.isGpsType(reminder.type)) {
             reminder_time.text = TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime),
-                    prefs.is24HourFormatEnabled, prefs.appLanguage)
+                    prefs.is24HourFormat, prefs.appLanguage)
             timeBlock.visibility = View.VISIBLE
         } else {
             timeBlock.visibility = View.GONE

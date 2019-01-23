@@ -80,7 +80,7 @@ class TaskActivity : ThemedActivity() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,7 +177,7 @@ class TaskActivity : ThemedActivity() {
     private fun showReminder(reminder: Reminder) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-        timeField.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        timeField.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormat, prefs.appLanguage)
         isReminder = true
     }
 
@@ -458,7 +458,7 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mTimeCallBack)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, mTimeCallBack)
     }
 
     override fun onDestroy() {

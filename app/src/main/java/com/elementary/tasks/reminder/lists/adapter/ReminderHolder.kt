@@ -115,7 +115,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
     }
 
     private fun loadDate(model: Reminder) {
-        val is24 = prefs.is24HourFormatEnabled
+        val is24 = prefs.is24HourFormat
         if (Reminder.isGpsType(model.type)) {
             val place = model.places[0]
             itemView.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, model.places.size)

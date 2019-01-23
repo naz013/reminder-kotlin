@@ -444,7 +444,7 @@ class ConversationActivity : ThemedActivity() {
         addObjectResponse(Reply(Reply.REMINDER, reminder))
         if (prefs.isTellAboutEvent) {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
-                    TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale, language) +
+                    TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormat, prefs.voiceLocale, language) +
                     ". " + getLocalized(R.string.would_you_like_to_save_it))
             postMicClick({ askReminderAction(reminder, false) }, 7000)
         } else {

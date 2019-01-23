@@ -212,7 +212,7 @@ class NotePreviewActivity : ThemedActivity() {
     private fun showReminder(reminder: Reminder?) {
         mReminder = reminder
         if (reminder != null) {
-            val dateTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime, prefs.is24HourFormatEnabled,
+            val dateTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime, prefs.is24HourFormat,
                     prefs.appLanguage)
             reminderTime.text = dateTime
             reminderContainer.visibility = View.VISIBLE

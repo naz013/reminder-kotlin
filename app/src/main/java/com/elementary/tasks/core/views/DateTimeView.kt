@@ -158,7 +158,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private fun updateTime(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormat, prefs.appLanguage)
         mListener?.onTimeSelect(mills, mHour, mMinute)
         onDateChangeListener?.onChanged(dateTime)
     }
@@ -168,7 +168,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     private fun selectTime() {
-        TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, this)
+        TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, this)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {

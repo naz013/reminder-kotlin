@@ -63,7 +63,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
     override fun onDataSetChanged() {
         data.clear()
         map.clear()
-        val is24 = prefs.is24HourFormatEnabled
+        val is24 = prefs.is24HourFormat
         val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false)
         for (item in reminderItems) {
             val type = item.type

@@ -47,7 +47,7 @@ class WeekFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
         timeField.text = formattedTime
     }
 
@@ -131,10 +131,10 @@ class WeekFragment : RepeatableTypeFragment() {
 
         timeField.setOnClickListener {
             TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
-                    prefs.is24HourFormatEnabled, mHour, mMinute, mTimeSelect)
+                    prefs.is24HourFormat, mHour, mMinute, mTimeSelect)
         }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                prefs.is24HourFormatEnabled, prefs.appLanguage)
+                prefs.is24HourFormat, prefs.appLanguage)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
@@ -181,7 +181,7 @@ class WeekFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         val startTime = TimeCount.getNextWeekdayTime(reminder)
-        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     private fun initPropertyFields() {
@@ -287,7 +287,7 @@ class WeekFragment : RepeatableTypeFragment() {
             this.groupUuId = reminder.groupUuId
         }
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-                prefs.is24HourFormatEnabled, prefs.appLanguage)
+                prefs.is24HourFormat, prefs.appLanguage)
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)
         }
