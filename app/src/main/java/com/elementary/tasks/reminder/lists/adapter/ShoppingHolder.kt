@@ -155,7 +155,7 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     private fun loadShoppingDate(reminder: Reminder) {
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
-            itemView.taskDate.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, prefs.appLanguage)
+            itemView.taskDate.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormat, prefs.appLanguage)
             itemView.taskDate.visibility = View.VISIBLE
             loadLeft(reminder)
         } else {

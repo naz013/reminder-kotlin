@@ -172,7 +172,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        remindTime.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        remindTime.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     init {
@@ -532,7 +532,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         mHour = calendar.get(Calendar.HOUR_OF_DAY)
         mMinute = calendar.get(Calendar.MINUTE)
         remindDate.text = TimeUtil.getDate(calendar.timeInMillis, prefs.appLanguage)
-        remindTime.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled, prefs.appLanguage)
+        remindTime.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     private fun createObject(): NoteWithImages? {
@@ -756,7 +756,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormatEnabled, mHour, mMinute, mCallBack)
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, mCallBack)
     }
 
     override fun onDestroy() {

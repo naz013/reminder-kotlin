@@ -117,7 +117,7 @@ object TimeUtil {
         try {
             FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
             val date = FIRE_DATE_FORMAT.parse(gmt)
-            return if (prefs.is24HourFormatEnabled) {
+            return if (prefs.is24HourFormat) {
                 dateTime24(prefs.appLanguage).format(date)
             } else {
                 dateTime12(prefs.appLanguage).format(date)
@@ -191,12 +191,28 @@ object TimeUtil {
         return null
     }
 
-    fun getBirthdayTime(hour: Int, minute: Int, lang: Int = 0): String {
+    fun getBirthdayTime(hour: Int, minute: Int): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
-        return time24(lang).format(calendar.time)
+        return TIME_24.format(calendar.time)
+    }
+
+    fun getBirthdayVisualTime(time: String?, is24: Boolean, lang: Int = 0): String {
+        if (time != null) {
+            try {
+                val date = TIME_24.parse(time)
+                return if (is24) {
+                    time24(lang).format(date)
+                } else {
+                    time12(lang).format(date)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return ""
     }
 
     fun getBirthdayTime(time: String?): Long {

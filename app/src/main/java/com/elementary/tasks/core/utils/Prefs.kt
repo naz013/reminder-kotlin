@@ -156,7 +156,7 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.SOUND_STREAM)
         set(value) = putInt(PrefsConstants.SOUND_STREAM, value)
 
-    var is24HourFormatEnabled: Boolean
+    var is24HourFormat: Boolean
         get() {
             val hourFormat = hourFormat
             return if (hourFormat == 0) DateFormat.is24HourFormat(context)
