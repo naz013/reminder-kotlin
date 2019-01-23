@@ -685,5 +685,9 @@
     <string name="do_not_disturb">Do not disturb</string>
     <string name="ignore_when_priority">Allow ignoring when priority</string>
     <string name="events_that_occured_during">Events that occurred during Do not disturb mode</string>
+    <string name="do_not_allow">Do not allow</string>
+    <string name="ignore">Ignore</string>
+    <string name="schedule_for_later">Schedule for later</string>
+    <string name="and_above">and above</string>
 
 </resources>

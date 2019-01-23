@@ -56,11 +56,27 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showIgnore() {
-
+        doNotDisturbIgnorePrefs.setDetailText(ignoreList()[prefs.doNotDisturbIgnore])
     }
 
     private fun showIgnoreDialog() {
-
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.priority))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, ignoreList())
+        mItemSelect = prefs.doNotDisturbIgnore
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            mItemSelect = which
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.doNotDisturbIgnore = mItemSelect
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.setOnDismissListener { showIgnore() }
+        dialog.show()
     }
 
     private fun initActionPrefs() {
@@ -70,11 +86,27 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showAction() {
-
+        doNotDisturbActionPrefs.setDetailText(actionList()[prefs.doNotDisturbAction])
     }
 
     private fun showActionDialog() {
-
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.events_that_occured_during))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, actionList())
+        mItemSelect = prefs.doNotDisturbAction
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            mItemSelect = which
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.doNotDisturbAction = mItemSelect
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.setOnDismissListener { showAction() }
+        dialog.show()
     }
 
     private fun initTimesPrefs() {
@@ -165,6 +197,24 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
         val isChecked = completedPrefs.isChecked
         completedPrefs.isChecked = !isChecked
         prefs.moveCompleted = !isChecked
+    }
+
+    private fun ignoreList(): Array<String> {
+        return arrayOf(
+                getString(R.string.priority_lowest) + " " + getString(R.string.and_above),
+                getString(R.string.priority_low) + " " + getString(R.string.and_above),
+                getString(R.string.priority_normal) + " " + getString(R.string.and_above),
+                getString(R.string.priority_high) + " " + getString(R.string.and_above),
+                getString(R.string.priority_highest),
+                getString(R.string.do_not_allow)
+        )
+    }
+
+    private fun actionList(): Array<String> {
+        return arrayOf(
+                getString(R.string.schedule_for_later),
+                getString(R.string.ignore)
+        )
     }
 
     private fun priorityList(): Array<String> {

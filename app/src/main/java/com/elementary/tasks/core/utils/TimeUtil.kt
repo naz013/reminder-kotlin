@@ -215,67 +215,90 @@ object TimeUtil {
         return ""
     }
 
-    fun millisToEndDnd(to: String?, current: Long): Long {
-        var toMillis = 0L
-        return toMillis - current
+    fun millisToEndDnd(from: String?, to: String?, current: Long): Long {
+        return doNotDisturbRange(from, to).last - current
     }
 
     fun doNotDisturbRange(from: String?, to: String?): LongRange {
         var fromMillis = 0L
         var toMillis = 0L
-
+        if (from != null) {
+            fromMillis = toMillis(from)
+        }
+        if (to != null) {
+            toMillis = toMillis(to)
+        }
+        val fromHm = hourMinute(fromMillis)
+        val toHm = hourMinute(toMillis)
+        val compare = compareHm(fromHm, toHm)
+        if (compare > 0) {
+            if (toMillis < fromMillis) {
+                toMillis += AlarmManager.INTERVAL_DAY
+            }
+        } else if (compare == 0) {
+            return LongRange(0, 0)
+        }
         return LongRange(fromMillis, toMillis)
     }
 
-    fun getBirthdayTime(time: String?): Long {
-        val calendar = Calendar.getInstance()
-        if (time != null) {
-            try {
-                val date = TIME_24.parse(time)
-                calendar.time = date
-                val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                val minute = calendar.get(Calendar.MINUTE)
-                calendar.timeInMillis = System.currentTimeMillis()
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                if (calendar.timeInMillis < System.currentTimeMillis()) {
-                    calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_DAY
-                }
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                e.printStackTrace()
+    private fun compareHm(first: Pair<Int, Int>, second: Pair<Int, Int>): Int {
+        return when {
+            first.first == second.first -> when {
+                first.second == second.second -> 0
+                first.second > second.second -> -1
+                else -> 1
             }
+            first.first > second.first -> -1
+            else -> 1
         }
-        return calendar.timeInMillis
+    }
+
+    private fun hourMinute(millis: Long): Pair<Int, Int> {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+        return Pair(
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE)
+        )
+    }
+
+    private fun toMillis(time24: String): Long {
+        return try {
+            val calendar = Calendar.getInstance()
+            val date = TIME_24.parse(time24)
+            calendar.time = date
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+            calendar.timeInMillis = System.currentTimeMillis()
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            calendar.timeInMillis
+        } catch (e: Exception) {
+            0
+        }
+    }
+
+    fun getBirthdayTime(time: String?): Long {
+        if (time != null) {
+            var millis = toMillis(time)
+            if (millis < System.currentTimeMillis()) {
+                millis += AlarmManager.INTERVAL_DAY
+            }
+            return millis
+        }
+        return System.currentTimeMillis()
     }
 
     fun getBirthdayCalendar(time: String?): Calendar {
         val calendar = Calendar.getInstance()
         if (time != null) {
-            try {
-                val date = TIME_24.parse(time)
-                calendar.time = date
-                val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                val minute = calendar.get(Calendar.MINUTE)
-                calendar.timeInMillis = System.currentTimeMillis()
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                if (calendar.timeInMillis < System.currentTimeMillis()) {
-                    calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_DAY
-                }
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                e.printStackTrace()
+            var millis = toMillis(time)
+            if (millis < System.currentTimeMillis()) {
+                millis += AlarmManager.INTERVAL_DAY
             }
-
+            calendar.timeInMillis = millis
         }
         return calendar
     }

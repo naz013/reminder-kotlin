@@ -168,7 +168,7 @@ class GeolocationService : Service() {
         }
         if (prefs.applyDoNotDisturb(reminder.priority)) {
             if (prefs.doNotDisturbAction == 0) {
-                val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbTo, System.currentTimeMillis())
+                val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis())
                 if (delayTime > 0) {
                     reminder.eventTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis() + delayTime)
                     AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
