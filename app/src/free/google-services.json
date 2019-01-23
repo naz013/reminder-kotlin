@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "226701179860-840s1n27u3e34a25kvs5842ll141v7ir.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "226701179860-0fgoueigvgi135s3diamg6pls2r7vjat.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
           "client_id": "226701179860-tg78pim5r2t10udfs2gag6s755kbho23.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -31,7 +23,15 @@
           }
         },
         {
-          "client_id": "226701179860-g5ttnpap4q5ea69dq63ctqp874u8r46g.apps.googleusercontent.com",
+          "client_id": "226701179860-l9emv5i5vakvi999pa7gsn9ob97blrsb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cray.software.justreminder",
+            "certificate_hash": "cd4f5572162e64e07ce4e178b45a4766b8604bcc"
+          }
+        },
+        {
+          "client_id": "226701179860-0fgoueigvgi135s3diamg6pls2r7vjat.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -51,7 +51,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "226701179860-840s1n27u3e34a25kvs5842ll141v7ir.apps.googleusercontent.com",
+              "client_id": "226701179860-0fgoueigvgi135s3diamg6pls2r7vjat.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
