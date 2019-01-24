@@ -74,6 +74,9 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     override val maxVolume: Int
         get() = prefs.loudness
 
+    override val priority: Int
+        get() = prefs.missedCallPriority
+
     private val mMissedCallObserver: Observer<in MissedCall> = Observer { missedCall ->
         if (missedCall != null) {
             showInfo(missedCall)

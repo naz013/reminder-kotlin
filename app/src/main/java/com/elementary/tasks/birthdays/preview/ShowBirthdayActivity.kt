@@ -145,6 +145,9 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return isWake
         }
 
+    override val priority: Int
+        get() = prefs.birthdayPriority
+
     private val mBirthdayObserver: Observer<in Birthday> = Observer { birthday ->
         if (birthday != null) {
             showBirthday(birthday)
