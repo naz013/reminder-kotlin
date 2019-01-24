@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.view_action.view.*
 
 /**
@@ -104,7 +103,7 @@ class ActionView : LinearLayout, TextWatcher {
             if (b) {
                 openAction()
             } else {
-                ViewUtils.hideOver(actionBlock)
+                actionBlock.visibility = View.GONE
             }
             listener?.onStateChanged(hasAction(), type, number)
         }

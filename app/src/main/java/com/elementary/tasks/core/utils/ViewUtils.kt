@@ -12,7 +12,9 @@ import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.animation.*
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.DecelerateInterpolator
 import android.widget.ScrollView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
@@ -169,30 +171,6 @@ object ViewUtils {
         }
     }
 
-    fun slideInUp(context: Context, view: View) {
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-        view.startAnimation(animation)
-        view.visibility = View.VISIBLE
-    }
-
-    fun slideOutDown(context: Context, view: View) {
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
-        view.startAnimation(animation)
-        view.visibility = View.GONE
-    }
-
-    fun slideOutUp(context: Context, view: View) {
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_out)
-        view.startAnimation(animation)
-        view.visibility = View.GONE
-    }
-
-    fun slideInDown(context: Context, view: View) {
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_down_in)
-        view.startAnimation(animation)
-        view.visibility = View.VISIBLE
-    }
-
     fun fadeInAnimation(view: View) {
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.interpolator = DecelerateInterpolator()
@@ -207,22 +185,6 @@ object ViewUtils {
         fadeOut.interpolator = AccelerateInterpolator() //and this
         fadeOut.duration = 400
         view.animation = fadeOut
-        view.visibility = View.GONE
-    }
-
-    fun showOver(view: View) {
-        val fadeIn = AlphaAnimation(0f, 1f)
-        fadeIn.interpolator = OvershootInterpolator()
-        fadeIn.duration = 300
-        view.animation = fadeIn
-        view.visibility = View.VISIBLE
-    }
-
-    fun hideOver(view: View) {
-        val fadeIn = AlphaAnimation(1f, 0f)
-        fadeIn.interpolator = OvershootInterpolator()
-        fadeIn.duration = 300
-        view.animation = fadeIn
         view.visibility = View.GONE
     }
 }
