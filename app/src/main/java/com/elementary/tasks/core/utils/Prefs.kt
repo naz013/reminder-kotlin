@@ -29,10 +29,10 @@ import javax.inject.Singleton
 @Singleton
 class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
-    fun applyDoNotDisturb(priority: Int): Boolean {
+    fun applyDoNotDisturb(priority: Int, millis: Long = System.currentTimeMillis()): Boolean {
         if (isDoNotDisturbEnabled) {
             val range = TimeUtil.doNotDisturbRange(doNotDisturbFrom, doNotDisturbTo)
-            return if (range.contains(System.currentTimeMillis())) {
+            return if (range.contains(millis)) {
                 if (doNotDisturbIgnore == 5) {
                     true
                 } else priority < doNotDisturbIgnore
