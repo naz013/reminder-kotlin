@@ -7,7 +7,6 @@ import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -132,21 +131,21 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         @RawRes
         get() {
             val style = prefs.mapStyle
-            Timber.d("mapStyleJson: $style")
-            return when (style) {
-                0 -> R.raw.map_terrain_day
-                1 -> R.raw.map_terrain_retro
-                2 -> R.raw.map_terrain_silver
-                3 -> R.raw.map_terrain_night
-                4 -> R.raw.map_terrain_dark
-                5 -> R.raw.map_terrain_aubergine
-                6 -> if (isDark) {
-                    R.raw.map_terrain_night
-                } else {
-                    R.raw.map_terrain_day
+            when (style) {
+                0 -> return R.raw.map_terrain_day
+                1 -> return R.raw.map_terrain_retro
+                2 -> return R.raw.map_terrain_silver
+                3 -> return R.raw.map_terrain_night
+                4 -> return R.raw.map_terrain_dark
+                5 -> return R.raw.map_terrain_aubergine
+                6 -> {
+                    return if (isDark)
+                        R.raw.map_terrain_night
+                    else
+                        R.raw.map_terrain_day
                 }
-                else -> R.raw.map_terrain_day
             }
+            return R.raw.map_terrain_day
         }
 
     val mapStylePreview: Int
