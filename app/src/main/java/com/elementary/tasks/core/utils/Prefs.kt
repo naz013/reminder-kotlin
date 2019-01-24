@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.text.TextUtils
 import android.text.format.DateFormat
+import com.google.android.gms.maps.GoogleMap
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -578,7 +579,7 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             uiEd.putInt(PrefsConstants.TODAY_COLOR, 0)
             uiEd.putInt(PrefsConstants.BIRTH_COLOR, 2)
             uiEd.putInt(PrefsConstants.REMINDER_COLOR, 4)
-            uiEd.putInt(PrefsConstants.MAP_TYPE, Constants.MAP_NORMAL)
+            uiEd.putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
             uiEd.putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
             uiEd.putString(PrefsConstants.REMINDER_IMAGE, Constants.DEFAULT)
             uiEd.putInt(PrefsConstants.LED_COLOR, LED.BLUE)
@@ -770,7 +771,7 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             putInt(PrefsConstants.VOLUME, 25)
         }
         if (!hasKey(PrefsConstants.MAP_TYPE)) {
-            putInt(PrefsConstants.MAP_TYPE, Constants.MAP_NORMAL)
+            putInt(PrefsConstants.MAP_TYPE, GoogleMap.MAP_TYPE_NORMAL)
         }
         if (!hasKey(PrefsConstants.MISSED_CALL_TIME)) {
             putInt(PrefsConstants.MISSED_CALL_TIME, 10)

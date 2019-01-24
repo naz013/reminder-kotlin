@@ -5,12 +5,12 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.list.PlacesFragment
+import com.google.android.gms.maps.GoogleMap
 import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_location.*
 import java.util.*
@@ -61,7 +61,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         mapStylePrefs.setOnClickListener { openMapStylesFragment() }
         mapStylePrefs.setDetailText(getString(themeUtil.styleName))
         mapStylePrefs.setViewResource(themeUtil.mapStylePreview)
-        mapStylePrefs.isEnabled = prefs.mapType == 3
+        mapStylePrefs.isEnabled = prefs.mapType == GoogleMap.MAP_TYPE_NORMAL
     }
 
     private fun openMapStylesFragment() {
@@ -183,9 +183,9 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     private fun getPosition(type: Int): Int {
         return when (type) {
-            Constants.MAP_SATELLITE -> 1
-            Constants.MAP_TERRAIN -> 2
-            Constants.MAP_HYBRID -> 3
+            GoogleMap.MAP_TYPE_SATELLITE -> 1
+            GoogleMap.MAP_TYPE_TERRAIN -> 2
+            GoogleMap.MAP_TYPE_HYBRID -> 3
             else -> 0
         }
     }

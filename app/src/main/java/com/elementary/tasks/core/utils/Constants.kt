@@ -20,10 +20,6 @@ package com.elementary.tasks.core.utils
  */
 object Constants {
 
-    const val MAP_NORMAL = 1
-    const val MAP_SATELLITE = 2
-    const val MAP_HYBRID = 4
-    const val MAP_TERRAIN = 3
     const val NONE = "none"
     const val DEFAULT = "defaut"
     const val INTENT_ID = "item_id"
@@ -42,7 +38,6 @@ object Constants {
     const val REQUEST_CODE_CONTACTS = 101
     const val REQUEST_CODE_APPLICATION = 117
     const val ACTION_REQUEST_GALLERY = 111
-    const val ACTION_REQUEST_CAMERA = 112
     const val SELECTED_CONTACT_NAME = "selected_name"
     const val SELECTED_APPLICATION = "selected_application"
     const val WEB_URL = "https://www.hummingbirdrr.com/"
