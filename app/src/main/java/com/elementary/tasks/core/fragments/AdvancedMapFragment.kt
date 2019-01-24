@@ -82,7 +82,6 @@ class AdvancedMapFragment : BaseMapFragment() {
         mMap = googleMap
         googleMap.uiSettings.isMyLocationButtonEnabled = false
         googleMap.uiSettings.isCompassEnabled = true
-        googleMap.isIndoorEnabled = false
         setStyle(googleMap)
         setMyLocation()
         googleMap.setOnMapClickListener(onMapClickListener)
@@ -473,7 +472,6 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun styleClick(style: Int) {
-        Timber.d("styleClick: $style, $mMap")
         prefs.mapStyle = style
         val map = mMap ?: return
         refreshStyles(map)
