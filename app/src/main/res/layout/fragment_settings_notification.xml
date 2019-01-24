@@ -229,6 +229,14 @@
             app:prefs_type="check_switch" />
 
         <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/unlockPriorityPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/allow_unlock_for_priority"
+            app:prefs_type="none" />
+
+        <com.elementary.tasks.core.views.PrefsView
             android:id="@+id/autoCallPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

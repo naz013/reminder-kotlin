@@ -689,5 +689,6 @@
     <string name="ignore">Ignore</string>
     <string name="schedule_for_later">Schedule for later</string>
     <string name="and_above">and above</string>
+    <string name="allow_unlock_for_priority">Allow unlock screen only for</string>
 
 </resources>

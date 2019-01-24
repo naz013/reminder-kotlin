@@ -74,7 +74,38 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         initIgnoreWindowTypePrefs()
         initSmartFold()
         initWearNotification()
+        initUnlockPriorityPrefs()
         Permissions.ensurePermissions(activity!!, PERM_SD, Permissions.READ_EXTERNAL)
+    }
+
+    private fun initUnlockPriorityPrefs() {
+        unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
+        unlockPriorityPrefs.setDependentView(unlockScreenPrefs)
+        showPriority()
+    }
+
+    private fun showPriority() {
+        unlockPriorityPrefs.setDetailText(unlockList()[prefs.unlockPriority])
+    }
+
+    private fun showPriorityDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setTitle(getString(R.string.priority))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, unlockList())
+        mItemSelect = prefs.unlockPriority
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            mItemSelect = which
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.unlockPriority = mItemSelect
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.setOnDismissListener { showPriority() }
+        dialog.show()
     }
 
     private fun initSmartFold() {
@@ -701,6 +732,16 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
                 PERM_AUTO_SMS -> changeAutoSmsPrefs()
             }
         }
+    }
+
+    private fun unlockList(): Array<String> {
+        return arrayOf(
+                getString(R.string.all),
+                getString(R.string.priority_low) + " " + getString(R.string.and_above),
+                getString(R.string.priority_normal) + " " + getString(R.string.and_above),
+                getString(R.string.priority_high) + " " + getString(R.string.and_above),
+                getString(R.string.priority_highest)
+        )
     }
 
     companion object {

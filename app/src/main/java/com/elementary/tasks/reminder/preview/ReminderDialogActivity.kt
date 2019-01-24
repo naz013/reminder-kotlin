@@ -157,7 +157,9 @@ class ReminderDialogActivity : BaseNotificationActivity() {
                 } else {
                     LED.getLED(prefs.ledColor)
                 }
-            } else LED.getLED(0)
+            } else {
+                LED.getLED(0)
+            }
         }
 
     override val isGlobal: Boolean
@@ -174,11 +176,19 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     override val maxVolume: Int
         get() {
             val reminder = mReminder ?: return 25
-            return if (!isGlobal && reminder.volume != -1)
+            return if (!isGlobal && reminder.volume != -1) {
                 reminder.volume
-            else
+            } else {
                 prefs.loudness
+            }
         }
+
+    override val priority: Int
+        get() {
+            val reminder = mReminder ?: return 0
+            return reminder.priority
+        }
+
     private val isRateDialogShowed: Boolean
         get() {
             var count = prefs.rateCount

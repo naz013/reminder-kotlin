@@ -100,6 +100,8 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     protected abstract val maxVolume: Int
 
+    protected abstract val priority: Int
+
     protected open val sound: Sound?
         get() = soundStackHolder.sound
 
@@ -167,7 +169,11 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     private fun canUnlockScreen(): Boolean {
         return if (isGlobal) {
-            prefs.isDeviceUnlockEnabled
+            if (prefs.isDeviceUnlockEnabled) {
+                priority >= prefs.unlockPriority
+            } else {
+                false
+            }
         } else {
             isUnlockDevice
         }
