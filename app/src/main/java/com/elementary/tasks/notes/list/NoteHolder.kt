@@ -3,6 +3,7 @@ package com.elementary.tasks.notes.list
 import android.content.Intent
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -54,7 +55,9 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
 
     init {
         ReminderApp.appComponent.inject(this)
-        itemView.bgView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        hoverClick(itemView.bgView) {
+            listener?.invoke(it, adapterPosition, ListActions.OPEN)
+        }
         itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
         updateMore()
     }
@@ -64,6 +67,26 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
             itemView.button_more.visibility = View.INVISIBLE
         } else {
             itemView.button_more.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hoverClick(view: View, click: (View) -> Unit) {
+        view.setOnTouchListener { v, event ->
+            when {
+                event.action == MotionEvent.ACTION_DOWN -> {
+                    itemView.clickView.isPressed = true
+                    return@setOnTouchListener true
+                }
+                event.action == MotionEvent.ACTION_UP -> {
+                    itemView.clickView.isPressed = false
+                    click.invoke(v)
+                    return@setOnTouchListener v.performClick()
+                }
+                event.action == MotionEvent.ACTION_CANCEL -> {
+                    itemView.clickView.isPressed = false
+                }
+            }
+            return@setOnTouchListener true
         }
     }
 
@@ -118,7 +141,7 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
 
     private fun setClick(imageView: ImageView, position: Int, key: String?, images: List<ImageFile>) {
         val context = imageView.context.applicationContext
-        imageView.setOnClickListener {
+        hoverClick(imageView) {
             imagesSingleton.setCurrent(images)
             context.startActivity(Intent(context, ImagePreviewActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
