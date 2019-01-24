@@ -29,6 +29,39 @@ import javax.inject.Singleton
 @Singleton
 class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
+    private val observersMap = mutableMapOf<String, List<((String) -> Unit)>>()
+
+    fun addObserver(key: String, observer: (String) -> Unit) {
+        val observers: MutableList<((String) -> Unit)> = if (observersMap.containsKey(key)) {
+            observersMap[key]?.toMutableList() ?: mutableListOf()
+        } else {
+            mutableListOf()
+        }
+        observers.add(observer)
+        observersMap[key] = observers
+    }
+
+    fun removeObserver(key: String, observer: (String) -> Unit) {
+        val observers: MutableList<((String) -> Unit)> = if (observersMap.containsKey(key)) {
+            observersMap[key]?.toMutableList() ?: mutableListOf()
+        } else {
+            mutableListOf()
+        }
+        observers.remove(observer)
+        observersMap[key] = observers
+    }
+
+    private fun notifyKey(key: String) {
+        val observers: MutableList<((String) -> Unit)> = if (observersMap.containsKey(key)) {
+            observersMap[key]?.toMutableList() ?: mutableListOf()
+        } else {
+            mutableListOf()
+        }
+        observers.forEach {
+            it.invoke(key)
+        }
+    }
+
     fun applyDoNotDisturb(priority: Int, millis: Long = System.currentTimeMillis()): Boolean {
         if (isDoNotDisturbEnabled) {
             val range = TimeUtil.doNotDisturbRange(doNotDisturbFrom, doNotDisturbTo)
@@ -60,15 +93,24 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
     var isDoNotDisturbEnabled: Boolean
         get() = getBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, false)
-        set(value) = putBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, value)
+        set(value) {
+            putBoolean(PrefsConstants.DO_NOT_DISTURB_ENABLED, value)
+            notifyKey(PrefsConstants.DO_NOT_DISTURB_ENABLED)
+        }
 
     var doNotDisturbFrom: String
         get() = getString(PrefsConstants.DO_NOT_DISTURB_FROM)
-        set(value) = putString(PrefsConstants.DO_NOT_DISTURB_FROM, value)
+        set(value) {
+            putString(PrefsConstants.DO_NOT_DISTURB_FROM, value)
+            notifyKey(PrefsConstants.DO_NOT_DISTURB_FROM)
+        }
 
     var doNotDisturbTo: String
         get() = getString(PrefsConstants.DO_NOT_DISTURB_TO)
-        set(value) = putString(PrefsConstants.DO_NOT_DISTURB_TO, value)
+        set(value) {
+            putString(PrefsConstants.DO_NOT_DISTURB_TO, value)
+            notifyKey(PrefsConstants.DO_NOT_DISTURB_TO)
+        }
 
     var doNotDisturbIgnore: Int
         get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE)
