@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.work
 
-import android.content.Context
 import com.elementary.tasks.core.utils.IoHelper
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
@@ -19,9 +18,9 @@ object ExportAllDataWorker {
             value?.invoke(mJob != null)
         }
 
-    fun export(context: Context, ioHelper: IoHelper) {
+    fun export(ioHelper: IoHelper) {
         mJob?.cancel()
-        launchSync(context, ioHelper)
+        launchSync(ioHelper)
     }
 
     fun unsubscribe() {
@@ -29,7 +28,7 @@ object ExportAllDataWorker {
         listener = null
     }
 
-    private fun launchSync(context: Context, ioHelper: IoHelper) {
+    private fun launchSync(ioHelper: IoHelper) {
         mJob = launchIo {
             val file = ioHelper.exportAllToFile()
             withUIContext {

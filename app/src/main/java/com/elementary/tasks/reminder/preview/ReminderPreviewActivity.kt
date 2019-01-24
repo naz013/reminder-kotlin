@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -42,6 +43,7 @@ import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import timber.log.Timber
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -65,6 +67,8 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
+    @Inject
+    lateinit var backupTool: BackupTool
 
     private val list = ArrayList<Long>()
     private val mUiHandler = Handler(Looper.getMainLooper())
@@ -81,6 +85,10 @@ class ReminderPreviewActivity : ThemedActivity() {
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
         openFullMap()
         false
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -396,8 +404,9 @@ class ReminderPreviewActivity : ThemedActivity() {
         menuInflater.inflate(R.menu.menu_reminder_preview, menu)
 
         ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_file_copy_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_delete_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDark)
 
         return true
     }
@@ -405,21 +414,25 @@ class ReminderPreviewActivity : ThemedActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val ids = item.itemId
         when (ids) {
-            R.id.action_delete -> {
-                removeReminder()
-                return true
-            }
-            android.R.id.home -> {
-                closeWindow()
-                return true
-            }
-            R.id.action_make_copy -> {
-                makeCopy()
-                return true
-            }
+            R.id.action_delete -> removeReminder()
+            android.R.id.home -> closeWindow()
+            R.id.action_make_copy -> makeCopy()
+            R.id.action_share -> shareReminder()
             R.id.action_edit -> editReminder()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun shareReminder() {
+        val reminder = reminder ?: return
+        launchDefault {
+            val path = backupTool.exportReminder(reminder)
+            if (path != null) {
+                withUIContext {
+                    TelephonyUtil.sendFile(File(path), this@ReminderPreviewActivity)
+                }
+            }
+        }
     }
 
     private fun editReminder() {
