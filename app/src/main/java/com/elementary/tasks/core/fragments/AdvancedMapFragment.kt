@@ -647,6 +647,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             args.putBoolean(ENABLE_STYLES, isStyles)
             args.putBoolean(ENABLE_BACK, isBack)
             args.putBoolean(ENABLE_ZOOM, isZoom)
+            args.putBoolean(ENABLE_RADIUS, false)
             args.putBoolean(THEME_MODE, isDark)
             fragment.arguments = args
             return fragment
