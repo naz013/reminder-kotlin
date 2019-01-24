@@ -62,6 +62,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     private var isStyles = true
     private var isPlaces = true
     private var isSearch = true
+    private var isRadius = true
     var isFullscreen = false
     private var isDark = false
     private var markerTitle: String = ""
@@ -322,6 +323,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             isPlaces = args.getBoolean(ENABLE_PLACES, true)
             isSearch = args.getBoolean(ENABLE_SEARCH, true)
             isStyles = args.getBoolean(ENABLE_STYLES, true)
+            isRadius = args.getBoolean(ENABLE_RADIUS, true)
             isBack = args.getBoolean(ENABLE_BACK, true)
             isZoom = args.getBoolean(ENABLE_ZOOM, true)
             isDark = args.getBoolean(THEME_MODE, false)
@@ -448,6 +450,8 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
         if (!isSearch) {
             searchCard.visibility = View.GONE
+        }
+        if (!isRadius) {
             radiusCard.visibility = View.GONE
         }
         if (!isStyles || !Module.isPro) {
@@ -628,6 +632,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         const val ENABLE_STYLES = "enable_styles"
         const val ENABLE_BACK = "enable_back"
         const val ENABLE_ZOOM = "enable_zoom"
+        const val ENABLE_RADIUS = "enable_radius"
         const val MARKER_STYLE = "marker_style"
         const val THEME_MODE = "theme_mode"
 
@@ -648,7 +653,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
 
         fun newInstance(isPlaces: Boolean, isStyles: Boolean, isBack: Boolean,
-                        isZoom: Boolean, markerStyle: Int, isDark: Boolean, isSearch: Boolean = true): AdvancedMapFragment {
+                        isZoom: Boolean, markerStyle: Int, isDark: Boolean, isRadius: Boolean = true): AdvancedMapFragment {
             val fragment = AdvancedMapFragment()
             val args = Bundle()
             args.putBoolean(ENABLE_PLACES, isPlaces)
@@ -656,7 +661,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             args.putBoolean(ENABLE_BACK, isBack)
             args.putBoolean(ENABLE_ZOOM, isZoom)
             args.putBoolean(THEME_MODE, isDark)
-            args.putBoolean(ENABLE_SEARCH, isSearch)
+            args.putBoolean(ENABLE_RADIUS, isRadius)
             args.putInt(MARKER_STYLE, markerStyle)
             fragment.arguments = args
             return fragment
