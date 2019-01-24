@@ -63,7 +63,7 @@
         <com.tuyenmonkey.mkloader.MKLoader
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:mk_color="?attr/colorAccent"
+            app:mk_color="?colorSecondary"
             app:mk_type="Sharingan" />
 
         <androidx.appcompat.widget.AppCompatTextView
