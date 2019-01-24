@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.places.work.SingleBackupWorker
+import com.elementary.tasks.navigation.settings.additional.work.SingleBackupWorker
 import kotlinx.coroutines.runBlocking
 
 /**

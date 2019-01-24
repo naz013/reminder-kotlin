@@ -10,6 +10,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.places.work.SingleBackupWorker
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -40,7 +41,9 @@ class PlaceViewModel private constructor(application: Application, key: String) 
     fun savePlace(place: Place) {
         postInProgress(true)
         launchDefault {
-            appDb.placesDao().insert(place)
+            runBlocking {
+                appDb.placesDao().insert(place)
+            }
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
             withUIContext {
                 postInProgress(false)
