@@ -46,10 +46,12 @@ abstract class BaseMapFragment : Fragment() {
     protected fun setStyle(map: GoogleMap, mapType: Int = mMapType) {
         mMapType = mapType
         map.setMapStyle(null)
-        if (mapType == 3) {
+        if (mapType == GoogleMap.MAP_TYPE_TERRAIN) {
             val ctx = context ?: return
             val res = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.mapStyleJson))
             if (!res) {
+                map.mapType = mapType
+            } else {
                 map.mapType = mapType
             }
         } else {
