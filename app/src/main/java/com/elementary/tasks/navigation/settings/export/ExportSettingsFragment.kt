@@ -189,7 +189,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     private fun exportClick() {
         if (Permissions.ensurePermissions(activity!!, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
             onProgress.invoke(true)
-            ExportAllDataWorker.export(context!!, IoHelper(context!!, prefs, backupTool))
+            ExportAllDataWorker.export(IoHelper(context!!, prefs, backupTool))
         }
     }
 

@@ -26,7 +26,7 @@ abstract class ThemedActivity : AppCompatActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
-    open protected fun applyTheme(): Boolean = true
+    protected open fun applyTheme(): Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
