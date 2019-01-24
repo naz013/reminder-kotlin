@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.speech.RecognizerIntent
 import android.text.TextUtils
 import android.view.MenuItem
@@ -62,6 +63,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private var beforeSettings: Int = 0
     private var isBackPressed: Boolean = false
     private var pressedTime: Long = 0
+    private val prefsObserver: (String) -> Unit = {
+        Handler(Looper.getMainLooper()).post {
+            checkDoNotDisturb()
+        }
+    }
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -148,6 +154,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         super.onResume()
         buttonObservable.addObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
         buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
+        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
+        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
+        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
         if (prefs.isUiChanged) {
             prefs.isUiChanged = false
             recreate()
@@ -163,6 +172,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun checkDoNotDisturb() {
+        Timber.d("checkDoNotDisturb: ")
         val view = nav_view.getHeaderView(0)
         if (prefs.applyDoNotDisturb(0)) {
             view.doNoDisturbIcon.visibility = View.VISIBLE
@@ -173,6 +183,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onPause() {
         super.onPause()
+        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
+        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
+        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
         buttonObservable.removeObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
         buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
         if (!Module.isPro) {
