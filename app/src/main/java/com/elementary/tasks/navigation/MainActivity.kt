@@ -48,15 +48,8 @@ import javax.inject.Inject
 
 class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
         RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
-    override fun invoke(view: View, action: GlobalButtonObservable.Action) {
-        if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
-            mNoteView?.switchQuickNote()
-        } else if (action == GlobalButtonObservable.Action.VOICE) {
-            SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
-        }
-    }
 
-    lateinit var remotePrefs: RemotePrefs
+    private lateinit var remotePrefs: RemotePrefs
     @Inject
     lateinit var buttonObservable: GlobalButtonObservable
 
@@ -166,6 +159,16 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (!Module.isPro) {
             remotePrefs.addSaleObserver(this)
         }
+        checkDoNotDisturb()
+    }
+
+    private fun checkDoNotDisturb() {
+        val view = nav_view.getHeaderView(0)
+        if (prefs.applyDoNotDisturb(0)) {
+            view.doNoDisturbIcon.visibility = View.VISIBLE
+        } else {
+            view.doNoDisturbIcon.visibility = View.GONE
+        }
     }
 
     override fun onPause() {
@@ -268,6 +271,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val view = nav_view.getHeaderView(0)
         view.sale_badge.visibility = View.GONE
         view.update_badge.visibility = View.GONE
+        view.doNoDisturbIcon.visibility = View.GONE
         val nameView = view.findViewById<TextView>(R.id.appNameBannerPro)
         if (Module.isPro) {
             nameView.visibility = View.VISIBLE
@@ -432,6 +436,14 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun noUpdate() {
         val view = nav_view.getHeaderView(0)
         view.update_badge.visibility = View.GONE
+    }
+
+    override fun invoke(view: View, action: GlobalButtonObservable.Action) {
+        if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
+            mNoteView?.switchQuickNote()
+        } else if (action == GlobalButtonObservable.Action.VOICE) {
+            SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
+        }
     }
 
     companion object {
