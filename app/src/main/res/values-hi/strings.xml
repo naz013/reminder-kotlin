@@ -676,5 +676,18 @@
     <string name="export_all_my_data">मेरा सारा डेटा निर्यात करें</string>
     <string name="scan_contacts">संपर्कों को स्कैन करें</string>
     <string name="no_new_birthdays">कोई नया जन्मदिन नहीं</string>
+    <string name="do_not_move">हिलना मत</string>
+    <string name="completed_reminders">पूरा किया हुआ अनुस्मारक</string>
+    <string name="reminders_">अनुस्मारक</string>
+    <string name="default_priority">डिफ़ॉल्ट प्राथमिकता</string>
+    <string name="do_not_disturb">परेशान न करें</string>
+    <string name="ignore_when_priority">प्राथमिकता होने पर अनदेखी करने दें</string>
+    <string name="events_that_occured_during">ईवेंट डिस्टर्ब न करें के दौरान होने वाली घटनाएँ</string>
+    <string name="do_not_allow">अनुमति नहीं है</string>
+    <string name="ignore">नज़रअंदाज़ करना</string>
+    <string name="schedule_for_later">बाद में उन्हें शेड्यूल करें</string>
+    <string name="and_above">और ऊपर</string>
+    <string name="allow_unlock_for_priority">के लिए केवल अनलॉक स्क्रीन की अनुमति दें</string>
+    <string name="import_file">फ़ाइल आयात करें</string>
 
 </resources>

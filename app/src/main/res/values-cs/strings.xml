@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Exportovat všechna data</string>
     <string name="scan_contacts">Skenování kontaktů</string>
     <string name="no_new_birthdays">Žádné nové narozeniny</string>
+    <string name="do_not_move">Nehýbejte se</string>
+    <string name="completed_reminders">Dokončené připomenutí</string>
+    <string name="reminders_">Připomenutí</string>
+    <string name="default_priority">Výchozí priorita</string>
+    <string name="do_not_disturb">Nerušit</string>
+    <string name="ignore_when_priority">Povolit ignorování při prioritě</string>
+    <string name="events_that_occured_during">Události, ke kterým došlo během režimu Nerušit</string>
+    <string name="do_not_allow">Neumožňují</string>
+    <string name="ignore">Ignorovat</string>
+    <string name="schedule_for_later">Naplánujte je později</string>
+    <string name="and_above">a výše</string>
+    <string name="allow_unlock_for_priority">Povolit obrazovku pro odemčení pouze pro</string>
+    <string name="import_file">Importovat soubor</string>
 
 </resources>

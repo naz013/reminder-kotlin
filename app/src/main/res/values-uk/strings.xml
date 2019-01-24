@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Експортувати всі мої дані</string>
     <string name="scan_contacts">Сканування контактів</string>
     <string name="no_new_birthdays">Немає нових днів народжень</string>
+    <string name="do_not_move">Не переміщати</string>
+    <string name="completed_reminders">Завершені нагадування</string>
+    <string name="reminders_">Нагадування</string>
+    <string name="default_priority">Пріоритет за умовчанням</string>
+    <string name="do_not_disturb">Не турбувати</string>
+    <string name="ignore_when_priority">Дозволити ігнорування, коли пріоритет</string>
+    <string name="events_that_occured_during">Події, що сталися під час режиму «Не турбувати»</string>
+    <string name="do_not_allow">Не дозволяти</string>
+    <string name="ignore">Ігнорувати</string>
+    <string name="schedule_for_later">Запланувати їх на пізніше</string>
+    <string name="and_above">і вище</string>
+    <string name="allow_unlock_for_priority">Дозволити розблокувати екран лише для</string>
+    <string name="import_file">Імпортувати файл</string>
 
 </resources>

@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Exporter toutes mes données</string>
     <string name="scan_contacts">Scanner les contacts</string>
     <string name="no_new_birthdays">Pas de nouveaux anniversaires</string>
+    <string name="do_not_move">Ne bougez pas</string>
+    <string name="completed_reminders">Rappels terminés</string>
+    <string name="reminders_">Des rappels</string>
+    <string name="default_priority">Priorité par défaut</string>
+    <string name="do_not_disturb">Ne pas déranger</string>
+    <string name="ignore_when_priority">Permettre d\'ignorer la priorité</string>
+    <string name="events_that_occured_during">Événements survenus en mode Ne pas déranger</string>
+    <string name="do_not_allow">Ne permettent pas</string>
+    <string name="ignore">Ignorer</string>
+    <string name="schedule_for_later">Planifiez-les pour plus tard</string>
+    <string name="and_above">et ci-dessus</string>
+    <string name="allow_unlock_for_priority">Autoriser le déverrouillage de l\'écran uniquement pour</string>
+    <string name="import_file">Importer le fichier</string>
 
 </resources>

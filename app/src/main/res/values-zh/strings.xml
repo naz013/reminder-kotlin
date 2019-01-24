@@ -676,5 +676,18 @@
     <string name="export_all_my_data">导出我的所有数据</string>
     <string name="scan_contacts">扫描联系人</string>
     <string name="no_new_birthdays">没有新的生日</string>
+    <string name="do_not_move">别动</string>
+    <string name="completed_reminders">完成提醒</string>
+    <string name="reminders_">提醒</string>
+    <string name="default_priority">默认优先级</string>
+    <string name="do_not_disturb">请勿打扰</string>
+    <string name="ignore_when_priority">允许忽略优先级</string>
+    <string name="events_that_occured_during">请勿打扰模式期间发生的事件</string>
+    <string name="do_not_allow">不允许</string>
+    <string name="ignore">忽视</string>
+    <string name="schedule_for_later">安排他们以后</string>
+    <string name="and_above">以上</string>
+    <string name="allow_unlock_for_priority">仅允许解锁屏幕</string>
+    <string name="import_file">导入文件</string>
 
 </resources>

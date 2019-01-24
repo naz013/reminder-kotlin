@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Exportați toate datele mele</string>
     <string name="scan_contacts">Scanați contactele</string>
     <string name="no_new_birthdays">Nu există zile noi de naștere</string>
+    <string name="do_not_move">Nu misca</string>
+    <string name="completed_reminders">Mementouri terminate</string>
+    <string name="reminders_">Mementouri</string>
+    <string name="default_priority">Prioritate prestabilită</string>
+    <string name="do_not_disturb">Nu deranja</string>
+    <string name="ignore_when_priority">Permiteți ignorarea când este prioritară</string>
+    <string name="events_that_occured_during">Evenimente care au avut loc în timpul modului \"Nu deranjați\"</string>
+    <string name="do_not_allow">Nu permite</string>
+    <string name="ignore">Ignora</string>
+    <string name="schedule_for_later">Programați-le pentru mai târziu</string>
+    <string name="and_above">si mai sus</string>
+    <string name="allow_unlock_for_priority">Permiteți ecranul de deblocare numai pentru</string>
+    <string name="import_file">Fișier de import</string>
 
 </resources>
