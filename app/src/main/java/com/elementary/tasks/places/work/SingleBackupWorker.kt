@@ -9,7 +9,7 @@ import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.google.gson.Gson
 import java.io.File
 import java.io.IOException
@@ -19,10 +19,12 @@ class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
     override fun doWork(): Result {
         val uuId = inputData.getString(Constants.INTENT_ID) ?: ""
         if (uuId.isNotEmpty()) {
-            val db = AppDb.getAppDatabase(applicationContext)
-            val place = db.placesDao().getByKey(uuId)
-            if (place != null) {
-                cacheFiles(uuId + FileConfig.FILE_NAME_PLACE, Gson().toJson(place))
+            launchDefault {
+                val db = AppDb.getAppDatabase(applicationContext)
+                val place = db.placesDao().getByKey(uuId)
+                if (place != null) {
+                    cacheFiles(uuId + FileConfig.FILE_NAME_PLACE, Gson().toJson(place))
+                }
             }
         }
         return Result.SUCCESS
