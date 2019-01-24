@@ -6,6 +6,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.notes.create.DecodeImages
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -35,7 +36,7 @@ data class ImageFile(
         var noteId: String = "",
         @Transient
         @Ignore
-        var state: DecodeImages.State = DecodeImages.State.Ready) {
+        var state: DecodeImages.State = DecodeImages.State.Ready) : Serializable {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

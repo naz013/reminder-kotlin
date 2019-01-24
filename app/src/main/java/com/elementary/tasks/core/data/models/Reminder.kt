@@ -87,7 +87,7 @@ data class Reminder(
         var priority: Int = 2,
         @ColumnInfo(name = "groupTitle")
         @Transient
-        var groupTitle: String = "",
+        var groupTitle: String? = "",
         @ColumnInfo(name = "groupColor")
         @Transient
         var groupColor: Int = 0

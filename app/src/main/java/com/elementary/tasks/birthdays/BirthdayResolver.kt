@@ -3,7 +3,7 @@ package com.elementary.tasks.birthdays
 import android.content.Intent
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues

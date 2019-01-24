@@ -281,7 +281,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         val groupIds = mutableMapOf<String, String>()
         reminders.forEach {
             if (it.groupUuId.isNotBlank()) {
-                groupIds[it.groupUuId] = it.groupTitle
+                groupIds[it.groupUuId] = it.groupTitle ?: ""
             }
         }
         filter.add(filterAllElement)

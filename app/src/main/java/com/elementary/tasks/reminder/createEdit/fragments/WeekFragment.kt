@@ -281,11 +281,7 @@ class WeekFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        showGroup(groupView, reminder)
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormat, prefs.appLanguage)
         if (reminder.weekdays.isNotEmpty()) {

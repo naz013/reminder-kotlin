@@ -2,7 +2,9 @@ package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -163,11 +165,7 @@ class EmailFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        showGroup(groupView, reminder)
         mail.setText(reminder.target)
         subject.setText(reminder.subject)
     }

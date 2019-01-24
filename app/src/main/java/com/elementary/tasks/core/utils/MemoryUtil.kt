@@ -135,7 +135,7 @@ object MemoryUtil {
     private fun getDir(directory: String): File? {
         return if (isSdPresent) {
             val sdPath = Environment.getExternalStorageDirectory()
-            val dir = File(sdPath.toString() + "/JustReminder/" + directory)
+            val dir = File("$sdPath/JustReminder/$directory")
             if (!dir.exists() && dir.mkdirs()) {
                 dir
             } else dir
@@ -147,7 +147,7 @@ object MemoryUtil {
     fun humanReadableByte(bytes: Long, si: Boolean): String {
         val unit = if (si) 1000 else 1024
         if (bytes < unit) {
-            return bytes.toString() + " B"
+            return "$bytes B"
         }
         val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
         val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""

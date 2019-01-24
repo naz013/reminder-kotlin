@@ -203,11 +203,7 @@ class DateFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        showGroup(groupView, reminder)
         if (reminder.target != "") {
             actionView.setAction(true)
             if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {

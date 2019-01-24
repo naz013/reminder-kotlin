@@ -207,11 +207,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        showGroup(groupView, reminder)
         if (reminder.target != "") {
             if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
                 application.isChecked = true

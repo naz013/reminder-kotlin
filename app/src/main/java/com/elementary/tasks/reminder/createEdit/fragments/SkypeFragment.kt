@@ -189,11 +189,7 @@ class SkypeFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        showGroup(groupView, reminder)
         when (reminder.type) {
             Reminder.BY_SKYPE_CALL -> skypeCall.isChecked = true
             Reminder.BY_SKYPE_VIDEO -> skypeVideo.isChecked = true

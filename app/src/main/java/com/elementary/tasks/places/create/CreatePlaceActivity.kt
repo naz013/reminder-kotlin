@@ -20,7 +20,6 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.places.PlaceViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_create_place.*
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -106,16 +105,18 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
             try {
                 val name = intent.data ?: return
                 val scheme = name.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
-                    val cr = contentResolver
-                    backupTool.getPlace(cr, name)
-                } else {
+                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getPlace(name.path, null)
-                }
+                } else null
                 showPlace(mItem)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
-            } catch (e: IllegalStateException) {
+            }
+        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+            try {
+                mItem = intent.getSerializableExtra(Constants.INTENT_ITEM) as Place?
+                showPlace(mItem)
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

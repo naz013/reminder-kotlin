@@ -173,8 +173,8 @@ class ShopFragment : RepeatableTypeFragment() {
     }
 
     private fun addNewItem() {
-        val task = shopEdit.text.toString().trim { it <= ' ' }
-        if (task.matches("".toRegex())) {
+        val task = shopEdit.text.toString().trim()
+        if (task == "") {
             shopLayout.error = getString(R.string.must_be_not_empty)
             shopLayout.isErrorEnabled = true
             return
@@ -185,11 +185,7 @@ class ShopFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        showGroup(groupView, reminder)
         mAdapter.data = reminder.shoppings
         attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
         updateHeader()

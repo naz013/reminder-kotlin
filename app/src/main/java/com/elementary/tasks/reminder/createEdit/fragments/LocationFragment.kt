@@ -283,12 +283,8 @@ class LocationFragment : RadiusTypeFragment() {
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        Timber.d("editReminder: %s", reminder.toString())
-        groupView.reminderGroup = ReminderGroup().apply {
-            this.groupColor = reminder.groupColor
-            this.groupTitle = reminder.groupTitle
-            this.groupUuId = reminder.groupUuId
-        }
+        Timber.d("editReminder: %s", reminder)
+        showGroup(groupView, reminder)
         if (reminder.eventTime != "" && reminder.hasReminder) {
             dateView.setDateTime(reminder.eventTime)
             attackDelay.isChecked = true

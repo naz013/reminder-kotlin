@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.content.Context
+import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
@@ -8,6 +9,8 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.views.GroupView
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -82,9 +85,22 @@ abstract class TypeFragment : Fragment() {
         }
     }
 
+    protected fun showGroup(groupView: GroupView, reminder: Reminder) {
+        if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {
+            groupView.reminderGroup = reminderInterface.defGroup
+        } else {
+            groupView.reminderGroup = ReminderGroup().apply {
+                this.groupUuId = reminder.groupUuId
+                this.groupColor = reminder.groupColor
+                this.groupTitle = reminder.groupTitle ?: ""
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        if (reminderInterface.reminder.groupUuId.isBlank()) {
+        Timber.d("onResume: ${reminderInterface.reminder.groupTitle}, ${reminderInterface.defGroup}")
+        if (reminderInterface.reminder.groupUuId.isBlank() || TextUtils.isEmpty(reminderInterface.reminder.groupTitle)) {
             val defGroup = reminderInterface.defGroup ?: return
             onGroupUpdate(defGroup)
         }

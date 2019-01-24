@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.TimeUtil
-
-import java.util.UUID
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.elementary.tasks.core.utils.TimeUtil
+import java.io.Serializable
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,7 +26,7 @@ import androidx.room.PrimaryKey
  * limitations under the License.
  */
 @Entity
-class SmsTemplate {
+class SmsTemplate : Serializable {
     var title: String = ""
     @PrimaryKey
     var key: String = ""
