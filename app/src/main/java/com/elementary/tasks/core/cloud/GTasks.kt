@@ -52,28 +52,33 @@ class GTasks private constructor(context: Context) {
     @Inject
     lateinit var backupTool: BackupTool
 
+    var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
         private set
 
     init {
         ReminderApp.appComponent.inject(this)
         val user = prefs.tasksUser
-        Timber.d("GTasks: $user")
         if (user.matches(".*@.*".toRegex())) {
-            val credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(TasksScopes.TASKS))
+            Timber.d("GTasks: user -> $user")
+            val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(TasksScopes.TASKS))
             credential.selectedAccountName = user
-            val mJsonFactory = GsonFactory.getDefaultInstance()
-            val mTransport = AndroidHttp.newCompatibleTransport()
-            tasksService = Tasks.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build()
+            tasksService = Tasks.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build()
             isLogged = true
+            statusObserver?.invoke(true)
+        } else {
+            logOut()
         }
     }
 
-    internal fun logOut() {
+    fun logOut() {
         Timber.d("logOut: ")
         prefs.tasksUser = Prefs.DRIVE_USER_NONE
         tasksService = null
         isLogged = false
+        statusObserver?.invoke(false)
         instance = null
     }
 
@@ -245,8 +250,7 @@ class GTasks private constructor(context: Context) {
 
         const val TASKS_NEED_ACTION = "needsAction"
         const val TASKS_COMPLETE = "completed"
-        private const val TAG = "GTasks"
-        private const val APPLICATION_NAME = "Reminder/6.0"
+        private const val APPLICATION_NAME = "Reminder/7.0"
 
         private var instance: GTasks? = null
 
