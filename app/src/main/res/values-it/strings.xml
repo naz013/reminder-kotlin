@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Esporta tutti i miei dati</string>
     <string name="scan_contacts">Scansione dei contatti</string>
     <string name="no_new_birthdays">Nessun nuovo compleanno</string>
+    <string name="do_not_move">Non muoverti</string>
+    <string name="completed_reminders">Promemoria completati</string>
+    <string name="reminders_">Promemoria</string>
+    <string name="default_priority">Priorità predefinita</string>
+    <string name="do_not_disturb">Non disturbare</string>
+    <string name="ignore_when_priority">Permetti di ignorare quando è prioritario</string>
+    <string name="events_that_occured_during">Eventi che si sono verificati durante la modalità Non disturbare</string>
+    <string name="do_not_allow">Non permettere</string>
+    <string name="ignore">Ignorare</string>
+    <string name="schedule_for_later">Programmali per dopo</string>
+    <string name="and_above">e al di sopra</string>
+    <string name="allow_unlock_for_priority">Consenti solo lo schermo di sblocco</string>
+    <string name="import_file">Importare file</string>
 
 </resources>

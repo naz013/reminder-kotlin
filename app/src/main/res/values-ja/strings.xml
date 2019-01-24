@@ -677,5 +677,18 @@
     <string name="export_all_my_data">自分のデータをすべてエクスポートする</string>
     <string name="scan_contacts">連絡先をスキャン</string>
     <string name="no_new_birthdays">新しい誕生日はありません</string>
+    <string name="do_not_move">移動しない</string>
+    <string name="completed_reminders">完了したお知らせ</string>
+    <string name="reminders_">リマインダー</string>
+    <string name="default_priority">デフォルトの優先順位</string>
+    <string name="do_not_disturb">邪魔しないでください</string>
+    <string name="ignore_when_priority">優先度を無視することを許可する</string>
+    <string name="events_that_occured_during">中に発生したイベントは、モードを邪魔しないでください</string>
+    <string name="do_not_allow">許可しない</string>
+    <string name="ignore">無視する</string>
+    <string name="schedule_for_later">後でスケジュールします。</string>
+    <string name="and_above">以上</string>
+    <string name="allow_unlock_for_priority">のためだけにロック解除画面を許可する</string>
+    <string name="import_file">インポートファイル</string>
 
 </resources>

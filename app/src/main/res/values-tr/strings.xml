@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Tüm verilerimi ver</string>
     <string name="scan_contacts">Kişileri tara</string>
     <string name="no_new_birthdays">Yeni doğum günü yok</string>
+    <string name="do_not_move">Hareket etme</string>
+    <string name="completed_reminders">Tamamlanan hatırlatıcılar</string>
+    <string name="reminders_">Hatırlatmalar</string>
+    <string name="default_priority">Varsayılan öncelik</string>
+    <string name="do_not_disturb">Rahatsız etmeyin</string>
+    <string name="ignore_when_priority">Öncelik olduğunda yoksaymaya izin ver</string>
+    <string name="events_that_occured_during">Rahatsız etme modu sırasında oluşan olaylar</string>
+    <string name="do_not_allow">İzin verme</string>
+    <string name="ignore">Aldırmamak</string>
+    <string name="schedule_for_later">Daha sonra onları planlayın</string>
+    <string name="and_above">ve yukarıda</string>
+    <string name="allow_unlock_for_priority">Sadece ekran kilidini aç</string>
+    <string name="import_file">Önemli dosya</string>
 
 </resources>

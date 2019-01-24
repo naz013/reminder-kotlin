@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Export all my data</string>
     <string name="scan_contacts">Scan contacts</string>
     <string name="no_new_birthdays">No new birthdays</string>
+    <string name="do_not_move">Do not move</string>
+    <string name="completed_reminders">Completed reminders</string>
+    <string name="reminders_">Reminders</string>
+    <string name="default_priority">Default priority</string>
+    <string name="do_not_disturb">Do not disturb</string>
+    <string name="ignore_when_priority">Allow ignoring when priority</string>
+    <string name="events_that_occured_during">Events that occurred during Do not disturb mode</string>
+    <string name="do_not_allow">Do not allow</string>
+    <string name="ignore">Ignore</string>
+    <string name="schedule_for_later">Schedule them for later</string>
+    <string name="and_above">and above</string>
+    <string name="allow_unlock_for_priority">Allow unlock screen only for</string>
+    <string name="import_file">Import file</string>
 
 </resources>

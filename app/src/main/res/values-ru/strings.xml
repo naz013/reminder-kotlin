@@ -676,5 +676,18 @@
     <string name="export_all_my_data">Экспортировать все мои данные</string>
     <string name="scan_contacts">Сканирование контактов</string>
     <string name="no_new_birthdays">Нет новых дней рождения</string>
+    <string name="do_not_move">Не перемещать</string>
+    <string name="completed_reminders">Завершенные напоминания</string>
+    <string name="reminders_">Напоминания</string>
+    <string name="default_priority">Приоритет по умолчанию</string>
+    <string name="do_not_disturb">Не беспокоить</string>
+    <string name="ignore_when_priority">Разрешить игнорирование, когда приоритет</string>
+    <string name="events_that_occured_during">События, произошедшие в режиме «Не беспокоить»</string>
+    <string name="do_not_allow">Не разрешать</string>
+    <string name="ignore">игнорировать</string>
+    <string name="schedule_for_later">Запланируйте их на потом</string>
+    <string name="and_above">и выше</string>
+    <string name="allow_unlock_for_priority">Разрешить разблокировку экрана только для</string>
+    <string name="import_file">Импортировать файл</string>
 
 </resources>
