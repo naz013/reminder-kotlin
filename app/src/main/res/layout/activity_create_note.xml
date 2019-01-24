@@ -33,28 +33,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="56dp">
+            android:paddingRight="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="80dp"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/imagesList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/taskMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="16dp"
                     android:hint="@string/note"
                     android:textSize="@dimen/create_note_text_size" />
 
@@ -62,7 +54,7 @@
                     android:id="@+id/remindContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="80dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center|end"
                     android:orientation="horizontal"
                     android:visibility="gone">
@@ -95,6 +87,16 @@
                         app:srcCompat="@drawable/ic_twotone_cancel_24px" />
 
                 </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagesList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

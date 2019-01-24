@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.notes.create.DecodeImages
 import kotlinx.android.synthetic.main.list_item_note_image.view.*
 import java.util.*
 
@@ -63,7 +64,14 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(noteImage: ImageFile) {
-            loadImage(itemView.photoView, noteImage)
+            if (noteImage.state is DecodeImages.State.Loading) {
+                itemView.stateReady.visibility = View.GONE
+                itemView.stateLoading.visibility = View.VISIBLE
+            } else {
+                itemView.stateLoading.visibility = View.GONE
+                itemView.stateReady.visibility = View.VISIBLE
+                loadImage(itemView.photoView, noteImage)
+            }
         }
 
         init {
