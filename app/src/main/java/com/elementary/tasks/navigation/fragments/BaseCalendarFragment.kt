@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener

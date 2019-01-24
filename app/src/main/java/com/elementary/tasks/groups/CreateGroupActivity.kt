@@ -97,18 +97,24 @@ class CreateGroupActivity : ThemedActivity() {
             try {
                 val name = intent.data ?: return
                 val scheme = name.scheme
-                val item = if (ContentResolver.SCHEME_CONTENT == scheme) {
-                    val cr = contentResolver
-                    backupTool.getGroup(cr, name)
-                } else {
+                val item = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getGroup(name.path, null)
-                }
+                } else null
                 if (item != null) {
                     showGroup(item)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
+        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+            try {
+                val item = intent.getSerializableExtra(Constants.INTENT_ITEM) as ReminderGroup?
+                if (item != null) {
+                    showGroup(item)
+                }
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

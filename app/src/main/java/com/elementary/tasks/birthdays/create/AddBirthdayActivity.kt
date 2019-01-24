@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays.createEdit
+package com.elementary.tasks.birthdays.create
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -22,7 +22,6 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_add_birthday.*
-import java.io.IOException
 import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
@@ -143,17 +142,18 @@ class AddBirthdayActivity : ThemedActivity() {
             try {
                 val name = intent.data ?: return
                 val scheme = name.scheme
-                mBirthday = if (ContentResolver.SCHEME_CONTENT == scheme) {
-                    val cr = contentResolver
-                    backupTool.getBirthday(cr, name)
-                } else {
+                mBirthday = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getBirthday(name.path, null)
-                }
+                } else null
                 showBirthday(mBirthday)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
+            }
+        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+            try {
+                mBirthday = intent.getSerializableExtra(Constants.INTENT_ITEM) as Birthday?
+                showBirthday(mBirthday)
+            } catch (e: Exception) {
             }
         }
     }

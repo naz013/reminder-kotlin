@@ -3,6 +3,7 @@ package com.elementary.tasks.core.data.models
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.elementary.tasks.core.interfaces.NoteInterface
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -28,7 +29,7 @@ data class NoteWithImages(
         var note: Note? = null,
         @Relation(parentColumn = "key", entityColumn = "noteId")
         var images: List<ImageFile> = ArrayList()
-) : NoteInterface {
+) : NoteInterface, Serializable {
 
     override fun getGmtTime(): String {
         return note?.date ?: ""

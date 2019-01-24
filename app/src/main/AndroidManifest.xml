@@ -67,29 +67,12 @@
 
         <activity android:name=".navigation.MainActivity" />
         <activity
-            android:name=".reminder.createEdit.CreateReminderActivity"
+            android:name=".core.IntentActivity"
             android:configChanges="keyboardHidden"
+            android:label="@string/import_file"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="file" />
-                <data android:host="*" />
-                <data android:mimeType="\*/\*" />
-                <data android:pathPattern=".*\\.ta2" />
-                <data android:pathPattern=".*\\..*\\.ta2" />
-                <data android:pathPattern=".*\\..*\\..*\\.ta2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.ta2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.ta2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.ta2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.ta2" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -97,6 +80,77 @@
                     android:scheme="content"
                     tools:ignore="AppLinkUrlError" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.ta2" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="content"
+                    tools:ignore="AppLinkUrlError" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.te2" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="content"
+                    tools:ignore="AppLinkUrlError" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.gr2" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="content"
+                    tools:ignore="AppLinkUrlError" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.pl2" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="content"
+                    tools:ignore="AppLinkUrlError" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.no2" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="content"
+                    tools:ignore="AppLinkUrlError" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.bi2" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".reminder.createEdit.CreateReminderActivity"
+            android:configChanges="keyboardHidden"
+            android:windowSoftInputMode="stateUnchanged">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="\*/\*" />
                 <data android:pathPattern=".*\\.ta2" />
                 <data android:pathPattern=".*\\..*\\.ta2" />
                 <data android:pathPattern=".*\\..*\\..*\\.ta2" />
@@ -113,31 +167,12 @@
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.te2" />
-                <data android:pathPattern=".*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.te2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.te2" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="content"
-                    tools:ignore="AppLinkUrlError" />
-                <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.te2" />
                 <data android:pathPattern=".*\\..*\\.te2" />
                 <data android:pathPattern=".*\\..*\\..*\\.te2" />
@@ -161,31 +196,12 @@
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.gr2" />
-                <data android:pathPattern=".*\\..*\\.gr2" />
-                <data android:pathPattern=".*\\..*\\..*\\.gr2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.gr2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.gr2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.gr2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.gr2" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="content"
-                    tools:ignore="AppLinkUrlError" />
-                <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.gr2" />
                 <data android:pathPattern=".*\\..*\\.gr2" />
                 <data android:pathPattern=".*\\..*\\..*\\.gr2" />
@@ -201,31 +217,12 @@
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.pl2" />
-                <data android:pathPattern=".*\\..*\\.pl2" />
-                <data android:pathPattern=".*\\..*\\..*\\.pl2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.pl2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pl2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.pl2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.pl2" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="content"
-                    tools:ignore="AppLinkUrlError" />
-                <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.pl2" />
                 <data android:pathPattern=".*\\..*\\.pl2" />
                 <data android:pathPattern=".*\\..*\\..*\\.pl2" />
@@ -241,31 +238,12 @@
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.no2" />
-                <data android:pathPattern=".*\\..*\\.no2" />
-                <data android:pathPattern=".*\\..*\\..*\\.no2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.no2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.no2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.no2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.no2" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="content"
-                    tools:ignore="AppLinkUrlError" />
-                <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.no2" />
                 <data android:pathPattern=".*\\..*\\.no2" />
                 <data android:pathPattern=".*\\..*\\..*\\.no2" />
@@ -276,35 +254,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".birthdays.createEdit.AddBirthdayActivity"
+            android:name=".birthdays.create.AddBirthdayActivity"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bi2" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="content"
-                    tools:ignore="AppLinkUrlError" />
-                <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.bi2" />
                 <data android:pathPattern=".*\\..*\\.bi2" />
                 <data android:pathPattern=".*\\..*\\..*\\.bi2" />

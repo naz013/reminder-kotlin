@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.list_item_navigation.view.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -174,17 +173,19 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             intent.data != null -> try {
                 val uri = intent.data ?: return
                 val scheme = uri.scheme
-                reminder = if (ContentResolver.SCHEME_CONTENT == scheme) {
-                    val cr = contentResolver
-                    backupTool.getReminder(cr, uri) ?: Reminder()
-                } else {
+                reminder = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getReminder(uri.path, null) ?: Reminder()
-                }
+                } else Reminder()
                 editReminder(reminder, false)
-            } catch (e: IOException) {
+            } catch (e: java.lang.Exception) {
                 Timber.d("loadReminder: ${e.message}")
-            } catch (e: IllegalStateException) {
-                Timber.d("loadReminder: ${e.message}")
+            }
+            intent.hasExtra(Constants.INTENT_ITEM) -> {
+                try {
+                    reminder = intent.getSerializableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
+                    editReminder(reminder, false)
+                } catch (e: Exception) {
+                }
             }
             else -> {
                 var lastPos = prefs.lastUsedReminder

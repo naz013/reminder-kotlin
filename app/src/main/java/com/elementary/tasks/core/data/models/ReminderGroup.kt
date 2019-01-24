@@ -5,6 +5,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -26,7 +27,7 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-class ReminderGroup {
+class ReminderGroup : Serializable {
 
     @SerializedName("title")
     var groupTitle: String = ""

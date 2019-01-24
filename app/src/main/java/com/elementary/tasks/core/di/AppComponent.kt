@@ -1,8 +1,9 @@
 package com.elementary.tasks.core.di
 
-import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
+import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.BaseNotificationActivity
+import com.elementary.tasks.core.IntentActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
 import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
@@ -157,4 +158,5 @@ interface AppComponent {
     fun inject(activity: LoginActivity)
     fun inject(activity: TaskListActivity)
     fun inject(activity: TaskActivity)
+    fun inject(activity: IntentActivity)
 }

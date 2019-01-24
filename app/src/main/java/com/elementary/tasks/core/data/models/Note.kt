@@ -3,6 +3,7 @@ package com.elementary.tasks.core.data.models
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -24,7 +25,7 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-data class Note(
+data class Note (
         var summary: String = "",
         @PrimaryKey
         var key: String = UUID.randomUUID().toString(),
@@ -32,7 +33,7 @@ data class Note(
         var color: Int = 0,
         var style: Int = 0,
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
-        var opacity: Int = 100) {
+        var opacity: Int = 100) : Serializable {
 
     @Ignore
     constructor(oldNote: OldNote) : this() {

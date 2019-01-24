@@ -64,12 +64,9 @@ class TemplateActivity : ThemedActivity() {
             try {
                 val name = intent.data
                 val scheme = name!!.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
-                    val cr = contentResolver
-                    backupTool.getTemplate(cr, name)
-                } else {
+                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getTemplate(name.path, null)
-                }
+                } else null
                 val item = mItem
                 if (item != null) {
                     showTemplate(item)
@@ -77,6 +74,15 @@ class TemplateActivity : ThemedActivity() {
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
+        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+            try {
+                val item = intent.getSerializableExtra(Constants.INTENT_ITEM) as SmsTemplate?
+                if (item != null) {
+                    showTemplate(item)
+                }
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

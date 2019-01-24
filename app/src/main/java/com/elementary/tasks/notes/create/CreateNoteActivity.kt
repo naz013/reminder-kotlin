@@ -357,6 +357,13 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (data != null) {
             val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
             loadNoteFromFile(filePath, data)
+        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+            try {
+                val note = intent.getSerializableExtra(Constants.INTENT_ITEM) as NoteWithImages?
+                showNote(note)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -413,11 +420,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         try {
             mItem = if (uri != null) {
                 val scheme = uri.scheme
-                if (ContentResolver.SCHEME_CONTENT == scheme) {
-                    val cr = contentResolver
-                    backupTool.getNote(cr, uri)
-                } else {
+                if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getNote(uri.path, null)
+                } else {
+                    null
                 }
             } else {
                 backupTool.getNote(filePath, null)
