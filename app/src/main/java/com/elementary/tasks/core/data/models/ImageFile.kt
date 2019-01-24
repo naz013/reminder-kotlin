@@ -35,7 +35,7 @@ data class ImageFile(
         var noteId: String = "",
         @Transient
         @Ignore
-        var state: DecodeImages.State = DecodeImages.State.Loading) {
+        var state: DecodeImages.State = DecodeImages.State.Ready) {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
