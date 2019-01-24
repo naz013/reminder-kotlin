@@ -62,7 +62,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         initActionBar()
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, true, false, false,
-                prefs.markerStyle, themeUtil.isDark)
+                prefs.markerStyle, themeUtil.isDark, false)
         mGoogleMap?.setListener(this)
         mGoogleMap?.setCallback(this)
 

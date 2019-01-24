@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             app:mk_color="?android:textColorPrimary"
-            app:mk_type="LineSpinner" />
+            app:mk_type="Whirlpool" />
 
     </RelativeLayout>
 
