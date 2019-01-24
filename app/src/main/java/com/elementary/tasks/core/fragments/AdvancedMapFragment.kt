@@ -648,7 +648,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
 
         fun newInstance(isPlaces: Boolean, isStyles: Boolean, isBack: Boolean,
-                        isZoom: Boolean, markerStyle: Int, isDark: Boolean): AdvancedMapFragment {
+                        isZoom: Boolean, markerStyle: Int, isDark: Boolean, isSearch: Boolean = true): AdvancedMapFragment {
             val fragment = AdvancedMapFragment()
             val args = Bundle()
             args.putBoolean(ENABLE_PLACES, isPlaces)
@@ -656,6 +656,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             args.putBoolean(ENABLE_BACK, isBack)
             args.putBoolean(ENABLE_ZOOM, isZoom)
             args.putBoolean(THEME_MODE, isDark)
+            args.putBoolean(ENABLE_SEARCH, isSearch)
             args.putInt(MARKER_STYLE, markerStyle)
             fragment.arguments = args
             return fragment

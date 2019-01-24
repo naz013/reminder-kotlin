@@ -158,13 +158,16 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.d("onActivityResult: %d, %d, %s", requestCode, resultCode, data)
         if (requestCode == PICK_FROM_CAMERA && resultCode == Activity.RESULT_OK) {
-            if (imageUri != null) showPhoto(imageUri!!)
+            val uri = imageUri ?: return
+            showPhoto(uri)
         } else if (requestCode == PICK_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             imageUri = data?.data
-            if (imageUri != null) {
-                showPhoto(imageUri!!)
-            } else if (data?.clipData != null) {
-                mCallback?.onImageSelected(null, data.clipData)
+            val clipData = data?.clipData
+            val uri = imageUri
+            if (uri != null) {
+                showPhoto(uri)
+            } else if (clipData != null) {
+                mCallback?.onImageSelected(null, clipData)
             }
         }
     }

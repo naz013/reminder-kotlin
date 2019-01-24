@@ -2,7 +2,9 @@ package com.elementary.tasks.core.data.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.elementary.tasks.notes.create.DecodeImages
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -30,7 +32,10 @@ data class ImageFile(
         @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
         var image: ByteArray? = null,
         @SerializedName("noteId")
-        var noteId: String = "") {
+        var noteId: String = "",
+        @Transient
+        @Ignore
+        var state: DecodeImages.State = DecodeImages.State.Loading) {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

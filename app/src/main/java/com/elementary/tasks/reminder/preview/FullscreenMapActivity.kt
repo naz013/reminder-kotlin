@@ -114,7 +114,7 @@ class FullscreenMapActivity : ThemedActivity() {
 
     private fun initMap() {
         val googleMap = AdvancedMapFragment.newInstance(false, false, true,
-                false, prefs.markerStyle, themeUtil.isDark)
+                false, prefs.markerStyle, themeUtil.isDark, false)
         googleMap.setCallback(object : MapCallback {
             override fun onMapReady() {
                 googleMap.setSearchEnabled(false)

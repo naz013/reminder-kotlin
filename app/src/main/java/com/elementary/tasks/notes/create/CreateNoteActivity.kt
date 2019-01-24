@@ -86,7 +86,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private var mIsLogged = false
 
     private lateinit var viewModel: NoteViewModel
-    private val mAdapter = ImagesGridAdapter()
+    private val imagesGridAdapter = ImagesGridAdapter()
     private var mProgress: ProgressDialog? = null
 
     private var mItem: NoteWithImages? = null
@@ -362,7 +362,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun saveEditedImage() {
         val image = imagesSingleton.getEditable() ?: return
-        mAdapter.setImage(image, mEditPosition)
+        imagesGridAdapter.setImage(image, mEditPosition)
     }
 
     private fun initViewModel(id: String) {
@@ -434,7 +434,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         this.mItem = noteWithImages
         Timber.d("showNote: $noteWithImages")
         if (noteWithImages != null) {
-            mAdapter.setImages(noteWithImages.images)
+            imagesGridAdapter.setImages(noteWithImages.images)
             val note = noteWithImages.note ?: return
             mColor = note.color
             mFontStyle = note.style
@@ -446,8 +446,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun initImagesList() {
-        mAdapter.setEditable(true)
-        mAdapter.actionsListener = object : ActionsListener<ImageFile> {
+        imagesGridAdapter.setEditable(true)
+        imagesGridAdapter.actionsListener = object : ActionsListener<ImageFile> {
             override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
                     ListActions.EDIT -> editImage(position)
@@ -457,19 +457,19 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 }
             }
         }
-        imagesList.layoutManager = KeepLayoutManager(this, 6, mAdapter)
+        imagesList.layoutManager = KeepLayoutManager(this, 6, imagesGridAdapter)
         imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
-        imagesList.adapter = mAdapter
+        imagesList.adapter = imagesGridAdapter
     }
 
     private fun openImagePreview(position: Int) {
-        imagesSingleton.setCurrent(mAdapter.data)
+        imagesSingleton.setCurrent(imagesGridAdapter.data)
         startActivity(Intent(this, ImagePreviewActivity::class.java)
                 .putExtra(Constants.INTENT_POSITION, position))
     }
 
     private fun editImage(position: Int) {
-        imagesSingleton.setEditable(mAdapter.getItem(position))
+        imagesSingleton.setEditable(imagesGridAdapter.getItem(position))
         this.mEditPosition = position
         startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }
@@ -537,7 +537,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun createObject(): NoteWithImages? {
         val text = taskMessage.text.toString().trim()
-        val images = mAdapter.data
+        val images = imagesGridAdapter.data
         if (TextUtils.isEmpty(text) && images.isEmpty()) {
             taskMessage.error = getString(R.string.must_be_not_empty)
             return null
@@ -692,7 +692,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                 val imageFile = ImageFile(outputStream.toByteArray())
                 withUIContext {
-                    mAdapter.addImage(imageFile)
+                    imagesGridAdapter.addImage(imageFile)
                 }
             }
         }
@@ -781,11 +781,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (uri != null) {
             addImageFromUri(uri)
         } else if (clipData != null) {
-            DecodeImages.startDecoding(this, clipData) {
-                if (!it.isEmpty()) {
-                    mAdapter.addNextImages(it)
-                }
-            }
+            DecodeImages.startDecoding(this, clipData, imagesGridAdapter.itemCount, {
+                imagesGridAdapter.addNextImages(it)
+            }, { i, imageFile ->
+                imagesGridAdapter.setImage(imageFile, i)
+            })
         }
     }
 
@@ -795,7 +795,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
             val imageFile = ImageFile(outputStream.toByteArray())
             withUIContext {
-                mAdapter.addImage(imageFile)
+                imagesGridAdapter.addImage(imageFile)
             }
         }
     }
