@@ -138,7 +138,12 @@ class EsWorker extends Worker {
 
     @Override
     public boolean hasRepeat(String input) {
-        return input.matches(".*cada.*") || input.matches(".*todos.*");
+        return input.matches(".*cada.*") || input.matches(".*todos.*") || hasEveryDay(input);
+    }
+
+    @Override
+    public boolean hasEveryDay(String input) {
+        return input.matches(".*diario.*");
     }
 
     @Override
@@ -146,7 +151,7 @@ class EsWorker extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*todos.*") || part.matches(".*cada.*")) {
+            if (hasRepeat(part)) {
                 parts[i] = "";
                 break;
             }

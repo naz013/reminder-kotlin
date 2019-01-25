@@ -135,7 +135,12 @@ class EnWorker extends Worker {
 
     @Override
     public boolean hasRepeat(String input) {
-        return input.matches(".*every.*");
+        return input.matches(".*every.*") || hasEveryDay(input);
+    }
+
+    @Override
+    public boolean hasEveryDay(String input) {
+        return input.matches(".*everyday.*");
     }
 
     @Override
@@ -143,7 +148,7 @@ class EnWorker extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*every.*")) {
+            if (hasRepeat(part)) {
                 parts[i] = "";
                 break;
             }
