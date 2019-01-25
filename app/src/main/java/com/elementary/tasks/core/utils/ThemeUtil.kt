@@ -35,7 +35,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     val isDark: Boolean
         get() {
             val appTheme = prefs.appTheme
-            val isDark = appTheme > THEME_LIGHT_4
+            val isDark = appTheme > THEME_LIGHT_4 && appTheme != THEME_RETRO_YELLOW
             if (appTheme == THEME_AUTO) {
                 return isNight
             }
@@ -65,7 +65,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                     addAccent("Light1")
                 }
             }
-            THEME_PURE_BLACK -> addAccent("PureBlack")
             THEME_PURE_WHITE -> addAccent("PureWhite")
             THEME_LIGHT_1 -> addAccent("Light1")
             THEME_LIGHT_2 -> addAccent("Light2")
@@ -75,7 +74,12 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             THEME_DARK_2 -> addAccent("Dark2")
             THEME_DARK_3 -> addAccent("Dark3")
             THEME_DARK_4 -> addAccent("Dark4")
-            else -> addAccent("Light1")
+            THEME_PURE_BLACK -> addAccent("PureBlack")
+            else -> if (Module.isPro && prefs.appTheme == THEME_RETRO_YELLOW) {
+                addAccent("Retro.Yellow")
+            } else {
+                addAccent("Light1")
+            }
         }
 
     private val styleDialogWithAccent: Int
@@ -88,7 +92,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                     addAccent("Light1.Dialog")
                 }
             }
-            THEME_PURE_BLACK -> addAccent("PureBlack.Dialog")
             THEME_PURE_WHITE -> addAccent("PureWhite.Dialog")
             THEME_LIGHT_1 -> addAccent("Light1.Dialog")
             THEME_LIGHT_2 -> addAccent("Light2.Dialog")
@@ -98,7 +101,12 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             THEME_DARK_2 -> addAccent("Dark2.Dialog")
             THEME_DARK_3 -> addAccent("Dark3.Dialog")
             THEME_DARK_4 -> addAccent("Dark4.Dialog")
-            else -> addAccent("Light1.Dialog")
+            THEME_PURE_BLACK -> addAccent("PureBlack.Dialog")
+            else -> if (Module.isPro && prefs.appTheme == THEME_RETRO_YELLOW) {
+                addAccent("Retro.Yellow.Dialog")
+            } else {
+                addAccent("Light1.Dialog")
+            }
         }
 
     @StyleRes
@@ -406,19 +414,36 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
 
     @ColorInt
     fun themeColorsForSlider(): IntArray {
-        return intArrayOf(
-                getColor(if (isNight) R.color.darkPrimary1 else R.color.lightPrimary1),
-                getColor(R.color.pureWhite),
-                getColor(R.color.lightPrimary1),
-                getColor(R.color.lightPrimary2),
-                getColor(R.color.lightPrimary3),
-                getColor(R.color.lightPrimary4),
-                getColor(R.color.darkPrimary1),
-                getColor(R.color.darkPrimary2),
-                getColor(R.color.darkPrimary3),
-                getColor(R.color.darkPrimary4),
-                getColor(R.color.pureBlack)
-        )
+        if (Module.isPro) {
+            return intArrayOf(
+                    getColor(if (isNight) R.color.darkPrimary1 else R.color.lightPrimary1),
+                    getColor(R.color.pureWhite),
+                    getColor(R.color.lightPrimary1),
+                    getColor(R.color.lightPrimary2),
+                    getColor(R.color.lightPrimary3),
+                    getColor(R.color.lightPrimary4),
+                    getColor(R.color.darkPrimary1),
+                    getColor(R.color.darkPrimary2),
+                    getColor(R.color.darkPrimary3),
+                    getColor(R.color.darkPrimary4),
+                    getColor(R.color.pureBlack),
+                    getColor(R.color.retroYellow)
+            )
+        } else {
+            return intArrayOf(
+                    getColor(if (isNight) R.color.darkPrimary1 else R.color.lightPrimary1),
+                    getColor(R.color.pureWhite),
+                    getColor(R.color.lightPrimary1),
+                    getColor(R.color.lightPrimary2),
+                    getColor(R.color.lightPrimary3),
+                    getColor(R.color.lightPrimary4),
+                    getColor(R.color.darkPrimary1),
+                    getColor(R.color.darkPrimary2),
+                    getColor(R.color.darkPrimary3),
+                    getColor(R.color.darkPrimary4),
+                    getColor(R.color.pureBlack)
+            )
+        }
     }
 
     private fun getStyleColorName(code: Int): String {
@@ -502,6 +527,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         const val THEME_DARK_3 = 8
         const val THEME_DARK_4 = 9
         const val THEME_PURE_BLACK = 10
+        const val THEME_RETRO_YELLOW = 11
 
         @ColorInt
         fun colorWithAlpha(@ColorInt color: Int, alpha: Int): Int {

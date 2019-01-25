@@ -2080,4 +2080,236 @@
         <item name="colorPrimary">@color/secondaryLivingCoral</item>
         <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
     </style>
+
+    <style name="Retro.Yellow.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/retroYellow</item>
+    </style>
+
+    <style name="Retro.Yellow.Card" parent="Widget.MaterialComponents.CardView" >
+        <item name="cardBackgroundColor">@color/retroYellowBg</item>
+    </style>
+
+    <style name="Retro.Yellow" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/retroYellow</item>
+        <item name="android:windowBackground">@color/retroYellow</item>
+        <item name="android:colorBackground">@color/retroYellow</item>
+        <item name="materialCardViewStyle">@style/Retro.Yellow.Card</item>
+        <item name="popupMenuStyle">@style/Retro.Yellow.PopupMenu</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog" parent="Base.Light.Dialog">
+        <item name="colorBackgroundFloating">@color/retroYellow</item>
+        <item name="scrimBackground">@color/retroYellow</item>
+        <item name="android:colorBackground">@color/retroYellow</item>
+        <item name="android:popupBackground">@color/retroYellow</item>
+        <item name="android:windowBackground">@color/retroYellow</item>
+    </style>
+
+    <!-- Retro.Yellow -->
+
+    <style name="Retro.Yellow.Red" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Retro.Yellow.Pink" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Retro.Yellow.Purple" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Retro.Yellow.PurpleDeep" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Retro.Yellow.Indigo" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Retro.Yellow.Blue" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Retro.Yellow.LightBlue" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Retro.Yellow.Cyan" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Retro.Yellow.Teal" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Retro.Yellow.Green" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Retro.Yellow.LightGreen" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Retro.Yellow.Lime" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Retro.Yellow.Yellow" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Retro.Yellow.Amber" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Retro.Yellow.Orange" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Retro.Yellow.OrangeDeep" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Retro.Yellow.LivingCoral" parent="Retro.Yellow">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
+
+    <!-- Retro.Yellow.Dialog -->
+
+    <style name="Retro.Yellow.Dialog.Red" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryRed</item>
+        <item name="colorPrimary">@color/secondaryRed</item>
+        <item name="colorSecondary12">@color/secondaryRed12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Pink" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryPink</item>
+        <item name="colorPrimary">@color/secondaryPink</item>
+        <item name="colorSecondary12">@color/secondaryPink12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Purple" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryPurple</item>
+        <item name="colorPrimary">@color/secondaryPurple</item>
+        <item name="colorSecondary12">@color/secondaryPurple12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.PurpleDeep" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryPurpleDeep</item>
+        <item name="colorPrimary">@color/secondaryPurpleDeep</item>
+        <item name="colorSecondary12">@color/secondaryPurpleDeep12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Indigo" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryIndigo</item>
+        <item name="colorPrimary">@color/secondaryIndigo</item>
+        <item name="colorSecondary12">@color/secondaryIndigo12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Blue" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorPrimary">@color/secondaryBlue</item>
+        <item name="colorSecondary12">@color/secondaryBlue12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.LightBlue" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryBlueLight</item>
+        <item name="colorPrimary">@color/secondaryBlueLight</item>
+        <item name="colorSecondary12">@color/secondaryBlueLight12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Cyan" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryCyan</item>
+        <item name="colorPrimary">@color/secondaryCyan</item>
+        <item name="colorSecondary12">@color/secondaryCyan12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Teal" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryTeal</item>
+        <item name="colorPrimary">@color/secondaryTeal</item>
+        <item name="colorSecondary12">@color/secondaryTeal12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Green" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryGreen</item>
+        <item name="colorPrimary">@color/secondaryGreen</item>
+        <item name="colorSecondary12">@color/secondaryGreen12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.LightGreen" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryGreenLight</item>
+        <item name="colorPrimary">@color/secondaryGreenLight</item>
+        <item name="colorSecondary12">@color/secondaryGreenLight12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Lime" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryLime</item>
+        <item name="colorPrimary">@color/secondaryLime</item>
+        <item name="colorSecondary12">@color/secondaryLime12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Yellow" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryYellow</item>
+        <item name="colorPrimary">@color/secondaryYellow</item>
+        <item name="colorSecondary12">@color/secondaryYellow12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Amber" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryAmber</item>
+        <item name="colorPrimary">@color/secondaryAmber</item>
+        <item name="colorSecondary12">@color/secondaryAmber12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.Orange" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryOrange</item>
+        <item name="colorPrimary">@color/secondaryOrange</item>
+        <item name="colorSecondary12">@color/secondaryOrange12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.OrangeDeep" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryOrangeDeep</item>
+        <item name="colorPrimary">@color/secondaryOrangeDeep</item>
+        <item name="colorSecondary12">@color/secondaryOrangeDeep12</item>
+    </style>
+
+    <style name="Retro.Yellow.Dialog.LivingCoral" parent="Retro.Yellow.Dialog">
+        <item name="colorSecondary">@color/secondaryLivingCoral</item>
+        <item name="colorPrimary">@color/secondaryLivingCoral</item>
+        <item name="colorSecondary12">@color/secondaryLivingCoral12</item>
+    </style>
 </resources>

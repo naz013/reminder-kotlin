@@ -3,6 +3,10 @@
 
     <color name="pureWhite">#FFFFFF</color>
 
+    <color name="retroYellow">#ffe28a</color>
+    <color name="retroYellowDark">#cab05b</color>
+    <color name="retroYellowBg">#cab05b</color>
+
     <color name="lightPrimary1">#f5f5f5</color>
     <color name="lightPrimaryDark1">#8d8d8d</color>
     <color name="lightBg1">#fafafa</color>

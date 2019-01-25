@@ -48,6 +48,7 @@ class SelectThemeActivity : ThemedActivity() {
             prefs.isUiChanged = true
             onColorSelect(themes[position])
         }
+        colorSliderBg.setSelection(0)
         colorSliderBg.setSelection(prefs.appTheme)
 
         colorSlider.setColors(themeUtil.accentColorsForSlider())
@@ -57,6 +58,7 @@ class SelectThemeActivity : ThemedActivity() {
             bgTitle.setTextColor(color)
             accentTitle.setTextColor(color)
         }
+        colorSlider.setSelection(0)
         colorSlider.setSelection(prefs.appThemeColor)
 
         onColorSelect(themes[prefs.appTheme])
@@ -92,7 +94,10 @@ class SelectThemeActivity : ThemedActivity() {
                 Theme(ThemeUtil.THEME_DARK_4, loaded == ThemeUtil.THEME_DARK_4, true, NAMES[8],
                         toColor(R.color.darkPrimaryDark4), toColor(R.color.darkPrimary4), toColor(R.color.darkBg4)),
                 Theme(ThemeUtil.THEME_PURE_BLACK, loaded == ThemeUtil.THEME_PURE_BLACK, true, NAMES[9],
-                        toColor(R.color.pureBlack), toColor(R.color.pureBlack), toColor(R.color.pureBlack))
+                        toColor(R.color.pureBlack), toColor(R.color.pureBlack), toColor(R.color.pureBlack)),
+                Theme(ThemeUtil.THEME_RETRO_YELLOW, loaded == ThemeUtil.THEME_RETRO_YELLOW, false, NAMES[9],
+                        toColor(R.color.retroYellowDark), toColor(R.color.retroYellow), toColor(R.color.retroYellowBg))
+
         )
     }
 
@@ -173,7 +178,8 @@ class SelectThemeActivity : ThemedActivity() {
                 "616161",
                 "424242",
                 "212121",
-                "000000"
+                "000000",
+                "FFE28A"
         )
     }
 }
