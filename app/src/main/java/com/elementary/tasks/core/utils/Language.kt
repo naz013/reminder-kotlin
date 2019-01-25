@@ -130,6 +130,18 @@ class Language @Inject constructor(private val prefs: Prefs){
         }
     }
 
+    fun getVoiceLocale(code: Int): Locale {
+        return when (code) {
+            0 -> Locale.ENGLISH
+            1 -> Locale("ru", "")
+            2 -> Locale("uk", "")
+            3 -> Locale.GERMAN
+            4 -> Locale("es", "")
+            5 -> Locale("pt", "")
+            else -> Locale.ENGLISH
+        }
+    }
+
     fun getVoiceLanguage(code: Int): String {
         return when (code) {
             0 -> com.backdoor.engine.misc.Locale.EN

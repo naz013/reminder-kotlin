@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Language
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -27,18 +30,19 @@ import java.util.*
  */
 class VoiceHelpDialog : BaseDialog() {
 
+    @Inject
+    lateinit var language: Language
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val alert = dialogues.getDialog(this)
         alert.setTitle(getString(R.string.help))
         val wv = WebView(this)
-        val localeCheck = Locale.getDefault().toString().toLowerCase()
-        val url = when {
-            localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"
-            localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-voice-russian"
-            else -> Constants.WEB_URL + "reminder-voice-english"
-        }
-        wv.loadUrl(url)
+        wv.loadUrl(getHelpUrl(language.getVoiceLocale(prefs.voiceLocale)))
         wv.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 view.loadUrl(url)
@@ -55,5 +59,19 @@ class VoiceHelpDialog : BaseDialog() {
         alertDialog.setOnCancelListener { finish() }
         alertDialog.setOnDismissListener { finish() }
         alertDialog.show()
+    }
+
+    companion object {
+        fun getHelpUrl(locale: Locale = Locale.getDefault()): String {
+            val localeCheck = locale.toString().toLowerCase()
+            return when {
+                localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"
+                localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-voice-russian"
+                localeCheck.startsWith("de") -> Constants.WEB_URL + "reminder-voice-german"
+                localeCheck.startsWith("es") -> Constants.WEB_URL + "reminder-voice-spanish"
+                localeCheck.startsWith("pt") -> Constants.WEB_URL + "reminder-voice-portuguese"
+                else -> Constants.WEB_URL + "reminder-voice-english"
+            }
+        }
     }
 }

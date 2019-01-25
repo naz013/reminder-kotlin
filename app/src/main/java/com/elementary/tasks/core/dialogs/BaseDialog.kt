@@ -28,9 +28,12 @@ import javax.inject.Inject
  */
 abstract class BaseDialog : FragmentActivity() {
 
-    @Inject lateinit var themeUtil: ThemeUtil
-    @Inject lateinit var dialogues: Dialogues
-    @Inject lateinit var prefs: Prefs
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var dialogues: Dialogues
+    @Inject
+    lateinit var prefs: Prefs
 
     init {
         ReminderApp.appComponent.inject(this)
