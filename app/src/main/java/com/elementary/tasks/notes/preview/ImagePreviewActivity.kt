@@ -8,6 +8,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_image_preview.*
 import java.util.*
 import javax.inject.Inject
@@ -87,11 +88,7 @@ class ImagePreviewActivity : ThemedActivity() {
     private fun initActionBar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
         toolbar.title = ""
     }
 

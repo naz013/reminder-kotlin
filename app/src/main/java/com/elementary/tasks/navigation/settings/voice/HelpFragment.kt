@@ -5,7 +5,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.core.dialogs.VoiceHelpDialog
+import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.navigation.fragments.BaseWebViewFragment
 
 /**
@@ -30,7 +30,7 @@ class HelpFragment : BaseWebViewFragment() {
 
     override val url: String
         get() {
-            return VoiceHelpDialog.getHelpUrl(language.getVoiceLocale(prefs.voiceLocale))
+            return VoiceHelpActivity.getHelpUrl(language.getVoiceLocale(prefs.voiceLocale))
         }
 
     @SuppressLint("SetJavaScriptEnabled")

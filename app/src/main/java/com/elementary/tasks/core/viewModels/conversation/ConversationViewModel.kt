@@ -19,7 +19,7 @@ import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.*
-import com.elementary.tasks.core.dialogs.VoiceHelpDialog
+import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
@@ -275,7 +275,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                     val action = model.action
                     when (action) {
                         Action.APP -> context.startActivity(Intent(context, SplashScreen::class.java))
-                        Action.HELP -> context.startActivity(Intent(context, VoiceHelpDialog::class.java)
+                        Action.HELP -> context.startActivity(Intent(context, VoiceHelpActivity::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         Action.BIRTHDAY -> AddBirthdayActivity.openLogged(context)
                         Action.REMINDER -> CreateReminderActivity.openLogged(context)

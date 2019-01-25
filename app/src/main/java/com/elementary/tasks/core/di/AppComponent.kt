@@ -21,7 +21,6 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.contacts.ContactsRecyclerAdapter
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.dialogs.BaseDialog
-import com.elementary.tasks.core.dialogs.VoiceHelpDialog
 import com.elementary.tasks.core.fragments.BaseMapFragment
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.services.*
@@ -110,7 +109,6 @@ interface AppComponent {
     fun inject(google: GDrive)
     fun inject(backupTool: BackupTool)
     fun inject(baseDialog: BaseDialog)
-    fun inject(dialog: VoiceHelpDialog)
     fun inject(repeatNotificationReceiver: RepeatNotificationReceiver)
     fun inject(reminderUtils: ReminderUtils)
     fun inject(calendarMonthFactory: CalendarMonthFactory)
