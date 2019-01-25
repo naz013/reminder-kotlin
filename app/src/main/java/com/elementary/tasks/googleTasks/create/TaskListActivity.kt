@@ -49,6 +49,7 @@ class TaskListActivity : ThemedActivity() {
 
         initActionBar()
         colorSlider.setColors(themeUtil.colorsForSlider())
+        colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {
             colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))

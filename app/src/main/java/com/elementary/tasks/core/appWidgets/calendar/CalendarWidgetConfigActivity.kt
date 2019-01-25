@@ -40,10 +40,12 @@ class CalendarWidgetConfigActivity : ThemedActivity() {
         readIntent()
         setContentView(R.layout.widget_calendar_config)
         fabSave.setOnClickListener { savePrefs() }
+        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bgColorSlider.setListener { position, _ ->
             updateContent(position)
         }
 
+        headerBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         headerBgColorSlider.setListener { position, _ ->
             headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateHeader(position)

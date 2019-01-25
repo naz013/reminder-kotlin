@@ -107,7 +107,7 @@ public class Model {
                 ", dateTime='" + dateTime + '\'' +
                 ", repeatInterval=" + repeatInterval +
                 ", type=" + type +
-                ", weekdays=" + weekdays +
+                ", weekdays=" + weekdays.toString() +
                 ", action=" + action +
                 ", hasCalendar=" + hasCalendar +
                 '}';

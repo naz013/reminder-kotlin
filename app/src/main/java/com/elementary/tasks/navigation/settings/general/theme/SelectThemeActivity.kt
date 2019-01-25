@@ -165,6 +165,8 @@ class SelectThemeActivity : ThemedActivity() {
         } else {
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
+        colorSliderBg.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
+        colorSlider.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
     }
 
     companion object {

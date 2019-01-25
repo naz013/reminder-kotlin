@@ -43,6 +43,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         val dialog = BottomSheetDialog(activity)
         val b = LayoutInflater.from(activity).inflate(R.layout.view_color_slider, null, false)
         b.colorSlider.setColors(colors)
+        b.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         b.colorSlider.setSelection(current)
         b.colorSlider.setListener { i, _ ->
             onChange.invoke(i)
@@ -97,6 +98,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         builder.setTitle(title)
         val bind = LayoutInflater.from(activity).inflate(R.layout.view_color_slider, null, false)
         bind.colorSlider.setColors(colors)
+        bind.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bind.colorSlider.setSelection(current)
         builder.setView(bind)
         builder.setPositiveButton(R.string.save) { dialog, _ ->

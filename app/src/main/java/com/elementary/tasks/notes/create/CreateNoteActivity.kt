@@ -276,6 +276,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         fontButton.setOnClickListener { showStyleDialog() }
 
         colorSlider.setColors(themeUtil.colorsForSlider())
+        colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         colorSlider.setListener { position, _ ->
             mColor = position
             if (prefs.isNoteColorRememberingEnabled) {
