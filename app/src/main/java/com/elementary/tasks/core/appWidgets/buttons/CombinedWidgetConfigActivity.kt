@@ -38,6 +38,7 @@ class CombinedWidgetConfigActivity : ThemedActivity() {
         setContentView(R.layout.widget_combined_config)
 
         fabSave.setOnClickListener { savePrefs() }
+        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bgColorSlider.setListener { position, _ ->
             widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)

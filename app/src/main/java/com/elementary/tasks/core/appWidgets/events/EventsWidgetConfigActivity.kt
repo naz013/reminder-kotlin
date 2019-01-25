@@ -44,11 +44,13 @@ class EventsWidgetConfigActivity : ThemedActivity() {
         setContentView(R.layout.widget_current_tasks_config)
 
         fabSave.setOnClickListener { showTextSizeDialog() }
+        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bgColorSlider.setListener { position, _ ->
             headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
 
+        listItemBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         listItemBgColorSlider.setListener { position, _ ->
             listItemCard.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateText(position)

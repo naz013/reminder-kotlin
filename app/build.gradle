@@ -164,7 +164,7 @@ dependencies {
     implementation 'org.dmfs:lib-recur:0.10.1'
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation 'com.github.florent37:expansionpanel:1.1.1'
-    implementation 'com.github.naz013:ColorSlider:1.0.3'
+    implementation 'com.github.naz013:ColorSlider:1.0.4'
     implementation 'com.airbnb.android:lottie:2.8.0'
     implementation 'co.revely:gradient:1.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'

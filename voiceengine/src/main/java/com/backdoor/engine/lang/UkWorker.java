@@ -146,7 +146,7 @@ class UkWorker extends Worker {
 
     @Override
     public boolean hasEveryDay(String input) {
-        return input.matches(".*щоден.*");
+        return input.matches(".*щоден.*") || input.matches(".*щодня.*");
     }
 
     @Override

@@ -133,10 +133,24 @@ public class Recognizer {
             isEveryDay = worker.hasEveryDay(keyStr);
             keyStr = worker.clearRepeat(keyStr);
 
-            System.out.println("parse: has repeat -> " + keyStr);
+            System.out.println("parse: has repeat -> " + keyStr + ", isEvery " + isEveryDay);
             repeat = worker.getDaysRepeat(keyStr);
             if (repeat != 0) {
                 keyStr = worker.clearDaysRepeat(keyStr);
+            }
+
+            if (isEveryDay) {
+                weekdays.clear();
+                for (int i = 0; i < 7; i++) {
+                    weekdays.add(1);
+                }
+                if (type == Action.CALL) {
+                    type = Action.WEEK_CALL;
+                } else if (type == Action.MESSAGE) {
+                    type = Action.WEEK_SMS;
+                } else {
+                    type = Action.WEEK;
+                }
             }
         }
         boolean isCalendar;
@@ -196,20 +210,28 @@ public class Recognizer {
         }
         System.out.println("parse: " + keyStr + ", time " + time + ", date " + date);
         if (today) {
+            System.out.println("parse: today");
             time = getTodayTime(time);
         } else if (afterTomorrow) {
+            System.out.println("parse: after tomorrow");
             time = getAfterTomorrowTime(time);
         } else if (tomorrow) {
+            System.out.println("parse: tomorrow");
             time = getTomorrowTime(time);
         } else if (isEveryDay) {
+            System.out.println("parse: everyday");
             time = getDayTime(time, weekdays);
         } else if (hasWeekday && !repeating) {
+            System.out.println("parse: on weekday");
             time = getDayTime(time, weekdays);
         } else if (repeating) {
+            System.out.println("parse: repeating");
             time = getRepeatingTime(time, hasWeekday);
         } else if (hasTimer) {
+            System.out.println("parse: timer");
             time = System.currentTimeMillis() + afterTime.get();
         } else if (date.get() != 0 || time != 0) {
+            System.out.println("parse: date/time");
             time = getDateTime(date.get(), time);
         } else {
             return null;
