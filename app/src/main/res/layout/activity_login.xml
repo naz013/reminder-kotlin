@@ -64,12 +64,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/google_drive"
+        android:textColor="?colorOnSecondary"
         android:textAppearance="?textAppearanceButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/dropbox_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="?colorOnSecondary"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:text="@string/dropbox"
@@ -81,6 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
+        android:textColor="?colorOnSecondary"
         android:text="@string/local"
         android:textAppearance="?textAppearanceButton" />
 
@@ -96,6 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
+        android:textColor="?android:textColorPrimary"
         android:text="@string/skip"
         android:textAppearance="?textAppearanceButton" />
 

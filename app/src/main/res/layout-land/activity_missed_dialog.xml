@@ -113,7 +113,7 @@
             android:text="@string/make_call"
             android:textAllCaps="true"
             android:textAppearance="?textAppearanceButton"
-            android:textColor="@android:color/white"
+            android:textColor="?colorOnSecondary"
             android:textSize="14sp"
             android:visibility="visible"
             app:backgroundTint="?colorSecondary"
@@ -130,6 +130,7 @@
             android:contentDescription="@string/acc_button_ok"
             android:tint="@color/whitePrimary"
             app:fabSize="normal"
+            app:tint="?colorOnSecondary"
             app:srcCompat="@drawable/ic_twotone_done_24px" />
 
         <com.google.android.material.button.MaterialButton
@@ -145,7 +146,7 @@
             android:text="@string/send_sms"
             android:textAllCaps="true"
             android:textAppearance="?textAppearanceButton"
-            android:textColor="@android:color/white"
+            android:textColor="?colorOnSecondary"
             android:textSize="14sp"
             android:visibility="visible"
             app:backgroundTint="?colorSecondary"

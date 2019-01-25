@@ -691,5 +691,7 @@
     <string name="and_above">and above</string>
     <string name="allow_unlock_for_priority">Allow unlock screen only for</string>
     <string name="import_file">Import file</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
 
 </resources>

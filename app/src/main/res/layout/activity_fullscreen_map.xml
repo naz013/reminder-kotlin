@@ -27,7 +27,7 @@
         android:text="@string/move_to_place"
         android:textAllCaps="true"
         android:textAppearance="?textAppearanceButton"
-        android:textColor="@android:color/white"
+        android:textColor="?colorOnSecondary"
         android:textSize="14sp"
         android:visibility="visible"
         app:backgroundTint="?colorSecondary"
@@ -35,6 +35,6 @@
         app:icon="@drawable/ic_twotone_place_24px"
         app:iconPadding="12dp"
         app:iconSize="24dp"
-        app:iconTint="@android:color/white"
+        app:iconTint="?colorOnSecondary"
         tools:targetApi="lollipop" />
 </RelativeLayout>

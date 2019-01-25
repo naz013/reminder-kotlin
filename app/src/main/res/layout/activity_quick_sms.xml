@@ -19,7 +19,7 @@
         android:padding="16dp"
         android:text="@string/send"
         android:textAppearance="?textAppearanceButton"
-        android:textColor="?colorSecondary" />
+        android:textColor="?android:textColorPrimary" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/contactInfo"

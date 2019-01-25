@@ -95,8 +95,16 @@ class SelectThemeActivity : ThemedActivity() {
                         toColor(R.color.darkPrimaryDark4), toColor(R.color.darkPrimary4), toColor(R.color.darkBg4)),
                 Theme(ThemeUtil.THEME_PURE_BLACK, loaded == ThemeUtil.THEME_PURE_BLACK, true, NAMES[9],
                         toColor(R.color.pureBlack), toColor(R.color.pureBlack), toColor(R.color.pureBlack)),
-                Theme(ThemeUtil.THEME_RETRO_YELLOW, loaded == ThemeUtil.THEME_RETRO_YELLOW, false, NAMES[9],
-                        toColor(R.color.retroYellowDark), toColor(R.color.retroYellow), toColor(R.color.retroYellowBg))
+                Theme(ThemeUtil.THEME_RETRO_YELLOW, loaded == ThemeUtil.THEME_RETRO_YELLOW, false, NAMES[10],
+                        toColor(R.color.retroYellowDark), toColor(R.color.retroYellow), toColor(R.color.retroYellowBg)),
+                Theme(ThemeUtil.THEME_RETRO_ORANGE, loaded == ThemeUtil.THEME_RETRO_ORANGE, false, NAMES[11],
+                        toColor(R.color.retroOrangeDark), toColor(R.color.retroOrange), toColor(R.color.retroOrangeBg)),
+                Theme(ThemeUtil.THEME_RETRO_GREEN, loaded == ThemeUtil.THEME_RETRO_GREEN, false, NAMES[12],
+                        toColor(R.color.retroGreenDark), toColor(R.color.retroGreen), toColor(R.color.retroGreenBg)),
+                Theme(ThemeUtil.THEME_RETRO_RED, loaded == ThemeUtil.THEME_RETRO_RED, false, NAMES[13],
+                        toColor(R.color.retroRedDark), toColor(R.color.retroRed), toColor(R.color.retroRedBg)),
+                Theme(ThemeUtil.THEME_RETRO_BROWN, loaded == ThemeUtil.THEME_RETRO_BROWN, false, NAMES[14],
+                        toColor(R.color.retroBrownDark), toColor(R.color.retroBrown), toColor(R.color.retroBrownBg))
 
         )
     }
@@ -171,17 +179,21 @@ class SelectThemeActivity : ThemedActivity() {
 
     companion object {
         val NAMES = arrayOf(
-                "FFFFFF",
-                "F5F5F5",
-                "EEEEEE",
-                "E0E0E0",
-                "9E9E9E",
-                "757575",
-                "616161",
-                "424242",
-                "212121",
-                "000000",
-                "FFE28A"
+                "FFFFFF".toUpperCase(),
+                "F5F5F5".toUpperCase(),
+                "EEEEEE".toUpperCase(),
+                "E0E0E0".toUpperCase(),
+                "9E9E9E".toUpperCase(),
+                "757575".toUpperCase(),
+                "616161".toUpperCase(),
+                "424242".toUpperCase(),
+                "212121".toUpperCase(),
+                "000000".toUpperCase(),
+                "FFFEB3".toUpperCase(),
+                "FFE28A".toUpperCase(),
+                "a1ffd0".toUpperCase(),
+                "ff79b6".toUpperCase(),
+                "9bdbe4".toUpperCase()
         )
     }
 }

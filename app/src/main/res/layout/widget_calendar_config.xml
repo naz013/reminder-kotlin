@@ -160,7 +160,7 @@
         android:text="@string/save"
         android:textAllCaps="true"
         android:textAppearance="?textAppearanceButton"
-        android:textColor="@color/pureBlack"
+        android:textColor="?colorOnSecondary"
         android:textSize="14sp"
         android:visibility="visible"
         app:backgroundTint="?colorSecondary"
@@ -168,6 +168,6 @@
         app:icon="@drawable/ic_twotone_done_24px"
         app:iconPadding="12dp"
         app:iconSize="24dp"
-        app:iconTint="@color/pureBlack"
+        app:iconTint="?colorOnSecondary"
         tools:targetApi="lollipop" />
 </LinearLayout>
