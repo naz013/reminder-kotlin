@@ -203,10 +203,6 @@ class NotePreviewActivity : ThemedActivity() {
             ContextCompat.getColor(this, R.color.pureBlack)
         }
         noteText.setTextColor(textColor)
-        reminderCardTitle.setTextColor(textColor)
-        reminderTime.setTextColor(textColor)
-        editReminder.setTextColor(textColor)
-        deleteReminder.setTextColor(textColor)
     }
 
     private fun showReminder(reminder: Reminder?) {
