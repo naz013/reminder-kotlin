@@ -1,14 +1,16 @@
 package com.elementary.tasks.core.dialogs
 
 import android.os.Bundle
+import android.view.MenuItem
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.ViewUtils
+import kotlinx.android.synthetic.main.activity_voice_help.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -28,37 +30,40 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class VoiceHelpDialog : BaseDialog() {
-
-    @Inject
-    lateinit var language: Language
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+class VoiceHelpActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val alert = dialogues.getDialog(this)
-        alert.setTitle(getString(R.string.help))
-        val wv = WebView(this)
-        wv.loadUrl(getHelpUrl(language.getVoiceLocale(prefs.voiceLocale)))
-        wv.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        setContentView(R.layout.activity_voice_help)
+        initActionBar()
+        webView.settings.javaScriptEnabled = true
+        webView.webViewClient = object : WebViewClient() {
+            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
+
+            override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
                 view.loadUrl(url)
                 return true
             }
         }
-        alert.setView(wv)
-        alert.setCancelable(true)
-        alert.setNegativeButton(R.string.ok) { dialog, _ ->
-            dialog.dismiss()
-            finish()
+        webView.webChromeClient = WebChromeClient()
+        webView.loadUrl(getHelpUrl(language.getVoiceLocale(prefs.voiceLocale)))
+    }
+
+    private fun initActionBar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        toolbar.title = getString(R.string.help)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        val alertDialog = alert.create()
-        alertDialog.setOnCancelListener { finish() }
-        alertDialog.setOnDismissListener { finish() }
-        alertDialog.show()
     }
 
     companion object {

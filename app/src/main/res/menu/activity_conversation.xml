@@ -14,4 +14,8 @@
         android:id="@+id/action_report"
         android:title="@string/feedback" />
 
+    <item
+        android:id="@+id/action_help"
+        android:title="@string/help" />
+
 </menu>

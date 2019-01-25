@@ -22,6 +22,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.*
+import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -563,6 +564,7 @@ class ConversationActivity : ThemedActivity() {
         popupMenu.menu.getItem(0).title = getLocalized(R.string.language)
         popupMenu.menu.getItem(1).title = getLocalized(R.string.tell_about_event)
         popupMenu.menu.getItem(2).title = getLocalized(R.string.feedback)
+        popupMenu.menu.getItem(3).title = getLocalized(R.string.help)
         popupMenu.menu.getItem(1).isChecked = prefs.isTellAboutEvent
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -576,6 +578,10 @@ class ConversationActivity : ThemedActivity() {
                 }
                 R.id.action_report -> {
                     startActivity(Intent(this@ConversationActivity, SendFeedbackActivity::class.java))
+                    return@setOnMenuItemClickListener true
+                }
+                R.id.action_help -> {
+                    startActivity(Intent(this@ConversationActivity, VoiceHelpActivity::class.java))
                     return@setOnMenuItemClickListener true
                 }
             }
