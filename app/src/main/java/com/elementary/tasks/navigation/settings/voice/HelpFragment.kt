@@ -5,9 +5,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.dialogs.VoiceHelpDialog
 import com.elementary.tasks.navigation.fragments.BaseWebViewFragment
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,12 +30,7 @@ class HelpFragment : BaseWebViewFragment() {
 
     override val url: String
         get() {
-            val localeCheck = Locale.getDefault().toString().toLowerCase()
-            return when {
-                localeCheck.startsWith("uk") -> Constants.WEB_URL + "reminder-voice-ukrainian"
-                localeCheck.startsWith("ru") -> Constants.WEB_URL + "reminder-voice-russian"
-                else -> Constants.WEB_URL + "reminder-voice-english"
-            }
+            return VoiceHelpDialog.getHelpUrl(language.getVoiceLocale(prefs.voiceLocale))
         }
 
     @SuppressLint("SetJavaScriptEnabled")
