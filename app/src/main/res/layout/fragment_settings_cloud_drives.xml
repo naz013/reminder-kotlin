@@ -39,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connect"
+                android:textColor="?colorOnSecondary"
                 android:textAppearance="?textAppearanceButton" />
 
         </LinearLayout>
@@ -66,6 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connect"
+                android:textColor="?colorOnSecondary"
                 android:textAppearance="?textAppearanceButton" />
 
         </LinearLayout>
@@ -92,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connect"
+                android:textColor="?colorOnSecondary"
                 android:textAppearance="?textAppearanceButton" />
 
         </LinearLayout>

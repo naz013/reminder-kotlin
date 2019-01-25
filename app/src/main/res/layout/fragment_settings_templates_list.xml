@@ -50,6 +50,7 @@
         android:layout_margin="16dp"
         android:visibility="visible"
         app:fabSize="normal"
+        app:tint="?colorOnSecondary"
         app:srcCompat="@drawable/ic_twotone_add_24px" />
 
 </RelativeLayout>

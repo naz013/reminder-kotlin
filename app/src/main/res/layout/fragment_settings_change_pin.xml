@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="16dp"
+        android:textColor="?android:textColorPrimary"
         android:text="@string/save"
         android:textAppearance="?textAppearanceButton" />
 </LinearLayout>

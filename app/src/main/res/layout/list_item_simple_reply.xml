@@ -18,7 +18,7 @@
         android:paddingEnd="24dp"
         android:background="@drawable/chat_bubble_response"
         android:textAppearance="?textAppearanceBody1"
-        android:textColor="@color/pureBlack"
+        android:textColor="?colorOnSecondary"
         tools:text="Helolo skdf ksd fjksjsdkf jskf jskdksjdf ksdj" />
 
 </FrameLayout>

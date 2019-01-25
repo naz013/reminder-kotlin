@@ -133,6 +133,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:textColor="?android:textColorPrimary"
             android:text="@string/export_all_my_data"
             android:textAppearance="?textAppearanceButton" />
 
@@ -144,6 +145,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:textColor="?android:textColorPrimary"
             android:text="@string/backup_data_now"
             android:textAppearance="?textAppearanceButton" />
 
@@ -157,6 +159,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
             android:text="@string/sync_data_now"
+            android:textColor="?android:textColorPrimary"
             android:textAppearance="?textAppearanceButton" />
 
     </LinearLayout>

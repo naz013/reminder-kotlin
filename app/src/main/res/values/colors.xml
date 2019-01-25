@@ -2,10 +2,27 @@
 <resources>
 
     <color name="pureWhite">#FFFFFF</color>
+    <color name="pureWhite12">#1EFFFFFF</color>
 
-    <color name="retroYellow">#ffe28a</color>
-    <color name="retroYellowDark">#cab05b</color>
-    <color name="retroYellowBg">#cab05b</color>
+    <color name="retroYellow">#fffeb3</color>
+    <color name="retroYellowDark">#cbcb83</color>
+    <color name="retroYellowBg">#cbcb83</color>
+
+    <color name="retroOrange">#ffe28a</color>
+    <color name="retroOrangeDark">#cab05b</color>
+    <color name="retroOrangeBg">#cab05b</color>
+
+    <color name="retroGreen">#a1ffd0</color>
+    <color name="retroGreenDark">#6fcb9f</color>
+    <color name="retroGreenBg">#6fcb9f</color>
+
+    <color name="retroRed">#ff79b6</color>
+    <color name="retroRedDark">#e64386</color>
+    <color name="retroRedBg">#e64386</color>
+
+    <color name="retroBrown">#9bdbe4</color>
+    <color name="retroBrownDark">#6aa9b2</color>
+    <color name="retroBrownBg">#6aa9b2</color>
 
     <color name="lightPrimary1">#f5f5f5</color>
     <color name="lightPrimaryDark1">#8d8d8d</color>
@@ -40,6 +57,7 @@
     <color name="darkBg4">#424242</color>
 
     <color name="pureBlack">#000000</color>
+    <color name="pureBlack12">#1E000000</color>
     <color name="pureBlackDark">#000000</color>
 
     <color name="secondary">#ff1744</color>

@@ -49,6 +49,7 @@
         android:layout_height="56dp"
         android:layout_margin="16dp"
         android:text="@string/interval"
+        android:textColor="?android:textColorPrimary"
         android:textAppearance="?textAppearanceButton" />
 
     <com.elementary.tasks.core.views.DividerView
@@ -67,8 +68,8 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
+        android:textColor="?android:textColorPrimary"
         android:text="@string/import_string"
         android:textAppearance="?textAppearanceButton" />
 
