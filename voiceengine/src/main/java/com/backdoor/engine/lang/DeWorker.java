@@ -138,7 +138,12 @@ class DeWorker extends Worker {
 
     @Override
     public boolean hasRepeat(String input) {
-        return input.matches(".*jeden.*");
+        return input.matches(".*jeden.*") || hasEveryDay(input);
+    }
+
+    @Override
+    public boolean hasEveryDay(String input) {
+        return input.matches(".*täglich.*");
     }
 
     @Override
@@ -146,7 +151,7 @@ class DeWorker extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*jeden.*")) {
+            if (hasRepeat(part)) {
                 parts[i] = "";
                 break;
             }

@@ -80,6 +80,11 @@ public abstract class Worker implements WorkerInterface {
 
     protected abstract boolean hasMonth(String input);
 
+    @Override
+    public boolean hasEveryDay(String input) {
+        return false;
+    }
+
     protected abstract int getMonth(String input);
 
     @Override

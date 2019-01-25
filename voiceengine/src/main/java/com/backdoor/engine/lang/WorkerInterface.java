@@ -114,4 +114,6 @@ public interface WorkerInterface {
     Action getShowAction(String input);
 
     boolean hasNextModifier(String input);
+
+    boolean hasEveryDay(String input);
 }

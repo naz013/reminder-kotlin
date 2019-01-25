@@ -13,6 +13,7 @@ import com.backdoor.engine.misc.TimeUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -124,9 +125,14 @@ public class Recognizer {
             }
         }
         boolean repeating;
+        boolean isEveryDay = false;
+        boolean hasWeekday = false;
+        List<Integer> weekdays = new ArrayList<>();
         long repeat = 0;
         if (repeating = worker.hasRepeat(keyStr)) {
+            isEveryDay = worker.hasEveryDay(keyStr);
             keyStr = worker.clearRepeat(keyStr);
+
             System.out.println("parse: has repeat -> " + keyStr);
             repeat = worker.getDaysRepeat(keyStr);
             if (repeat != 0) {
@@ -153,22 +159,23 @@ public class Recognizer {
         if (ampm != null) {
             keyStr = worker.clearAmpm(keyStr);
         }
-        List<Integer> weekdays = worker.getWeekDays(keyStr);
-        boolean hasWeekday = false;
-        for (int day : weekdays) {
-            if (day == 1) {
-                hasWeekday = true;
-                break;
+        if (!isEveryDay) {
+            weekdays = worker.getWeekDays(keyStr);
+            for (int day : weekdays) {
+                if (day == 1) {
+                    hasWeekday = true;
+                    break;
+                }
             }
-        }
-        keyStr = worker.clearWeekDays(keyStr);
-        if (hasWeekday) {
-            if (type == Action.CALL) {
-                type = Action.WEEK_CALL;
-            } else if (type == Action.MESSAGE) {
-                type = Action.WEEK_SMS;
-            } else {
-                type = Action.WEEK;
+            keyStr = worker.clearWeekDays(keyStr);
+            if (hasWeekday) {
+                if (type == Action.CALL) {
+                    type = Action.WEEK_CALL;
+                } else if (type == Action.MESSAGE) {
+                    type = Action.WEEK_SMS;
+                } else {
+                    type = Action.WEEK;
+                }
             }
         }
 
@@ -194,6 +201,8 @@ public class Recognizer {
             time = getAfterTomorrowTime(time);
         } else if (tomorrow) {
             time = getTomorrowTime(time);
+        } else if (isEveryDay) {
+            time = getDayTime(time, weekdays);
         } else if (hasWeekday && !repeating) {
             time = getDayTime(time, weekdays);
         } else if (repeating) {

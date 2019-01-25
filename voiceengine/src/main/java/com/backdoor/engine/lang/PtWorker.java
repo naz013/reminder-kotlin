@@ -138,7 +138,12 @@ class PtWorker extends Worker {
 
     @Override
     public boolean hasRepeat(String input) {
-        return input.matches(".*cada.*") || input.matches(".*tod([ao])s( as)?.*");
+        return input.matches(".*cada.*") || input.matches(".*tod([ao])s( as)?.*") || hasEveryDay(input);
+    }
+
+    @Override
+    public boolean hasEveryDay(String input) {
+        return input.matches(".*diário.*");
     }
 
     @Override
@@ -146,7 +151,7 @@ class PtWorker extends Worker {
         String[] parts = input.split(WHITESPACES);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (part.matches(".*cada.*") || part.matches(".*tod([ao])s( as)?.*")) {
+            if (hasRepeat(part)) {
                 parts[i] = "";
                 break;
             }
