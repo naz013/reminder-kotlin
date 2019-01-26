@@ -1,7 +1,7 @@
 -verbose
 -allowaccessmodification
 -assumevalues class android.os.Build$VERSION {
-    int SDK_INT return 19..2147483647;
+    int SDK_INT return 21..2147483647;
 }
 
 # ServiceLoader support
