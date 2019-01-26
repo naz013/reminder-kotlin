@@ -198,7 +198,7 @@ class ExclusionPickerView : LinearLayout {
     }
 
     private fun getHour(hour: Int, minute: Int): String {
-        return hour.toString() + ":" + minute
+        return "$hour:$minute"
     }
 
     private fun initButtons(b: View) {

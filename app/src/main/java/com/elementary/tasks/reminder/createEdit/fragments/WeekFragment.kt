@@ -175,8 +175,13 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     private fun calculateNextDate() {
+        val weekdays = days
+        if (!IntervalUtil.isWeekday(weekdays)) {
+            calculatedNextTime.text = ""
+            return
+        }
         val reminder = Reminder()
-        reminder.weekdays = days
+        reminder.weekdays = weekdays
         reminder.type = Reminder.BY_WEEK
         reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
