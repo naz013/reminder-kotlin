@@ -368,6 +368,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:orientation="vertical"
+                    android:transitionName="map"
                     android:visibility="gone">
 
                 </LinearLayout>
@@ -414,9 +415,9 @@
                 <ImageView
                     android:id="@+id/attachmentImage"
                     android:layout_width="72dp"
-                    android:transitionName="image"
                     android:layout_height="72dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:transitionName="image" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
