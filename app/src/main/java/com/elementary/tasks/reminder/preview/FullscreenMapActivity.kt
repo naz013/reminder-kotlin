@@ -13,7 +13,6 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_fullscreen_map.*
@@ -105,11 +104,7 @@ class FullscreenMapActivity : ThemedActivity() {
     }
 
     private fun closeWindow() {
-        if (Module.isLollipop) {
-            mUiHandler.post { this.finishAfterTransition() }
-        } else {
-            finish()
-        }
+        mUiHandler.post { this.finishAfterTransition() }
     }
 
     private fun initMap() {

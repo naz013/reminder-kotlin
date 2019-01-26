@@ -60,11 +60,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
                         e.printStackTrace()
                     }
 
-                    if (Module.isLollipop) {
-                        tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
-                    } else {
-                        tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null)
-                    }
+                    tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
                 }
             }
         } else {
@@ -253,9 +249,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         wearableNotificationBuilder.setSmallIcon(R.drawable.ic_notification_nv_white)
         wearableNotificationBuilder.setContentTitle(summary)
         wearableNotificationBuilder.setContentText(secondaryText)
-        if (Module.isLollipop) {
-            wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        }
+        wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         wearableNotificationBuilder.setOngoing(false)
         wearableNotificationBuilder.setOnlyAlertOnce(true)
         wearableNotificationBuilder.setGroup("GROUP")

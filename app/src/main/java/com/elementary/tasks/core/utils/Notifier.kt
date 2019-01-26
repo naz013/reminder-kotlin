@@ -55,15 +55,9 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val note = noteWithImages.note ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setContentText(context.getString(R.string.note))
-        if (Module.isLollipop) {
-            builder.color = ContextCompat.getColor(context, R.color.bluePrimary)
-        }
+        builder.color = ContextCompat.getColor(context, R.color.bluePrimary)
         val content = note.summary
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_note_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_note_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_note_white)
         builder.setContentTitle(content)
         val isWear = prefs.getBoolean(WEAR_NOTIFICATION)
         if (isWear) {
@@ -87,9 +81,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             wearableNotificationBuilder.setContentTitle(content)
             wearableNotificationBuilder.setContentText(context.getString(R.string.note))
             wearableNotificationBuilder.setOngoing(false)
-            if (Module.isLollipop) {
-                wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.bluePrimary)
-            }
+            wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.bluePrimary)
             wearableNotificationBuilder.setOnlyAlertOnce(true)
             wearableNotificationBuilder.setGroup("GROUP")
             wearableNotificationBuilder.setGroupSummary(false)
@@ -161,13 +153,9 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         calendar.timeInMillis = System.currentTimeMillis()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH)
-        val list = AppDb.getAppDatabase(context).birthdaysDao().getAll(day.toString() + "|" + month)
+        val list = AppDb.getAppDatabase(context).birthdaysDao().getAll("$day|$month")
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_cake_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         builder.setAutoCancel(false)
         builder.setOngoing(true)
         builder.priority = NotificationCompat.PRIORITY_HIGH
@@ -184,11 +172,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
                 }
                 builder.setStyle(NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()))
             }
-            if (Module.isLollipop) {
-                builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss)
-            } else {
-                builder.addAction(R.drawable.ic_clear_nv_white, context.getString(R.string.ok), piDismiss)
-            }
+            builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss)
             getManager(context)?.notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
         }
     }
@@ -198,11 +182,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_SILENT)
         builder.setAutoCancel(false)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         builder.setContent(remoteViews)
         builder.setOngoing(true)
         if (prefs.isSbIconEnabled) {
@@ -265,13 +245,13 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             remoteViews.setViewVisibility(R.id.featured, View.GONE)
         }
         if (prefs.appThemeColor == ThemeUtil.Color.BLACK) {
-            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
-            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
-            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
+            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
+            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
+            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
         } else {
-            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_24px, R.id.notificationAdd)
-            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
-            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
+            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_alarm_24px, R.id.notificationAdd)
+            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
+            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
         }
 
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getSecondaryColor())

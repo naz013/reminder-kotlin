@@ -219,9 +219,7 @@ class SelectThemeActivity : ThemedActivity() {
         bgTitle.text = getString(R.string.background) + " - " + theme.name
         warningCard.setCardBackgroundColor(theme.bgColor)
         toolbar.setBackgroundColor(theme.barColor)
-        if (Module.isLollipop) {
-            window.statusBarColor = theme.barColor
-        }
+        window.statusBarColor = theme.barColor
         windowBackground.setBackgroundColor(theme.barColor)
         toolbar.navigationIcon = ViewUtils.backIcon(this, theme.isDark)
         if (theme.isDark) {

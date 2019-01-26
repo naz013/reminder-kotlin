@@ -793,12 +793,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             getString(R.string.app_name)
         }
         builder.setContentText(appName)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -862,12 +858,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             appName = getString(R.string.app_name)
         }
         builder.setContentText(appName)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -940,12 +932,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
             appName = getString(R.string.app_name)
         }
         builder.setContentText(appName)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)

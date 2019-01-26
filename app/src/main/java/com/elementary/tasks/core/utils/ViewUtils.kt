@@ -76,11 +76,9 @@ object ViewUtils {
     fun createIcon(context: Context, @DrawableRes res: Int, @ColorInt color: Int): Bitmap? {
         var icon = ContextCompat.getDrawable(context, res)
         if (icon != null) {
-            if (Module.isLollipop) {
-                icon = (DrawableCompat.wrap(icon)).mutate()
-                DrawableCompat.setTint(icon, color)
-                DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
-            }
+            icon = (DrawableCompat.wrap(icon)).mutate()
+            DrawableCompat.setTint(icon, color)
+            DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
             if (icon != null) {
                 val bitmap = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmap)
@@ -95,9 +93,7 @@ object ViewUtils {
     fun tintIcon(context: Context, @DrawableRes resource: Int, isDark: Boolean): Drawable? {
         var icon = ContextCompat.getDrawable(context, resource)
         if (icon != null) {
-            if (Module.isLollipop) {
-                icon = (DrawableCompat.wrap(icon)).mutate()
-            }
+            icon = (DrawableCompat.wrap(icon)).mutate()
             if (icon == null) return null
             val color = if (isDark) {
                 ContextCompat.getColor(context, R.color.whitePrimary)

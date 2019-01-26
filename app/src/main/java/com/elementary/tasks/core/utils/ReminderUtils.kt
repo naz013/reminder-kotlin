@@ -53,11 +53,7 @@ object ReminderUtils {
     fun showSimpleBirthday(context: Context, prefs: Prefs, id: String) {
         val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_cake_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         val intent = PendingIntent.getBroadcast(context, birthday.uniqueId,
                 BirthdayActionService.show(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
         builder.setContentIntent(intent)
@@ -103,28 +99,16 @@ object ReminderUtils {
 
         val piDismiss = PendingIntent.getBroadcast(context, birthday.uniqueId,
                 BirthdayActionService.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-        if (Module.isLollipop) {
-            builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
-        } else {
-            builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss)
-        }
+        builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
 
         if (prefs.isTelephonyAllowed && !TextUtils.isEmpty(birthday.number)) {
             val piCall = PendingIntent.getBroadcast(context, birthday.uniqueId,
                     BirthdayActionService.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-            if (Module.isLollipop) {
-                builder.addAction(R.drawable.ic_twotone_call_white, context.getString(R.string.make_call), piCall)
-            } else {
-                builder.addAction(R.drawable.ic_call_nv_white, context.getString(R.string.make_call), piCall)
-            }
+            builder.addAction(R.drawable.ic_twotone_call_white, context.getString(R.string.make_call), piCall)
 
             val piSms = PendingIntent.getBroadcast(context, birthday.uniqueId,
                     BirthdayActionService.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
-            if (Module.isLollipop) {
-                builder.addAction(R.drawable.ic_twotone_send_white, context.getString(R.string.send_sms), piSms)
-            } else {
-                builder.addAction(R.drawable.ic_send_nv_white, context.getString(R.string.send_sms), piSms)
-            }
+            builder.addAction(R.drawable.ic_twotone_send_white, context.getString(R.string.send_sms), piSms)
         }
 
         Notifier.getManager(context)?.notify(birthday.uniqueId, builder.build())
@@ -142,11 +126,7 @@ object ReminderUtils {
         dismissIntent.putExtra(Constants.INTENT_ID, id)
         val piDismiss = PendingIntent.getBroadcast(context, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         val notificationIntent = Intent(context, ReminderActionService::class.java)
         notificationIntent.action = ReminderActionService.ACTION_SHOW
         notificationIntent.putExtra(Constants.INTENT_ID, id)
@@ -182,11 +162,7 @@ object ReminderUtils {
             }
         }
         builder.setContentText(appName)
-        if (Module.isLollipop) {
-            builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
-        } else {
-            builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss)
-        }
+        builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
         Notifier.getManager(context)?.notify(reminder.uniqueId, builder.build())
     }
 

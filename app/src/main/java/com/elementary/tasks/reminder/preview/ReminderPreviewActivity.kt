@@ -474,11 +474,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun closeWindow() {
-        if (Module.isLollipop) {
-            mUiHandler.post { this.finishAfterTransition() }
-        } else {
-            finish()
-        }
+        mUiHandler.post { this.finishAfterTransition() }
     }
 
     private fun showDialog() {

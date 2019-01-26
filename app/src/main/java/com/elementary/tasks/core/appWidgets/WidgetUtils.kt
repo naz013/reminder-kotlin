@@ -1,21 +1,15 @@
 package com.elementary.tasks.core.appWidgets
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
+import android.widget.RemoteViews
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
-import android.widget.RemoteViews
-
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
-
-import androidx.appcompat.widget.AppCompatDrawableManager
-import androidx.core.content.ContextCompat
 import com.elementary.tasks.core.utils.ViewUtils
 
 /**
@@ -47,7 +41,7 @@ object WidgetUtils {
         extras?.invoke(configIntent)
         val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
         rv.setOnClickPendingIntent(viewId, configPendingIntent)
-        WidgetUtils.setIcon(context, rv, iconId, viewId)
+        WidgetUtils.setIcon(rv, iconId, viewId)
     }
 
     fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int,
@@ -55,29 +49,15 @@ object WidgetUtils {
         val configIntent = Intent(context, cls)
         val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
         rv.setOnClickPendingIntent(viewId, configPendingIntent)
-        WidgetUtils.setIcon(context, rv, iconId, viewId)
+        WidgetUtils.setIcon(rv, iconId, viewId)
     }
 
     fun setIcon(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int, @ColorRes color: Int) {
         rv.setImageViewBitmap(viewId, ViewUtils.createIcon(context, iconId, ContextCompat.getColor(context, color)))
     }
 
-    fun setIcon(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {
-        if (Module.isLollipop) {
-            rv.setImageViewResource(viewId, iconId)
-        } else {
-            rv.setImageViewBitmap(viewId, getIcon(context, iconId))
-        }
-    }
-
-    @SuppressLint("RestrictedApi")
-    fun getIcon(context: Context, @DrawableRes id: Int): Bitmap {
-        val d = AppCompatDrawableManager.get().getDrawable(context, id)
-        val b = Bitmap.createBitmap(d.intrinsicWidth, d.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val c = Canvas(b)
-        d.setBounds(0, 0, c.width, c.height)
-        d.draw(c)
-        return b
+    fun setIcon(rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int) {
+        rv.setImageViewResource(viewId, iconId)
     }
 
     @ColorRes
