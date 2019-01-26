@@ -65,9 +65,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            tools:text="@string/tasks"
             android:textAppearance="?textAppearanceHeadline6"
             android:textColor="@color/whitePrimary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="@string/tasks" />
     </LinearLayout>
 </RelativeLayout>
