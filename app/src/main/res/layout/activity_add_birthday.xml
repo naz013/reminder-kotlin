@@ -148,7 +148,7 @@
                     android:contentDescription="@string/acc_select_number_from_contacts"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_contacts_24px"
-                    app:tint="@color/whitePrimary" />
+                    app:tint="?colorOnSecondary" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
