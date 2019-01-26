@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import android.content.Context
 import android.text.TextUtils
@@ -69,6 +69,8 @@ abstract class TypeFragment : Fragment() {
     open fun onVoiceAction(text: String) {
 
     }
+
+    protected fun isTablet(): Boolean = reminderInterface.isTablet()
 
     open fun onAttachmentSelect(path: String) {
         reminderInterface.reminder.attachmentFile = path

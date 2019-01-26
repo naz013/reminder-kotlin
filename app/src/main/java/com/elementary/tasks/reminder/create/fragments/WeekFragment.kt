@@ -1,23 +1,22 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import android.app.Activity
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.fragments.PlacesMapFragment
-import com.elementary.tasks.core.interfaces.MapCallback
-import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.ActionView
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.fragment_reminder_place.*
+import kotlinx.android.synthetic.main.fragment_reminder_weekdays.*
 import timber.log.Timber
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,112 +36,118 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesFragment : RadiusTypeFragment() {
+class WeekFragment : RepeatableTypeFragment() {
 
-    private var mPlacesMap: PlacesMapFragment? = null
-    private val mListener = object : MapListener {
-        override fun placeChanged(place: LatLng, address: String) {
-        }
+    private var mHour = 0
+    private var mMinute = 0
 
-        override fun onZoomClick(isFull: Boolean) {
-            reminderInterface.setFullScreenMode(isFull)
-        }
-
-        override fun onBackClick() {
-            val map = mPlacesMap ?: return
-            if (map.isFullscreen) {
-                map.isFullscreen = false
-                reminderInterface.setFullScreenMode(false)
-            }
-            if (mapContainer.visibility == View.VISIBLE) {
-                ViewUtils.fadeOutAnimation(mapContainer)
-                ViewUtils.fadeInAnimation(scrollView)
-            }
-        }
+    private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        mHour = hourOfDay
+        mMinute = minute
+        val c = Calendar.getInstance()
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay)
+        c.set(Calendar.MINUTE, minute)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
+        timeField.text = formattedTime
     }
 
-    override fun recreateMarker() {
-        mPlacesMap?.recreateMarker()
-    }
+    private val time: Long
+        get() {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = System.currentTimeMillis()
+            calendar.set(Calendar.HOUR_OF_DAY, mHour)
+            calendar.set(Calendar.MINUTE, mMinute)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            return calendar.timeInMillis
+        }
+
+    val days: List<Int>
+        get() = IntervalUtil.getWeekRepeat(mondayCheck.isChecked,
+                tuesdayCheck.isChecked, wednesdayCheck.isChecked,
+                thursdayCheck.isChecked, fridayCheck.isChecked,
+                saturdayCheck.isChecked, sundayCheck.isChecked)
 
     override fun prepare(): Reminder? {
-        val reminder = super.prepare() ?: return null
-        val map = mPlacesMap ?: return null
-        var type = Reminder.BY_PLACES
-        val places = map.places
-        if (places.isEmpty()) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
-            return null
-        }
-        if (TextUtils.isEmpty(reminder.summary)) {
+        val reminder = reminderInterface.reminder
+        var type = Reminder.BY_WEEK
+        val isAction = actionView.hasAction()
+        if (TextUtils.isEmpty(reminder.summary) && !isAction) {
             taskLayout.error = getString(R.string.task_summary_is_empty)
             taskLayout.isErrorEnabled = true
-            map.invokeBack()
             return null
         }
         var number = ""
-        if (actionView.hasAction()) {
+        if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
                 reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
-                Reminder.BY_PLACES_CALL
+                Reminder.BY_WEEK_CALL
             } else {
-                Reminder.BY_PLACES_SMS
+                Reminder.BY_WEEK_SMS
             }
         }
-
-        reminder.places = places
+        val weekdays = days
+        if (!IntervalUtil.isWeekday(weekdays)) {
+            reminderInterface.showSnackbar(getString(R.string.you_dont_select_any_day))
+            return null
+        }
+        reminder.weekdays = weekdays
         reminder.target = number
         reminder.type = type
-        reminder.exportToCalendar = false
-        reminder.exportToTasks = false
-        reminder.hasReminder = attackDelay.isChecked
-        if (attackDelay.isChecked) {
-            val startTime = dateView.dateTime
-            reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-            reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-        } else {
-            reminder.eventTime = ""
-            reminder.startTime = ""
+        reminder.repeatInterval = 0
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        val startTime = TimeCount.getNextWeekdayTime(reminder)
+        reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+        if (!TimeCount.isCurrent(reminder.eventTime)) {
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            return null
         }
         return reminder
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reminder_place, container, false)
+        return inflater.inflate(R.layout.fragment_reminder_weekdays, container, false)
+    }
+
+    private val mCheckListener: CompoundButton.OnCheckedChangeListener =  CompoundButton.OnCheckedChangeListener { _, _ ->
+        calculateNextDate()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sundayCheck.setOnCheckedChangeListener(mCheckListener)
+        saturdayCheck.setOnCheckedChangeListener(mCheckListener)
+        fridayCheck.setOnCheckedChangeListener(mCheckListener)
+        thursdayCheck.setOnCheckedChangeListener(mCheckListener)
+        wednesdayCheck.setOnCheckedChangeListener(mCheckListener)
+        tuesdayCheck.setOnCheckedChangeListener(mCheckListener)
+        mondayCheck.setOnCheckedChangeListener(mCheckListener)
+
+        timeField.setOnClickListener {
+            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
+                    prefs.is24HourFormat, mHour, mMinute, mTimeSelect)
+        }
+        timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
+                prefs.is24HourFormat, prefs.appLanguage)
+        actionView.setActivity(activity!!)
+        actionView.setContactClickListener(View.OnClickListener { selectContact() })
+
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
-        moreLayout.isNestedScrollingEnabled = false
+        moreLayout?.isNestedScrollingEnabled = false
 
         if (prefs.isTelephonyAllowed) {
             actionView.visibility = View.VISIBLE
         } else {
             actionView.visibility = View.GONE
         }
-
-        val placesMap = PlacesMapFragment()
-        placesMap.setListener(mListener)
-        placesMap.setCallback(object : MapCallback {
-            override fun onMapReady() {
-                mPlacesMap?.selectMarkers(reminderInterface.reminder.places)
-            }
-        })
-        placesMap.markerRadius = prefs.radius
-        placesMap.setMarkerStyle(prefs.markerStyle)
-        fragmentManager!!.beginTransaction()
-                .replace(mapFrame.id, placesMap)
-                .addToBackStack(null)
-                .commit()
-        this.mPlacesMap = placesMap
 
         if (Module.isPro) {
             ledView.visibility = View.VISIBLE
@@ -153,18 +158,6 @@ class PlacesFragment : RadiusTypeFragment() {
         tuneExtraView.dialogues = dialogues
         tuneExtraView.hasAutoExtra = false
 
-        actionView.setActivity(activity!!)
-        actionView.setContactClickListener(View.OnClickListener { selectContact() })
-
-        delayLayout.visibility = View.GONE
-        mapContainer.visibility = View.GONE
-        attackDelay.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
-                delayLayout.visibility = View.VISIBLE
-            else
-                delayLayout.visibility = View.GONE
-        }
-
         melodyView.onFileSelectListener = {
             reminderInterface.selectMelody()
         }
@@ -174,19 +167,41 @@ class PlacesFragment : RadiusTypeFragment() {
         groupView.onGroupSelectListener = {
             reminderInterface.selectGroup()
         }
+        calculateNextDate()
 
-        mapButton.setOnClickListener { toggleMap() }
-
+        initScreenState()
         initPropertyFields()
         editReminder()
+    }
+
+    private fun calculateNextDate() {
+        val weekdays = days
+        if (!IntervalUtil.isWeekday(weekdays)) {
+            calculatedNextTime.text = ""
+            return
+        }
+        val reminder = Reminder()
+        reminder.weekdays = weekdays
+        reminder.type = Reminder.BY_WEEK
+        reminder.repeatInterval = 0
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+        val startTime = TimeCount.getNextWeekdayTime(reminder)
+        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     private fun initPropertyFields() {
         taskSummary.bindProperty(reminderInterface.reminder.summary) {
             reminderInterface.reminder.summary = it.trim()
         }
-        dateView.bindProperty(reminderInterface.reminder.eventTime) {
-            reminderInterface.reminder.eventTime = it
+        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
+            reminderInterface.reminder.remindBefore = it
+            updateHeader()
+        }
+        exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
+            reminderInterface.reminder.exportToCalendar = it
+        }
+        exportToTasks.bindProperty(reminderInterface.reminder.exportToTasks) {
+            reminderInterface.reminder.exportToTasks = it
         }
         priorityView.bindProperty(reminderInterface.reminder.priority) {
             reminderInterface.reminder.priority = it
@@ -204,6 +219,9 @@ class PlacesFragment : RadiusTypeFragment() {
         }
         loudnessView.bindProperty(reminderInterface.reminder.volume) {
             reminderInterface.reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
+            reminderInterface.reminder.repeatLimit = it
         }
         windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
             reminderInterface.reminder.windowType = it
@@ -235,28 +253,46 @@ class PlacesFragment : RadiusTypeFragment() {
         cardSummary?.text = getSummary()
     }
 
-    private fun toggleMap() {
-        if (mapContainer != null && mapContainer.visibility == View.VISIBLE) {
-            ViewUtils.fadeOutAnimation(mapContainer)
-            ViewUtils.fadeInAnimation(scrollView)
+    private fun initScreenState() {
+        if (reminderInterface.canExportToCalendar) {
+            exportToCalendar.visibility = View.VISIBLE
         } else {
-            ViewUtils.fadeOutAnimation(scrollView)
-            ViewUtils.fadeInAnimation(mapContainer)
+            exportToCalendar.visibility = View.GONE
+        }
+        if (reminderInterface.canExportToTasks) {
+            exportToTasks.visibility = View.VISIBLE
+        } else {
+            exportToTasks.visibility = View.GONE
         }
     }
 
-    override fun onBackPressed(): Boolean {
-        return mPlacesMap == null || mPlacesMap!!.onBackPressed()
+    private fun updateTime(millis: Long): Date {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
+        mHour = cal.get(Calendar.HOUR_OF_DAY)
+        mMinute = cal.get(Calendar.MINUTE)
+        return cal.time
+    }
+
+    private fun setCheckForDays(weekdays: List<Int>) {
+        sundayCheck.isChecked = weekdays[0] == 1
+        mondayCheck.isChecked = weekdays[1] == 1
+        tuesdayCheck.isChecked = weekdays[2] == 1
+        wednesdayCheck.isChecked = weekdays[3] == 1
+        thursdayCheck.isChecked = weekdays[4] == 1
+        fridayCheck.isChecked = weekdays[5] == 1
+        saturdayCheck.isChecked = weekdays[6] == 1
     }
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
-        Timber.d("editReminder: %s", reminder)
         showGroup(groupView, reminder)
-        if (reminder.eventTime != "" && reminder.hasReminder) {
-            dateView.setDateTime(reminder.eventTime)
-            attackDelay.isChecked = true
+        timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
+                prefs.is24HourFormat, prefs.appLanguage)
+        if (reminder.weekdays.isNotEmpty()) {
+            setCheckForDays(reminder.weekdays)
         }
+        calculateNextDate()
         if (reminder.target != "") {
             actionView.setAction(true)
             actionView.number = reminder.target
@@ -266,7 +302,6 @@ class PlacesFragment : RadiusTypeFragment() {
                 actionView.type = ActionView.TYPE_MESSAGE
             }
         }
-        updateHeader()
     }
 
     private fun selectContact() {
@@ -285,10 +320,9 @@ class PlacesFragment : RadiusTypeFragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
-            when (requestCode) {
-                CONTACTS -> selectContact()
-                CONTACTS_ACTION -> actionView.setAction(true)
+        when (requestCode) {
+            CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
+                selectContact()
             }
         }
     }
@@ -310,7 +344,6 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     companion object {
-        private const val CONTACTS = 122
-        const val CONTACTS_ACTION = 123
+        private const val CONTACTS = 112
     }
 }

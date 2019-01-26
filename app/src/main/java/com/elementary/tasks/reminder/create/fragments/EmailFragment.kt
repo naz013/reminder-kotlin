@@ -1,21 +1,15 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
-import kotlinx.android.synthetic.main.fragment_reminder_shop.*
+import kotlinx.android.synthetic.main.fragment_reminder_email.*
 import timber.log.Timber
 
 /**
@@ -36,53 +30,40 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShopFragment : RepeatableTypeFragment() {
-
-    private val mAdapter = ShopListRecyclerAdapter()
-    private val mActionListener = object : ShopListRecyclerAdapter.ActionListener {
-        override fun onItemCheck(position: Int, isChecked: Boolean) {
-            val item = mAdapter.getItem(position)
-            item.isChecked = !item.isChecked
-            mAdapter.updateData()
-        }
-
-        override fun onItemDelete(position: Int) {
-            mAdapter.delete(position)
-        }
-    }
+class EmailFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        if (mAdapter.itemCount == 0) {
-            reminderInterface.showSnackbar(getString(R.string.shopping_list_is_empty))
+        val reminder = reminderInterface.reminder
+        val email = mail.text.toString().trim { it <= ' ' }
+        if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*".toRegex())) {
+            reminderInterface.showSnackbar(getString(R.string.email_is_incorrect))
             return null
         }
-        val reminder = reminderInterface.reminder
-        reminder.shoppings = mAdapter.data
-        reminder.target = ""
-        reminder.type = Reminder.BY_DATE_SHOP
-        reminder.repeatInterval = 0
-        reminder.exportToCalendar = false
-        reminder.exportToTasks = false
-        reminder.hasReminder = attackDelay.isChecked
-        if (attackDelay.isChecked) {
-            val startTime = dateView.dateTime
-            val time = TimeUtil.getGmtFromDateTime(startTime)
-            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-            if (!TimeCount.isCurrent(time)) {
-                Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
-                return null
-            }
-            reminder.startTime = time
-            reminder.eventTime = time
-        } else {
-            reminder.eventTime = ""
-            reminder.startTime = ""
+        val subjectString = subject.text.toString().trim { it <= ' ' }
+        if (TextUtils.isEmpty(subjectString)) {
+            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_any_message))
+            return null
+        }
+        val startTime = dateView.dateTime
+        if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            return null
+        }
+        reminder.subject = subjectString
+        reminder.target = email
+
+        reminder.type = Reminder.BY_DATE_EMAIL
+        reminder.startTime = reminder.eventTime
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+        if (!TimeCount.isCurrent(reminder.eventTime)) {
+            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            return null
         }
         return reminder
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reminder_shop, container, false)
+        return inflater.inflate(R.layout.fragment_reminder_email, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +71,7 @@ class ShopFragment : RepeatableTypeFragment() {
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
-        moreLayout.isNestedScrollingEnabled = false
+        moreLayout?.isNestedScrollingEnabled = false
 
         if (Module.isPro) {
             ledView.visibility = View.VISIBLE
@@ -99,27 +80,8 @@ class ShopFragment : RepeatableTypeFragment() {
         }
 
         tuneExtraView.dialogues = dialogues
-        tuneExtraView.hasAutoExtra = false
-
-        todoList.layoutManager = LinearLayoutManager(context)
-        mAdapter.listener = mActionListener
-        todoList.adapter = mAdapter
-        shopEdit.setOnEditorActionListener { _, actionId, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
-                addNewItem()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-        addButton.setOnClickListener { addNewItem() }
-        attackDelay.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
-                delayLayout.visibility = View.VISIBLE
-            else
-                delayLayout.visibility = View.GONE
-        }
-
-        delayLayout.visibility = View.GONE
+        tuneExtraView.hint = getString(R.string.message)
+        tuneExtraView.hasAutoExtra = true
 
         melodyView.onFileSelectListener = {
             reminderInterface.selectMelody()
@@ -130,7 +92,7 @@ class ShopFragment : RepeatableTypeFragment() {
         groupView.onGroupSelectListener = {
             reminderInterface.selectGroup()
         }
-
+        initScreenState()
         initPropertyFields()
         editReminder()
     }
@@ -138,6 +100,19 @@ class ShopFragment : RepeatableTypeFragment() {
     private fun initPropertyFields() {
         taskSummary.bindProperty(reminderInterface.reminder.summary) {
             reminderInterface.reminder.summary = it.trim()
+        }
+        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
+            reminderInterface.reminder.remindBefore = it
+            updateHeader()
+        }
+        repeatView.bindProperty(reminderInterface.reminder.repeatInterval) {
+            reminderInterface.reminder.repeatInterval = it
+        }
+        exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
+            reminderInterface.reminder.exportToCalendar = it
+        }
+        exportToTasks.bindProperty(reminderInterface.reminder.exportToTasks) {
+            reminderInterface.reminder.exportToTasks = it
         }
         dateView.bindProperty(reminderInterface.reminder.eventTime) {
             reminderInterface.reminder.eventTime = it
@@ -154,6 +129,9 @@ class ShopFragment : RepeatableTypeFragment() {
         }
         loudnessView.bindProperty(reminderInterface.reminder.volume) {
             reminderInterface.reminder.volume = it
+        }
+        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
+            reminderInterface.reminder.repeatLimit = it
         }
         windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
             reminderInterface.reminder.windowType = it
@@ -172,23 +150,24 @@ class ShopFragment : RepeatableTypeFragment() {
         cardSummary?.text = getSummary()
     }
 
-    private fun addNewItem() {
-        val task = shopEdit.text.toString().trim()
-        if (task == "") {
-            shopLayout.error = getString(R.string.must_be_not_empty)
-            shopLayout.isErrorEnabled = true
-            return
+    private fun initScreenState() {
+        if (reminderInterface.canExportToCalendar) {
+            exportToCalendar.visibility = View.VISIBLE
+        } else {
+            exportToCalendar.visibility = View.GONE
         }
-        mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
-        shopEdit.setText("")
+        if (reminderInterface.canExportToTasks) {
+            exportToTasks.visibility = View.VISIBLE
+        } else {
+            exportToTasks.visibility = View.GONE
+        }
     }
 
     private fun editReminder() {
         val reminder = reminderInterface.reminder
         showGroup(groupView, reminder)
-        mAdapter.data = reminder.shoppings
-        attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
-        updateHeader()
+        mail.setText(reminder.target)
+        subject.setText(reminder.subject)
     }
 
     override fun onGroupUpdate(reminderGroup: ReminderGroup) {

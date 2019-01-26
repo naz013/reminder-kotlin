@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.ReminderUtils

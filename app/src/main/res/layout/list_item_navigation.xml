@@ -5,14 +5,17 @@
     android:layout_height="wrap_content"
     android:background="?android:selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:textAppearance="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceSubtitle1"
         tools:text="@string/yearly" />
 
 </LinearLayout>

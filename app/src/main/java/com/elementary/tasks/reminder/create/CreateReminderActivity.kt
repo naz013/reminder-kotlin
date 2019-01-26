@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.createEdit
+package com.elementary.tasks.reminder.create
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -30,7 +30,7 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import com.elementary.tasks.reminder.createEdit.fragments.*
+import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_reminder.*
 import kotlinx.android.synthetic.main.list_item_navigation.view.*
@@ -50,6 +50,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private var isEditing: Boolean = false
     private var mIsLogged = false
     private var mIsSaving = false
+    private var mIsTablet = false
     override var reminder: Reminder = Reminder()
         private set
     override var defGroup: ReminderGroup? = null
@@ -77,6 +78,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reminder.priority = prefs.defaultPriority
+        mIsTablet = resources.getBoolean(R.bool.is_tablet)
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_reminder)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
@@ -483,15 +485,21 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun setFullScreenMode(b: Boolean) {
-        if (b) {
-            appBar.visibility = View.GONE
-        } else {
-            appBar.visibility = View.VISIBLE
+        if (!mIsTablet) {
+            if (b) {
+                appBar.visibility = View.GONE
+            } else {
+                appBar.visibility = View.VISIBLE
+            }
         }
     }
 
     override fun updateScroll(y: Int) {
-        appBar.isSelected = y > 0
+        if (!mIsTablet) appBar.isSelected = y > 0
+    }
+
+    override fun isTablet(): Boolean {
+        return mIsTablet
     }
 
     override fun onDestroy() {

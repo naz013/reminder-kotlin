@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import java.text.SimpleDateFormat
 import java.util.*
 

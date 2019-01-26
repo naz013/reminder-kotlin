@@ -28,7 +28,7 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
 import timber.log.Timber

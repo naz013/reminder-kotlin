@@ -18,7 +18,7 @@ import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.dayView.day.CalendarEventsAdapter
 import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*
 import kotlinx.coroutines.Job
 import timber.log.Timber

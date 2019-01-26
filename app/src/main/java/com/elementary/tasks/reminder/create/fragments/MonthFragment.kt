@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -140,7 +140,7 @@ class MonthFragment : RepeatableTypeFragment() {
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
-        moreLayout.isNestedScrollingEnabled = false
+        moreLayout?.isNestedScrollingEnabled = false
 
         if (prefs.isTelephonyAllowed) {
             actionView.visibility = View.VISIBLE

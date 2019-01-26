@@ -9,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 
 /**
  * Copyright 2018 Nazar Suhovich

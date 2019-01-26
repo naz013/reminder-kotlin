@@ -12,7 +12,7 @@ import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.navigation.settings.additional.TemplateActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import javax.inject.Inject
 

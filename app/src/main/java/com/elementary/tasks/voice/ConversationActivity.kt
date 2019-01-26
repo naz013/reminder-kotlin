@@ -29,7 +29,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber

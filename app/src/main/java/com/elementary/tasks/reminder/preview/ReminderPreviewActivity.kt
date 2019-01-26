@@ -38,7 +38,7 @@ import com.elementary.tasks.googleTasks.create.TasksConstants
 import com.elementary.tasks.googleTasks.list.GoogleTaskHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng

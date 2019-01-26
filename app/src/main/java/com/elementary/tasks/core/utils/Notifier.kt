@@ -20,7 +20,7 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject

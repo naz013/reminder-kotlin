@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -149,7 +150,11 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
                 }
             }
         }
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!) && resources.getBoolean(R.bool.is_tablet)) {
+            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)

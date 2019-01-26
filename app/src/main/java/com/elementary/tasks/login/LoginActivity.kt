@@ -22,7 +22,7 @@ import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.view_progress.*
 import java.io.IOException

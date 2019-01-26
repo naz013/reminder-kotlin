@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_above="@+id/mapContainer">
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,59 +67,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/searchBlock"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/addressLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="-4dp"
-                    android:layout_marginBottom="-8dp"
-                    android:layout_weight="1"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
-
-                    <com.elementary.tasks.core.views.AddressAutoCompleteView
-                        android:id="@+id/addressField"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/address"
-                        android:maxLines="1"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textAppearance="?textAppearanceSubtitle2" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/clearButton"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:backgroundTint="?colorSecondary"
-                    app:srcCompat="@drawable/ic_twotone_backspace_24px"
-                    app:tint="?colorOnSecondary" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/mapButton"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    app:backgroundTint="?colorSecondary"
-                    app:srcCompat="@drawable/ic_twotone_map_24px"
-                    app:tint="?colorOnSecondary" />
-
-            </LinearLayout>
-
-            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -126,26 +74,17 @@
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/leaveCheck"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/mapButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/leaving_place"
-                    android:textAppearance="?textAppearanceCaption" />
+                    android:scaleType="centerInside"
+                    android:text="@string/select_place"
+                    android:tint="?android:textColorPrimary"
+                    app:cornerRadius="25dp"
+                    app:icon="@drawable/ic_twotone_map_24px" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/enterCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/entering_place"
-                    android:textAppearance="?textAppearanceCaption" />
-
-            </RadioGroup>
+            </LinearLayout>
 
             <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
                 android:layout_width="match_parent"
@@ -327,21 +266,19 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/mapContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_weight="1"
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/mapFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
         </LinearLayout>
-    </RelativeLayout>
-</RelativeLayout>
+    </FrameLayout>
+</LinearLayout>

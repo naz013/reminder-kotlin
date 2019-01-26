@@ -422,8 +422,7 @@ class TaskActivity : ThemedActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_create_task, menu)
+        menuInflater.inflate(R.menu.menu_create_task, menu)
         if (mItem != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_task)
             menu.add(Menu.NONE, MENU_ITEM_MOVE, 100, R.string.move_to_another_list)
