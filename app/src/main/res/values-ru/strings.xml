@@ -689,5 +689,8 @@
     <string name="and_above">и выше</string>
     <string name="allow_unlock_for_priority">Разрешить разблокировку экрана только для</string>
     <string name="import_file">Импортировать файл</string>
+    <string name="white">Белый</string>
+    <string name="black">Черный</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Не рекомендуется использовать эти цвета вместе</string>
 
 </resources>

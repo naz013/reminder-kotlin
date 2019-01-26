@@ -690,5 +690,8 @@
     <string name="and_above">以上</string>
     <string name="allow_unlock_for_priority">のためだけにロック解除画面を許可する</string>
     <string name="import_file">インポートファイル</string>
+    <string name="white">白</string>
+    <string name="black">黒</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">この色を一緒に使用することはお勧めできません</string>
 
 </resources>

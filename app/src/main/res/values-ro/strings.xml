@@ -689,5 +689,8 @@
     <string name="and_above">si mai sus</string>
     <string name="allow_unlock_for_priority">Permiteți ecranul de deblocare numai pentru</string>
     <string name="import_file">Fișier de import</string>
+    <string name="white">Alb</string>
+    <string name="black">Negru</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Nu este recomandat să folosiți aceste culori împreună</string>
 
 </resources>
