@@ -414,6 +414,7 @@
                 <ImageView
                     android:id="@+id/attachmentImage"
                     android:layout_width="72dp"
+                    android:transitionName="image"
                     android:layout_height="72dp"
                     android:scaleType="centerCrop" />
 
