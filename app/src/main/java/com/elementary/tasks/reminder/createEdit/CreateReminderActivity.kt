@@ -268,11 +268,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             reminder.type = oldType
             editReminder(reminder, false)
         }
-        if (isEditing) {
+//        if (isEditing) {
             buttonDefault.visibility = View.INVISIBLE
-        } else {
-            buttonDefault.visibility = View.VISIBLE
-        }
+//        } else {
+//            buttonDefault.visibility = View.VISIBLE
+//        }
     }
 
     private fun initActionBar() {

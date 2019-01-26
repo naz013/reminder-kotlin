@@ -104,7 +104,7 @@
                 android:contentDescription="@string/acc_add"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_twotone_add_24px"
-                app:tint="@color/whitePrimary" />
+                app:tint="?colorOnSecondary" />
 
         </LinearLayout>
 

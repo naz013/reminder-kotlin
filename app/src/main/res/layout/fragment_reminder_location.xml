@@ -103,7 +103,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerInside"
                     app:backgroundTint="?colorSecondary"
-                    app:tint="@color/whitePrimary"
+                    app:tint="?colorOnSecondary"
                     app:srcCompat="@drawable/ic_twotone_backspace_24px" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
@@ -111,7 +111,7 @@
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:scaleType="centerInside"
-                    app:tint="@color/whitePrimary"
+                    app:tint="?colorOnSecondary"
                     app:backgroundTint="?colorSecondary"
                     app:srcCompat="@drawable/ic_twotone_map_24px" />
 

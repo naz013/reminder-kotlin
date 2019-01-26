@@ -56,7 +56,7 @@
         android:label="@string/app_title"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Light1"
+        android:theme="@style/Light1.Blue"
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="m">
