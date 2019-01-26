@@ -32,7 +32,8 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:overScrollMode="ifContentScrolls">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,24 +60,22 @@
                     android:textAppearance="?textAppearanceHeadline5"
                     tools:text="Timer" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/switchWrapper"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:background="?selectableItemBackground"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/statusText"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@+id/statusSwitch"
                         android:textAppearance="?textAppearanceHeadline6"
                         tools:text="Enabled" />
 
@@ -84,12 +83,10 @@
                         android:id="@+id/statusSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
                         android:clickable="false" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

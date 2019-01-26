@@ -76,7 +76,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="8dp"
-                    android:background="?android:attr/selectableItemBackground"
                     android:padding="4dp"
                     android:textAppearance="?textAppearanceHeadline5"
                     tools:text="25/05/1985" />
@@ -115,11 +114,11 @@
                     android:id="@+id/numberLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_marginTop="-4dp"
                     android:layout_marginBottom="-8dp"
-                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     app:boxBackgroundColor="?colorSecondary12"
                     app:boxCornerRadiusTopEnd="5dp"
                     app:boxCornerRadiusTopStart="5dp">
@@ -144,9 +143,9 @@
                     android:id="@+id/pickContact"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
-                    app:backgroundTint="?colorSecondary"
                     android:contentDescription="@string/acc_select_number_from_contacts"
                     android:scaleType="centerInside"
+                    app:backgroundTint="?colorSecondary"
                     app:srcCompat="@drawable/ic_twotone_contacts_24px"
                     app:tint="?colorOnSecondary" />
             </LinearLayout>

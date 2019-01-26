@@ -22,7 +22,7 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:background="?selectableItemBackground"
+        android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/acc_rotate_left"
         app:srcCompat="@drawable/ic_twotone_rotate_left_24px"
         app:tint="?colorSecondary" />
@@ -34,7 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:background="?selectableItemBackground"
+        android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/acc_rotate_right"
         app:srcCompat="@drawable/ic_twotone_rotate_right_24px"
         app:tint="?colorSecondary" />
