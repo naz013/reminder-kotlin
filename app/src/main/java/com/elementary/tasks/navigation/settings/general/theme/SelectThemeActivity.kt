@@ -2,6 +2,7 @@ package com.elementary.tasks.navigation.settings.general.theme
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
@@ -42,11 +43,14 @@ class SelectThemeActivity : ThemedActivity() {
         setContentView(R.layout.activity_select_theme)
         initToolbar()
 
+        warningCard.visibility = View.GONE
+
         colorSliderBg.setColors(themeUtil.themeColorsForSlider())
         colorSliderBg.setListener { position, _ ->
             prefs.appTheme = position
             prefs.isUiChanged = true
             onColorSelect(themes[position])
+            checkCompat()
         }
         colorSliderBg.setSelection(0)
         colorSliderBg.setSelection(prefs.appTheme)
@@ -57,11 +61,62 @@ class SelectThemeActivity : ThemedActivity() {
             prefs.isUiChanged = true
             bgTitle.setTextColor(color)
             accentTitle.setTextColor(color)
+            checkCompat()
         }
         colorSlider.setSelection(0)
         colorSlider.setSelection(prefs.appThemeColor)
 
         onColorSelect(themes[prefs.appTheme])
+        checkCompat()
+    }
+
+    private fun checkCompat() {
+        val bgColor = prefs.appTheme
+        val accent = prefs.appThemeColor
+
+        if (isBad(bgColor, accent)) {
+            warningCard.visibility = View.VISIBLE
+        } else {
+            warningCard.visibility = View.GONE
+        }
+    }
+
+    private fun isBad(bgColor: Int, accent: Int): Boolean {
+        return when (bgColor) {
+            ThemeUtil.THEME_PURE_WHITE, ThemeUtil.THEME_LIGHT_1, ThemeUtil.THEME_LIGHT_2,
+            ThemeUtil.THEME_LIGHT_3, ThemeUtil.THEME_LIGHT_4 -> accent == ThemeUtil.Color.WHITE
+            ThemeUtil.THEME_PURE_BLACK, ThemeUtil.THEME_DARK_3, ThemeUtil.THEME_DARK_4 -> accent == ThemeUtil.Color.BLACK
+            ThemeUtil.THEME_RETRO_YELLOW -> accent == ThemeUtil.Color.WHITE
+                    || accent == ThemeUtil.Color.YELLOW
+                    || accent == ThemeUtil.Color.AMBER
+                    || accent == ThemeUtil.Color.LIME
+            ThemeUtil.THEME_RETRO_ORANGE -> accent == ThemeUtil.Color.YELLOW
+                    || accent == ThemeUtil.Color.AMBER
+                    || accent == ThemeUtil.Color.LIME
+                    || accent == ThemeUtil.Color.ORANGE
+                    || accent == ThemeUtil.Color.LIGHT_GREEN
+            ThemeUtil.THEME_RETRO_GREEN -> accent == ThemeUtil.Color.WHITE
+                    || accent == ThemeUtil.Color.YELLOW
+                    || accent == ThemeUtil.Color.LIME
+                    || accent == ThemeUtil.Color.GREEN
+                    || accent == ThemeUtil.Color.LIGHT_GREEN
+                    || accent == ThemeUtil.Color.TEAL
+                    || accent == ThemeUtil.Color.LIGHT_BLUE
+                    || accent == ThemeUtil.Color.CYAN
+            ThemeUtil.THEME_RETRO_RED -> accent == ThemeUtil.Color.RED
+                    || accent == ThemeUtil.Color.PINK
+                    || accent == ThemeUtil.Color.PURPLE
+                    || accent == ThemeUtil.Color.ORANGE
+                    || accent == ThemeUtil.Color.DEEP_ORANGE
+                    || accent == ThemeUtil.Color.LIVING_CORAL
+            ThemeUtil.THEME_RETRO_BROWN -> accent == ThemeUtil.Color.LIGHT_BLUE
+                    || accent == ThemeUtil.Color.CYAN
+                    || accent == ThemeUtil.Color.TEAL
+                    || accent == ThemeUtil.Color.GREEN
+                    || accent == ThemeUtil.Color.LIGHT_GREEN
+                    || accent == ThemeUtil.Color.LIME
+            else -> false
+        }
     }
 
     private fun initToolbar() {
@@ -162,6 +217,7 @@ class SelectThemeActivity : ThemedActivity() {
 
     private fun onColorSelect(theme: Theme) {
         bgTitle.text = getString(R.string.background) + " - " + theme.name
+        warningCard.setCardBackgroundColor(theme.bgColor)
         toolbar.setBackgroundColor(theme.barColor)
         if (Module.isLollipop) {
             window.statusBarColor = theme.barColor
@@ -170,8 +226,10 @@ class SelectThemeActivity : ThemedActivity() {
         toolbar.navigationIcon = ViewUtils.backIcon(this, theme.isDark)
         if (theme.isDark) {
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            warningText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            warningText.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
         colorSliderBg.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
         colorSlider.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)

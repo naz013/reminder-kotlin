@@ -156,13 +156,13 @@
 
                     <com.elementary.tasks.core.views.AddressAutoCompleteView
                         android:id="@+id/cardSearch"
-                        android:textAppearance="?textAppearanceSubtitle2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="@string/address"
                         android:maxLines="1"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp" />
+                        android:paddingEnd="16dp"
+                        android:textAppearance="?textAppearanceSubtitle2" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -173,7 +173,7 @@
                     android:background="?colorSecondary"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_my_location_24px"
-                    app:tint="@color/whitePrimary" />
+                    app:tint="?colorOnSecondary" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -255,8 +255,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -273,25 +273,25 @@
                     <ImageView
                         android:id="@+id/styleRetro"
                         android:layout_width="56dp"
-                        android:layout_marginStart="16dp"
                         android:layout_height="56dp"
+                        android:layout_marginStart="16dp"
                         android:contentDescription="@string/retro"
                         android:src="@drawable/preview_map_retro" />
 
                     <ImageView
                         android:id="@+id/styleSilver"
                         android:layout_width="56dp"
-                        android:layout_marginStart="16dp"
                         android:layout_height="56dp"
+                        android:layout_marginStart="16dp"
                         android:contentDescription="@string/silver"
                         android:src="@drawable/preview_map_silver" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -303,18 +303,18 @@
 
                     <ImageView
                         android:id="@+id/styleDark"
-                        android:layout_marginStart="16dp"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
+                        android:layout_marginStart="16dp"
                         android:contentDescription="@string/dark"
                         android:src="@drawable/preview_map_dark" />
 
                     <ImageView
                         android:id="@+id/styleAubergine"
                         android:layout_width="56dp"
-                        android:contentDescription="@string/aubergine"
                         android:layout_height="56dp"
                         android:layout_marginStart="16dp"
+                        android:contentDescription="@string/aubergine"
                         android:src="@drawable/preview_map_aubergine" />
 
                 </LinearLayout>
@@ -332,11 +332,11 @@
         android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:textAppearance="?textAppearanceHeadline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/recent_places" />
+            android:text="@string/recent_places"
+            android:textAppearance="?textAppearanceHeadline6" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/placesList"

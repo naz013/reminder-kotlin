@@ -173,7 +173,7 @@
                     android:background="?colorSecondary"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_twotone_search_24px"
-                    app:tint="@color/whitePrimary" />
+                    app:tint="?colorOnSecondary" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
