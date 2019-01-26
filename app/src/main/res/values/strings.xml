@@ -693,5 +693,6 @@
     <string name="import_file">Import file</string>
     <string name="white">White</string>
     <string name="black">Black</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">It\'s not recommended to use this colors together</string>
 
 </resources>
