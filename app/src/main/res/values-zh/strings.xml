@@ -689,5 +689,8 @@
     <string name="and_above">以上</string>
     <string name="allow_unlock_for_priority">仅允许解锁屏幕</string>
     <string name="import_file">导入文件</string>
+    <string name="white">白色</string>
+    <string name="black">黑色</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">不建议一起使用这些颜色</string>
 
 </resources>

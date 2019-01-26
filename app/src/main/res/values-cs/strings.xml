@@ -689,5 +689,8 @@
     <string name="and_above">a výše</string>
     <string name="allow_unlock_for_priority">Povolit obrazovku pro odemčení pouze pro</string>
     <string name="import_file">Importovat soubor</string>
+    <string name="white">Bílý</string>
+    <string name="black">Černá</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Tyto barvy se nedoporučují používat společně</string>
 
 </resources>

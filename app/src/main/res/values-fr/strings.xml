@@ -689,5 +689,8 @@
     <string name="and_above">et ci-dessus</string>
     <string name="allow_unlock_for_priority">Autoriser le déverrouillage de l\'écran uniquement pour</string>
     <string name="import_file">Importer le fichier</string>
+    <string name="white">Blanc</string>
+    <string name="black">Noir</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Il n\'est pas recommandé d\'utiliser ces couleurs ensemble</string>
 
 </resources>

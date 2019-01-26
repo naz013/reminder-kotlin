@@ -689,5 +689,8 @@
     <string name="and_above">і вище</string>
     <string name="allow_unlock_for_priority">Дозволити розблокувати екран лише для</string>
     <string name="import_file">Імпортувати файл</string>
+    <string name="white">Білий</string>
+    <string name="black">Чорний</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Не рекомендується використовувати ці кольори разом</string>
 
 </resources>

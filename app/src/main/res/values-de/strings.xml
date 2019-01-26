@@ -689,5 +689,8 @@
     <string name="and_above">und darüber</string>
     <string name="allow_unlock_for_priority">Freigabebildschirm nur für zulassen</string>
     <string name="import_file">Datei importieren</string>
+    <string name="white">Weiß</string>
+    <string name="black">Schwarz</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Es wird nicht empfohlen, diese Farben zusammen zu verwenden</string>
 
 </resources>

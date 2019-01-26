@@ -689,5 +689,8 @@
     <string name="and_above">e al di sopra</string>
     <string name="allow_unlock_for_priority">Consenti solo lo schermo di sblocco</string>
     <string name="import_file">Importare file</string>
+    <string name="white">Bianco</string>
+    <string name="black">Nero</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Non è consigliabile utilizzare questi colori insieme</string>
 
 </resources>

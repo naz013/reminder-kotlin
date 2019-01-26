@@ -689,5 +689,8 @@
     <string name="and_above">ve yukarıda</string>
     <string name="allow_unlock_for_priority">Sadece ekran kilidini aç</string>
     <string name="import_file">Önemli dosya</string>
+    <string name="white">Beyaz</string>
+    <string name="black">Siyah</string>
+    <string name="it_s_not_recommended_to_use_this_colors_together">Bu renkleri birlikte kullanmanız önerilmez.</string>
 
 </resources>
