@@ -573,8 +573,9 @@ class ReminderPreviewActivity : ThemedActivity() {
     private fun openFullMap() {
         val reminder = this.reminder
         if (reminder != null) {
+            val options = ActivityOptions.makeSceneTransitionAnimation(this, mapContainer, "map")
             startActivity(Intent(this, FullscreenMapActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, reminder.uuId))
+                    .putExtra(Constants.INTENT_ID, reminder.uuId), options.toBundle())
         }
     }
 

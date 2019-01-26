@@ -3,7 +3,9 @@ package com.elementary.tasks.reminder.preview
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.transition.Explode
 import android.view.MenuItem
+import android.view.Window
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -47,6 +49,12 @@ class FullscreenMapActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            exitTransition = Explode()
+        }
+
         setContentView(R.layout.activity_fullscreen_map)
 
         mapButton.setOnClickListener {
@@ -96,15 +104,11 @@ class FullscreenMapActivity : ThemedActivity() {
         val ids = item.itemId
         when (ids) {
             android.R.id.home -> {
-                closeWindow()
+                finishAfterTransition()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun closeWindow() {
-        mUiHandler.post { this.finishAfterTransition() }
     }
 
     private fun initMap() {
@@ -115,7 +119,7 @@ class FullscreenMapActivity : ThemedActivity() {
                 googleMap.setSearchEnabled(false)
                 googleMap.setListener(object : MapListener {
                     override fun onBackClick() {
-                        closeWindow()
+                        finishAfterTransition()
                     }
 
                     override fun onZoomClick(isFull: Boolean) {
@@ -136,6 +140,6 @@ class FullscreenMapActivity : ThemedActivity() {
     }
 
     override fun onBackPressed() {
-        closeWindow()
+        finishAfterTransition()
     }
 }
