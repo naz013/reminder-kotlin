@@ -1,7 +1,9 @@
 package com.elementary.tasks.reminder.preview
 
 import android.os.Bundle
+import android.transition.Explode
 import android.view.MenuItem
+import android.view.Window
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
@@ -32,6 +34,11 @@ class AttachmentPreviewActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            exitTransition = Explode()
+        }
+
         setContentView(R.layout.activity_attachment_preview)
         initActionBar()
 
@@ -56,7 +63,7 @@ class AttachmentPreviewActivity : ThemedActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                supportFinishAfterTransition()
                 true
             }
             else -> super.onOptionsItemSelected(item)

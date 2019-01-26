@@ -68,5 +68,6 @@
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorSecondary12">@color/secondary_12</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 </resources>

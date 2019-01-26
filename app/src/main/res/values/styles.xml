@@ -114,6 +114,7 @@
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorSecondary12">@color/secondary_12</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="Base.Dark" parent="Theme.MaterialComponents.NoActionBar">
@@ -137,6 +138,7 @@
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorSecondary12">@color/secondary_12</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="PureWhite" parent="Base.Light">

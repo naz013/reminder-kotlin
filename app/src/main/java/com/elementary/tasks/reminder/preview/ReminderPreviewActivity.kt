@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
+import android.app.ActivityOptions
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
@@ -398,8 +399,10 @@ class ReminderPreviewActivity : ThemedActivity() {
             if (FileRecyclerAdapter.isPicture(name)) {
                 attachmentsView.visibility = View.VISIBLE
                 attachmentsView.setOnClickListener {
-                    startActivity(Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
-                            .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile))
+                    val options = ActivityOptions.makeSceneTransitionAnimation(this, attachmentImage, "image")
+                    startActivity(Intent(this, AttachmentPreviewActivity::class.java)
+                            .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile),
+                            options.toBundle())
                 }
                 Glide.with(attachmentImage)
                         .load(file)
