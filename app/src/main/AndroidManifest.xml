@@ -297,6 +297,7 @@
         <activity android:name=".navigation.settings.security.PinLoginActivity" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
         <activity android:name=".intro.PrivacyPolicyActivity" />
+        <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"
             android:theme="@style/Light1.Dialog" />

@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
@@ -24,6 +25,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.fileExplorer.FileRecyclerAdapter
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.services.SendReceiver
@@ -386,17 +388,28 @@ class ReminderPreviewActivity : ThemedActivity() {
         return if (windowType == 0) getString(R.string.full_screen) else getString(R.string.simple)
     }
 
-    private fun showAttachment(reminder: Reminder?) {
-        if (reminder != null) {
-            if (reminder.attachmentFile != "") {
-                val file = File(reminder.attachmentFile)
-                attachment.text = file.name
-                attachmentView.visibility = View.VISIBLE
+    private fun showAttachment(reminder: Reminder) {
+        if (reminder.attachmentFile != "") {
+            val file = File(reminder.attachmentFile)
+            val name = file.name
+            attachment.text = name
+            attachmentView.visibility = View.VISIBLE
+
+            if (FileRecyclerAdapter.isPicture(name)) {
+                attachmentsView.visibility = View.VISIBLE
+                attachmentsView.setOnClickListener {
+                    startActivity(Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
+                            .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile))
+                }
+                Glide.with(attachmentImage)
+                        .load(file)
+                        .into(attachmentImage)
             } else {
-                attachmentView.visibility = View.GONE
+                attachmentsView.visibility = View.GONE
             }
         } else {
             attachmentView.visibility = View.GONE
+            attachmentsView.visibility = View.GONE
         }
     }
 
@@ -512,6 +525,8 @@ class ReminderPreviewActivity : ThemedActivity() {
         switchWrapper.setOnClickListener { switchClick() }
         fab.setOnClickListener { fabClick() }
         mapContainer.visibility = View.GONE
+        attachmentsView.visibility = View.GONE
+        fab.visibility = View.GONE
     }
 
     private fun fabClick() {
