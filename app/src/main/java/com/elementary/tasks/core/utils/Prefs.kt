@@ -285,10 +285,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.MAP_STYLE)
         set(value) = putInt(PrefsConstants.MAP_STYLE, value)
 
-    var trackDistance: Int
-        get() = getInt(PrefsConstants.TRACK_DISTANCE)
-        set(value) = putInt(PrefsConstants.TRACK_DISTANCE, value)
-
     var trackTime: Int
         get() = getInt(PrefsConstants.TRACK_TIME)
         set(value) = putInt(PrefsConstants.TRACK_TIME, value)
@@ -586,7 +582,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             uiEd.putInt(PrefsConstants.BIRTHDAY_LED_COLOR, LED.BLUE)
             uiEd.putInt(PrefsConstants.LOCATION_RADIUS, 25)
             uiEd.putInt(PrefsConstants.MARKER_STYLE, 5)
-            uiEd.putInt(PrefsConstants.TRACK_DISTANCE, 1)
             uiEd.putInt(PrefsConstants.TRACK_TIME, 1)
             uiEd.putInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME, 10)
             uiEd.putInt(PrefsConstants.NOTE_TEXT_SIZE, 4)
@@ -742,9 +737,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.DO_NOT_DISTURB_TO)) {
             putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
-        }
-        if (!hasKey(PrefsConstants.TRACK_DISTANCE)) {
-            putInt(PrefsConstants.TRACK_DISTANCE, 1)
         }
         if (!hasKey(PrefsConstants.AUTO_BACKUP_INTERVAL)) {
             putInt(PrefsConstants.AUTO_BACKUP_INTERVAL, 6)

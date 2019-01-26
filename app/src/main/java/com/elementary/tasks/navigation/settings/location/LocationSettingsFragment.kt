@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings.location
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
@@ -117,41 +116,11 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.tracking_settings)
         val b = layoutInflater.inflate(R.layout.dialog_tracking_settings_layout, null)
-        b.distanceBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.distanceTitle.text = String.format(Locale.getDefault(), getString(R.string.x_meters), (progress + 1).toString())
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val distance = prefs.trackDistance - 1
-        b.distanceBar.progress = distance
-        b.distanceTitle.text = String.format(Locale.getDefault(), getString(R.string.x_meters), (distance + 1).toString())
-        b.timeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), (progress + 1).toString())
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
         val time = prefs.trackTime - 1
         b.timeBar.progress = time
         b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), (time + 1).toString())
         builder.setView(b)
         builder.setPositiveButton(R.string.ok) { _, _ ->
-            prefs.trackDistance = b.distanceBar.progress + 1
             prefs.trackTime = b.timeBar.progress + 1
         }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }

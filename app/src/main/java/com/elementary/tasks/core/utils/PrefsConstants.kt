@@ -64,7 +64,6 @@ object PrefsConstants {
     const val STATUS_BAR_ICON = "status_icon"
     const val STATUS_BAR_NOTIFICATION = "status_notification"
     const val TRACK_TIME = "tracking_time"
-    const val TRACK_DISTANCE = "tracking_distance"
     const val NOTE_TEXT_SIZE = "text_size"
     const val QUICK_NOTE_REMINDER = "quick_note_reminder"
     const val QUICK_NOTE_REMINDER_TIME = "quick_note_reminder_time"
