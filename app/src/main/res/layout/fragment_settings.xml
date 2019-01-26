@@ -9,6 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
         <com.elementary.tasks.core.views.PrefsView
@@ -16,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/general"
             app:prefs_icon="@drawable/ic_twotone_looks_24px"
+            app:prefs_primary_text="@string/general"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -25,8 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/reminders_"
             app:prefs_icon="@drawable/ic_twotone_alarm_24px"
+            app:prefs_primary_text="@string/reminders_"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -34,8 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/export_and_sync"
             app:prefs_icon="@drawable/ic_twotone_backup_24px"
+            app:prefs_primary_text="@string/export_and_sync"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -43,8 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/calendar"
             app:prefs_icon="@drawable/ic_twotone_today_24px"
+            app:prefs_primary_text="@string/calendar"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -52,8 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/birthdays"
             app:prefs_icon="@drawable/ic_twotone_cake_24px"
+            app:prefs_primary_text="@string/birthdays"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -87,8 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/location"
             app:prefs_icon="@drawable/ic_twotone_navigation_24px"
+            app:prefs_primary_text="@string/location"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -96,8 +98,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/notes"
             app:prefs_icon="@drawable/ic_twotone_note_24px"
+            app:prefs_primary_text="@string/notes"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
@@ -105,8 +107,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/voice_control"
             app:prefs_icon="@drawable/ic_twotone_mic_24px"
+            app:prefs_primary_text="@string/voice_control"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView

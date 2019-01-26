@@ -4,20 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:colorBackground"
-    android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginStart="@dimen/material_margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/material_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/morningTime"
+            android:layout_weight="1"
             android:text="@string/morning"
             android:textAppearance="?textAppearanceBody1" />
 
@@ -25,22 +26,24 @@
             android:id="@+id/morningTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:padding="5dp"
             android:textAppearance="?textAppearanceHeadline5"
             tools:text="07:00" />
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/dayTime"
+            android:layout_weight="1"
             android:text="@string/day"
             android:textAppearance="?textAppearanceBody1" />
 
@@ -48,22 +51,24 @@
             android:id="@+id/dayTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:padding="5dp"
             android:textAppearance="?textAppearanceHeadline5"
             tools:text="12:00" />
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/eveningTime"
+            android:layout_weight="1"
             android:text="@string/evening"
             android:textAppearance="?textAppearanceBody1" />
 
@@ -71,22 +76,24 @@
             android:id="@+id/eveningTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:padding="5dp"
             android:textAppearance="?textAppearanceHeadline5"
             tools:text="18:00" />
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/nightTime"
+            android:layout_weight="1"
             android:text="@string/night"
             android:textAppearance="?textAppearanceBody1" />
 
@@ -94,9 +101,8 @@
             android:id="@+id/nightTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:padding="5dp"
             android:textAppearance="?textAppearanceHeadline5"
             tools:text="23:00" />
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

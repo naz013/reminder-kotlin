@@ -10,4 +10,7 @@
     <dimen name="create_note_image_button_size">50dp</dimen>
 
     <dimen name="dialog_toggle_size">32dp</dimen>
+    <dimen name="list_margin">128dp</dimen>
+    <dimen name="material_margin">128dp</dimen>
+    <bool name="is_tablet">true</bool>
 </resources>

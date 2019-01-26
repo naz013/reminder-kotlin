@@ -12,15 +12,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/contactPhoto"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
                 android:contentDescription="@string/acc_contact_photo"
                 android:scaleType="centerCrop"
                 android:visibility="visible"
@@ -31,9 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:textAppearance="?textAppearanceHeadline5"
                 tools:text="1234567890" />
@@ -43,9 +41,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="16dp"
                 app:boxBackgroundColor="?colorSecondary12"
                 app:boxCornerRadiusTopEnd="5dp"
                 app:boxCornerRadiusTopStart="5dp">
@@ -64,7 +60,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/type"
                 android:textAppearance="?textAppearanceCaption"
@@ -73,13 +68,11 @@
             <com.elementary.tasks.core.views.DividerView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp" />
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
@@ -103,7 +96,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/date_and_time"
                 android:textAppearance="?textAppearanceCaption"
@@ -112,14 +104,12 @@
             <com.elementary.tasks.core.views.DividerView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/timeTomorrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/tomorrow"
                 android:textAppearance="?textAppearanceBody1" />
@@ -128,7 +118,6 @@
                 android:id="@+id/tomorrowTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:padding="5dp"
                 android:textAppearance="?textAppearanceHeadline6"
@@ -138,7 +127,6 @@
                 android:id="@+id/timeNextWorking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/next_business_day"
                 android:textAppearance="?textAppearanceBody1" />
@@ -147,7 +135,6 @@
                 android:id="@+id/nextWorkingTime"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:padding="5dp"
                 android:textAppearance="?textAppearanceHeadline6"
@@ -157,7 +144,6 @@
                 android:id="@+id/timeAfter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/after"
                 android:textAppearance="?textAppearanceBody1" />
@@ -166,7 +152,6 @@
                 android:id="@+id/afterTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:padding="5dp" />
 
@@ -174,7 +159,6 @@
                 android:id="@+id/timeCustom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/time"
                 android:textAppearance="?textAppearanceBody1" />
@@ -182,7 +166,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
@@ -210,7 +193,6 @@
                 android:id="@+id/exportCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/add_to_calendar"
                 android:textAppearance="?textAppearanceSubtitle1"
@@ -220,7 +202,6 @@
                 android:id="@+id/taskExport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/google_tasks"
                 android:textAppearance="?textAppearanceSubtitle1" />

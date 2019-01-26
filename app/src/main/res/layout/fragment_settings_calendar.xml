@@ -4,12 +4,14 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:background="?android:colorBackground">
+    android:background="?android:colorBackground"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
         <com.elementary.tasks.core.views.PrefsView
@@ -17,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/import_events"
             app:prefs_icon="@drawable/ic_twotone_import_export_24px"
+            app:prefs_primary_text="@string/import_events"
             app:prefs_type="none" />
 
         <com.elementary.tasks.core.views.PrefsView
