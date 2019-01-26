@@ -182,9 +182,7 @@ class NotePreviewActivity : ThemedActivity() {
             showImages(noteWithImages.images)
             noteText.text = noteWithImages.getSummary()
             noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
-            if (Module.isLollipop) {
-                window.statusBarColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity())
-            }
+            window.statusBarColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity())
             windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity()))
             isBgDark = if (themeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
                 isDark
@@ -292,11 +290,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun closeWindow() {
-        if (Module.isLollipop) {
-            mUiHandler.post { this.finishAfterTransition() }
-        } else {
-            finish()
-        }
+        mUiHandler.post { this.finishAfterTransition() }
     }
 
     private fun showDeleteDialog() {

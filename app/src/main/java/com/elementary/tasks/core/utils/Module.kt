@@ -36,9 +36,6 @@ object Module {
     val isOreo: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
-    val isLollipop: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-
     val isMarshmallow: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 

@@ -264,13 +264,10 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years, prefs.appLanguage))
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_cake_nv_white)
-        }
-        if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this) || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
+        builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
+                        || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
             val sound = sound
             sound?.playAlarm(soundUri, isBirthdayInfiniteSound)
         }

@@ -150,9 +150,7 @@ object TimeUtil {
     fun showDatePicker(context: Context, theme: Int, prefs: Prefs,
                        year: Int, month: Int, dayOfMonth: Int, listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
         val dialog = DatePickerDialog(context, theme, listener, year, month, dayOfMonth)
-        if (Module.isLollipop) {
-            dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
-        }
+        dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
         dialog.show()
         return dialog
     }

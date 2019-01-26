@@ -24,7 +24,6 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
@@ -612,14 +611,9 @@ class ConversationActivity : ThemedActivity() {
         dialog.show()
     }
 
-    @Suppress("DEPRECATION")
     private fun playTts(text: String) {
         if (!isTtsReady || tts == null) return
-        if (Module.isLollipop) {
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
-        } else {
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null)
-        }
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
     private fun checkTts() {

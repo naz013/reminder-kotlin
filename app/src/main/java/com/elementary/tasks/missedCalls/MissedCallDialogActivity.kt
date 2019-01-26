@@ -265,14 +265,8 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             appName = getString(R.string.app_name)
         }
         builder.setContentText(appName)
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_call_nv_white)
-        }
-        if (Module.isLollipop) {
-            builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_call_white)
+        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this)
                         && prefs.isSoundInSilentModeEnabled)) {

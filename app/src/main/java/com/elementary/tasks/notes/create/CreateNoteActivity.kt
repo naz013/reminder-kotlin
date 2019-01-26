@@ -319,13 +319,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
         taskMessage.setTextColor(textColor)
         taskMessage.setHintTextColor(textColor)
-        if (Module.isLollipop) {
-            taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {
-                R.color.pureWhite
-            } else {
-                R.color.pureBlack
-            })
-        }
+        taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {
+            R.color.pureWhite
+        } else {
+            R.color.pureBlack
+        })
         remindDate.setTextColor(textColor)
         remindTime.setTextColor(textColor)
     }
@@ -716,9 +714,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         appBar.setBackgroundColor(lightColorSemi)
 
         val lightColor = themeUtil.getNoteLightColor(mColor, 100)
-        if (Module.isLollipop) {
-            window.statusBarColor = lightColor
-        }
+        window.statusBarColor = lightColor
         bottomBar.setCardBackgroundColor(lightColor)
         bottomBar.invalidate()
     }

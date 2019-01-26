@@ -108,11 +108,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         } else {
             builder.setContentText(context.getString(R.string.app_name))
         }
-        if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white)
-        }
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
             val uri = getSoundUri(reminder.melodyPath, context)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
