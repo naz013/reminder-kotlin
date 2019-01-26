@@ -386,57 +386,63 @@
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/attachmentsView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="100dp"
-        android:orientation="vertical"
-        android:stateListAnimator="@animator/card_animator"
-        android:visibility="gone"
-        app:cardCornerRadius="5dp"
-        tools:targetApi="lollipop">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/attachmentsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:stateListAnimator="@animator/card_animator"
+            android:visibility="gone"
+            app:cardCornerRadius="5dp"
+            tools:targetApi="lollipop">
 
-            <ImageView
-                android:id="@+id/attachmentImage"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:scaleType="centerCrop" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <ImageView
+                    android:id="@+id/attachmentImage"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:scaleType="centerCrop" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/fab"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        android:elevation="4dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="20dp"
-        android:text="@string/make_call"
-        android:textAllCaps="true"
-        android:textAppearance="?textAppearanceButton"
-        android:textColor="?colorOnSecondary"
-        android:textSize="14sp"
-        android:visibility="visible"
-        app:backgroundTint="?colorSecondary"
-        app:cornerRadius="32dp"
-        app:icon="@drawable/ic_twotone_call_24px"
-        app:iconPadding="12dp"
-        app:iconSize="24dp"
-        app:iconTint="?colorOnSecondary"
-        tools:targetApi="lollipop" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fab"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:elevation="4dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="20dp"
+            android:text="@string/make_call"
+            android:textAllCaps="true"
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?colorOnSecondary"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:backgroundTint="?colorSecondary"
+            app:cornerRadius="32dp"
+            app:icon="@drawable/ic_twotone_call_24px"
+            app:iconPadding="12dp"
+            app:iconSize="24dp"
+            app:iconTint="?colorOnSecondary"
+            tools:targetApi="lollipop" />
+
+    </LinearLayout>
 </RelativeLayout>
