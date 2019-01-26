@@ -8,12 +8,9 @@ import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.FontRequestEmojiCompatConfig
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
 import com.elementary.tasks.core.di.*
 import com.elementary.tasks.core.services.EventJobService
 import com.evernote.android.job.JobManager
-import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
 /**
@@ -51,7 +48,6 @@ class ReminderApp : MultiDexApplication() {
                 .build()
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-        Fabric.with(this, Crashlytics(), Answers())
         JobManager.create(this).addJobCreator { EventJobService() }
 
         val fontRequest = FontRequest(

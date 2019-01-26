@@ -113,8 +113,10 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
      */
     @SuppressLint("MissingPermission")
     fun getCalendarsList(): List<CalendarItem> {
-        val ids = ArrayList<CalendarItem>()
-        ids.clear()
+        if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
+            return listOf()
+        }
+        val ids = mutableListOf<CalendarItem>()
         val uri = CalendarContract.Calendars.CONTENT_URI
         val mProjection = arrayOf(CalendarContract.Calendars._ID, // 0
                 CalendarContract.Calendars.ACCOUNT_NAME, // 1
@@ -136,11 +138,7 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
             } while (c.moveToNext())
         }
         c?.close()
-        return if (ids.size == 0) {
-            listOf()
-        } else {
-            ids
-        }
+        return ids
     }
 
     /**
