@@ -5,10 +5,10 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="horizontal"
-    android:paddingLeft="24dp"
-    android:paddingTop="24dp"
-    android:paddingRight="24dp"
-    android:paddingBottom="16dp">
+    android:paddingLeft="32dp"
+    android:paddingTop="32dp"
+    android:paddingRight="32dp"
+    android:paddingBottom="32dp">
 
     <ImageView
         android:layout_width="56dp"
