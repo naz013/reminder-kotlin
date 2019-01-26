@@ -146,6 +146,10 @@ class MapFragment : BaseNavigationFragment() {
         reloadView()
     }
 
+    override fun canGoBack(): Boolean {
+        return mGoogleMap?.onBackPressed() == true
+    }
+
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
             recyclerView?.visibility = View.VISIBLE
