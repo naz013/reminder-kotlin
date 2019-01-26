@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -23,7 +24,7 @@ import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
@@ -189,7 +190,11 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
                 }
             }
         }
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!) && resources.getBoolean(R.bool.is_tablet)) {
+            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(recyclerView) {
             setScroll(it)

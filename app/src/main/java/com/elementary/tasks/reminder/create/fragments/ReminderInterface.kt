@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import android.view.View
 import com.elementary.tasks.core.data.models.Reminder
@@ -31,6 +31,8 @@ interface ReminderInterface {
     var canExportToTasks: Boolean
 
     var canExportToCalendar: Boolean
+
+    fun isTablet(): Boolean
 
     fun selectMelody()
 

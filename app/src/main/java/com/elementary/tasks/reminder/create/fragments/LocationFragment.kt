@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -54,14 +54,16 @@ class LocationFragment : RadiusTypeFragment() {
         }
 
         override fun onBackClick() {
-            val map = mAdvancedMapFragment ?: return
-            if (map.isFullscreen) {
-                map.isFullscreen = false
-                reminderInterface.setFullScreenMode(false)
-            }
-            if (mapContainer.visibility == View.VISIBLE) {
-                ViewUtils.fadeOutAnimation(mapContainer)
-                ViewUtils.fadeInAnimation(scrollView)
+            if (!isTablet()) {
+                val map = mAdvancedMapFragment ?: return
+                if (map.isFullscreen) {
+                    map.isFullscreen = false
+                    reminderInterface.setFullScreenMode(false)
+                }
+                if (mapContainer.visibility == View.VISIBLE) {
+                    ViewUtils.fadeOutAnimation(mapContainer)
+                    ViewUtils.fadeInAnimation(scrollView)
+                }
             }
         }
     }
@@ -77,7 +79,7 @@ class LocationFragment : RadiusTypeFragment() {
             if (mAdvancedMapFragment != null) {
                 mAdvancedMapFragment?.markerRadius = jPlace.radius
                 lastPos = LatLng(latitude, longitude)
-                mAdvancedMapFragment?.addMarker(lastPos, text, true, true)
+                mAdvancedMapFragment?.addMarker(lastPos, text, true, animate = true)
                 toggleMap()
             }
         }
@@ -140,10 +142,19 @@ class LocationFragment : RadiusTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!isTablet()) {
+            mapContainer.visibility = View.GONE
+            mapButton.visibility = View.VISIBLE
+            searchBlock.visibility = View.VISIBLE
+        } else {
+            mapContainer.visibility = View.VISIBLE
+            mapButton.visibility = View.GONE
+            searchBlock.visibility = View.GONE
+        }
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
-        moreLayout.isNestedScrollingEnabled = false
+        moreLayout?.isNestedScrollingEnabled = false
 
         val advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
                 prefs.markerStyle, themeUtil.isDark)
@@ -179,7 +190,6 @@ class LocationFragment : RadiusTypeFragment() {
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
         delayLayout.visibility = View.GONE
-        mapContainer.visibility = View.GONE
         attackDelay.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 delayLayout.visibility = View.VISIBLE
@@ -206,7 +216,7 @@ class LocationFragment : RadiusTypeFragment() {
             val pos = LatLng(lat, lon)
             var title: String? = taskSummary.text.toString().trim()
             if (title != null && title.matches("".toRegex())) title = pos.toString()
-            mAdvancedMapFragment?.addMarker(pos, title, true, true)
+            mAdvancedMapFragment?.addMarker(pos, title, true, animate = true)
         }
 
         initPropertyFields()
@@ -268,12 +278,14 @@ class LocationFragment : RadiusTypeFragment() {
     }
 
     private fun toggleMap() {
-        if (mapContainer != null && mapContainer.visibility == View.VISIBLE) {
-            ViewUtils.fadeOutAnimation(mapContainer)
-            ViewUtils.fadeInAnimation(scrollView)
-        } else {
-            ViewUtils.fadeOutAnimation(scrollView)
-            ViewUtils.fadeInAnimation(mapContainer)
+        if (!isTablet()) {
+            if (mapContainer != null && mapContainer.visibility == View.VISIBLE) {
+                ViewUtils.fadeOutAnimation(mapContainer)
+                ViewUtils.fadeInAnimation(scrollView)
+            } else {
+                ViewUtils.fadeOutAnimation(scrollView)
+                ViewUtils.fadeInAnimation(mapContainer)
+            }
         }
     }
 

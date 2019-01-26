@@ -1,20 +1,15 @@
-package com.elementary.tasks.reminder.createEdit.fragments
+package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.apps.ApplicationActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
-import kotlinx.android.synthetic.main.fragment_reminder_application.*
+import kotlinx.android.synthetic.main.fragment_reminder_skype.*
 import timber.log.Timber
 
 /**
@@ -35,45 +30,25 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ApplicationFragment : RepeatableTypeFragment() {
-
-    private var selectedPackage: String? = null
-    private val type: Int
-        get() = if (application.isChecked) {
-            Reminder.BY_DATE_APP
-        } else {
-            Reminder.BY_DATE_LINK
-        }
-    private val appName: String
-        get() {
-            val packageManager = context!!.packageManager
-            var applicationInfo: ApplicationInfo? = null
-            try {
-                applicationInfo = packageManager.getApplicationInfo(selectedPackage, 0)
-            } catch (ignored: PackageManager.NameNotFoundException) {
-            }
-            return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
-        }
+class SkypeFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        val type = type
-        var number: String
         val reminder = reminderInterface.reminder
-        if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-            number = selectedPackage ?: ""
-            if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_select_application))
-                return null
-            }
-        } else {
-            number = urlField.text.toString().trim()
-            if (TextUtils.isEmpty(number) || number.matches(".*https?://".toRegex())) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_link))
-                return null
-            }
-            if (!number.startsWith("http://") && !number.startsWith("https://"))
-                number = "http://$number"
+        if (!SuperUtil.isSkypeClientInstalled(context!!)) {
+            showInstallSkypeDialog()
+            return null
         }
+        if (TextUtils.isEmpty(reminder.summary)) {
+            taskLayout.error = getString(R.string.task_summary_is_empty)
+            taskLayout.isErrorEnabled = true
+            return null
+        }
+        val number = skypeContact.text.toString().trim { it <= ' ' }
+        if (TextUtils.isEmpty(number)) {
+            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+            return null
+        }
+        val type = getType(skypeGroup.checkedRadioButtonId)
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
@@ -90,8 +65,19 @@ class ApplicationFragment : RepeatableTypeFragment() {
         return reminder
     }
 
+    private fun showInstallSkypeDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setMessage(R.string.skype_is_not_installed)
+        builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            SuperUtil.installSkype(context!!)
+        }
+        builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
+        builder.create().show()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reminder_application, container, false)
+        return inflater.inflate(R.layout.fragment_reminder_skype, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,7 +85,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
         ViewUtils.listenScrollableView(scrollView) {
             reminderInterface.updateScroll(it)
         }
-        moreLayout.isNestedScrollingEnabled = false
+        moreLayout?.isNestedScrollingEnabled = false
 
         if (Module.isPro) {
             ledView.visibility = View.VISIBLE
@@ -108,8 +94,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
         }
 
         tuneExtraView.dialogues = dialogues
-        tuneExtraView.hasAutoExtra = true
-        tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
+        tuneExtraView.hasAutoExtra = false
 
         melodyView.onFileSelectListener = {
             reminderInterface.selectMelody()
@@ -121,20 +106,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
             reminderInterface.selectGroup()
         }
 
-        pickApplication.setOnClickListener {
-            activity?.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
-        }
         initScreenState()
-        urlLayout.visibility = View.GONE
-        application.setOnCheckedChangeListener { _, b ->
-            if (!b) {
-                applicationLayout.visibility = View.GONE
-                urlLayout.visibility = View.VISIBLE
-            } else {
-                urlLayout.visibility = View.GONE
-                applicationLayout.visibility = View.VISIBLE
-            }
-        }
         initPropertyFields()
         editReminder()
     }
@@ -205,25 +177,26 @@ class ApplicationFragment : RepeatableTypeFragment() {
         }
     }
 
+    private fun getType(checkedId: Int): Int {
+        var type = Reminder.BY_SKYPE_CALL
+        when (checkedId) {
+            R.id.skypeCall -> type = Reminder.BY_SKYPE_CALL
+            R.id.skypeChat -> type = Reminder.BY_SKYPE
+            R.id.skypeVideo -> type = Reminder.BY_SKYPE_VIDEO
+        }
+        return type
+    }
+
     private fun editReminder() {
         val reminder = reminderInterface.reminder
         showGroup(groupView, reminder)
-        if (reminder.target != "") {
-            if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
-                application.isChecked = true
-                selectedPackage = reminder.target
-                applicationName.text = appName
-            } else {
-                browser.isChecked = true
-                urlField.setText(reminder.target)
-            }
+        when (reminder.type) {
+            Reminder.BY_SKYPE_CALL -> skypeCall.isChecked = true
+            Reminder.BY_SKYPE_VIDEO -> skypeVideo.isChecked = true
+            Reminder.BY_SKYPE -> skypeChat.isChecked = true
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
-            selectedPackage = data?.getStringExtra(Constants.SELECTED_APPLICATION)
-            applicationName.text = appName
+        if (reminder.target != "") {
+            skypeContact.setText(reminder.target)
         }
     }
 

@@ -146,7 +146,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".reminder.createEdit.CreateReminderActivity"
+            android:name=".reminder.create.CreateReminderActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>

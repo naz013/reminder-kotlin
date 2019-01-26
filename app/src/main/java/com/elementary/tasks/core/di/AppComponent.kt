@@ -56,8 +56,8 @@ import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.google.LocationPlacesAdapter
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-import com.elementary.tasks.reminder.createEdit.fragments.TypeFragment
+import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.create.fragments.TypeFragment
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.voice.ConversationAdapter
 import dagger.Component

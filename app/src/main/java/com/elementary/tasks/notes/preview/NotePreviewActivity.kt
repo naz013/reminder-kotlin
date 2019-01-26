@@ -26,7 +26,7 @@ import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
-import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_note_preview.*
 import java.io.File
 import javax.inject.Inject
