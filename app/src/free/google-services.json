@@ -23,14 +23,6 @@
           }
         },
         {
-          "client_id": "226701179860-l9emv5i5vakvi999pa7gsn9ob97blrsb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.cray.software.justreminder",
-            "certificate_hash": "cd4f5572162e64e07ce4e178b45a4766b8604bcc"
-          }
-        },
-        {
           "client_id": "226701179860-0fgoueigvgi135s3diamg6pls2r7vjat.apps.googleusercontent.com",
           "client_type": 3
         }
