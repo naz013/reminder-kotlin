@@ -11,7 +11,10 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.dialog_about.view.*
 import kotlinx.android.synthetic.main.fragment_settings_other.*
@@ -181,9 +184,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
         }
 
         builder.setView(binding)
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
+        builder.create().show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
