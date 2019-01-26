@@ -66,8 +66,7 @@ android {
         }
         debug {
             minifyEnabled false
-            productFlavors.free.signingConfig signingConfigs.freeApp
-            productFlavors.pro.signingConfig signingConfigs.proApp
+            signingConfig signingConfigs.proApp
         }
     }
     compileOptions {
@@ -95,9 +94,6 @@ dependencies {
     }
     implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
-    }
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
-        transitive = true
     }
     implementation project(':voiceengine')
 
@@ -140,6 +136,7 @@ dependencies {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
