@@ -85,7 +85,11 @@ class AdvancedMapFragment : BaseMapFragment() {
         googleMap.uiSettings.isCompassEnabled = true
         setStyle(googleMap)
         setMyLocation()
-        googleMap.setOnMapClickListener(onMapClickListener)
+        googleMap.setOnMapClickListener {
+            hideLayers()
+            hideStyles()
+            onMapClickListener?.onMapClick(it)
+        }
         setOnMarkerClick(onMarkerClickListener)
         if (lastPos != null) {
             addMarker(lastPos, lastPos.toString(), true, false, markerRadius)

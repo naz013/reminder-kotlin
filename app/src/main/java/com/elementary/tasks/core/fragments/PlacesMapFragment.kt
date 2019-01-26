@@ -89,6 +89,7 @@ class PlacesMapFragment : BaseMapFragment() {
         setMyLocation()
         googleMap.setOnMapClickListener {
             hideLayers()
+            hideStyles()
         }
         mCallback?.onMapReady()
     }
