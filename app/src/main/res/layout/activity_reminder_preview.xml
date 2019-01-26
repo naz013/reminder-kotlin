@@ -386,6 +386,35 @@
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/attachmentsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="100dp"
+        android:orientation="vertical"
+        android:stateListAnimator="@animator/card_animator"
+        android:visibility="gone"
+        app:cardCornerRadius="5dp"
+        tools:targetApi="lollipop">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/attachmentImage"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:scaleType="centerCrop" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fab"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"

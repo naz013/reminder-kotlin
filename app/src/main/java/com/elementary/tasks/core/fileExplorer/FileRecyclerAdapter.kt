@@ -98,10 +98,6 @@ class FileRecyclerAdapter : ListAdapter<FileItem, FileRecyclerAdapter.ContactVie
                 || file.contains(".json")
     }
 
-    private fun isPicture(file: String): Boolean {
-        return file.contains(".jpg") || file.contains(".jpeg") || file.contains(".png")
-    }
-
     private fun isArchive(file: String): Boolean {
         return file.contains(".zip") || file.contains(".rar") || file.contains(".tar.gz")
     }
@@ -122,5 +118,12 @@ class FileRecyclerAdapter : ListAdapter<FileItem, FileRecyclerAdapter.ContactVie
 
     private fun isMelody(file: String): Boolean {
         return file.contains(".mp3") || file.contains(".ogg") || file.contains(".m4a") || file.contains(".flac")
+    }
+
+    companion object {
+        fun isPicture(file: String): Boolean {
+            return file.contains(".jpg") || file.contains(".jpeg") || file.contains(".png")
+                    || file.contains(".tiff") || file.contains(".bmp")
+        }
     }
 }
