@@ -478,8 +478,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.sound_stream))
         val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, types)
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
         val stream = prefs.soundStream
         mItemSelect = stream - 3
         builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
@@ -508,8 +507,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         builder.setCancelable(true)
         builder.setTitle(R.string.notification_type)
         val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, types)
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
         mItemSelect = prefs.reminderType
         builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
             if (which != -1) {
@@ -583,8 +581,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.melody))
         val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, types)
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
         mItemSelect = if (prefs.melodyFile == "" || prefs.melodyFile.matches(Constants.DEFAULT.toRegex())) {
             0
         } else {
@@ -702,7 +699,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data!!.getStringExtra(Constants.FILE_PICKED)
+                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
                 if (filePath != null) {
                     val file = File(filePath)
                     if (file.exists()) {
