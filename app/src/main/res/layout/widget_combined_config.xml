@@ -22,9 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/material_margin"
         android:background="@drawable/widget_bg_white"
         android:gravity="center"
         android:orientation="horizontal">
@@ -70,9 +70,9 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/material_margin"
         android:text="@string/background"
         android:textAppearance="?textAppearanceCaption"
         android:textColor="?colorSecondary" />
@@ -81,9 +81,9 @@
         android:id="@+id/bgColorSlider"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/material_margin"
         app:cs_colors="@array/widget_colors" />
 
     <View

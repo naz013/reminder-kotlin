@@ -10,6 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -133,9 +135,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="?android:textColorPrimary"
             android:text="@string/export_all_my_data"
-            android:textAppearance="?textAppearanceButton" />
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?android:textColorPrimary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backupButton"
@@ -145,9 +147,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="?android:textColorPrimary"
             android:text="@string/backup_data_now"
-            android:textAppearance="?textAppearanceButton" />
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?android:textColorPrimary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/syncButton"
@@ -159,8 +161,8 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
             android:text="@string/sync_data_now"
-            android:textColor="?android:textColorPrimary"
-            android:textAppearance="?textAppearanceButton" />
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?android:textColorPrimary" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

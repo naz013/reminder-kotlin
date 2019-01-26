@@ -38,7 +38,9 @@
                 android:id="@+id/reminderContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginStart="@dimen/material_margin"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/material_margin"
                 app:cardCornerRadius="5dp">
 
                 <LinearLayout
@@ -77,8 +79,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/edit"
-                            android:textColor="?android:textColorPrimary"
-                            android:textAppearance="?textAppearanceButton" />
+                            android:textAppearance="?textAppearanceButton"
+                            android:textColor="?android:textColorPrimary" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/deleteReminder"
@@ -87,8 +89,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:text="@string/delete"
-                            android:textColor="?android:textColorPrimary"
-                            android:textAppearance="?textAppearanceButton" />
+                            android:textAppearance="?textAppearanceButton"
+                            android:textColor="?android:textColorPrimary" />
 
                     </LinearLayout>
                 </LinearLayout>

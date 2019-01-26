@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:colorBackground"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/material_margin"
+    android:paddingEnd="@dimen/material_margin">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pinLayout"
@@ -66,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="16dp"
-        android:textColor="?android:textColorPrimary"
         android:text="@string/save"
-        android:textAppearance="?textAppearanceButton" />
+        android:textAppearance="?textAppearanceButton"
+        android:textColor="?android:textColorPrimary" />
 </LinearLayout>

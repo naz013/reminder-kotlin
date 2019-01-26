@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
+        android:layout_marginStart="@dimen/material_margin"
+        android:layout_marginEnd="@dimen/material_margin"
         android:animateLayoutChanges="true"
         android:gravity="center"
         android:orientation="vertical">
@@ -20,9 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -39,8 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connect"
-                android:textColor="?colorOnSecondary"
-                android:textAppearance="?textAppearanceButton" />
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?colorOnSecondary" />
 
         </LinearLayout>
 
@@ -48,9 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -67,17 +65,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connect"
-                android:textColor="?colorOnSecondary"
-                android:textAppearance="?textAppearanceButton" />
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?colorOnSecondary" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -94,8 +90,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/connect"
-                android:textColor="?colorOnSecondary"
-                android:textAppearance="?textAppearanceButton" />
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?colorOnSecondary" />
 
         </LinearLayout>
     </LinearLayout>

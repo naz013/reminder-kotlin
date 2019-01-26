@@ -4,12 +4,14 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:background="?android:colorBackground">
+    android:background="?android:colorBackground"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
         android:orientation="vertical">
 
         <com.elementary.tasks.core.views.PrefsView
@@ -112,10 +114,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="?android:textColorPrimary"
             android:layout_marginBottom="32dp"
             android:text="@string/scan_contacts"
-            android:textAppearance="?textAppearanceButton" />
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?android:textColorPrimary" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -20,9 +20,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="156dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/material_margin"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/material_margin"
         android:orientation="vertical">
 
         <LinearLayout
@@ -100,14 +100,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 android:text="@string/header_background"
                 android:textAppearance="?textAppearanceCaption"
                 android:textColor="?colorSecondary" />
@@ -116,17 +116,13 @@
                 android:id="@+id/headerBgColorSlider"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 app:cs_colors="@array/widget_colors" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 android:text="@string/background"
                 android:textAppearance="?textAppearanceCaption"
                 android:textColor="?colorSecondary" />
@@ -135,13 +131,10 @@
                 android:id="@+id/bgColorSlider"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 app:cs_colors="@array/widget_colors" />
 
         </LinearLayout>
-
     </ScrollView>
 
     <View
