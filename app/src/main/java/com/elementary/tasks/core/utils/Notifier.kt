@@ -264,10 +264,20 @@ class Notifier @Inject constructor(private val context: Context, private val pre
             remoteViews.setTextViewText(R.id.text, context.getString(R.string.no_events))
             remoteViews.setViewVisibility(R.id.featured, View.GONE)
         }
-        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
-        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
-        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
+        if (prefs.appThemeColor == ThemeUtil.Color.BLACK) {
+            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
+            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
+            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
+        } else {
+            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_alarm_24px, R.id.notificationAdd)
+            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
+            WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
+        }
+
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getSecondaryColor())
+        val colorOnSecondary = themeUtil.getOnSecondaryColor()
+        remoteViews.setTextColor(R.id.featured, colorOnSecondary)
+        remoteViews.setTextColor(R.id.text, colorOnSecondary)
         getManager(context)?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
     }
 

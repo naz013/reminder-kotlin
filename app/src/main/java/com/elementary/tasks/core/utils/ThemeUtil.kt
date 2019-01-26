@@ -336,28 +336,36 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
 
     @ColorInt
     fun getSecondaryColor(code: Int = prefs.appThemeColor): Int {
-        val color: Int
-        when (code) {
-            Color.RED -> color = R.color.secondaryRed
-            Color.PURPLE -> color = R.color.secondaryPurple
-            Color.LIGHT_GREEN -> color = R.color.secondaryGreenLight
-            Color.GREEN -> color = R.color.secondaryGreen
-            Color.LIGHT_BLUE -> color = R.color.secondaryBlueLight
-            Color.BLUE -> color = R.color.secondaryBlue
-            Color.YELLOW -> color = R.color.secondaryYellow
-            Color.ORANGE -> color = R.color.secondaryOrange
-            Color.CYAN -> color = R.color.secondaryCyan
-            Color.PINK -> color = R.color.secondaryPink
-            Color.TEAL -> color = R.color.secondaryTeal
-            Color.AMBER -> color = R.color.secondaryAmber
-            Color.DEEP_PURPLE -> color = R.color.secondaryPurpleDeep
-            Color.DEEP_ORANGE -> color = R.color.secondaryOrangeDeep
-            Color.LIME -> color = R.color.secondaryLime
-            Color.INDIGO -> color = R.color.secondaryIndigo
-            Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
-            Color.WHITE -> color = R.color.pureWhite12
-            Color.BLACK -> color = R.color.pureBlack12
-            else -> color = R.color.secondaryBlue
+        val color: Int = when (code) {
+            Color.RED -> R.color.secondaryRed
+            Color.PURPLE -> R.color.secondaryPurple
+            Color.LIGHT_GREEN -> R.color.secondaryGreenLight
+            Color.GREEN -> R.color.secondaryGreen
+            Color.LIGHT_BLUE -> R.color.secondaryBlueLight
+            Color.BLUE -> R.color.secondaryBlue
+            Color.YELLOW -> R.color.secondaryYellow
+            Color.ORANGE -> R.color.secondaryOrange
+            Color.CYAN -> R.color.secondaryCyan
+            Color.PINK -> R.color.secondaryPink
+            Color.TEAL -> R.color.secondaryTeal
+            Color.AMBER -> R.color.secondaryAmber
+            Color.DEEP_PURPLE -> R.color.secondaryPurpleDeep
+            Color.DEEP_ORANGE -> R.color.secondaryOrangeDeep
+            Color.LIME -> R.color.secondaryLime
+            Color.INDIGO -> R.color.secondaryIndigo
+            Color.LIVING_CORAL -> R.color.secondaryLivingCoral
+            Color.WHITE -> R.color.pureWhite
+            Color.BLACK -> R.color.pureBlack
+            else -> R.color.secondaryBlue
+        }
+        return getColor(color)
+    }
+
+    @ColorInt
+    fun getOnSecondaryColor(code: Int = prefs.appThemeColor): Int {
+        val color: Int = when (code) {
+            Color.BLACK -> R.color.pureWhite
+            else -> R.color.pureBlack
         }
         return getColor(color)
     }
@@ -367,7 +375,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return adjustAlpha(getNoteLightColor(code), opacity)
     }
 
-    private object Color {
+    object Color {
         const val RED = 0
         const val PINK = 1
         const val PURPLE = 2
