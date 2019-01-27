@@ -20,6 +20,8 @@
     <dimen name="empty_animation_size">188dp</dimen>
     <dimen name="list_margin">0dp</dimen>
     <dimen name="material_margin">16dp</dimen>
+    <dimen name="image_height">256dp</dimen>
+    <dimen name="image_height_list">192dp</dimen>
 
     <bool name="is_tablet">false</bool>
 

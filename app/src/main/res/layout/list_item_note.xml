@@ -44,7 +44,7 @@
                 <ImageView
                     android:id="@+id/noteImage"
                     android:layout_width="match_parent"
-                    android:layout_height="192dp"
+                    android:layout_height="@dimen/image_height_list"
                     android:scaleType="centerCrop" />
 
                 <HorizontalScrollView

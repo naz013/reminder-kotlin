@@ -281,6 +281,10 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.no2" />
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.no2" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="org.chromium.arc.intent.action.CREATE_NOTE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".birthdays.create.AddBirthdayActivity"

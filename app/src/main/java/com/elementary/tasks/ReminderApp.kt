@@ -50,9 +50,8 @@ class ReminderApp : MultiDexApplication() {
                 .build()
 
         Timber.plant(Timber.DebugTree())
-        JobManager.create(this).addJobCreator { EventJobService() }
-
         Module.checkComponents(this)
+        JobManager.create(this).addJobCreator { EventJobService() }
 
         val fontRequest = FontRequest(
                 "com.google.android.gms.fonts",

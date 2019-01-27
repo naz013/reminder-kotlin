@@ -16,6 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:layout_marginStart="@dimen/material_margin"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -23,8 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="72dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:textSize="18sp"
                 tools:text="Note" />
 
