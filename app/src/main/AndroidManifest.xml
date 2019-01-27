@@ -365,13 +365,11 @@
 
         <service android:name=".core.services.GeolocationService" android:enabled="false" />
 
-        <service android:name=".core.appWidgets.events.EventEditService"
-            android:enabled="false"/>
+        <service android:name=".core.appWidgets.events.EventEditService" />
 
         <receiver
             android:name=".core.appWidgets.buttons.CombinedButtonsWidget"
             android:icon="@mipmap/ic_launcher"
-            android:enabled="false"
             android:label="@string/quick_buttons">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -385,7 +383,6 @@
         <activity
             android:name=".core.appWidgets.buttons.CombinedWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
-            android:enabled="false"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -394,7 +391,6 @@
         <activity
             android:name=".core.appWidgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
-            android:enabled="false"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -403,7 +399,6 @@
         <activity
             android:name=".core.appWidgets.notes.NotesWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
-            android:enabled="false"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -412,7 +407,6 @@
         <activity
             android:name=".core.appWidgets.googleTasks.TasksWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
-            android:enabled="false"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -422,7 +416,6 @@
         <receiver
             android:name=".core.appWidgets.events.EventsWidget"
             android:icon="@mipmap/ic_launcher"
-            android:enabled="false"
             android:label="@string/active_reminders">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -436,13 +429,11 @@
 
         <service
             android:name=".core.appWidgets.events.EventsService"
-            android:enabled="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
             android:name=".core.appWidgets.notes.NotesWidget"
             android:icon="@mipmap/ic_launcher"
-            android:enabled="false"
             android:label="@string/notes">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -455,13 +446,11 @@
 
         <service
             android:name=".core.appWidgets.notes.NotesService"
-            android:enabled="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
             android:name=".core.appWidgets.googleTasks.TasksWidget"
             android:icon="@mipmap/ic_launcher"
-            android:enabled="false"
             android:label="@string/google_tasks">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -474,13 +463,11 @@
 
         <service
             android:name=".core.appWidgets.googleTasks.TasksService"
-            android:enabled="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
             android:name=".core.appWidgets.calendar.CalendarWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
-            android:enabled="false"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -490,7 +477,6 @@
         <receiver
             android:name=".core.appWidgets.calendar.CalendarWidget"
             android:icon="@mipmap/ic_launcher"
-            android:enabled="false"
             android:label="@string/calendar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -503,17 +489,14 @@
 
         <service
             android:name=".core.appWidgets.calendar.CalendarWeekdayService"
-            android:enabled="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
             android:name=".core.appWidgets.calendar.CalendarMonthService"
-            android:enabled="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
             android:name=".core.appWidgets.buttons.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
-            android:enabled="false"
             android:theme="@style/Light1.Dialog">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
