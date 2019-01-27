@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import kotlinx.android.synthetic.main.view_group.view.*
@@ -69,6 +70,7 @@ class GroupView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.change_group), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.change_group))
         reminderGroup = null
     }
 }
