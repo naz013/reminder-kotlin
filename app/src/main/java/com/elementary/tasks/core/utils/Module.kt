@@ -1,7 +1,9 @@
 package com.elementary.tasks.core.utils
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
-
+import androidx.annotation.RequiresApi
 import com.elementary.tasks.BuildConfig
 
 /**
@@ -44,4 +46,25 @@ object Module {
 
     val isNougat1: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
+
+    fun hasTelephony(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
+    }
+
+    fun hasLocation(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION)
+    }
+
+    fun hasCamera(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)
+    }
+
+    fun hasMicrophone(context: Context): Boolean {
+        return false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun hasFingerprint(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)
+    }
 }

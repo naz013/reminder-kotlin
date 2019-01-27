@@ -6,6 +6,7 @@ import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import kotlinx.android.synthetic.main.fragment_settings_security.*
@@ -48,14 +49,21 @@ class SecuritySettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initPhonePrefs() {
-        telephonyPrefs.setOnClickListener { changePhonePrefs() }
-        telephonyPrefs.isChecked = prefs.isTelephonyAllowed
+        if (Module.hasTelephony(context!!)) {
+            telephonyPrefs.isEnabled = true
+            telephonyPrefs.setOnClickListener { changePhonePrefs() }
+            telephonyPrefs.isChecked = prefs.isTelephonyEnabled
+        } else {
+            prefs.isTelephonyEnabled = false
+            telephonyPrefs.isChecked = false
+            telephonyPrefs.isEnabled = false
+        }
     }
 
     private fun changePhonePrefs() {
         val isChecked = telephonyPrefs.isChecked
         telephonyPrefs.isChecked = !isChecked
-        prefs.isTelephonyAllowed = !isChecked
+        prefs.isTelephonyEnabled = !isChecked
     }
 
     private fun initPinPrefs() {

@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.GeolocationService
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 
@@ -35,14 +36,20 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
         get() = false
 
     override fun start(): Boolean {
-        reminder.isActive = true
-        reminder.isRemoved = false
-        super.save()
-        return if (EventJobService.enablePositionDelay(context, reminder.uuId)) {
-            true
+        return if (Module.hasLocation(context)) {
+            reminder.isActive = true
+            reminder.isRemoved = false
+            super.save()
+            if (EventJobService.enablePositionDelay(context, reminder.uuId)) {
+                true
+            } else {
+                SuperUtil.startGpsTracking(context)
+                true
+            }
         } else {
-            SuperUtil.startGpsTracking(context)
-            true
+            stop()
+            remove()
+            false
         }
     }
 

@@ -24,6 +24,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
@@ -76,7 +77,9 @@ class ConversationActivity : ThemedActivity() {
                 isTtsReady = true
                 if (!isRotated || mAdapter.itemCount == 0) {
                     addResponse(getLocalized(R.string.hi_how_can_i_help_you))
-                    postMicClick({ micClick() }, 2000)
+                    if (Module.hasMicrophone(this)) {
+                        postMicClick({ micClick() }, 2000)
+                    }
                 }
             }
         } else {
@@ -147,6 +150,13 @@ class ConversationActivity : ThemedActivity() {
         initList()
         checkTts()
         initViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!Module.hasMicrophone(this)) {
+            finish()
+        }
     }
 
     private fun initViewModel() {
