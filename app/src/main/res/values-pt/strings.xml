@@ -692,5 +692,6 @@
     <string name="white">Branco</string>
     <string name="black">Preto</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">Não é recomendado usar essas cores juntas</string>
+    <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services não encontrado, algumas funcionalidades estão desativadas!</string>
 
 </resources>
