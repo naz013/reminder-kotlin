@@ -38,7 +38,6 @@ import kotlinx.android.synthetic.main.list_item_navigation.view.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 class CreateReminderActivity : ThemedActivity(), ReminderInterface {
@@ -52,6 +51,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private var mIsLogged = false
     private var mIsSaving = false
     private var mIsTablet = false
+    private var hasLocation = false
     override var reminder: Reminder = Reminder()
         private set
     override var defGroup: ReminderGroup? = null
@@ -79,6 +79,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reminder.priority = prefs.defaultPriority
+        hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_reminder)
@@ -103,8 +104,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             DATE -> replaceFragment(DateFragment())
             TIMER -> replaceFragment(TimerFragment())
             WEEK -> replaceFragment(WeekFragment())
-            GPS -> if (hasGpsPermission(GPS)) {
-                replaceFragment(LocationFragment())
+            EMAIL -> if (Permissions.ensurePermissions(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
+                replaceFragment(EmailFragment())
             } else {
                 navSpinner.setSelection(DATE)
             }
@@ -112,8 +113,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             APP -> replaceFragment(ApplicationFragment())
             MONTH -> replaceFragment(MonthFragment())
             SHOP -> replaceFragment(ShopFragment())
-            EMAIL -> if (Permissions.ensurePermissions(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
-                replaceFragment(EmailFragment())
+            YEAR -> replaceFragment(YearFragment())
+            GPS -> if (hasGpsPermission(GPS)) {
+                replaceFragment(LocationFragment())
             } else {
                 navSpinner.setSelection(DATE)
             }
@@ -122,7 +124,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             } else {
                 navSpinner.setSelection(DATE)
             }
-            YEAR -> replaceFragment(YearFragment())
         }
     }
 
@@ -216,17 +217,25 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = DATE
             Reminder.BY_TIME -> toSelect = TIMER
             Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = WEEK
-            Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
-            Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = GPS
+            Reminder.BY_DATE_EMAIL -> toSelect = EMAIL
             Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> toSelect = SKYPE
             Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> toSelect = APP
             Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> toSelect = MONTH
             Reminder.BY_DATE_SHOP -> toSelect = SHOP
-            Reminder.BY_DATE_EMAIL -> toSelect = EMAIL
             Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> toSelect = YEAR
-            else -> if (Module.isPro) {
-                when (reminder.type) {
-                    Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> toSelect = GPS_PLACE
+            else -> {
+                if (hasLocation) {
+                    when (reminder.type) {
+                        Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
+                        Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = GPS
+                        else -> if (Module.isPro) {
+                            when (reminder.type) {
+                                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> toSelect = GPS_PLACE
+                            }
+                        }
+                    }
+                } else {
+                    toSelect = DATE
                 }
             }
         }
@@ -240,21 +249,23 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private fun initNavigation() {
         updateDefaultButton()
 
-        val arrayAdapter = ArrayList<SpinnerItem>()
-        arrayAdapter.add(SpinnerItem(getString(R.string.by_date)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.timer)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.alarm)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.location)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.skype)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.launch_application)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.yearly)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list)))
-        arrayAdapter.add(SpinnerItem(getString(R.string.e_mail)))
-        if (Module.isPro) {
-            arrayAdapter.add(SpinnerItem(getString(R.string.places)))
+        val list = mutableListOf<SpinnerItem>()
+        list.add(SpinnerItem(getString(R.string.by_date)))
+        list.add(SpinnerItem(getString(R.string.timer)))
+        list.add(SpinnerItem(getString(R.string.alarm)))
+        list.add(SpinnerItem(getString(R.string.e_mail)))
+        list.add(SpinnerItem(getString(R.string.skype)))
+        list.add(SpinnerItem(getString(R.string.launch_application)))
+        list.add(SpinnerItem(getString(R.string.day_of_month)))
+        list.add(SpinnerItem(getString(R.string.yearly)))
+        list.add(SpinnerItem(getString(R.string.shopping_list)))
+        if (hasLocation) {
+            list.add(SpinnerItem(getString(R.string.location)))
+            if (Module.isPro) {
+                list.add(SpinnerItem(getString(R.string.places)))
+            }
         }
-        val adapter = TitleNavigationAdapter(arrayAdapter)
+        val adapter = TitleNavigationAdapter(list)
         navSpinner.adapter = adapter
         navSpinner.onItemSelectedListener = mOnTypeSelectListener
         Timber.d("initNavigation: ")
@@ -271,11 +282,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             reminder.type = oldType
             editReminder(reminder, false)
         }
-//        if (isEditing) {
-            buttonDefault.visibility = View.INVISIBLE
-//        } else {
-//            buttonDefault.visibility = View.VISIBLE
-//        }
+        buttonDefault.visibility = View.INVISIBLE
     }
 
     private fun initActionBar() {
@@ -408,7 +415,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 finish()
             }
         } else if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val matches = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (matches != null) {
                 val model = conversationViewModel.findResults(matches)
                 if (model != null) {
@@ -420,12 +427,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             }
         }
         if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
-            val melodyPath = data!!.getStringExtra(Constants.FILE_PICKED)
+            val melodyPath = data?.getStringExtra(Constants.FILE_PICKED) ?: ""
             fragment?.onMelodySelect(melodyPath)
             showCurrentMelody()
         }
         if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val attachment = data!!.getStringExtra(Constants.FILE_PICKED)
+            val attachment = data?.getStringExtra(Constants.FILE_PICKED) ?: ""
             if (attachment != "") {
                 fragment?.onAttachmentSelect(attachment)
                 showAttachmentSnack()
@@ -527,14 +534,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private class SpinnerItem internal constructor(val title: String)
 
-    private inner class TitleNavigationAdapter(private val spinnerNavItem: ArrayList<SpinnerItem>) : BaseAdapter() {
+    private inner class TitleNavigationAdapter(private val items: List<SpinnerItem>) : BaseAdapter() {
 
         override fun getCount(): Int {
-            return spinnerNavItem.size
+            return items.size
         }
 
         override fun getItem(index: Int): Any {
-            return spinnerNavItem[index]
+            return items[index]
         }
 
         override fun getItemId(position: Int): Long {
@@ -546,7 +553,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             if (cView == null) {
                 cView = layoutInflater.inflate(R.layout.list_item_navigation, null)!!
             }
-            cView.txtTitle.text = spinnerNavItem[position].title
+            cView.txtTitle.text = items[position].title
             return cView
         }
 
@@ -555,7 +562,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             if (cView == null) {
                 cView = layoutInflater.inflate(R.layout.list_item_navigation, null)!!
             }
-            cView.txtTitle.text = spinnerNavItem[position].title
+            cView.txtTitle.text = items[position].title
             return cView
         }
     }
@@ -565,13 +572,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         private const val DATE = 0
         private const val TIMER = 1
         private const val WEEK = 2
-        private const val GPS = 3
+        private const val EMAIL = 3
         private const val SKYPE = 4
         private const val APP = 5
         private const val MONTH = 6
         private const val YEAR = 7
         private const val SHOP = 8
-        private const val EMAIL = 9
+        private const val GPS = 9
         private const val GPS_PLACE = 10
 
         private const val VOICE_RECOGNITION_REQUEST_CODE = 109
