@@ -291,6 +291,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         } else {
             nameView.visibility = View.GONE
         }
+        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
+            view.playServicesWarning.visibility = View.GONE
+        } else {
+            view.playServicesWarning.visibility = View.VISIBLE
+        }
         setMenuVisible()
     }
 
