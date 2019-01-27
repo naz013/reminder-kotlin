@@ -59,6 +59,7 @@ object SuperUtil {
         return screenLock
     }
 
+    @Suppress("DEPRECATION")
     fun unlockOff(activity: Activity, window: Window) {
         Timber.d("unlockOff: ")
         if (Module.isOreoMr1) {
@@ -69,6 +70,7 @@ object SuperUtil {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun unlockOn(activity: Activity, window: Window) {
         Timber.d("unlockOn: ")
         if (Module.isOreo) {
@@ -80,6 +82,7 @@ object SuperUtil {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun turnScreenOff(activity: Activity, window: Window, wakeLock: PowerManager.WakeLock? = null) {
         Timber.d("turnScreenOff: ")
         if (wakeLock?.isHeld == true) {
@@ -98,6 +101,7 @@ object SuperUtil {
         unlockOff(activity, window)
     }
 
+    @Suppress("DEPRECATION")
     fun turnScreenOn(activity: Activity, window: Window) {
         Timber.d("turnScreenOn: ")
         if (Module.isOreoMr1) {

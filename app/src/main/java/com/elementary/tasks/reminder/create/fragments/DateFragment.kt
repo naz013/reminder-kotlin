@@ -229,7 +229,7 @@ class DateFragment : RepeatableTypeFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        actionView.onRequestPermissionsResult(requestCode, grantResults)
         when (requestCode) {
             CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
                 selectContact()

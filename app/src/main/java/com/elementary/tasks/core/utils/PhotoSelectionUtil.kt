@@ -158,6 +158,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
         return File(sd, File(directoryPictures, "Reminder").toString())
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
