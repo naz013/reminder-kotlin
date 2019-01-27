@@ -71,6 +71,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateProgress(false)
+        progressMessageView.text = getString(R.string.please_wait)
         mDropbox = DropboxLogin(activity!!, mDropboxCallback)
         mGoogleLogin = GoogleLogin(activity!!, prefs)
         mGoogleLogin.googleStatus = {
