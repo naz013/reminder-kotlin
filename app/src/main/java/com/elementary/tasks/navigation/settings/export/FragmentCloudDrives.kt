@@ -84,11 +84,21 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun initGoogleTasksButton() {
-        linkGTasks.setOnClickListener { googleTasksButtonClick() }
+        if (SuperUtil.isGooglePlayServicesAvailable(context!!)) {
+            linkGTasks.visibility = View.VISIBLE
+            linkGTasks.setOnClickListener { googleTasksButtonClick() }
+        } else {
+            linkGTasks.visibility = View.GONE
+        }
     }
 
     private fun initGoogleDriveButton() {
-        linkGDrive.setOnClickListener { googleDriveButtonClick() }
+        if (SuperUtil.isGooglePlayServicesAvailable(context!!)) {
+            linkGDrive.visibility = View.VISIBLE
+            linkGDrive.setOnClickListener { googleDriveButtonClick() }
+        } else {
+            linkGDrive.visibility = View.GONE
+        }
     }
 
     private fun googleTasksButtonClick() {

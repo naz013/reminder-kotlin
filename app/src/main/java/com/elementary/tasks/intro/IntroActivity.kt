@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_intro.*
 
@@ -81,16 +81,8 @@ class IntroActivity : ThemedActivity() {
             Toast.makeText(this, getString(R.string.privacy_warming), Toast.LENGTH_SHORT).show()
             return
         }
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            openLoginScreen()
-        } else {
-            openFixScreen()
-        }
-    }
-
-    private fun openFixScreen() {
-        startActivity(Intent(this, GoogleFixActivity::class.java))
-        finish()
+        Module.checkComponents(this)
+        openLoginScreen()
     }
 
     private fun openLoginScreen() {

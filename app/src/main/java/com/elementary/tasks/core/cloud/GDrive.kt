@@ -58,7 +58,7 @@ class GDrive private constructor(context: Context) {
     init {
         ReminderApp.appComponent.inject(this)
         val user = prefs.driveUser
-        if (user.matches(".*@.*".toRegex())) {
+        if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
             Timber.d("GDrive: user -> $user")
             val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(DriveScopes.DRIVE_APPDATA))
             credential.selectedAccountName = user
