@@ -64,7 +64,9 @@ class LoginActivity : ThemedActivity() {
         setContentView(R.layout.activity_login)
         if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
         else appNameBannerPro.visibility = View.GONE
-        googleLogin = GoogleLogin(this, prefs)
+        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
+            googleLogin = GoogleLogin(this, prefs)
+        }
         dropboxLogin = DropboxLogin(this, object : DropboxLogin.LoginCallback {
             override fun onSuccess(b: Boolean) {
                 if (b) loadDataFromDropbox()
@@ -141,7 +143,12 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initButtons() {
-        google_button.setOnClickListener { googleLoginClick() }
+        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
+            google_button.visibility = View.VISIBLE
+            google_button.setOnClickListener { googleLoginClick() }
+        } else {
+            google_button.visibility = View.GONE
+        }
         local_button.setOnClickListener { restoreLocalData() }
         dropbox_button.setOnClickListener { loginToDropbox() }
         skip_button.setOnClickListener { openApplication() }

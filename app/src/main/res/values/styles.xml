@@ -1,7 +1,7 @@
 <resources>
 
-    <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name ="android:windowBackground"> @drawable/splash_bg</item>
+    <style name="SplashScreenTheme" parent="@style/Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 
     <style name="ActionOverflowButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.Overflow">
@@ -20,8 +20,7 @@
         <item name="android:tint">@color/whitePrimary</item>
     </style>
 
-    <style name="ToolbarTextStyle" parent="Text.H6">
-    </style>
+    <style name="ToolbarTextStyle" parent="Text.H6"></style>
 
     <style name="Text.H1" parent="@style/TextAppearance.MaterialComponents.Headline1">
         <item name="android:fontFamily">@font/merriweathersans_light</item>
@@ -153,7 +152,7 @@
         <item name="android:popupBackground">@color/pureWhite</item>
     </style>
 
-    <style name="PureWhite.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="PureWhite.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/pureWhite</item>
     </style>
 
@@ -169,7 +168,7 @@
         <item name="android:popupBackground">@color/lightPrimary1</item>
     </style>
 
-    <style name="Light1.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Light1.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/lightBg1</item>
     </style>
 
@@ -185,7 +184,7 @@
         <item name="android:popupBackground">@color/lightPrimary2</item>
     </style>
 
-    <style name="Light2.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Light2.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/lightBg2</item>
     </style>
 
@@ -201,7 +200,7 @@
         <item name="android:popupBackground">@color/lightPrimary3</item>
     </style>
 
-    <style name="Light3.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Light3.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/lightBg3</item>
     </style>
 
@@ -217,7 +216,7 @@
         <item name="android:popupBackground">@color/lightPrimary4</item>
     </style>
 
-    <style name="Light4.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Light4.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/lightBg4</item>
     </style>
 
@@ -233,7 +232,7 @@
         <item name="android:popupBackground">@color/darkPrimary1</item>
     </style>
 
-    <style name="Dark1.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Dark1.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/darkBg1</item>
     </style>
 
@@ -249,7 +248,7 @@
         <item name="android:popupBackground">@color/darkPrimary2</item>
     </style>
 
-    <style name="Dark2.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Dark2.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/darkBg2</item>
     </style>
 
@@ -265,7 +264,7 @@
         <item name="android:popupBackground">@color/darkPrimary3</item>
     </style>
 
-    <style name="Dark3.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Dark3.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/darkBg3</item>
     </style>
 
@@ -281,7 +280,7 @@
         <item name="android:popupBackground">@color/darkPrimary4</item>
     </style>
 
-    <style name="Dark4.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Dark4.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/darkBg4</item>
     </style>
 
@@ -299,7 +298,7 @@
         <item name="android:popupBackground">@color/pureBlack</item>
     </style>
 
-    <style name="PureBlack.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="PureBlack.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/pureBlack</item>
     </style>
 
@@ -395,7 +394,7 @@
         <item name="android:popupBackground">@color/retroYellow</item>
     </style>
 
-    <style name="Retro.Yellow.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Retro.Yellow.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/retroYellowBg</item>
     </style>
 
@@ -419,7 +418,7 @@
         <item name="android:popupBackground">@color/retroOrange</item>
     </style>
 
-    <style name="Retro.Orange.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Retro.Orange.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/retroOrangeBg</item>
     </style>
 
@@ -443,7 +442,7 @@
         <item name="android:popupBackground">@color/retroGreen</item>
     </style>
 
-    <style name="Retro.Green.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Retro.Green.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/retroGreenBg</item>
     </style>
 
@@ -467,7 +466,7 @@
         <item name="android:popupBackground">@color/retroRed</item>
     </style>
 
-    <style name="Retro.Red.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Retro.Red.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/retroRedBg</item>
     </style>
 
@@ -491,7 +490,7 @@
         <item name="android:popupBackground">@color/retroBrown</item>
     </style>
 
-    <style name="Retro.Brown.Card" parent="Widget.MaterialComponents.CardView" >
+    <style name="Retro.Brown.Card" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/retroBrownBg</item>
     </style>
 

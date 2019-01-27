@@ -206,7 +206,7 @@ object SuperUtil {
         activity.startActivityForResult(Intent(activity, ContactsActivity::class.java), requestCode)
     }
 
-    fun isGooglePlayServicesAvailable(a: Activity): Boolean {
+    fun isGooglePlayServicesAvailable(a: Context): Boolean {
         val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(a)
         return resultCode == ConnectionResult.SUCCESS
     }

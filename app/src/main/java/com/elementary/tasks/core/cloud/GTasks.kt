@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.SuperUtil
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.json.gson.GsonFactory
@@ -59,7 +60,7 @@ class GTasks private constructor(context: Context) {
     init {
         ReminderApp.appComponent.inject(this)
         val user = prefs.tasksUser
-        if (user.matches(".*@.*".toRegex())) {
+        if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
             Timber.d("GTasks: user -> $user")
             val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(TasksScopes.TASKS))
             credential.selectedAccountName = user

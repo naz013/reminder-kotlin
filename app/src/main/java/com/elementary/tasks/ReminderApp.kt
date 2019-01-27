@@ -10,6 +10,7 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.elementary.tasks.core.di.*
 import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.utils.Module
 import com.evernote.android.job.JobManager
 import timber.log.Timber
 
@@ -46,6 +47,8 @@ class ReminderApp : MultiDexApplication() {
                 .dbModule(DbModule())
                 .utilModule(UtilModule())
                 .build()
+
+        Module.checkComponents(this)
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         JobManager.create(this).addJobCreator { EventJobService() }
