@@ -90,7 +90,7 @@ object Module {
         return context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
     }
 
-    fun supportWidgets(context: Context): Boolean {
+    private fun supportWidgets(context: Context): Boolean {
         return context.packageManager.hasSystemFeature(PackageManager.FEATURE_APP_WIDGETS)
     }
 
