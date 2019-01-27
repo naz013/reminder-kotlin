@@ -15,6 +15,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -23,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="64dp"
                 android:layout_marginEnd="16dp"
                 app:boxBackgroundColor="?colorSecondary12"
                 app:boxCornerRadiusTopEnd="5dp"
@@ -68,21 +70,21 @@
 
             <LinearLayout
                 android:id="@+id/searchBlock"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/addressLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:layout_marginTop="-4dp"
                     android:layout_marginBottom="-8dp"
+                    android:layout_weight="1"
                     app:boxBackgroundColor="?colorSecondary12"
                     app:boxCornerRadiusTopEnd="5dp"
                     app:boxCornerRadiusTopStart="5dp">
@@ -105,17 +107,17 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerInside"
                     app:backgroundTint="?colorSecondary"
-                    app:tint="?colorOnSecondary"
-                    app:srcCompat="@drawable/ic_twotone_backspace_24px" />
+                    app:srcCompat="@drawable/ic_twotone_backspace_24px"
+                    app:tint="?colorOnSecondary" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/mapButton"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:scaleType="centerInside"
-                    app:tint="?colorOnSecondary"
                     app:backgroundTint="?colorSecondary"
-                    app:srcCompat="@drawable/ic_twotone_map_24px" />
+                    app:srcCompat="@drawable/ic_twotone_map_24px"
+                    app:tint="?colorOnSecondary" />
 
             </LinearLayout>
 
