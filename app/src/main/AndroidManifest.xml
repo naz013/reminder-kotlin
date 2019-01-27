@@ -79,6 +79,10 @@
         tools:replace="android:label"
         tools:targetApi="m">
 
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity android:name=".navigation.MainActivity" />
         <activity
             android:name=".core.IntentActivity"
