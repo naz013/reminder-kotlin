@@ -2,7 +2,6 @@ package com.elementary.tasks.notes.create
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.ClipData
 import android.content.ContentResolver
@@ -87,7 +86,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private lateinit var viewModel: NoteViewModel
     private val imagesGridAdapter = ImagesGridAdapter()
-    private var mProgress: ProgressDialog? = null
 
     private var mItem: NoteWithImages? = null
     private var mReminder: Reminder? = null
@@ -494,13 +492,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun hideProgress() {
-        if (mProgress != null && (mProgress?.isShowing == true)) {
-            mProgress?.dismiss()
-        }
+        recordingView.visibility = View.GONE
     }
 
     private fun showProgress() {
-        mProgress = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false)
+        recordingView.visibility = View.VISIBLE
     }
 
     private fun shareNote() {

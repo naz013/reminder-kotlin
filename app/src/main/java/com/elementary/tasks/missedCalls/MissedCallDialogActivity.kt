@@ -225,14 +225,6 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         }
     }
 
-    override fun showSendingError() {
-        remText.text = getString(R.string.error_sending)
-        buttonSms.text = getString(R.string.retry)
-        if (buttonSms.visibility == View.GONE) {
-            buttonSms.visibility = View.VISIBLE
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {

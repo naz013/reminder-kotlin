@@ -205,6 +205,8 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         setContentView(R.layout.activity_reminder_dialog)
 
         container.visibility = View.GONE
+        progressOverlay.visibility = View.GONE
+        progressOverlay.setOnTouchListener { v, _ -> v.performClick() }
         subjectContainer.visibility = View.GONE
         contactBlock.visibility = View.INVISIBLE
 
@@ -659,7 +661,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         if (!Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS)) {
             return
         }
-        showProgressDialog(getString(R.string.sending_message))
+        onProgressShow(getString(R.string.please_wait))
         val action = "SMS_SENT"
         val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
         registerReceiver(SendReceiver(mSendListener), IntentFilter(action))
@@ -772,6 +774,14 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun ok() {
         doActions({ it.next() }, { finish() })
+    }
+
+    override fun onProgressHidden() {
+        progressOverlay.visibility = View.GONE
+    }
+
+    override fun onProgressShow(message: String) {
+        progressOverlay.visibility = View.VISIBLE
     }
 
     override fun showSendingError() {

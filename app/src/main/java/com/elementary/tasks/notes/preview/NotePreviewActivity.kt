@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.preview
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -59,7 +58,6 @@ class NotePreviewActivity : ThemedActivity() {
     private val mAdapter = ImagesGridAdapter()
     private lateinit var viewModel: NoteViewModel
 
-    private var mProgress: ProgressDialog? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
 
     @Inject
@@ -220,13 +218,11 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun hideProgress() {
-        if (mProgress != null && mProgress?.isShowing == true) {
-            mProgress?.dismiss()
-        }
+
     }
 
     private fun showProgress() {
-        mProgress = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false)
+
     }
 
     private fun shareNote() {
@@ -252,7 +248,6 @@ class NotePreviewActivity : ThemedActivity() {
         val noteWithImages = mNote
         if (noteWithImages != null) {
             TelephonyUtil.sendNote(file, this, noteWithImages.note?.summary)
-            closeWindow()
         }
     }
 
