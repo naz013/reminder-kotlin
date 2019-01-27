@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.create.fragments
 
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
@@ -72,8 +73,8 @@ abstract class TypeFragment : Fragment() {
 
     protected fun isTablet(): Boolean = reminderInterface.isTablet()
 
-    open fun onAttachmentSelect(path: String) {
-        reminderInterface.reminder.attachmentFile = path
+    open fun onAttachmentSelect(uri: Uri) {
+        reminderInterface.reminder.attachmentFile = uri.toString()
     }
 
     open fun onGroupUpdate(reminderGroup: ReminderGroup) {

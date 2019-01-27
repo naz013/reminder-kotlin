@@ -1,16 +1,16 @@
 package com.elementary.tasks.reminder.preview
 
+import android.net.Uri
 import android.os.Bundle
 import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
-import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_attachment_preview.*
-import java.io.File
 
 /**
  * Copyright 2019 Nazar Suhovich
@@ -46,10 +46,10 @@ class AttachmentPreviewActivity : ThemedActivity() {
     }
 
     private fun showImages() {
-        val file = File(intent.getStringExtra(Constants.INTENT_ITEM) ?: "")
-        toolbar.title = file.name
-        Glide.with(ivPhoto)
-                .load(file)
+        val uri = Uri.parse(intent.getStringExtra(Constants.INTENT_ITEM) ?: "")
+        toolbar.title = uri.lastPathSegment
+        Picasso.get()
+                .load(uri)
                 .into(ivPhoto)
     }
 

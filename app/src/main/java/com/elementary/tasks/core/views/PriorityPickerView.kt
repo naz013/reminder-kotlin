@@ -85,7 +85,7 @@ class PriorityPickerView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.priority), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(this, context.getString(R.string.priority))
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.priority))
         chipGroup.setOnCheckedChangeListener { _, id ->
             if (isAnyChecked()) {
                 updateState(priorityFromChip(id))

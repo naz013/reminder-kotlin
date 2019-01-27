@@ -70,6 +70,7 @@ data class Reminder(
         var type: Int = 0,
         var target: String = "",
         var subject: String = "",
+        @Deprecated("Use #attachmentFiles property")
         var attachmentFile: String = "",
         var attachmentFiles: List<String> = ArrayList(),
         var auto: Boolean = false,

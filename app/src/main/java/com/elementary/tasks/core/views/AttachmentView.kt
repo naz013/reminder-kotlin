@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -9,7 +10,6 @@ import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.view_attachment.view.*
 import timber.log.Timber
-import java.io.File
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,18 +33,13 @@ class AttachmentView : LinearLayout {
 
     var onFileUpdateListener: ((path: String) -> Unit)? = null
     var onFileSelectListener: (() -> Unit)? = null
-    var file: String = ""
-        set(value) {
+    private var content: String = ""
+        private set(value) {
             field = value
             if (value != "") {
-                val file = File(value)
-                if (file.exists()) {
-                    text.text = file.name
-                    removeButton.visibility = View.VISIBLE
-                    onFileUpdateListener?.invoke(value)
-                } else {
-                    noFile()
-                }
+                text.text = Uri.parse(value).lastPathSegment
+                removeButton.visibility = View.VISIBLE
+                onFileUpdateListener?.invoke(value)
             } else {
                 noFile()
             }
@@ -62,6 +57,11 @@ class AttachmentView : LinearLayout {
         init(context)
     }
 
+    fun setUri(uri: Uri) {
+        Timber.d("setUri: ${uri.path}")
+        content = uri.toString()
+    }
+
     private fun noFile() {
         removeButton.visibility = View.GONE
         text.text = context.getString(R.string.not_selected)
@@ -72,7 +72,7 @@ class AttachmentView : LinearLayout {
         orientation = LinearLayout.VERTICAL
 
         removeButton.setOnClickListener {
-            file = ""
+            content = ""
         }
         text.setOnClickListener {
             addClick()
@@ -85,12 +85,12 @@ class AttachmentView : LinearLayout {
             return@setOnLongClickListener true
         }
         TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.attachment))
-        file = ""
+        content = ""
     }
 
     private fun addClick() {
-        Timber.d("init: $file")
-        if (file == "") {
+        Timber.d("init: $content")
+        if (content == "") {
             onFileSelectListener?.invoke()
         }
     }

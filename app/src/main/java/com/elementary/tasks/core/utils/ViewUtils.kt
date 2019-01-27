@@ -1,17 +1,13 @@
 package com.elementary.tasks.core.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ClipData
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.view.Menu
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
@@ -24,6 +20,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,6 +41,52 @@ import com.elementary.tasks.R
  * limitations under the License.
  */
 object ViewUtils {
+
+    fun registerDragAndDrop(activity: Activity, view: View, markAction: Boolean = true,
+                            @ColorInt color: Int,
+                            onDrop: (ClipData) -> Unit, vararg mimeTypes: String) {
+        view.setOnDragListener { v, event ->
+            return@setOnDragListener when (event.action) {
+                DragEvent.ACTION_DRAG_STARTED -> {
+                    Timber.d("registerDragAndDrop: started, ${event.clipDescription}")
+                    for (type in mimeTypes) {
+                        if (event.clipDescription.hasMimeType(type)) {
+                            if (markAction) {
+                                v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
+                            }
+                            return@setOnDragListener true
+                        }
+                    }
+                    false
+                }
+                DragEvent.ACTION_DRAG_ENTERED -> {
+                    if (markAction) {
+                        v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 50))
+                    }
+                    true
+                }
+                DragEvent.ACTION_DRAG_EXITED -> {
+                    if (markAction) {
+                        v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
+                    }
+                    true
+                }
+                DragEvent.ACTION_DROP -> {
+                    if (Module.isNougat) {
+                        activity.requestDragAndDropPermissions(event)
+                    }
+                    onDrop.invoke(event.clipData)
+                    true
+                }
+                DragEvent.ACTION_DRAG_ENDED -> {
+                    v.setBackgroundColor(Color.argb(0,255,255,255))
+                    true
+                }
+                DragEvent.ACTION_DRAG_LOCATION -> true
+                else -> false
+            }
+        }
+    }
 
     fun isHorizontal(context: Context): Boolean {
         return context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE

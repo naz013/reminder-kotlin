@@ -31,6 +31,8 @@ import timber.log.Timber
 
 object UriUtil {
 
+    const val URI_MIME = "application/x-arc-uri-list"
+
     fun getUri(context: Context, filePath: String): Uri {
         Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)
         return if (Module.isNougat) {
