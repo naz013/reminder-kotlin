@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.list.PlacesFragment
@@ -47,7 +48,12 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         initMarkerStylePrefs()
         trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }
         notificationOptionPrefs.setOnClickListener { changeNotificationPrefs() }
-        placesPrefs.setOnClickListener { openPlacesScreen() }
+        if (Module.hasLocation(context!!)) {
+            placesPrefs.setOnClickListener { openPlacesScreen() }
+            placesPrefs.visibility = View.VISIBLE
+        } else {
+            placesPrefs.visibility = View.GONE
+        }
         notificationOptionPrefs.isChecked = prefs.isDistanceNotificationEnabled
         initRadiusPrefs()
     }

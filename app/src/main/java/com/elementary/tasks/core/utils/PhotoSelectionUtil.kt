@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.*
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Patterns
@@ -42,26 +41,39 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
     private var imageUri: Uri? = null
 
     fun selectImage() {
+        val hasCamera = Module.hasCamera(activity)
         val items = if (urlSupported) {
-            arrayOf<CharSequence>(
-                    activity.getString(R.string.gallery),
-                    activity.getString(R.string.take_a_shot),
-                    activity.getString(R.string.from_url)
-            )
+            if (hasCamera) {
+                arrayOf(
+                        activity.getString(R.string.gallery),
+                        activity.getString(R.string.take_a_shot),
+                        activity.getString(R.string.from_url)
+                )
+            } else {
+                arrayOf(activity.getString(R.string.gallery), activity.getString(R.string.from_url))
+            }
         } else {
-            arrayOf<CharSequence>(
-                    activity.getString(R.string.gallery),
-                    activity.getString(R.string.take_a_shot)
-            )
+            if (hasCamera) {
+                arrayOf(activity.getString(R.string.gallery), activity.getString(R.string.take_a_shot))
+            } else {
+                arrayOf(activity.getString(R.string.gallery))
+            }
         }
         val builder = dialogues.getDialog(activity)
         builder.setTitle(R.string.image)
         builder.setItems(items) { dialog, item ->
             dialog.dismiss()
-            when (item) {
-                0 -> pickFromGallery()
-                1 -> takePhoto()
-                2 -> checkClipboard()
+            if (hasCamera) {
+                when (item) {
+                    0 -> pickFromGallery()
+                    1 -> takePhoto()
+                    2 -> checkClipboard()
+                }
+            } else {
+                when (item) {
+                    0 -> pickFromGallery()
+                    1 -> checkClipboard()
+                }
             }
         }
         builder.show()
@@ -73,7 +85,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
         }
         var intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        if (urlSupported && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (urlSupported) {
             intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "image/*"

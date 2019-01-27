@@ -53,11 +53,15 @@ class VoiceWidgetDialog : FragmentActivity() {
         super.onCreate(savedInstanceState)
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setTheme(themeUtil.dialogStyle)
-        viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
-        if (prefs.hasPinCode && !mIsLogged) {
-            PinLoginActivity.verify(this)
+        if (Module.hasMicrophone(this)) {
+            viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+            if (prefs.hasPinCode && !mIsLogged) {
+                PinLoginActivity.verify(this)
+            } else {
+                startVoiceRecognitionActivity()
+            }
         } else {
-            startVoiceRecognitionActivity()
+            finish()
         }
     }
 

@@ -52,4 +52,12 @@ abstract class EventManager(val reminder: Reminder) : EventControl {
             notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
     }
+
+    protected fun remove() {
+        db.reminderDao().delete(reminder)
+        UpdatesHelper.updateWidget(context)
+        if (prefs.isSbNotificationEnabled) {
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+        }
+    }
 }

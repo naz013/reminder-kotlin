@@ -16,10 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -95,7 +92,12 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         inflater?.inflate(R.menu.fragment_active_menu, menu)
 
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
-        ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_mic_24px, isDark)
+        if (Module.hasMicrophone(context!!)) {
+            menu?.getItem(1)?.isVisible = true
+            ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_mic_24px, isDark)
+        } else {
+            menu?.getItem(1)?.isVisible = false
+        }
         ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_filter_list_24px, isDark)
 
         mSearchMenu = menu?.findItem(R.id.action_search)

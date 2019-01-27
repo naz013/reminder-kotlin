@@ -137,7 +137,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY)
         set(value) = putInt(PrefsConstants.UNLOCK_SCREEN_PRIORITY, value)
 
-    var isTelephonyAllowed: Boolean
+    var isTelephonyAllowed: Boolean = false
+        get() = Module.hasTelephony(context) && isTelephonyEnabled
+
+    var isTelephonyEnabled: Boolean
         get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
         set(value) = putBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, value)
 

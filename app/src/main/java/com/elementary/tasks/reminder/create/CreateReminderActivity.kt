@@ -14,6 +14,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -389,7 +390,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_create_reminder, menu)
-        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDark)
+        if (Module.hasMicrophone(this)) {
+            menu[0].isVisible = true
+            ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDark)
+        } else {
+            menu[0].isVisible = false
+        }
         if (isEditing) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }

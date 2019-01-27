@@ -270,6 +270,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun initMenu() {
+        if (Module.hasMicrophone(this)) {
+            micButton.visibility = View.VISIBLE
+        } else {
+            micButton.visibility = View.GONE
+        }
+
         colorButton.setOnClickListener { toggleColorView() }
         imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
         reminderButton.setOnClickListener { switchReminder() }

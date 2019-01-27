@@ -297,6 +297,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private fun setMenuVisible() {
         val menu = nav_view.menu
         menu.getItem(5)?.isVisible = GTasks.getInstance(this)?.isLogged ?: false
+        menu.getItem(7)?.isVisible = Module.hasLocation(this)
         menu.getItem(11)?.isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 
