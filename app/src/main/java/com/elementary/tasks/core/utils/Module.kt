@@ -67,4 +67,8 @@ object Module {
     fun hasFingerprint(context: Context): Boolean {
         return context.packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)
     }
+
+    fun hasBluetooth(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
+    }
 }

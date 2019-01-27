@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <permission
         android:name="com.cray.software.justreminder.maps.permission.MAPS_RECEIVE"

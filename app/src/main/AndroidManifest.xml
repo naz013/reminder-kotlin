@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.elementary.tasks"
-    android:installLocation="auto">
+    package="com.elementary.tasks">
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -33,6 +32,9 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.fingerprint"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.bluetooth"
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -76,10 +78,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="m">
-
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
 
         <activity android:name=".navigation.MainActivity" />
         <activity
@@ -549,6 +547,6 @@
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
+            android:value="true" />
     </application>
 </manifest>
