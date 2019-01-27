@@ -49,7 +49,7 @@ class ReminderApp : MultiDexApplication() {
                 .utilModule(UtilModule())
                 .build()
 
-        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+        Timber.plant(Timber.DebugTree())
         JobManager.create(this).addJobCreator { EventJobService() }
 
         Module.checkComponents(this)
