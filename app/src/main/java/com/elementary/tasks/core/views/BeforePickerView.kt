@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeCount
 import kotlinx.android.synthetic.main.view_remind_before.view.*
@@ -86,6 +87,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
             Toast.makeText(context, context.getString(R.string.before_time), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.before_time))
 
         before_type_view.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {

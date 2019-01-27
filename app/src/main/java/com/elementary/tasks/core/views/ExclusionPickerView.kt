@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
@@ -130,6 +131,7 @@ class ExclusionPickerView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.exclusion), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.exclusion))
     }
 
     private fun openExclusionDialog() {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Dialogues
@@ -136,6 +137,7 @@ class TuneExtraView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.update_additional_parameters), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.update_additional_parameters))
         text.setOnClickListener {
             openCustomizationDialog()
         }

@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.view_loudness.view.*
 
@@ -68,6 +69,7 @@ class LoudnessPickerView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.loudness), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.loudness))
         sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 level = progress

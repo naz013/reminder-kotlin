@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LED
 import kotlinx.android.synthetic.main.view_led_color.view.*
@@ -89,6 +90,7 @@ class LedPickerView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.led_color), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.led_color))
     }
 
     private fun updateState(led: Int) {

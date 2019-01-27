@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.view_attachment.view.*
 import timber.log.Timber
@@ -83,6 +84,7 @@ class AttachmentView : LinearLayout {
             Toast.makeText(context, context.getString(R.string.attachment), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
+        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.attachment))
         file = ""
     }
 
