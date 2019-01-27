@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils
 
+import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.widget.AppCompatCheckBox
@@ -138,7 +139,7 @@ fun MelodyView.bindProperty(value: String, listener: ((String) -> Unit)) {
 }
 
 fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
-    this.file = value
+    this.setUri(Uri.parse(value))
     this.onFileUpdateListener = {
         listener.invoke(it)
     }

@@ -296,14 +296,6 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
         return getNoteLightColor(code)
     }
 
-    private fun adjustAlpha(color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
-        val alpha = 255f * (factor.toFloat() / 100f)
-        val red = android.graphics.Color.red(color)
-        val green = android.graphics.Color.green(color)
-        val blue = android.graphics.Color.blue(color)
-        return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
-    }
-
     fun isAlmostTransparent(opacity: Int): Boolean {
         return opacity < 25
     }
@@ -590,6 +582,15 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
             val outValue = TypedValue()
             context.theme.resolveAttribute(colorAttr, outValue, true)
             return outValue.data
+        }
+
+        @ColorInt
+        fun adjustAlpha(@ColorInt color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
+            val alpha = 255f * (factor.toFloat() / 100f)
+            val red = android.graphics.Color.red(color)
+            val green = android.graphics.Color.green(color)
+            val blue = android.graphics.Color.blue(color)
+            return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
         }
     }
 }

@@ -5,7 +5,10 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,7 +21,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
@@ -26,7 +28,6 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.fileExplorer.FileRecyclerAdapter
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.services.SendReceiver
@@ -42,6 +43,8 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import timber.log.Timber
 import java.io.File
@@ -390,26 +393,34 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun showAttachment(reminder: Reminder) {
+        Timber.d("showAttachment: ${reminder.attachmentFile}")
         if (reminder.attachmentFile != "") {
-            val file = File(reminder.attachmentFile)
-            val name = file.name
-            attachment.text = name
+            val uri = Uri.parse(reminder.attachmentFile)
+            attachment.text = reminder.attachmentFile
             attachmentView.visibility = View.VISIBLE
 
-            if (FileRecyclerAdapter.isPicture(name)) {
-                attachmentsView.visibility = View.VISIBLE
-                attachmentsView.setOnClickListener {
-                    val options = ActivityOptions.makeSceneTransitionAnimation(this, attachmentImage, "image")
-                    startActivity(Intent(this, AttachmentPreviewActivity::class.java)
-                            .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile),
-                            options.toBundle())
+            Picasso.get().load(uri).into(object : Target {
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                    Timber.d("onPrepareLoad: ")
                 }
-                Glide.with(attachmentImage)
-                        .load(file)
-                        .into(attachmentImage)
-            } else {
-                attachmentsView.visibility = View.GONE
-            }
+
+                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                    Timber.d("onBitmapFailed: $e")
+                    attachmentsView.visibility = View.GONE
+                }
+
+                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                    Timber.d("onBitmapLoaded: ${bitmap != null}")
+                    attachmentsView.visibility = View.VISIBLE
+                    attachmentImage.setImageBitmap(bitmap)
+                    attachmentsView.setOnClickListener {
+                        val options = ActivityOptions.makeSceneTransitionAnimation(this@ReminderPreviewActivity, attachmentImage, "image")
+                        startActivity(Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
+                                .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile),
+                                options.toBundle())
+                    }
+                }
+            })
         } else {
             attachmentView.visibility = View.GONE
             attachmentsView.visibility = View.GONE

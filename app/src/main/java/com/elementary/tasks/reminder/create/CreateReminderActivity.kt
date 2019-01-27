@@ -358,8 +358,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun attachFile() {
         if (Permissions.ensurePermissions(this, 331, Permissions.READ_EXTERNAL)) {
-            startActivityForResult(Intent(this, FileExplorerActivity::class.java)
-                    .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST)
+            selectAnyFile()
         }
     }
 
@@ -432,21 +431,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             showCurrentMelody()
         }
         if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val attachment = data?.getStringExtra(Constants.FILE_PICKED) ?: ""
-            if (attachment != "") {
+            val attachment = data?.data
+            if (attachment != null) {
                 fragment?.onAttachmentSelect(attachment)
-                showAttachmentSnack()
             }
         }
         fragment?.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun showAttachmentSnack() {
-        val file = File(reminder.attachmentFile)
-        showSnackbar(String.format(getString(R.string.file_x_attached), file.name),
-                getString(R.string.cancel), View.OnClickListener {
-            fragment?.onAttachmentSelect("")
-        })
     }
 
     private fun showCurrentMelody() {
@@ -479,10 +469,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 navSpinner.setSelection(DATE)
             }
             331 -> if (Permissions.isAllGranted(grantResults)) {
-                startActivityForResult(Intent(this, FileExplorerActivity::class.java)
-                        .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST)
+                selectAnyFile()
             }
         }
+    }
+
+    private fun selectAnyFile() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "*/*"
+        startActivityForResult(intent, FILE_REQUEST)
     }
 
     override fun selectGroup() {

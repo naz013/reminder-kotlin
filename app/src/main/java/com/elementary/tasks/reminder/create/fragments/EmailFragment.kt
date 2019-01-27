@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.create.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -89,6 +90,12 @@ class EmailFragment : RepeatableTypeFragment() {
         attachmentView.onFileSelectListener = {
             reminderInterface.attachFile()
         }
+        ViewUtils.registerDragAndDrop(activity!!, attachmentView, true, themeUtil.getSecondaryColor(),
+                { clipData ->
+                    if (clipData.itemCount > 0) {
+                        attachmentView.setUri(clipData.getItemAt(0).uri)
+                    }
+                }, UriUtil.URI_MIME)
         groupView.onGroupSelectListener = {
             reminderInterface.selectGroup()
         }
@@ -181,8 +188,8 @@ class EmailFragment : RepeatableTypeFragment() {
         melodyView.file = path
     }
 
-    override fun onAttachmentSelect(path: String) {
-        super.onAttachmentSelect(path)
-        attachmentView.file = path
+    override fun onAttachmentSelect(uri: Uri) {
+        super.onAttachmentSelect(uri)
+        attachmentView.setUri(uri)
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -163,6 +164,12 @@ class MonthFragment : RepeatableTypeFragment() {
         attachmentView.onFileSelectListener = {
             reminderInterface.attachFile()
         }
+        ViewUtils.registerDragAndDrop(activity!!, attachmentView, true, themeUtil.getSecondaryColor(),
+                { clipData ->
+                    if (clipData.itemCount > 0) {
+                        attachmentView.setUri(clipData.getItemAt(0).uri)
+                    }
+                }, UriUtil.URI_MIME)
         groupView.onGroupSelectListener = {
             reminderInterface.selectGroup()
         }
@@ -364,9 +371,9 @@ class MonthFragment : RepeatableTypeFragment() {
         melodyView.file = path
     }
 
-    override fun onAttachmentSelect(path: String) {
-        super.onAttachmentSelect(path)
-        attachmentView.file = path
+    override fun onAttachmentSelect(uri: Uri) {
+        super.onAttachmentSelect(uri)
+        attachmentView.setUri(uri)
     }
 
     companion object {
