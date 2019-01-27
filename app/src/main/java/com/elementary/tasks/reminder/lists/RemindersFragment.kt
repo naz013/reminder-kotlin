@@ -23,8 +23,7 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
-import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
+import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import timber.log.Timber
 import java.util.*
@@ -47,7 +46,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
+class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
 
     private lateinit var viewModel: ActiveRemindersViewModel
 
@@ -60,7 +59,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val mAdapter = RemindersRecyclerAdapter()
 
     private var mGroupsIds = ArrayList<String>()
-    private val filterController = ReminderFilterController(this)
+    private val searchModifier = SearchModifier(null, this)
 
     private val filterAllElement: FilterView.FilterElement
         get() = FilterView.FilterElement(getString(R.string.all), 0, true)
@@ -70,7 +69,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
-            filterController.setSearchValue(query)
+            searchModifier.setSearchValue(query)
             if (mSearchMenu != null) {
                 mSearchMenu?.collapseActionView()
             }
@@ -78,7 +77,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-            filterController.setSearchValue(newText)
+            searchModifier.setSearchValue(newText)
             return false
         }
     }
@@ -111,7 +110,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
             mSearchView?.setOnQueryTextListener(queryTextListener)
         }
-        val isNotEmpty = filterController.original.isNotEmpty()
+        val isNotEmpty = searchModifier.hasOriginal()
         menu?.getItem(0)?.isVisible = isNotEmpty
         menu?.getItem(2)?.isVisible = false
 
@@ -170,7 +169,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun showData(result: List<Reminder>) {
-        filterController.original = result.toMutableList()
+        searchModifier.original = result.toMutableList()
         refreshFilters()
         activity?.invalidateOptionsMenu()
     }
@@ -215,13 +214,12 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun addStatusFilter() {
-        val reminders = filterController.original
+        val reminders = searchModifier.original
         if (reminders.isEmpty()) {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View?, id: Int) {
-                filterController.setStatusValue(id)
             }
         })
         filter.add(filterAllElement)
@@ -231,13 +229,12 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun addDateFilter() {
-        val reminders = filterController.original
+        val reminders = searchModifier.original
         if (reminders.isEmpty()) {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View?, id: Int) {
-                filterController.setRangeValue(id)
             }
         })
         filter.add(filterAllElement)
@@ -248,7 +245,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun addTypeFilter() {
-        val reminders = filterController.original
+        val reminders = searchModifier.original
         if (reminders.isEmpty()) {
             return
         }
@@ -258,7 +255,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View?, id: Int) {
-                filterController.setTypeValue(id)
             }
         })
         filter.add(filterAllElement)
@@ -272,17 +268,13 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun addGroupFilter() {
         mGroupsIds.clear()
-        val reminders = filterController.original
+        val reminders = searchModifier.original
         if (reminders.isEmpty()) {
             return
         }
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View?, id: Int) {
-                if (id == 0) {
-                    filterController.setGroupValue(null)
-                } else {
-                    filterController.setGroupValue(mGroupsIds[id - 1])
-                }
+
             }
         })
         val groupIds = mutableMapOf<String, String>()
@@ -301,12 +293,6 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         filterView.addFilter(filter)
     }
 
-    override fun onChanged(result: List<Reminder>) {
-        mAdapter.submitList(result)
-        recyclerView.smoothScrollToPosition(0)
-        reloadView(result.size)
-    }
-
     override fun canGoBack(): Boolean {
         return if (filterView.visibility == View.GONE) {
             true
@@ -314,5 +300,11 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             toggleFilter()
             false
         }
+    }
+
+    override fun invoke(result: List<Reminder>) {
+        mAdapter.submitList(result)
+        recyclerView.smoothScrollToPosition(0)
+        reloadView(result.size)
     }
 }

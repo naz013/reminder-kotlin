@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
@@ -22,7 +23,6 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_settings_templates_list.*
 
 /**
@@ -43,7 +43,7 @@ import kotlinx.android.synthetic.main.fragment_settings_templates_list.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
+class TemplatesFragment : BaseSettingsFragment() {
 
     private val adapter = TemplatesAdapter()
     private lateinit var viewModel: SmsTemplatesViewModel
@@ -51,23 +51,31 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
-    private val filterController = TemplateFilterController(this)
+    private val searchModifier = object : SearchModifier<SmsTemplate>(null, {
+        adapter.data = it
+        templatesList.smoothScrollToPosition(0)
+        refreshView()
+    }) {
+        override fun filter(v: SmsTemplate): Boolean {
+            return searchValue.isEmpty() || v.title.toLowerCase().contains(searchValue.toLowerCase())
+        }
+    }
 
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
-            filterController.setSearchValue(query)
+            searchModifier.setSearchValue(query)
             mSearchMenu?.collapseActionView()
             return false
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-            filterController.setSearchValue(newText)
+            searchModifier.setSearchValue(newText)
             return false
         }
     }
 
     private val mCloseListener = {
-        filterController.setSearchValue("")
+        searchModifier.setSearchValue("")
         true
     }
 
@@ -164,7 +172,7 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     override fun getTitle(): String = getString(R.string.messages)
 
     private fun showTemplates(smsTemplates: List<SmsTemplate>) {
-        filterController.original = smsTemplates
+        searchModifier.original = smsTemplates
     }
 
     private fun refreshView() {
@@ -175,11 +183,5 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
             emptyItem.visibility = View.GONE
             templatesList.visibility = View.VISIBLE
         }
-    }
-
-    override fun onChanged(result: List<SmsTemplate>) {
-        adapter.data = result
-        templatesList.smoothScrollToPosition(0)
-        refreshView()
     }
 }
