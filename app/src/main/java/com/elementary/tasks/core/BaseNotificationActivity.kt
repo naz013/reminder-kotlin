@@ -1,6 +1,5 @@
 package com.elementary.tasks.core
 
-import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.RingtoneManager
@@ -43,7 +42,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     private var tts: TextToSpeech? = null
     private var mWakeLock: PowerManager.WakeLock? = null
-    private var mSendDialog: ProgressDialog? = null
     @Inject
     lateinit var soundStackHolder: SoundStackHolder
 
@@ -68,7 +66,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         }
     }
     protected var mSendListener = { isSent: Boolean ->
-        hideProgressDialog()
+        onProgressHidden()
         if (isSent) {
             finish()
         } else {
@@ -132,7 +130,17 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
-    protected abstract fun showSendingError()
+    protected open fun showSendingError() {
+
+    }
+
+    protected open fun onProgressHidden() {
+
+    }
+
+    protected open fun onProgressShow(message: String) {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -219,17 +227,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE)
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
-        }
-    }
-
-    protected fun showProgressDialog(message: String) {
-        hideProgressDialog()
-        mSendDialog = ProgressDialog.show(this, null, message, true, false)
-    }
-
-    private fun hideProgressDialog() {
-        if (mSendDialog != null && mSendDialog?.isShowing == true) {
-            mSendDialog?.dismiss()
         }
     }
 

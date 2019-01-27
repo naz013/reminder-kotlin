@@ -346,10 +346,6 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         finish()
     }
 
-    override fun showSendingError() {
-        Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (Permissions.isAllGranted(grantResults)) {
