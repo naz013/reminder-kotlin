@@ -508,22 +508,30 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         launchDefault {
             val file = backupTool.createNote(note)
             withUIContext {
-                if (file != null) sendNote(file)
+                hideProgress()
+                if (file != null) {
+                    sendNote(file)
+                } else {
+                    showErrorSending()
+                }
             }
         }
     }
 
     private fun sendNote(file: File) {
-        hideProgress()
         if (isFinishing) return
         if (!file.exists() || !file.canRead()) {
-            Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
+            showErrorSending()
             return
         }
         val noteWithImages = mItem
         if (noteWithImages != null) {
             TelephonyUtil.sendNote(file, this, noteWithImages.note?.summary)
         }
+    }
+
+    private fun showErrorSending() {
+        Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
     }
 
     private fun setDateTime(eventTime: String?) {

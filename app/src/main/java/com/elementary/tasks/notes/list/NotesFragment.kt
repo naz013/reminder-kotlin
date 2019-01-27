@@ -124,18 +124,26 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
         launchDefault {
             val file = backupTool.createNote(note)
             withUIContext {
-                if (file != null) sendNote(note, file)
+                hideProgress()
+                if (file != null) {
+                    sendNote(note, file)
+                } else {
+                    showErrorSending()
+                }
             }
         }
     }
 
     private fun sendNote(note: NoteWithImages, file: File) {
-        hideProgress()
         if (!file.exists() || !file.canRead()) {
-            Toast.makeText(context, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
+            showErrorSending()
             return
         }
         TelephonyUtil.sendNote(file, context!!, note.note?.summary)
+    }
+
+    private fun showErrorSending() {
+        Toast.makeText(context, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
     }
 
     private fun hideProgress() {
