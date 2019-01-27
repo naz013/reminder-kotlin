@@ -233,22 +233,30 @@ class NotePreviewActivity : ThemedActivity() {
         launchDefault {
             val file = backupTool.createNote(mNote)
             withUIContext {
-                if (file != null) sendNote(file)
+                hideProgress()
+                if (file != null) {
+                    sendNote(file)
+                } else {
+                    showErrorSending()
+                }
             }
         }
     }
 
     private fun sendNote(file: File) {
-        hideProgress()
         if (isFinishing) return
         if (!file.exists() || !file.canRead()) {
-            Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
+            showErrorSending()
             return
         }
         val noteWithImages = mNote
         if (noteWithImages != null) {
             TelephonyUtil.sendNote(file, this, noteWithImages.note?.summary)
         }
+    }
+
+    private fun showErrorSending() {
+        Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

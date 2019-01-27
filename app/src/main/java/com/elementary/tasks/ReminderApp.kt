@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.Module
 import com.evernote.android.job.JobManager
 import timber.log.Timber
 
+
 /**
  * Copyright 2016 Nazar Suhovich
  *
