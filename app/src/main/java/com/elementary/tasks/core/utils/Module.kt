@@ -60,7 +60,7 @@ object Module {
     }
 
     fun hasMicrophone(context: Context): Boolean {
-        return false
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
