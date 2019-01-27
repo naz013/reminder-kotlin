@@ -168,7 +168,7 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
             while (index < images.size) {
                 val imV = ImageView(container.context)
                 val params = LinearLayout.LayoutParams(MeasureUtils.dp2px(container.context, 128),
-                        MeasureUtils.dp2px(container.context, 72))
+                        MeasureUtils.dp2px(container.context, 128))
                 imV.layoutParams = params
                 setClick(imV, index, item.getKey(), images)
                 imV.scaleType = ImageView.ScaleType.CENTER_CROP

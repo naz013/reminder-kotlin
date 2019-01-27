@@ -12,5 +12,7 @@
     <dimen name="dialog_toggle_size">32dp</dimen>
     <dimen name="list_margin">112dp</dimen>
     <dimen name="material_margin">112dp</dimen>
+    <dimen name="image_height">404dp</dimen>
+    <dimen name="image_height_list">256dp</dimen>
     <bool name="is_tablet">true</bool>
 </resources>

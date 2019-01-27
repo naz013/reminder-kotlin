@@ -65,6 +65,10 @@ object Module {
     val isNougat1: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 
+    fun isChromeOs(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature("org.chromium.arc.device_management")
+    }
+
     fun hasTelephony(context: Context): Boolean {
         return context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
     }

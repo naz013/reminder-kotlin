@@ -36,6 +36,13 @@ abstract class ThemedActivity : AppCompatActivity() {
         isDark = themeUtil.isDark
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (Module.isChromeOs(this)) {
+            window.statusBarColor = themeUtil.getSecondaryColor()
+        }
+    }
+
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(language.onAttach(newBase))
     }
