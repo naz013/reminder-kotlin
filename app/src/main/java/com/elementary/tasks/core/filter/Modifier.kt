@@ -1,4 +1,4 @@
-package com.elementary.tasks.core
+package com.elementary.tasks.core.filter
 
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -18,6 +18,8 @@ abstract class Modifier<V>(private var modifier: Modifier<V>? = null,
     init {
         modifier?.setExternal(this)
     }
+
+    fun hasOriginal(): Boolean = original.isNotEmpty()
 
     protected open fun apply(data: List<V>): List<V> {
         val mod = modifier

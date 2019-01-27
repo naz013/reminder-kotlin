@@ -21,8 +21,7 @@ import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
-import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
+import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import kotlinx.android.synthetic.main.fragment_trash.*
 
 /**
@@ -43,7 +42,7 @@ import kotlinx.android.synthetic.main.fragment_trash.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
+class ArchiveFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
 
     private lateinit var viewModel: ArchiveRemindersViewModel
 
@@ -54,14 +53,14 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             allGroups = { return@ReminderResolver viewModel.groups })
 
     private var mAdapter = RemindersRecyclerAdapter()
-    private val filterController = ReminderFilterController(this)
+    private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
-            filterController.setSearchValue(query)
+            searchModifier.setSearchValue(query)
             if (mSearchMenu != null) {
                 mSearchMenu?.collapseActionView()
             }
@@ -69,7 +68,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-            filterController.setSearchValue(newText)
+            searchModifier.setSearchValue(newText)
             return false
         }
     }
@@ -135,7 +134,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     override fun getTitle(): String = getString(R.string.trash)
 
     private fun showData(result: List<Reminder>) {
-        filterController.original = result.toMutableList()
+        searchModifier.original = result.toMutableList()
         activity?.invalidateOptionsMenu()
     }
 
@@ -170,7 +169,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    override fun onChanged(result: List<Reminder>) {
+    override fun invoke(result: List<Reminder>) {
         mAdapter.submitList(result)
         recyclerView.smoothScrollToPosition(0)
         reloadView(result.size)

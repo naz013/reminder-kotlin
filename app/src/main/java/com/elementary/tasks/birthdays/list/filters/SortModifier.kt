@@ -1,6 +1,6 @@
 package com.elementary.tasks.birthdays.list.filters
 
-import com.elementary.tasks.core.Modifier
+import com.elementary.tasks.core.filter.Modifier
 import com.elementary.tasks.core.data.models.Birthday
 
 class SortModifier(modifier: Modifier<Birthday>? = null,

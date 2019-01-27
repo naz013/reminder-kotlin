@@ -1,6 +1,6 @@
 package com.elementary.tasks.notes.list.filters
 
-import com.elementary.tasks.core.Modifier
+import com.elementary.tasks.core.filter.Modifier
 import com.elementary.tasks.core.data.models.NoteWithImages
 
 class SearchModifier(modifier: Modifier<NoteWithImages>? = null,

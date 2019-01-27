@@ -11,9 +11,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.activity_application_list.*
 import kotlinx.coroutines.Job
 
@@ -35,10 +35,19 @@ import kotlinx.coroutines.Job
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
+class ApplicationActivity : ThemedActivity() {
 
     private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
-    private val filterController = AppFilterController(this)
+    private val searchModifier = object : SearchModifier<ApplicationItem>(null, {
+        adapter.submitList(it)
+        contactsList.smoothScrollToPosition(0)
+        refreshView(it.size)
+    }) {
+        override fun filter(v: ApplicationItem): Boolean {
+            return searchValue.isEmpty() || (v.name
+                    ?: "").toLowerCase().contains(searchValue.toLowerCase())
+        }
+    }
     private var mLoader: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,8 +89,8 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
             }
             withUIContext {
                 hideProgress()
-                filterController.original = mList
-                refreshView()
+                searchModifier.original = mList
+                refreshView(mList.size)
             }
         }
     }
@@ -126,7 +135,7 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                filterController.setSearchValue(s.toString())
+                searchModifier.setSearchValue(s.toString())
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -144,8 +153,8 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
         imm?.hideSoftInputFromWindow(searchField.windowToken, 0)
     }
 
-    private fun refreshView() {
-        if (adapter.itemCount > 0) {
+    private fun refreshView(count: Int) {
+        if (count > 0) {
             emptyItem.visibility = View.GONE
             scroller.visibility = View.VISIBLE
         } else {
@@ -163,11 +172,5 @@ class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
     override fun onDestroy() {
         super.onDestroy()
         mLoader?.cancel()
-    }
-
-    override fun onChanged(result: List<ApplicationItem>) {
-        adapter.submitList(result)
-        contactsList.smoothScrollToPosition(0)
-        refreshView()
     }
 }

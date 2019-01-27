@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.activity_file_explorer.*
 import java.io.File
 import java.io.FilenameFilter
@@ -42,7 +42,7 @@ import kotlin.Comparator
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
+class FileExplorerActivity : ThemedActivity() {
 
     private val str = ArrayList<String>()
     private var firstLvl: Boolean = true
@@ -56,7 +56,15 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
     private var filType: String = ""
 
     private val mAdapter: FileRecyclerAdapter = FileRecyclerAdapter()
-    private val filterController = FileFilterController(this)
+    private val searchModifier = object : SearchModifier<FileItem>(null, {
+        mAdapter.submitList(it)
+        recyclerView.scrollToPosition(0)
+        refreshView(it.size)
+    }) {
+        override fun filter(v: FileItem): Boolean {
+            return searchValue.isEmpty() || v.fileName.toLowerCase().contains(searchValue.toLowerCase())
+        }
+    }
     private var mSound: Sound? = null
 
     private val directoryIcon: Int = R.drawable.ic_twotone_folder_24px
@@ -66,7 +74,7 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
         val item = mAdapter.getFileItem(position)
         mFileName = item.fileName
         mFilePath = item.filePath
-        val sel = File(path.toString() + "/" + mFileName)
+        val sel = File("$path/$mFileName")
         if (sel.isDirectory) {
             firstLvl = false
             str.add(mFileName)
@@ -171,7 +179,7 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (mFilter) {
-                    filterController.setSearchValue(s.toString())
+                    searchModifier.setSearchValue(s.toString())
                 }
             }
 
@@ -194,7 +202,7 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
             Toast.makeText(this, getString(R.string.no_files), Toast.LENGTH_SHORT).show()
         }
         recyclerView.smoothScrollToPosition(0)
-        refreshView()
+        refreshView(mDataList.size)
     }
 
     private fun play() {
@@ -245,7 +253,7 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
                 createFilteredFileList()
             }
             withUIContext {
-                filterController.original = mDataList
+                searchModifier.original = mDataList
                 loaderView.visibility = View.GONE
                 loadList()
             }
@@ -335,8 +343,8 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
         }
     }
 
-    private fun refreshView() {
-        if (mAdapter.itemCount > 0) {
+    private fun refreshView(count: Int) {
+        if (count > 0) {
             emptyItem.visibility = View.GONE
             scroller.visibility = View.VISIBLE
         } else {
@@ -355,12 +363,6 @@ class FileExplorerActivity : ThemedActivity(), FilterCallback<FileItem> {
                 finish()
             }
         }
-    }
-
-    override fun onChanged(result: List<FileItem>) {
-        mAdapter.submitList(result)
-        recyclerView.scrollToPosition(0)
-        refreshView()
     }
 
     companion object {
