@@ -148,7 +148,7 @@ class ActionView : LinearLayout, TextWatcher {
         actionCheck.isChecked = action
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             REQ_CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
                 actionCheck.isChecked = true

@@ -50,7 +50,7 @@ abstract class BaseMapFragment : Fragment() {
                 map.mapType = GoogleMap.MAP_TYPE_NONE
             }
             val ctx = context ?: return
-            val res = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.mapStyleJson))
+            map.setMapStyle(MapStyleOptions.loadRawResourceStyle(ctx, themeUtil.mapStyleJson))
             map.mapType = mapType
         } else {
             map.mapType = mapType

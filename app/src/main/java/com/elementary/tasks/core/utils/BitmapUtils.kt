@@ -122,5 +122,6 @@ object BitmapUtils {
         val o2 = BitmapFactory.Options()
         o2.inSampleSize = scale
         return BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedImage), null, o2)
+                ?: throw FileNotFoundException()
     }
 }

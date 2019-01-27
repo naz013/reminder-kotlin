@@ -294,7 +294,7 @@ class PlacesFragment : RadiusTypeFragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        actionView.onRequestPermissionsResult(requestCode, grantResults)
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
                 CONTACTS -> selectContact()

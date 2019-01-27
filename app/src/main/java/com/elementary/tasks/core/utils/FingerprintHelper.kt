@@ -10,6 +10,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 
+@Suppress("DEPRECATION")
 @SuppressLint("NewApi")
 class FingerprintHelper(context: Context, callback: Callback?) : FingerprintManager.AuthenticationCallback() {
 
