@@ -487,7 +487,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private fun showNote(noteWithImages: NoteWithImages?) {
         this.mItem = noteWithImages
         Timber.d("showNote: $noteWithImages")
-        if (noteWithImages != null) {
+        if (noteWithImages != null && !stateViewModel.isNoteEdited) {
             val note = noteWithImages.note ?: return
             colorSlider.setSelection(note.color)
             opacityBar.progress = note.opacity
@@ -495,6 +495,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             stateViewModel.fontStyle.postValue(note.style)
             stateViewModel.images.postValue(noteWithImages.images)
             stateViewModel.colorOpacity.postValue(newPair(note.color, note.opacity))
+            stateViewModel.isNoteEdited = true
         }
     }
 
@@ -530,9 +531,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun showReminder(reminder: Reminder?) {
         mReminder = reminder
-        if (reminder != null) {
+        if (reminder != null && !stateViewModel.isReminderEdited) {
             setDateTime(reminder.eventTime)
             stateViewModel.isReminderAttached.postValue(true)
+            stateViewModel.isReminderEdited = true
         }
     }
 
