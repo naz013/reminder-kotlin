@@ -140,7 +140,7 @@ class YearFragment : RepeatableTypeFragment() {
                     if (clipData.itemCount > 0) {
                         attachmentView.setUri(clipData.getItemAt(0).uri)
                     }
-                }, UriUtil.URI_MIME)
+                }, *ATTACHMENT_TYPES)
         groupView.onGroupSelectListener = {
             reminderInterface.selectGroup()
         }

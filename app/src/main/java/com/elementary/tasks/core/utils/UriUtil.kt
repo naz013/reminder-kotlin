@@ -32,6 +32,7 @@ import timber.log.Timber
 object UriUtil {
 
     const val URI_MIME = "application/x-arc-uri-list"
+    const val ANY_MIME = "any"
 
     fun getUri(context: Context, filePath: String): Uri {
         Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)
