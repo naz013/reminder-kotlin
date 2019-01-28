@@ -2,8 +2,7 @@ package com.elementary.tasks.core.contacts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
@@ -28,9 +27,8 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactHolder>() {
+class ContactsRecyclerAdapter : ListAdapter<ContactItem, ContactHolder>(ContactDiffCallback()) {
 
-    val data: MutableList<ContactItem> = mutableListOf()
     var clickListener: ((name: String, number: String) -> Unit)? = null
 
     @Inject
@@ -42,47 +40,17 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactHolder>() {
         ReminderApp.appComponent.inject(this)
     }
 
-    fun setData(data: List<ContactItem>) {
-        val diffResult = DiffUtil.calculateDiff(ContactDiffCallback(this.data as List<ContactItem>, data))
-        this.data.clear()
-        this.data.addAll(data)
-        diffResult.dispatchUpdatesTo(this)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
         return ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false),
                 themeUtil.isDark) { performClick(it) }
     }
 
     private fun performClick(it: Int) {
-        val item = data[it]
+        val item = getItem(it)
         clickListener?.invoke(item.name, "")
     }
 
     override fun onBindViewHolder(holder: ContactHolder, position: Int) {
-        holder.bind(data[position])
-    }
-
-    override fun getItemCount(): Int {
-        return data.size
-    }
-
-    internal class ContactDiffCallback(private var oldList: List<ContactItem>, private var newList: List<ContactItem>) : DiffUtil.Callback() {
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val p1 = oldList[oldItemPosition]
-            val p2 = newList[newItemPosition]
-            return p1.id == p2.id
-        }
-
-        override fun getOldListSize(): Int = oldList.size
-
-        override fun getNewListSize(): Int = newList.size
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val p1 = oldList[oldItemPosition]
-            val p2 = newList[newItemPosition]
-            return p1 == p2
-        }
+        holder.bind(getItem(position))
     }
 }

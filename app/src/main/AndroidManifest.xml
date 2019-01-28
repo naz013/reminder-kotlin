@@ -326,11 +326,11 @@
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".core.contacts.ContactsActivity"
+            android:name=".core.contacts.SelectContactActivity"
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderDialogActivity" />
         <activity
-            android:name=".core.apps.ApplicationActivity"
+            android:name=".core.apps.SelectApplicationActivity"
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".reminder.preview.FullscreenMapActivity" />

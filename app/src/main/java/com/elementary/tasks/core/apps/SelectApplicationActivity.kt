@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.activity_application_list.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ApplicationActivity : ThemedActivity() {
+class SelectApplicationActivity : ThemedActivity() {
 
     private lateinit var viewModel: SelectApplicationViewModel
     private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
@@ -57,7 +57,9 @@ class ApplicationActivity : ThemedActivity() {
         viewModel = ViewModelProviders.of(this).get(SelectApplicationViewModel::class.java)
         viewModel.packageManager = packageManager
         viewModel.loadApps()
+
         setContentView(R.layout.activity_application_list)
+
         loaderView.visibility = View.GONE
         initActionBar()
         initSearchView()
@@ -67,10 +69,7 @@ class ApplicationActivity : ThemedActivity() {
     override fun onStart() {
         super.onStart()
         viewModel.applications.observe(this, Observer { applications ->
-            applications?.let {
-                searchModifier.original = it
-                refreshView(it.size)
-            }
+            applications?.let { searchModifier.original = it }
         })
         viewModel.isLoading.observe(this, Observer { isLoading ->
             isLoading?.let {
