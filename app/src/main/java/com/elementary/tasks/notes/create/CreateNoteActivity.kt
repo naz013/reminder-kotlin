@@ -43,9 +43,7 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import kotlinx.android.synthetic.main.activity_create_note.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -70,25 +68,19 @@ import javax.inject.Inject
  */
 class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
-    private var mHour = 0
-    private var mMinute = 0
-    private var mYear = 0
-    private var mMonth = 0
-    private var mDay = 1
-    private var mColor = 0
-    private var mFontStyle = 9
     private var mEditPosition = -1
     private var isBgDark = false
-    private var mIsLogged = false
 
     private lateinit var viewModel: NoteViewModel
+    private lateinit var stateViewModel: CreateNoteViewModel
+    private lateinit var photoSelectionUtil: PhotoSelectionUtil
+
     private val imagesGridAdapter = ImagesGridAdapter()
 
     private var mItem: NoteWithImages? = null
     private var mReminder: Reminder? = null
-
     private var speech: SpeechRecognizer? = null
-    private lateinit var photoSelectionUtil: PhotoSelectionUtil
+
     @Inject
     lateinit var backupTool: BackupTool
     @Inject
@@ -141,33 +133,21 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
     }
 
-    private val isReminderAttached: Boolean
-        get() = remindContainer.visibility == View.VISIBLE
-
     private var mDateCallBack = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-        mYear = year
-        mMonth = monthOfYear
-        mDay = dayOfMonth
-        val dayStr: String = if (mDay < 10) {
-            "0$mDay"
-        } else {
-            mDay.toString()
-        }
-        val monthStr: String = if (mMonth < 9) {
-            "0" + (mMonth + 1)
-        } else {
-            (mMonth + 1).toString()
-        }
-        remindDate.text = SuperUtil.appendString(dayStr, "/", monthStr, "/", mYear.toString())
+        val c = Calendar.getInstance()
+        c.timeInMillis = System.currentTimeMillis()
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        c.set(Calendar.MONTH, monthOfYear)
+        c.set(Calendar.YEAR, year)
+        stateViewModel.date.postValue(c.timeInMillis)
     }
 
     private var mCallBack = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-        mHour = hourOfDay
-        mMinute = minute
         val c = Calendar.getInstance()
+        c.timeInMillis = System.currentTimeMillis()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        remindTime.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
+        stateViewModel.time.postValue(c.timeInMillis)
     }
 
     init {
@@ -176,10 +156,38 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
+        lifecycle.addObserver(stateViewModel)
+
         isBgDark = isDark
-        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+
         setContentView(R.layout.activity_create_note)
 
+        initActionBar()
+        initMenu()
+        hideRecording()
+        remindDate.setOnClickListener { dateDialog() }
+        remindTime.setOnClickListener { timeDialog() }
+        micButton.setOnClickListener { micClick() }
+        discardReminder.setOnClickListener { stateViewModel.isReminderAttached.postValue(false) }
+        initImagesList()
+
+        if (savedInstanceState == null) {
+            initDefaults()
+        }
+        initFromState()
+        loadNote()
+    }
+
+    private fun initFromState() {
+        val pair = newPair()
+
+        colorSlider.setSelection(pair.first)
+        opacityBar.progress = pair.second
+    }
+
+    override fun onStart() {
+        super.onStart()
         photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
 
         ViewUtils.registerDragAndDrop(this, layoutContainer, true, themeUtil.getSecondaryColor(), {
@@ -188,40 +196,69 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             }
         }, ClipDescription.MIMETYPE_TEXT_PLAIN)
 
-        initActionBar()
-        initMenu()
+        observeStates()
 
-        hideRecording()
-
-        remindDate.setOnClickListener { dateDialog() }
-        remindTime.setOnClickListener { timeDialog() }
-        micButton.setOnClickListener { micClick() }
-        discardReminder.setOnClickListener { remindContainer.visibility = View.GONE }
-        remindContainer.visibility = View.GONE
-        initImagesList()
-
-        initColor()
-        loadNote()
-
-        updateBackground()
-        updateDarkness()
-        updateTextStyle()
-        updateTextColors()
-        updateIcons()
-
-        if (prefs.hasPinCode && !mIsLogged) {
+        if (prefs.hasPinCode && !stateViewModel.isLogged) {
             PinLoginActivity.verify(this)
         }
     }
 
-    private fun initColor() {
-        mColor = if (prefs.isNoteColorRememberingEnabled) {
+    private fun observeStates() {
+        stateViewModel.colorOpacity.observe(this, Observer {
+            if (it != null) {
+                updateDarkness(it.second)
+                updateBackground(it.first, it.second)
+                updateTextColors()
+                updateIcons()
+            }
+        })
+        stateViewModel.time.observe(this, Observer {
+            if (it != null) {
+                remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
+            }
+        })
+        stateViewModel.date.observe(this, Observer {
+            if (it != null) {
+                remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
+            }
+        })
+        stateViewModel.isReminderAttached.observe(this, Observer {
+            if (it != null) {
+                remindContainer.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        })
+        stateViewModel.fontStyle.observe(this, Observer {
+            if (it != null) {
+                updateFontStyle(it)
+            }
+        })
+        stateViewModel.images.observe(this, Observer {
+            if (it != null) {
+                imagesGridAdapter.submitList(it)
+            }
+        })
+    }
+
+    private fun initDefaults() {
+        stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+
+        val color = if (prefs.isNoteColorRememberingEnabled) {
             prefs.lastNoteColor
         } else {
-            Random().nextInt(16)
+            newColor()
         }
-        colorSlider.setSelection(mColor)
+        val opacity = prefs.noteColorOpacity
+        stateViewModel.colorOpacity.postValue(newPair(color, opacity))
+
+        colorSlider.setSelection(color)
+        opacityBar.progress = opacity
+
+        stateViewModel.fontStyle.postValue(0)
+        stateViewModel.time.postValue(System.currentTimeMillis())
+        stateViewModel.date.postValue(System.currentTimeMillis())
     }
+
+    private fun newColor(): Int = Random().nextInt(16)
 
     private fun setText(text: String?) {
         taskMessage.setText(text)
@@ -270,6 +307,19 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         initRecognizer()
     }
 
+    private fun newPair(color: Int = -1, opacity: Int = -1): Pair<Int, Int> {
+        var newColor = color
+        var newOpacity = opacity
+        if (color == -1) {
+            newColor = stateViewModel.colorOpacity.value?.first ?: newColor()
+        }
+        if (opacity == -1) {
+            newOpacity = stateViewModel.colorOpacity.value?.second ?: 100
+        }
+        Timber.d("newPair: $newColor, $newOpacity")
+        return Pair(newColor, newOpacity)
+    }
+
     private fun initMenu() {
         if (Module.hasMicrophone(this)) {
             micButton.visibility = View.VISIBLE
@@ -285,20 +335,15 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         colorSlider.setColors(themeUtil.colorsForSlider())
         colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         colorSlider.setListener { position, _ ->
-            mColor = position
+            stateViewModel.colorOpacity.postValue(newPair(color = position))
             if (prefs.isNoteColorRememberingEnabled) {
-                prefs.lastNoteColor = mColor
+                prefs.lastNoteColor = position
             }
-            updateBackground()
         }
-        opacityBar.progress = prefs.noteColorOpacity
         opacityBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 prefs.noteColorOpacity = progress
-                updateBackground()
-                updateDarkness()
-                updateTextColors()
-                updateIcons()
+                stateViewModel.colorOpacity.postValue(newPair(opacity = progress))
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -307,11 +352,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
             }
         })
-        updateBackground()
     }
 
-    private fun updateDarkness() {
-        isBgDark = if (themeUtil.isAlmostTransparent(opacityBar.progress)) {
+    private fun updateDarkness(opacity: Int) {
+        isBgDark = if (themeUtil.isAlmostTransparent(opacity)) {
             isDark
         } else {
             false
@@ -347,13 +391,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         return colorLayout.visibility == View.GONE
     }
 
+    private fun isReminderAdded(): Boolean = stateViewModel.isReminderAttached.value ?: false
+
     private fun switchReminder() {
-        if (!isReminderAttached) {
-            setDateTime(null)
-            remindContainer.visibility = View.VISIBLE
-        } else {
-            remindContainer.visibility = View.GONE
-        }
+        stateViewModel.isReminderAttached.postValue(!isReminderAdded())
     }
 
     private fun loadNote() {
@@ -375,7 +416,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun saveEditedImage() {
         val image = imagesSingleton.getEditable() ?: return
-        imagesGridAdapter.setImage(image, mEditPosition)
+        stateViewModel.setImage(image, mEditPosition)
     }
 
     private fun initViewModel(id: String) {
@@ -396,6 +437,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 }
             }
         })
+        lifecycle.addObserver(viewModel)
     }
 
     private fun initActionBar() {
@@ -411,14 +453,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
 
         toolbar.inflateMenu(R.menu.activity_create_note)
-        updateIcons()
     }
 
     private fun updateIcons() {
         toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
         ViewUtils.tintOverflowButton(toolbar, isBgDark)
         invalidateOptionsMenu()
-
         discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
     }
 
@@ -446,24 +486,23 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         this.mItem = noteWithImages
         Timber.d("showNote: $noteWithImages")
         if (noteWithImages != null) {
-            imagesGridAdapter.setImages(noteWithImages.images)
             val note = noteWithImages.note ?: return
-            mColor = note.color
-            mFontStyle = note.style
-            setText(note.summary)
-            colorSlider.setSelection(mColor)
+            colorSlider.setSelection(note.color)
             opacityBar.progress = note.opacity
-            updateBackground()
+            setText(note.summary)
+            stateViewModel.fontStyle.postValue(note.style)
+            stateViewModel.images.postValue(noteWithImages.images)
         }
     }
 
     private fun initImagesList() {
-        imagesGridAdapter.setEditable(true)
+        imagesGridAdapter.isEditable = true
         imagesGridAdapter.actionsListener = object : ActionsListener<ImageFile> {
             override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
                     ListActions.EDIT -> editImage(position)
                     ListActions.OPEN -> openImagePreview(position)
+                    ListActions.REMOVE -> stateViewModel.removeImage(position)
                     else -> {
                     }
                 }
@@ -481,7 +520,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun editImage(position: Int) {
-        imagesSingleton.setEditable(imagesGridAdapter.getItem(position))
+        imagesSingleton.setEditable(imagesGridAdapter.get(position))
         this.mEditPosition = position
         startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }
@@ -490,7 +529,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         mReminder = reminder
         if (reminder != null) {
             setDateTime(reminder.eventTime)
-            remindContainer.visibility = View.VISIBLE
+            stateViewModel.isReminderAttached.postValue(true)
         }
     }
 
@@ -544,13 +583,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         } else {
             calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(eventTime)
         }
-        mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        mMonth = calendar.get(Calendar.MONTH)
-        mYear = calendar.get(Calendar.YEAR)
-        mHour = calendar.get(Calendar.HOUR_OF_DAY)
-        mMinute = calendar.get(Calendar.MINUTE)
-        remindDate.text = TimeUtil.getDate(calendar.timeInMillis, prefs.appLanguage)
-        remindTime.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormat, prefs.appLanguage)
+        stateViewModel.date.postValue(calendar.timeInMillis)
+        stateViewModel.time.postValue(calendar.timeInMillis)
     }
 
     private fun createObject(): NoteWithImages? {
@@ -560,17 +594,19 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             taskMessage.error = getString(R.string.must_be_not_empty)
             return null
         }
-        var noteWithImages = mItem
 
+        val pair = stateViewModel.colorOpacity.value ?: Pair(newColor(), opacityBar.progress)
+
+        var noteWithImages = mItem
         var note = noteWithImages?.note
         if (note == null) {
             note = Note()
         }
         note.summary = text
         note.date = TimeUtil.gmtDateTime
-        note.color = mColor
-        note.style = mFontStyle
-        note.opacity = opacityBar.progress
+        note.color = pair.first
+        note.style = stateViewModel.fontStyle.value ?: 0
+        note.opacity = pair.second
 
         if (noteWithImages == null) {
             noteWithImages = NoteWithImages()
@@ -583,22 +619,38 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun saveNote() {
         val noteWithImages = createObject() ?: return
-        val hasReminder = isReminderAttached
+        val hasReminder = stateViewModel.isReminderAttached.value ?: false
         if (!hasReminder && mItem != null) removeNoteFromReminder()
         var reminder: Reminder? = null
         val note = noteWithImages.note
         if (hasReminder && note != null) {
-            val calendar = Calendar.getInstance()
-            calendar.set(mYear, mMonth, mDay, mHour, mMinute)
-            reminder = createReminder(note, calendar) ?: return
-        }
-        if (prefs.isNoteColorRememberingEnabled) {
-            prefs.lastNoteColor = mColor
+            reminder = createReminder(note) ?: return
         }
         viewModel.saveNote(noteWithImages, reminder)
     }
 
-    private fun createReminder(note: Note, calendar: Calendar): Reminder? {
+    private fun dateTime(): Long {
+        val result = Calendar.getInstance()
+        result.timeInMillis = System.currentTimeMillis()
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
+
+        result.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+        result.set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+        result.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+
+        calendar.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
+
+        result.set(Calendar.HOUR, calendar.get(Calendar.HOUR))
+        result.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
+        result.set(Calendar.SECOND, 0)
+        result.set(Calendar.MILLISECOND, 0)
+
+        return result.timeInMillis
+    }
+
+    private fun createReminder(note: Note): Reminder? {
         var reminder = mReminder
         if (reminder == null) {
             reminder = Reminder()
@@ -612,7 +664,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         reminder.isRemoved = false
         reminder.summary = note.summary
 
-        val startTime = calendar.timeInMillis
+        val startTime = dateTime()
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         if (!TimeCount.isCurrent(reminder.eventTime)) {
@@ -679,54 +731,19 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         return true
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        photoSelectionUtil.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinLoginActivity.REQ_CODE) {
-            if (resultCode != Activity.RESULT_OK) {
-                finish()
-            }
-        } else if (requestCode == EDIT_CODE) {
-            if (resultCode == RESULT_OK) {
-                if (mEditPosition != -1) {
-                    saveEditedImage()
-                }
-            }
-        }
+    private fun updateFontStyle(fontStyle: Int) {
+        taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
     }
 
-    private fun addImageFromUri(uri: Uri?) {
-        if (uri == null) return
-        launchDefault {
-            var bitmapImage: Bitmap? = null
-            try {
-                bitmapImage = BitmapUtils.decodeUriToBitmap(this@CreateNoteActivity, uri)
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            }
+    private fun updateBackground(color: Int, opacity: Int) {
+        Timber.d("updateBackground: $color, $opacity")
 
-            if (bitmapImage != null) {
-                val outputStream = ByteArrayOutputStream()
-                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                val imageFile = ImageFile(outputStream.toByteArray())
-                withUIContext {
-                    imagesGridAdapter.addImage(imageFile)
-                }
-            }
-        }
-    }
-
-    private fun updateTextStyle() {
-        taskMessage.typeface = AssetsUtil.getTypeface(this, mFontStyle)
-    }
-
-    private fun updateBackground() {
-        val lightColorSemi = themeUtil.getNoteLightColor(mColor, opacityBar.progress)
+        val lightColorSemi = themeUtil.getNoteLightColor(color, opacity)
         layoutContainer.setBackgroundColor(lightColorSemi)
         toolbar.setBackgroundColor(lightColorSemi)
         appBar.setBackgroundColor(lightColorSemi)
 
-        val lightColor = themeUtil.getNoteLightColor(mColor, 100)
+        val lightColor = themeUtil.getNoteLightColor(color, 100)
         window.statusBarColor = lightColor
         bottomBar.setCardBackgroundColor(lightColor)
         bottomBar.invalidate()
@@ -758,9 +775,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 return AssetsUtil.getTypeface(this@CreateNoteActivity, position)
             }
         }
-        builder.setSingleChoiceItems(adapter, mFontStyle) { _, which ->
-            mFontStyle = which
-            updateTextStyle()
+        builder.setSingleChoiceItems(adapter, stateViewModel.fontStyle.value ?: 0) { _, which ->
+            stateViewModel.fontStyle.postValue(which)
         }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
@@ -768,18 +784,44 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
+        val c = Calendar.getInstance()
+        c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, mCallBack)
+        val c = Calendar.getInstance()
+        c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat,
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), mCallBack)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        lifecycle.removeObserver(stateViewModel)
+        lifecycle.removeObserver(viewModel)
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         imm?.hideSoftInputFromWindow(taskMessage.windowToken, 0)
         releaseSpeech()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        photoSelectionUtil.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PinLoginActivity.REQ_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            } else {
+                stateViewModel.isLogged = true
+            }
+        } else if (requestCode == EDIT_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (mEditPosition != -1) {
+                    saveEditedImage()
+                }
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -794,26 +836,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     override fun onImageSelected(uri: Uri?, clipData: ClipData?) {
-        if (uri != null) {
-            addImageFromUri(uri)
-        } else if (clipData != null) {
-            DecodeImages.startDecoding(this, clipData, imagesGridAdapter.itemCount, {
-                imagesGridAdapter.addNextImages(it)
-            }, { i, imageFile ->
-                imagesGridAdapter.setImage(imageFile, i)
-            })
-        }
+        stateViewModel.addMultiple(uri, clipData, this)
     }
 
     override fun onBitmapReady(bitmap: Bitmap) {
-        launchDefault {
-            val outputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            val imageFile = ImageFile(outputStream.toByteArray())
-            withUIContext {
-                imagesGridAdapter.addImage(imageFile)
-            }
-        }
+        stateViewModel.addBitmap(bitmap)
     }
 
     override fun onBackPressed() {

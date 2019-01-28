@@ -22,5 +22,6 @@ enum class ListActions {
     OPEN,
     MORE,
     EDIT,
-    SWITCH
+    SWITCH,
+    REMOVE
 }

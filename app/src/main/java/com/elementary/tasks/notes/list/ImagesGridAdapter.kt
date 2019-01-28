@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
@@ -13,7 +14,6 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.notes.create.DecodeImages
 import kotlinx.android.synthetic.main.list_item_note_image.view.*
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,21 +33,23 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder>() {
+class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHolder>(ImageDIffCallback()) {
 
-    private val mDataList = ArrayList<ImageFile>()
-    private var isEditable: Boolean = false
+    var isEditable: Boolean = false
     var actionsListener: ActionsListener<ImageFile>? = null
+    var data: List<ImageFile> = listOf()
+        private set
 
-    val data: List<ImageFile>
-        get() = mDataList
-
-    fun setEditable(editable: Boolean) {
-        isEditable = editable
+    fun get(position: Int): ImageFile {
+        return data[position]
     }
 
-    fun getItem(position: Int): ImageFile {
-        return mDataList[position]
+    override fun submitList(list: List<ImageFile>?) {
+        super.submitList(list)
+        if (list != null) {
+            data = list
+            notifyDataSetChanged()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -55,11 +57,7 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        holder.bind(mDataList[position])
-    }
-
-    override fun getItemCount(): Int {
-        return mDataList.size
+        holder.bind(getItem(position))
     }
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -78,7 +76,9 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
             itemView.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
             if (isEditable) {
                 itemView.removeButton.visibility = View.VISIBLE
-                itemView.removeButton.setOnClickListener { removeImage(adapterPosition) }
+                itemView.removeButton.setOnClickListener {
+                    actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.REMOVE)
+                }
                 if (actionsListener != null && Module.isPro) {
                     itemView.editButton.visibility = View.VISIBLE
                     itemView.editButton.setOnClickListener { view ->
@@ -92,42 +92,15 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
                 itemView.editButton.visibility = View.GONE
             }
         }
-    }
 
-    private fun removeImage(position: Int) {
-        mDataList.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(0, mDataList.size)
-    }
-
-    fun setImages(list: List<ImageFile>) {
-        mDataList.clear()
-        mDataList.addAll(list)
-        notifyDataSetChanged()
-    }
-
-    fun addNextImages(list: List<ImageFile>) {
-        mDataList.addAll(list)
-        notifyItemRangeChanged(0, mDataList.size)
-    }
-
-    fun setImage(image: ImageFile, position: Int) {
-        mDataList[position] = image
-        notifyItemChanged(position)
-    }
-
-    fun addImage(image: ImageFile) {
-        mDataList.add(image)
-        notifyDataSetChanged()
-    }
-
-    private fun performClick(view: View, position: Int) {
-        if (actionsListener != null) {
-            actionsListener?.onAction(view, position, null, ListActions.OPEN)
+        private fun performClick(view: View, position: Int) {
+            if (actionsListener != null) {
+                actionsListener?.onAction(view, position, null, ListActions.OPEN)
+            }
         }
-    }
 
-    fun loadImage(imageView: ImageView, image: ImageFile) {
-        Glide.with(imageView).load(image.image).into(imageView)
+        private fun loadImage(imageView: ImageView, image: ImageFile) {
+            Glide.with(imageView).load(image.image).into(imageView)
+        }
     }
 }
