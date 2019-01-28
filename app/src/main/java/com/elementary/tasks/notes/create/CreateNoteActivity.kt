@@ -3,10 +3,7 @@ package com.elementary.tasks.notes.create
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.ClipData
-import android.content.ContentResolver
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.net.Uri
@@ -184,6 +181,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         setContentView(R.layout.activity_create_note)
 
         photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
+
+        ViewUtils.registerDragAndDrop(this, layoutContainer, true, themeUtil.getSecondaryColor(), {
+            if (it.itemCount > 0) {
+                taskMessage.setText(taskMessage.text.toString().trim() + "\n" + it.getItemAt(0).text.toString())
+            }
+        }, ClipDescription.MIMETYPE_TEXT_PLAIN)
 
         initActionBar()
         initMenu()

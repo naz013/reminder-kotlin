@@ -50,7 +50,7 @@ object ViewUtils {
                 DragEvent.ACTION_DRAG_STARTED -> {
                     Timber.d("registerDragAndDrop: started, ${event.clipDescription}")
                     for (type in mimeTypes) {
-                        if (event.clipDescription.hasMimeType(type)) {
+                        if (type == UriUtil.ANY_MIME || event.clipDescription.hasMimeType(type)) {
                             if (markAction) {
                                 v.setBackgroundColor(ThemeUtil.adjustAlpha(color, 25))
                             }

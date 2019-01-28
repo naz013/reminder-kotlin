@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.create.fragments
 
+import android.content.ClipDescription
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
@@ -10,6 +11,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.views.GroupView
 import timber.log.Timber
 import javax.inject.Inject
@@ -107,5 +109,9 @@ abstract class TypeFragment : Fragment() {
             val defGroup = reminderInterface.defGroup ?: return
             onGroupUpdate(defGroup)
         }
+    }
+
+    companion object {
+        val ATTACHMENT_TYPES = arrayOf(UriUtil.URI_MIME, UriUtil.ANY_MIME)
     }
 }
