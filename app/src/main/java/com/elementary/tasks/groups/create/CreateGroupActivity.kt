@@ -1,4 +1,4 @@
-package com.elementary.tasks.groups
+package com.elementary.tasks.groups.create
 
 import android.content.ContentResolver
 import android.os.Bundle
@@ -18,7 +18,6 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import kotlinx.android.synthetic.main.activity_create_group.*
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -56,6 +55,7 @@ class CreateGroupActivity : ThemedActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_group)
         initActionBar()
+
         colorSlider.setColors(themeUtil.colorsForSlider())
         colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
 
@@ -82,16 +82,18 @@ class CreateGroupActivity : ThemedActivity() {
 
     private fun showGroup(reminderGroup: ReminderGroup) {
         this.mItem = reminderGroup
-        nameInput.setText(reminderGroup.groupTitle)
-        colorSlider.setSelection(reminderGroup.groupColor)
-        defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
-        defaultCheck.isChecked = reminderGroup.isDefaultGroup
+        if (!viewModel.isEdited) {
+            nameInput.setText(reminderGroup.groupTitle)
+            colorSlider.setSelection(reminderGroup.groupColor)
+            defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
+            defaultCheck.isChecked = reminderGroup.isDefaultGroup
+            viewModel.isEdited = true
+        }
         toolbar.setTitle(R.string.change_group)
         invalidateOptionsMenu()
     }
 
     private fun loadGroup() {
-        val intent = intent
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
@@ -101,9 +103,7 @@ class CreateGroupActivity : ThemedActivity() {
                 val item = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getGroup(name.path, null)
                 } else null
-                if (item != null) {
-                    showGroup(item)
-                }
+                item?.let { showGroup(it) }
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -111,9 +111,8 @@ class CreateGroupActivity : ThemedActivity() {
             }
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
-                val item = intent.getSerializableExtra(Constants.INTENT_ITEM) as ReminderGroup?
-                if (item != null) {
-                    showGroup(item)
+                (intent.getSerializableExtra(Constants.INTENT_ITEM) as ReminderGroup?)?.let {
+                    showGroup(it)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -123,24 +122,20 @@ class CreateGroupActivity : ThemedActivity() {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, GroupViewModel.Factory(id)).get(GroupViewModel::class.java)
-        viewModel.reminderGroup.observe(this, Observer{ group ->
-            if (group != null) {
-                showGroup(group)
-            }
+        viewModel.reminderGroup.observe(this, Observer { group ->
+            group?.let { showGroup(it) }
         })
-        viewModel.result.observe(this, Observer{ commands ->
-            if (commands != null) {
-                when (commands) {
+        viewModel.result.observe(this, Observer { commands ->
+            commands?.let {
+                when (it) {
                     Commands.SAVED, Commands.DELETED -> finish()
                     else -> {
                     }
                 }
             }
         })
-        viewModel.allGroups.observe(this, Observer{ groups ->
-            if (groups != null) {
-                invalidateOptionsMenu()
-            }
+        viewModel.allGroups.observe(this, Observer { groups ->
+            groups?.let { invalidateOptionsMenu() }
         })
     }
 
@@ -151,25 +146,26 @@ class CreateGroupActivity : ThemedActivity() {
             nameLayout.isErrorEnabled = true
             return
         }
-        var item = mItem
-        if (item == null) {
-            item = ReminderGroup(text, UUID.randomUUID().toString(), 0, TimeUtil.gmtDateTime)
+        val item = (mItem ?: ReminderGroup()).apply {
+            this.groupColor = colorSlider.selectedItem
+            this.groupDateTime = TimeUtil.gmtDateTime
+            this.groupTitle = text
+            this.isDefaultGroup = defaultCheck.isChecked
         }
         val wasDefault = item.isDefaultGroup
-
-        item.groupColor = colorSlider.selectedItem
-        item.isDefaultGroup = defaultCheck.isChecked
-        item.groupTitle = text
-        item.groupDateTime = TimeUtil.gmtDateTime
-
         viewModel.saveGroup(item, wasDefault)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-        val groups = viewModel.allGroups.value ?: listOf()
-        if (mItem != null && groups.size > 1) {
-            menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
+        mItem?.let {
+            if (!it.isDefaultGroup) {
+                viewModel.allGroups.value?.let { groups ->
+                    if (groups.size > 1) {
+                        menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
+                    }
+                }
+            }
         }
         return true
     }
@@ -193,10 +189,7 @@ class CreateGroupActivity : ThemedActivity() {
     }
 
     private fun deleteItem() {
-        val item = mItem
-        if (item != null) {
-            viewModel.deleteGroup(item)
-        }
+        mItem?.let { viewModel.deleteGroup(it) }
     }
 
     companion object {

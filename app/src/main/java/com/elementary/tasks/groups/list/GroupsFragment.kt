@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
-import com.elementary.tasks.groups.CreateGroupActivity
+import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import kotlinx.android.synthetic.main.fragment_groups.*
 

@@ -225,7 +225,7 @@
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".groups.CreateGroupActivity"
+            android:name=".groups.create.CreateGroupActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>

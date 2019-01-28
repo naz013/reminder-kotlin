@@ -9,6 +9,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.groups.work.SingleBackupWorker
+import kotlinx.coroutines.runBlocking
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,6 +32,7 @@ import com.elementary.tasks.groups.work.SingleBackupWorker
 class GroupViewModel private constructor(id: String) : BaseGroupsViewModel() {
 
     var reminderGroup: LiveData<ReminderGroup>
+    var isEdited = false
 
     init {
         reminderGroup = appDb.reminderGroupDao().loadById(id)
@@ -39,12 +41,14 @@ class GroupViewModel private constructor(id: String) : BaseGroupsViewModel() {
     fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
         postInProgress(true)
         launchDefault {
-            if (!wasDefault && reminderGroup.isDefaultGroup) {
-                val groups = appDb.reminderGroupDao().all()
-                for (g in groups) g.isDefaultGroup = false
-                appDb.reminderGroupDao().insertAll(groups)
+            runBlocking {
+                if (!wasDefault && reminderGroup.isDefaultGroup) {
+                    val groups = appDb.reminderGroupDao().all()
+                    for (g in groups) g.isDefaultGroup = false
+                    appDb.reminderGroupDao().insertAll(groups)
+                }
+                appDb.reminderGroupDao().insert(reminderGroup)
             }
-            appDb.reminderGroupDao().insert(reminderGroup)
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
             withUIContext {
                 postInProgress(false)
