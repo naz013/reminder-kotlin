@@ -42,7 +42,7 @@ import com.elementary.tasks.dayView.day.EventsListFragment
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TaskListActivity
 import com.elementary.tasks.googleTasks.list.TaskListFragment
-import com.elementary.tasks.groups.CreateGroupActivity
+import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
