@@ -22,6 +22,7 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_add_birthday.*
+import timber.log.Timber
 import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
@@ -47,23 +48,17 @@ import javax.inject.Inject
 class AddBirthdayActivity : ThemedActivity() {
 
     private lateinit var viewModel: BirthdayViewModel
-
-    private var mYear = 0
-    private var mMonth = 0
-    private var mDay = 0
-    private var number: String = ""
     private var mBirthday: Birthday? = null
-    private var date: Long = 0
-    private var mIsLogged = false
-
     @Inject
     lateinit var backupTool: BackupTool
 
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-        mYear = year
-        mMonth = monthOfYear
-        mDay = dayOfMonth
-        birthDate.text = createBirthDate(mDay, mMonth, mYear)
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, monthOfYear)
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        viewModel.date.postValue(calendar.timeInMillis)
     }
 
     init {
@@ -72,29 +67,39 @@ class AddBirthdayActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_add_birthday)
         initActionBar()
-        container.visibility = View.GONE
-        contactCheck.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
-                container.visibility = View.VISIBLE
-            else
-                container.visibility = View.GONE
-        }
 
         if (prefs.isTelephonyAllowed) {
             contactCheck.visibility = View.VISIBLE
+            contactCheck.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked && !prefs.isTelephonyAllowed) return@setOnCheckedChangeListener
+                viewModel.isContactAttached.postValue(isChecked)
+            }
         } else {
             contactCheck.visibility = View.GONE
+        }
+
+        ViewUtils.listenScrollableView(scrollView) {
+            appBar.isSelected = it > 0
         }
 
         birthDate.setOnClickListener { dateDialog() }
         pickContact.setOnClickListener { pickContact() }
 
         loadBirthday()
-        if (prefs.hasPinCode && !mIsLogged) {
-            PinLoginActivity.verify(this, PinLoginActivity.REQ_CODE)
+
+        if (savedInstanceState == null) {
+            viewModel.isContactAttached.postValue(false)
+            viewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (prefs.hasPinCode && !viewModel.isLogged) {
+            PinLoginActivity.verify(this)
         }
     }
 
@@ -111,49 +116,55 @@ class AddBirthdayActivity : ThemedActivity() {
         calendar.timeInMillis = System.currentTimeMillis()
         toolbar.setTitle(R.string.add_birthday)
         if (birthday != null) {
-            birthName.setText(birthday.name)
-            try {
-                val dt = TimeUtil.BIRTH_DATE_FORMAT.parse(birthday.date)
-                if (dt != null) calendar.time = dt
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
-
-            if (!TextUtils.isEmpty(birthday.number)) {
-                numberView.setText(birthday.number)
-                contactCheck.isChecked = true
-            }
             toolbar.setTitle(R.string.edit_birthday)
-            this.number = birthday.number
-        } else if (date != 0L) {
-            calendar.timeInMillis = date
+            if (!viewModel.isEdited) {
+                birthName.setText(birthday.name)
+                try {
+                    val dt = TimeUtil.BIRTH_DATE_FORMAT.parse(birthday.date)
+                    if (dt != null) calendar.time = dt
+                } catch (e: ParseException) {
+                    e.printStackTrace()
+                }
+
+                if (!TextUtils.isEmpty(birthday.number)) {
+                    numberView.setText(birthday.number)
+                    contactCheck.isChecked = true
+                }
+                viewModel.isEdited = true
+            }
         }
-        mYear = calendar.get(Calendar.YEAR)
-        mMonth = calendar.get(Calendar.MONTH)
-        mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        birthDate.text = TimeUtil.BIRTH_DATE_FORMAT.format(calendar.time)
     }
 
     private fun loadBirthday() {
-        date = intent.getLongExtra(Constants.INTENT_DATE, 0)
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
-        if (intent.data != null) {
-            try {
-                val name = intent.data ?: return
-                val scheme = name.scheme
-                mBirthday = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getBirthday(name.path, null)
-                } else null
-                showBirthday(mBirthday)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        when {
+            intent.data != null -> {
+                try {
+                    val name = intent.data ?: return
+                    val scheme = name.scheme
+                    mBirthday = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                        backupTool.getBirthday(name.path, null)
+                    } else null
+                    showBirthday(mBirthday)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
-            try {
-                mBirthday = intent.getSerializableExtra(Constants.INTENT_ITEM) as Birthday?
-                showBirthday(mBirthday)
-            } catch (e: Exception) {
+            intent.hasExtra(Constants.INTENT_ITEM) -> {
+                try {
+                    mBirthday = intent.getSerializableExtra(Constants.INTENT_ITEM) as Birthday?
+                    showBirthday(mBirthday)
+                } catch (e: Exception) {
+                }
+            }
+            intent.hasExtra(Constants.INTENT_DATE) -> {
+                viewModel.date.postValue(intent.getLongExtra(Constants.INTENT_DATE, System.currentTimeMillis()))
+            }
+            else -> {
+                if ((viewModel.date.value ?: 0L) == 0L) {
+                    viewModel.date.postValue(System.currentTimeMillis())
+                }
             }
         }
     }
@@ -161,13 +172,24 @@ class AddBirthdayActivity : ThemedActivity() {
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
         viewModel.birthday.observe(this, Observer<Birthday> { this.showBirthday(it) })
-        viewModel.result.observe(this, Observer<Commands> {
-            if (it != null) {
+        viewModel.result.observe(this, Observer<Commands> { commands ->
+            commands?.let {
                 when (it) {
                     Commands.SAVED, Commands.DELETED -> closeScreen()
                     else -> {
                     }
                 }
+            }
+        })
+        viewModel.date.observe(this, Observer { millis ->
+            millis?.let {
+                Timber.d("initViewModel: ${TimeUtil.getFullDateTime(millis, true)}")
+                birthDate.text = TimeUtil.BIRTH_DATE_FORMAT.format(Date(it))
+            }
+        })
+        viewModel.isContactAttached.observe(this, Observer { isAttached ->
+            isAttached?.let {
+                container.visibility = if (it) View.VISIBLE else View.GONE
             }
         })
     }
@@ -220,8 +242,8 @@ class AddBirthdayActivity : ThemedActivity() {
             return
         }
         var contactId = 0L
+        val number = numberView.text.toString().trim()
         if (contactCheck.isChecked) {
-            number = numberView.text.toString().trim()
             if (TextUtils.isEmpty(number)) {
                 numberLayout.error = getString(R.string.you_dont_insert_number)
                 numberLayout.isErrorEnabled = true
@@ -232,16 +254,16 @@ class AddBirthdayActivity : ThemedActivity() {
             }
             contactId = Contacts.getIdFromNumber(number, this)
         }
-        var birthday = mBirthday
-        if (birthday == null) {
-            birthday = Birthday(contact, birthDate.text.toString().trim(), number, 0, contactId, mDay, mMonth)
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = viewModel.date.value ?: System.currentTimeMillis()
+        val birthday = (mBirthday ?: Birthday()).apply {
+            this.name = contact
+            this.contactId = contactId
+            this.date = birthDate.text.toString()
+            this.number = number
+            this.day = calendar.get(Calendar.DAY_OF_MONTH)
+            this.month = calendar.get(Calendar.MONTH)
         }
-        birthday.name = contact
-        birthday.contactId = contactId
-        birthday.date = birthDate.text.toString()
-        birthday.number = number
-        birthday.day = mDay
-        birthday.month = mMonth
         viewModel.saveBirthday(birthday)
     }
 
@@ -253,29 +275,30 @@ class AddBirthdayActivity : ThemedActivity() {
     }
 
     private fun deleteItem() {
-        val birthday = mBirthday
-        if (birthday != null) {
-            viewModel.deleteBirthday(birthday)
-        }
+        mBirthday?.let { viewModel.deleteBirthday(it) }
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
+        val c = Calendar.getInstance()
+        c.timeInMillis = viewModel.date.value ?: System.currentTimeMillis()
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
             if (resultCode == Activity.RESULT_OK) {
                 val name = data?.getStringExtra(Constants.SELECTED_CONTACT_NAME)
-                number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
                 if (birthName.text.toString().matches("".toRegex())) {
                     birthName.setText(name)
                 }
-                numberView.setText(number)
+                numberView.setText(data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: "")
             }
         } else if (requestCode == PinLoginActivity.REQ_CODE) {
             if (resultCode != Activity.RESULT_OK) {
                 finish()
+            } else {
+                viewModel.isLogged = true
             }
         }
     }
@@ -308,17 +331,12 @@ class AddBirthdayActivity : ThemedActivity() {
         }
 
         fun createBirthDate(day: Int, month: Int, year: Int): String {
-            val monthStr: String = if (month < 9) {
-                "0" + (month + 1)
-            } else {
-                (month + 1).toString()
-            }
-            val dayStr: String = if (day < 10) {
-                "0$day"
-            } else {
-                day.toString()
-            }
-            return SuperUtil.appendString(year.toString(), "-", monthStr, "-", dayStr)
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = System.currentTimeMillis()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, day)
+            return TimeUtil.BIRTH_DATE_FORMAT.format(calendar.time)
         }
     }
 }

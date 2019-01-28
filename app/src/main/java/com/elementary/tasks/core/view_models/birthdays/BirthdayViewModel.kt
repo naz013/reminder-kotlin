@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.view_models.birthdays
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.data.models.Birthday
@@ -26,6 +27,11 @@ import com.elementary.tasks.core.data.models.Birthday
 class BirthdayViewModel private constructor(id: String) : BaseBirthdaysViewModel() {
 
     var birthday: LiveData<Birthday>
+    var date: MutableLiveData<Long> = MutableLiveData()
+    var isContactAttached: MutableLiveData<Boolean> = MutableLiveData()
+
+    var isLogged = false
+    var isEdited = false
 
     init {
         birthday = appDb.birthdaysDao().loadById(id)

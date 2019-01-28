@@ -11,7 +11,7 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:stateListAnimator="@animator/toolbar_animator">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,6 +22,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/material_margin"
             android:layout_marginEnd="@dimen/material_margin"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -101,7 +103,7 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/numberLayout"
@@ -142,6 +144,10 @@
                     app:srcCompat="@drawable/ic_twotone_contacts_24px"
                     app:tint="?colorOnSecondary" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

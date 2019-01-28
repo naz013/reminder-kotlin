@@ -184,10 +184,4 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
                     .putExtra(Constants.INTENT_DATE, dateMills))
         }
     }
-
-    companion object {
-
-        const val REMINDER_CODE = 1110
-        const val BD_CODE = 1111
-    }
 }
