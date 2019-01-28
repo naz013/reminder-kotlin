@@ -14,8 +14,8 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.groups.GroupViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import kotlinx.android.synthetic.main.activity_create_group.*
 import java.io.IOException
 import java.util.*
@@ -122,7 +122,7 @@ class CreateGroupActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, GroupViewModel.Factory(application, id)).get(GroupViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, GroupViewModel.Factory(id)).get(GroupViewModel::class.java)
         viewModel.reminderGroup.observe(this, Observer{ group ->
             if (group != null) {
                 showGroup(group)

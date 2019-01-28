@@ -27,10 +27,11 @@ import com.elementary.tasks.core.services.*
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.viewModels.BaseDbViewModel
-import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.core.viewModels.notes.BaseNotesViewModel
-import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
+import com.elementary.tasks.core.view_models.BaseDbViewModel
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.core.view_models.google_tasks.BaseTaskListsViewModel
+import com.elementary.tasks.core.view_models.notes.BaseNotesViewModel
+import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
 import com.elementary.tasks.core.views.DateTimeView
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.core.views.RepeatView
@@ -94,6 +95,7 @@ interface AppComponent {
     fun inject(viewModel: BaseNotesViewModel)
     fun inject(viewModel: BaseRemindersViewModel)
     fun inject(viewModel: ConversationViewModel)
+    fun inject(viewModel: BaseTaskListsViewModel)
 
     fun inject(conversationAdapter: ConversationAdapter)
     fun inject(contactsRecyclerAdapter: ContactsRecyclerAdapter)

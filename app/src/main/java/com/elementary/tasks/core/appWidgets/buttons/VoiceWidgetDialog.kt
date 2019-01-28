@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import javax.inject.Inject
 

@@ -15,8 +15,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import kotlinx.android.synthetic.main.activity_show_birthday.*
 import java.util.*
 
@@ -180,7 +180,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
         viewModel.birthday.observeForever(mBirthdayObserver)
         viewModel.result.observe(this, Observer<Commands>{ commands ->
             if (commands != null) {

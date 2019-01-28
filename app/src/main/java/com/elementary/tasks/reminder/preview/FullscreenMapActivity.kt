@@ -15,7 +15,7 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_fullscreen_map.*
 
@@ -74,8 +74,7 @@ class FullscreenMapActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        val factory = ReminderViewModel.Factory(application, id)
-        viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showInfo(reminder)

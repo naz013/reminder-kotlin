@@ -14,9 +14,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
+import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
 import com.elementary.tasks.dayView.day.DayCallback
 import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.dayView.pager.DayPagerAdapter
@@ -93,7 +92,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
-                DayViewViewModel.Factory(activity?.application!!, prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
+                DayViewViewModel.Factory(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
                 .get(DayViewViewModel::class.java)
         viewModel.events.observe(this, Observer<Pair<EventsPagerItem, List<EventModel>>> {
             val item = eventsPagerItem

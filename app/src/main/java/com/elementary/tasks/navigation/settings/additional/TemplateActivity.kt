@@ -13,8 +13,8 @@ import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplateViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import kotlinx.android.synthetic.main.activity_template.*
 import java.io.IOException
 import javax.inject.Inject
@@ -89,7 +89,7 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, SmsTemplateViewModel.Factory(application, id))
+        viewModel = ViewModelProviders.of(this, SmsTemplateViewModel.Factory(id))
                 .get(SmsTemplateViewModel::class.java)
         viewModel.smsTemplate.observe(this, Observer{ smsTemplate ->
             if (smsTemplate != null) {

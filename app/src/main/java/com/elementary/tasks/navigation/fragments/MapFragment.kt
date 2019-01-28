@@ -12,7 +12,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.core.viewModels.reminders.ActiveGpsRemindersViewModel
+import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng

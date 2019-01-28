@@ -28,8 +28,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_reminder_dialog.*
@@ -270,8 +270,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun initViewModel(id: String) {
         Timber.d("initViewModel: $id")
-        val factory = ReminderViewModel.Factory(application, id)
-        viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observeForever(mReminderObserver)
         viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {

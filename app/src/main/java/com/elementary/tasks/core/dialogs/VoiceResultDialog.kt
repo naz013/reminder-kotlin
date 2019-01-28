@@ -9,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 
@@ -38,7 +38,7 @@ class VoiceResultDialog : BaseDialog() {
 
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
-        val viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, id)).get(ReminderViewModel::class.java)
+        val viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showReminder(reminder)
@@ -54,7 +54,7 @@ class VoiceResultDialog : BaseDialog() {
         parent.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         parent.orientation = LinearLayout.VERTICAL
 
-        val holder = ReminderHolder(parent, false, false)
+        val holder = ReminderHolder(parent, false, editable = false)
         holder.setData(reminder)
 
         parent.addView(holder.itemView)

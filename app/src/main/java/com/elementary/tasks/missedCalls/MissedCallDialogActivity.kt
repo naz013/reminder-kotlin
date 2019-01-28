@@ -14,8 +14,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.missedCalls.MissedCallViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import kotlinx.android.synthetic.main.activity_missed_dialog.*
 import timber.log.Timber
 import java.sql.Date
@@ -128,7 +128,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     private fun initViewModel() {
         val number = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(application, number))
+        viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(number))
                 .get(MissedCallViewModel::class.java)
         viewModel.missedCall.observeForever(mMissedCallObserver)
         viewModel.result.observe(this, Observer { commands ->

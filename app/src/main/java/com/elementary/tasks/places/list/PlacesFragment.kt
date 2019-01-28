@@ -21,8 +21,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.places.PlacesViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import kotlinx.android.synthetic.main.fragment_places.*

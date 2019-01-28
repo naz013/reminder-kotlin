@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,7 +18,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
@@ -127,6 +129,15 @@ class ArchiveFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
         viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
+            }
+        })
+        viewModel.result.observe(this, Observer {
+            if (it != null) {
+                when (it) {
+                    Commands.DELETED ->  Toast.makeText(context!!, R.string.trash_cleared, Toast.LENGTH_SHORT).show()
+                    else -> {
+                    }
+                }
             }
         })
     }

@@ -16,8 +16,8 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.places.PlaceViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_create_place.*
 import java.util.*
@@ -80,7 +80,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, PlaceViewModel.Factory(application, id)).get(PlaceViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, PlaceViewModel.Factory(id)).get(PlaceViewModel::class.java)
         viewModel.place.observe(this, Observer{ place ->
             if (place != null) {
                 showPlace(place)

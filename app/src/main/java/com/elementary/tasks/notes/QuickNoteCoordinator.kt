@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import kotlinx.android.synthetic.main.view_note_card.view.*
 import kotlinx.android.synthetic.main.view_note_reminder_card.view.*
 import kotlinx.android.synthetic.main.view_note_status_card.view.*

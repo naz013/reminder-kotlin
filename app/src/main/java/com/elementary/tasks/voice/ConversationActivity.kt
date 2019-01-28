@@ -27,8 +27,8 @@ import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_conversation.*
