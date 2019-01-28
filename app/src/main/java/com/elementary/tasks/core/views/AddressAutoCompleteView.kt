@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.graphics.Typeface
 import android.location.Address
 import android.text.Editable
 import android.text.TextWatcher
@@ -38,8 +37,7 @@ import timber.log.Timber
  */
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
-    private var mTypeface: Typeface? = null
-    private var foundPlaces: List<Address>? = null
+    private var foundPlaces: MutableList<Address> = mutableListOf()
     private var mAdapter: AddressAdapter? = null
     private var isEnabledInner = true
 
@@ -79,23 +77,17 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     fun getAddress(position: Int): Address {
-        return foundPlaces!![position]
+        return foundPlaces[position]
     }
 
     private fun performTypeValue(s: String) {
         GeocoderTask.findAddresses(context, s) {
             Timber.d("onAddressReceived: $it")
-            foundPlaces = it
+            foundPlaces.clear()
+            foundPlaces.addAll(it)
             mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, it)
             setAdapter<AddressAdapter>(mAdapter)
             mAdapter?.notifyDataSetChanged()
-        }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (mTypeface != null) {
-            typeface = mTypeface
         }
     }
 
@@ -130,8 +122,10 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         fun getName(position: Int): String {
             return formName(getItem(position)!!)
         }
+    }
 
-        private fun formName(address: Address): String {
+    companion object {
+        fun formName(address: Address): String {
             val sb = StringBuilder()
             sb.append(address.featureName)
             if (address.adminArea != null) {

@@ -23,6 +23,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
+import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -128,7 +129,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             if (markerRadius == -1)
                 markerRadius = prefs.radius
             if (clear) mMap?.clear()
-            if (t == null || t.matches("".toRegex())) t = pos.toString()
+            if (t == null || t == "") t = pos.toString()
             if (!Module.isPro && markerStyle != DEF_MARKER_STYLE) {
                 markerStyle = DEF_MARKER_STYLE
                 createStyleDrawable()
@@ -372,8 +373,7 @@ class AdvancedMapFragment : BaseMapFragment() {
             val lat = sel.latitude
             val lon = sel.longitude
             val pos = LatLng(lat, lon)
-            addMarker(pos, markerTitle, true, true, markerRadius)
-            mListener?.placeChanged(pos, getFormattedAddress(sel))
+            addMarker(pos, getFormattedAddress(sel), true, true, markerRadius)
         }
         initPlacesViewModel()
     }
@@ -412,10 +412,11 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun getFormattedAddress(address: Address): String {
-        return String.format("%s, %s%s",
-                if (address.maxAddressLineIndex > 0) address.getAddressLine(0) else "",
-                if (address.maxAddressLineIndex > 1) address.getAddressLine(1) + ", " else "",
-                address.countryName)
+        return if (address.getAddressLine(0) != null) {
+            address.getAddressLine(0)
+        } else {
+            AddressAutoCompleteView.formName(address)
+        }
     }
 
     private fun initViews() {
