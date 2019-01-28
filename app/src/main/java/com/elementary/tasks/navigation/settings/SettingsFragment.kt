@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.navigation.settings.additional.AdditionalSettingsFragment
 import com.elementary.tasks.navigation.settings.calendar.CalendarSettingsFragment
@@ -50,7 +51,6 @@ class SettingsFragment : BaseSettingsFragment() {
         otherSettings.setOnClickListener { callback?.openFragment(OtherSettingsFragment(), getString(R.string.other)) }
         voiceSettings.setOnClickListener { callback?.openFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
         notesSettings.setOnClickListener { callback?.openFragment(NoteSettingsFragment(), getString(R.string.notes)) }
-        locationSettings.setOnClickListener { callback?.openFragment(LocationSettingsFragment(), getString(R.string.location)) }
         additionalSettings.setOnClickListener { callback?.openFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
         notificationSettings.setOnClickListener { callback?.openFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
         exportSettings.setOnClickListener { callback?.openFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
@@ -59,6 +59,13 @@ class SettingsFragment : BaseSettingsFragment() {
         remindersSettings.setOnClickListener { callback?.openFragment(RemindersSettingsFragment(), getString(R.string.reminders_)) }
         securitySettings.setOnClickListener { askPin() }
         testsScreen.setOnClickListener { callback?.openFragment(TestsFragment(), "Tests") }
+
+        if (Module.hasLocation(context!!)) {
+            locationSettings.setOnClickListener { callback?.openFragment(LocationSettingsFragment(), getString(R.string.location)) }
+            locationSettings.visibility = View.VISIBLE
+        } else {
+            locationSettings.visibility = View.GONE
+        }
     }
 
     private fun askPin() {

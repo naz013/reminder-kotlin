@@ -32,6 +32,7 @@ import kotlinx.coroutines.runBlocking
 class SmsTemplateViewModel private constructor(key: String) : BaseSmsTemplatesViewModel() {
 
     var smsTemplate: LiveData<SmsTemplate>
+    var isEdited = false
 
     init {
         smsTemplate = appDb.smsTemplatesDao().loadByKey(key)
