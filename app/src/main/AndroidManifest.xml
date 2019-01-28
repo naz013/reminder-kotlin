@@ -37,6 +37,13 @@
         android:name="android.hardware.bluetooth"
         android:required="false" />
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -84,7 +91,9 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".navigation.MainActivity" />
+        <activity
+            android:name=".navigation.MainActivity"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".core.IntentActivity"
             android:configChanges="keyboardHidden"
@@ -216,6 +225,7 @@
         <activity
             android:name=".core.fileExplorer.FileExplorerActivity"
             android:configChanges="keyboardHidden"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".groups.CreateGroupActivity"
@@ -320,10 +330,12 @@
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".core.contacts.ContactsActivity"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderDialogActivity" />
         <activity
             android:name=".core.apps.ApplicationActivity"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".reminder.preview.FullscreenMapActivity" />
@@ -343,7 +355,9 @@
             android:name=".core.dialogs.VolumeDialog"
             android:theme="@style/Light1.Dialog" />
         <activity android:name=".notes.editor.ImageEditActivity" />
-        <activity android:name=".voice.ConversationActivity" />
+        <activity
+            android:name=".voice.ConversationActivity"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".core.SplashScreen"
             android:theme="@style/SplashScreenTheme">
@@ -353,8 +367,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity" />
-        <activity android:name=".intro.IntroActivity" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".intro.IntroActivity"
+            android:launchMode="singleInstance" />
 
         <receiver
             android:name=".core.services.CallReceiver"
