@@ -498,6 +498,10 @@ object TimeUtil {
         }
     }
 
+    fun getTime(millis: Long, is24: Boolean, lang: Int = 0): String {
+        return getTime(Date(millis), is24, lang)
+    }
+
     private fun getAge(year: Int): Int {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()

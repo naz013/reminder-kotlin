@@ -81,9 +81,10 @@ object DecodeImages {
         return image
     }
 
-    sealed class State {
-        object Loading : State()
-        object Ready : State()
-        object Error : State()
+    sealed class State(var id: Int = 0) {
+
+        object Loading : State(0)
+        object Ready : State(1)
+        object Error : State(2)
     }
 }
