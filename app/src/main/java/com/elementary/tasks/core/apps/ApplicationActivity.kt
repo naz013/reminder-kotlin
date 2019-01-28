@@ -2,20 +2,22 @@ package com.elementary.tasks.core.apps
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_application_list.*
-import kotlinx.coroutines.Job
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,6 +39,7 @@ import kotlinx.coroutines.Job
  */
 class ApplicationActivity : ThemedActivity() {
 
+    private lateinit var viewModel: SelectApplicationViewModel
     private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
     private val searchModifier = object : SearchModifier<ApplicationItem>(null, {
         adapter.submitList(it)
@@ -48,16 +51,36 @@ class ApplicationActivity : ThemedActivity() {
                     ?: "").toLowerCase().contains(searchValue.toLowerCase())
         }
     }
-    private var mLoader: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(SelectApplicationViewModel::class.java)
+        viewModel.packageManager = packageManager
+        viewModel.loadApps()
         setContentView(R.layout.activity_application_list)
         loaderView.visibility = View.GONE
         initActionBar()
         initSearchView()
         initRecyclerView()
-        loadApps()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.applications.observe(this, Observer { applications ->
+            applications?.let {
+                searchModifier.original = it
+                refreshView(it.size)
+            }
+        })
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            isLoading?.let {
+                if (it) {
+                    showProgress()
+                } else {
+                    hideProgress()
+                }
+            }
+        })
     }
 
     private fun hideProgress() {
@@ -66,48 +89,6 @@ class ApplicationActivity : ThemedActivity() {
 
     private fun showProgress() {
         loaderView.visibility = View.VISIBLE
-    }
-
-    private fun loadApps() {
-        showProgress()
-        mLoader?.cancel()
-        mLoader = launchDefault {
-            val mList: MutableList<ApplicationItem> = mutableListOf()
-            val pm = packageManager
-            val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
-            for (packageInfo in packages) {
-                val name = packageInfo.loadLabel(pm).toString()
-                val packageName = packageInfo.packageName
-                val drawable = packageInfo.loadIcon(pm)
-                val data = ApplicationItem(name, packageName, drawable)
-                val pos = getPosition(name, mList)
-                if (pos == -1) {
-                    mList.add(data)
-                } else {
-                    mList.add(getPosition(name, mList), data)
-                }
-            }
-            withUIContext {
-                hideProgress()
-                searchModifier.original = mList
-                refreshView(mList.size)
-            }
-        }
-    }
-
-    private fun getPosition(name: String, mList: MutableList<ApplicationItem>): Int {
-        if (mList.size == 0) {
-            return 0
-        }
-        var position = -1
-        for (data in mList) {
-            val comp = name.compareTo(data.name!!)
-            if (comp <= 0) {
-                position = mList.indexOf(data)
-                break
-            }
-        }
-        return position
     }
 
     private fun initRecyclerView() {
@@ -167,10 +148,5 @@ class ApplicationActivity : ThemedActivity() {
         val intent = Intent()
         setResult(RESULT_CANCELED, intent)
         finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mLoader?.cancel()
     }
 }
