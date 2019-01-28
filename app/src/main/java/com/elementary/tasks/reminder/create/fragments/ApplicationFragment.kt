@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.apps.ApplicationActivity
+import com.elementary.tasks.core.apps.SelectApplicationActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
@@ -130,7 +130,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
         }
 
         pickApplication.setOnClickListener {
-            activity?.startActivityForResult(Intent(activity, ApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
+            activity?.startActivityForResult(Intent(activity, SelectApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
         }
         initScreenState()
         urlLayout.visibility = View.GONE

@@ -8,13 +8,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.filter.SearchModifier
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.android.synthetic.main.activity_contacts_list.*
 import kotlinx.coroutines.Job
-import timber.log.Timber
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,22 +39,46 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsActivity : ThemedActivity() {
+class SelectContactActivity : ThemedActivity() {
 
+    private lateinit var viewModel: SelectContactViewModel
     private val adapter: ContactsRecyclerAdapter = ContactsRecyclerAdapter()
-    private val fullData: MutableList<ContactItem> = mutableListOf()
+    private val searchModifier = object : SearchModifier<ContactItem>(null, {
+        adapter.submitList(it)
+        contactsList.smoothScrollToPosition(0)
+        refreshView(it.size)
+    }) {
+        override fun filter(v: ContactItem): Boolean {
+            return searchValue.isEmpty() || v.name.toLowerCase().contains(searchValue.toLowerCase())
+        }
+    }
     private var mLoader: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("onCreate: ")
+        viewModel = ViewModelProviders.of(this).get(SelectContactViewModel::class.java)
+        viewModel.contentResolver = contentResolver
+        viewModel.loadContacts()
+
         setContentView(R.layout.activity_contacts_list)
         loaderView.visibility = View.GONE
 
         initActionBar()
         initSearchView()
         initRecyclerView()
-        loadContacts()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.contacts.observe(this, Observer { contacts ->
+            contacts?.let { searchModifier.original = it }
+        })
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            isLoading?.let {
+                if (it) showProgress()
+                else hideProgress()
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -79,36 +108,12 @@ class ContactsActivity : ThemedActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                filter(s.toString())
+                searchModifier.setSearchValue(s.toString())
             }
 
             override fun afterTextChanged(s: Editable) {
             }
         })
-    }
-
-    private fun filter(query: String) {
-        var q = query
-        q = q.toLowerCase()
-        if (q.isEmpty()) {
-            adapter.setData(fullData)
-            return
-        }
-        launchDefault {
-            val filtered = getFiltered(fullData.toList(), q)
-            withUIContext { adapter.setData(filtered) }
-        }
-    }
-
-    private fun getFiltered(models: List<ContactItem>, query: String): List<ContactItem> {
-        val list = ArrayList<ContactItem>()
-        for (model in models) {
-            val text = model.name.toLowerCase()
-            if (text.contains(query)) {
-                list.add(model)
-            }
-        }
-        return list
     }
 
     private fun selectNumber(name: String) {
@@ -138,7 +143,7 @@ class ContactsActivity : ThemedActivity() {
                     }
                     withUIContext {
                         hideProgress()
-                        val builder = dialogues.getDialog(this@ContactsActivity)
+                        val builder = dialogues.getDialog(this@SelectContactActivity)
                         builder.setItems(numbers) { dialog, which ->
                             dialog.dismiss()
                             var number = numbers[which] as String
@@ -180,47 +185,7 @@ class ContactsActivity : ThemedActivity() {
         backButton.setOnClickListener { onBackPressed() }
     }
 
-    private fun loadContacts() {
-        showProgress()
-        mLoader?.cancel()
-        mLoader = launchDefault {
-            val mList = mutableListOf<ContactItem>()
-            val cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null,
-                    null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC")
-            mList.clear()
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-                    var hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
-                    val id = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID))
-                    val uri = Contacts.getPhoto(id.toLong())
-                    var photo: String? = null
-                    if (uri != null) {
-                        photo = uri.toString()
-                    }
-                    hasPhone = if (hasPhone.equals("1", ignoreCase = true)) {
-                        "true"
-                    } else {
-                        "false"
-                    }
-                    if (name != null && java.lang.Boolean.parseBoolean(hasPhone)) {
-                        val data = ContactItem(name, photo, id)
-                        val pos = getPosition(name, mList)
-                        if (pos == -1) {
-                            mList.add(data)
-                        } else {
-                            mList.add(pos, data)
-                        }
-                    }
-                }
-                cursor.close()
-            }
-            withUIContext {
-                hideProgress()
-                showContacts(mList)
-            }
-        }
-    }
+
 
     private fun hideProgress() {
         loaderView.visibility = View.GONE
@@ -230,29 +195,6 @@ class ContactsActivity : ThemedActivity() {
     private fun showProgress() {
         loaderView.visibility = View.VISIBLE
         typeIcon.isEnabled = false
-    }
-
-    private fun showContacts(list: MutableList<ContactItem>) {
-        this.fullData.clear()
-        this.fullData.addAll(list)
-        adapter.setData(list)
-        contactsList.smoothScrollToPosition(0)
-        refreshView()
-    }
-
-    private fun getPosition(name: String, list: List<ContactItem>): Int {
-        if (list.isEmpty()) {
-            return 0
-        }
-        var position = -1
-        for (data in list) {
-            val comp = name.compareTo(data.name)
-            if (comp <= 0) {
-                position = list.indexOf(data)
-                break
-            }
-        }
-        return position
     }
 
     private fun onContactSelected(number: String, name: String) {
@@ -265,8 +207,8 @@ class ContactsActivity : ThemedActivity() {
         finish()
     }
 
-    private fun refreshView() {
-        if (adapter.itemCount > 0) {
+    private fun refreshView(count: Int) {
+        if (count > 0) {
             emptyItem.visibility = View.GONE
             scroller.visibility = View.VISIBLE
         } else {

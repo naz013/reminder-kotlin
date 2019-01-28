@@ -22,7 +22,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.core.contacts.ContactsActivity
+import com.elementary.tasks.core.contacts.SelectContactActivity
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface
 import com.elementary.tasks.voice.ConversationActivity
@@ -207,7 +207,7 @@ object SuperUtil {
     }
 
     fun selectContact(activity: Activity, requestCode: Int) {
-        activity.startActivityForResult(Intent(activity, ContactsActivity::class.java), requestCode)
+        activity.startActivityForResult(Intent(activity, SelectContactActivity::class.java), requestCode)
     }
 
     fun isGooglePlayServicesAvailable(a: Context): Boolean {
