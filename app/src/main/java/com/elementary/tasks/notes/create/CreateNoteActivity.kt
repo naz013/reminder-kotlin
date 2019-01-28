@@ -419,9 +419,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         stateViewModel.setImage(image, mEditPosition)
     }
 
+    private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
+
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(id)).get(NoteViewModel::class.java)
-        viewModel.note.observe(this, Observer { this.showNote(it) })
+        viewModel.note.observe(this, mNoteObserver)
         viewModel.reminder.observe(this, Observer<Reminder> { this.showReminder(it) })
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
@@ -492,6 +494,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             setText(note.summary)
             stateViewModel.fontStyle.postValue(note.style)
             stateViewModel.images.postValue(noteWithImages.images)
+            stateViewModel.colorOpacity.postValue(newPair(note.color, note.opacity))
         }
     }
 
@@ -626,6 +629,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (hasReminder && note != null) {
             reminder = createReminder(note) ?: return
         }
+        viewModel.note.removeObserver(mNoteObserver)
         viewModel.saveNote(noteWithImages, reminder)
     }
 
