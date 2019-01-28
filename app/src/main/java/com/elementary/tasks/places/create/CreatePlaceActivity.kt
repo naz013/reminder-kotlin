@@ -20,7 +20,6 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_create_place.*
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -44,10 +43,11 @@ import javax.inject.Inject
 class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     private lateinit var viewModel: PlaceViewModel
+    private lateinit var stateViewModel: CreatePlaceViewModel
+
     private var mGoogleMap: AdvancedMapFragment? = null
+
     private var mItem: Place? = null
-    private var place: LatLng? = null
-    private var placeTitle: String = ""
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -58,6 +58,9 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
+        stateViewModel.isPlaceEdited = savedInstanceState != null
+
         setContentView(R.layout.activity_create_place)
         initActionBar()
 
@@ -126,34 +129,35 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         this.mItem = place
         if (place != null) {
             titleView.text = getString(R.string.edit_place)
-            mGoogleMap?.setStyle(place.marker)
-            mGoogleMap?.addMarker(LatLng(place.latitude, place.longitude), place.name, true, true, -1)
-            placeName.setText(place.name)
+            if (!stateViewModel.isPlaceEdited) {
+                placeName.setText(place.name)
+                stateViewModel.place = place
+                stateViewModel.isPlaceEdited = true
+                showPlaceOnMap()
+            }
         }
     }
 
     private fun addPlace() {
-        val pl = place
-        if (pl != null) {
+        if (stateViewModel.place.hasLatLng()) {
             var name: String = placeName.text.toString().trim()
-            if (name.matches("".toRegex())) {
-                name = placeTitle
+            if (name == "") {
+                name = stateViewModel.place.name
             }
-            if (name == "" || name.matches("".toRegex())) {
+            if (name == "") {
                 placeLayout.error = getString(R.string.must_be_not_empty)
                 placeLayout.isErrorEnabled = true
                 return
             }
-            val latitude = pl.latitude
-            val longitude = pl.longitude
-            var item = mItem
-            if (item != null) {
-                item.name = name
-                item.latitude = latitude
-                item.longitude = longitude
-                item.marker = mGoogleMap?.markerStyle ?: prefs.markerStyle
-            } else {
-                item = Place(prefs.radius, mGoogleMap?.markerStyle ?: prefs.markerStyle, latitude, longitude, name, "", ArrayList())
+            val latitude = stateViewModel.place.latitude
+            val longitude = stateViewModel.place.longitude
+            val marker = mGoogleMap?.markerStyle ?: prefs.markerStyle
+            val item = (mItem ?: Place()).apply {
+                this.name = name
+                this.latitude = latitude
+                this.longitude = longitude
+                this.marker = marker
+                this.radius = prefs.radius
             }
             viewModel.savePlace(item)
         } else {
@@ -176,10 +180,14 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     private fun deleteItem() {
-        mItem.let {
-            if (it != null) {
-                viewModel.deletePlace(it)
-            }
+        mItem?.let { viewModel.deletePlace(it) }
+    }
+
+    private fun showPlaceOnMap() {
+        val map = mGoogleMap ?: return
+        if (stateViewModel.place.hasLatLng()) {
+            map.setStyle(stateViewModel.place.marker)
+            mGoogleMap?.addMarker(stateViewModel.place.latLng(), stateViewModel.place.name, true, true, -1)
         }
     }
 
@@ -196,20 +204,26 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     override fun placeChanged(place: LatLng, address: String) {
-        this.place = place
-        placeTitle = address
+        stateViewModel.place.apply {
+            this.latitude = place.latitude
+            this.longitude = place.longitude
+            this.name = address
+        }
+        if (placeName.text.toString().trim() == "") {
+            placeName.setText(address)
+        }
     }
 
     override fun onBackClick() {
-
     }
 
     override fun onZoomClick(isFull: Boolean) {
-
     }
 
     override fun onMapReady() {
-        if (mItem != null) showPlace(mItem)
+        if (stateViewModel.isPlaceEdited) {
+            showPlaceOnMap()
+        }
     }
 
     companion object {

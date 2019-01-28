@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.utils.TimeUtil
+import com.google.android.gms.maps.model.LatLng
 import java.io.Serializable
 import java.util.*
 
@@ -53,4 +54,8 @@ data class Place(
         this.address = address
         this.tags = tags
     }
+
+    fun latLng(): LatLng = LatLng(latitude, longitude)
+
+    fun hasLatLng(): Boolean = latitude != 0.0 && longitude != 0.0
 }
