@@ -19,8 +19,8 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
@@ -82,7 +82,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, mId)).get(NoteViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(mId)).get(NoteViewModel::class.java)
         viewModel.note.observe(this, Observer{ note ->
             if (note != null) {
                 showNote(note)

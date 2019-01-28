@@ -23,7 +23,7 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
+import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import kotlinx.android.synthetic.main.fragment_places.*
 

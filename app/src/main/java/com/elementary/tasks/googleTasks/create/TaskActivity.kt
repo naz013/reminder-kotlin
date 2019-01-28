@@ -22,8 +22,8 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_create_google_task.*
 import kotlinx.android.synthetic.main.view_progress.*
@@ -137,7 +137,7 @@ class TaskActivity : ThemedActivity() {
 
     private fun initViewModel(taskId: String, listId: String) {
         this.listId = listId
-        viewModel = ViewModelProviders.of(this, GoogleTaskViewModel.Factory(application, taskId)).get(GoogleTaskViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, GoogleTaskViewModel.Factory(taskId)).get(GoogleTaskViewModel::class.java)
         viewModel.isInProgress.observe(this, Observer{ aBoolean ->
             if (aBoolean != null) {
                 updateProgress(aBoolean)

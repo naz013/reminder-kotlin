@@ -12,7 +12,7 @@ import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.monthView.MonthViewViewModel
+import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.dayView.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
@@ -91,7 +91,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
-                MonthViewViewModel.Factory(activity?.application!!, prefs.isRemindersInCalendarEnabled,
+                MonthViewViewModel.Factory(prefs.isRemindersInCalendarEnabled,
                         prefs.isFutureEventEnabled)).get(MonthViewViewModel::class.java)
         viewModel.events.observe(this, Observer<Pair<MonthPagerItem, List<EventModel>>> {
             val item = monthPagerItem

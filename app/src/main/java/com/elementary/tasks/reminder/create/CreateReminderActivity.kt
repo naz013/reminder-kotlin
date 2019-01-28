@@ -27,9 +27,9 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
@@ -129,9 +129,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private fun initViewModel(id: String) {
         conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
-
-        val factory = ReminderViewModel.Factory(application, id)
-        viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null && !mIsSaving) {
                 editReminder(reminder)

@@ -21,7 +21,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.notes.NotesViewModel
+import com.elementary.tasks.core.view_models.notes.NotesViewModel
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.filters.SearchModifier

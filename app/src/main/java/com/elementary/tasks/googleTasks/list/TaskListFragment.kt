@@ -20,8 +20,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants
 import kotlinx.android.synthetic.main.fragment_google_list.*
@@ -99,7 +99,7 @@ class TaskListFragment : Fragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this,
-                GoogleTaskListViewModel.Factory(activity!!.application, mId)).get(GoogleTaskListViewModel::class.java)
+                GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
         viewModel.isInProgress.observe(this, Observer {
             if (it != null) {
                 updateProgress(it)

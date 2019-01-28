@@ -1,7 +1,7 @@
 package com.elementary.tasks.monthView
 
 import androidx.annotation.ColorInt
-import com.elementary.tasks.core.viewModels.monthView.MonthViewViewModel
+import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.dayView.day.EventModel
 import java.util.*
 

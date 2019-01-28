@@ -12,8 +12,8 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import kotlinx.android.synthetic.main.activity_create_task_list.*
 import kotlinx.android.synthetic.main.view_progress.*
 
@@ -84,7 +84,7 @@ class TaskListActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(application, id)).get(GoogleTaskListViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(id)).get(GoogleTaskListViewModel::class.java)
         viewModel.googleTaskList.observe(this, Observer { googleTaskList ->
             if (googleTaskList != null) {
                 editTaskList(googleTaskList)

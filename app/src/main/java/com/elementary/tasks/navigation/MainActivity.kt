@@ -24,8 +24,8 @@ import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.dayView.DayViewFragment
 import com.elementary.tasks.googleTasks.GoogleTasksFragment
@@ -103,7 +103,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun initQuickNote() {
-        val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, "")).get(NoteViewModel::class.java)
+        val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
         mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
                 noteViewModel, prefs, notifier)
     }

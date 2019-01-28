@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListsViewModel
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
 import com.elementary.tasks.googleTasks.create.TaskActivity
 import com.elementary.tasks.googleTasks.create.TaskListActivity
 import com.elementary.tasks.googleTasks.create.TasksConstants

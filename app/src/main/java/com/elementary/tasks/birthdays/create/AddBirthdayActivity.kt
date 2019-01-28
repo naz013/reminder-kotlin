@@ -18,8 +18,8 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import kotlinx.android.synthetic.main.activity_add_birthday.*
 import java.text.ParseException
@@ -159,7 +159,7 @@ class AddBirthdayActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
         viewModel.birthday.observe(this, Observer<Birthday> { this.showBirthday(it) })
         viewModel.result.observe(this, Observer<Commands> {
             if (it != null) {

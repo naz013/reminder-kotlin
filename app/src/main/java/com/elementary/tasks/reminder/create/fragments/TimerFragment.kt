@@ -17,7 +17,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.UsedTime
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.usedTime.UsedTimeViewModel
+import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_timer.*
 import kotlinx.android.synthetic.main.list_item_used_time.view.*

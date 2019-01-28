@@ -20,8 +20,8 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
+import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import kotlinx.android.synthetic.main.activity_follow.*
 import java.util.*
 
@@ -165,7 +165,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, "")).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory("")).get(ReminderViewModel::class.java)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
