@@ -84,14 +84,12 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, PlaceViewModel.Factory(id)).get(PlaceViewModel::class.java)
-        viewModel.place.observe(this, Observer{ place ->
-            if (place != null) {
-                showPlace(place)
-            }
+        viewModel.place.observe(this, Observer { place ->
+            place?.let { showPlace(it) }
         })
-        viewModel.result.observe(this, Observer{ commands ->
-            if (commands != null) {
-                when (commands) {
+        viewModel.result.observe(this, Observer { commands ->
+            commands?.let {
+                when (it) {
                     Commands.SAVED, Commands.DELETED -> finish()
                     else -> {
                     }
@@ -101,7 +99,6 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     private fun loadPlace() {
-        val intent = intent
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
@@ -127,7 +124,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     private fun showPlace(place: Place?) {
         this.mItem = place
-        if (place != null) {
+        place?.let {
             titleView.text = getString(R.string.edit_place)
             if (!stateViewModel.isPlaceEdited) {
                 placeName.setText(place.name)

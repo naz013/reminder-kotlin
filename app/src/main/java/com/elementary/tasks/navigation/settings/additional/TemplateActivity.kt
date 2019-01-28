@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import kotlinx.android.synthetic.main.activity_template.*
@@ -109,8 +110,11 @@ class TemplateActivity : ThemedActivity() {
 
     private fun showTemplate(smsTemplate: SmsTemplate) {
         this.mItem = smsTemplate
-        messageInput.setText(smsTemplate.title)
         toolbar.title = getString(R.string.edit_template)
+        if (!viewModel.isEdited) {
+            messageInput.setText(smsTemplate.title)
+            viewModel.isEdited = true
+        }
     }
 
     private fun initActionBar() {
@@ -118,11 +122,7 @@ class TemplateActivity : ThemedActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -144,32 +144,26 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun deleteItem() {
-        val item = mItem
-        if (item != null) {
-            viewModel.deleteSmsTemplate(item)
-        }
+        mItem?.let { viewModel.deleteSmsTemplate(it) }
     }
 
     private fun saveTemplate() {
-        val text = messageInput.text.toString().trim { it <= ' ' }
+        val text = messageInput.text.toString().trim()
         if (text.isEmpty()) {
-            messageInput.error = getString(R.string.must_be_not_empty)
+            messageLayout.error = getString(R.string.must_be_not_empty)
+            messageLayout.isErrorEnabled = true
             return
         }
         val date = TimeUtil.gmtDateTime
-        var item = mItem
-        if (item != null) {
-            item.date = date
-            item.title = text
-        } else {
-            item = SmsTemplate(text, date)
+        val item = (mItem ?: SmsTemplate()).apply {
+            this.date = date
+            this.title = text
         }
         viewModel.saveTemplate(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_create_template, menu)
+        menuInflater.inflate(R.menu.menu_create_template, menu)
         if (mItem != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
@@ -177,7 +171,6 @@ class TemplateActivity : ThemedActivity() {
     }
 
     companion object {
-
         private const val MENU_ITEM_DELETE = 12
     }
 }
