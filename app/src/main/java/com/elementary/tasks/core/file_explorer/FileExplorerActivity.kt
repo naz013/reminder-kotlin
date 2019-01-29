@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
@@ -177,8 +178,11 @@ class FileExplorerActivity : ThemedActivity() {
                 }
             }
         }
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
+            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            recyclerView.layoutManager = LinearLayoutManager(this)
+        }
         recyclerView.adapter = mAdapter
         recyclerView.isNestedScrollingEnabled = false
         ViewUtils.listenScrollableView(scroller) {
