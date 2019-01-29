@@ -45,10 +45,10 @@ class TimerFragment : RepeatableTypeFragment() {
     lateinit var viewModel: UsedTimeViewModel
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         val after = timerPickerView.timerValue
         if (after == 0L) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_timer_time))
+            iFace.showSnackbar(getString(R.string.you_dont_insert_timer_time))
             return null
         }
         var type = Reminder.BY_TIME
@@ -62,7 +62,7 @@ class TimerFragment : RepeatableTypeFragment() {
         if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -82,7 +82,7 @@ class TimerFragment : RepeatableTypeFragment() {
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -125,11 +125,11 @@ class TimerFragment : RepeatableTypeFragment() {
         exclusionView.prefs = prefs
         exclusionView.themeUtil = themeUtil
 
-        exclusionView.bindProperty(reminderInterface.state.reminder.hours, reminderInterface.state.reminder.from,
-                reminderInterface.state.reminder.to) { hours, from, to ->
-            reminderInterface.state.reminder.hours = hours
-            reminderInterface.state.reminder.from = from
-            reminderInterface.state.reminder.to = to
+        exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
+                iFace.state.reminder.to) { hours, from, to ->
+            iFace.state.reminder.hours = hours
+            iFace.state.reminder.from = from
+            iFace.state.reminder.to = to
         }
 
         editReminder()
@@ -154,7 +154,6 @@ class TimerFragment : RepeatableTypeFragment() {
 
     private fun initMostUsedList() {
         mostUserTimes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
         timesAdapter.listener = {
             timerPickerView.timerValue = it.timeMills
         }
@@ -175,17 +174,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
-        timerPickerView.timerValue = reminder.after
-        if (reminder.target != "") {
-            actionView.setAction(true)
-            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-                actionView.type = ActionView.TYPE_CALL
-            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
-                actionView.type = ActionView.TYPE_MESSAGE
-            }
-        }
+        timerPickerView.timerValue = iFace.state.reminder.after
     }
 
     inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {

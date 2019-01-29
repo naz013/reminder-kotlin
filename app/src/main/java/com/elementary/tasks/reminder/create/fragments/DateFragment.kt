@@ -32,7 +32,7 @@ import timber.log.Timber
 class DateFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         var type = Reminder.BY_DATE
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -44,7 +44,7 @@ class DateFragment : RepeatableTypeFragment() {
         if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -56,12 +56,12 @@ class DateFragment : RepeatableTypeFragment() {
         Timber.d("prepare: $type")
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         reminder.target = number
@@ -102,7 +102,6 @@ class DateFragment : RepeatableTypeFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tuneExtraView.hasAutoExtra = false
-        editReminder()
     }
 
     override fun updateActions() {
@@ -115,19 +114,6 @@ class DateFragment : RepeatableTypeFragment() {
             }
         } else {
             tuneExtraView.hasAutoExtra = false
-        }
-    }
-
-    private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
-        if (reminder.target != "") {
-            actionView.setAction(true)
-            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-                actionView.type = ActionView.TYPE_CALL
-            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
-                actionView.type = ActionView.TYPE_MESSAGE
-            }
         }
     }
 }

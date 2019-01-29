@@ -7,6 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.onChanged
 import kotlinx.android.synthetic.main.fragment_reminder_email.*
 import timber.log.Timber
 
@@ -31,20 +32,20 @@ import timber.log.Timber
 class EmailFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         val email = mail.text.toString().trim()
         if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*".toRegex())) {
-            reminderInterface.showSnackbar(getString(R.string.email_is_incorrect))
+            iFace.showSnackbar(getString(R.string.email_is_incorrect))
             return null
         }
         val subjectString = subject.text.toString().trim()
         if (TextUtils.isEmpty(subjectString)) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_any_message))
+            iFace.showSnackbar(getString(R.string.you_dont_insert_any_message))
             return null
         }
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
         reminder.subject = subjectString
@@ -54,7 +55,7 @@ class EmailFragment : RepeatableTypeFragment() {
         reminder.startTime = reminder.eventTime
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -92,13 +93,26 @@ class EmailFragment : RepeatableTypeFragment() {
         super.onViewCreated(view, savedInstanceState)
         tuneExtraView.hint = getString(R.string.message)
         tuneExtraView.hasAutoExtra = true
+
+        mail.onChanged {
+            iFace.state.isEmailOrSubjectChanged = true
+            iFace.state.email = it
+        }
+        subject.onChanged {
+            iFace.state.isEmailOrSubjectChanged = true
+            iFace.state.subject = it
+        }
+
         editReminder()
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
-        mail.setText(reminder.target)
-        subject.setText(reminder.subject)
+        if (iFace.state.isEmailOrSubjectChanged) {
+            mail.setText(iFace.state.email)
+            subject.setText(iFace.state.subject)
+        } else {
+            mail.setText(iFace.state.reminder.target)
+            subject.setText(iFace.state.reminder.subject)
+        }
     }
 }

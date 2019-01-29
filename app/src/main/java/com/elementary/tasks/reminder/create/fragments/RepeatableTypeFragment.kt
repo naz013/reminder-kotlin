@@ -24,7 +24,7 @@ import com.elementary.tasks.core.utils.ReminderUtils
 abstract class RepeatableTypeFragment : TypeFragment() {
 
     override fun getSummary(): String {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
 
         var summary = ""
 

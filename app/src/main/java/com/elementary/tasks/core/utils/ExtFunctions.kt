@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.EditText
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
 import com.elementary.tasks.core.data.models.Reminder
@@ -33,6 +34,20 @@ fun launchDefault(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend
 
 fun launchIo(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
         : Job = GlobalScope.launch(Dispatchers.IO, start, block)
+
+fun EditText.onChanged(function: (String) -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            function.invoke(s.toString().trim())
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+        }
+    })
+}
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
     this.useGlobal = reminder.useGlobal

@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.create.fragments
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -13,6 +12,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.onChanged
 import kotlinx.android.synthetic.main.fragment_reminder_application.*
 import timber.log.Timber
 
@@ -36,7 +36,6 @@ import timber.log.Timber
  */
 class ApplicationFragment : RepeatableTypeFragment() {
 
-    private var selectedPackage: String? = null
     private val type: Int
         get() = if (application.isChecked) {
             Reminder.BY_DATE_APP
@@ -48,8 +47,8 @@ class ApplicationFragment : RepeatableTypeFragment() {
             val packageManager = context!!.packageManager
             var applicationInfo: ApplicationInfo? = null
             try {
-                applicationInfo = packageManager.getApplicationInfo(selectedPackage, 0)
-            } catch (ignored: PackageManager.NameNotFoundException) {
+                applicationInfo = packageManager.getApplicationInfo(iFace.state.app, 0)
+            } catch (ignored: Exception) {
             }
             return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
         }
@@ -57,17 +56,17 @@ class ApplicationFragment : RepeatableTypeFragment() {
     override fun prepare(): Reminder? {
         val type = type
         var number: String
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-            number = selectedPackage ?: ""
+            number = iFace.state.app
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_select_application))
+                iFace.showSnackbar(getString(R.string.you_dont_select_application))
                 return null
             }
         } else {
             number = urlField.text.toString().trim()
             if (TextUtils.isEmpty(number) || number.matches(".*https?://".toRegex())) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_link))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_link))
                 return null
             }
             if (!number.startsWith("http://") && !number.startsWith("https://"))
@@ -75,7 +74,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
         }
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
         reminder.target = number
@@ -83,7 +82,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
         reminder.startTime = reminder.eventTime
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -126,7 +125,12 @@ class ApplicationFragment : RepeatableTypeFragment() {
             activity?.startActivityForResult(Intent(activity, SelectApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
         }
         urlLayout.visibility = View.GONE
+        urlField.setText(iFace.state.link)
+        urlField.onChanged {
+            iFace.state.link = it
+        }
         application.setOnCheckedChangeListener { _, b ->
+            iFace.state.isLink = !b
             if (!b) {
                 applicationLayout.visibility = View.GONE
                 urlLayout.visibility = View.VISIBLE
@@ -139,15 +143,17 @@ class ApplicationFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
+        val reminder = iFace.state.reminder
         if (reminder.target != "") {
-            if (Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
+            if (!iFace.state.isLink && Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
                 application.isChecked = true
-                selectedPackage = reminder.target
+                iFace.state.app = reminder.target
+                iFace.state.isLink = false
                 applicationName.text = appName
             } else {
                 browser.isChecked = true
+                iFace.state.link = reminder.target
+                iFace.state.isLink = true
                 urlField.setText(reminder.target)
             }
         }
@@ -155,7 +161,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
-            selectedPackage = data?.getStringExtra(Constants.SELECTED_APPLICATION)
+            iFace.state.app = data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
             applicationName.text = appName
         }
     }

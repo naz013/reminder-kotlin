@@ -35,12 +35,9 @@ import java.util.*
  */
 class WeekFragment : RepeatableTypeFragment() {
 
-    private var mHour = 0
-    private var mMinute = 0
-
     private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-        mHour = hourOfDay
-        mMinute = minute
+        iFace.state.hour = hourOfDay
+        iFace.state.minute = minute
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
@@ -52,8 +49,8 @@ class WeekFragment : RepeatableTypeFragment() {
         get() {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
-            calendar.set(Calendar.HOUR_OF_DAY, mHour)
-            calendar.set(Calendar.MINUTE, mMinute)
+            calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
+            calendar.set(Calendar.MINUTE, iFace.state.minute)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
             return calendar.timeInMillis
@@ -70,7 +67,7 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         var type = Reminder.BY_WEEK
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -82,7 +79,7 @@ class WeekFragment : RepeatableTypeFragment() {
         if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -93,7 +90,7 @@ class WeekFragment : RepeatableTypeFragment() {
         }
         val weekdays = days
         if (!IntervalUtil.isWeekday(weekdays)) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_select_any_day))
+            iFace.showSnackbar(getString(R.string.you_dont_select_any_day))
             return null
         }
         reminder.weekdays = weekdays
@@ -106,7 +103,7 @@ class WeekFragment : RepeatableTypeFragment() {
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -151,10 +148,9 @@ class WeekFragment : RepeatableTypeFragment() {
 
         timeField.setOnClickListener {
             TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
-                    prefs.is24HourFormat, mHour, mMinute, mTimeSelect)
+                    prefs.is24HourFormat, iFace.state.hour, iFace.state.minute, mTimeSelect)
         }
-        timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                prefs.is24HourFormat, prefs.appLanguage)
+        timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
 
         tuneExtraView.hasAutoExtra = false
         calculateNextDate()
@@ -192,8 +188,8 @@ class WeekFragment : RepeatableTypeFragment() {
     private fun updateTime(millis: Long): Date {
         val cal = Calendar.getInstance()
         cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
-        mHour = cal.get(Calendar.HOUR_OF_DAY)
-        mMinute = cal.get(Calendar.MINUTE)
+        iFace.state.hour = cal.get(Calendar.HOUR_OF_DAY)
+        iFace.state.minute = cal.get(Calendar.MINUTE)
         return cal.time
     }
 
@@ -208,22 +204,12 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
+        val reminder = iFace.state.reminder
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormat, prefs.appLanguage)
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)
         }
         calculateNextDate()
-        if (reminder.target != "") {
-            actionView.setAction(true)
-            actionView.number = reminder.target
-            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-                actionView.type = ActionView.TYPE_CALL
-            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
-                actionView.type = ActionView.TYPE_MESSAGE
-            }
-        }
     }
 }

@@ -43,7 +43,7 @@ import javax.inject.Inject
  */
 abstract class TypeFragment : Fragment() {
 
-    lateinit var reminderInterface: ReminderInterface
+    lateinit var iFace: ReminderInterface
         private set
 
     @Inject
@@ -69,7 +69,7 @@ abstract class TypeFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        reminderInterface = context as ReminderInterface
+        iFace = context as ReminderInterface
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -104,72 +104,81 @@ abstract class TypeFragment : Fragment() {
                 it.visibility = View.VISIBLE
                 it.setActivity(activity!!)
                 it.setContactClickListener(View.OnClickListener { selectContact() })
-                it.bindProperty(reminderInterface.state.reminder.target) { number ->
-                    reminderInterface.state.reminder.target = number
+                it.bindProperty(iFace.state.reminder.target) { number ->
+                    iFace.state.reminder.target = number
                     updateActions()
+                }
+                if (iFace.state.reminder.target != "") {
+                    it.setAction(true)
+                    if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.CALL)) {
+                        it.type = ActionView.TYPE_CALL
+                    } else if (Reminder.isKind(iFace.state.reminder.type, Reminder.Kind.SMS)) {
+                        it.type = ActionView.TYPE_MESSAGE
+                    }
                 }
             } else {
                 it.visibility = View.GONE
             }
         }
         loudnessPickerView?.let {
-            it.bindProperty(reminderInterface.state.reminder.volume) { loudness ->
-                reminderInterface.state.reminder.volume = loudness
+            it.bindProperty(iFace.state.reminder.volume) { loudness ->
+                iFace.state.reminder.volume = loudness
             }
         }
         repeatLimitView?.let {
-            it.bindProperty(reminderInterface.state.reminder.repeatLimit) { limit ->
-                reminderInterface.state.reminder.repeatLimit = limit
+            it.bindProperty(iFace.state.reminder.repeatLimit) { limit ->
+                iFace.state.reminder.repeatLimit = limit
             }
         }
         windowTypeView?.let {
-            it.bindProperty(reminderInterface.state.reminder.windowType) { type ->
-                reminderInterface.state.reminder.windowType = type
+            it.bindProperty(iFace.state.reminder.windowType) { type ->
+                iFace.state.reminder.windowType = type
             }
         }
         priorityPickerView?.let {
-            it.bindProperty(reminderInterface.state.reminder.priority) { priority ->
-                reminderInterface.state.reminder.priority = priority
+            it.bindProperty(iFace.state.reminder.priority) { priority ->
+                iFace.state.reminder.priority = priority
                 updateHeader()
             }
         }
         dateTimeView?.let {
-            it.bindProperty(reminderInterface.state.reminder.eventTime) { dateTime ->
-                reminderInterface.state.reminder.eventTime = dateTime
+            it.bindProperty(iFace.state.reminder.eventTime) { dateTime ->
+                iFace.state.reminder.eventTime = dateTime
             }
         }
         repeatView?.let {
-            it.bindProperty(reminderInterface.state.reminder.repeatInterval) { millis ->
-                reminderInterface.state.reminder.repeatInterval = millis
+            it.bindProperty(iFace.state.reminder.repeatInterval) { millis ->
+                iFace.state.reminder.repeatInterval = millis
             }
         }
         beforePickerView?.let {
-            it.bindProperty(reminderInterface.state.reminder.remindBefore) { millis ->
-                reminderInterface.state.reminder.remindBefore = millis
+            it.bindProperty(iFace.state.reminder.remindBefore) { millis ->
+                iFace.state.reminder.remindBefore = millis
                 updateHeader()
             }
         }
         summaryView?.let {
-            it.bindProperty(reminderInterface.state.reminder.summary) { summary ->
-                reminderInterface.state.reminder.summary = summary.trim()
+            it.bindProperty(iFace.state.reminder.summary) { summary ->
+                iFace.state.reminder.summary = summary.trim()
             }
         }
         groupView?.let {
             it.onGroupSelectListener = {
-                reminderInterface.selectGroup()
+                iFace.selectGroup()
             }
+            showGroup(it, iFace.state.reminder)
         }
         melodyView?.let {
             it.onFileSelectListener = {
-                reminderInterface.selectMelody()
+                iFace.selectMelody()
             }
-            it.bindProperty(reminderInterface.state.reminder.melodyPath) { melody ->
-                reminderInterface.state.reminder.melodyPath = melody
+            it.bindProperty(iFace.state.reminder.melodyPath) { melody ->
+                iFace.state.reminder.melodyPath = melody
             }
         }
         attachmentView?.let {
             it.onFileSelectListener = {
-                reminderInterface.attachFile()
+                iFace.attachFile()
             }
             ViewUtils.registerDragAndDrop(activity!!, it, true, themeUtil.getSecondaryColor(),
                     { clipData ->
@@ -177,51 +186,51 @@ abstract class TypeFragment : Fragment() {
                             it.setUri(clipData.getItemAt(0).uri)
                         }
                     }, *ATTACHMENT_TYPES)
-            it.bindProperty(reminderInterface.state.reminder.attachmentFile) { path ->
-                reminderInterface.state.reminder.attachmentFile = path
+            it.bindProperty(iFace.state.reminder.attachmentFile) { path ->
+                iFace.state.reminder.attachmentFile = path
             }
         }
         scrollView?.let { view ->
             ViewUtils.listenScrollableView(view) {
-                reminderInterface.updateScroll(it)
+                iFace.updateScroll(it)
             }
         }
         expansionLayout?.let {
             it.isNestedScrollingEnabled = false
-            if (reminderInterface.state.isExpanded) {
+            if (iFace.state.isExpanded) {
                 it.expand(false)
             } else {
                 it.collapse(false)
             }
             it.addListener { _, expanded ->
-                reminderInterface.state.isExpanded = expanded
+                iFace.state.isExpanded = expanded
             }
         }
         ledPickerView?.let {
             if (Module.isPro) {
                 it.visibility = View.VISIBLE
-                it.bindProperty(reminderInterface.state.reminder.color) { color ->
-                    reminderInterface.state.reminder.color = color
+                it.bindProperty(iFace.state.reminder.color) { color ->
+                    iFace.state.reminder.color = color
                 }
             } else {
                 it.visibility = View.GONE
             }
         }
         calendarCheck?.let {
-            if (reminderInterface.canExportToCalendar) {
+            if (iFace.canExportToCalendar) {
                 it.visibility = View.VISIBLE
-                it.bindProperty(reminderInterface.state.reminder.exportToCalendar) { isChecked ->
-                    reminderInterface.state.reminder.exportToCalendar = isChecked
+                it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
+                    iFace.state.reminder.exportToCalendar = isChecked
                 }
             } else {
                 it.visibility = View.GONE
             }
         }
         tasksCheck?.let {
-            if (reminderInterface.canExportToTasks) {
+            if (iFace.canExportToTasks) {
                 it.visibility = View.VISIBLE
-                it.bindProperty(reminderInterface.state.reminder.exportToTasks) { isChecked ->
-                    reminderInterface.state.reminder.exportToTasks = isChecked
+                it.bindProperty(iFace.state.reminder.exportToTasks) { isChecked ->
+                    iFace.state.reminder.exportToTasks = isChecked
                 }
             } else {
                 it.visibility = View.GONE
@@ -229,8 +238,8 @@ abstract class TypeFragment : Fragment() {
         }
         extraView?.let {
             it.dialogues = dialogues
-            it.bindProperty(reminderInterface.state.reminder) { reminder ->
-                reminderInterface.state.reminder.copyExtra(reminder)
+            it.bindProperty(iFace.state.reminder) { reminder ->
+                iFace.state.reminder.copyExtra(reminder)
             }
         }
     }
@@ -251,11 +260,11 @@ abstract class TypeFragment : Fragment() {
 
     }
 
-    protected fun isTablet(): Boolean = reminderInterface.isTablet()
+    protected fun isTablet(): Boolean = iFace.isTablet()
 
     protected fun showGroup(groupView: GroupView, reminder: Reminder) {
         if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {
-            groupView.reminderGroup = reminderInterface.defGroup
+            groupView.reminderGroup = iFace.defGroup
         } else {
             groupView.reminderGroup = ReminderGroup().apply {
                 this.groupUuId = reminder.groupUuId
@@ -267,17 +276,17 @@ abstract class TypeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Timber.d("onResume: ${reminderInterface.state.reminder.groupTitle}, ${reminderInterface.defGroup}")
-        if (reminderInterface.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(reminderInterface.state.reminder.groupTitle)) {
-            val defGroup = reminderInterface.defGroup ?: return
+        Timber.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
+        if (iFace.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(iFace.state.reminder.groupTitle)) {
+            val defGroup = iFace.defGroup ?: return
             onGroupUpdate(defGroup)
         }
-        reminderInterface.setFragment(this)
+        iFace.setFragment(this)
     }
 
     fun onGroupUpdate(reminderGroup: ReminderGroup) {
         try {
-            val reminder = reminderInterface.state.reminder
+            val reminder = iFace.state.reminder
             reminder.groupUuId = reminderGroup.groupUuId
             reminder.groupColor = reminderGroup.groupColor
             reminder.groupTitle = reminderGroup.groupTitle
@@ -292,12 +301,12 @@ abstract class TypeFragment : Fragment() {
     }
 
     fun onMelodySelect(path: String) {
-        reminderInterface.state.reminder.melodyPath = path
+        iFace.state.reminder.melodyPath = path
         melodyView?.file = path
     }
 
     fun onAttachmentSelect(uri: Uri) {
-        reminderInterface.state.reminder.attachmentFile = uri.toString()
+        iFace.state.reminder.attachmentFile = uri.toString()
         attachmentView?.setUri(uri)
     }
 
