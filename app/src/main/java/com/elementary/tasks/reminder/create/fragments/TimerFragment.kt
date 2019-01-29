@@ -1,8 +1,5 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -14,9 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.UsedTime
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_timer.*
@@ -47,7 +45,7 @@ class TimerFragment : RepeatableTypeFragment() {
     lateinit var viewModel: UsedTimeViewModel
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.reminder
+        val reminder = reminderInterface.state.reminder
         val after = timerPickerView.timerValue
         if (after == 0L) {
             reminderInterface.showSnackbar(getString(R.string.you_dont_insert_timer_time))
@@ -90,61 +88,51 @@ class TimerFragment : RepeatableTypeFragment() {
         return reminder
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reminder_timer, container, false)
+    override fun layoutRes(): Int = R.layout.fragment_reminder_timer
+
+    override fun provideViews() {
+        setViews(
+                scrollView = scrollView,
+                expansionLayout = moreLayout,
+                ledPickerView = ledView,
+                calendarCheck = exportToCalendar,
+                tasksCheck = exportToTasks,
+                extraView = tuneExtraView,
+                melodyView = melodyView,
+                attachmentView = attachmentView,
+                groupView = groupView,
+                summaryView = taskSummary,
+                beforePickerView = beforeView,
+                loudnessPickerView = loudnessView,
+                priorityPickerView = priorityView,
+                repeatLimitView = repeatLimitView,
+                repeatView = repeatView,
+                windowTypeView = windowTypeView,
+                actionView = actionView
+        )
+    }
+
+    override fun onNewHeader(newHeader: String) {
+        cardSummary?.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMostUsedList()
-
-        ViewUtils.listenScrollableView(scrollView) {
-            reminderInterface.updateScroll(it)
-        }
-        moreLayout?.isNestedScrollingEnabled = false
-
-        if (prefs.isTelephonyAllowed) {
-            actionView.visibility = View.VISIBLE
-        } else {
-            actionView.visibility = View.GONE
-        }
-
-        if (Module.isPro) {
-            ledView.visibility = View.VISIBLE
-        } else {
-            ledView.visibility = View.GONE
-        }
-
-        tuneExtraView.dialogues = dialogues
         tuneExtraView.hasAutoExtra = false
 
         exclusionView.dialogues = dialogues
         exclusionView.prefs = prefs
         exclusionView.themeUtil = themeUtil
 
-        actionView.setActivity(activity!!)
-        actionView.setContactClickListener(View.OnClickListener { selectContact() })
-
-        melodyView.onFileSelectListener = {
-            reminderInterface.selectMelody()
-        }
-        attachmentView.onFileSelectListener = {
-            reminderInterface.attachFile()
-        }
-        ViewUtils.registerDragAndDrop(activity!!, attachmentView, true, themeUtil.getSecondaryColor(),
-                { clipData ->
-                    if (clipData.itemCount > 0) {
-                        attachmentView.setUri(clipData.getItemAt(0).uri)
-                    }
-                }, *ATTACHMENT_TYPES)
-        groupView.onGroupSelectListener = {
-            reminderInterface.selectGroup()
+        exclusionView.bindProperty(reminderInterface.state.reminder.hours, reminderInterface.state.reminder.from,
+                reminderInterface.state.reminder.to) { hours, from, to ->
+            reminderInterface.state.reminder.hours = hours
+            reminderInterface.state.reminder.from = from
+            reminderInterface.state.reminder.to = to
         }
 
-        initScreenState()
-        initPropertyFields()
         editReminder()
-
         initViewModel()
     }
 
@@ -173,63 +161,7 @@ class TimerFragment : RepeatableTypeFragment() {
         mostUserTimes.adapter = timesAdapter
     }
 
-    private fun initPropertyFields() {
-        val reminder = reminderInterface.reminder
-        taskSummary.bindProperty(reminder.summary) {
-            reminder.summary = it.trim()
-        }
-        beforeView.bindProperty(reminder.remindBefore) {
-            reminder.remindBefore = it
-            updateHeader()
-        }
-        repeatView.bindProperty(reminder.repeatInterval) {
-            reminder.repeatInterval = it
-        }
-        exportToCalendar.bindProperty(reminder.exportToCalendar) {
-            reminder.exportToCalendar = it
-        }
-        exportToTasks.bindProperty(reminder.exportToTasks) {
-            reminder.exportToTasks = it
-        }
-        priorityView.bindProperty(reminder.priority) {
-            reminder.priority = it
-            updateHeader()
-        }
-        actionView.bindProperty(reminder.target) {
-            reminder.target = it
-            updateActions()
-        }
-        melodyView.bindProperty(reminder.melodyPath) {
-            reminder.melodyPath = it
-        }
-        attachmentView.bindProperty(reminder.attachmentFile) {
-            reminder.attachmentFile = it
-        }
-        loudnessView.bindProperty(reminder.volume) {
-            reminder.volume = it
-        }
-        repeatLimitView.bindProperty(reminder.repeatLimit) {
-            reminder.repeatLimit = it
-        }
-        windowTypeView.bindProperty(reminder.windowType) {
-            reminder.windowType = it
-        }
-        tuneExtraView.bindProperty(reminder) {
-            reminder.copyExtra(it)
-        }
-        exclusionView.bindProperty(reminder.hours, reminder.from, reminder.to) { hours, from, to ->
-            reminder.hours = hours
-            reminder.from = from
-            reminder.to = to
-        }
-        if (Module.isPro) {
-            ledView.bindProperty(reminder.color) {
-                reminder.color = it
-            }
-        }
-    }
-
-    private fun updateActions() {
+    override fun updateActions() {
         if (actionView.hasAction()) {
             tuneExtraView.hasAutoExtra = true
             if (actionView.type == ActionView.TYPE_MESSAGE) {
@@ -242,25 +174,8 @@ class TimerFragment : RepeatableTypeFragment() {
         }
     }
 
-    private fun updateHeader() {
-        cardSummary?.text = getSummary()
-    }
-
-    private fun initScreenState() {
-        if (reminderInterface.canExportToCalendar) {
-            exportToCalendar.visibility = View.VISIBLE
-        } else {
-            exportToCalendar.visibility = View.GONE
-        }
-        if (reminderInterface.canExportToTasks) {
-            exportToTasks.visibility = View.VISIBLE
-        } else {
-            exportToTasks.visibility = View.GONE
-        }
-    }
-
     private fun editReminder() {
-        val reminder = reminderInterface.reminder
+        val reminder = reminderInterface.state.reminder
         showGroup(groupView, reminder)
         timerPickerView.timerValue = reminder.after
         if (reminder.target != "") {
@@ -271,45 +186,6 @@ class TimerFragment : RepeatableTypeFragment() {
                 actionView.type = ActionView.TYPE_MESSAGE
             }
         }
-    }
-
-    private fun selectContact() {
-        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
-            SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
-            val number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
-            actionView.number = number
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        actionView.onRequestPermissionsResult(requestCode, grantResults)
-        when (requestCode) {
-            CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
-                selectContact()
-            }
-        }
-    }
-
-    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
-        super.onGroupUpdate(reminderGroup)
-        groupView?.reminderGroup = reminderGroup
-        updateHeader()
-    }
-
-    override fun onMelodySelect(path: String) {
-        super.onMelodySelect(path)
-        melodyView.file = path
-    }
-
-    override fun onAttachmentSelect(uri: Uri) {
-        super.onAttachmentSelect(uri)
-        attachmentView.setUri(uri)
     }
 
     inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {
@@ -348,10 +224,5 @@ class TimerFragment : RepeatableTypeFragment() {
                 itemView.chipItem.text = usedTime.timeString
             }
         }
-    }
-
-    companion object {
-
-        private const val CONTACTS = 112
     }
 }

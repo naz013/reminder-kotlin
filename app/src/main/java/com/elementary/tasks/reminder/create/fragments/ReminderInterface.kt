@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.create.fragments
 
 import android.view.View
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.reminder.create.StateViewModel
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,13 +24,13 @@ import com.elementary.tasks.core.data.models.ReminderGroup
  */
 interface ReminderInterface {
 
-    val reminder: Reminder
-
     var defGroup: ReminderGroup?
 
     var canExportToTasks: Boolean
 
     var canExportToCalendar: Boolean
+
+    val state: StateViewModel
 
     fun isTablet(): Boolean
 
@@ -47,4 +47,6 @@ interface ReminderInterface {
     fun setFullScreenMode(b: Boolean)
 
     fun updateScroll(y: Int)
+
+    fun setFragment(typeFragment: TypeFragment)
 }

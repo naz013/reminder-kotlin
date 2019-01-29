@@ -1,18 +1,25 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.content.ClipDescription
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.views.GroupView
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.views.*
+import com.github.florent37.expansionpanel.ExpansionLayout
+import com.google.android.material.textfield.TextInputEditText
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -46,15 +53,190 @@ abstract class TypeFragment : Fragment() {
     @Inject
     lateinit var themeUtil: ThemeUtil
 
+    private var melodyView: MelodyView? = null
+    private var attachmentView: AttachmentView? = null
+    private var groupView: GroupView? = null
+    private var actionView: ActionView? = null
+
     init {
         ReminderApp.appComponent.inject(this)
     }
 
     abstract fun prepare(): Reminder?
 
+    @LayoutRes
+    abstract fun layoutRes(): Int
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         reminderInterface = context as ReminderInterface
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(layoutRes(), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        provideViews()
+    }
+
+    abstract fun provideViews()
+
+    abstract fun onNewHeader(newHeader: String)
+
+    protected fun setViews(scrollView: NestedScrollView? = null, expansionLayout: ExpansionLayout? = null,
+                           ledPickerView: LedPickerView? = null, calendarCheck: AppCompatCheckBox? = null,
+                           tasksCheck: AppCompatCheckBox? = null, extraView: TuneExtraView? = null,
+                           melodyView: MelodyView? = null, attachmentView: AttachmentView? = null,
+                           groupView: GroupView? = null, beforePickerView: BeforePickerView? = null,
+                           summaryView: TextInputEditText? = null, repeatView: RepeatView? = null,
+                           dateTimeView: DateTimeView? = null, priorityPickerView: PriorityPickerView? = null,
+                           windowTypeView: WindowTypeView? = null, repeatLimitView: RepeatLimitView? = null,
+                           loudnessPickerView: LoudnessPickerView? = null, actionView: ActionView? = null) {
+        this.attachmentView = attachmentView
+        this.melodyView = melodyView
+        this.groupView = groupView
+        this.actionView = actionView
+
+        actionView?.let {
+            if (prefs.isTelephonyAllowed) {
+                it.visibility = View.VISIBLE
+                it.setActivity(activity!!)
+                it.setContactClickListener(View.OnClickListener { selectContact() })
+                it.bindProperty(reminderInterface.state.reminder.target) { number ->
+                    reminderInterface.state.reminder.target = number
+                    updateActions()
+                }
+            } else {
+                it.visibility = View.GONE
+            }
+        }
+        loudnessPickerView?.let {
+            it.bindProperty(reminderInterface.state.reminder.volume) { loudness ->
+                reminderInterface.state.reminder.volume = loudness
+            }
+        }
+        repeatLimitView?.let {
+            it.bindProperty(reminderInterface.state.reminder.repeatLimit) { limit ->
+                reminderInterface.state.reminder.repeatLimit = limit
+            }
+        }
+        windowTypeView?.let {
+            it.bindProperty(reminderInterface.state.reminder.windowType) { type ->
+                reminderInterface.state.reminder.windowType = type
+            }
+        }
+        priorityPickerView?.let {
+            it.bindProperty(reminderInterface.state.reminder.priority) { priority ->
+                reminderInterface.state.reminder.priority = priority
+                updateHeader()
+            }
+        }
+        dateTimeView?.let {
+            it.bindProperty(reminderInterface.state.reminder.eventTime) { dateTime ->
+                reminderInterface.state.reminder.eventTime = dateTime
+            }
+        }
+        repeatView?.let {
+            it.bindProperty(reminderInterface.state.reminder.repeatInterval) { millis ->
+                reminderInterface.state.reminder.repeatInterval = millis
+            }
+        }
+        beforePickerView?.let {
+            it.bindProperty(reminderInterface.state.reminder.remindBefore) { millis ->
+                reminderInterface.state.reminder.remindBefore = millis
+                updateHeader()
+            }
+        }
+        summaryView?.let {
+            it.bindProperty(reminderInterface.state.reminder.summary) { summary ->
+                reminderInterface.state.reminder.summary = summary.trim()
+            }
+        }
+        groupView?.let {
+            it.onGroupSelectListener = {
+                reminderInterface.selectGroup()
+            }
+        }
+        melodyView?.let {
+            it.onFileSelectListener = {
+                reminderInterface.selectMelody()
+            }
+            it.bindProperty(reminderInterface.state.reminder.melodyPath) { melody ->
+                reminderInterface.state.reminder.melodyPath = melody
+            }
+        }
+        attachmentView?.let {
+            it.onFileSelectListener = {
+                reminderInterface.attachFile()
+            }
+            ViewUtils.registerDragAndDrop(activity!!, it, true, themeUtil.getSecondaryColor(),
+                    { clipData ->
+                        if (clipData.itemCount > 0) {
+                            it.setUri(clipData.getItemAt(0).uri)
+                        }
+                    }, *ATTACHMENT_TYPES)
+            it.bindProperty(reminderInterface.state.reminder.attachmentFile) { path ->
+                reminderInterface.state.reminder.attachmentFile = path
+            }
+        }
+        scrollView?.let { view ->
+            ViewUtils.listenScrollableView(view) {
+                reminderInterface.updateScroll(it)
+            }
+        }
+        expansionLayout?.let {
+            it.isNestedScrollingEnabled = false
+            if (reminderInterface.state.isExpanded) {
+                it.expand(false)
+            } else {
+                it.collapse(false)
+            }
+            it.addListener { _, expanded ->
+                reminderInterface.state.isExpanded = expanded
+            }
+        }
+        ledPickerView?.let {
+            if (Module.isPro) {
+                it.visibility = View.VISIBLE
+                it.bindProperty(reminderInterface.state.reminder.color) { color ->
+                    reminderInterface.state.reminder.color = color
+                }
+            } else {
+                it.visibility = View.GONE
+            }
+        }
+        calendarCheck?.let {
+            if (reminderInterface.canExportToCalendar) {
+                it.visibility = View.VISIBLE
+                it.bindProperty(reminderInterface.state.reminder.exportToCalendar) { isChecked ->
+                    reminderInterface.state.reminder.exportToCalendar = isChecked
+                }
+            } else {
+                it.visibility = View.GONE
+            }
+        }
+        tasksCheck?.let {
+            if (reminderInterface.canExportToTasks) {
+                it.visibility = View.VISIBLE
+                it.bindProperty(reminderInterface.state.reminder.exportToTasks) { isChecked ->
+                    reminderInterface.state.reminder.exportToTasks = isChecked
+                }
+            } else {
+                it.visibility = View.GONE
+            }
+        }
+        extraView?.let {
+            it.dialogues = dialogues
+            it.bindProperty(reminderInterface.state.reminder) { reminder ->
+                reminderInterface.state.reminder.copyExtra(reminder)
+            }
+        }
+    }
+
+    protected open fun updateActions() {
+
     }
 
     open fun getSummary(): String {
@@ -65,30 +247,11 @@ abstract class TypeFragment : Fragment() {
         return true
     }
 
-    open fun onMelodySelect(path: String) {
-        reminderInterface.reminder.melodyPath = path
-    }
-
     open fun onVoiceAction(text: String) {
 
     }
 
     protected fun isTablet(): Boolean = reminderInterface.isTablet()
-
-    open fun onAttachmentSelect(uri: Uri) {
-        reminderInterface.reminder.attachmentFile = uri.toString()
-    }
-
-    open fun onGroupUpdate(reminderGroup: ReminderGroup) {
-        try {
-            val reminder = reminderInterface.reminder
-            reminder.groupUuId = reminderGroup.groupUuId
-            reminder.groupColor = reminderGroup.groupColor
-            reminder.groupTitle = reminderGroup.groupTitle
-        } catch (e: Exception) {
-
-        }
-    }
 
     protected fun showGroup(groupView: GroupView, reminder: Reminder) {
         if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {
@@ -104,14 +267,62 @@ abstract class TypeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Timber.d("onResume: ${reminderInterface.reminder.groupTitle}, ${reminderInterface.defGroup}")
-        if (reminderInterface.reminder.groupUuId.isBlank() || TextUtils.isEmpty(reminderInterface.reminder.groupTitle)) {
+        Timber.d("onResume: ${reminderInterface.state.reminder.groupTitle}, ${reminderInterface.defGroup}")
+        if (reminderInterface.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(reminderInterface.state.reminder.groupTitle)) {
             val defGroup = reminderInterface.defGroup ?: return
             onGroupUpdate(defGroup)
+        }
+        reminderInterface.setFragment(this)
+    }
+
+    fun onGroupUpdate(reminderGroup: ReminderGroup) {
+        try {
+            val reminder = reminderInterface.state.reminder
+            reminder.groupUuId = reminderGroup.groupUuId
+            reminder.groupColor = reminderGroup.groupColor
+            reminder.groupTitle = reminderGroup.groupTitle
+        } catch (e: Exception) {
+        }
+        groupView?.reminderGroup = reminderGroup
+        updateHeader()
+    }
+
+    private fun updateHeader() {
+        onNewHeader(getSummary())
+    }
+
+    fun onMelodySelect(path: String) {
+        reminderInterface.state.reminder.melodyPath = path
+        melodyView?.file = path
+    }
+
+    fun onAttachmentSelect(uri: Uri) {
+        reminderInterface.state.reminder.attachmentFile = uri.toString()
+        attachmentView?.setUri(uri)
+    }
+
+    private fun selectContact() {
+        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
+            SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
+            actionView?.number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        actionView?.onRequestPermissionsResult(requestCode, grantResults)
+        when (requestCode) {
+            CONTACTS -> if (Permissions.isAllGranted(grantResults)) selectContact()
         }
     }
 
     companion object {
+        private const val CONTACTS = 112
         val ATTACHMENT_TYPES = arrayOf(UriUtil.URI_MIME, UriUtil.ANY_MIME)
     }
 }
