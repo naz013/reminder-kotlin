@@ -242,6 +242,7 @@ abstract class TypeFragment : Fragment() {
                 iFace.state.reminder.copyExtra(reminder)
             }
         }
+        updateHeader()
     }
 
     protected open fun updateActions() {
@@ -262,11 +263,11 @@ abstract class TypeFragment : Fragment() {
 
     protected fun isTablet(): Boolean = iFace.isTablet()
 
-    protected fun showGroup(groupView: GroupView, reminder: Reminder) {
+    private fun showGroup(groupView: GroupView?, reminder: Reminder) {
         if (TextUtils.isEmpty(reminder.groupTitle) || reminder.groupTitle == "null") {
-            groupView.reminderGroup = iFace.defGroup
+            groupView?.reminderGroup = iFace.defGroup
         } else {
-            groupView.reminderGroup = ReminderGroup().apply {
+            groupView?.reminderGroup = ReminderGroup().apply {
                 this.groupUuId = reminder.groupUuId
                 this.groupColor = reminder.groupColor
                 this.groupTitle = reminder.groupTitle ?: ""
@@ -278,18 +279,18 @@ abstract class TypeFragment : Fragment() {
         super.onResume()
         Timber.d("onResume: ${iFace.state.reminder.groupTitle}, ${iFace.defGroup}")
         if (iFace.state.reminder.groupUuId.isBlank() || TextUtils.isEmpty(iFace.state.reminder.groupTitle)) {
-            val defGroup = iFace.defGroup ?: return
-            onGroupUpdate(defGroup)
+            iFace.defGroup?.let {
+                onGroupUpdate(it)
+            }
         }
         iFace.setFragment(this)
     }
 
     fun onGroupUpdate(reminderGroup: ReminderGroup) {
         try {
-            val reminder = iFace.state.reminder
-            reminder.groupUuId = reminderGroup.groupUuId
-            reminder.groupColor = reminderGroup.groupColor
-            reminder.groupTitle = reminderGroup.groupTitle
+            iFace.state.reminder.groupUuId = reminderGroup.groupUuId
+            iFace.state.reminder.groupColor = reminderGroup.groupColor
+            iFace.state.reminder.groupTitle = reminderGroup.groupTitle
         } catch (e: Exception) {
         }
         groupView?.reminderGroup = reminderGroup
@@ -317,6 +318,7 @@ abstract class TypeFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
             actionView?.number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
         }

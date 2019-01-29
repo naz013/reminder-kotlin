@@ -8,10 +8,12 @@ import androidx.emoji.text.EmojiCompat
 import androidx.emoji.text.FontRequestEmojiCompatConfig
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.core.di.*
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.Module
 import com.evernote.android.job.JobManager
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
 
@@ -42,6 +44,7 @@ class ReminderApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
