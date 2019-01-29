@@ -25,21 +25,16 @@ abstract class RepeatableTypeFragment : TypeFragment() {
 
     override fun getSummary(): String {
         val reminder = iFace.state.reminder
-
         var summary = ""
-
         val groupName = reminder.groupTitle
         if (groupName != "") {
            summary += "$groupName, "
         }
-
         summary += ReminderUtils.getPriorityTitle(context!!, reminder.priority) + ", "
-
         val before = reminder.remindBefore
         if (before > 0) {
             summary += IntervalUtil.getInterval(context!!, before) + ", "
         }
-
         return summary
     }
 

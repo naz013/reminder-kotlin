@@ -112,11 +112,11 @@ fun RepeatView.bindProperty(value: Long, listener: ((Long) -> Unit)) {
     }
 }
 
-fun BeforePickerView.bindProperty(value: Long, listener: ((Long) -> Unit)) {
+fun BeforePickerView.bindProperty(value: Long, listener: ((Long) -> Unit)?) {
     this.setBefore(value)
     this.onBeforeChangedListener = object : BeforePickerView.OnBeforeChangedListener {
         override fun onChanged(beforeMills: Long) {
-            listener.invoke(beforeMills)
+            listener?.invoke(beforeMills)
         }
     }
 }

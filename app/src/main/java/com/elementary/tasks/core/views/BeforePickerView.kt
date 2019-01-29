@@ -33,7 +33,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BeforePickerView : LinearLayout, TextWatcher {
+class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedListener {
 
     private val seconds = 0
     private val minutes = 1
@@ -80,7 +80,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         View.inflate(context, R.layout.view_remind_before, this)
-        orientation = LinearLayout.VERTICAL
+        orientation = LinearLayout.HORIZONTAL
         mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 
         hintIcon.setOnLongClickListener {
@@ -89,15 +89,7 @@ class BeforePickerView : LinearLayout, TextWatcher {
         }
         TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.before_time))
 
-        before_type_view.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                setState(i)
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>) {
-
-            }
-        }
+        before_type_view.onItemSelectedListener = this
         before_value_view.addTextChangedListener(this)
         before_value_view.setOnFocusChangeListener { _, hasFocus ->
             if (mImm == null) return@setOnFocusChangeListener
@@ -191,6 +183,13 @@ class BeforePickerView : LinearLayout, TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable) {
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        setState(position)
     }
 
     interface OnBeforeChangedListener {

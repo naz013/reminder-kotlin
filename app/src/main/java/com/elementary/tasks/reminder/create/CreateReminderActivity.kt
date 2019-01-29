@@ -513,7 +513,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         return mIsTablet
     }
 
-    override fun setFragment(typeFragment: TypeFragment) {
+    override fun setFragment(typeFragment: TypeFragment?) {
         this.fragment = typeFragment
     }
 

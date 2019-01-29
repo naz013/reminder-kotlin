@@ -224,7 +224,6 @@ class MonthFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = iFace.state.reminder
-        showGroup(groupView, reminder)
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormat, prefs.appLanguage)
         if (iFace.state.isLastDay && reminder.dayOfMonth == 0) {
