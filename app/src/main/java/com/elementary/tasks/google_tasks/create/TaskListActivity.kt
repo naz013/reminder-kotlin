@@ -38,11 +38,15 @@ import kotlinx.android.synthetic.main.view_progress.*
 class TaskListActivity : ThemedActivity() {
 
     private lateinit var viewModel: GoogleTaskListViewModel
+    private lateinit var stateViewModel: StateViewModel
+
     private var mItem: GoogleTaskList? = null
     private var mIsLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
+
         setContentView(R.layout.activity_create_task_list)
         progressMessageView.text = getString(R.string.please_wait)
         updateProgress(false)
@@ -86,18 +90,14 @@ class TaskListActivity : ThemedActivity() {
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(id)).get(GoogleTaskListViewModel::class.java)
         viewModel.googleTaskList.observe(this, Observer { googleTaskList ->
-            if (googleTaskList != null) {
-                editTaskList(googleTaskList)
-            }
+            googleTaskList?.let { editTaskList(it) }
         })
         viewModel.isInProgress.observe(this, Observer { aBoolean ->
-            if (aBoolean != null) {
-                updateProgress(aBoolean)
-            }
+            aBoolean?.let { updateProgress(it) }
         })
         viewModel.result.observe(this, Observer { commands ->
-            if (commands != null) {
-                when (commands) {
+            commands?.let {
+                when (it) {
                     Commands.DELETED, Commands.SAVED -> onBackPressed()
                     else -> {
                     }
@@ -109,12 +109,15 @@ class TaskListActivity : ThemedActivity() {
     private fun editTaskList(googleTaskList: GoogleTaskList) {
         this.mItem = googleTaskList
         toolbar.title = getString(R.string.edit_task_list)
-        editField.setText(googleTaskList.title)
-        if (googleTaskList.def == 1) {
-            defaultCheck.isChecked = true
-            defaultCheck.isEnabled = false
+        if (!stateViewModel.isEdited) {
+            editField.setText(googleTaskList.title)
+            if (googleTaskList.def == 1) {
+                defaultCheck.isChecked = true
+                defaultCheck.isEnabled = false
+            }
+            colorSlider.setSelection(googleTaskList.color)
+            stateViewModel.isEdited = true
         }
-        colorSlider.setSelection(googleTaskList.color)
     }
 
     private fun saveTaskList() {
@@ -183,15 +186,16 @@ class TaskListActivity : ThemedActivity() {
     }
 
     private fun deleteList() {
-        val item = mItem ?: return
-        viewModel.deleteGoogleTaskList(item)
+        if (mIsLoading) return
+        mItem?.let { viewModel.deleteGoogleTaskList(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-        val item = mItem
-        if (item != null && item.systemDefault != 1) {
-            menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
+        mItem?.let {
+            if (it.systemDefault != 1) {
+                menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
+            }
         }
         return true
     }

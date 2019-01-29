@@ -22,6 +22,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
@@ -49,43 +50,34 @@ import java.util.*
  */
 class TaskActivity : ThemedActivity() {
 
+    private lateinit var stateViewModel: StateViewModel
     private lateinit var viewModel: GoogleTaskViewModel
 
-    private var mHour = 0
-    private var mMinute = 0
-    private var mYear = 0
-    private var mMonth = 0
-    private var mDay = 1
     private var mIsLoading = false
-    private var listId: String = ""
-    private var action: String = ""
-    private var isReminder = false
-    private var isDate = false
-    private var mIsLogged = false
-
     private var mItem: GoogleTask? = null
+
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-        mYear = year
-        mMonth = monthOfYear
-        mDay = dayOfMonth
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(year, monthOfYear, dayOfMonth)
-        dateField.text = TimeUtil.getGoogleTaskDate(calendar.time, prefs.appLanguage)
+        val c = Calendar.getInstance()
+        c.timeInMillis = System.currentTimeMillis()
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        c.set(Calendar.MONTH, monthOfYear)
+        c.set(Calendar.YEAR, year)
+        stateViewModel.date.postValue(c.timeInMillis)
     }
 
     private var mTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-        mHour = hourOfDay
-        mMinute = minute
         val c = Calendar.getInstance()
+        c.timeInMillis = System.currentTimeMillis()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
+        stateViewModel.time.postValue(c.timeInMillis)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
+        lifecycle.addObserver(stateViewModel)
+
         setContentView(R.layout.activity_create_google_task)
         initToolbar()
         initFields()
@@ -93,35 +85,69 @@ class TaskActivity : ThemedActivity() {
         progressMessageView.text = getString(R.string.please_wait)
         updateProgress(false)
 
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        mHour = calendar.get(Calendar.HOUR_OF_DAY)
-        mMinute = calendar.get(Calendar.MINUTE)
-        mYear = calendar.get(Calendar.YEAR)
-        mMonth = calendar.get(Calendar.MONTH)
-        mDay = calendar.get(Calendar.DAY_OF_MONTH)
-
         var tmp = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        action = intent.getStringExtra(TasksConstants.INTENT_ACTION) ?: ""
-        if (action == "") action = TasksConstants.CREATE
+        if (savedInstanceState == null) {
+            stateViewModel.action = intent.getStringExtra(TasksConstants.INTENT_ACTION) ?: ""
+            if (stateViewModel.action == "") stateViewModel.action = TasksConstants.CREATE
+            initDefaults()
+        } else {
+            updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
+        }
 
-        if (action == TasksConstants.CREATE) {
+        if (stateViewModel.action == TasksConstants.CREATE) {
             if (savedInstanceState != null) {
                 tmp = savedInstanceState.getString(ARG_LIST, "")
-                updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
             }
             initViewModel("", tmp)
         } else {
             initViewModel(tmp, "")
         }
-        switchDate()
-        if (prefs.hasPinCode && !mIsLogged) {
+    }
+
+    override fun onStart() {
+        super.onStart()
+        observeStates()
+        if (prefs.hasPinCode && !stateViewModel.isLogged) {
             PinLoginActivity.verify(this)
         }
     }
 
+    private fun observeStates() {
+        stateViewModel.time.observe(this, Observer {
+            if (it != null) {
+                switchDate()
+            }
+        })
+        stateViewModel.date.observe(this, Observer {
+            if (it != null) {
+                switchDate()
+            }
+        })
+        stateViewModel.isDateEnabled.observe(this, Observer {
+            if (it != null) {
+                switchDate(isDate = it)
+            }
+        })
+        stateViewModel.isReminder.observe(this, Observer {
+            if (it != null) {
+                switchDate(isReminder = it)
+            }
+        })
+        stateViewModel.reminderValue.observe(this, Observer {
+            if (it != null) {
+                showReminder(it)
+            }
+        })
+    }
+
+    private fun initDefaults() {
+        stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+        stateViewModel.time.postValue(System.currentTimeMillis())
+        stateViewModel.date.postValue(System.currentTimeMillis())
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(ARG_LIST, listId)
+        outState.putString(ARG_LIST, stateViewModel.listId)
         outState.putBoolean(ARG_LOADING, mIsLoading)
         super.onSaveInstanceState(outState)
     }
@@ -136,14 +162,14 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun initViewModel(taskId: String, listId: String) {
-        this.listId = listId
+        stateViewModel.listId = listId
         viewModel = ViewModelProviders.of(this, GoogleTaskViewModel.Factory(taskId)).get(GoogleTaskViewModel::class.java)
-        viewModel.isInProgress.observe(this, Observer{ aBoolean ->
+        viewModel.isInProgress.observe(this, Observer { aBoolean ->
             if (aBoolean != null) {
                 updateProgress(aBoolean)
             }
         })
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> onBackPressed()
@@ -157,38 +183,39 @@ class TaskActivity : ThemedActivity() {
                 editTask(googleTask)
             }
         })
-        viewModel.googleTaskLists.observe(this, Observer{ googleTaskLists ->
+        viewModel.googleTaskLists.observe(this, Observer { googleTaskLists ->
             if (googleTaskLists != null) {
                 selectCurrent(googleTaskLists)
             }
         })
-        viewModel.defaultTaskList.observe(this, Observer{ googleTaskList ->
+        viewModel.defaultTaskList.observe(this, Observer { googleTaskList ->
             if (googleTaskList != null && listId == "") {
                 showTaskList(googleTaskList)
             }
         })
-        viewModel.reminder.observe(this, Observer{ reminder ->
+        viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
-                showReminder(reminder)
+                if (!stateViewModel.isReminderEdited) {
+                    stateViewModel.reminderValue.postValue(reminder)
+                    stateViewModel.isReminderEdited = true
+                }
             }
         })
     }
 
     private fun showReminder(reminder: Reminder) {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-        timeField.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormat, prefs.appLanguage)
-        isReminder = true
+        stateViewModel.time.postValue(TimeUtil.getDateTimeFromGmt(reminder.eventTime))
+        stateViewModel.isReminder.postValue(true)
     }
 
     private fun showTaskList(googleTaskList: GoogleTaskList) {
-        this.listId = googleTaskList.listId
+        stateViewModel.listId = googleTaskList.listId
         listText.text = googleTaskList.title
     }
 
     private fun selectCurrent(googleTaskLists: List<GoogleTaskList>) {
         for (googleTaskList in googleTaskLists) {
-            if (googleTaskList.listId == listId) {
+            if (googleTaskList.listId == stateViewModel.listId) {
                 showTaskList(googleTaskList)
                 break
             }
@@ -197,34 +224,29 @@ class TaskActivity : ThemedActivity() {
 
     private fun editTask(googleTask: GoogleTask) {
         this.mItem = googleTask
-        this.listId = googleTask.listId
+        stateViewModel.listId = googleTask.listId
         toolbar.setTitle(R.string.edit_task)
-        editField.setText(googleTask.title)
-
-        val note = googleTask.notes
-        if (note != "") {
-            detailsField.setText(note)
-            detailsField.setSelection(detailsField.text.toString().trim().length)
-        }
-        val time = googleTask.dueDate
-        if (time != 0L) {
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = time
-            mHour = calendar.get(Calendar.HOUR_OF_DAY)
-            mMinute = calendar.get(Calendar.MINUTE)
-            mYear = calendar.get(Calendar.YEAR)
-            mMonth = calendar.get(Calendar.MONTH)
-            mDay = calendar.get(Calendar.DAY_OF_MONTH)
-            isDate = true
-            dateField.text = TimeUtil.getGoogleTaskDate(calendar.time, prefs.appLanguage)
-        }
-        if (viewModel.googleTaskLists.value != null) {
-            for (googleTaskList in viewModel.googleTaskLists.value!!) {
-                if (googleTaskList.listId == googleTask.listId) {
-                    showTaskList(googleTaskList)
-                    break
+        if (!stateViewModel.isEdited) {
+            editField.setText(googleTask.title)
+            val note = googleTask.notes
+            if (note != "") {
+                detailsField.setText(note)
+                detailsField.setSelection(detailsField.text.toString().trim().length)
+            }
+            val time = googleTask.dueDate
+            if (time != 0L) {
+                stateViewModel.date.postValue(time)
+                stateViewModel.isDateEnabled.postValue(true)
+            }
+            if (viewModel.googleTaskLists.value != null) {
+                for (googleTaskList in viewModel.googleTaskLists.value!!) {
+                    if (googleTaskList.listId == googleTask.listId) {
+                        showTaskList(googleTaskList)
+                        break
+                    }
                 }
             }
+            stateViewModel.isEdited = true
         }
         viewModel.loadReminder(googleTask.uuId)
     }
@@ -240,11 +262,7 @@ class TaskActivity : ThemedActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        if (isDark) {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_white_24px)
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_twotone_arrow_back_24px)
-        }
+        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
         toolbar.setTitle(R.string.new_task)
     }
 
@@ -258,47 +276,63 @@ class TaskActivity : ThemedActivity() {
                 android.R.layout.simple_list_item_single_choice, types)
         var selection = 0
         if (type == 1) {
-            if (isDate) selection = 1
+            if (isDate()) selection = 1
         }
         if (type == 2) {
-            if (isReminder) selection = 1
+            if (isReminder()) selection = 1
         }
         builder.setSingleChoiceItems(adapter, selection) { dialog, which ->
             if (which != -1) {
                 dialog.dismiss()
                 if (type == 1) {
                     when (which) {
-                        0 -> {
-                            isDate = false
-                            switchDate()
-                        }
+                        0 -> stateViewModel.isDateEnabled.postValue(false)
                         1 -> {
-                            isDate = true
+                            stateViewModel.isDateEnabled.postValue(true)
                             dateDialog()
                         }
                     }
                 }
                 if (type == 2) {
                     when (which) {
-                        0 -> {
-                            isReminder = false
-                            switchDate()
-                        }
+                        0 -> stateViewModel.isReminder.postValue(false)
                         1 -> {
-                            isReminder = true
+                            stateViewModel.isReminder.postValue(true)
                             timeDialog()
                         }
                     }
                 }
             }
         }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
-    private fun switchDate() {
-        if (!isDate) dateField.text = getString(R.string.no_date)
-        if (!isReminder) timeField.text = getString(R.string.no_reminder)
+    private fun isDate(): Boolean = stateViewModel.isDateEnabled.value ?: false
+
+    private fun isReminder(): Boolean = stateViewModel.isReminder.value ?: false
+
+    private fun switchDate(isDate: Boolean = isDate(), isReminder: Boolean = isReminder()) {
+        if (!isDate) {
+            dateField.text = getString(R.string.no_date)
+        } else {
+            showDate()
+        }
+        if (!isReminder) {
+            timeField.text = getString(R.string.no_reminder)
+        } else {
+            showTime()
+        }
+    }
+
+    private fun showDate() {
+        dateField.text = TimeUtil.getGoogleTaskDate(stateViewModel.date.value
+                ?: System.currentTimeMillis(),
+                prefs.appLanguage)
+    }
+
+    private fun showTime() {
+        timeField.text = TimeUtil.getTime(stateViewModel.time.value ?: System.currentTimeMillis(),
+                prefs.is24HourFormat, prefs.appLanguage)
     }
 
     private fun moveTask(listId: String) {
@@ -323,7 +357,7 @@ class TaskActivity : ThemedActivity() {
         for (i in list.indices) {
             val item = list[i]
             names.add(item.title)
-            if (listId != "" && item.listId != "" && item.listId.matches(listId.toRegex())) {
+            if (stateViewModel.listId != "" && item.listId != "" && item.listId.matches(stateViewModel.listId.toRegex())) {
                 position = i
             }
         }
@@ -333,10 +367,11 @@ class TaskActivity : ThemedActivity() {
         builder.setSingleChoiceItems(ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, names),
                 position) { dialog, which ->
             dialog.dismiss()
-            if (move)
+            if (move) {
                 moveTask(finalList[which].listId)
-            else
+            } else {
                 showTaskList(finalList[which])
+            }
         }
         val alert = builder.create()
         alert.show()
@@ -350,18 +385,14 @@ class TaskActivity : ThemedActivity() {
             return
         }
         val note = detailsField.text.toString().trim()
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(mYear, mMonth, mDay, 12, 0, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
         var due: Long = 0
-        if (isDate) due = calendar.timeInMillis
+        if (isDate()) due = stateViewModel.date.value ?: 0
         var reminder: Reminder? = null
-        if (isReminder) reminder = createReminder(taskName)
+        if (isReminder()) reminder = createReminder(taskName)
         var item = mItem
-        if (action.matches(TasksConstants.EDIT.toRegex()) && item != null) {
+        if (stateViewModel.action.matches(TasksConstants.EDIT.toRegex()) && item != null) {
             val initListId = item.listId
-            item.listId = listId
+            item.listId = stateViewModel.listId
             item.status = GTasks.TASKS_NEED_ACTION
             item.title = taskName
             item.notes = note
@@ -369,14 +400,14 @@ class TaskActivity : ThemedActivity() {
                 item.uuId = reminder.uuId
             }
             item.dueDate = due
-            if (listId != "") {
+            if (stateViewModel.listId != "") {
                 viewModel.updateAndMoveGoogleTask(item, initListId, reminder)
             } else {
                 viewModel.updateGoogleTask(item, reminder)
             }
         } else {
             item = GoogleTask()
-            item.listId = listId
+            item.listId = stateViewModel.listId
             item.status = GTasks.TASKS_NEED_ACTION
             item.title = taskName
             item.notes = note
@@ -388,12 +419,30 @@ class TaskActivity : ThemedActivity() {
         }
     }
 
+    private fun dateTime(): Long {
+        val result = Calendar.getInstance()
+        result.timeInMillis = System.currentTimeMillis()
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
+
+        result.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+        result.set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+        result.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+
+        calendar.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
+
+        result.set(Calendar.HOUR, calendar.get(Calendar.HOUR))
+        result.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
+        result.set(Calendar.SECOND, 0)
+        result.set(Calendar.MILLISECOND, 0)
+
+        return result.timeInMillis
+    }
+
     private fun createReminder(task: String): Reminder? {
         val group = viewModel.defaultReminderGroup.value ?: return null
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(mYear, mMonth, mDay, mHour, mMinute)
-        val due = calendar.timeInMillis
+        val due = dateTime()
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
         reminder.summary = task
@@ -417,8 +466,8 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun deleteTask() {
-        val item = mItem ?: return
-        viewModel.deleteGoogleTask(item)
+        if (mIsLoading) return
+        mItem?.let { viewModel.deleteGoogleTask(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -453,15 +502,24 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
+        val c = Calendar.getInstance()
+        c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
+        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, mTimeCallBack)
+        val c = Calendar.getInstance()
+        c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
+        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat,
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), mTimeCallBack)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        lifecycle.removeObserver(stateViewModel)
+        lifecycle.removeObserver(viewModel)
+        hideKeyboard()
         UpdatesHelper.updateTasksWidget(this)
     }
 
@@ -475,6 +533,8 @@ class TaskActivity : ThemedActivity() {
         if (requestCode == PinLoginActivity.REQ_CODE) {
             if (resultCode != Activity.RESULT_OK) {
                 finish()
+            } else {
+                stateViewModel.isLogged = true
             }
         }
     }
