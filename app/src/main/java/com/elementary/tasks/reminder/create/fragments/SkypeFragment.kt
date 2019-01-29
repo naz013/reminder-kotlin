@@ -8,6 +8,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.onChanged
 import kotlinx.android.synthetic.main.fragment_reminder_skype.*
 import timber.log.Timber
 
@@ -32,7 +33,7 @@ import timber.log.Timber
 class SkypeFragment : RepeatableTypeFragment() {
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         if (!SuperUtil.isSkypeClientInstalled(context!!)) {
             showInstallSkypeDialog()
             return null
@@ -44,13 +45,13 @@ class SkypeFragment : RepeatableTypeFragment() {
         }
         val number = skypeContact.text.toString().trim()
         if (TextUtils.isEmpty(number)) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+            iFace.showSnackbar(getString(R.string.you_dont_insert_number))
             return null
         }
         val type = getType(skypeGroup.checkedRadioButtonId)
         val startTime = dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
         reminder.target = number
@@ -58,7 +59,7 @@ class SkypeFragment : RepeatableTypeFragment() {
         reminder.startTime = reminder.eventTime
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -106,6 +107,10 @@ class SkypeFragment : RepeatableTypeFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tuneExtraView.hasAutoExtra = false
+        skypeContact.onChanged {
+            iFace.state.skypeContact = it
+        }
+        skypeContact.setText(iFace.state.skypeContact)
         editReminder()
     }
 
@@ -120,8 +125,7 @@ class SkypeFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
+        val reminder = iFace.state.reminder
         when (reminder.type) {
             Reminder.BY_SKYPE_CALL -> skypeCall.isChecked = true
             Reminder.BY_SKYPE_VIDEO -> skypeVideo.isChecked = true

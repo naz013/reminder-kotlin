@@ -37,7 +37,6 @@ import timber.log.Timber
 class LocationFragment : RadiusTypeFragment() {
 
     private var mAdvancedMapFragment: AdvancedMapFragment? = null
-
     private var lastPos: LatLng? = null
 
     private val mListener = object : MapListener {
@@ -46,7 +45,7 @@ class LocationFragment : RadiusTypeFragment() {
         }
 
         override fun onZoomClick(isFull: Boolean) {
-            reminderInterface.setFullScreenMode(isFull)
+            iFace.setFullScreenMode(isFull)
         }
 
         override fun onBackClick() {
@@ -54,7 +53,7 @@ class LocationFragment : RadiusTypeFragment() {
                 val map = mAdvancedMapFragment ?: return
                 if (map.isFullscreen) {
                     map.isFullscreen = false
-                    reminderInterface.setFullScreenMode(false)
+                    iFace.setFullScreenMode(false)
                 }
                 if (mapContainer.visibility == View.VISIBLE) {
                     ViewUtils.fadeOutAnimation(mapContainer)
@@ -65,7 +64,7 @@ class LocationFragment : RadiusTypeFragment() {
     }
 
     private fun showPlaceOnMap() {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         if (!Reminder.isGpsType(reminder.type)) return
         val text = reminder.summary
         if (reminder.places.isNotEmpty()) {
@@ -91,7 +90,7 @@ class LocationFragment : RadiusTypeFragment() {
         var type = if (enterCheck.isChecked) Reminder.BY_LOCATION else Reminder.BY_OUT
         val pos = lastPos
         if (pos == null) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
+            iFace.showSnackbar(getString(R.string.you_dont_select_place))
             return null
         }
         if (TextUtils.isEmpty(reminder.summary)) {
@@ -104,7 +103,7 @@ class LocationFragment : RadiusTypeFragment() {
         if (actionView.hasAction()) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -186,10 +185,17 @@ class LocationFragment : RadiusTypeFragment() {
 
         delayLayout.visibility = View.GONE
         attackDelay.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
+            iFace.state.isDelayAdded = isChecked
+            if (isChecked) {
                 delayLayout.visibility = View.VISIBLE
-            else
+            } else {
                 delayLayout.visibility = View.GONE
+            }
+        }
+        attackDelay.isChecked = iFace.state.isDelayAdded
+
+        leaveCheck.setOnCheckedChangeListener { _, isChecked ->
+            iFace.state.isLeave = isChecked
         }
 
         clearButton.setOnClickListener { addressField.setText("") }
@@ -233,27 +239,17 @@ class LocationFragment : RadiusTypeFragment() {
     }
 
     override fun onBackPressed(): Boolean {
-        return mAdvancedMapFragment == null || mAdvancedMapFragment!!.onBackPressed()
+        return mAdvancedMapFragment == null || mAdvancedMapFragment?.onBackPressed() == true
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         Timber.d("editReminder: %s", reminder)
-        showGroup(groupView, reminder)
         if (reminder.eventTime != "" && reminder.hasReminder) {
             dateView.setDateTime(reminder.eventTime)
             attackDelay.isChecked = true
         }
-        if (reminder.target != "") {
-            actionView.setAction(true)
-            actionView.number = reminder.target
-            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-                actionView.type = ActionView.TYPE_CALL
-            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
-                actionView.type = ActionView.TYPE_MESSAGE
-            }
-        }
-        if (Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
+        if (iFace.state.isLeave && Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
             leaveCheck.isChecked = true
         } else {
             enterCheck.isChecked = true

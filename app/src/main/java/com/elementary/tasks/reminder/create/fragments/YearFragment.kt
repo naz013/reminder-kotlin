@@ -33,25 +33,19 @@ import java.util.*
  */
 class YearFragment : RepeatableTypeFragment() {
 
-    private var mHour = 0
-    private var mMinute = 0
-    private var mYear = 0
-    private var mMonth = 0
-    private var mDay = 1
-
     private val time: Long
         get() {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
-            calendar.set(Calendar.HOUR_OF_DAY, mHour)
-            calendar.set(Calendar.MINUTE, mMinute)
+            calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
+            calendar.set(Calendar.MINUTE, iFace.state.minute)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
             return calendar.timeInMillis
         }
 
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         var type = Reminder.BY_DAY_OF_YEAR
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -63,7 +57,7 @@ class YearFragment : RepeatableTypeFragment() {
         if (isAction) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -75,15 +69,15 @@ class YearFragment : RepeatableTypeFragment() {
         reminder.weekdays = listOf()
         reminder.target = number
         reminder.type = type
-        reminder.dayOfMonth = mDay
-        reminder.monthOfYear = mMonth
+        reminder.dayOfMonth = iFace.state.day
+        reminder.monthOfYear = iFace.state.month
         reminder.repeatInterval = 0
 
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         val startTime = TimeCount.getNextYearDayTime(reminder)
 
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            reminderInterface.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
 
@@ -91,7 +85,7 @@ class YearFragment : RepeatableTypeFragment() {
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
         if (!TimeCount.isCurrent(reminder.eventTime)) {
-            reminderInterface.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
         return reminder
@@ -133,28 +127,28 @@ class YearFragment : RepeatableTypeFragment() {
         dateView.setEventListener(object : DateTimeView.OnSelectListener {
             override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
                 if (month == 1 && day > 28) {
-                    reminderInterface.showSnackbar(getString(R.string.max_day_supported))
+                    iFace.showSnackbar(getString(R.string.max_day_supported))
                     return
                 }
-                mDay = day
-                mMonth = month
-                mYear = year
+                iFace.state.day = day
+                iFace.state.month = month
+                iFace.state.year = year
             }
 
             override fun onTimeSelect(mills: Long, hour: Int, minute: Int) {
-                mHour = hour
-                mMinute = minute
+                iFace.state.hour = hour
+                iFace.state.minute = minute
             }
         })
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
-        mDay = calendar.get(Calendar.DAY_OF_MONTH)
-        mMonth = calendar.get(Calendar.MONTH)
-        mYear = calendar.get(Calendar.YEAR)
-        mHour = calendar.get(Calendar.HOUR_OF_DAY)
-        mMinute = calendar.get(Calendar.MINUTE)
-        dateView.dateTime = System.currentTimeMillis()
+        calendar.set(Calendar.DAY_OF_MONTH, iFace.state.day)
+        calendar.set(Calendar.MONTH, iFace.state.month)
+        calendar.set(Calendar.YEAR, iFace.state.year)
+        calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
+        calendar.set(Calendar.MINUTE, iFace.state.minute)
+        dateView.dateTime = calendar.timeInMillis
         editReminder()
     }
 
@@ -174,32 +168,19 @@ class YearFragment : RepeatableTypeFragment() {
     private fun updateDateTime(reminder: Reminder) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-        mHour = calendar.get(Calendar.HOUR_OF_DAY)
-        mMinute = calendar.get(Calendar.MINUTE)
+        iFace.state.hour = calendar.get(Calendar.HOUR_OF_DAY)
+        iFace.state.minute = calendar.get(Calendar.MINUTE)
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(Calendar.DAY_OF_MONTH, reminder.dayOfMonth)
         calendar.set(Calendar.MONTH, reminder.monthOfYear)
-        calendar.set(Calendar.HOUR_OF_DAY, mHour)
-        calendar.set(Calendar.MINUTE, mMinute)
+        calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
+        calendar.set(Calendar.MINUTE, iFace.state.minute)
         dateView.dateTime = calendar.timeInMillis
-        mDay = reminder.dayOfMonth
-        mMonth = reminder.monthOfYear
+        iFace.state.day = reminder.dayOfMonth
+        iFace.state.month = reminder.monthOfYear
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
-        showGroup(groupView, reminder)
-        updateDateTime(reminder)
-        mDay = reminder.dayOfMonth
-        mMonth = reminder.monthOfYear
-        if (reminder.target != "") {
-            actionView.setAction(true)
-            actionView.number = reminder.target
-            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-                actionView.type = ActionView.TYPE_CALL
-            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
-                actionView.type = ActionView.TYPE_MESSAGE
-            }
-        }
+        updateDateTime(iFace.state.reminder)
     }
 }

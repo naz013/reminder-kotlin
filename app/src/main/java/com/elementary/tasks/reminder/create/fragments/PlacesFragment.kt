@@ -41,7 +41,7 @@ class PlacesFragment : RadiusTypeFragment() {
         }
 
         override fun onZoomClick(isFull: Boolean) {
-            reminderInterface.setFullScreenMode(isFull)
+            iFace.setFullScreenMode(isFull)
         }
 
         override fun onBackClick() {
@@ -49,7 +49,7 @@ class PlacesFragment : RadiusTypeFragment() {
                 val map = mPlacesMap ?: return
                 if (map.isFullscreen) {
                     map.isFullscreen = false
-                    reminderInterface.setFullScreenMode(false)
+                    iFace.setFullScreenMode(false)
                 }
                 if (mapContainer.visibility == View.VISIBLE) {
                     ViewUtils.fadeOutAnimation(mapContainer)
@@ -69,7 +69,7 @@ class PlacesFragment : RadiusTypeFragment() {
         var type = Reminder.BY_PLACES
         val places = map.places
         if (places.isEmpty()) {
-            reminderInterface.showSnackbar(getString(R.string.you_dont_select_place))
+            iFace.showSnackbar(getString(R.string.you_dont_select_place))
             return null
         }
         if (TextUtils.isEmpty(reminder.summary)) {
@@ -82,7 +82,7 @@ class PlacesFragment : RadiusTypeFragment() {
         if (actionView.hasAction()) {
             number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                reminderInterface.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
             type = if (actionView.type == ActionView.TYPE_CALL) {
@@ -148,27 +148,29 @@ class PlacesFragment : RadiusTypeFragment() {
         placesMap.setListener(mListener)
         placesMap.setCallback(object : MapCallback {
             override fun onMapReady() {
-                mPlacesMap?.selectMarkers(reminderInterface.state.reminder.places)
+                mPlacesMap?.selectMarkers(iFace.state.reminder.places)
             }
         })
         placesMap.markerRadius = prefs.radius
         placesMap.setMarkerStyle(prefs.markerStyle)
-        fragmentManager!!.beginTransaction()
-                .replace(mapFrame.id, placesMap)
-                .addToBackStack(null)
-                .commit()
+        fragmentManager?.beginTransaction()
+                ?.replace(mapFrame.id, placesMap)
+                ?.addToBackStack(null)
+                ?.commit()
         this.mPlacesMap = placesMap
 
         tuneExtraView.hasAutoExtra = false
 
         delayLayout.visibility = View.GONE
         attackDelay.setOnCheckedChangeListener { _, isChecked ->
+            iFace.state.isDelayAdded = isChecked
             if (isChecked) {
                 delayLayout.visibility = View.VISIBLE
             } else {
                 delayLayout.visibility = View.GONE
             }
         }
+        attackDelay.isChecked = iFace.state.isDelayAdded
         mapButton.setOnClickListener { toggleMap() }
         editReminder()
     }
@@ -203,21 +205,11 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.state.reminder
+        val reminder = iFace.state.reminder
         Timber.d("editReminder: %s", reminder)
-        showGroup(groupView, reminder)
         if (reminder.eventTime != "" && reminder.hasReminder) {
             dateView.setDateTime(reminder.eventTime)
             attackDelay.isChecked = true
-        }
-        if (reminder.target != "") {
-            actionView.setAction(true)
-            actionView.number = reminder.target
-            if (Reminder.isKind(reminder.type, Reminder.Kind.CALL)) {
-                actionView.type = ActionView.TYPE_CALL
-            } else if (Reminder.isKind(reminder.type, Reminder.Kind.SMS)) {
-                actionView.type = ActionView.TYPE_MESSAGE
-            }
         }
     }
 }
