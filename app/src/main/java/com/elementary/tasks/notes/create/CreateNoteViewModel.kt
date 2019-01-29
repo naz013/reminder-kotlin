@@ -26,6 +26,7 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
     var isLogged = false
     var isNoteEdited = false
     var isReminderEdited = false
+    var editPosition = -1
 
     fun removeImage(position: Int) {
         val list = (images.value ?: listOf()).toMutableList()

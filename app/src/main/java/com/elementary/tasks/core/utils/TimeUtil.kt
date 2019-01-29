@@ -440,6 +440,10 @@ object TimeUtil {
         return fullDate(lang).format(date)
     }
 
+    fun getGoogleTaskDate(millis: Long, lang: Int = 0): String {
+        return getGoogleTaskDate(Date(millis), lang)
+    }
+
     fun getDate(date: Date, format: DateFormat): String {
         format.timeZone = TimeZone.getDefault()
         return format.format(date)

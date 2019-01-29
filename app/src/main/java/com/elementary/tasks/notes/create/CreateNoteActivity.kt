@@ -13,7 +13,6 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.TextUtils
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.TextView
@@ -68,7 +67,6 @@ import javax.inject.Inject
  */
 class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
-    private var mEditPosition = -1
     private var isBgDark = false
 
     private lateinit var viewModel: NoteViewModel
@@ -416,7 +414,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun saveEditedImage() {
         val image = imagesSingleton.getEditable() ?: return
-        stateViewModel.setImage(image, mEditPosition)
+        stateViewModel.setImage(image, stateViewModel.editPosition)
     }
 
     private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
@@ -525,7 +523,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun editImage(position: Int) {
         imagesSingleton.setEditable(imagesGridAdapter.get(position))
-        this.mEditPosition = position
+        stateViewModel.editPosition = position
         startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }
 
@@ -807,8 +805,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         super.onDestroy()
         lifecycle.removeObserver(stateViewModel)
         lifecycle.removeObserver(viewModel)
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.hideSoftInputFromWindow(taskMessage.windowToken, 0)
+        hideKeyboard(taskMessage.windowToken)
         releaseSpeech()
     }
 
@@ -823,7 +820,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             }
         } else if (requestCode == EDIT_CODE) {
             if (resultCode == RESULT_OK) {
-                if (mEditPosition != -1) {
+                if (stateViewModel.editPosition != -1) {
                     saveEditedImage()
                 }
             }

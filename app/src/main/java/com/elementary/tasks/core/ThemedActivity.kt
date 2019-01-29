@@ -2,6 +2,8 @@ package com.elementary.tasks.core
 
 import android.content.Context
 import android.os.Bundle
+import android.os.IBinder
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
@@ -45,5 +47,15 @@ abstract class ThemedActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(language.onAttach(newBase))
+    }
+
+    protected fun hideKeyboard(token: IBinder? = null) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        if (token == null) {
+            val currentToken = window.currentFocus?.windowToken
+            currentToken?.let { imm?.hideSoftInputFromWindow(token, 0) }
+        } else {
+            imm?.hideSoftInputFromWindow(token, 0)
+        }
     }
 }
