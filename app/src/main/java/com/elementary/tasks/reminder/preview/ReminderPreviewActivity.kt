@@ -101,6 +101,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         super.onCreate(savedInstanceState)
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         setContentView(R.layout.activity_reminder_preview)
+        dataContainer.removeAllViewsInLayout()
         initActionBar()
         initViews()
         initViewModel(id)
@@ -453,36 +454,32 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun shareReminder() {
-        val reminder = reminder ?: return
-        launchDefault {
-            val path = backupTool.exportReminder(reminder)
-            if (path != null) {
-                withUIContext {
-                    TelephonyUtil.sendFile(File(path), this@ReminderPreviewActivity)
+        reminder?.let {
+            launchDefault {
+                val path = backupTool.exportReminder(it)
+                if (path != null) {
+                    withUIContext {
+                        TelephonyUtil.sendFile(File(path), this@ReminderPreviewActivity)
+                    }
                 }
             }
         }
     }
 
     private fun editReminder() {
-        val reminder = this.reminder
-        if (reminder != null) {
+        reminder?.let {
             CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, reminder.uuId))
+                    .putExtra(Constants.INTENT_ID, it.uuId))
         }
     }
 
     private fun removeReminder() {
-        val reminder = reminder
-        if (reminder != null) {
-            viewModel.moveToTrash(reminder)
-        }
+        reminder?.let { viewModel.moveToTrash(it) }
     }
 
     private fun makeCopy() {
-        val reminder = reminder
-        if (reminder != null) {
-            val type = reminder.type
+        reminder?.let {
+            val type = it.type
             if (!Reminder.isGpsType(type) && !Reminder.isSame(type, Reminder.BY_TIME)) {
                 showDialog()
             }
@@ -529,8 +526,9 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun saveCopy(which: Int) {
         Timber.d("saveCopy: $which")
-        val reminder = reminder ?: return
-        viewModel.copyReminder(reminder, list[which], reminder.summary + " - copy")
+        reminder?.let {
+            viewModel.copyReminder(it, list[which], it.summary + " - " + getString(R.string.copy))
+        }
     }
 
     private fun initViews() {
@@ -542,25 +540,21 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun fabClick() {
-        val reminder = this.reminder
-        if (reminder != null) {
-            if (reminder.isActive && !reminder.isRemoved) {
+        reminder?.let {
+            if (it.isActive && !it.isRemoved) {
                 when {
-                    Reminder.isKind(reminder.type, Reminder.Kind.SMS) -> sendSMS(reminder)
-                    Reminder.isKind(reminder.type, Reminder.Kind.CALL) -> makeCall(reminder)
-                    Reminder.isSame(reminder.type, Reminder.BY_DATE_APP) -> openApp(reminder)
-                    Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) -> openApp(reminder)
-                    Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> sendEmail(reminder)
+                    Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS(it)
+                    Reminder.isKind(it.type, Reminder.Kind.CALL) -> makeCall(it)
+                    Reminder.isSame(it.type, Reminder.BY_DATE_APP) -> openApp(it)
+                    Reminder.isSame(it.type, Reminder.BY_DATE_LINK) -> openApp(it)
+                    Reminder.isSame(it.type, Reminder.BY_DATE_EMAIL) -> sendEmail(it)
                 }
             }
         }
     }
 
     private fun switchClick() {
-        val reminder = this.reminder
-        if (reminder != null) {
-            viewModel.toggleReminder(reminder)
-        }
+        reminder?.let { viewModel.toggleReminder(it) }
     }
 
     private fun initMap() {
@@ -573,7 +567,7 @@ class ReminderPreviewActivity : ThemedActivity() {
                     openFullMap()
                 })
                 googleMap.setOnMarkerClick(mOnMarkerClick)
-                if (reminder != null) showMapData(reminder!!)
+                reminder?.let { showMapData(it) }
             }
         })
         supportFragmentManager.beginTransaction()
@@ -584,11 +578,10 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun openFullMap() {
-        val reminder = this.reminder
-        if (reminder != null) {
+        reminder?.let {
             val options = ActivityOptions.makeSceneTransitionAnimation(this, mapContainer, "map")
             startActivity(Intent(this, FullscreenMapActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, reminder.uuId), options.toBundle())
+                    .putExtra(Constants.INTENT_ID, it.uuId), options.toBundle())
         }
     }
 
