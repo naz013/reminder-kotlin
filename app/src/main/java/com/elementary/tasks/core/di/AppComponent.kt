@@ -43,7 +43,7 @@ import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.list.TaskListFragment
 import com.elementary.tasks.groups.create.CreateGroupActivity
-import com.elementary.tasks.login.LoginActivity
+import com.elementary.tasks.login.LoginViewModel
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
@@ -96,6 +96,7 @@ interface AppComponent {
     fun inject(viewModel: BaseRemindersViewModel)
     fun inject(viewModel: ConversationViewModel)
     fun inject(viewModel: BaseTaskListsViewModel)
+    fun inject(viewModel: LoginViewModel)
 
     fun inject(conversationAdapter: ConversationAdapter)
     fun inject(contactsRecyclerAdapter: ContactsRecyclerAdapter)
@@ -157,7 +158,6 @@ interface AppComponent {
     fun inject(activity: NotePreviewActivity)
     fun inject(activity: AddBirthdayActivity)
     fun inject(activity: CreateGroupActivity)
-    fun inject(activity: LoginActivity)
     fun inject(activity: TaskListActivity)
     fun inject(activity: TaskActivity)
     fun inject(activity: IntentActivity)

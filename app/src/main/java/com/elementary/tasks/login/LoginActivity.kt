@@ -8,26 +8,23 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.view_progress.*
-import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -49,18 +46,15 @@ import javax.inject.Inject
  */
 class LoginActivity : ThemedActivity() {
 
+    private lateinit var viewModel: LoginViewModel
+
     private var googleLogin: GoogleLogin? = null
     private var dropboxLogin: DropboxLogin? = null
 
-    @Inject
-    lateinit var backupTool: BackupTool
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+
         setContentView(R.layout.activity_login)
         if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
         else appNameBannerPro.visibility = View.GONE
@@ -69,21 +63,40 @@ class LoginActivity : ThemedActivity() {
         }
         dropboxLogin = DropboxLogin(this, object : DropboxLogin.LoginCallback {
             override fun onSuccess(b: Boolean) {
-                if (b) loadDataFromDropbox()
+                if (b) viewModel.loadDataFromDropbox()
             }
         })
         initButtons()
     }
 
-    private fun showProgress(message: String?) {
-        if (message == null) {
-            setEnabling(true)
-            progressView.visibility = View.INVISIBLE
-        } else {
-            setEnabling(false)
-            progressMessageView.text = message
-            progressView.visibility = View.VISIBLE
-        }
+    override fun onStart() {
+        super.onStart()
+        observeStates()
+    }
+
+    override fun onBackPressed() {
+        viewModel.onBack()
+        super.onBackPressed()
+    }
+
+    private fun observeStates() {
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            isLoading?.let {
+                if (it) progressView.visibility = View.VISIBLE
+                else progressView.visibility = View.INVISIBLE
+                setEnabling(!it)
+            }
+        })
+        viewModel.isReady.observe(this, Observer { isReady ->
+            isReady?.let {
+                if (it) finishRestoring()
+            }
+        })
+        viewModel.message.observe(this, Observer {
+            if (it != null && it != 0) {
+                progressMessageView.text = getString(it)
+            }
+        })
     }
 
     override fun onResume() {
@@ -91,47 +104,9 @@ class LoginActivity : ThemedActivity() {
         dropboxLogin?.checkDropboxStatus()
     }
 
-    private fun loadDataFromDropbox() {
-        prefs.isBackupEnabled = true
-        showProgress(getString(R.string.please_wait))
-        launchDefault {
-            val drive = Dropbox()
-
-            withUIContext { showProgress(getString(R.string.syncing_groups)) }
-            drive.downloadGroups(false)
-
-            verifyGroups()
-
-            withUIContext { showProgress(getString(R.string.syncing_reminders)) }
-            drive.downloadReminders(false)
-
-            //export & import notes
-            withUIContext { showProgress(getString(R.string.syncing_notes)) }
-            drive.downloadNotes(false)
-
-            //export & import birthdays
-            withUIContext { showProgress(getString(R.string.syncing_birthdays)) }
-            drive.downloadBirthdays(false)
-
-            //export & import places
-            withUIContext { showProgress(getString(R.string.syncing_places)) }
-            drive.downloadPlaces(false)
-
-            //export & import templates
-            withUIContext { showProgress(getString(R.string.syncing_templates)) }
-            drive.downloadTemplates(false)
-            drive.downloadSettings()
-
-            withUIContext {
-                finishRestoring()
-            }
-        }
-    }
-
     private fun finishRestoring() {
         UpdatesHelper.updateWidget(this)
         UpdatesHelper.updateNotesWidget(this)
-        showProgress(null)
         openApplication()
     }
 
@@ -170,127 +145,7 @@ class LoginActivity : ThemedActivity() {
         if (!Permissions.ensurePermissions(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
-        prefs.isBackupEnabled = true
-        showProgress(getString(R.string.please_wait))
-        launchDefault {
-            withUIContext { showProgress(getString(R.string.syncing_groups)) }
-            try {
-                backupTool.importGroups()
-            } catch (ignored: IOException) {
-            }
-
-            verifyGroups()
-
-            withUIContext { showProgress(getString(R.string.syncing_reminders)) }
-            try {
-                backupTool.importReminders()
-            } catch (ignored: IOException) {
-            }
-
-            withUIContext { showProgress(getString(R.string.syncing_notes)) }
-            try {
-                backupTool.importNotes()
-            } catch (ignored: IOException) {
-            }
-
-            withUIContext { showProgress(getString(R.string.syncing_birthdays)) }
-            try {
-                backupTool.importBirthdays()
-            } catch (ignored: IOException) {
-            }
-
-            withUIContext { showProgress(getString(R.string.syncing_places)) }
-            try {
-                backupTool.importPlaces()
-            } catch (ignored: IOException) {
-            }
-
-            withUIContext { showProgress(getString(R.string.syncing_templates)) }
-            try {
-                backupTool.importTemplates()
-            } catch (ignored: IOException) {
-            }
-
-            prefs.loadPrefsFromFile()
-
-            withUIContext {
-                finishRestoring()
-            }
-        }
-    }
-
-    private fun verifyGroups() {
-        val list = AppDb.getAppDatabase(this).reminderGroupDao().all()
-        if (list.isEmpty()) {
-            val defUiID = GroupsUtil.initDefault(this)
-            val items = AppDb.getAppDatabase(this).reminderDao().all()
-            val dao = AppDb.getAppDatabase(this).reminderDao()
-            for (item in items) {
-                item.groupUuId = defUiID
-                dao.insert(item)
-            }
-            BackupDataWorker.schedule()
-        }
-    }
-
-    private fun loadDataFromGoogle() {
-        prefs.isBackupEnabled = true
-        showProgress(getString(R.string.please_wait))
-        launchDefault {
-            val drive = GDrive.getInstance(this@LoginActivity)
-            if (drive != null) {
-                withUIContext { showProgress(getString(R.string.syncing_groups)) }
-                try {
-                    drive.downloadGroups(false)
-                } catch (e: Exception) {
-                }
-
-                verifyGroups()
-
-                withUIContext { showProgress(getString(R.string.syncing_reminders)) }
-                try {
-                    drive.downloadReminders(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import notes
-                withUIContext { showProgress(getString(R.string.syncing_notes)) }
-                try {
-                    drive.downloadNotes(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import birthdays
-                withUIContext { showProgress(getString(R.string.syncing_birthdays)) }
-                try {
-                    drive.downloadBirthdays(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import places
-                withUIContext { showProgress(getString(R.string.syncing_places)) }
-                try {
-                    drive.downloadPlaces(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import templates
-                withUIContext { showProgress(getString(R.string.syncing_templates)) }
-                try {
-                    drive.downloadTemplates(false)
-                } catch (e: Exception) {
-                }
-
-                try {
-                    drive.downloadSettings(false)
-                } catch (e: Exception) {
-                }
-            }
-
-            withUIContext {
-                finishRestoring()
-            }
-        }
+        viewModel.loadDataFromLocal()
     }
 
     private fun openApplication() {
@@ -339,7 +194,7 @@ class LoginActivity : ThemedActivity() {
                 }
 
                 override fun onResult(v: GDrive?, isLogged: Boolean) {
-                    if (isLogged) loadDataFromGoogle()
+                    if (isLogged) viewModel.loadDataFromGoogle()
                     else showLoginError()
                 }
 
@@ -374,7 +229,6 @@ class LoginActivity : ThemedActivity() {
     }
 
     companion object {
-
         private const val PERM = 103
         private const val PERM_DROPBOX = 104
         private const val PERM_LOCAL = 105
