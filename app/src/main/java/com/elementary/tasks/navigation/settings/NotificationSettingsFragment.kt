@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
+import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*

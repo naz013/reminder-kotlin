@@ -10,7 +10,7 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.utils.TimeUtil.BIRTH_FORMAT
-import com.elementary.tasks.missedCalls.MissedCallDialogActivity
+import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobManager
 import com.evernote.android.job.JobRequest

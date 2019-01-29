@@ -14,9 +14,9 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.dayView.DayViewFragment
-import com.elementary.tasks.dayView.day.CalendarEventsAdapter
-import com.elementary.tasks.dayView.day.EventModel
+import com.elementary.tasks.day_view.DayViewFragment
+import com.elementary.tasks.day_view.day.CalendarEventsAdapter
+import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GTasks

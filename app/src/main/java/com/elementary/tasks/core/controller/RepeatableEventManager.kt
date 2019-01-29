@@ -13,8 +13,8 @@ import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
-import com.elementary.tasks.googleTasks.work.SaveNewTaskWorker
-import com.elementary.tasks.googleTasks.work.UpdateTaskWorker
+import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
+import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.google.gson.Gson
 
 /**

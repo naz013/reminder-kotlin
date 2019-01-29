@@ -2,7 +2,7 @@ package com.elementary.tasks.core.view_models.google_tasks
 
 import android.content.Context
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList

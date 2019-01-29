@@ -8,9 +8,9 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
-import com.elementary.tasks.dayView.DayViewProvider
-import com.elementary.tasks.dayView.day.EventModel
-import com.elementary.tasks.monthView.MonthPagerItem
+import com.elementary.tasks.day_view.DayViewProvider
+import com.elementary.tasks.day_view.day.EventModel
+import com.elementary.tasks.month_view.MonthPagerItem
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*

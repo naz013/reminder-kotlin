@@ -21,11 +21,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
+import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel

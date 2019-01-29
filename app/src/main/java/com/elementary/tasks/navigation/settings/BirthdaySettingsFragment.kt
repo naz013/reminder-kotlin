@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver

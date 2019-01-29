@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive

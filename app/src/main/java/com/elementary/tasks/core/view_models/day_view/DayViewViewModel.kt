@@ -13,9 +13,9 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.dayView.DayViewProvider
-import com.elementary.tasks.dayView.EventsPagerItem
-import com.elementary.tasks.dayView.day.EventModel
+import com.elementary.tasks.day_view.DayViewProvider
+import com.elementary.tasks.day_view.EventsPagerItem
+import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.Job
 import timber.log.Timber

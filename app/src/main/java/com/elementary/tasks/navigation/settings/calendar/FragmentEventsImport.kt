@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
