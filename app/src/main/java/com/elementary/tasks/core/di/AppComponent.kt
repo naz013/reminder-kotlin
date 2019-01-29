@@ -48,6 +48,7 @@ import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.navigation.settings.export.CloudViewModel
 import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -97,6 +98,7 @@ interface AppComponent {
     fun inject(viewModel: ConversationViewModel)
     fun inject(viewModel: BaseTaskListsViewModel)
     fun inject(viewModel: LoginViewModel)
+    fun inject(viewModel: CloudViewModel)
 
     fun inject(conversationAdapter: ConversationAdapter)
     fun inject(contactsRecyclerAdapter: ContactsRecyclerAdapter)

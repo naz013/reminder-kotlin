@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -11,19 +13,14 @@ import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.google.api.services.tasks.model.TaskLists
 import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
 import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
-import java.io.IOException
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,6 +42,7 @@ import java.util.*
  */
 class FragmentCloudDrives : BaseSettingsFragment() {
 
+    private lateinit var viewModel: CloudViewModel
     private lateinit var mDropbox: DropboxLogin
     private lateinit var mGoogleLogin: GoogleLogin
 
@@ -66,6 +64,11 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         builder.create().show()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(CloudViewModel::class.java)
+    }
+
     override fun layoutRes(): Int = R.layout.fragment_settings_cloud_drives
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,6 +85,21 @@ class FragmentCloudDrives : BaseSettingsFragment() {
         initGoogleTasksButton()
 
         checkGoogleStatus()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        viewModel.isLoading.observe(this, Observer {
+            if (it != null) {
+                updateProgress(it)
+            }
+        })
+        viewModel.isReady.observe(this, Observer {
+            if (it != null && it) {
+                UpdatesHelper.updateTasksWidget(context!!)
+            }
+        })
     }
 
     private fun initGoogleTasksButton() {
@@ -138,8 +156,9 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                 override fun onResult(v: GTasks?, isLogged: Boolean) {
                     Timber.d("onResult: $isLogged")
                     if (isLogged) {
-                        loadGoogleTasks()
+                        viewModel.loadGoogleTasks()
                     }
+                    checkGoogleStatus()
                     callback?.refreshMenu()
                 }
 
@@ -148,64 +167,6 @@ class FragmentCloudDrives : BaseSettingsFragment() {
                     callback?.refreshMenu()
                 }
             })
-        }
-    }
-
-    private fun loadGoogleTasks() {
-        val gTasks = GTasks.getInstance(context!!) ?: return
-        checkGoogleStatus()
-        updateProgress(true)
-        launchDefault {
-            val appDb: AppDb = AppDb.getAppDatabase(context!!)
-
-            var lists: TaskLists? = null
-            try {
-                lists = gTasks.taskLists()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            if (lists != null && lists.size > 0 && lists.items != null) {
-                for (item in lists.items) {
-                    val listId = item.id
-                    var taskList = appDb.googleTaskListsDao().getById(listId)
-                    if (taskList != null) {
-                        taskList.update(item)
-                    } else {
-                        val r = Random()
-                        val color = r.nextInt(15)
-                        taskList = GoogleTaskList(item, color)
-                    }
-                    Timber.d("loadGoogleTasks: $taskList")
-                    appDb.googleTaskListsDao().insert(taskList)
-                    val tasks = gTasks.getTasks(listId)
-                    if (tasks.isNotEmpty()) {
-                        for (task in tasks) {
-                            var googleTask = appDb.googleTasksDao().getById(task.id)
-                            if (googleTask != null) {
-                                googleTask.update(task)
-                                googleTask.listId = task.id
-                            } else {
-                                googleTask = GoogleTask(task, listId)
-                            }
-                            appDb.googleTasksDao().insert(googleTask)
-                        }
-                    }
-                }
-                val local = appDb.googleTaskListsDao().all()
-                if (local.isNotEmpty()) {
-                    val listItem = local[0].apply {
-                        this.def = 1
-                        this.systemDefault = 1
-                    }
-                    appDb.googleTaskListsDao().insert(listItem)
-                }
-            }
-
-            withUIContext {
-                UpdatesHelper.updateTasksWidget(context!!)
-                updateProgress(false)
-            }
         }
     }
 
