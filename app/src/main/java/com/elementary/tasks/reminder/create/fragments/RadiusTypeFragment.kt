@@ -25,7 +25,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 abstract class RadiusTypeFragment : TypeFragment() {
 
     override fun getSummary(): String {
-        val reminder = reminderInterface.reminder
+        val reminder = reminderInterface.state.reminder
 
         var summary = ""
 
@@ -46,6 +46,6 @@ abstract class RadiusTypeFragment : TypeFragment() {
             SuperUtil.showLocationAlert(context!!, reminderInterface)
             return null
         }
-        return reminderInterface.reminder
+        return reminderInterface.state.reminder
     }
 }

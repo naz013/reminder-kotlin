@@ -1,20 +1,15 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.fragments.PlacesMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.views.ActionView
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_reminder_place.*
@@ -115,8 +110,28 @@ class PlacesFragment : RadiusTypeFragment() {
         return reminder
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reminder_place, container, false)
+    override fun layoutRes(): Int = R.layout.fragment_reminder_place
+
+    override fun provideViews() {
+        setViews(
+                scrollView = scrollView,
+                expansionLayout = moreLayout,
+                ledPickerView = ledView,
+                extraView = tuneExtraView,
+                melodyView = melodyView,
+                attachmentView = attachmentView,
+                groupView = groupView,
+                summaryView = taskSummary,
+                dateTimeView = dateView,
+                loudnessPickerView = loudnessView,
+                priorityPickerView = priorityView,
+                windowTypeView = windowTypeView,
+                actionView = actionView
+        )
+    }
+
+    override fun onNewHeader(newHeader: String) {
+        cardSummary?.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,22 +143,12 @@ class PlacesFragment : RadiusTypeFragment() {
             mapContainer.visibility = View.VISIBLE
             mapButton.visibility = View.GONE
         }
-        ViewUtils.listenScrollableView(scrollView) {
-            reminderInterface.updateScroll(it)
-        }
-        moreLayout?.isNestedScrollingEnabled = false
-
-        if (prefs.isTelephonyAllowed) {
-            actionView.visibility = View.VISIBLE
-        } else {
-            actionView.visibility = View.GONE
-        }
 
         val placesMap = PlacesMapFragment()
         placesMap.setListener(mListener)
         placesMap.setCallback(object : MapCallback {
             override fun onMapReady() {
-                mPlacesMap?.selectMarkers(reminderInterface.reminder.places)
+                mPlacesMap?.selectMarkers(reminderInterface.state.reminder.places)
             }
         })
         placesMap.markerRadius = prefs.radius
@@ -154,86 +159,21 @@ class PlacesFragment : RadiusTypeFragment() {
                 .commit()
         this.mPlacesMap = placesMap
 
-        if (Module.isPro) {
-            ledView.visibility = View.VISIBLE
-        } else {
-            ledView.visibility = View.GONE
-        }
-
-        tuneExtraView.dialogues = dialogues
         tuneExtraView.hasAutoExtra = false
-
-        actionView.setActivity(activity!!)
-        actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
         delayLayout.visibility = View.GONE
         attackDelay.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
+            if (isChecked) {
                 delayLayout.visibility = View.VISIBLE
-            else
+            } else {
                 delayLayout.visibility = View.GONE
+            }
         }
-
-        melodyView.onFileSelectListener = {
-            reminderInterface.selectMelody()
-        }
-        attachmentView.onFileSelectListener = {
-            reminderInterface.attachFile()
-        }
-        ViewUtils.registerDragAndDrop(activity!!, attachmentView, true, themeUtil.getSecondaryColor(),
-                { clipData ->
-                    if (clipData.itemCount > 0) {
-                        attachmentView.setUri(clipData.getItemAt(0).uri)
-                    }
-                }, *ATTACHMENT_TYPES)
-        groupView.onGroupSelectListener = {
-            reminderInterface.selectGroup()
-        }
-
         mapButton.setOnClickListener { toggleMap() }
-
-        initPropertyFields()
         editReminder()
     }
 
-    private fun initPropertyFields() {
-        taskSummary.bindProperty(reminderInterface.reminder.summary) {
-            reminderInterface.reminder.summary = it.trim()
-        }
-        dateView.bindProperty(reminderInterface.reminder.eventTime) {
-            reminderInterface.reminder.eventTime = it
-        }
-        priorityView.bindProperty(reminderInterface.reminder.priority) {
-            reminderInterface.reminder.priority = it
-            updateHeader()
-        }
-        actionView.bindProperty(reminderInterface.reminder.target) {
-            reminderInterface.reminder.target = it
-            updateActions()
-        }
-        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
-            reminderInterface.reminder.melodyPath = it
-        }
-        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
-            reminderInterface.reminder.attachmentFile = it
-        }
-        loudnessView.bindProperty(reminderInterface.reminder.volume) {
-            reminderInterface.reminder.volume = it
-        }
-        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
-            reminderInterface.reminder.windowType = it
-        }
-        tuneExtraView.bindProperty(reminderInterface.reminder) {
-            reminderInterface.reminder.copyExtra(it)
-        }
-        if (Module.isPro) {
-            ledView.bindProperty(reminderInterface.reminder.color) {
-                reminderInterface.reminder.color = it
-            }
-        }
-    }
-
-    private fun updateActions() {
+    override fun updateActions() {
         if (actionView.hasAction()) {
             tuneExtraView.hasAutoExtra = true
             if (actionView.type == ActionView.TYPE_MESSAGE) {
@@ -244,10 +184,6 @@ class PlacesFragment : RadiusTypeFragment() {
         } else {
             tuneExtraView.hasAutoExtra = false
         }
-    }
-
-    private fun updateHeader() {
-        cardSummary?.text = getSummary()
     }
 
     private fun toggleMap() {
@@ -267,7 +203,7 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.reminder
+        val reminder = reminderInterface.state.reminder
         Timber.d("editReminder: %s", reminder)
         showGroup(groupView, reminder)
         if (reminder.eventTime != "" && reminder.hasReminder) {
@@ -283,51 +219,5 @@ class PlacesFragment : RadiusTypeFragment() {
                 actionView.type = ActionView.TYPE_MESSAGE
             }
         }
-        updateHeader()
-    }
-
-    private fun selectContact() {
-        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
-            SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
-            val number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
-            actionView.number = number
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        actionView.onRequestPermissionsResult(requestCode, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
-            when (requestCode) {
-                CONTACTS -> selectContact()
-                CONTACTS_ACTION -> actionView.setAction(true)
-            }
-        }
-    }
-
-    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
-        super.onGroupUpdate(reminderGroup)
-        groupView?.reminderGroup = reminderGroup
-        updateHeader()
-    }
-
-    override fun onMelodySelect(path: String) {
-        super.onMelodySelect(path)
-        melodyView.file = path
-    }
-
-    override fun onAttachmentSelect(uri: Uri) {
-        super.onAttachmentSelect(uri)
-        attachmentView.setUri(uri)
-    }
-
-    companion object {
-        private const val CONTACTS = 122
-        const val CONTACTS_ACTION = 123
     }
 }

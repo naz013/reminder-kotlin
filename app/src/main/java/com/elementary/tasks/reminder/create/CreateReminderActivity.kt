@@ -44,16 +44,15 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private lateinit var viewModel: ReminderViewModel
     private lateinit var conversationViewModel: ConversationViewModel
+    private lateinit var stateViewModel: StateViewModel
 
     private var fragment: TypeFragment? = null
 
     private var isEditing: Boolean = false
-    private var mIsLogged = false
-    private var mIsSaving = false
     private var mIsTablet = false
     private var hasLocation = false
-    override var reminder: Reminder = Reminder()
-        private set
+    override val state: StateViewModel
+        get() = stateViewModel
     override var defGroup: ReminderGroup? = null
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
@@ -71,6 +70,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
         }
     }
+    private val mReminderObserver: Observer<in Reminder> = Observer { reminder ->
+        if (reminder != null) {
+            editReminder(reminder)
+        }
+    }
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -78,16 +82,26 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        reminder.priority = prefs.defaultPriority
+        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
+
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
-        mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         setContentView(R.layout.activity_create_reminder)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         initActionBar()
         initNavigation()
-        loadReminder(savedInstanceState)
-        if (prefs.hasPinCode && !mIsLogged) {
+
+        if (savedInstanceState == null) {
+            stateViewModel.reminder.priority = prefs.defaultPriority
+            stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+        }
+
+        loadReminder()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (prefs.hasPinCode && !stateViewModel.isLogged) {
             PinLoginActivity.verify(this)
         }
     }
@@ -130,11 +144,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     private fun initViewModel(id: String) {
         conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
         viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
-        viewModel.reminder.observe(this, Observer { reminder ->
-            if (reminder != null && !mIsSaving) {
-                editReminder(reminder)
-            }
-        })
+        viewModel.reminder.observe(this, mReminderObserver)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
@@ -155,27 +165,24 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         })
     }
 
-    private fun loadReminder(savedInstanceState: Bundle?) {
+    private fun loadReminder() {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
         initViewModel(id)
         when {
-            savedInstanceState != null -> {
-                editReminder(savedInstanceState.getSerializable(ARG_ITEM) as Reminder? ?: reminder, false)
-            }
             id != "" -> {
                 isEditing = true
                 updateDefaultButton()
             }
             date != 0L -> {
-                reminder.type = Reminder.BY_DATE
-                reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
-                editReminder(reminder, false)
+                stateViewModel.reminder.type = Reminder.BY_DATE
+                stateViewModel.reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
+                editReminder(stateViewModel.reminder, false)
             }
             intent.data != null -> try {
                 val uri = intent.data ?: return
                 val scheme = uri.scheme
-                reminder = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                val reminder = if (ContentResolver.SCHEME_CONTENT != scheme) {
                     backupTool.getReminder(uri.path, null) ?: Reminder()
                 } else Reminder()
                 editReminder(reminder, false)
@@ -184,7 +191,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
-                    reminder = intent.getSerializableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
+                    val reminder = intent.getSerializableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
                     editReminder(reminder, false)
                 } catch (e: Exception) {
                 }
@@ -199,14 +206,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private fun editReminder(reminder: Reminder, stop: Boolean = true) {
         Timber.d("editReminder: ")
-        this.reminder = reminder
+        stateViewModel.reminder = reminder
         if (stop) viewModel.pauseReminder(reminder)
         else {
             val group = defGroup
             if (reminder.groupUuId.isBlank() && group != null) {
-                this.reminder.groupUuId = group.groupUuId
-                this.reminder.groupColor = group.groupColor
-                this.reminder.groupTitle = group.groupTitle
+                stateViewModel.reminder.groupUuId = group.groupUuId
+                stateViewModel.reminder.groupColor = group.groupColor
+                stateViewModel.reminder.groupTitle = group.groupTitle
             }
         }
         val current = navSpinner.selectedItemPosition
@@ -275,8 +282,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             true
         }
         buttonDefault.setOnClickListener {
-            val oldType = reminder.type
-            reminder = Reminder()
+            val oldType = stateViewModel.reminder.type
+            val reminder = Reminder()
             reminder.type = oldType
             editReminder(reminder, false)
         }
@@ -297,7 +304,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
-                android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminder.groupTitle)) { dialog, which ->
+                android.R.layout.simple_list_item_single_choice, names), names.indexOf(stateViewModel.reminder.groupTitle)) { dialog, which ->
             dialog.dismiss()
             showGroup(groups[which])
         }
@@ -316,13 +323,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun replaceFragment(fragment: TypeFragment) {
-        Timber.d("replaceFragment: ")
-        this.fragment = fragment
         supportFragmentManager.beginTransaction()
                 .replace(R.id.main_container, fragment, null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commitAllowingStateLoss()
-        Timber.d("replaceFragment: done")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -362,8 +366,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
 
     private fun closeScreen() {
         if (isEditing) {
-            if (!reminder.isActive) {
-                viewModel.resumeReminder(reminder)
+            if (!stateViewModel.reminder.isActive) {
+                viewModel.resumeReminder(stateViewModel.reminder)
             }
             setResult(Activity.RESULT_OK)
             finish()
@@ -374,20 +378,19 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun deleteReminder() {
-        if (reminder.isRemoved) {
-            viewModel.deleteReminder(reminder, true)
+        if (stateViewModel.reminder.isRemoved) {
+            viewModel.deleteReminder(stateViewModel.reminder, true)
         } else {
-            viewModel.moveToTrash(reminder)
+            viewModel.moveToTrash(stateViewModel.reminder)
         }
     }
 
     private fun save() {
-        if (fragment != null) {
-            val reminder = fragment?.prepare()
-            if (reminder != null) {
-                mIsSaving = true
-                Timber.d("save: %s", reminder)
-                viewModel.saveAndStartReminder(reminder, isEditing)
+        fragment?.let {
+            it.prepare()?.let { item ->
+                Timber.d("save: %s", item)
+                viewModel.reminder.removeObserver(mReminderObserver)
+                viewModel.saveAndStartReminder(item, isEditing)
             }
         }
     }
@@ -410,6 +413,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         if (requestCode == PinLoginActivity.REQ_CODE) {
             if (resultCode != Activity.RESULT_OK) {
                 finish()
+            } else {
+                stateViewModel.isLogged = true
             }
         } else if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
@@ -429,16 +434,15 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             showCurrentMelody()
         }
         if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val attachment = data?.data
-            if (attachment != null) {
-                fragment?.onAttachmentSelect(attachment)
+            data?.data?.let {
+                fragment?.onAttachmentSelect(it)
             }
         }
         fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showCurrentMelody() {
-        val musicFile = File(reminder.melodyPath)
+        val musicFile = File(stateViewModel.reminder.melodyPath)
         showSnackbar(String.format(getString(R.string.melody_x), musicFile.name),
                 getString(R.string.delete), View.OnClickListener { removeMelody() })
     }
@@ -509,6 +513,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         return mIsTablet
     }
 
+    override fun setFragment(typeFragment: TypeFragment) {
+        this.fragment = typeFragment
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         UpdatesHelper.updateWidget(this)
@@ -519,11 +527,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         if (fragment != null && fragment?.onBackPressed() == true) {
             closeScreen()
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(ARG_ITEM, reminder)
-        super.onSaveInstanceState(outState)
     }
 
     private class SpinnerItem internal constructor(val title: String)
@@ -580,7 +583,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         private const val CONTACTS_REQUEST_E = 501
         private const val FILE_REQUEST = 323
 
-        private const val ARG_ITEM = "arg_item"
         private const val ARG_LOGGED = "arg_logged"
 
         fun openLogged(context: Context, intent: Intent? = null) {

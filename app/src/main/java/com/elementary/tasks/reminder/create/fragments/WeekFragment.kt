@@ -1,19 +1,15 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
 import android.app.TimePickerDialog
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CompoundButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.IntervalUtil
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_weekdays.*
 import timber.log.Timber
@@ -69,8 +65,12 @@ class WeekFragment : RepeatableTypeFragment() {
                 thursdayCheck.isChecked, fridayCheck.isChecked,
                 saturdayCheck.isChecked, sundayCheck.isChecked)
 
+    private val mCheckListener: CompoundButton.OnCheckedChangeListener =  CompoundButton.OnCheckedChangeListener { _, _ ->
+        calculateNextDate()
+    }
+
     override fun prepare(): Reminder? {
-        val reminder = reminderInterface.reminder
+        val reminder = reminderInterface.state.reminder
         var type = Reminder.BY_WEEK
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -112,12 +112,31 @@ class WeekFragment : RepeatableTypeFragment() {
         return reminder
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_reminder_weekdays, container, false)
+    override fun layoutRes(): Int = R.layout.fragment_reminder_weekdays
+
+    override fun provideViews() {
+        setViews(
+                scrollView = scrollView,
+                expansionLayout = moreLayout,
+                ledPickerView = ledView,
+                calendarCheck = exportToCalendar,
+                tasksCheck = exportToTasks,
+                extraView = tuneExtraView,
+                melodyView = melodyView,
+                attachmentView = attachmentView,
+                groupView = groupView,
+                summaryView = taskSummary,
+                beforePickerView = beforeView,
+                loudnessPickerView = loudnessView,
+                priorityPickerView = priorityView,
+                repeatLimitView = repeatLimitView,
+                windowTypeView = windowTypeView,
+                actionView = actionView
+        )
     }
 
-    private val mCheckListener: CompoundButton.OnCheckedChangeListener =  CompoundButton.OnCheckedChangeListener { _, _ ->
-        calculateNextDate()
+    override fun onNewHeader(newHeader: String) {
+        cardSummary?.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -136,48 +155,9 @@ class WeekFragment : RepeatableTypeFragment() {
         }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 prefs.is24HourFormat, prefs.appLanguage)
-        actionView.setActivity(activity!!)
-        actionView.setContactClickListener(View.OnClickListener { selectContact() })
 
-        ViewUtils.listenScrollableView(scrollView) {
-            reminderInterface.updateScroll(it)
-        }
-        moreLayout?.isNestedScrollingEnabled = false
-
-        if (prefs.isTelephonyAllowed) {
-            actionView.visibility = View.VISIBLE
-        } else {
-            actionView.visibility = View.GONE
-        }
-
-        if (Module.isPro) {
-            ledView.visibility = View.VISIBLE
-        } else {
-            ledView.visibility = View.GONE
-        }
-
-        tuneExtraView.dialogues = dialogues
         tuneExtraView.hasAutoExtra = false
-
-        melodyView.onFileSelectListener = {
-            reminderInterface.selectMelody()
-        }
-        attachmentView.onFileSelectListener = {
-            reminderInterface.attachFile()
-        }
-        ViewUtils.registerDragAndDrop(activity!!, attachmentView, true, themeUtil.getSecondaryColor(),
-                { clipData ->
-                    if (clipData.itemCount > 0) {
-                        attachmentView.setUri(clipData.getItemAt(0).uri)
-                    }
-                }, *ATTACHMENT_TYPES)
-        groupView.onGroupSelectListener = {
-            reminderInterface.selectGroup()
-        }
         calculateNextDate()
-
-        initScreenState()
-        initPropertyFields()
         editReminder()
     }
 
@@ -196,54 +176,7 @@ class WeekFragment : RepeatableTypeFragment() {
         calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
 
-    private fun initPropertyFields() {
-        taskSummary.bindProperty(reminderInterface.reminder.summary) {
-            reminderInterface.reminder.summary = it.trim()
-        }
-        beforeView.bindProperty(reminderInterface.reminder.remindBefore) {
-            reminderInterface.reminder.remindBefore = it
-            updateHeader()
-        }
-        exportToCalendar.bindProperty(reminderInterface.reminder.exportToCalendar) {
-            reminderInterface.reminder.exportToCalendar = it
-        }
-        exportToTasks.bindProperty(reminderInterface.reminder.exportToTasks) {
-            reminderInterface.reminder.exportToTasks = it
-        }
-        priorityView.bindProperty(reminderInterface.reminder.priority) {
-            reminderInterface.reminder.priority = it
-            updateHeader()
-        }
-        actionView.bindProperty(reminderInterface.reminder.target) {
-            reminderInterface.reminder.target = it
-            updateActions()
-        }
-        melodyView.bindProperty(reminderInterface.reminder.melodyPath) {
-            reminderInterface.reminder.melodyPath = it
-        }
-        attachmentView.bindProperty(reminderInterface.reminder.attachmentFile) {
-            reminderInterface.reminder.attachmentFile = it
-        }
-        loudnessView.bindProperty(reminderInterface.reminder.volume) {
-            reminderInterface.reminder.volume = it
-        }
-        repeatLimitView.bindProperty(reminderInterface.reminder.repeatLimit) {
-            reminderInterface.reminder.repeatLimit = it
-        }
-        windowTypeView.bindProperty(reminderInterface.reminder.windowType) {
-            reminderInterface.reminder.windowType = it
-        }
-        tuneExtraView.bindProperty(reminderInterface.reminder) {
-            reminderInterface.reminder.copyExtra(it)
-        }
-        if (Module.isPro) {
-            ledView.bindProperty(reminderInterface.reminder.color) {
-                reminderInterface.reminder.color = it
-            }
-        }
-    }
-
-    private fun updateActions() {
+    override fun updateActions() {
         if (actionView.hasAction()) {
             tuneExtraView.hasAutoExtra = true
             if (actionView.type == ActionView.TYPE_MESSAGE) {
@@ -253,23 +186,6 @@ class WeekFragment : RepeatableTypeFragment() {
             }
         } else {
             tuneExtraView.hasAutoExtra = false
-        }
-    }
-
-    private fun updateHeader() {
-        cardSummary?.text = getSummary()
-    }
-
-    private fun initScreenState() {
-        if (reminderInterface.canExportToCalendar) {
-            exportToCalendar.visibility = View.VISIBLE
-        } else {
-            exportToCalendar.visibility = View.GONE
-        }
-        if (reminderInterface.canExportToTasks) {
-            exportToTasks.visibility = View.VISIBLE
-        } else {
-            exportToTasks.visibility = View.GONE
         }
     }
 
@@ -292,7 +208,7 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        val reminder = reminderInterface.reminder
+        val reminder = reminderInterface.state.reminder
         showGroup(groupView, reminder)
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormat, prefs.appLanguage)
@@ -309,48 +225,5 @@ class WeekFragment : RepeatableTypeFragment() {
                 actionView.type = ActionView.TYPE_MESSAGE
             }
         }
-    }
-
-    private fun selectContact() {
-        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
-            SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
-            val number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
-            actionView.number = number
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        actionView.onRequestPermissionsResult(requestCode, grantResults)
-        when (requestCode) {
-            CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
-                selectContact()
-            }
-        }
-    }
-
-    override fun onGroupUpdate(reminderGroup: ReminderGroup) {
-        super.onGroupUpdate(reminderGroup)
-        groupView?.reminderGroup = reminderGroup
-        updateHeader()
-    }
-
-    override fun onMelodySelect(path: String) {
-        super.onMelodySelect(path)
-        melodyView.file = path
-    }
-
-    override fun onAttachmentSelect(uri: Uri) {
-        super.onAttachmentSelect(uri)
-        attachmentView.setUri(uri)
-    }
-
-    companion object {
-        private const val CONTACTS = 112
     }
 }
