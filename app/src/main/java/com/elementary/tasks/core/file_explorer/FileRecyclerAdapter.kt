@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.UriUtil
 import kotlinx.android.synthetic.main.list_item_file.view.*
 import timber.log.Timber
@@ -33,7 +35,12 @@ import java.io.File
  */
 class FileRecyclerAdapter : ListAdapter<FileItem, FileRecyclerAdapter.ContactViewHolder>(FileDiffCallback()) {
 
-    var clickListener: ((Int) -> Unit)? = null
+    var clickListener: ActionsListener<FileItem>? = null
+
+    override fun submitList(list: List<FileItem>?) {
+        super.submitList(list)
+        notifyDataSetChanged()
+    }
 
     fun getFileItem(position: Int): FileItem {
         return super.getItem(position)
@@ -49,12 +56,22 @@ class FileRecyclerAdapter : ListAdapter<FileItem, FileRecyclerAdapter.ContactVie
 
     inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(fileItem: FileItem) {
-            itemView.itemName.text = fileItem.fileName
+            if (fileItem.isUp) {
+                itemView.itemName.text = itemView.context.getString(R.string.up)
+            } else {
+                itemView.itemName.text = fileItem.fileName
+            }
             loadImage(fileItem)
         }
 
         init {
-            itemView.clickView.setOnClickListener { clickListener?.invoke(adapterPosition) }
+            itemView.clickView.setOnClickListener {
+                clickListener?.onAction(it, adapterPosition, getFileItem(adapterPosition), ListActions.OPEN)
+            }
+            itemView.clickView.setOnLongClickListener {
+                clickListener?.onAction(it, adapterPosition, getFileItem(adapterPosition), ListActions.MORE)
+                return@setOnLongClickListener true
+            }
         }
 
         private fun loadImage(item: FileItem) {
