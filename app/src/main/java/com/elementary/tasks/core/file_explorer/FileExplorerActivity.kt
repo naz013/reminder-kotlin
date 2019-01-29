@@ -3,7 +3,6 @@ package com.elementary.tasks.core.file_explorer
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -12,17 +11,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.filter.SearchModifier
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.activity_file_explorer.*
+import timber.log.Timber
 import java.io.File
-import java.io.FilenameFilter
-import java.util.*
-import kotlin.Comparator
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,22 +43,14 @@ import kotlin.Comparator
  */
 class FileExplorerActivity : ThemedActivity() {
 
-    private val str = ArrayList<String>()
-    private var firstLvl: Boolean = true
-    private var mFilter: Boolean = false
-
-    private var mDataList: MutableList<FileItem> = mutableListOf()
-    private var path = File(Environment.getExternalStorageDirectory().toString() + "")
+    private lateinit var viewModel: SelectFileViewModel
     private var mFileName: String = ""
     private var mFilePath: String = ""
-
-    private var filType: String = ""
 
     private val mAdapter: FileRecyclerAdapter = FileRecyclerAdapter()
     private val searchModifier = object : SearchModifier<FileItem>(null, {
         mAdapter.submitList(it)
-        recyclerView.scrollToPosition(0)
-        refreshView(it.size)
+        showList(it.size)
     }) {
         override fun filter(v: FileItem): Boolean {
             return searchValue.isEmpty() || v.fileName.toLowerCase().contains(searchValue.toLowerCase())
@@ -67,26 +58,64 @@ class FileExplorerActivity : ThemedActivity() {
     }
     private var mSound: Sound? = null
 
-    private val directoryIcon: Int = R.drawable.ic_twotone_folder_24px
-    private val undoIcon: Int = R.drawable.ic_twotone_subdirectory_arrow_left_24px
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(SelectFileViewModel::class.java)
+        viewModel.files.observe(this, androidx.lifecycle.Observer { files ->
+            files?.let {
+                searchModifier.original = it
+            }
+        })
+        viewModel.isLoading.observe(this, androidx.lifecycle.Observer { isLoading ->
+            isLoading?.let {
+                if (it) loaderView.visibility = View.VISIBLE
+                else loaderView.visibility = View.GONE
+            }
+        })
+
+        mSound = Sound(this, prefs)
+
+        setContentView(R.layout.activity_file_explorer)
+
+        viewModel.filType = intent.getStringExtra(Constants.FILE_TYPE) ?: ""
+        if (viewModel.filType == "") viewModel.filType = TYPE_MUSIC
+
+        initRecyclerView()
+        initPlayer()
+        initSearch()
+        initButtons()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Permissions.ensurePermissions(this, SD_CARD, Permissions.READ_EXTERNAL)) {
+            viewModel.loadFileList()
+        }
+    }
+
+    private fun longClick(position: Int) {
+        val item = mAdapter.getFileItem(position)
+        if (isImage(item.fileName)) {
+            showFullImage()
+        }
+    }
 
     private fun selectFile(position: Int) {
         val item = mAdapter.getFileItem(position)
+        Timber.d("selectFile: $item")
         mFileName = item.fileName
         mFilePath = item.filePath
-        val sel = File("$path/$mFileName")
+        val sel = File(item.filePath)
         if (sel.isDirectory) {
-            firstLvl = false
-            str.add(mFileName)
-            mDataList.clear()
-            path = File(sel.toString() + "")
-            loadFileList()
-        } else if (mFileName.equals(getString(R.string.up), ignoreCase = true) && !sel.exists()) {
+            viewModel.str.add(mFileName)
+            searchField.setText("")
+            viewModel.loadFileList(sel, false)
+        } else if (item.isUp) {
             moveUp()
         } else {
-            if (filType.matches("any".toRegex())) {
+            if (viewModel.filType.matches("any".toRegex())) {
                 sendFile()
-            } else if (filType == TYPE_PHOTO) {
+            } else if (viewModel.filType == TYPE_PHOTO) {
                 if (isImage(mFileName)) {
                     showFullImage()
                 } else {
@@ -122,13 +151,8 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun moveUp() {
-        val s = str.removeAt(str.size - 1)
-        path = File(path.toString().substring(0, path.toString().lastIndexOf(s)))
-        mDataList.clear()
-        if (str.isEmpty()) {
-            firstLvl = true
-        }
-        loadFileList()
+        val s = viewModel.str.removeAt(viewModel.str.size - 1)
+        viewModel.moveUp(s, viewModel.str.isEmpty())
     }
 
     private fun sendFile() {
@@ -138,30 +162,21 @@ class FileExplorerActivity : ThemedActivity() {
         finish()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mSound = Sound(this, prefs)
-        setContentView(R.layout.activity_file_explorer)
-        filType = intent.getStringExtra(Constants.FILE_TYPE) ?: ""
-        if (filType == "") filType = TYPE_MUSIC
-
-        loaderView.visibility = View.GONE
-
-        initRecyclerView()
-        initPlayer()
-        initSearch()
-        initButtons()
-        if (Permissions.ensurePermissions(this, SD_CARD, Permissions.READ_EXTERNAL)) {
-            loadFileList()
-        }
-    }
-
     private fun initPlayer() {
         playerLayout.visibility = View.GONE
     }
 
     private fun initRecyclerView() {
-        mAdapter.clickListener = { this.selectFile(it) }
+        mAdapter.clickListener = object : ActionsListener<FileItem> {
+            override fun onAction(view: View, position: Int, t: FileItem?, actions: ListActions) {
+                when (actions) {
+                    ListActions.MORE -> longClick(position)
+                    ListActions.OPEN -> selectFile(position)
+                    else -> {
+                    }
+                }
+            }
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = mAdapter
@@ -178,9 +193,7 @@ class FileExplorerActivity : ThemedActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (mFilter) {
-                    searchModifier.setSearchValue(s.toString())
-                }
+                searchModifier.setSearchValue(s.toString())
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -197,12 +210,12 @@ class FileExplorerActivity : ThemedActivity() {
         playButton.setOnClickListener { play() }
     }
 
-    private fun loadList() {
-        if (mDataList.isEmpty()) {
+    private fun showList(count: Int) {
+        if (count == 0) {
             Toast.makeText(this, getString(R.string.no_files), Toast.LENGTH_SHORT).show()
         }
         recyclerView.smoothScrollToPosition(0)
-        refreshView(mDataList.size)
+        refreshView(count)
     }
 
     private fun play() {
@@ -238,65 +251,7 @@ class FileExplorerActivity : ThemedActivity() {
         playerLayout.visibility = View.VISIBLE
     }
 
-    private fun loadFileList() {
-        loaderView.visibility = View.VISIBLE
-        mFilter = false
-        searchField.setText("")
-        mFilter = true
-        launchDefault {
-            try {
-                path.mkdirs()
-            } catch (e: SecurityException) {
-            }
 
-            if (path.exists()) {
-                createFilteredFileList()
-            }
-            withUIContext {
-                searchModifier.original = mDataList
-                loaderView.visibility = View.GONE
-                loadList()
-            }
-        }
-    }
-
-    private fun createFilteredFileList() {
-        val filter = FilenameFilter { dir, filename ->
-            val sel = File(dir, filename)
-            (sel.isFile || sel.isDirectory) && !sel.isHidden
-        }
-
-        val list = try {
-            Arrays.asList(*path.list(filter))
-        } catch (e: NullPointerException) {
-            arrayListOf<String>()
-        }
-
-        mDataList = list.asSequence().map { File(path, it) }
-                .sortedWith(Comparator { o1, o2 ->
-                    if (o1 == null) return@Comparator -1
-                    if (o2 == null) return@Comparator 1
-                    when {
-                        o1.isDirectory == o2.isDirectory -> o1.name.toLowerCase().compareTo(o2.name.toLowerCase())
-                        o1.isDirectory -> -1
-                        o1.isDirectory -> 1
-                        else -> 0
-                    }
-                })
-                .map { FileItem(it.name, if (it.isDirectory) directoryIcon else 0, it.toString()) }
-                .toMutableList()
-
-        if ((!firstLvl)) {
-            addUpItem()
-        }
-    }
-
-    private fun addUpItem() {
-        val temp = ArrayList<FileItem>(mDataList.size + 1)
-        temp.add(0, FileItem(getString(R.string.up), undoIcon, ""))
-        temp.addAll(mDataList)
-        mDataList = temp
-    }
 
     private fun isMelody(file: String?): Boolean {
         return file != null && (file.endsWith(".mp3") || file.endsWith(".ogg")
@@ -319,7 +274,7 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     override fun onBackPressed() {
-        if ((!firstLvl)) {
+        if ((!viewModel.isRoot)) {
             moveUp()
         } else {
             exit()
@@ -357,7 +312,7 @@ class FileExplorerActivity : ThemedActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             SD_CARD -> if (Permissions.isAllGranted(grantResults)) {
-                loadFileList()
+                viewModel.loadFileList()
             } else {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
@@ -366,7 +321,6 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     companion object {
-
         private const val SD_CARD = 444
         const val TYPE_MUSIC = "music"
         const val TYPE_PHOTO = "photo"
