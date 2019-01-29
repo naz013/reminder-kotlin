@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
+import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.ViewUtils

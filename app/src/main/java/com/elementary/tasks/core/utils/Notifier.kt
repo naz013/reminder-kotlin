@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.appWidgets.WidgetUtils
+import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver

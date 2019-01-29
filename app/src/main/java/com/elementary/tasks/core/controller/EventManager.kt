@@ -2,7 +2,7 @@ package com.elementary.tasks.core.controller
 
 import android.content.Context
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.PermanentReminderReceiver

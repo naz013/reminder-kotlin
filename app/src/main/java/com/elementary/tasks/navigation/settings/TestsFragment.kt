@@ -11,7 +11,7 @@ import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.missedCalls.MissedCallDialogActivity
+import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import kotlinx.android.synthetic.main.fragment_settings_tests.*
 import java.util.*

@@ -2,7 +2,7 @@ package com.elementary.tasks.core.work
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.IoHelper
 import com.elementary.tasks.core.utils.launchIo

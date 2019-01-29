@@ -221,7 +221,7 @@
             android:name=".core.additional.FollowReminderActivity"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".core.fileExplorer.FileExplorerActivity"
+            android:name=".core.file_explorer.FileExplorerActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
@@ -318,11 +318,11 @@
         <activity android:name=".notes.preview.ImagePreviewActivity" />
         <activity android:name=".notes.preview.NotePreviewActivity" />
         <activity
-            android:name=".googleTasks.create.TaskListActivity"
+            android:name=".google_tasks.create.TaskListActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".googleTasks.create.TaskActivity"
+            android:name=".google_tasks.create.TaskActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
@@ -334,7 +334,7 @@
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".reminder.preview.FullscreenMapActivity" />
-        <activity android:name=".missedCalls.MissedCallDialogActivity" />
+        <activity android:name=".missed_calls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.preview.ShowBirthdayActivity" />
         <activity android:name=".navigation.settings.security.PinLoginActivity" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
@@ -383,10 +383,10 @@
             android:name=".core.services.GeolocationService"
             android:enabled="false" />
 
-        <service android:name=".core.appWidgets.events.EventEditService" />
+        <service android:name=".core.app_widgets.events.EventEditService" />
 
         <receiver
-            android:name=".core.appWidgets.buttons.CombinedButtonsWidget"
+            android:name=".core.app_widgets.buttons.CombinedButtonsWidget"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/quick_buttons">
             <intent-filter>
@@ -399,7 +399,7 @@
         </receiver>
 
         <activity
-            android:name=".core.appWidgets.buttons.CombinedWidgetConfigActivity"
+            android:name=".core.app_widgets.buttons.CombinedWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -407,7 +407,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.appWidgets.events.EventsWidgetConfigActivity"
+            android:name=".core.app_widgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -415,7 +415,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.appWidgets.notes.NotesWidgetConfigActivity"
+            android:name=".core.app_widgets.notes.NotesWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -423,7 +423,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".core.appWidgets.googleTasks.TasksWidgetConfigActivity"
+            android:name=".core.app_widgets.google_tasks.TasksWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -432,7 +432,7 @@
         </activity>
 
         <receiver
-            android:name=".core.appWidgets.events.EventsWidget"
+            android:name=".core.app_widgets.events.EventsWidget"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/active_reminders">
             <intent-filter>
@@ -446,11 +446,11 @@
         </receiver>
 
         <service
-            android:name=".core.appWidgets.events.EventsService"
+            android:name=".core.app_widgets.events.EventsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
-            android:name=".core.appWidgets.notes.NotesWidget"
+            android:name=".core.app_widgets.notes.NotesWidget"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/notes">
             <intent-filter>
@@ -463,11 +463,11 @@
         </receiver>
 
         <service
-            android:name=".core.appWidgets.notes.NotesService"
+            android:name=".core.app_widgets.notes.NotesService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
-            android:name=".core.appWidgets.googleTasks.TasksWidget"
+            android:name=".core.app_widgets.google_tasks.TasksWidget"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/google_tasks">
             <intent-filter>
@@ -480,11 +480,11 @@
         </receiver>
 
         <service
-            android:name=".core.appWidgets.googleTasks.TasksService"
+            android:name=".core.app_widgets.google_tasks.TasksService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name=".core.appWidgets.calendar.CalendarWidgetConfigActivity"
+            android:name=".core.app_widgets.calendar.CalendarWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -493,7 +493,7 @@
         </activity>
 
         <receiver
-            android:name=".core.appWidgets.calendar.CalendarWidget"
+            android:name=".core.app_widgets.calendar.CalendarWidget"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/calendar">
             <intent-filter>
@@ -506,14 +506,14 @@
         </receiver>
 
         <service
-            android:name=".core.appWidgets.calendar.CalendarWeekdayService"
+            android:name=".core.app_widgets.calendar.CalendarWeekdayService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name=".core.appWidgets.calendar.CalendarMonthService"
+            android:name=".core.app_widgets.calendar.CalendarMonthService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name=".core.appWidgets.buttons.VoiceWidgetDialog"
+            android:name=".core.app_widgets.buttons.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
             android:theme="@style/Light1.Dialog">
             <intent-filter>
@@ -522,10 +522,10 @@
         </activity>
 
         <service
-            android:name=".core.appWidgets.calendar.CalendarUpdateMinusService"
+            android:name=".core.app_widgets.calendar.CalendarUpdateMinusService"
             android:enabled="false" />
         <service
-            android:name=".core.appWidgets.calendar.CalendarUpdateService"
+            android:name=".core.app_widgets.calendar.CalendarUpdateService"
             android:enabled="false" />
 
         <service

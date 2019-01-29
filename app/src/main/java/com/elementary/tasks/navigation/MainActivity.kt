@@ -27,10 +27,10 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
-import com.elementary.tasks.dayView.DayViewFragment
-import com.elementary.tasks.googleTasks.GoogleTasksFragment
+import com.elementary.tasks.day_view.DayViewFragment
+import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
-import com.elementary.tasks.monthView.CalendarFragment
+import com.elementary.tasks.month_view.CalendarFragment
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.fragments.FeedbackFragment
 import com.elementary.tasks.navigation.fragments.MapFragment
