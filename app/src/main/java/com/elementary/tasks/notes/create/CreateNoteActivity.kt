@@ -147,6 +147,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         c.set(Calendar.MINUTE, minute)
         stateViewModel.time.postValue(c.timeInMillis)
     }
+    private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -416,8 +417,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         val image = imagesSingleton.getEditable() ?: return
         stateViewModel.setImage(image, stateViewModel.editPosition)
     }
-
-    private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(id)).get(NoteViewModel::class.java)
