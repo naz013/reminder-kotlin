@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.filter.SearchModifier
@@ -101,7 +102,11 @@ class SelectApplicationActivity : ThemedActivity() {
                 }
             }
         }
-        contactsList.layoutManager = LinearLayoutManager(this)
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
+            contactsList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            contactsList.layoutManager = LinearLayoutManager(this)
+        }
         contactsList.adapter = adapter
         contactsList.isNestedScrollingEnabled = false
         ViewUtils.listenScrollableView(scroller) {
