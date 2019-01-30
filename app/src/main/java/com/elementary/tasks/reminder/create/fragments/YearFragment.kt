@@ -126,10 +126,6 @@ class YearFragment : RepeatableTypeFragment() {
         dateView.setDateFormat(TimeUtil.simpleDate(prefs.appLanguage))
         dateView.setEventListener(object : DateTimeView.OnSelectListener {
             override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
-                if (month == 1 && day > 28) {
-                    iFace.showSnackbar(getString(R.string.max_day_supported))
-                    return
-                }
                 iFace.state.day = day
                 iFace.state.month = month
                 iFace.state.year = year

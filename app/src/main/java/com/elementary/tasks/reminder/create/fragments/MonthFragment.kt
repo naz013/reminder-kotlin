@@ -45,9 +45,6 @@ class MonthFragment : RepeatableTypeFragment() {
         calculateNextDate()
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-        if (dayOfMonth > 28) {
-            iFace.showSnackbar(getString(R.string.max_day_supported))
-        }
         iFace.state.day = dayOfMonth
         iFace.state.month = monthOfYear
         iFace.state.year = year
@@ -197,9 +194,6 @@ class MonthFragment : RepeatableTypeFragment() {
     private fun showSelectedDay() {
         if (iFace.state.day <= 0) {
             iFace.state.day = System.currentTimeMillis().toCalendar().get(Calendar.DAY_OF_MONTH)
-        }
-        if (iFace.state.day > 28) {
-            iFace.state.day = 28
         }
         Timber.d("showSelectedDay: ${iFace.state.day}")
         monthDayField.text = getZeroedInt(iFace.state.day)
