@@ -252,10 +252,8 @@ class FileExplorerActivity : ThemedActivity() {
         if (mSound?.isPlaying == true) {
             mSound?.stop(true)
         }
-        playerLayout.visibility = View.VISIBLE
+        playerLayout.visibility = View.GONE
     }
-
-
 
     private fun isMelody(file: String?): Boolean {
         return file != null && (file.endsWith(".mp3") || file.endsWith(".ogg")
