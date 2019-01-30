@@ -21,6 +21,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
@@ -445,7 +446,7 @@ class TaskActivity : ThemedActivity() {
         val due = dateTime()
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
-        reminder.summary = task
+        reminder.summary = SuperUtil.normalizeSummary(task)
         reminder.groupUuId = group.groupUuId
         reminder.startTime = TimeUtil.getGmtFromDateTime(due)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(due)

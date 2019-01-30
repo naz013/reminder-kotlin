@@ -52,6 +52,14 @@ import java.util.*
  */
 object SuperUtil {
 
+    fun normalizeSummary(summary: String): String {
+        return if (summary.length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
+            summary.substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
+        } else {
+            summary
+        }
+    }
+
     fun wakeDevice(activity: Activity, id: String = UUID.randomUUID().toString()): PowerManager.WakeLock {
         val screenLock = (activity.getSystemService(Context.POWER_SERVICE) as PowerManager)
                 .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "reminder:ReminderAPPTAG:$id")

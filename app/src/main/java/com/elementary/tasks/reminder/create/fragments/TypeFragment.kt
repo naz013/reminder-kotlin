@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputFilter
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -158,6 +159,7 @@ abstract class TypeFragment : Fragment() {
             }
         }
         summaryView?.let {
+            it.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
             it.bindProperty(iFace.state.reminder.summary) { summary ->
                 iFace.state.reminder.summary = summary.trim()
             }
