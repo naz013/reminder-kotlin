@@ -128,7 +128,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/acc_button_ok"
-            android:tint="@color/whitePrimary"
             app:fabSize="normal"
             app:tint="?colorOnSecondary"
             app:srcCompat="@drawable/ic_twotone_done_24px" />

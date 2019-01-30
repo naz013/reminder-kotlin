@@ -252,7 +252,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:contentDescription="@string/acc_button_ok"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_done_24px"
                     app:tint="?colorOnSecondary" />
@@ -265,7 +264,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:contentDescription="@string/acc_button_cancel"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_cancel_24px"
                     app:tint="?colorOnSecondary" />
@@ -277,7 +275,6 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_refresh_24px"
                     app:tint="?colorOnSecondary" />
@@ -290,7 +287,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:contentDescription="@string/attach_file"
-                    android:tint="@color/whitePrimary"
                     android:visibility="gone"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_attachment_24px"
@@ -313,7 +309,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:contentDescription="@string/acc_button_snooze"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_snooze_24px"
                     app:tint="?colorOnSecondary" />
@@ -326,7 +321,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:contentDescription="@string/acc_button_snooze_for"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_more_horiz_24px"
                     app:tint="?colorOnSecondary" />
@@ -339,7 +333,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:contentDescription="@string/acc_button_move_to_status_bar"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_notifications_24px"
                     app:tint="?colorOnSecondary" />
@@ -352,7 +345,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:contentDescription="@string/acc_button_edit"
-                    android:tint="@color/whitePrimary"
                     app:fabSize="normal"
                     app:srcCompat="@drawable/ic_twotone_edit_24px"
                     app:tint="?colorOnSecondary" />
