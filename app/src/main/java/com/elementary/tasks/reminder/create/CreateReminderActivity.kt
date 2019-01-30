@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -172,7 +171,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         when {
             id != "" -> {
                 isEditing = true
-                updateDefaultButton()
             }
             date != 0L -> {
                 stateViewModel.reminder.type = Reminder.BY_DATE
@@ -252,8 +250,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     private fun initNavigation() {
-        updateDefaultButton()
-
         val list = mutableListOf<SpinnerItem>()
         list.add(SpinnerItem(getString(R.string.by_date)))
         list.add(SpinnerItem(getString(R.string.timer)))
@@ -274,20 +270,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         navSpinner.adapter = adapter
         navSpinner.onItemSelectedListener = mOnTypeSelectListener
         Timber.d("initNavigation: ")
-    }
-
-    private fun updateDefaultButton() {
-        buttonDefault.setOnLongClickListener {
-            Toast.makeText(this, getString(R.string.clear_all_changes), Toast.LENGTH_SHORT).show()
-            true
-        }
-        buttonDefault.setOnClickListener {
-            val oldType = stateViewModel.reminder.type
-            val reminder = Reminder()
-            reminder.type = oldType
-            editReminder(reminder, false)
-        }
-        buttonDefault.visibility = View.INVISIBLE
     }
 
     private fun initActionBar() {
@@ -488,11 +470,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener) {
-        Snackbar.make(main_container, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
+        Snackbar.make(coordinator, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
     }
 
     override fun showSnackbar(title: String) {
-        Snackbar.make(main_container, title, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(coordinator, title, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun setFullScreenMode(b: Boolean) {

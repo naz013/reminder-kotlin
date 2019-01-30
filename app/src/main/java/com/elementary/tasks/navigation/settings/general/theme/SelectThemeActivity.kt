@@ -235,21 +235,21 @@ class SelectThemeActivity : ThemedActivity() {
 
     companion object {
         val NAMES = arrayOf(
-                "FFFFFF".toUpperCase(),
-                "F5F5F5".toUpperCase(),
-                "EEEEEE".toUpperCase(),
-                "E0E0E0".toUpperCase(),
-                "9E9E9E".toUpperCase(),
-                "757575".toUpperCase(),
-                "616161".toUpperCase(),
-                "424242".toUpperCase(),
-                "212121".toUpperCase(),
-                "000000".toUpperCase(),
-                "FFFEB3".toUpperCase(),
-                "FFE28A".toUpperCase(),
-                "a1ffd0".toUpperCase(),
-                "ff79b6".toUpperCase(),
-                "9bdbe4".toUpperCase()
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15"
         )
     }
 }

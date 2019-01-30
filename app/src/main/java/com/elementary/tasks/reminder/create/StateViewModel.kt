@@ -4,7 +4,6 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import timber.log.Timber
 import java.util.*
 
 class StateViewModel : ViewModel(), LifecycleObserver {
