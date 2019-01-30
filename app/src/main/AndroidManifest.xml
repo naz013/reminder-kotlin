@@ -95,6 +95,7 @@
         <activity
             android:name=".core.IntentActivity"
             android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
             android:label="@string/import_file"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
@@ -216,13 +217,17 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.te2" />
             </intent-filter>
         </activity>
-        <activity android:name=".core.additional.QuickSmsActivity" />
+        <activity
+            android:name=".core.additional.QuickSmsActivity"
+            android:excludeFromRecents="true" />
         <activity
             android:name=".core.additional.FollowReminderActivity"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".core.file_explorer.FileExplorerActivity"
             android:configChanges="keyboardHidden"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".groups.create.CreateGroupActivity"
@@ -327,32 +332,50 @@
             android:windowSoftInputMode="stateUnchanged" />
         <activity
             android:name=".core.contacts.SelectContactActivity"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
-        <activity android:name=".reminder.preview.ReminderDialogActivity" />
+        <activity
+            android:name=".reminder.preview.ReminderDialogActivity"
+            android:excludeFromRecents="true" />
         <activity
             android:name=".core.apps.SelectApplicationActivity"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
-        <activity android:name=".reminder.preview.FullscreenMapActivity" />
-        <activity android:name=".missed_calls.MissedCallDialogActivity" />
-        <activity android:name=".birthdays.preview.ShowBirthdayActivity" />
-        <activity android:name=".navigation.settings.security.PinLoginActivity" />
+        <activity
+            android:name=".reminder.preview.FullscreenMapActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".missed_calls.MissedCallDialogActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".birthdays.preview.ShowBirthdayActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".navigation.settings.security.PinLoginActivity"
+            android:excludeFromRecents="true" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
         <activity android:name=".intro.PrivacyPolicyActivity" />
         <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"
+            android:excludeFromRecents="true"
             android:theme="@style/Light1.Dialog" />
         <activity
             android:name=".core.dialogs.VoiceResultDialog"
+            android:excludeFromRecents="true"
             android:theme="@style/Light1.Dialog" />
         <activity
             android:name=".core.dialogs.VolumeDialog"
+            android:excludeFromRecents="true"
             android:theme="@style/Light1.Dialog" />
-        <activity android:name=".notes.editor.ImageEditActivity" />
+        <activity
+            android:name=".notes.editor.ImageEditActivity"
+            android:excludeFromRecents="true" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
             android:name=".core.SplashScreen"
+            android:excludeFromRecents="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -360,7 +383,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:excludeFromRecents="true" />
         <activity android:name=".intro.IntroActivity" />
 
         <receiver
@@ -401,6 +426,7 @@
         <activity
             android:name=".core.app_widgets.buttons.CombinedWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -409,6 +435,7 @@
         <activity
             android:name=".core.app_widgets.events.EventsWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -417,6 +444,7 @@
         <activity
             android:name=".core.app_widgets.notes.NotesWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -425,6 +453,7 @@
         <activity
             android:name=".core.app_widgets.google_tasks.TasksWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -486,6 +515,7 @@
         <activity
             android:name=".core.app_widgets.calendar.CalendarWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -515,6 +545,7 @@
         <activity
             android:name=".core.app_widgets.buttons.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
+            android:excludeFromRecents="true"
             android:theme="@style/Light1.Dialog">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
