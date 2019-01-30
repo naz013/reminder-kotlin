@@ -364,7 +364,7 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
 
     @ColorInt
     fun getNoteLightColor(code: Int, opacity: Int): Int {
-        return adjustAlpha(getNoteLightColor(code), opacity)
+        return adjustAlpha(getNoteColor(code), opacity)
     }
 
     object Color {
@@ -434,6 +434,61 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
                 getColor(R.color.pureWhite),
                 getColor(R.color.pureBlack)
         )
+    }
+
+    @ColorInt
+    fun noteColorsForSlider(): IntArray {
+        return intArrayOf(
+                getColor(R.color.note1),
+                getColor(R.color.note2),
+                getColor(R.color.note3),
+                getColor(R.color.note4),
+                getColor(R.color.note5),
+                getColor(R.color.note6),
+                getColor(R.color.note7),
+                getColor(R.color.note8),
+                getColor(R.color.note9),
+                getColor(R.color.note10),
+                getColor(R.color.note11),
+                getColor(R.color.note12),
+                getColor(R.color.note13),
+                getColor(R.color.note14),
+                getColor(R.color.note15),
+                getColor(R.color.note16),
+                getColor(R.color.note17),
+                getColor(R.color.note18),
+                getColor(R.color.note19),
+                getColor(R.color.note20)
+        )
+    }
+
+    @ColorInt
+    fun getNoteColor(code: Int = prefs.appThemeColor): Int {
+        val color: Int
+        when (code) {
+            0 -> color = R.color.note1
+            1 -> color = R.color.note2
+            2 -> color = R.color.note3
+            3 -> color = R.color.note4
+            4 -> color = R.color.note5
+            5 -> color = R.color.note6
+            6 -> color = R.color.note7
+            7 -> color = R.color.note8
+            8 -> color = R.color.note9
+            9 -> color = R.color.note10
+            10 -> color = R.color.note11
+            11 -> color = R.color.note12
+            12 -> color = R.color.note13
+            13 -> color = R.color.note14
+            14 -> color = R.color.note15
+            15 -> color = R.color.note16
+            16 -> color = R.color.note17
+            17 -> color = R.color.note18
+            18 -> color = R.color.note19
+            19 -> color = R.color.note20
+            else -> color = R.color.note1
+        }
+        return getColor(color)
     }
 
     @ColorInt
@@ -548,6 +603,8 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     data class Marker(@ColorRes val fillColor: Int, @ColorRes val strokeColor: Int)
 
     companion object {
+        const val NOTE_COLORS = 20
+
         const val THEME_AUTO = 0
         const val THEME_PURE_WHITE = 1
         const val THEME_LIGHT_1 = 2

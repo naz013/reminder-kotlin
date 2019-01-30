@@ -257,7 +257,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         stateViewModel.date.postValue(System.currentTimeMillis())
     }
 
-    private fun newColor(): Int = Random().nextInt(16)
+    private fun newColor(): Int = Random().nextInt(ThemeUtil.NOTE_COLORS)
 
     private fun setText(text: String?) {
         taskMessage.setText(text)
@@ -331,7 +331,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         reminderButton.setOnClickListener { switchReminder() }
         fontButton.setOnClickListener { showStyleDialog() }
 
-        colorSlider.setColors(themeUtil.colorsForSlider())
+        colorSlider.setColors(themeUtil.noteColorsForSlider())
         colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         colorSlider.setListener { position, _ ->
             stateViewModel.colorOpacity.postValue(newPair(color = position))

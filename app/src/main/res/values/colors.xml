@@ -201,4 +201,28 @@
 
     <color name="secondaryLivingCoral">#FA7268</color>
     <color name="secondaryLivingCoral12">#1EFA7268</color>
+
+    <color name="note1">#86E3CE</color>
+    <color name="note2">#D0E6A5</color>
+    <color name="note3">#FFDD94</color>
+    <color name="note4">#FA897B</color>
+    <color name="note5">#CCABD8</color>
+
+    <color name="note6">#F5CEC7</color>
+    <color name="note7">#E79796</color>
+    <color name="note8">#FFC98B</color>
+    <color name="note9">#FFB284</color>
+    <color name="note10">#C6C09C</color>
+
+    <color name="note11">#AAC9CE</color>
+    <color name="note12">#B6B4C2</color>
+    <color name="note13">#C9BBC8</color>
+    <color name="note14">#E5C1CD</color>
+    <color name="note15">#F3DBCF</color>
+
+    <color name="note16">#80BEAF</color>
+    <color name="note17">#B3DDD1</color>
+    <color name="note18">#D1DCE2</color>
+    <color name="note19">#F5B994</color>
+    <color name="note20">#EE9C6C</color>
 </resources>
