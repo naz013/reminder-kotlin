@@ -665,7 +665,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         reminder.noteId = note.key
         reminder.isActive = true
         reminder.isRemoved = false
-        reminder.summary = note.summary
+        reminder.summary = SuperUtil.normalizeSummary(note.summary)
 
         val startTime = dateTime()
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)

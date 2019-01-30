@@ -11,10 +11,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import kotlinx.android.synthetic.main.view_note_card.view.*
 import kotlinx.android.synthetic.main.view_note_reminder_card.view.*
@@ -151,7 +148,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         reminder.noteId = note.key
         reminder.isActive = true
         reminder.isRemoved = false
-        reminder.summary = note.summary
+        reminder.summary = SuperUtil.normalizeSummary(note.summary)
         val prefsTime = prefs.noteReminderTime * TimeCount.MINUTE
         val startTime = System.currentTimeMillis() + prefsTime
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)

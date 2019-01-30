@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/e_mail"
                 android:inputType="textEmailAddress"
-                android:maxLength="50"
+                android:maxLength="72"
                 android:maxLines="1"
                 android:paddingStart="12dp"
                 android:textAppearance="?textAppearanceSubtitle1" />
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/subject"
                 android:inputType="textEmailSubject"
-                android:maxLength="50"
+                android:maxLength="72"
                 android:maxLines="1"
                 android:textAppearance="?textAppearanceSubtitle2" />
 
@@ -78,7 +78,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/message"
                 android:inputType="textMultiLine"
-                android:maxLines="3"
                 android:textAppearance="?textAppearanceSubtitle2" />
 
         </com.google.android.material.textfield.TextInputLayout>
