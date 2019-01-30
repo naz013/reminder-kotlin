@@ -10,6 +10,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.views.*
 import kotlinx.coroutines.*
+import timber.log.Timber
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -47,6 +49,12 @@ fun EditText.onChanged(function: (String) -> Unit) {
         override fun afterTextChanged(s: Editable?) {
         }
     })
+}
+
+fun Long.toCalendar(): Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+    return calendar
 }
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
@@ -107,6 +115,7 @@ fun RepeatView.bindProperty(value: Long, listener: ((Long) -> Unit)) {
     this.repeat = value
     this.onRepeatChangeListener = object : RepeatView.OnRepeatChangeListener {
         override fun onChanged(repeat: Long) {
+            Timber.d("onChanged: $repeat")
             listener.invoke(repeat)
         }
     }
