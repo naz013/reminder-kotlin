@@ -9,6 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.toCalendar
 import com.elementary.tasks.core.views.ActionView
 import kotlinx.android.synthetic.main.fragment_reminder_month.*
 import timber.log.Timber
@@ -40,19 +41,17 @@ class MonthFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
-        timeField.text = formattedTime
+        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
         calculateNextDate()
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         if (dayOfMonth > 28) {
             iFace.showSnackbar(getString(R.string.max_day_supported))
-            return@OnDateSetListener
         }
         iFace.state.day = dayOfMonth
         iFace.state.month = monthOfYear
         iFace.state.year = year
-        monthDayField.text = getZeroedInt(iFace.state.day)
+        showSelectedDay()
         calculateNextDate()
     }
 
@@ -151,28 +150,33 @@ class MonthFragment : RepeatableTypeFragment() {
                     iFace.state.hour, iFace.state.minute, mTimeSelect)
         }
         timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
+        repeatView.defaultValue = 1
 
         tuneExtraView.hasAutoExtra = false
         lastCheck.setOnCheckedChangeListener { _, b ->
             iFace.state.isLastDay = b
             changeUi(b)
         }
-        if (!iFace.state.isLastDay) dayCheck.isChecked = true
 
-        calculateNextDate()
-        editReminder()
+        if (!iFace.state.isLastDay) {
+            dayCheck.isChecked = true
+        }
+        changeUi(iFace.state.isLastDay)
+
         showSelectedDay()
+        editReminder()
+        calculateNextDate()
     }
 
     private fun calculateNextDate() {
         val reminder = Reminder()
-        reminder.weekdays = listOf()
         reminder.type = Reminder.BY_MONTH
         reminder.dayOfMonth = iFace.state.day
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         if (reminder.repeatInterval <= 0) {
             reminder.repeatInterval = 1
         }
+        Timber.d("calculateNextDate: $reminder")
         val startTime = TimeCount.getNextMonthDayTime(reminder)
         calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
@@ -191,10 +195,13 @@ class MonthFragment : RepeatableTypeFragment() {
     }
 
     private fun showSelectedDay() {
-        if (iFace.state.day == 0) {
-            iFace.state.day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        if (iFace.state.day <= 0) {
+            iFace.state.day = System.currentTimeMillis().toCalendar().get(Calendar.DAY_OF_MONTH)
         }
-        if (iFace.state.day > 28) iFace.state.day = 28
+        if (iFace.state.day > 28) {
+            iFace.state.day = 28
+        }
+        Timber.d("showSelectedDay: ${iFace.state.day}")
         monthDayField.text = getZeroedInt(iFace.state.day)
     }
 
@@ -204,12 +211,7 @@ class MonthFragment : RepeatableTypeFragment() {
             iFace.state.day = 0
         } else {
             day_view.visibility = View.VISIBLE
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
-            iFace.state.day = calendar.get(Calendar.DAY_OF_MONTH)
-            iFace.state.month = calendar.get(Calendar.MONTH)
-            iFace.state.year = calendar.get(Calendar.YEAR)
-            if (iFace.state.day > 28) iFace.state.day = 1
+            showSelectedDay()
         }
         calculateNextDate()
     }
@@ -231,6 +233,7 @@ class MonthFragment : RepeatableTypeFragment() {
         } else {
             iFace.state.day = reminder.dayOfMonth
             dayCheck.isChecked = true
+            showSelectedDay()
         }
         calculateNextDate()
     }

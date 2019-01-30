@@ -56,6 +56,11 @@ class RepeatView : LinearLayout, TextWatcher {
             }
         }
 
+    var defaultValue: Int = 0
+        set(value) {
+            field = value
+            setDefaultField()
+        }
     var repeat: Long
         get() {
             return if (mState == MONTHS) {
@@ -152,8 +157,6 @@ class RepeatView : LinearLayout, TextWatcher {
                 mImm?.showSoftInput(repeatTitle, 0)
             }
         }
-        mRepeatValue = 0
-        repeatTitle.setText(mRepeatValue.toString())
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RepeatView, 0, 0)
             try {
@@ -165,15 +168,15 @@ class RepeatView : LinearLayout, TextWatcher {
                 a.recycle()
             }
         }
+        mRepeatValue = defaultValue
+        setDefaultField()
         if (mState == MONTHS && mIsLocked) {
             val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times_month))
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             repeatType.adapter = spinnerAdapter
             repeatType.isEnabled = false
-            repeatTitle.setText("1")
         } else {
             repeatType.isEnabled = true
-            repeatType.setSelection(mState)
         }
         setState(mState)
     }
@@ -192,9 +195,19 @@ class RepeatView : LinearLayout, TextWatcher {
     }
 
     private fun setProgress(i: Int) {
-        mRepeatValue = i
-        repeatTitle.setText(i.toString())
-        updateEditField()
+        if (mState == MONTHS && mIsLocked) {
+            if (i < defaultValue) {
+                setDefaultField()
+            } else {
+                mRepeatValue = i
+                repeatTitle.setText(i.toString())
+                updateEditField()
+            }
+        } else {
+            mRepeatValue = i
+            repeatTitle.setText(i.toString())
+            updateEditField()
+        }
     }
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -204,21 +217,21 @@ class RepeatView : LinearLayout, TextWatcher {
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         try {
             mRepeatValue = Integer.parseInt(s.toString())
-            if (mState == MONTHS && mRepeatValue <= 0) {
-                repeatTitle.setText("1")
-                repeatTitle.setSelection(repeatTitle.text.toString().length)
+            if (mState == MONTHS && mRepeatValue < defaultValue) {
+                setDefaultField()
                 return
             }
-            mRepeatListener?.onProgress(mRepeatValue)
-            onRepeatChangeListener?.onChanged(repeat)
         } catch (e: NumberFormatException) {
-            if (mState == MONTHS) {
-                repeatTitle.setText("1")
-            } else {
-                repeatTitle.setText("0")
-            }
-            repeatTitle.setSelection(repeatTitle.text.toString().length)
+            setDefaultField()
         }
+        mRepeatListener?.onProgress(mRepeatValue)
+        onRepeatChangeListener?.onChanged(repeat)
+    }
+
+    private fun setDefaultField() {
+        mRepeatValue = defaultValue
+        repeatTitle.setText(defaultValue.toString())
+        repeatTitle.setSelection(repeatTitle.text.toString().length)
     }
 
     override fun afterTextChanged(s: Editable) {
