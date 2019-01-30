@@ -41,7 +41,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
     fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = themeUtil.colorsForSlider(),
                         onChange: (Int) -> Unit) {
         val dialog = BottomSheetDialog(activity)
-        val b = LayoutInflater.from(activity).inflate(R.layout.view_color_slider, null, false)
+        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_bottom_color_slider, null, false)
         b.colorSlider.setColors(colors)
         b.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         b.colorSlider.setSelection(current)
@@ -54,7 +54,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
 
     fun showRadiusBottomDialog(activity: Activity, current: Int, listener: (Int) -> String) {
         val dialog = BottomSheetDialog(activity)
-        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_with_seek_and_title, null, false)
+        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_bottom_seek_and_title, null, false)
         b.seekBar.max = MAX_DEF_RADIUS
         if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
             b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
