@@ -74,7 +74,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/list_margin"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:visibility="visible" />
@@ -172,7 +172,7 @@
                         android:layout_height="40dp"
                         android:layout_marginStart="8dp"
                         android:contentDescription="@string/acc_pause"
-                        app:srcCompat="@drawable/ic_twotone_pause_circle_filled_24px"
+                        app:srcCompat="@drawable/ic_twotone_pause_circle_outline_24px"
                         app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
