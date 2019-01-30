@@ -17,6 +17,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.bindProperty
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
+import com.elementary.tasks.core.views.TimerPickerView
 import kotlinx.android.synthetic.main.fragment_reminder_timer.*
 import kotlinx.android.synthetic.main.list_item_used_time.view.*
 import timber.log.Timber
@@ -120,6 +121,12 @@ class TimerFragment : RepeatableTypeFragment() {
         super.onViewCreated(view, savedInstanceState)
         initMostUsedList()
         tuneExtraView.hasAutoExtra = false
+
+        timerPickerView.setListener(object : TimerPickerView.TimerListener {
+            override fun onTimerChange(time: Long) {
+                iFace.state.reminder.after = time
+            }
+        })
 
         exclusionView.dialogues = dialogues
         exclusionView.prefs = prefs

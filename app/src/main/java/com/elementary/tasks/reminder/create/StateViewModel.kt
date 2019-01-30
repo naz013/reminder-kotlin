@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.create
 
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
@@ -35,6 +34,8 @@ class StateViewModel : ViewModel(), LifecycleObserver {
 
     var hour: Int = 0
     var minute: Int = 0
+
+    var timer: Long = 0
 
     init {
         val calendar = Calendar.getInstance()
