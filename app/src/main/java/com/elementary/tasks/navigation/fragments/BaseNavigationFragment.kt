@@ -1,5 +1,7 @@
 package com.elementary.tasks.navigation.fragments
 
+import com.elementary.tasks.core.binding.Binding
+
 /**
  * Copyright 2016 Nazar Suhovich
  *
@@ -18,4 +20,4 @@ package com.elementary.tasks.navigation.fragments
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseNavigationFragment : BaseFragment()
+abstract class BaseNavigationFragment<B : Binding> : BaseFragment<B>()

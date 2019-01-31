@@ -63,7 +63,6 @@
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/dateIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:scaleType="centerInside"

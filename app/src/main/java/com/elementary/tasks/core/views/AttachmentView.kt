@@ -8,7 +8,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.view_attachment.view.*
+import com.elementary.tasks.core.binding.views.AttachmentViewBinding
+import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.show
 import timber.log.Timber
 
 /**
@@ -31,14 +33,15 @@ import timber.log.Timber
  */
 class AttachmentView : LinearLayout {
 
+    private lateinit var binding: AttachmentViewBinding
     var onFileUpdateListener: ((path: String) -> Unit)? = null
     var onFileSelectListener: (() -> Unit)? = null
     private var content: String = ""
         private set(value) {
             field = value
             if (value != "") {
-                text.text = Uri.parse(value).lastPathSegment
-                removeButton.visibility = View.VISIBLE
+                binding.text.text = Uri.parse(value).lastPathSegment
+                binding.removeButton.show()
                 onFileUpdateListener?.invoke(value)
             } else {
                 noFile()
@@ -63,28 +66,29 @@ class AttachmentView : LinearLayout {
     }
 
     private fun noFile() {
-        removeButton.visibility = View.GONE
-        text.text = context.getString(R.string.not_selected)
+        binding.removeButton.hide()
+        binding.text.text = context.getString(R.string.not_selected)
     }
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_attachment, this)
         orientation = LinearLayout.VERTICAL
+        binding = AttachmentViewBinding(this)
 
-        removeButton.setOnClickListener {
+        binding.removeButton.setOnClickListener {
             content = ""
         }
-        text.setOnClickListener {
+        binding.text.setOnClickListener {
             addClick()
         }
-        hintIcon.setOnClickListener {
+        binding.hintIcon.setOnClickListener {
             addClick()
         }
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.attachment), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.attachment))
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.attachment))
         content = ""
     }
 

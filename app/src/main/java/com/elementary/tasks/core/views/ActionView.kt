@@ -9,8 +9,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.ActionViewBinding
 import com.elementary.tasks.core.utils.Permissions
-import kotlinx.android.synthetic.main.view_action.view.*
+import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.show
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,10 +37,11 @@ class ActionView : LinearLayout, TextWatcher {
     private var mImm: InputMethodManager? = null
     private var mActivity: Activity? = null
     private var listener: OnActionListener? = null
+    private lateinit var binding: ActionViewBinding
 
     var type: Int
         get() = if (hasAction()) {
-            if (callAction.isChecked) {
+            if (binding.callAction.isChecked) {
                 TYPE_CALL
             } else {
                 TYPE_MESSAGE
@@ -47,14 +50,14 @@ class ActionView : LinearLayout, TextWatcher {
             0
         }
         set(type) = if (type == TYPE_CALL) {
-            callAction.isChecked = true
+            binding.callAction.isChecked = true
         } else {
-            messageAction.isChecked = true
+            binding.messageAction.isChecked = true
         }
 
     var number: String
-        get() = numberView.text.toString().trim { it <= ' ' }
-        set(number) = numberView.setText(number)
+        get() = binding.numberView.text.toString().trim()
+        set(number) = binding.numberView.setText(number)
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -71,54 +74,52 @@ class ActionView : LinearLayout, TextWatcher {
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_action, this)
         orientation = LinearLayout.VERTICAL
+        binding = ActionViewBinding(this)
 
-        actionBlock.visibility = View.GONE
+        binding.actionBlock.hide()
 
-        numberView.isFocusableInTouchMode = true
-        numberView.setOnFocusChangeListener { _, hasFocus ->
+        binding.numberView.isFocusableInTouchMode = true
+        binding.numberView.setOnFocusChangeListener { _, hasFocus ->
             mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             if (!hasFocus) {
-                mImm?.hideSoftInputFromWindow(numberView.windowToken, 0)
+                mImm?.hideSoftInputFromWindow(binding.numberView.windowToken, 0)
             } else {
-                mImm?.showSoftInput(numberView, 0)
+                mImm?.showSoftInput(binding.numberView, 0)
             }
         }
-        numberView.setOnClickListener {
+        binding.numberView.setOnClickListener {
             mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            if (!mImm!!.isActive(numberView)) {
-                mImm?.showSoftInput(numberView, 0)
+            if (mImm?.isActive(binding.numberView) == false) {
+                mImm?.showSoftInput(binding.numberView, 0)
             }
         }
-        numberView.addTextChangedListener(this)
-
-        radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
-
-        callAction.isChecked = true
-
-        actionCheck.setOnCheckedChangeListener { _, b ->
+        binding.numberView.addTextChangedListener(this)
+        binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
+        binding.callAction.isChecked = true
+        binding.actionCheck.setOnCheckedChangeListener { _, b ->
             if (!Permissions.ensurePermissions(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
-                actionCheck.isChecked = false
+                binding.actionCheck.isChecked = false
                 return@setOnCheckedChangeListener
             }
             if (b) {
                 openAction()
             } else {
-                actionBlock.visibility = View.GONE
+                binding.actionBlock.hide()
             }
             listener?.onStateChanged(hasAction(), type, number)
         }
-        if (actionCheck.isChecked) {
+        if (binding.actionCheck.isChecked) {
             openAction()
         }
     }
 
     private fun openAction() {
-        actionBlock.visibility = View.VISIBLE
+        binding.actionBlock.show()
         refreshState()
     }
 
     private fun refreshState() {
-        buttonClick(radioGroup.checkedRadioButtonId)
+        buttonClick(binding.radioGroup.checkedRadioButtonId)
     }
 
     private fun buttonClick(i: Int) {
@@ -133,7 +134,7 @@ class ActionView : LinearLayout, TextWatcher {
     }
 
     fun setContactClickListener(contactClickListener: View.OnClickListener) {
-        selectNumber.setOnClickListener(contactClickListener)
+        binding.selectNumber.setOnClickListener(contactClickListener)
     }
 
     fun setListener(listener: OnActionListener) {
@@ -141,18 +142,18 @@ class ActionView : LinearLayout, TextWatcher {
     }
 
     fun hasAction(): Boolean {
-        return actionCheck.isChecked
+        return binding.actionCheck.isChecked
     }
 
     fun setAction(action: Boolean) {
-        actionCheck.isChecked = action
+        binding.actionCheck.isChecked = action
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             REQ_CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
-                actionCheck.isChecked = true
-                numberView.reloadContacts()
+                binding.actionCheck.isChecked = true
+                binding.numberView.reloadContacts()
             }
         }
     }

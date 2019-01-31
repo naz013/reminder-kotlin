@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.ChipViewBinding
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.google.android.material.chip.ChipGroup
-import kotlinx.android.synthetic.main.view_chip.view.*
 import timber.log.Timber
 import java.util.*
 
@@ -95,13 +95,13 @@ class FilterView : LinearLayout {
     }
 
     private fun createChip(element: FilterElement, parent: ViewGroup): View {
-        val chip = LayoutInflater.from(context).inflate(R.layout.view_chip, parent, false)
+        val chip = ChipViewBinding(LayoutInflater.from(context).inflate(R.layout.view_chip, parent, false))
         chip.chipView.text = element.title
         chip.chipView.isChipIconVisible = false
         chip.chipView.isChecked = element.isChecked
         chip.chipView.id = element.id + 1000
-        element.binding = chip
-        return chip
+        element.binding = chip.view
+        return chip.view
     }
 
     interface FilterElementClick {

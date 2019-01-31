@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.binding.Binding
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import javax.inject.Inject
@@ -30,7 +31,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<B : Binding> : Fragment() {
 
     var callback: FragmentCallback? = null
         private set
@@ -45,6 +46,7 @@ abstract class BaseFragment : Fragment() {
     @Inject
     lateinit var notifier: Notifier
 
+    lateinit var binding: B
     var isDark = false
         private set
     private var mLastScroll: Int = 0
@@ -73,6 +75,11 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = newBinding(view)
+    }
+
     protected fun setScroll(scroll: Int) {
         if (isRemoving) return
         this.mLastScroll = scroll
@@ -97,6 +104,8 @@ abstract class BaseFragment : Fragment() {
     }
 
     abstract fun getTitle(): String
+
+    abstract fun newBinding(view: View): B
 
     @LayoutRes
     open fun layoutRes(): Int = 0
