@@ -8,7 +8,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.view_repeat_limit.view.*
+import com.elementary.tasks.core.binding.views.RepeatLimitViewBinding
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.view_repeat_limit.view.*
  */
 class RepeatLimitView : LinearLayout {
 
+    private lateinit var binding: RepeatLimitViewBinding
     var onLevelUpdateListener: ((level: Int) -> Unit)? = null
     var level: Int = 0
         get() {
@@ -38,9 +39,9 @@ class RepeatLimitView : LinearLayout {
         private set(value) {
             field = value
             if (value > 0) {
-                labelView.text = "${value - 1}"
+                binding.labelView.text = "${value - 1}"
             } else {
-                labelView.text = context.getString(R.string.no_limits)
+                binding.labelView.text = context.getString(R.string.no_limits)
             }
         }
 
@@ -58,24 +59,25 @@ class RepeatLimitView : LinearLayout {
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        sliderView.isEnabled = enabled
+        binding.sliderView.isEnabled = enabled
     }
 
     fun setLimit(level: Int) {
-        sliderView.progress = level + 1
-        this.level = sliderView.progress
+        binding.sliderView.progress = level + 1
+        this.level = binding.sliderView.progress
     }
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_repeat_limit, this)
         orientation = LinearLayout.HORIZONTAL
+        binding = RepeatLimitViewBinding(this)
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.repeat_limit), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.repeat_limit))
-        sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.repeat_limit))
+        binding.sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 level = progress
                 onLevelUpdateListener?.invoke(level)

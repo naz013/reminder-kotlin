@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.children
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.view_pin_code.view.*
+import com.elementary.tasks.core.binding.views.PinCodeViewBinding
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.view_pin_code.view.*
  */
 class PinCodeView : LinearLayout, View.OnClickListener {
 
+    private lateinit var binding: PinCodeViewBinding
     private var pinString = ""
     var callback: ((String) -> Unit)? = null
 
@@ -46,11 +47,13 @@ class PinCodeView : LinearLayout, View.OnClickListener {
     private fun init(context: Context) {
         orientation = LinearLayout.VERTICAL
         View.inflate(context, R.layout.view_pin_code, this)
-        deleteButton.setOnClickListener {
+        binding = PinCodeViewBinding(this)
+
+        binding.deleteButton.setOnClickListener {
             pinString = pinString.substring(0, pinString.length - 1)
             updateTimeView()
         }
-        deleteButton.setOnLongClickListener {
+        binding.deleteButton.setOnLongClickListener {
             clearPin()
             true
         }
@@ -64,44 +67,42 @@ class PinCodeView : LinearLayout, View.OnClickListener {
     }
 
     private fun initButtons() {
-        if (b1 != null) {
-            b1.id = Integer.valueOf(101)
-            b2.id = Integer.valueOf(102)
-            b3.id = Integer.valueOf(103)
-            b4.id = Integer.valueOf(104)
-            b5.id = Integer.valueOf(105)
-            b6.id = Integer.valueOf(106)
-            b7.id = Integer.valueOf(107)
-            b8.id = Integer.valueOf(108)
-            b9.id = Integer.valueOf(109)
-            b0.id = Integer.valueOf(100)
-            b1.setOnClickListener(this)
-            b2.setOnClickListener(this)
-            b3.setOnClickListener(this)
-            b4.setOnClickListener(this)
-            b5.setOnClickListener(this)
-            b6.setOnClickListener(this)
-            b7.setOnClickListener(this)
-            b8.setOnClickListener(this)
-            b9.setOnClickListener(this)
-            b0.setOnClickListener(this)
-        }
+        binding.b1.id = Integer.valueOf(101)
+        binding.b2.id = Integer.valueOf(102)
+        binding.b3.id = Integer.valueOf(103)
+        binding.b4.id = Integer.valueOf(104)
+        binding.b5.id = Integer.valueOf(105)
+        binding.b6.id = Integer.valueOf(106)
+        binding.b7.id = Integer.valueOf(107)
+        binding.b8.id = Integer.valueOf(108)
+        binding.b9.id = Integer.valueOf(109)
+        binding.b0.id = Integer.valueOf(100)
+        binding.b1.setOnClickListener(this)
+        binding.b2.setOnClickListener(this)
+        binding.b3.setOnClickListener(this)
+        binding.b4.setOnClickListener(this)
+        binding.b5.setOnClickListener(this)
+        binding.b6.setOnClickListener(this)
+        binding.b7.setOnClickListener(this)
+        binding.b8.setOnClickListener(this)
+        binding.b9.setOnClickListener(this)
+        binding.b0.setOnClickListener(this)
     }
 
     private fun updateTimeView() {
-        deleteButton.isEnabled = pinString.isNotEmpty()
+        binding.deleteButton.isEnabled = pinString.isNotEmpty()
         clearBirds()
         showBirds()
     }
 
     private fun showBirds() {
         for(i in 0 until pinString.length) {
-            birdsView.getChildAt(i)?.visibility = View.VISIBLE
+            binding.birdsView.getChildAt(i)?.visibility = View.VISIBLE
         }
     }
 
     private fun clearBirds() {
-        for(child in birdsView.children) {
+        for(child in binding.birdsView.children) {
             child.visibility = View.INVISIBLE
         }
     }

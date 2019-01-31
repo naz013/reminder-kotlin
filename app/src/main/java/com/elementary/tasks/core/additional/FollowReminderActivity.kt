@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.additional
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
@@ -16,13 +16,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.binding.activities.FollowReminderActivityBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
-import kotlinx.android.synthetic.main.activity_follow.*
 import java.util.*
 
 /**
@@ -44,7 +44,7 @@ import java.util.*
  * limitations under the License.
  */
 @Suppress("DEPRECATION")
-class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListener {
+class FollowReminderActivity : ThemedActivity<FollowReminderActivityBinding>(), CompoundButton.OnCheckedChangeListener {
 
     private lateinit var viewModel: ReminderViewModel
 
@@ -96,7 +96,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         c.set(Calendar.MONTH, monthOfYear)
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-        customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
+        binding.customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
     }
 
     private var mTimeCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
@@ -107,11 +107,11 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
 
-        customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
+        binding.customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
     }
 
     private val type: Int
-        get() = if (typeCall.isChecked)
+        get() = if (binding.typeCall.isChecked)
             Reminder.BY_DATE_CALL
         else
             Reminder.BY_DATE_SMS
@@ -120,13 +120,16 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_follow
+
+    override fun newBinding(activity: Activity): FollowReminderActivityBinding = FollowReminderActivityBinding(activity)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         val receivedDate = intent.getLongExtra(Constants.SELECTED_TIME, 0)
         mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
         val name = Contacts.getNameFromNumber(mNumber, this)
-        setContentView(R.layout.activity_follow)
 
         val c = Calendar.getInstance()
         if (receivedDate != 0L) {
@@ -136,21 +139,20 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         }
         mCurrentTime = c.timeInMillis
 
-        textField.hint = getString(R.string.message)
+        binding.textField.hint = getString(R.string.message)
 
-        val contactInfo = contactInfo
         if (name != null && !name.matches("".toRegex())) {
-            contactInfo.text = SuperUtil.appendString(name, "\n", mNumber)
+            binding.contactInfo.text = SuperUtil.appendString(name, "\n", mNumber)
         } else {
-            contactInfo.text = mNumber
+            binding.contactInfo.text = mNumber
         }
 
         val photo = Contacts.getPhoto(Contacts.getIdFromNumber(mNumber, this))
         if (photo != null) {
-            contactPhoto.visibility = View.VISIBLE
-            contactPhoto.setImageURI(photo)
+            binding.contactPhoto.show()
+            binding.contactPhoto.setImageURI(photo)
         } else {
-            contactPhoto.visibility = View.GONE
+            binding.contactPhoto.hide()
         }
 
         initViews()
@@ -181,13 +183,13 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun initViews() {
-        fab.setOnClickListener { saveDateTask() }
-        typeCall.isChecked = true
-        timeTomorrow.setOnCheckedChangeListener(this)
-        timeAfter.setOnCheckedChangeListener(this)
-        timeCustom.setOnCheckedChangeListener(this)
-        timeNextWorking.setOnCheckedChangeListener(this)
-        timeTomorrow.isChecked = true
+        binding.fab.setOnClickListener { saveDateTask() }
+        binding.typeCall.isChecked = true
+        binding.timeTomorrow.setOnCheckedChangeListener(this)
+        binding.timeAfter.setOnCheckedChangeListener(this)
+        binding.timeCustom.setOnCheckedChangeListener(this)
+        binding.timeNextWorking.setOnCheckedChangeListener(this)
+        binding.timeTomorrow.isChecked = true
     }
 
     private fun initNextBusinessTime() {
@@ -200,8 +202,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
             else -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24
         }
         mNextWorkTime = c.timeInMillis
-        val nextWorkingTime = nextWorkingTime
-        nextWorkingTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
+        binding.nextWorkingTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
     }
 
     private fun initTomorrowTime() {
@@ -213,43 +214,43 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         mYear = c.get(Calendar.YEAR)
         mMonth = c.get(Calendar.MONTH)
         mDay = c.get(Calendar.DAY_OF_MONTH)
-        tomorrowTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
+        binding.tomorrowTime.text = TimeUtil.getDateTime(c.time, mIs24Hour, prefs.appLanguage)
     }
 
     private fun initSpinner() {
-        afterTime.adapter = adapter
+        binding.afterTime.adapter = adapter
     }
 
     private fun initCustomTime() {
         val c = Calendar.getInstance()
         c.timeInMillis = mCurrentTime
-        customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
-        customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
+        binding.customDate.text = TimeUtil.date(prefs.appLanguage).format(c.time)
+        binding.customTime.text = TimeUtil.getTime(c.time, mIs24Hour, prefs.appLanguage)
         mCustomHour = c.get(Calendar.HOUR_OF_DAY)
         mCustomMinute = c.get(Calendar.MINUTE)
         mCustomYear = c.get(Calendar.YEAR)
         mCustomMonth = c.get(Calendar.MONTH)
         mCustomDay = c.get(Calendar.DAY_OF_MONTH)
-        customDate.setOnClickListener {
-            timeCustom.isChecked = true
+        binding.customDate.setOnClickListener {
+            binding.timeCustom.isChecked = true
             dateDialog()
         }
-        customTime.setOnClickListener {
-            timeCustom.isChecked = true
+        binding.customTime.setOnClickListener {
+            binding.timeCustom.isChecked = true
             timeDialog()
         }
     }
 
     private fun initExportChecks() {
         if (mCalendar || mStock) {
-            exportCheck.visibility = View.VISIBLE
+            binding.exportCheck.show()
         } else {
-            exportCheck.visibility = View.GONE
+            binding.exportCheck.hide()
         }
         if (canExportToTasks) {
-            taskExport.visibility = View.VISIBLE
+            binding.taskExport.show()
         } else {
-            taskExport.visibility = View.GONE
+            binding.taskExport.hide()
         }
     }
 
@@ -285,10 +286,10 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun saveDateTask() {
-        val text = textField.text.toString().trim()
+        val text = binding.textField.text.toString().trim()
         if (text == "") {
-            textLayout.error = getString(R.string.must_be_not_empty)
-            textLayout.isErrorEnabled = true
+            binding.textLayout.error = getString(R.string.must_be_not_empty)
+            binding.textLayout.isErrorEnabled = true
             return
         }
         val type = type
@@ -309,11 +310,11 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
         reminder.type = type
         reminder.summary = text
         reminder.target = mNumber
-        if (taskExport.visibility == View.VISIBLE) {
-            reminder.exportToTasks = taskExport.isChecked
+        if (binding.taskExport.isVisible()) {
+            reminder.exportToTasks = binding.taskExport.isChecked
         }
-        if (exportCheck.visibility == View.VISIBLE) {
-            reminder.exportToCalendar = exportCheck.isChecked
+        if (binding.exportCheck.isVisible()) {
+            reminder.exportToCalendar = binding.exportCheck.isChecked
         }
         viewModel.saveAndStartReminder(reminder)
     }
@@ -325,9 +326,9 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
 
     private fun setUpTimes() {
         when {
-            timeNextWorking.isChecked -> setUpNextBusiness()
-            timeTomorrow.isChecked -> setUpTomorrow()
-            timeCustom.isChecked -> {
+            binding.timeNextWorking.isChecked -> setUpNextBusiness()
+            binding.timeTomorrow.isChecked -> setUpTomorrow()
+            binding.timeCustom.isChecked -> {
                 mDay = mCustomDay
                 mHour = mCustomHour
                 mMinute = mCustomMinute
@@ -336,7 +337,7 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
             }
             else -> {
                 val c = Calendar.getInstance()
-                c.timeInMillis = mCurrentTime + 1000 * 60 * getAfterMins(afterTime.selectedItemPosition)
+                c.timeInMillis = mCurrentTime + 1000 * 60 * getAfterMins(binding.afterTime.selectedItemPosition)
                 mHour = c.get(Calendar.HOUR_OF_DAY)
                 mMinute = c.get(Calendar.MINUTE)
                 mYear = c.get(Calendar.YEAR)
@@ -356,30 +357,30 @@ class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedChangeL
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         when (buttonView.id) {
             R.id.timeTomorrow -> {
-                if (timeTomorrow.isChecked) {
-                    timeNextWorking.isChecked = false
-                    timeAfter.isChecked = false
-                    timeCustom.isChecked = false
+                if (binding.timeTomorrow.isChecked) {
+                    binding.timeNextWorking.isChecked = false
+                    binding.timeAfter.isChecked = false
+                    binding.timeCustom.isChecked = false
                 }
                 setUpTomorrow()
             }
             R.id.timeNextWorking -> {
-                if (timeNextWorking.isChecked) {
-                    timeTomorrow.isChecked = false
-                    timeAfter.isChecked = false
-                    timeCustom.isChecked = false
+                if (binding.timeNextWorking.isChecked) {
+                    binding.timeTomorrow.isChecked = false
+                    binding.timeAfter.isChecked = false
+                    binding.timeCustom.isChecked = false
                 }
                 setUpNextBusiness()
             }
-            R.id.timeAfter -> if (timeAfter.isChecked) {
-                timeTomorrow.isChecked = false
-                timeNextWorking.isChecked = false
-                timeCustom.isChecked = false
+            R.id.timeAfter -> if (binding.timeAfter.isChecked) {
+                binding.timeTomorrow.isChecked = false
+                binding.timeNextWorking.isChecked = false
+                binding.timeCustom.isChecked = false
             }
-            R.id.timeCustom -> if (timeCustom.isChecked) {
-                timeTomorrow.isChecked = false
-                timeNextWorking.isChecked = false
-                timeAfter.isChecked = false
+            R.id.timeCustom -> if (binding.timeCustom.isChecked) {
+                binding.timeTomorrow.isChecked = false
+                binding.timeNextWorking.isChecked = false
+                binding.timeAfter.isChecked = false
             }
         }
     }
