@@ -1,8 +1,10 @@
 package com.elementary.tasks.core
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import com.elementary.tasks.core.binding.activities.EmptyActivityBinding
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
@@ -11,7 +13,11 @@ import com.elementary.tasks.intro.IntroActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 
-class SplashScreen : ThemedActivity() {
+class SplashScreen : ThemedActivity<EmptyActivityBinding>() {
+
+    override fun layoutRes(): Int = 0
+
+    override fun newBinding(activity: Activity): EmptyActivityBinding = EmptyActivityBinding(activity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

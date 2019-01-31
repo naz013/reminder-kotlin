@@ -1,5 +1,6 @@
 package com.elementary.tasks.birthdays.preview
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,11 +14,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
+import com.elementary.tasks.core.binding.activities.ShowBirthdayActivityBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
-import kotlinx.android.synthetic.main.activity_show_birthday.*
 import java.util.*
 
 /**
@@ -38,7 +39,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShowBirthdayActivity : BaseNotificationActivity() {
+class ShowBirthdayActivity : BaseNotificationActivity<ShowBirthdayActivityBinding>() {
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
@@ -154,18 +155,21 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         }
     }
 
+    override fun layoutRes(): Int = R.layout.activity_show_birthday
+
+    override fun newBinding(activity: Activity): ShowBirthdayActivityBinding = ShowBirthdayActivityBinding(activity)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        setContentView(R.layout.activity_show_birthday)
 
-        buttonOk.setOnClickListener { ok() }
-        buttonCall.setOnClickListener { makeCall() }
-        buttonSms.setOnClickListener { sendSMS() }
+        binding.buttonOk.setOnClickListener { ok() }
+        binding.buttonCall.setOnClickListener { makeCall() }
+        binding.buttonSms.setOnClickListener { sendSMS() }
 
-        contactPhoto.borderColor = themeUtil.getNoteLightColor()
-        contactPhoto.visibility = View.GONE
+        binding.contactPhoto.borderColor = themeUtil.getNoteLightColor()
+        binding.contactPhoto.visibility = View.GONE
 
         if (savedInstanceState != null) {
             isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
@@ -218,31 +222,31 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         }
         val photo = Contacts.getPhoto(birthday.contactId)
         if (photo != null) {
-            contactPhoto.setImageURI(photo)
-            contactPhoto.visibility = View.VISIBLE
+            binding.contactPhoto.setImageURI(photo)
+            binding.contactPhoto.visibility = View.VISIBLE
         } else {
-            contactPhoto.visibility = View.GONE
+            binding.contactPhoto.visibility = View.GONE
         }
         val years = TimeUtil.getAgeFormatted(this, birthday.date, prefs.appLanguage)
-        userName.text = birthday.name
-        userName.contentDescription = birthday.name
-        userYears.text = years
-        userYears.contentDescription = years
+        binding.userName.text = birthday.name
+        binding.userName.contentDescription = birthday.name
+        binding.userYears.text = years
+        binding.userYears.contentDescription = years
         summary = birthday.name + "\n" + years
         if (TextUtils.isEmpty(birthday.number)) {
-            buttonCall.visibility = View.INVISIBLE
-            buttonSms.visibility = View.INVISIBLE
-            userNumber.visibility = View.GONE
+            binding.buttonCall.visibility = View.INVISIBLE
+            binding.buttonSms.visibility = View.INVISIBLE
+            binding.userNumber.visibility = View.GONE
         } else {
-            userNumber.text = birthday.number
-            userNumber.contentDescription = birthday.number
-            userNumber.visibility = View.VISIBLE
+            binding.userNumber.text = birthday.number
+            binding.userNumber.contentDescription = birthday.number
+            binding.userNumber.visibility = View.VISIBLE
             if (prefs.isTelephonyAllowed) {
-                buttonCall.visibility = View.VISIBLE
-                buttonSms.visibility = View.VISIBLE
+                binding.buttonCall.visibility = View.VISIBLE
+                binding.buttonSms.visibility = View.VISIBLE
             } else {
-                buttonCall.visibility = View.INVISIBLE
-                buttonSms.visibility = View.INVISIBLE
+                binding.buttonCall.visibility = View.INVISIBLE
+                binding.buttonSms.visibility = View.INVISIBLE
             }
         }
         init()

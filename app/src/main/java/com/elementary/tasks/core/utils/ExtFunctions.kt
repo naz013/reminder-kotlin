@@ -1,9 +1,12 @@
 package com.elementary.tasks.core.utils
 
+import android.app.Activity
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
+import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
 import com.elementary.tasks.core.data.models.Reminder
@@ -28,6 +31,35 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+fun <ViewT : View> View.bindView(@IdRes idRes: Int): Lazy<ViewT> {
+    return lazyUnSynchronized {
+        findViewById<ViewT>(idRes)
+    }
+}
+
+fun <ViewT : View> Activity.bindView(@IdRes idRes: Int): Lazy<ViewT> {
+    return lazyUnSynchronized {
+        findViewById<ViewT>(idRes)
+    }
+}
+
+fun View.isVisible(): Boolean = visibility == View.VISIBLE
+
+fun View.isNotVisible(): Boolean = visibility == View.INVISIBLE
+
+fun View.isGone(): Boolean = visibility == View.GONE
+
+fun View.hide() {
+    visibility = View.GONE
+}
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =
+        lazy(LazyThreadSafetyMode.NONE, initializer)
+
 suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T)
         : T = withContext(Dispatchers.Main, block)
 
