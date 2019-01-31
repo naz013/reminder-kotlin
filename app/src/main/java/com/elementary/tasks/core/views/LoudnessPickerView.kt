@@ -8,7 +8,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.view_loudness.view.*
+import com.elementary.tasks.core.binding.views.LoudnessViewBinding
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.view_loudness.view.*
  */
 class LoudnessPickerView : LinearLayout {
 
+    private lateinit var binding: LoudnessViewBinding
     var onLevelUpdateListener: ((level: Int) -> Unit)? = null
     var level: Int = 0
         get() {
@@ -38,9 +39,9 @@ class LoudnessPickerView : LinearLayout {
         private set(value) {
             field = value
             if (value > 0) {
-                labelView.text = "${value - 1}"
+                binding.labelView.text = "${value - 1}"
             } else {
-                labelView.text = context.getString(R.string.default_string)
+                binding.labelView.text = context.getString(R.string.default_string)
             }
         }
 
@@ -57,20 +58,21 @@ class LoudnessPickerView : LinearLayout {
     }
 
     fun setVolume(level: Int) {
-        sliderView.progress = level + 1
-        this.level = sliderView.progress
+        binding.sliderView.progress = level + 1
+        this.level = binding.sliderView.progress
     }
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_loudness, this)
         orientation = LinearLayout.HORIZONTAL
+        binding = LoudnessViewBinding(this)
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.loudness), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.loudness))
-        sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.loudness))
+        binding.sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 level = progress
                 onLevelUpdateListener?.invoke(level)

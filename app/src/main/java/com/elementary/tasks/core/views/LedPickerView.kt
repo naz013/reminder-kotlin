@@ -7,8 +7,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.LedPickerViewBinding
 import com.elementary.tasks.core.utils.LED
-import kotlinx.android.synthetic.main.view_led_color.view.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -30,14 +30,15 @@ import kotlinx.android.synthetic.main.view_led_color.view.*
  */
 class LedPickerView : LinearLayout {
 
+    private lateinit var binding: LedPickerViewBinding
     var onLedChangeListener: ((Int) -> Unit)? = null
     var led: Int = LED.BLUE
         set(value) {
             field = value
-            ledGroup.check(chipIdFromLed(value))
+            binding.ledGroup.check(chipIdFromLed(value))
         }
         get() {
-            return ledFromChip(ledGroup.checkedRadioButtonId)
+            return ledFromChip(binding.ledGroup.checkedRadioButtonId)
         }
 
     constructor(context: Context) : super(context) {
@@ -81,16 +82,17 @@ class LedPickerView : LinearLayout {
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_led_color, this)
         orientation = LinearLayout.VERTICAL
+        binding = LedPickerViewBinding(this)
 
-        ledGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.ledGroup.setOnCheckedChangeListener { _, checkedId ->
             updateState(ledFromChip(checkedId))
         }
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.led_color), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.led_color))
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.led_color))
     }
 
     private fun updateState(led: Int) {

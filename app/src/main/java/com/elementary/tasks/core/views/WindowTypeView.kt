@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.WindowTypeViewBinding
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.view_window_type.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,14 +31,15 @@ import kotlinx.android.synthetic.main.view_window_type.view.*
  */
 class WindowTypeView : LinearLayout {
 
+    private lateinit var binding: WindowTypeViewBinding
     var onTypeChaneListener: ((Int) -> Unit)? = null
     var windowType: Int = 2
         set(value) {
             field = value
-            chipGroup.check(chipIdFromType(value))
+            binding.chipGroup.check(chipIdFromType(value))
         }
         get() {
-            return typeFromChip(chipGroup.checkedChipId)
+            return typeFromChip(binding.chipGroup.checkedChipId)
         }
     private var mLastIdRes: Int = R.id.chipFullscreen
 
@@ -74,13 +75,14 @@ class WindowTypeView : LinearLayout {
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_window_type, this)
         orientation = LinearLayout.VERTICAL
+        binding = WindowTypeViewBinding(this)
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.notification_type), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.notification_type))
-        chipGroup.setOnCheckedChangeListener { _, id ->
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.notification_type))
+        binding.chipGroup.setOnCheckedChangeListener { _, id ->
             if (isAnyChecked()) {
                 updateState(typeFromChip(id))
             } else {
@@ -92,14 +94,14 @@ class WindowTypeView : LinearLayout {
 
     private fun chipView(@IdRes id: Int): Chip {
         return when (id) {
-            R.id.chipFullscreen -> chipFullscreen
-            R.id.chipSimple -> chipSimple
-            else -> chipFullscreen
+            R.id.chipFullscreen -> binding.chipFullscreen
+            R.id.chipSimple -> binding.chipSimple
+            else -> binding.chipFullscreen
         }
     }
 
     private fun isAnyChecked(): Boolean {
-        return chipFullscreen.isChecked || chipSimple.isChecked
+        return binding.chipFullscreen.isChecked || binding.chipSimple.isChecked
     }
 
     private fun updateState(type: Int) {

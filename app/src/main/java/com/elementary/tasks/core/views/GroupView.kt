@@ -7,8 +7,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.GroupViewBinding
 import com.elementary.tasks.core.data.models.ReminderGroup
-import kotlinx.android.synthetic.main.view_group.view.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -30,13 +30,14 @@ import kotlinx.android.synthetic.main.view_group.view.*
  */
 class GroupView : LinearLayout {
 
+    private lateinit var binding: GroupViewBinding
     var onGroupUpdateListener: ((group: ReminderGroup) -> Unit)? = null
     var onGroupSelectListener: (() -> Unit)? = null
     var reminderGroup: ReminderGroup? = null
         set(value) {
             if (value != null && value.groupUuId != "") {
                 field = value
-                text.text = value.groupTitle
+                binding.text.text = value.groupTitle
                 onGroupUpdateListener?.invoke(value)
             } else {
                 noGroup()
@@ -56,21 +57,22 @@ class GroupView : LinearLayout {
     }
 
     private fun noGroup() {
-        text.text = context.getString(R.string.not_selected)
+        binding.text.text = context.getString(R.string.not_selected)
     }
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_group, this)
         orientation = LinearLayout.VERTICAL
+        binding = GroupViewBinding(this)
 
-        text.setOnClickListener {
+        binding.text.setOnClickListener {
             onGroupSelectListener?.invoke()
         }
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.change_group), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.change_group))
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.change_group))
         reminderGroup = null
     }
 }

@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.additional
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -13,13 +14,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.binding.activities.QuickSmsActivityBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
-import kotlinx.android.synthetic.main.activity_quick_sms.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,22 +41,25 @@ import kotlinx.android.synthetic.main.activity_quick_sms.*
  * limitations under the License.
  */
 @Suppress("DEPRECATION")
-class QuickSmsActivity : ThemedActivity() {
+class QuickSmsActivity : ThemedActivity<QuickSmsActivityBinding>() {
 
     private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
     private var number: String = ""
 
+    override fun layoutRes(): Int = R.layout.activity_quick_sms
+
+    override fun newBinding(activity: Activity): QuickSmsActivityBinding = QuickSmsActivityBinding(activity)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         number = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
-        setContentView(R.layout.activity_quick_sms)
 
-        messagesList.layoutManager = LinearLayoutManager(this)
-        messagesList.adapter = mAdapter
+        binding.messagesList.layoutManager = LinearLayoutManager(this)
+        binding.messagesList.adapter = mAdapter
 
-        buttonSend.setOnClickListener { startSending() }
+        binding.buttonSend.setOnClickListener { startSending() }
         val name = Contacts.getNameFromNumber(number, this) ?: ""
-        contactInfo.text = "$name\n$number"
+        binding.contactInfo.text = "$name\n$number"
 
         initViewModel()
     }

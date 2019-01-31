@@ -8,11 +8,11 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.PriorityViewBinding
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.view_priority.view.*
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,14 +31,15 @@ import kotlinx.android.synthetic.main.view_priority.view.*
  */
 class PriorityPickerView : LinearLayout {
 
+    private lateinit var binding: PriorityViewBinding
     var onPriorityChaneListener: ((Int) -> Unit)? = null
     var priority: Int = 2
         set(value) {
             field = value
-            chipGroup.check(chipIdFromPriority(value))
+            binding.chipGroup.check(chipIdFromPriority(value))
         }
         get() {
-            return priorityFromChip(chipGroup.checkedChipId)
+            return priorityFromChip(binding.chipGroup.checkedChipId)
         }
     private var mLastIdRes: Int = R.id.chipNormal
 
@@ -80,13 +81,14 @@ class PriorityPickerView : LinearLayout {
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_priority, this)
         orientation = LinearLayout.VERTICAL
+        binding = PriorityViewBinding(this)
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.priority), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.priority))
-        chipGroup.setOnCheckedChangeListener { _, id ->
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.priority))
+        binding.chipGroup.setOnCheckedChangeListener { _, id ->
             if (isAnyChecked()) {
                 updateState(priorityFromChip(id))
             } else {
@@ -98,18 +100,18 @@ class PriorityPickerView : LinearLayout {
 
     private fun chipView(@IdRes id: Int): Chip {
         return when (id) {
-            R.id.chipLowest -> chipLowest
-            R.id.chipLow -> chipLow
-            R.id.chipNormal -> chipNormal
-            R.id.chipHigh -> chipHigh
-            R.id.chipHighest -> chipHighest
-            else -> chipNormal
+            R.id.chipLowest -> binding.chipLowest
+            R.id.chipLow -> binding.chipLow
+            R.id.chipNormal -> binding.chipNormal
+            R.id.chipHigh -> binding.chipHigh
+            R.id.chipHighest -> binding.chipHighest
+            else -> binding.chipNormal
         }
     }
 
     private fun isAnyChecked(): Boolean {
-        return chipLowest.isChecked || chipLow.isChecked || chipNormal.isChecked
-                || chipHigh.isChecked || chipHighest.isChecked
+        return binding.chipLowest.isChecked || binding.chipLow.isChecked || binding.chipNormal.isChecked
+                || binding.chipHigh.isChecked || binding.chipHighest.isChecked
     }
 
     private fun updateState(priority: Int) {

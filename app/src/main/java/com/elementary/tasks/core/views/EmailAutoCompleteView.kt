@@ -13,7 +13,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.binding.holders.ListItemEmail
+import com.elementary.tasks.core.binding.holders.ListItemEmailBinding
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import java.lang.ref.WeakReference
@@ -111,7 +111,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
             }
             v?.let {
                 val item = items[i]
-                return ListItemEmail(it).run {
+                return ListItemEmailBinding(it).run {
                     nameView.text = item.name
                     emailView.text = item.email
                     this.view

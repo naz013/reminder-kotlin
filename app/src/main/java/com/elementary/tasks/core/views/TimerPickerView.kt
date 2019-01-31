@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.TimerPickerViewBinding
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.view_timer_picker.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,11 +27,10 @@ import kotlinx.android.synthetic.main.view_timer_picker.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TimerPickerView : LinearLayout, View.OnClickListener {
 
+    private lateinit var binding: TimerPickerViewBinding
     private var timeString = "000000"
-
     private var mListener: TimerListener? = null
 
     var timerValue: Long
@@ -56,12 +55,14 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     private fun init(context: Context) {
         orientation = LinearLayout.VERTICAL
         View.inflate(context, R.layout.view_timer_picker, this)
-        deleteButton.setOnClickListener {
+        binding = TimerPickerViewBinding(this)
+
+        binding.deleteButton.setOnClickListener {
             timeString = timeString.substring(0, timeString.length - 1)
             timeString = "0$timeString"
             updateTimeView()
         }
-        deleteButton.setOnLongClickListener {
+        binding.deleteButton.setOnLongClickListener {
             timeString = "000000"
             updateTimeView()
             true
@@ -71,28 +72,26 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     }
 
     private fun initButtons() {
-        if (b1 != null) {
-            b1.id = Integer.valueOf(101)
-            b2.id = Integer.valueOf(102)
-            b3.id = Integer.valueOf(103)
-            b4.id = Integer.valueOf(104)
-            b5.id = Integer.valueOf(105)
-            b6.id = Integer.valueOf(106)
-            b7.id = Integer.valueOf(107)
-            b8.id = Integer.valueOf(108)
-            b9.id = Integer.valueOf(109)
-            b0.id = Integer.valueOf(100)
-            b1.setOnClickListener(this)
-            b2.setOnClickListener(this)
-            b3.setOnClickListener(this)
-            b4.setOnClickListener(this)
-            b5.setOnClickListener(this)
-            b6.setOnClickListener(this)
-            b7.setOnClickListener(this)
-            b8.setOnClickListener(this)
-            b9.setOnClickListener(this)
-            b0.setOnClickListener(this)
-        }
+        binding.b1.id = Integer.valueOf(101)
+        binding.b2.id = Integer.valueOf(102)
+        binding.b3.id = Integer.valueOf(103)
+        binding.b4.id = Integer.valueOf(104)
+        binding.b5.id = Integer.valueOf(105)
+        binding.b6.id = Integer.valueOf(106)
+        binding.b7.id = Integer.valueOf(107)
+        binding.b8.id = Integer.valueOf(108)
+        binding.b9.id = Integer.valueOf(109)
+        binding.b0.id = Integer.valueOf(100)
+        binding.b1.setOnClickListener(this)
+        binding.b2.setOnClickListener(this)
+        binding.b3.setOnClickListener(this)
+        binding.b4.setOnClickListener(this)
+        binding.b5.setOnClickListener(this)
+        binding.b6.setOnClickListener(this)
+        binding.b7.setOnClickListener(this)
+        binding.b8.setOnClickListener(this)
+        binding.b9.setOnClickListener(this)
+        binding.b0.setOnClickListener(this)
     }
 
     fun setListener(listener: TimerListener) {
@@ -100,14 +99,14 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     }
 
     private fun updateTimeView() {
-        deleteButton.isEnabled = !timeString.matches("000000".toRegex())
+        binding.deleteButton.isEnabled = !timeString.matches("000000".toRegex())
         if (timeString.length == 6) {
             val hours = timeString.substring(0, 2)
             val minutes = timeString.substring(2, 4)
             val seconds = timeString.substring(4, 6)
-            hoursView.text = hours
-            minutesView.text = minutes
-            secondsView.text = seconds
+            binding.hoursView.text = hours
+            binding.minutesView.text = minutes
+            binding.secondsView.text = seconds
             mListener?.onTimerChange(timerValue)
         }
     }
