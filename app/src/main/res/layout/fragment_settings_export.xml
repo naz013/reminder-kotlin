@@ -1,168 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground"
-    android:scrollbars="none">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground"
+        android:scrollbars="none">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/export"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary" />
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportToCalendarPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_today_24px"
-            app:prefs_primary_text="@string/export_to_google_calendar"
-            app:prefs_type="check_switch" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/export"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/eventDurationPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/event_duration"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/exportToCalendarPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_today_24px"
+                app:prefs_primary_text="@string/export_to_google_calendar"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/selectCalendarPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/choose_calendar"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/eventDurationPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/event_duration"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/exportToStockPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/export_to_stock_calendar"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/selectCalendarPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/choose_calendar"
+                app:prefs_type="none" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/backup"
-            android:textAppearance="?textAppearanceCaption"
-            android:textColor="?colorSecondary" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/exportToStockPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/export_to_stock_calendar"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/cloudsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_cloud_24px"
-            app:prefs_primary_text="@string/cloud_services"
-            app:prefs_type="none" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/backup"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/backupDataPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/backup_my_data"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/cloudsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_cloud_24px"
+                app:prefs_primary_text="@string/cloud_services"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/backupsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/backup_files"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/backupDataPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/backup_my_data"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/cleanPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/clean"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/backupsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/backup_files"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/syncSettingsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/backup_settings"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/cleanPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/clean"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/autoBackupPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/automatically_backup"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/syncSettingsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/backup_settings"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/syncIntervalPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/interval"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/autoBackupPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/automatically_backup"
+                app:prefs_type="check_switch" />
 
-        <include
-            layout="@layout/view_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/syncIntervalPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/interval"
+                app:prefs_type="none" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/exportButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/export_all_my_data"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+            <include
+                layout="@layout/view_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/backupButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/backup_data_now"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exportButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/export_all_my_data"
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?android:textColorPrimary" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/syncButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
-            android:text="@string/sync_data_now"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/backupButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/backup_data_now"
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?android:textColorPrimary" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/syncButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:text="@string/sync_data_now"
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?android:textColorPrimary" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -1,348 +1,351 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mapMask"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical"
-    android:visibility="visible">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
+    <RelativeLayout
+        android:id="@+id/mapMask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <LinearLayout
-        android:id="@+id/buttonContainer"
-        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:orientation="vertical">
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:visibility="visible">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/zoomCard"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/zoomIcon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_fullscreen_24px"
-                app:tint="?android:textColorPrimary" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/backCard"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_arrow_back_ios_24px"
-                app:tint="?android:textColorPrimary" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/layersCard"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_layers_24px"
-                app:tint="?android:textColorPrimary" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/markersCard"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_style_24px"
-                app:tint="?android:textColorPrimary" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/radiusCard"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_track_changes_24px"
-                app:tint="?android:textColorPrimary" />
-
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/buttonContainer"
-        android:orientation="vertical">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/searchCard"
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:cardCornerRadius="5dp">
+            android:layout_height="match_parent" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/buttonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/addressLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="-4dp"
-                    android:layout_marginBottom="-8dp"
-                    android:layout_weight="1"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
-
-                    <com.elementary.tasks.core.views.AddressAutoCompleteView
-                        android:id="@+id/cardSearch"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/address"
-                        android:maxLines="1"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textAppearance="?textAppearanceSubtitle2" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/zoomCard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp"
+                tools:targetApi="lollipop">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/myCard"
-                    android:layout_width="50dp"
+                    android:id="@+id/zoomIcon"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="?colorSecondary"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_my_location_24px"
-                    app:tint="?colorOnSecondary" />
+                    app:srcCompat="@drawable/ic_twotone_fullscreen_24px"
+                    app:tint="?android:textColorPrimary" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/layersContainer"
-            android:layout_width="wrap_content"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/backCard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp"
+                tools:targetApi="lollipop">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_arrow_back_ios_24px"
+                    app:tint="?android:textColorPrimary" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layersCard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp"
+                tools:targetApi="lollipop">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_layers_24px"
+                    app:tint="?android:textColorPrimary" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/markersCard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp"
+                tools:targetApi="lollipop">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_style_24px"
+                    app:tint="?android:textColorPrimary" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/radiusCard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:stateListAnimator="@animator/card_animator"
+                app:cardCornerRadius="5dp"
+                tools:targetApi="lollipop">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_track_changes_24px"
+                    app:tint="?android:textColorPrimary" />
+
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:cardCornerRadius="5dp">
+            android:layout_toEndOf="@+id/buttonContainer"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="112dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/searchCard"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="5dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/typeNormal"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:text="@string/normal"
-                    android:textAppearance="?textAppearanceBody1" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/typeSatellite"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:text="@string/satellite"
-                    android:textAppearance="?textAppearanceBody1" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/addressLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="-4dp"
+                        android:layout_marginBottom="-8dp"
+                        android:layout_weight="1"
+                        app:boxBackgroundColor="?colorSecondary12"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/typeTerrain"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:text="@string/terrain"
-                    android:textAppearance="?textAppearanceBody1" />
+                        <com.elementary.tasks.core.views.AddressAutoCompleteView
+                            android:id="@+id/cardSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/address"
+                            android:maxLines="1"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:textAppearance="?textAppearanceSubtitle2" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/typeHybrid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:text="@string/hybrid"
-                    android:textAppearance="?textAppearanceBody1" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/myCard"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:background="?colorSecondary"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_my_location_24px"
+                        app:tint="?colorOnSecondary" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mapStyleContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:cardCornerRadius="5dp">
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layersContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:visibility="visible"
+                app:cardCornerRadius="5dp">
+
+                <LinearLayout
+                    android:layout_width="112dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/typeNormal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:text="@string/normal"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/typeSatellite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:text="@string/satellite"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/typeTerrain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:text="@string/terrain"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/typeHybrid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:text="@string/hybrid"
+                        android:textAppearance="?textAppearanceBody1" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mapStyleContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:cardCornerRadius="5dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <ImageView
-                        android:id="@+id/styleDay"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/day"
-                        android:src="@drawable/preview_map_day" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/styleRetro"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:contentDescription="@string/retro"
-                        android:src="@drawable/preview_map_retro" />
+                        <ImageView
+                            android:id="@+id/styleDay"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:contentDescription="@string/day"
+                            android:src="@drawable/preview_map_day" />
 
-                    <ImageView
-                        android:id="@+id/styleSilver"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:contentDescription="@string/silver"
-                        android:src="@drawable/preview_map_silver" />
+                        <ImageView
+                            android:id="@+id/styleRetro"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/retro"
+                            android:src="@drawable/preview_map_retro" />
 
+                        <ImageView
+                            android:id="@+id/styleSilver"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/silver"
+                            android:src="@drawable/preview_map_silver" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/styleNight"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:contentDescription="@string/night"
+                            android:src="@drawable/preview_map_night" />
+
+                        <ImageView
+                            android:id="@+id/styleDark"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/dark"
+                            android:src="@drawable/preview_map_dark" />
+
+                        <ImageView
+                            android:id="@+id/styleAubergine"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/aubergine"
+                            android:src="@drawable/preview_map_aubergine" />
+
+                    </LinearLayout>
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/styleNight"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/night"
-                        android:src="@drawable/preview_map_night" />
-
-                    <ImageView
-                        android:id="@+id/styleDark"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:contentDescription="@string/dark"
-                        android:src="@drawable/preview_map_dark" />
-
-                    <ImageView
-                        android:id="@+id/styleAubergine"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:contentDescription="@string/aubergine"
-                        android:src="@drawable/preview_map_aubergine" />
-
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/placesListCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:visibility="gone">
-
-        <androidx.appcompat.widget.AppCompatTextView
+        <LinearLayout
+            android:id="@+id/placesListCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/recent_places"
-            android:textAppearance="?textAppearanceHeadline6" />
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/placesList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
-    </LinearLayout>
-</RelativeLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/recent_places"
+                android:textAppearance="?textAppearanceHeadline6" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/placesList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

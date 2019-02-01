@@ -1,123 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground"
-    android:scrollbars="none">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground"
+        android:scrollbars="none">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/birthReminderPrefs"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
-            app:prefs_primary_text="@string/birthday_reminder"
-            app:prefs_secondary_text_off="@string/do_not_remind_about_birthdays"
-            app:prefs_secondary_text_on="@string/show_reminder_about_birthdays"
-            app:prefs_type="check_switch" />
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/widgetShowPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/birthdays_in_home_screen_widget"
-            app:prefs_secondary_text_off="@string/do_not_show_in_home_screen_widget"
-            app:prefs_secondary_text_on="@string/show_in_home_screen"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/birthReminderPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+                app:prefs_primary_text="@string/birthday_reminder"
+                app:prefs_secondary_text_off="@string/do_not_remind_about_birthdays"
+                app:prefs_secondary_text_on="@string/show_reminder_about_birthdays"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/birthdayPermanentPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/permanent_status_bar_notification"
-            app:prefs_secondary_text_off="@string/do_not_show_permanent_notification"
-            app:prefs_secondary_text_on="@string/show_when_available_birthdays"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/widgetShowPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/birthdays_in_home_screen_widget"
+                app:prefs_secondary_text_off="@string/do_not_show_in_home_screen_widget"
+                app:prefs_secondary_text_on="@string/show_in_home_screen"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/daysToPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/days_to_birthday"
-            app:prefs_type="text" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/birthdayPermanentPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/permanent_status_bar_notification"
+                app:prefs_secondary_text_off="@string/do_not_show_permanent_notification"
+                app:prefs_secondary_text_on="@string/show_when_available_birthdays"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/priorityPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/priority"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/daysToPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/days_to_birthday"
+                app:prefs_type="text" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/reminderTimePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
-            app:prefs_primary_text="@string/remind_at"
-            app:prefs_type="text" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/priorityPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/priority"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/birthdayNotificationPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_settings_24px"
-            app:prefs_primary_text="@string/action_settings"
-            app:prefs_pro="true"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/reminderTimePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+                app:prefs_primary_text="@string/remind_at"
+                app:prefs_type="text" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/useContactsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_contacts_24px"
-            app:prefs_primary_text="@string/contacts"
-            app:prefs_secondary_text_off="@string/use_only_my_birthdays"
-            app:prefs_secondary_text_on="@string/retrieve_birthdays_from_contacts"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/birthdayNotificationPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_settings_24px"
+                app:prefs_primary_text="@string/action_settings"
+                app:prefs_pro="true"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/autoScanPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/check_automatically"
-            app:prefs_secondary_text_off="@string/do_not_scan_contacts"
-            app:prefs_secondary_text_on="@string/automatically_check_for_new_birthdays"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/useContactsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_contacts_24px"
+                app:prefs_primary_text="@string/contacts"
+                app:prefs_secondary_text_off="@string/use_only_my_birthdays"
+                app:prefs_secondary_text_on="@string/retrieve_birthdays_from_contacts"
+                app:prefs_type="check_switch" />
 
-        <include
-            layout="@layout/view_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/autoScanPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/check_automatically"
+                app:prefs_secondary_text_off="@string/do_not_scan_contacts"
+                app:prefs_secondary_text_on="@string/automatically_check_for_new_birthdays"
+                app:prefs_type="check_switch" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/scanButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
-            android:text="@string/scan_contacts"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+            <include
+                layout="@layout/view_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/scanButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:text="@string/scan_contacts"
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?android:textColorPrimary" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

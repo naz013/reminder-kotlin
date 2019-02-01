@@ -1,76 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground"
-    android:scrollbars="none">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground"
+        android:scrollbars="none">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/missedPrefs"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_phone_missed_24px"
-            app:prefs_primary_text="@string/missed_call_reminder"
-            app:prefs_secondary_text_off="@string/do_not_create_reminder_for_missed_calls"
-            app:prefs_secondary_text_on="@string/create_reminders_for_missed_calls"
-            app:prefs_type="check_switch" />
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/missedTimePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_access_time_24px"
-            app:prefs_primary_text="@string/time"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/missedPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_phone_missed_24px"
+                app:prefs_primary_text="@string/missed_call_reminder"
+                app:prefs_secondary_text_off="@string/do_not_create_reminder_for_missed_calls"
+                app:prefs_secondary_text_on="@string/create_reminders_for_missed_calls"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/priorityPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/priority"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/missedTimePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_access_time_24px"
+                app:prefs_primary_text="@string/time"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/quickSMSPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_reply_24px"
-            app:prefs_primary_text="@string/quick_sms"
-            app:prefs_secondary_text_off="@string/do_not_show_sms_screen_after_call"
-            app:prefs_secondary_text_on="@string/show_quick_answer_window"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/priorityPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/priority"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/templatesPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_message_24px"
-            app:prefs_primary_text="@string/messages"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/quickSMSPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_reply_24px"
+                app:prefs_primary_text="@string/quick_sms"
+                app:prefs_secondary_text_off="@string/do_not_show_sms_screen_after_call"
+                app:prefs_secondary_text_on="@string/show_quick_answer_window"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/followReminderPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/after_call_reminder"
-            app:prefs_secondary_text_off="@string/do_not_show_after_calls"
-            app:prefs_secondary_text_on="@string/show_event_screen_after_phone_call"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/templatesPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_message_24px"
+                app:prefs_primary_text="@string/messages"
+                app:prefs_type="none" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/followReminderPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/after_call_reminder"
+                app:prefs_secondary_text_off="@string/do_not_show_after_calls"
+                app:prefs_secondary_text_on="@string/show_event_screen_after_phone_call"
+                app:prefs_type="check_switch" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</layout>
