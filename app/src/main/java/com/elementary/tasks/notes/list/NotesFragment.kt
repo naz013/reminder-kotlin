@@ -22,13 +22,12 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.notes.NotesViewModel
+import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.filters.SearchModifier
 import com.elementary.tasks.notes.list.filters.SortModifier
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import kotlinx.android.synthetic.main.fragment_notes.*
-import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -51,7 +50,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
+class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<NoteWithImages>) -> Unit {
 
     private lateinit var viewModel: NotesViewModel
     @Inject
@@ -147,11 +146,11 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
     }
 
     private fun hideProgress() {
-        progressView.visibility = View.GONE
+        binding.progressView.visibility = View.GONE
     }
 
     private fun showProgress() {
-        progressView.visibility = View.VISIBLE
+        binding.progressView.visibility = View.VISIBLE
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -160,7 +159,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
             R.id.action_list -> {
                 enableGrid = !enableGrid
                 prefs.isNotesGridEnabled = enableGrid
-                recyclerView.layoutManager = layoutManager()
+                binding.recyclerView.layoutManager = layoutManager()
                 mAdapter.notifyDataSetChanged()
                 activity?.invalidateOptionsMenu()
             }
@@ -172,8 +171,8 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { CreateNoteActivity.openLogged(context!!) }
-        fab.setOnLongClickListener {
+        binding.fab.setOnClickListener { CreateNoteActivity.openLogged(context!!) }
+        binding.fab.setOnLongClickListener {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }
@@ -185,7 +184,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
     }
 
     private fun initProgress() {
-        progressMessageView.setText(R.string.please_wait)
+        binding.progressMessageView.setText(R.string.please_wait)
         hideProgress()
     }
 
@@ -209,7 +208,7 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
     private fun initList() {
         enableGrid = prefs.isNotesGridEnabled
-        recyclerView.layoutManager = layoutManager()
+        binding.recyclerView.layoutManager = layoutManager()
         mAdapter = NotesRecyclerAdapter()
         mAdapter.actionsListener = object : ActionsListener<NoteWithImages> {
             override fun onAction(view: View, position: Int, t: NoteWithImages?, actions: ListActions) {
@@ -221,9 +220,9 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
                 }
             }
         }
-        recyclerView.adapter = mAdapter
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        ViewUtils.listenScrollableView(recyclerView) {
+        binding.recyclerView.adapter = mAdapter
+        binding.recyclerView.itemAnimator = DefaultItemAnimator()
+        ViewUtils.listenScrollableView(binding.recyclerView) {
             setScroll(it)
         }
         refreshView(0)
@@ -288,17 +287,17 @@ class NotesFragment : BaseNavigationFragment(), (List<NoteWithImages>) -> Unit {
 
     private fun refreshView(count: Int) {
         if (count == 0) {
-            emptyItem.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
         } else {
-            emptyItem.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 
     override fun invoke(result: List<NoteWithImages>) {
         mAdapter.submitList(result)
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
         refreshView(result.size)
     }
 }

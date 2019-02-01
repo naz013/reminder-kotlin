@@ -1,19 +1,18 @@
 package com.elementary.tasks.notes.list
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.databinding.ListItemNoteImageBinding
 import com.elementary.tasks.notes.create.DecodeImages
-import kotlinx.android.synthetic.main.list_item_note_image.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -53,43 +52,43 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
-        return PhotoViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note_image, parent, false))
+        return PhotoViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class PhotoViewHolder(parent: ViewGroup) : HolderBinding<ListItemNoteImageBinding>(parent, R.layout.list_item_note_image) {
         fun bind(noteImage: ImageFile) {
             if (noteImage.state is DecodeImages.State.Loading) {
-                itemView.stateReady.visibility = View.GONE
-                itemView.stateLoading.visibility = View.VISIBLE
+                binding.stateReady.visibility = View.GONE
+                binding.stateLoading.visibility = View.VISIBLE
             } else {
-                itemView.stateLoading.visibility = View.GONE
-                itemView.stateReady.visibility = View.VISIBLE
-                loadImage(itemView.photoView, noteImage)
+                binding.stateLoading.visibility = View.GONE
+                binding.stateReady.visibility = View.VISIBLE
+                loadImage(binding.photoView, noteImage)
             }
         }
 
         init {
-            itemView.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
+            binding.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
             if (isEditable) {
-                itemView.removeButton.visibility = View.VISIBLE
-                itemView.removeButton.setOnClickListener {
+                binding.removeButton.visibility = View.VISIBLE
+                binding.removeButton.setOnClickListener {
                     actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.REMOVE)
                 }
                 if (actionsListener != null && Module.isPro) {
-                    itemView.editButton.visibility = View.VISIBLE
-                    itemView.editButton.setOnClickListener { view ->
+                    binding.editButton.visibility = View.VISIBLE
+                    binding.editButton.setOnClickListener { view ->
                         actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
                     }
                 } else {
-                    itemView.editButton.visibility = View.GONE
+                    binding.editButton.visibility = View.GONE
                 }
             } else {
-                itemView.removeButton.visibility = View.GONE
-                itemView.editButton.visibility = View.GONE
+                binding.removeButton.visibility = View.GONE
+                binding.editButton.visibility = View.GONE
             }
         }
 

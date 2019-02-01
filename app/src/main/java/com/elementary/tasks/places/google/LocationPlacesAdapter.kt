@@ -1,18 +1,17 @@
 package com.elementary.tasks.places.google
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
-import kotlinx.android.synthetic.main.list_item_location.view.*
+import com.elementary.tasks.databinding.ListItemLocationBinding
 import java.util.*
 import javax.inject.Inject
 
@@ -52,22 +51,22 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemLocationBinding>(parent, R.layout.list_item_location) {
         fun bind(item: Reminder) {
             val place = item.places[0]
             var name = place.name
             if (item.places.size > 1) {
                 name = item.summary + " (" + item.places.size + ")"
             }
-            itemView.textView.text = name
-            loadMarker(itemView.markerImage, place.marker)
+            binding.textView.text = name
+            loadMarker(binding.markerImage, place.marker)
         }
 
         init {
-            itemView.itemCard.setOnClickListener { view ->
+            binding.itemCard.setOnClickListener { view ->
                 actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            itemView.itemCard.setOnLongClickListener { view ->
+            binding.itemCard.setOnLongClickListener { view ->
                 actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }
@@ -83,7 +82,7 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_location, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

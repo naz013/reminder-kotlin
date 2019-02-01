@@ -22,11 +22,11 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
+import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import kotlinx.android.synthetic.main.activity_note_preview.*
 import java.io.File
 import javax.inject.Inject
 
@@ -48,7 +48,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotePreviewActivity : ThemedActivity() {
+class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
 
     private var mNote: NoteWithImages? = null
     private var mReminder: Reminder? = null
@@ -69,11 +69,12 @@ class NotePreviewActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_note_preview
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isBgDark = isDark
         mId = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        setContentView(R.layout.activity_note_preview)
         initActionBar()
         updateTextColors()
         initImagesList()
@@ -93,7 +94,7 @@ class NotePreviewActivity : ThemedActivity() {
                 showReminder(reminder)
             } else {
                 this.mReminder = null
-                reminderContainer.visibility = View.GONE
+                binding.reminderContainer.visibility = View.GONE
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -108,9 +109,9 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun initReminderCard() {
-        reminderContainer.visibility = View.GONE
-        editReminder.setOnClickListener { editReminder() }
-        deleteReminder.setOnClickListener { showReminderDeleteDialog() }
+        binding.reminderContainer.visibility = View.GONE
+        binding.editReminder.setOnClickListener { editReminder() }
+        binding.deleteReminder.setOnClickListener { showReminderDeleteDialog() }
     }
 
     private fun editReminder() {
@@ -130,9 +131,9 @@ class NotePreviewActivity : ThemedActivity() {
                 }
             }
         }
-        imagesList.layoutManager = KeepLayoutManager(this, 6, mAdapter)
-        imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
-        imagesList.adapter = mAdapter
+        binding.imagesList.layoutManager = KeepLayoutManager(this, 6, mAdapter)
+        binding.imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
+        binding.imagesList.adapter = mAdapter
     }
 
     private fun openImagePreview(position: Int) {
@@ -142,16 +143,16 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.title = ""
-        toolbar.inflateMenu(R.menu.activity_preview_note)
+        binding.toolbar.title = ""
+        binding.toolbar.inflateMenu(R.menu.activity_preview_note)
         updateIcons()
     }
 
     private fun updateIcons() {
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
-        ViewUtils.tintOverflowButton(toolbar, isBgDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
+        ViewUtils.tintOverflowButton(binding.toolbar, isBgDark)
         invalidateOptionsMenu()
     }
 
@@ -178,10 +179,10 @@ class NotePreviewActivity : ThemedActivity() {
         this.mNote = noteWithImages
         if (noteWithImages != null) {
             showImages(noteWithImages.images)
-            noteText.text = noteWithImages.getSummary()
-            noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
+            binding.noteText.text = noteWithImages.getSummary()
+            binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
             window.statusBarColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity())
-            windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity()))
+            binding.windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity()))
             isBgDark = if (themeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
                 isDark
             } else {
@@ -198,7 +199,7 @@ class NotePreviewActivity : ThemedActivity() {
         } else {
             ContextCompat.getColor(this, R.color.pureBlack)
         }
-        noteText.setTextColor(textColor)
+        binding.noteText.setTextColor(textColor)
     }
 
     private fun showReminder(reminder: Reminder?) {
@@ -206,10 +207,10 @@ class NotePreviewActivity : ThemedActivity() {
         if (reminder != null) {
             val dateTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime, prefs.is24HourFormat,
                     prefs.appLanguage)
-            reminderTime.text = dateTime
-            reminderContainer.visibility = View.VISIBLE
+            binding.reminderTime.text = dateTime
+            binding.reminderContainer.visibility = View.VISIBLE
         } else {
-            reminderContainer.visibility = View.GONE
+            binding.reminderContainer.visibility = View.GONE
         }
     }
 
@@ -323,7 +324,7 @@ class NotePreviewActivity : ThemedActivity() {
     private fun deleteReminder() {
         val reminder = mReminder ?: return
         viewModel.deleteReminder(reminder)
-        reminderContainer.visibility = View.GONE
+        binding.reminderContainer.visibility = View.GONE
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -19,12 +19,12 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
+import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
-import kotlinx.android.synthetic.main.fragment_reminders.*
 import timber.log.Timber
 import java.util.*
 
@@ -46,7 +46,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
+class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (List<Reminder>) -> Unit {
 
     private lateinit var viewModel: ActiveRemindersViewModel
 
@@ -132,10 +132,10 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
     }
 
     private fun toggleFilter() {
-        if (filterView.visibility == View.GONE) {
-            filterView.visibility = View.VISIBLE
+        if (binding.filterView.visibility == View.GONE) {
+            binding.filterView.visibility = View.VISIBLE
         } else {
-            filterView.visibility = View.GONE
+            binding.filterView.visibility = View.GONE
         }
     }
 
@@ -143,8 +143,8 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { CreateReminderActivity.openLogged(context!!) }
-        fab.setOnLongClickListener {
+        binding.fab.setOnClickListener { CreateReminderActivity.openLogged(context!!) }
+        binding.fab.setOnLongClickListener {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }
@@ -175,7 +175,7 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
     }
 
     private fun refreshFilters() {
-        filterView.clear()
+        binding.filterView.clear()
         addDateFilter()
         addGroupFilter()
         addTypeFilter()
@@ -192,12 +192,12 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
             }
         }
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!) && resources.getBoolean(R.bool.is_tablet)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
-        recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(recyclerView) {
+        binding.recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(binding.recyclerView) {
             setScroll(it)
         }
         reloadView(0)
@@ -207,9 +207,9 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
 
     private fun reloadView(count: Int) {
         if (count > 0) {
-            emptyItem.visibility = View.GONE
+            binding.emptyItem.visibility = View.GONE
         } else {
-            emptyItem.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 
@@ -225,7 +225,7 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
         filter.add(filterAllElement)
         filter.add(FilterView.FilterElement(getString(R.string.enabled4), 1))
         filter.add(FilterView.FilterElement(getString(R.string.disabled), 2))
-        filterView.addFilter(filter)
+        binding.filterView.addFilter(filter)
     }
 
     private fun addDateFilter() {
@@ -241,7 +241,7 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
         filter.add(FilterView.FilterElement(getString(R.string.permanent), 1))
         filter.add(FilterView.FilterElement(getString(R.string.today), 2))
         filter.add(FilterView.FilterElement(getString(R.string.tomorrow), 3))
-        filterView.addFilter(filter)
+        binding.filterView.addFilter(filter)
     }
 
     private fun addTypeFilter() {
@@ -262,7 +262,7 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
             filter.add(FilterView.FilterElement(ReminderUtils.getType(context!!, integer), integer))
         }
         if (filter.isNotEmpty()) {
-            filterView.addFilter(filter)
+            binding.filterView.addFilter(filter)
         }
     }
 
@@ -290,11 +290,11 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
             mGroupsIds.add(key)
             count++
         }
-        filterView.addFilter(filter)
+        binding.filterView.addFilter(filter)
     }
 
     override fun canGoBack(): Boolean {
-        return if (filterView.visibility == View.GONE) {
+        return if (binding.filterView.visibility == View.GONE) {
             true
         } else {
             toggleFilter()
@@ -304,7 +304,7 @@ class RemindersFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
 
     override fun invoke(result: List<Reminder>) {
         mAdapter.submitList(result)
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
         reloadView(result.size)
     }
 }

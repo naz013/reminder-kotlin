@@ -9,7 +9,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_image_preview.*
+import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import java.util.*
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ImagePreviewActivity : ThemedActivity() {
+class ImagePreviewActivity : ThemedActivity<ActivityImagePreviewBinding>() {
 
     @Inject
     lateinit var imagesSingleton: ImagesSingleton
@@ -40,9 +40,10 @@ class ImagePreviewActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_image_preview
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_image_preview)
         initActionBar()
 
         showImages()
@@ -58,13 +59,13 @@ class ImagePreviewActivity : ThemedActivity() {
     private fun setPhotoPosition() {
         val position = intent.getIntExtra(Constants.INTENT_POSITION, -1)
         if (position != -1)
-            photo_pager.currentItem = position
+            binding.photoPager.currentItem = position
     }
 
     private fun initViewPager(images: List<ImageFile>) {
-        photo_pager.adapter = PhotoPagerAdapter(images)
-        photo_pager.pageMargin = 5
-        photo_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.photoPager.adapter = PhotoPagerAdapter(images)
+        binding.photoPager.pageMargin = 5
+        binding.photoPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
@@ -77,19 +78,20 @@ class ImagePreviewActivity : ThemedActivity() {
 
             }
         })
-        setToolbarTitle(photo_pager.currentItem)
+        setToolbarTitle(binding.photoPager.currentItem)
         setPhotoPosition()
     }
 
     private fun setToolbarTitle(position: Int) {
-        toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x), position + 1, imagesSingleton.getCurrent().size)
+        binding.toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x),
+                position + 1, imagesSingleton.getCurrent().size)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.title = ""
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.title = ""
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

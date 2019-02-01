@@ -1,26 +1,25 @@
 package com.elementary.tasks.voice
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdayHolder
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.databinding.ListItemAskBinding
+import com.elementary.tasks.databinding.ListItemShowReplyBinding
+import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
+import com.elementary.tasks.databinding.ListItemSimpleResponseBinding
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
-import kotlinx.android.synthetic.main.list_item_ask.view.*
-import kotlinx.android.synthetic.main.list_item_show_reply.view.*
-import kotlinx.android.synthetic.main.list_item_simple_reply.view.*
-import kotlinx.android.synthetic.main.list_item_simple_response.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -67,12 +66,12 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         return when (viewType) {
             Reply.REPLY -> VoiceHolder(parent)
             Reply.RESPONSE -> VoiceResponseHolder(parent)
-            Reply.REMINDER -> ReminderHolder(parent, false, false, false)
+            Reply.REMINDER -> ReminderHolder(parent, hasHeader = false, editable = false, showMore = false)
             Reply.NOTE -> NoteHolder(parent, null)
             Reply.GROUP -> GroupHolder(parent, null)
             Reply.SHOW_MORE -> ShowMoreHolder(parent)
             Reply.BIRTHDAY -> BirthdayHolder(parent, false)
-            Reply.SHOPPING -> ShoppingHolder(parent, false, false)
+            Reply.SHOPPING -> ShoppingHolder(parent, editable = false, showMore = false)
             else -> AskHolder(parent)
         }
     }
@@ -96,20 +95,19 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         return getItem(position).viewType
     }
 
-    private inner class AskHolder(parent: ViewGroup) :
-            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_ask)) {
+    private inner class AskHolder(parent: ViewGroup) : HolderBinding<ListItemAskBinding>(parent, R.layout.list_item_ask) {
 
         private var askAction: AskAction? = null
 
         init {
-            itemView.replyYes.setOnClickListener {
+            binding.replyYes.setOnClickListener {
                 askAction?.onYes()
             }
-            itemView.replyNo.setOnClickListener {
+            binding.replyNo.setOnClickListener {
                 askAction?.onNo()
             }
-            itemView.replyNo.text = language.getLocalized(itemView.context, R.string.no)
-            itemView.replyYes.text = language.getLocalized(itemView.context, R.string.yes)
+            binding.replyNo.text = language.getLocalized(itemView.context, R.string.no)
+            binding.replyYes.text = language.getLocalized(itemView.context, R.string.yes)
         }
 
         internal fun setAskAction(askAction: AskAction) {
@@ -118,30 +116,26 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
     }
 
     private inner class VoiceHolder(parent: ViewGroup) :
-            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_simple_reply)) {
+            HolderBinding<ListItemSimpleReplyBinding>(parent, R.layout.list_item_simple_reply) {
         fun bind(text: String) {
-            itemView.replyTextSimple.text = text
+            binding.replyTextSimple.text = text
         }
     }
 
     private inner class VoiceResponseHolder(parent: ViewGroup) :
-            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_simple_response)) {
+            HolderBinding<ListItemSimpleResponseBinding>(parent, R.layout.list_item_simple_response) {
         fun bind(text: String) {
-            itemView.replyTextResponse.text = text
+            binding.replyTextResponse.text = text
         }
     }
 
     private inner class ShowMoreHolder(parent: ViewGroup) :
-            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_show_reply)) {
+            HolderBinding<ListItemShowReplyBinding>(parent, R.layout.list_item_show_reply) {
         init {
-            itemView.replyText.setOnClickListener {
+            binding.replyText.setOnClickListener {
                 showMore?.invoke(adapterPosition)
                 showMore = null
             }
         }
-    }
-
-    private fun inflate(parent: ViewGroup, res: Int): View {
-        return LayoutInflater.from(parent.context).inflate(res, parent, false)
     }
 }

@@ -34,6 +34,7 @@ import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.google_tasks.list.GoogleTaskHolder
@@ -45,7 +46,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -69,7 +69,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ReminderPreviewActivity : ThemedActivity() {
+class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>() {
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
@@ -97,11 +97,12 @@ class ReminderPreviewActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_reminder_preview
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        setContentView(R.layout.activity_reminder_preview)
-        dataContainer.removeAllViewsInLayout()
+        binding.dataContainer.removeAllViewsInLayout()
         initActionBar()
         initViews()
         initViewModel(id)
@@ -181,7 +182,7 @@ class ReminderPreviewActivity : ThemedActivity() {
     private fun showTask(pair: Pair<GoogleTaskList?, GoogleTask?>) {
         val googleTask = pair.second ?: return
         val googleTaskList = pair.first ?: return
-        val binding = GoogleTaskHolder(dataContainer) { _, _, listActions ->
+        val binding = GoogleTaskHolder(binding.dataContainer) { _, _, listActions ->
             if (listActions == ListActions.EDIT) {
                 TaskActivity.openLogged(this@ReminderPreviewActivity,
                         Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
@@ -190,11 +191,11 @@ class ReminderPreviewActivity : ThemedActivity() {
             }
         }
         binding.bind(googleTask, mapOf(Pair(googleTask.listId, googleTaskList)))
-        this.dataContainer.addView(binding.itemView)
+        this.binding.dataContainer.addView(binding.itemView)
     }
 
     private fun showNote(note: NoteWithImages) {
-        val binding = NoteHolder(dataContainer) { _, _, listActions ->
+        val binding = NoteHolder(binding.dataContainer) { _, _, listActions ->
             if (listActions == ListActions.OPEN) {
                 startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
                         .putExtra(Constants.INTENT_ID, note.getKey()))
@@ -202,12 +203,12 @@ class ReminderPreviewActivity : ThemedActivity() {
         }
         binding.hasMore = false
         binding.setData(note)
-        this.dataContainer.addView(binding.itemView)
+        this.binding.dataContainer.addView(binding.itemView)
     }
 
     private fun showMapData(reminder: Reminder) {
-        mapContainer.visibility = View.VISIBLE
-        location.visibility = View.VISIBLE
+        binding.mapContainer.visibility = View.VISIBLE
+        binding.location.visibility = View.VISIBLE
 
         var places = ""
         reminder.places.forEach {
@@ -217,7 +218,7 @@ class ReminderPreviewActivity : ThemedActivity() {
             places += String.format(Locale.getDefault(), "%.5f %.5f", lat, lon)
             places += "\n"
         }
-        location.text = places
+        binding.location.text = places
 
         val place = reminder.places[0]
         val lat = place.latitude
@@ -230,12 +231,12 @@ class ReminderPreviewActivity : ThemedActivity() {
 
         Timber.d("showInfo: %s", reminder.toString())
 
-        group.text = reminder.groupTitle
+        binding.group.text = reminder.groupTitle
         showStatus(reminder)
-        window_type_view.text = getWindowType(reminder.windowType)
-        taskText.text = reminder.summary
-        type.text = ReminderUtils.getTypeString(type.context, reminder.type)
-        itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
+        binding.windowTypeView.text = getWindowType(reminder.windowType)
+        binding.taskText.text = reminder.summary
+        binding.type.text = ReminderUtils.getTypeString(this, reminder.type)
+        binding.itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
 
         showDueAndRepeat(reminder)
         showBefore(reminder)
@@ -245,66 +246,66 @@ class ReminderPreviewActivity : ThemedActivity() {
         if (Reminder.isGpsType(reminder.type)) {
             initMap()
         } else {
-            locationView.visibility = View.GONE
-            mapContainer.visibility = View.GONE
+            binding.locationView.visibility = View.GONE
+            binding.mapContainer.visibility = View.GONE
         }
         if (reminder.shoppings.isNotEmpty()) {
-            todoList.visibility = View.VISIBLE
+            binding.todoList.visibility = View.VISIBLE
             loadData(reminder)
         } else {
-            todoList.visibility = View.GONE
+            binding.todoList.visibility = View.GONE
         }
         if (reminder.isActive && !reminder.isRemoved) {
             when {
                 Reminder.isKind(reminder.type, Reminder.Kind.SMS) -> {
                     if (prefs.isTelephonyAllowed) {
-                        fab.setIconResource(R.drawable.ic_twotone_send_24px)
-                        fab.text = getString(R.string.send_sms)
-                        fab.visibility = View.VISIBLE
+                        binding.fab.setIconResource(R.drawable.ic_twotone_send_24px)
+                        binding.fab.text = getString(R.string.send_sms)
+                        binding.fab.visibility = View.VISIBLE
                     } else {
-                        fab.visibility = View.GONE
+                        binding.fab.visibility = View.GONE
                     }
                 }
                 Reminder.isKind(reminder.type, Reminder.Kind.CALL) -> {
                     if (prefs.isTelephonyAllowed) {
-                        fab.setIconResource(R.drawable.ic_twotone_call_24px)
-                        fab.text = getString(R.string.make_call)
-                        fab.visibility = View.VISIBLE
+                        binding.fab.setIconResource(R.drawable.ic_twotone_call_24px)
+                        binding.fab.text = getString(R.string.make_call)
+                        binding.fab.visibility = View.VISIBLE
                     } else {
-                        fab.visibility = View.GONE
+                        binding.fab.visibility = View.GONE
                     }
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_APP) -> {
-                    fab.setIconResource(R.drawable.ic_twotone_open_in_new_24px)
-                    fab.text = getString(R.string.open_app)
-                    fab.visibility = View.VISIBLE
+                    binding.fab.setIconResource(R.drawable.ic_twotone_open_in_new_24px)
+                    binding.fab.text = getString(R.string.open_app)
+                    binding.fab.visibility = View.VISIBLE
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) -> {
-                    fab.setIconResource(R.drawable.ic_twotone_open_in_browser_24px)
-                    fab.text = getString(R.string.open_link)
-                    fab.visibility = View.VISIBLE
+                    binding.fab.setIconResource(R.drawable.ic_twotone_open_in_browser_24px)
+                    binding.fab.text = getString(R.string.open_link)
+                    binding.fab.visibility = View.VISIBLE
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
-                    fab.setIconResource(R.drawable.ic_twotone_local_post_office_24px)
-                    fab.text = getString(R.string.send)
-                    fab.visibility = View.VISIBLE
+                    binding.fab.setIconResource(R.drawable.ic_twotone_local_post_office_24px)
+                    binding.fab.text = getString(R.string.send)
+                    binding.fab.visibility = View.VISIBLE
                 }
-                else -> fab.visibility = View.GONE
+                else -> binding.fab.visibility = View.GONE
             }
         } else {
-            fab.visibility = View.GONE
+            binding.fab.visibility = View.GONE
         }
 
-        dataContainer.removeAllViewsInLayout()
+        binding.dataContainer.removeAllViewsInLayout()
     }
 
     private fun showBefore(reminder: Reminder) {
         val beforeStr = IntervalUtil.getInterval(this, reminder.remindBefore)
         if (beforeStr.isEmpty() || beforeStr == "0") {
-            beforeView.visibility = View.GONE
+            binding.beforeView.visibility = View.GONE
         } else {
-            beforeView.visibility = View.VISIBLE
-            before.text = beforeStr
+            binding.beforeView.visibility = View.VISIBLE
+            binding.before.text = beforeStr
         }
     }
 
@@ -325,37 +326,37 @@ class ReminderPreviewActivity : ThemedActivity() {
             }
         }
         shoppingAdapter.data = reminder.shoppings
-        todoList.layoutManager = LinearLayoutManager(this)
-        todoList.isNestedScrollingEnabled = false
-        todoList.adapter = shoppingAdapter
+        binding.todoList.layoutManager = LinearLayoutManager(this)
+        binding.todoList.isNestedScrollingEnabled = false
+        binding.todoList.adapter = shoppingAdapter
     }
 
     private fun showDueAndRepeat(reminder: Reminder) {
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
-            timeView.visibility = View.VISIBLE
-            time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormat, prefs.appLanguage)
+            binding.timeView.visibility = View.VISIBLE
+            binding.time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormat, prefs.appLanguage)
             when {
-                Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
-                Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> repeat.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
-                Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> repeat.text = getString(R.string.yearly)
-                else -> repeat.text = IntervalUtil.getInterval(this, reminder.repeatInterval)
+                Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> binding.repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
+                Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeat.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
+                Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeat.text = getString(R.string.yearly)
+                else -> binding.repeat.text = IntervalUtil.getInterval(this, reminder.repeatInterval)
             }
-            repeatView.visibility = View.VISIBLE
+            binding.repeatView.visibility = View.VISIBLE
         } else {
-            timeView.visibility = View.GONE
-            repeatView.visibility = View.GONE
+            binding.timeView.visibility = View.GONE
+            binding.repeatView.visibility = View.GONE
         }
     }
 
     private fun showPhoneContact(reminder: Reminder) {
         val numberStr = reminder.target
         if (!TextUtils.isEmpty(numberStr)) {
-            number.text = numberStr
-            numberView.visibility = View.VISIBLE
+            binding.number.text = numberStr
+            binding.numberView.visibility = View.VISIBLE
         } else {
-            number.visibility = View.GONE
-            numberView.visibility = View.GONE
+            binding.number.visibility = View.GONE
+            binding.numberView.visibility = View.GONE
         }
     }
 
@@ -374,15 +375,15 @@ class ReminderPreviewActivity : ThemedActivity() {
                 }
             }
         }
-        if (file != null) melody.text = file.name
+        if (file != null) binding.melody.text = file.name
     }
 
     private fun showStatus(reminder: Reminder) {
-        statusSwitch.isChecked = reminder.isActive
+        binding.statusSwitch.isChecked = reminder.isActive
         if (!reminder.isActive) {
-            statusText.setText(R.string.disabled)
+            binding.statusText.setText(R.string.disabled)
         } else {
-            statusText.setText(R.string.enabled4)
+            binding.statusText.setText(R.string.enabled4)
         }
     }
 
@@ -399,8 +400,8 @@ class ReminderPreviewActivity : ThemedActivity() {
         Timber.d("showAttachment: ${reminder.attachmentFile}")
         if (reminder.attachmentFile != "") {
             val uri = Uri.parse(reminder.attachmentFile)
-            attachment.text = reminder.attachmentFile
-            attachmentView.visibility = View.VISIBLE
+            binding.attachment.text = reminder.attachmentFile
+            binding.attachmentView.visibility = View.VISIBLE
 
             Picasso.get().load(uri).into(object : Target {
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -409,15 +410,16 @@ class ReminderPreviewActivity : ThemedActivity() {
 
                 override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
                     Timber.d("onBitmapFailed: $e")
-                    attachmentsView.visibility = View.GONE
+                    binding.attachmentsView.visibility = View.GONE
                 }
 
                 override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                     Timber.d("onBitmapLoaded: ${bitmap != null}")
-                    attachmentsView.visibility = View.VISIBLE
-                    attachmentImage.setImageBitmap(bitmap)
-                    attachmentsView.setOnClickListener {
-                        val options = ActivityOptions.makeSceneTransitionAnimation(this@ReminderPreviewActivity, attachmentImage, "image")
+                    binding.attachmentsView.visibility = View.VISIBLE
+                    binding.attachmentImage.setImageBitmap(bitmap)
+                    binding.attachmentsView.setOnClickListener {
+                        val options = ActivityOptions.makeSceneTransitionAnimation(this@ReminderPreviewActivity,
+                                binding.attachmentImage, "image")
                         startActivity(Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
                                 .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile),
                                 options.toBundle())
@@ -425,8 +427,8 @@ class ReminderPreviewActivity : ThemedActivity() {
                 }
             })
         } else {
-            attachmentView.visibility = View.GONE
-            attachmentsView.visibility = View.GONE
+            binding.attachmentView.visibility = View.GONE
+            binding.attachmentsView.visibility = View.GONE
         }
     }
 
@@ -532,11 +534,11 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun initViews() {
-        switchWrapper.setOnClickListener { switchClick() }
-        fab.setOnClickListener { fabClick() }
-        mapContainer.visibility = View.GONE
-        attachmentsView.visibility = View.GONE
-        fab.visibility = View.GONE
+        binding.switchWrapper.setOnClickListener { switchClick() }
+        binding.fab.setOnClickListener { fabClick() }
+        binding.mapContainer.visibility = View.GONE
+        binding.attachmentsView.visibility = View.GONE
+        binding.fab.visibility = View.GONE
     }
 
     private fun fabClick() {
@@ -571,7 +573,7 @@ class ReminderPreviewActivity : ThemedActivity() {
             }
         })
         supportFragmentManager.beginTransaction()
-                .replace(mapContainer.id, googleMap)
+                .replace(binding.mapContainer.id, googleMap)
                 .addToBackStack(null)
                 .commit()
         this.mGoogleMap = googleMap
@@ -579,19 +581,19 @@ class ReminderPreviewActivity : ThemedActivity() {
 
     private fun openFullMap() {
         reminder?.let {
-            val options = ActivityOptions.makeSceneTransitionAnimation(this, mapContainer, "map")
+            val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.mapContainer, "map")
             startActivity(Intent(this, FullscreenMapActivity::class.java)
                     .putExtra(Constants.INTENT_ID, it.uuId), options.toBundle())
         }
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        ViewUtils.listenScrollableView(scrollView) {
-            appBar.isSelected = it > 0
+        ViewUtils.listenScrollableView(binding.scrollView) {
+            binding.appBar.isSelected = it > 0
         }
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
     }
 
     override fun onBackPressed() {

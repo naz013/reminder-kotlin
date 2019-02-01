@@ -1,14 +1,14 @@
 package com.elementary.tasks.reminder.lists.adapter
 
 import android.graphics.Paint
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ShopItem
-import kotlinx.android.synthetic.main.list_item_shop_task.view.*
+import com.elementary.tasks.databinding.ListItemShopTaskBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -76,13 +76,13 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
         return mDataList[position]
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemShopTaskBinding>(parent, R.layout.list_item_shop_task) {
 
         init {
-            itemView.clearButton.setOnClickListener {
+            binding.clearButton.setOnClickListener {
                 listener?.onItemDelete(adapterPosition)
             }
-            itemView.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
+            binding.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
                 if (!onBind && listener != null) {
                     listener?.onItemCheck(adapterPosition, isChecked1)
                 }
@@ -92,25 +92,25 @@ class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.Vie
         fun bind(item: ShopItem) {
             val title = item.summary
             if (item.isChecked) {
-                itemView.shopText.paintFlags = itemView.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                binding.shopText.paintFlags = binding.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
-                itemView.shopText.paintFlags = itemView.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                binding.shopText.paintFlags = binding.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
-            itemView.itemCheck.isChecked = item.isChecked
-            itemView.shopText.text = title
+            binding.itemCheck.isChecked = item.isChecked
+            binding.shopText.text = title
             if (listener == null) {
-                itemView.clearButton.visibility = View.GONE
-                itemView.itemCheck.isEnabled = false
-                itemView.shopText.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
+                binding.clearButton.visibility = View.GONE
+                binding.itemCheck.isEnabled = false
+                binding.shopText.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
             } else {
-                itemView.itemCheck.visibility = View.VISIBLE
-                itemView.clearButton.visibility = View.VISIBLE
+                binding.itemCheck.visibility = View.VISIBLE
+                binding.clearButton.visibility = View.VISIBLE
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shop_task, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

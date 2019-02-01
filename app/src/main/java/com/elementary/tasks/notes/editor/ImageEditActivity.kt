@@ -11,8 +11,8 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.databinding.ActivityImageEditBinding
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import kotlinx.android.synthetic.main.activity_image_edit.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,9 +34,9 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ImageEditActivity : ThemedActivity(), EditInterface {
+class ImageEditActivity : ThemedActivity<ActivityImageEditBinding>(), EditInterface {
 
-    private var fragment: BitmapFragment? = null
+    private var fragment: BitmapFragment<*>? = null
     private var imageFile: ImageFile? = null
     private var currentImage: ByteArray? = null
     private var state = 0
@@ -48,14 +48,15 @@ class ImageEditActivity : ThemedActivity(), EditInterface {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_image_edit
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_image_edit)
         initActionBar()
-        typeIcon.visibility = if (BuildConfig.DEBUG) View.VISIBLE else View.INVISIBLE
-        typeIcon.setOnClickListener { toggleScreen() }
-        backButton.setOnClickListener { closeScreen() }
-        saveButton.setOnClickListener { saveImage() }
+        binding.typeIcon.visibility = if (BuildConfig.DEBUG) View.VISIBLE else View.INVISIBLE
+        binding.typeIcon.setOnClickListener { toggleScreen() }
+        binding.backButton.setOnClickListener { closeScreen() }
+        binding.saveButton.setOnClickListener { saveImage() }
     }
 
     private fun toggleScreen() {
@@ -138,10 +139,10 @@ class ImageEditActivity : ThemedActivity(), EditInterface {
         Timber.d("switchTab: $position")
         state = position
         if (position == 1) {
-            typeIcon.setImageResource(R.drawable.ic_twotone_crop_24px)
+            binding.typeIcon.setImageResource(R.drawable.ic_twotone_crop_24px)
             openDrawFragment()
         } else {
-            typeIcon.setImageResource(R.drawable.ic_random_line)
+            binding.typeIcon.setImageResource(R.drawable.ic_random_line)
             openCropFragment()
         }
     }
@@ -154,7 +155,7 @@ class ImageEditActivity : ThemedActivity(), EditInterface {
         replaceFragment(CropFragment.newInstance())
     }
 
-    private fun replaceFragment(fragment: BitmapFragment) {
+    private fun replaceFragment(fragment: BitmapFragment<*>) {
         this.fragment = fragment
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.container, fragment, null)

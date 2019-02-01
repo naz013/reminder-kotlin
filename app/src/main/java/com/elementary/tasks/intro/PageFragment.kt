@@ -1,12 +1,11 @@
 package com.elementary.tasks.intro
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.fragment_intro_page.*
+import com.elementary.tasks.core.BindingFragment
+import com.elementary.tasks.databinding.FragmentIntroPageBinding
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -26,34 +25,31 @@ import kotlinx.android.synthetic.main.fragment_intro_page.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PageFragment : Fragment() {
+class PageFragment : BindingFragment<FragmentIntroPageBinding>() {
 
     private var position: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            position = arguments!!.getInt(ARG_POSITION)
+            position = arguments?.getInt(ARG_POSITION) ?: 0
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_intro_page, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_intro_page
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val item = ItemFactory.getItem(activity!!, position)
         if (item != null) {
-            title.text = item.title
-            description.text = item.description
-            image_one.setImageResource(item.getImages()!![0])
-            if (item.getImages()!!.size > 1) {
-                image_two.setImageResource(item.getImages()!![1])
-                image_two.visibility = View.VISIBLE
+            binding.title.text = item.title
+            binding.description.text = item.description
+            binding.imageOne.setImageResource(item.getImages()!![0])
+            if (item.getImages()?.size ?: 1 > 1) {
+                binding.imageTwo.setImageResource(item.getImages()!![1])
+                binding.imageTwo.visibility = View.VISIBLE
             } else {
-                image_two.visibility = View.INVISIBLE
+                binding.imageTwo.visibility = View.INVISIBLE
             }
         }
     }

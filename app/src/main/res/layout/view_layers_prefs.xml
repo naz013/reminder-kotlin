@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:colorBackground"
-    android:orientation="vertical"
-    android:padding="24dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layersList"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="128dp" />
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/layersList"
+            android:layout_width="match_parent"
+            android:layout_height="128dp" />
+
+    </LinearLayout>
+</layout>
+

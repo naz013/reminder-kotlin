@@ -2,7 +2,6 @@ package com.elementary.tasks.notes.list
 
 import android.content.Intent
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +17,9 @@ import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import kotlinx.android.synthetic.main.list_item_note.view.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -43,7 +42,7 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> Unit)?) :
-        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
+        BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note) {
 
     @Inject
     lateinit var imagesSingleton: ImagesSingleton
@@ -55,18 +54,18 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
 
     init {
         ReminderApp.appComponent.inject(this)
-        hoverClick(itemView.bgView) {
+        hoverClick(binding.bgView) {
             listener?.invoke(it, adapterPosition, ListActions.OPEN)
         }
-        itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
         updateMore()
     }
 
     private fun updateMore() {
         if (listener == null || !hasMore) {
-            itemView.button_more.visibility = View.INVISIBLE
+            binding.buttonMore.visibility = View.INVISIBLE
         } else {
-            itemView.button_more.visibility = View.VISIBLE
+            binding.buttonMore.visibility = View.VISIBLE
         }
     }
 
@@ -74,16 +73,16 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
         view.setOnTouchListener { v, event ->
             when {
                 event.action == MotionEvent.ACTION_DOWN -> {
-                    itemView.clickView.isPressed = true
+                    binding.clickView.isPressed = true
                     return@setOnTouchListener true
                 }
                 event.action == MotionEvent.ACTION_UP -> {
-                    itemView.clickView.isPressed = false
+                    binding.clickView.isPressed = false
                     click.invoke(v)
                     return@setOnTouchListener v.performClick()
                 }
                 event.action == MotionEvent.ACTION_CANCEL -> {
-                    itemView.clickView.isPressed = false
+                    binding.clickView.isPressed = false
                 }
             }
             return@setOnTouchListener true
@@ -91,26 +90,26 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
     }
 
     fun setData(item: NoteWithImages) {
-        loadImage(itemView.imagesView, item)
-        loadNote(itemView.noteTv, item)
+        loadImage(binding.imagesView, item)
+        loadNote(binding.noteTv, item)
 
-        itemView.bgView.setBackgroundColor(themeUtil.getNoteLightColor(item.getColor(), item.getOpacity()))
+        binding.bgView.setBackgroundColor(themeUtil.getNoteLightColor(item.getColor(), item.getOpacity()))
 
         val isDarkIcon = if (themeUtil.isAlmostTransparent(item.getOpacity())) {
             themeUtil.isDark
         } else {
             false
         }
-        itemView.button_more.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
+        binding.buttonMore.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
 
         if (themeUtil.isAlmostTransparent(item.getOpacity())) {
             if (themeUtil.isDark) {
-                itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
+                binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
             } else {
-                itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
+                binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
             }
         } else {
-            itemView.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
+            binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
         }
     }
 
