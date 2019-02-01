@@ -2,16 +2,14 @@ package com.elementary.tasks.notes.editor
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.elementary.tasks.R
-import kotlinx.android.synthetic.main.fragment_crop_image.*
+import com.elementary.tasks.databinding.FragmentCropImageBinding
 import java.io.ByteArrayOutputStream
 
 /**
@@ -32,11 +30,11 @@ import java.io.ByteArrayOutputStream
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CropFragment : BitmapFragment() {
+class CropFragment : BitmapFragment<FragmentCropImageBinding>() {
 
     override val image: ByteArray?
         get() {
-            val cropped = cropImageView.croppedImage
+            val cropped = binding.cropImageView.croppedImage
             val outputStream = ByteArrayOutputStream()
             var img: ByteArray? = null
             if (cropped != null) {
@@ -50,9 +48,7 @@ class CropFragment : BitmapFragment() {
     override val originalImage: ByteArray?
         get() = editInterface?.getOriginal()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_crop_image, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_crop_image
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,7 +62,7 @@ class CropFragment : BitmapFragment() {
 
     override fun onPause() {
         super.onPause()
-        cropImageView.clearImage()
+        binding.cropImageView.clearImage()
     }
 
     override fun onBackPressed(): Boolean {
@@ -87,7 +83,7 @@ class CropFragment : BitmapFragment() {
                         }
 
                         override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            cropImageView.setImageBitmap(resource)
+                            binding.cropImageView.setImageBitmap(resource)
                             return false
                         }
                     })
@@ -96,8 +92,8 @@ class CropFragment : BitmapFragment() {
     }
 
     private fun initControls() {
-        rotateLeftButton.setOnClickListener { cropImageView.rotateImage(-90) }
-        rotateRightButton.setOnClickListener { cropImageView.rotateImage(90) }
+        binding.rotateLeftButton.setOnClickListener { binding.cropImageView.rotateImage(-90) }
+        binding.rotateRightButton.setOnClickListener { binding.cropImageView.rotateImage(90) }
     }
 
     companion object {

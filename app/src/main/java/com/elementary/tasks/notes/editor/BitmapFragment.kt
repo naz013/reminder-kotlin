@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes.editor
 
 import android.content.Context
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
 /**
@@ -21,7 +22,7 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BitmapFragment : BaseNavigationFragment() {
+abstract class BitmapFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
 
     protected var editInterface: EditInterface? = null
 

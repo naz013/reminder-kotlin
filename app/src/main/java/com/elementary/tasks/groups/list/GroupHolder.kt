@@ -2,7 +2,6 @@ package com.elementary.tasks.groups.list
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.ListActions
-import kotlinx.android.synthetic.main.list_item_group.view.*
+import com.elementary.tasks.databinding.ListItemGroupBinding
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -31,20 +30,20 @@ import kotlinx.android.synthetic.main.list_item_group.view.*
  * limitations under the License.
  */
 class GroupHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
-        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
+        BaseHolder<ListItemGroupBinding>(parent, R.layout.list_item_group) {
 
     init {
-        itemView.clickView.setOnClickListener { view ->
+        binding.clickView.setOnClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.EDIT)
         }
-        itemView.button_more.setOnClickListener { view ->
+        binding.buttonMore.setOnClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.MORE)
         }
     }
 
     fun setData(item: ReminderGroup) {
-        itemView.textView.text = item.groupTitle
-        gradientBg(itemView.gradientView, item)
+        binding.textView.text = item.groupTitle
+        gradientBg(binding.gradientView, item)
     }
 
     private fun gradientBg(gradientView: ImageView, item: ReminderGroup) {

@@ -20,11 +20,11 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
+import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
-import kotlinx.android.synthetic.main.fragment_trash.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,7 +44,7 @@ import kotlinx.android.synthetic.main.fragment_trash.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ArchiveFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
+class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Reminder>) -> Unit {
 
     private lateinit var viewModel: ArchiveRemindersViewModel
 
@@ -161,12 +161,12 @@ class ArchiveFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
             }
         }
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!) && resources.getBoolean(R.bool.is_tablet)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
-        recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(recyclerView) {
+        binding.recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(binding.recyclerView) {
             setScroll(it)
         }
         reloadView(0)
@@ -174,15 +174,15 @@ class ArchiveFragment : BaseNavigationFragment(), (List<Reminder>) -> Unit {
 
     private fun reloadView(count: Int) {
         if (count > 0) {
-            emptyItem.visibility = View.GONE
+            binding.emptyItem.visibility = View.GONE
         } else {
-            emptyItem.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 
     override fun invoke(result: List<Reminder>) {
         mAdapter.submitList(result)
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
         reloadView(result.size)
     }
 }

@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation.settings
 
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Language
@@ -24,7 +25,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseSettingsFragment : BaseNavigationFragment() {
+abstract class BaseSettingsFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
 
     @Inject
     lateinit var language: Language

@@ -26,9 +26,8 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
+import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import kotlinx.android.synthetic.main.activity_create_google_task.*
-import kotlinx.android.synthetic.main.view_progress.*
 import java.util.*
 
 /**
@@ -49,7 +48,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TaskActivity : ThemedActivity() {
+class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
 
     private lateinit var stateViewModel: StateViewModel
     private lateinit var viewModel: GoogleTaskViewModel
@@ -74,16 +73,16 @@ class TaskActivity : ThemedActivity() {
         stateViewModel.time.postValue(c.timeInMillis)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_create_google_task
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
         lifecycle.addObserver(stateViewModel)
-
-        setContentView(R.layout.activity_create_google_task)
         initToolbar()
         initFields()
 
-        progressMessageView.text = getString(R.string.please_wait)
+        binding.progressMessageView.text = getString(R.string.please_wait)
         updateProgress(false)
 
         var tmp = intent.getStringExtra(Constants.INTENT_ID) ?: ""
@@ -156,9 +155,9 @@ class TaskActivity : ThemedActivity() {
     private fun updateProgress(b: Boolean) {
         mIsLoading = b
         if (b) {
-            progressView.visibility = View.VISIBLE
+            binding.progressView.visibility = View.VISIBLE
         } else {
-            progressView.visibility = View.GONE
+            binding.progressView.visibility = View.GONE
         }
     }
 
@@ -211,7 +210,7 @@ class TaskActivity : ThemedActivity() {
 
     private fun showTaskList(googleTaskList: GoogleTaskList) {
         stateViewModel.listId = googleTaskList.listId
-        listText.text = googleTaskList.title
+        binding.listText.text = googleTaskList.title
     }
 
     private fun selectCurrent(googleTaskLists: List<GoogleTaskList>) {
@@ -226,13 +225,13 @@ class TaskActivity : ThemedActivity() {
     private fun editTask(googleTask: GoogleTask) {
         this.mItem = googleTask
         stateViewModel.listId = googleTask.listId
-        toolbar.setTitle(R.string.edit_task)
+        binding.toolbar.setTitle(R.string.edit_task)
         if (!stateViewModel.isEdited) {
-            editField.setText(googleTask.title)
+            binding.editField.setText(googleTask.title)
             val note = googleTask.notes
             if (note != "") {
-                detailsField.setText(note)
-                detailsField.setSelection(detailsField.text.toString().trim().length)
+                binding.detailsField.setText(note)
+                binding.detailsField.setSelection(binding.detailsField.text.toString().trim().length)
             }
             val time = googleTask.dueDate
             if (time != 0L) {
@@ -253,18 +252,18 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun initFields() {
-        listText.setOnClickListener { selectList(false) }
-        dateField.setOnClickListener { selectDateAction(1) }
-        timeField.setOnClickListener { selectDateAction(2) }
+        binding.listText.setOnClickListener { selectList(false) }
+        binding.dateField.setOnClickListener { selectDateAction(1) }
+        binding.timeField.setOnClickListener { selectDateAction(2) }
     }
 
     private fun initToolbar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.setTitle(R.string.new_task)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.setTitle(R.string.new_task)
     }
 
     private fun selectDateAction(type: Int) {
@@ -314,25 +313,25 @@ class TaskActivity : ThemedActivity() {
 
     private fun switchDate(isDate: Boolean = isDate(), isReminder: Boolean = isReminder()) {
         if (!isDate) {
-            dateField.text = getString(R.string.no_date)
+            binding.dateField.text = getString(R.string.no_date)
         } else {
             showDate()
         }
         if (!isReminder) {
-            timeField.text = getString(R.string.no_reminder)
+            binding.timeField.text = getString(R.string.no_reminder)
         } else {
             showTime()
         }
     }
 
     private fun showDate() {
-        dateField.text = TimeUtil.getGoogleTaskDate(stateViewModel.date.value
+        binding.dateField.text = TimeUtil.getGoogleTaskDate(stateViewModel.date.value
                 ?: System.currentTimeMillis(),
                 prefs.appLanguage)
     }
 
     private fun showTime() {
-        timeField.text = TimeUtil.getTime(stateViewModel.time.value ?: System.currentTimeMillis(),
+        binding.timeField.text = TimeUtil.getTime(stateViewModel.time.value ?: System.currentTimeMillis(),
                 prefs.is24HourFormat, prefs.appLanguage)
     }
 
@@ -380,12 +379,12 @@ class TaskActivity : ThemedActivity() {
 
     private fun saveTask() {
         if (mIsLoading) return
-        val taskName = editField.text.toString().trim()
+        val taskName = binding.editField.text.toString().trim()
         if (taskName.matches("".toRegex())) {
-            editField.error = getString(R.string.must_be_not_empty)
+            binding.editField.error = getString(R.string.must_be_not_empty)
             return
         }
-        val note = detailsField.text.toString().trim()
+        val note = binding.detailsField.text.toString().trim()
         var due: Long = 0
         if (isDate()) due = stateViewModel.date.value ?: 0
         var reminder: Reminder? = null

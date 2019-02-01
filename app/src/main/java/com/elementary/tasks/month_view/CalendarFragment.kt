@@ -13,11 +13,11 @@ import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
+import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
-import kotlinx.android.synthetic.main.fragment_flext_cal.*
 import org.apache.commons.lang3.StringUtils
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,7 +40,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CalendarFragment : BaseCalendarFragment(), MonthCallback {
+class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
 
     lateinit var dayPagerAdapter: MonthPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
@@ -82,7 +82,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        weekdayView.adapter = weekdayAdapter
+        binding.weekdayView.adapter = weekdayAdapter
 
         initPager()
         initViewModel()
@@ -109,7 +109,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
 
     private fun initPager() {
         dayPagerAdapter = MonthPagerAdapter(childFragmentManager)
-        pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
+        binding.pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
     }
 
     private fun updateMenuTitles(mills: Long): String {
@@ -120,7 +120,7 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
 
     private fun showCalendar() {
         dayPagerAdapter = MonthPagerAdapter(childFragmentManager)
-        pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
+        binding.pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
@@ -129,9 +129,9 @@ class CalendarFragment : BaseCalendarFragment(), MonthCallback {
         updateMenuTitles(calendar.timeInMillis)
         datePageChangeListener.setCurrentDateTime(calendar.timeInMillis)
 
-        pager.isEnabled = true
-        pager.addOnPageChangeListener(datePageChangeListener)
-        pager.currentItem = InfiniteViewPager.OFFSET + 1
+        binding.pager.isEnabled = true
+        binding.pager.addOnPageChangeListener(datePageChangeListener)
+        binding.pager.currentItem = InfiniteViewPager.OFFSET + 1
     }
 
     private fun fromMills(mills: Long): MonthPagerItem {

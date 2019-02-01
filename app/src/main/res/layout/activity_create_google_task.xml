@@ -36,7 +36,30 @@
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-                <include layout="@layout/view_progress" />
+                <LinearLayout
+                    android:id="@+id/progressView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="invisible">
+
+                    <androidx.core.widget.ContentLoadingProgressBar
+                        style="@style/Widget.AppCompat.ProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
+
+                    <TextView
+                        android:id="@+id/progressMessageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        tools:text="@string/please_wait" />
+
+                </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/nameLayout"

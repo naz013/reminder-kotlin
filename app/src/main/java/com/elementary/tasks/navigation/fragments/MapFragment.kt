@@ -13,10 +13,10 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
+import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.fragment_events_map.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,7 +36,7 @@ import kotlinx.android.synthetic.main.fragment_events_map.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class MapFragment : BaseNavigationFragment() {
+class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
     private lateinit var viewModel: ActiveGpsRemindersViewModel
     private val mAdapter = LocationPlacesAdapter()
@@ -90,7 +90,7 @@ class MapFragment : BaseNavigationFragment() {
     }
 
     private fun initViews() {
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 when (actions) {
@@ -101,7 +101,7 @@ class MapFragment : BaseNavigationFragment() {
             }
 
         }
-        recyclerView.adapter = mAdapter
+        binding.recyclerView.adapter = mAdapter
         reloadView()
     }
 
@@ -152,11 +152,11 @@ class MapFragment : BaseNavigationFragment() {
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
-            recyclerView?.visibility = View.VISIBLE
-            emptyItem?.visibility = View.GONE
+            binding.recyclerView?.visibility = View.VISIBLE
+            binding.emptyItem?.visibility = View.GONE
         } else {
-            recyclerView?.visibility = View.GONE
-            emptyItem?.visibility = View.VISIBLE
+            binding.recyclerView?.visibility = View.GONE
+            binding.emptyItem?.visibility = View.VISIBLE
         }
     }
 }
