@@ -11,8 +11,6 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.widget_current_tasks_config.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -41,7 +39,7 @@ class EventsWidgetConfigActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_current_tasks_config)
+        setContentView(R.layout.activity_widget_current_tasks_config)
 
         fabSave.setOnClickListener { showTextSizeDialog() }
         bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)

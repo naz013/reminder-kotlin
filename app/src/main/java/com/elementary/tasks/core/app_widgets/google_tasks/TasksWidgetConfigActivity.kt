@@ -12,7 +12,6 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.widget_google_tasks_config.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,7 +39,7 @@ class TasksWidgetConfigActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_google_tasks_config)
+        setContentView(R.layout.activity_widget_google_tasks_config)
 
         fabSave.setOnClickListener { savePrefs() }
         bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)

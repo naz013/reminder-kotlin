@@ -1,376 +1,379 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingTop="24dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="16dp">
+        android:layout_height="wrap_content">
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingTop="24dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="16dp">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/selectInterval"
+            <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/interval"
-                android:textAppearance="?textAppearanceCaption" />
-
-            <LinearLayout
-                android:id="@+id/intervalContainer"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/from"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/create_margin"
-                    android:textAppearance="?textAppearanceBody1"
-                    tools:text="From" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/to"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?textAppearanceBody1"
-                    tools:text="To" />
-
-            </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/selectHours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/create_margin"
-                android:text="@string/hours"
-                android:textAppearance="?textAppearanceCaption" />
-
-            <LinearLayout
-                android:id="@+id/hoursContainer"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/selectInterval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ToggleButton
-                        android:id="@+id/zero"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="0"
-                        android:textOn="0" />
-
-                    <ToggleButton
-                        android:id="@+id/one"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="1"
-                        android:textOn="1" />
-
-                    <ToggleButton
-                        android:id="@+id/two"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="2"
-                        android:textOn="2" />
-
-                    <ToggleButton
-                        android:id="@+id/three"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="3"
-                        android:textOn="3" />
-
-                    <ToggleButton
-                        android:id="@+id/four"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="4"
-                        android:textOn="4" />
-
-                    <ToggleButton
-                        android:id="@+id/five"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="5"
-                        android:textOn="5" />
-
-                    <ToggleButton
-                        android:id="@+id/six"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="6"
-                        android:textOn="6" />
-
-                    <ToggleButton
-                        android:id="@+id/seven"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="7"
-                        android:textOn="7" />
-                </LinearLayout>
+                    android:text="@string/interval"
+                    android:textAppearance="?textAppearanceCaption" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/intervalContainer"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ToggleButton
-                        android:id="@+id/eight"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/from"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/create_margin"
                         android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="8"
-                        android:textOn="8" />
+                        tools:text="From" />
 
-                    <ToggleButton
-                        android:id="@+id/nine"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/to"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="9"
-                        android:textOn="9" />
+                        tools:text="To" />
 
-                    <ToggleButton
-                        android:id="@+id/ten"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="10"
-                        android:textOn="10" />
-
-                    <ToggleButton
-                        android:id="@+id/eleven"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="11"
-                        android:textOn="11" />
-
-                    <ToggleButton
-                        android:id="@+id/twelve"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="12"
-                        android:textOn="12" />
-
-                    <ToggleButton
-                        android:id="@+id/thirteen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="13"
-                        android:textOn="13" />
-
-                    <ToggleButton
-                        android:id="@+id/fourteen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="14"
-                        android:textOn="14" />
-
-                    <ToggleButton
-                        android:id="@+id/fifteen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="15"
-                        android:textOn="15" />
                 </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/selectHours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/create_margin"
+                    android:text="@string/hours"
+                    android:textAppearance="?textAppearanceCaption" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/hoursContainer"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    <ToggleButton
-                        android:id="@+id/sixteen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="16"
-                        android:textOn="16" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <ToggleButton
-                        android:id="@+id/seventeen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="17"
-                        android:textOn="17" />
+                        <ToggleButton
+                            android:id="@+id/zero"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="0"
+                            android:textOn="0" />
 
-                    <ToggleButton
-                        android:id="@+id/eighteen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="18"
-                        android:textOn="18" />
+                        <ToggleButton
+                            android:id="@+id/one"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="1"
+                            android:textOn="1" />
 
-                    <ToggleButton
-                        android:id="@+id/nineteen"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="19"
-                        android:textOn="19" />
+                        <ToggleButton
+                            android:id="@+id/two"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="2"
+                            android:textOn="2" />
 
-                    <ToggleButton
-                        android:id="@+id/twenty"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="20"
-                        android:textOn="20" />
+                        <ToggleButton
+                            android:id="@+id/three"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="3"
+                            android:textOn="3" />
 
-                    <ToggleButton
-                        android:id="@+id/twentyOne"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="21"
-                        android:textOn="21" />
+                        <ToggleButton
+                            android:id="@+id/four"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="4"
+                            android:textOn="4" />
 
-                    <ToggleButton
-                        android:id="@+id/twentyTwo"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="22"
-                        android:textOn="22" />
+                        <ToggleButton
+                            android:id="@+id/five"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="5"
+                            android:textOn="5" />
 
-                    <ToggleButton
-                        android:id="@+id/twentyThree"
-                        android:layout_width="@dimen/dialog_toggle_size"
-                        android:layout_height="@dimen/dialog_toggle_size"
-                        android:background="@drawable/toggle_blue"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:textColor="@color/weekday_text_selector"
-                        android:textOff="23"
-                        android:textOn="23" />
+                        <ToggleButton
+                            android:id="@+id/six"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="6"
+                            android:textOn="6" />
+
+                        <ToggleButton
+                            android:id="@+id/seven"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="7"
+                            android:textOn="7" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ToggleButton
+                            android:id="@+id/eight"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="8"
+                            android:textOn="8" />
+
+                        <ToggleButton
+                            android:id="@+id/nine"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="9"
+                            android:textOn="9" />
+
+                        <ToggleButton
+                            android:id="@+id/ten"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="10"
+                            android:textOn="10" />
+
+                        <ToggleButton
+                            android:id="@+id/eleven"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="11"
+                            android:textOn="11" />
+
+                        <ToggleButton
+                            android:id="@+id/twelve"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="12"
+                            android:textOn="12" />
+
+                        <ToggleButton
+                            android:id="@+id/thirteen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="13"
+                            android:textOn="13" />
+
+                        <ToggleButton
+                            android:id="@+id/fourteen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="14"
+                            android:textOn="14" />
+
+                        <ToggleButton
+                            android:id="@+id/fifteen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="15"
+                            android:textOn="15" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ToggleButton
+                            android:id="@+id/sixteen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="16"
+                            android:textOn="16" />
+
+                        <ToggleButton
+                            android:id="@+id/seventeen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="17"
+                            android:textOn="17" />
+
+                        <ToggleButton
+                            android:id="@+id/eighteen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="18"
+                            android:textOn="18" />
+
+                        <ToggleButton
+                            android:id="@+id/nineteen"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="19"
+                            android:textOn="19" />
+
+                        <ToggleButton
+                            android:id="@+id/twenty"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="20"
+                            android:textOn="20" />
+
+                        <ToggleButton
+                            android:id="@+id/twentyOne"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="21"
+                            android:textOn="21" />
+
+                        <ToggleButton
+                            android:id="@+id/twentyTwo"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="22"
+                            android:textOn="22" />
+
+                        <ToggleButton
+                            android:id="@+id/twentyThree"
+                            android:layout_width="@dimen/dialog_toggle_size"
+                            android:layout_height="@dimen/dialog_toggle_size"
+                            android:background="@drawable/toggle_blue"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:textColor="@color/weekday_text_selector"
+                            android:textOff="23"
+                            android:textOn="23" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </RadioGroup>
-    </LinearLayout>
-</ScrollView>
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+</layout>

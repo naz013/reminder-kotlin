@@ -7,7 +7,6 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import kotlinx.android.synthetic.main.widget_combined_config.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -35,7 +34,7 @@ class CombinedWidgetConfigActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_combined_config)
+        setContentView(R.layout.activity_widget_combined_config)
 
         fabSave.setOnClickListener { savePrefs() }
         bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)

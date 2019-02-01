@@ -15,6 +15,7 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
+    dataBinding { enabled = true }
     signingConfigs {
         freeApp {
             storeFile file('justreminder.jks')

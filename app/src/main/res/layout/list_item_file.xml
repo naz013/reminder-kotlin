@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/clickView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:stateListAnimator="@animator/card_animator"
-    app:cardCornerRadius="5dp"
-    tools:targetApi="lollipop">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/clickView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:stateListAnimator="@animator/card_animator"
+        app:cardCornerRadius="5dp"
+        tools:targetApi="lollipop">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/itemImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            app:tint="?android:textColorPrimary" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/itemPhoto"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/itemName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:textAppearance="?textAppearanceSubtitle1"
-            tools:text="Name" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/itemImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:tint="?android:textColorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/itemPhoto"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/itemName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:text="Name" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

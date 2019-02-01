@@ -1,49 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/clickView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:stateListAnimator="@animator/card_animator"
-    tools:targetApi="lollipop">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/clickView"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:stateListAnimator="@animator/card_animator"
+        tools:targetApi="lollipop">
 
-        <ImageView
-            android:id="@+id/gradientView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="72dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            <ImageView
+                android:id="@+id/gradientView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="?textAppearanceSubtitle1"
-                tools:text="Name" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/button_more"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-                app:tint="@color/pureBlack" />
-        </LinearLayout>
-    </RelativeLayout>
-</com.google.android.material.card.MaterialCardView>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?textAppearanceSubtitle1"
+                    tools:text="Name" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/button_more"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_more_vert_24px"
+                    app:tint="@color/pureBlack" />
+            </LinearLayout>
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

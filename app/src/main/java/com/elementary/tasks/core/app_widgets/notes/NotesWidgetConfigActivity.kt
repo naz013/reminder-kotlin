@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
-import kotlinx.android.synthetic.main.widget_note_config.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -35,7 +34,7 @@ class NotesWidgetConfigActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_note_config)
+        setContentView(R.layout.activity_widget_note_config)
 
         fabSave.setOnClickListener { savePrefs() }
         bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)

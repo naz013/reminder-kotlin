@@ -1,78 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elementary.tasks.core.drawing.DrawView
-        android:id="@+id/draw_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:background="?android:colorBackground">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:background="?colorSecondary12"
-        android:padding="8dp">
+        <com.elementary.tasks.core.drawing.DrawView
+            android:id="@+id/draw_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/undoButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_undo_24px"
-            app:tint="?colorSecondary" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:background="?colorSecondary12"
+            android:padding="8dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/redoButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_redo_24px"
-            app:tint="?colorSecondary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/undoButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_undo_24px"
+                app:tint="?colorSecondary" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/clearButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_cancel_24px"
-            app:tint="?colorSecondary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/redoButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_redo_24px"
+                app:tint="?colorSecondary" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/layersButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_layers_24px"
-            app:tint="?colorSecondary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/clearButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_cancel_24px"
+                app:tint="?colorSecondary" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/layersButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_layers_24px"
+                app:tint="?colorSecondary" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/currentStrokeColorButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/drawable_black" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/currentToolButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_pen"
-            app:tint="?colorSecondary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/currentStrokeColorButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/drawable_black" />
 
-    </LinearLayout>
-</RelativeLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/currentToolButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pen"
+                app:tint="?colorSecondary" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

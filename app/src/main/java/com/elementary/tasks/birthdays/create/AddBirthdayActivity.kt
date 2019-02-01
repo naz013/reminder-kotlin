@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.binding.activities.AddBirthdayActivityBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.*
@@ -45,7 +44,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AddBirthdayActivity : ThemedActivity<AddBirthdayActivityBinding>() {
+class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.ActivityAddBirthdayBinding>() {
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
@@ -66,8 +65,6 @@ class AddBirthdayActivity : ThemedActivity<AddBirthdayActivityBinding>() {
     }
 
     override fun layoutRes(): Int = R.layout.activity_add_birthday
-
-    override fun newBinding(activity: Activity): AddBirthdayActivityBinding = AddBirthdayActivityBinding(activity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

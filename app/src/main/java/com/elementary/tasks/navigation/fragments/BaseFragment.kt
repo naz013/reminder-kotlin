@@ -5,10 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.fragment.app.Fragment
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.binding.Binding
+import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import javax.inject.Inject
@@ -31,7 +30,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseFragment<B : Binding> : Fragment() {
+abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     var callback: FragmentCallback? = null
         private set
@@ -45,8 +44,6 @@ abstract class BaseFragment<B : Binding> : Fragment() {
     lateinit var buttonObservable: GlobalButtonObservable
     @Inject
     lateinit var notifier: Notifier
-
-    lateinit var binding: B
     var isDark = false
         private set
     private var mLastScroll: Int = 0
@@ -67,17 +64,7 @@ abstract class BaseFragment<B : Binding> : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         isDark = themeUtil.isDark
-        val res = layoutRes()
-        return if (res != 0) {
-            inflater.inflate(layoutRes(), container, false)
-        } else {
-            super.onCreateView(inflater, container, savedInstanceState)
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = newBinding(view)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     protected fun setScroll(scroll: Int) {
@@ -104,9 +91,4 @@ abstract class BaseFragment<B : Binding> : Fragment() {
     }
 
     abstract fun getTitle(): String
-
-    abstract fun newBinding(view: View): B
-
-    @LayoutRes
-    open fun layoutRes(): Int = 0
 }
