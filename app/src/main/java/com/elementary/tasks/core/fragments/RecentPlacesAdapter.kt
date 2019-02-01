@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.fragments
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
@@ -11,7 +9,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.list_item_map_place.view.*
+import com.elementary.tasks.databinding.ListItemMapPlaceBinding
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -48,23 +46,23 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
         return mData.size
     }
 
-    inner class ViewHolder(itemView: View) : BaseHolder(itemView) {
+    inner class ViewHolder(parent: ViewGroup) : BaseHolder<ListItemMapPlaceBinding>(parent, R.layout.list_item_map_place) {
         fun bind(item: Place) {
-            itemView.textView.text = item.name
+            binding.textView.text = item.name
 
             val dmy = TimeUtil.getPlaceDateTimeFromGmt(item.dateTime, prefs.appLanguage)
-            itemView.dayView.text = dmy.day
-            itemView.monthYearView.text = "${dmy.month}\n${dmy.year}"
+            binding.dayView.text = dmy.day
+            binding.monthYearView.text = "${dmy.month}\n${dmy.year}"
 
             DrawableHelper.withContext(itemView.context)
                     .withDrawable(R.drawable.ic_twotone_place_24px)
                     .withColor(themeUtil.getNoteLightColor(item.marker))
                     .tint()
-                    .applyTo(itemView.markerImage)
+                    .applyTo(binding.markerImage)
         }
 
         init {
-            itemView.itemCard.setOnClickListener { view ->
+            binding.itemCard.setOnClickListener { view ->
                 actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
         }
@@ -74,9 +72,7 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
         return mData[position]
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_map_place, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))

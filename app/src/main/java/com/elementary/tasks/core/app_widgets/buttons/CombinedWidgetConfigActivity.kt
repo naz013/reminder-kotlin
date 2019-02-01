@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.databinding.ActivityWidgetCombinedConfigBinding
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -26,20 +27,21 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CombinedWidgetConfigActivity : ThemedActivity() {
+class CombinedWidgetConfigActivity : ThemedActivity<ActivityWidgetCombinedConfigBinding>() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
 
+    override fun layoutRes(): Int = R.layout.activity_widget_combined_config
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.activity_widget_combined_config)
 
-        fabSave.setOnClickListener { savePrefs() }
-        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        bgColorSlider.setListener { position, _ ->
-            widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+        binding.fabSave.setOnClickListener { savePrefs() }
+        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setListener { position, _ ->
+            binding.widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
         updateIcons(0)
@@ -51,21 +53,21 @@ class CombinedWidgetConfigActivity : ThemedActivity() {
         val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
 
         val headerBg = sp.getInt(WIDGET_BG_COLOR + widgetID, 0)
-        bgColorSlider.setSelection(headerBg)
+        binding.bgColorSlider.setSelection(headerBg)
         updateIcons(headerBg)
     }
 
     private fun updateIcons(code: Int) {
         if (WidgetUtils.isDarkBg(code)) {
-            btn_add_reminder.setImageResource(R.drawable.ic_twotone_alarm_white)
-            btn_add_note.setImageResource(R.drawable.ic_twotone_note_white)
-            btn_add_birthday.setImageResource(R.drawable.ic_twotone_cake_white)
-            btn_voice.setImageResource(R.drawable.ic_twotone_mic_white)
+            binding.btnAddReminder.setImageResource(R.drawable.ic_twotone_alarm_white)
+            binding.btnAddNote.setImageResource(R.drawable.ic_twotone_note_white)
+            binding.btnAddBirthday.setImageResource(R.drawable.ic_twotone_cake_white)
+            binding.btnVoice.setImageResource(R.drawable.ic_twotone_mic_white)
         } else {
-            btn_add_reminder.setImageResource(R.drawable.ic_twotone_alarm_24px)
-            btn_add_note.setImageResource(R.drawable.ic_twotone_note_24px)
-            btn_add_birthday.setImageResource(R.drawable.ic_twotone_cake_24px)
-            btn_voice.setImageResource(R.drawable.ic_twotone_mic_24px)
+            binding.btnAddReminder.setImageResource(R.drawable.ic_twotone_alarm_24px)
+            binding.btnAddNote.setImageResource(R.drawable.ic_twotone_note_24px)
+            binding.btnAddBirthday.setImageResource(R.drawable.ic_twotone_cake_24px)
+            binding.btnVoice.setImageResource(R.drawable.ic_twotone_mic_24px)
         }
     }
 
@@ -87,7 +89,7 @@ class CombinedWidgetConfigActivity : ThemedActivity() {
     private fun savePrefs() {
         val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
         sp.edit()
-                .putInt(WIDGET_BG_COLOR + widgetID, bgColorSlider.selectedItem)
+                .putInt(WIDGET_BG_COLOR + widgetID, binding.bgColorSlider.selectedItem)
                 .apply()
         val appWidgetManager = AppWidgetManager.getInstance(this)
         CombinedButtonsWidget.updateWidget(this, appWidgetManager, sp, widgetID)

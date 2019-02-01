@@ -1,8 +1,9 @@
 package com.elementary.tasks.core.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -28,7 +29,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseMapFragment : Fragment() {
+abstract class BaseMapFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     @Inject
     lateinit var themeUtil: ThemeUtil

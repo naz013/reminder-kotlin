@@ -16,11 +16,11 @@ import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
+import com.elementary.tasks.databinding.FragmentDayViewBinding
 import com.elementary.tasks.day_view.day.DayCallback
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.day_view.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
-import kotlinx.android.synthetic.main.fragment_day_view.*
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
@@ -42,7 +42,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class DayViewFragment : BaseCalendarFragment(), DayCallback {
+class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
     lateinit var dayPagerAdapter: DayPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
@@ -82,7 +82,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { showActionDialog(false) }
+        binding.fab.setOnClickListener { showActionDialog(false) }
 
         initPager()
         initViewModel()
@@ -108,7 +108,7 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
 
     private fun initPager() {
         dayPagerAdapter = DayPagerAdapter(childFragmentManager)
-        pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
+        binding.pager.adapter = InfinitePagerAdapter(dayPagerAdapter)
     }
 
     private fun updateMenuTitles(): String {
@@ -147,9 +147,9 @@ class DayViewFragment : BaseCalendarFragment(), DayCallback {
         updateMenuTitles()
 
         datePageChangeListener.setCurrentDateTime(dateMills)
-        pager.isEnabled = true
-        pager.addOnPageChangeListener(datePageChangeListener)
-        pager.currentItem = InfiniteViewPager.OFFSET + 1
+        binding.pager.isEnabled = true
+        binding.pager.addOnPageChangeListener(datePageChangeListener)
+        binding.pager.currentItem = InfiniteViewPager.OFFSET + 1
     }
 
     override fun getViewModel(): DayViewViewModel {

@@ -18,7 +18,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_application_list.*
+import com.elementary.tasks.databinding.ActivityApplicationListBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,13 +38,13 @@ import kotlinx.android.synthetic.main.activity_application_list.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SelectApplicationActivity : ThemedActivity() {
+class SelectApplicationActivity : ThemedActivity<ActivityApplicationListBinding>() {
 
     private lateinit var viewModel: SelectApplicationViewModel
     private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
     private val searchModifier = object : SearchModifier<ApplicationItem>(null, {
         adapter.submitList(it)
-        contactsList.smoothScrollToPosition(0)
+        binding.contactsList.smoothScrollToPosition(0)
         refreshView(it.size)
     }) {
         override fun filter(v: ApplicationItem): Boolean {
@@ -53,15 +53,15 @@ class SelectApplicationActivity : ThemedActivity() {
         }
     }
 
+    override fun layoutRes(): Int = R.layout.activity_application_list
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SelectApplicationViewModel::class.java)
         viewModel.packageManager = packageManager
         viewModel.loadApps()
 
-        setContentView(R.layout.activity_application_list)
-
-        loaderView.visibility = View.GONE
+        binding.loaderView.visibility = View.GONE
         initActionBar()
         initSearchView()
         initRecyclerView()
@@ -84,11 +84,11 @@ class SelectApplicationActivity : ThemedActivity() {
     }
 
     private fun hideProgress() {
-        loaderView.visibility = View.GONE
+        binding.loaderView.visibility = View.GONE
     }
 
     private fun showProgress() {
-        loaderView.visibility = View.VISIBLE
+        binding.loaderView.visibility = View.VISIBLE
     }
 
     private fun initRecyclerView() {
@@ -103,19 +103,19 @@ class SelectApplicationActivity : ThemedActivity() {
             }
         }
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
-            contactsList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.contactsList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            contactsList.layoutManager = LinearLayoutManager(this)
+            binding.contactsList.layoutManager = LinearLayoutManager(this)
         }
-        contactsList.adapter = adapter
-        contactsList.isNestedScrollingEnabled = false
-        ViewUtils.listenScrollableView(scroller) {
-            toolbarView.isSelected = it > 0
+        binding.contactsList.adapter = adapter
+        binding.contactsList.isNestedScrollingEnabled = false
+        ViewUtils.listenScrollableView(binding.scroller) {
+            binding.toolbarView.isSelected = it > 0
         }
     }
 
     private fun initSearchView() {
-        searchField.addTextChangedListener(object : TextWatcher {
+        binding.searchField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
@@ -129,22 +129,22 @@ class SelectApplicationActivity : ThemedActivity() {
     }
 
     private fun initActionBar() {
-        backButton.setOnClickListener { onBackPressed() }
+        binding.backButton.setOnClickListener { onBackPressed() }
     }
 
     override fun onPause() {
         super.onPause()
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.hideSoftInputFromWindow(searchField.windowToken, 0)
+        imm?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
     }
 
     private fun refreshView(count: Int) {
         if (count > 0) {
-            emptyItem.visibility = View.GONE
-            scroller.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
+            binding.scroller.visibility = View.VISIBLE
         } else {
-            scroller.visibility = View.GONE
-            emptyItem.visibility = View.VISIBLE
+            binding.scroller.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 

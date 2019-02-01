@@ -1,12 +1,10 @@
 package com.elementary.tasks.core
 
-import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
 import android.os.Bundle
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.binding.activities.EmptyActivityBinding
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
@@ -18,7 +16,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import javax.inject.Inject
 
-class IntentActivity: ThemedActivity<EmptyActivityBinding>() {
+class IntentActivity: ThemedActivity<Nothing>() {
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -28,8 +26,6 @@ class IntentActivity: ThemedActivity<EmptyActivityBinding>() {
     }
 
     override fun layoutRes(): Int = 0
-
-    override fun newBinding(activity: Activity): EmptyActivityBinding = EmptyActivityBinding(activity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
