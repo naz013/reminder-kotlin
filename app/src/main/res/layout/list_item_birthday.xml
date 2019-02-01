@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemCard"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp"
-    android:clipChildren="false"
-    android:stateListAnimator="@animator/card_animator"
-    app:cardCornerRadius="5dp"
-    app:contentPadding="1dp"
-    tools:targetApi="lollipop">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/itemCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clipChildren="false"
+        android:stateListAnimator="@animator/card_animator"
+        app:cardCornerRadius="5dp"
+        app:contentPadding="1dp"
+        tools:targetApi="lollipop">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/eventText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textAppearance="?textAppearanceBody1"
-                tools:text="Title" />
+                android:focusable="false"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/eventNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:maxLines="1"
-                android:textAppearance="?textAppearanceBody2"
-                tools:text="Number" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/eventText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="Title" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/eventDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:maxLines="2"
-                android:textAppearance="?textAppearanceBody2"
-                tools:text="Date" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/eventNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceBody2"
+                    tools:text="Number" />
 
-        </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/eventDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="2"
+                    android:textAppearance="?textAppearanceBody2"
+                    tools:text="Date" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/buttonMore"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="8dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-            app:tint="?android:textColorPrimary" />
-    </RelativeLayout>
-</com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/buttonMore"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
+                app:tint="?android:textColorPrimary" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

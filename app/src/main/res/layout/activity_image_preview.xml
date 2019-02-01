@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/photo_pager"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/photo_pager"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="?android:colorBackground" />
+            android:layout_marginTop="?actionBarSize"
+            android:layout_height="match_parent" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</RelativeLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="?android:colorBackground" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+    </RelativeLayout>
+</layout>

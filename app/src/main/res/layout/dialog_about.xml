@@ -1,76 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="horizontal"
-    android:paddingLeft="32dp"
-    android:paddingTop="32dp"
-    android:paddingRight="32dp"
-    android:paddingBottom="32dp">
-
-    <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
-        android:scaleType="centerInside"
-        android:src="@mipmap/ic_launcher" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="32dp"
+        android:paddingTop="32dp"
+        android:paddingRight="32dp"
+        android:paddingBottom="32dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appName"
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_launcher" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textAppearance="?textAppearanceHeadline6" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/appVersion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textAppearance="?textAppearanceSubtitle1"
-            tools:text="7.0" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/rights"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="@string/copyright"
-            android:textAppearance="?textAppearanceSubtitle2" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/translators"
-            android:textAppearance="?textAppearanceSubtitle2" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:overScrollMode="never"
-            android:scrollbars="none">
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/translators_list"
-                android:layout_width="match_parent"
+                android:id="@+id/appName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textAppearance="?textAppearanceHeadline6" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:text="7.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/rights"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/copyright"
                 android:textAppearance="?textAppearanceSubtitle2" />
 
-        </ScrollView>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/translators"
+                android:textAppearance="?textAppearanceSubtitle2" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/translators_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceSubtitle2" />
+
+            </ScrollView>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</layout>

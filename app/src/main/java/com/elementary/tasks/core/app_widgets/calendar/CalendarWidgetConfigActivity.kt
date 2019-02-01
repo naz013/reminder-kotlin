@@ -9,7 +9,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.widget_calendar_config.*
 import java.util.*
 
 /**
@@ -38,7 +37,7 @@ class CalendarWidgetConfigActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_calendar_config)
+        setContentView(R.layout.activity_widget_calendar_config)
         fabSave.setOnClickListener { savePrefs() }
         bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bgColorSlider.setListener { position, _ ->

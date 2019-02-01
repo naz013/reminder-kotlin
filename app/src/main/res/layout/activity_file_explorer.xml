@@ -1,230 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/toolbarView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?android:colorBackground"
-        android:stateListAnimator="@animator/toolbar_animator"
-        tools:targetApi="lollipop">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/toolbarView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?actionBarSize"
             android:background="?android:colorBackground"
-            app:contentInsetEnd="0dp"
-            app:contentInsetStart="0dp">
+            android:stateListAnimator="@animator/toolbar_animator"
+            tools:targetApi="lollipop">
 
-            <LinearLayout
+            <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/choose_file"
-                    android:textAppearance="?textAppearanceHeadline6" />
-
-                <RelativeLayout
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize">
-
-                    <com.tuyenmonkey.mkloader.MKLoader
-                        android:id="@+id/loaderView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        app:mk_color="?colorSecondary"
-                        app:mk_type="ClassicSpinner" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroller"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbarView">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_margin"
-                android:layout_marginEnd="@dimen/list_margin"
-                android:visibility="visible" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="76dp" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <LinearLayout
-        android:id="@+id/emptyItem"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbarView"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/emptyImage"
-            android:layout_width="@dimen/empty_image_size"
-            android:layout_height="@dimen/empty_image_size"
-            android:layout_marginBottom="24dp"
-            app:srcCompat="@drawable/ic_human_resources" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/emptyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:layout_marginRight="24dp"
-            android:gravity="center|top"
-            android:text="@string/no_files"
-            android:textAppearance="?textAppearanceHeadline6" />
-
-    </LinearLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/material_margin"
-        android:layout_marginEnd="@dimen/material_margin"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="25dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/playerLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/currentMelody"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    tools:text="Melody" />
+                android:background="?android:colorBackground"
+                app:contentInsetEnd="0dp"
+                app:contentInsetStart="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/playButton"
-                        style="@style/Widget.AppCompat.ActionButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:contentDescription="@string/acc_play"
-                        app:srcCompat="@drawable/ic_twotone_play_circle_filled_24px"
+                        android:id="@+id/backButton"
+                        android:layout_width="?actionBarSize"
+                        android:layout_height="?actionBarSize"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
                         app:tint="?android:textColorPrimary" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/pauseButton"
-                        style="@style/Widget.AppCompat.ActionButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
-                        android:contentDescription="@string/acc_pause"
-                        app:srcCompat="@drawable/ic_twotone_pause_circle_outline_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/stopButton"
-                        style="@style/Widget.AppCompat.ActionButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="8dp"
-                        android:contentDescription="@string/acc_stop"
-                        app:srcCompat="@drawable/ic_twotone_stop_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <View
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/choose_file"
+                        android:textAppearance="?textAppearanceHeadline6" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/saveButton"
-                        style="@style/Widget.AppCompat.ActionButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:contentDescription="@string/acc_stop"
-                        app:srcCompat="@drawable/ic_twotone_done_24px"
-                        app:tint="?android:textColorPrimary" />
+                    <RelativeLayout
+                        android:layout_width="?actionBarSize"
+                        android:layout_height="?actionBarSize">
+
+                        <com.tuyenmonkey.mkloader.MKLoader
+                            android:id="@+id/loaderView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="8dp"
+                            app:mk_color="?colorSecondary"
+                            app:mk_type="ClassicSpinner" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/searchLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbarView">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-4dp"
-                android:layout_marginBottom="-8dp"
-                app:boxBackgroundColor="?colorSecondary12"
-                app:boxCornerRadiusTopEnd="25dp"
-                app:boxCornerRadiusTopStart="25dp">
+                android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/searchField"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/search"
-                    android:maxLength="16"
-                    android:maxLines="1"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:textAppearance="?textAppearanceSubtitle1" />
+                    android:layout_marginStart="@dimen/list_margin"
+                    android:layout_marginEnd="@dimen/list_margin"
+                    android:visibility="visible" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="76dp" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/emptyItem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbarView"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/emptyImage"
+                android:layout_width="@dimen/empty_image_size"
+                android:layout_height="@dimen/empty_image_size"
+                android:layout_marginBottom="24dp"
+                app:srcCompat="@drawable/ic_human_resources" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/emptyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center|top"
+                android:text="@string/no_files"
+                android:textAppearance="?textAppearanceHeadline6" />
+
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</RelativeLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="25dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/playerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/currentMelody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        tools:text="Melody" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/playButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:contentDescription="@string/acc_play"
+                            app:srcCompat="@drawable/ic_twotone_play_circle_filled_24px"
+                            app:tint="?android:textColorPrimary" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/pauseButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@string/acc_pause"
+                            app:srcCompat="@drawable/ic_twotone_pause_circle_outline_24px"
+                            app:tint="?android:textColorPrimary" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/stopButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@string/acc_stop"
+                            app:srcCompat="@drawable/ic_twotone_stop_24px"
+                            app:tint="?android:textColorPrimary" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/saveButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:contentDescription="@string/acc_stop"
+                            app:srcCompat="@drawable/ic_twotone_done_24px"
+                            app:tint="?android:textColorPrimary" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/searchLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:layout_marginBottom="-8dp"
+                    app:boxBackgroundColor="?colorSecondary12"
+                    app:boxCornerRadiusTopEnd="25dp"
+                    app:boxCornerRadiusTopStart="25dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/search"
+                        android:maxLength="16"
+                        android:maxLines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textAppearance="?textAppearanceSubtitle1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+</layout>

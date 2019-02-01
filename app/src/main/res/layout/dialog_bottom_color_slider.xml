@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:colorBackground"
-    android:orientation="vertical"
-    android:padding="24dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.github.naz013.colorslider.ColorSlider
-        android:id="@+id/colorSlider"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="32dp" />
+        <com.github.naz013.colorslider.ColorSlider
+            android:id="@+id/colorSlider"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
 
-</LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp" />
+
+    </LinearLayout>
+</layout>

@@ -1,18 +1,18 @@
 package com.elementary.tasks.core
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.IBinder
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.binding.ActivityBinding
 import com.elementary.tasks.core.utils.*
 import javax.inject.Inject
 
-abstract class ThemedActivity<B : ActivityBinding> : AppCompatActivity() {
+abstract class ThemedActivity<B : ViewDataBinding> : AppCompatActivity() {
 
     @Inject
     lateinit var themeUtil: ThemeUtil
@@ -34,8 +34,6 @@ abstract class ThemedActivity<B : ActivityBinding> : AppCompatActivity() {
 
     protected open fun applyTheme(): Boolean = true
 
-    abstract fun newBinding(activity: Activity): B
-
     @LayoutRes
     abstract fun layoutRes(): Int
 
@@ -47,9 +45,8 @@ abstract class ThemedActivity<B : ActivityBinding> : AppCompatActivity() {
         isDark = themeUtil.isDark
 
         if (layoutRes() != 0) {
-            setContentView(layoutRes())
+            binding = DataBindingUtil.setContentView(this, layoutRes())
         }
-        binding = newBinding(this)
     }
 
     override fun onStart() {

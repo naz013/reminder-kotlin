@@ -11,9 +11,9 @@ import android.text.TextUtils
 import android.view.MotionEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.binding.ActivityBinding
 import com.elementary.tasks.core.utils.*
 import timber.log.Timber
 import java.io.File
@@ -39,7 +39,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseNotificationActivity<B : ActivityBinding> : ThemedActivity<B>() {
+abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>() {
 
     private var tts: TextToSpeech? = null
     private var mWakeLock: PowerManager.WakeLock? = null
