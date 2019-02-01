@@ -2,26 +2,27 @@ package com.elementary.tasks.core.contacts
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.list_item_contact.view.*
+import com.elementary.tasks.databinding.ListItemContactBinding
 
-class ContactHolder(itemView: View, val isDark: Boolean, callback: ((Int) -> Unit)?) : RecyclerView.ViewHolder(itemView) {
+class ContactHolder(parent: ViewGroup, val isDark: Boolean, callback: ((Int) -> Unit)?)
+    : HolderBinding<ListItemContactBinding>(parent, R.layout.list_item_contact) {
     fun bind(contactItem: ContactItem) {
-        itemView.itemName.text = contactItem.name
-        loadImage(itemView.itemImage, contactItem)
+        binding.itemName.text = contactItem.name
+        loadImage(binding.itemImage, contactItem)
     }
 
     init {
-        itemView.clickView.setOnClickListener { callback?.invoke(adapterPosition) }
+        binding.clickView.setOnClickListener { callback?.invoke(adapterPosition) }
     }
 
     private fun loadImage(imageView: ImageView, contactItem: ContactItem) {

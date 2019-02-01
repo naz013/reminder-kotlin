@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays.preview
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,11 +13,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
-import com.elementary.tasks.core.binding.activities.ShowBirthdayActivityBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
+import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import java.util.*
 
 /**
@@ -39,7 +38,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShowBirthdayActivity : BaseNotificationActivity<ShowBirthdayActivityBinding>() {
+class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>() {
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
@@ -156,8 +155,6 @@ class ShowBirthdayActivity : BaseNotificationActivity<ShowBirthdayActivityBindin
     }
 
     override fun layoutRes(): Int = R.layout.activity_show_birthday
-
-    override fun newBinding(activity: Activity): ShowBirthdayActivityBinding = ShowBirthdayActivityBinding(activity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

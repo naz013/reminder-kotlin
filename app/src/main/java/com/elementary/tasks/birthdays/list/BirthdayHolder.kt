@@ -7,12 +7,12 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.binding.holders.ListItemBirthday
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.databinding.ListItemBirthdayBinding
 import javax.inject.Inject
 
 /**
@@ -34,7 +34,7 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val listener: ((View, Int, ListActions) -> Unit)? = null) :
-        HolderBinding<ListItemBirthday>(parent, R.layout.list_item_birthday, { ListItemBirthday(it) }) {
+        HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday) {
 
     @Inject
     lateinit var prefs: Prefs

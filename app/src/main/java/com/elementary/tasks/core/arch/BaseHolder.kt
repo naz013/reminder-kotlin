@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.arch
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.binding.Binding
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -25,8 +24,8 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseHolder<B : Binding>(parent: ViewGroup, @LayoutRes res: Int, builder: (View) -> B)
-    : HolderBinding<B>(parent, res, builder) {
+abstract class BaseHolder<B : ViewDataBinding>(parent: ViewGroup, @LayoutRes res: Int)
+    : HolderBinding<B>(parent, res) {
 
     @Inject
     lateinit var prefs: Prefs

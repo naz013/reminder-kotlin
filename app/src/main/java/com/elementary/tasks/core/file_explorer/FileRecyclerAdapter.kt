@@ -1,17 +1,16 @@
 package com.elementary.tasks.core.file_explorer
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.UriUtil
-import kotlinx.android.synthetic.main.list_item_file.view.*
+import com.elementary.tasks.databinding.ListItemFileBinding
 import timber.log.Timber
 import java.io.File
 
@@ -47,49 +46,49 @@ class FileRecyclerAdapter : ListAdapter<FileItem, FileRecyclerAdapter.ContactVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_file, parent, false))
+        return ContactViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ContactViewHolder(parent: ViewGroup) : HolderBinding<ListItemFileBinding>(parent, R.layout.list_item_file) {
         fun bind(fileItem: FileItem) {
             if (fileItem.isUp) {
-                itemView.itemName.text = itemView.context.getString(R.string.up)
+                binding.itemName.text = itemView.context.getString(R.string.up)
             } else {
-                itemView.itemName.text = fileItem.fileName
+                binding.itemName.text = fileItem.fileName
             }
             loadImage(fileItem)
         }
 
         init {
-            itemView.clickView.setOnClickListener {
+            binding.clickView.setOnClickListener {
                 clickListener?.onAction(it, adapterPosition, getFileItem(adapterPosition), ListActions.OPEN)
             }
-            itemView.clickView.setOnLongClickListener {
+            binding.clickView.setOnLongClickListener {
                 clickListener?.onAction(it, adapterPosition, getFileItem(adapterPosition), ListActions.MORE)
                 return@setOnLongClickListener true
             }
         }
 
         private fun loadImage(item: FileItem) {
-            itemView.itemImage.visibility = View.VISIBLE
-            itemView.itemPhoto.visibility = View.GONE
+            binding.itemImage.visibility = View.VISIBLE
+            binding.itemPhoto.visibility = View.GONE
             if (item.filePath != "") {
-                itemView.itemImage.setImageResource(getFileIcon(File(item.filePath)))
+                binding.itemImage.setImageResource(getFileIcon(File(item.filePath)))
             } else {
-                itemView.itemImage.setImageResource(item.icon)
+                binding.itemImage.setImageResource(item.icon)
             }
             if (item.filePath != "" && isPicture(item.filePath)) {
-                itemView.itemImage.visibility = View.GONE
-                itemView.itemPhoto.visibility = View.VISIBLE
-                Glide.with(itemView.itemPhoto.context)
-                        .load(UriUtil.getUri(itemView.itemPhoto.context, item.filePath))
+                binding.itemImage.visibility = View.GONE
+                binding.itemPhoto.visibility = View.VISIBLE
+                Glide.with(binding.itemPhoto.context)
+                        .load(UriUtil.getUri(binding.itemPhoto.context, item.filePath))
                         .apply(RequestOptions.centerCropTransform())
                         .apply(RequestOptions.overrideOf(100, 100))
-                        .into(itemView.itemPhoto)
+                        .into(binding.itemPhoto)
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.additional
 
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -14,13 +13,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.binding.activities.QuickSmsActivityBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,14 +40,12 @@ import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
  * limitations under the License.
  */
 @Suppress("DEPRECATION")
-class QuickSmsActivity : ThemedActivity<QuickSmsActivityBinding>() {
+class QuickSmsActivity : ThemedActivity<ActivityQuickSmsBinding>() {
 
     private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
     private var number: String = ""
 
     override fun layoutRes(): Int = R.layout.activity_quick_sms
-
-    override fun newBinding(activity: Activity): QuickSmsActivityBinding = QuickSmsActivityBinding(activity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

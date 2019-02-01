@@ -10,5 +10,5 @@ import androidx.recyclerview.widget.RecyclerView
 abstract class HolderBinding<B : ViewDataBinding>(parent: ViewGroup, @LayoutRes res: Int) :
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(res, parent, false)) {
 
-    protected var binding: B? = DataBindingUtil.bind(itemView)
+    protected var binding: B = DataBindingUtil.bind(itemView)!!
 }

@@ -8,9 +8,7 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -24,13 +22,13 @@ import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.core.views.AddressAutoCompleteView
+import com.elementary.tasks.databinding.FragmentMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_map.*
 import timber.log.Timber
 
 /**
@@ -51,7 +49,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AdvancedMapFragment : BaseMapFragment() {
+class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
     private var mMap: GoogleMap? = null
 
@@ -99,18 +97,16 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private val isLayersVisible: Boolean
-        get() = layersContainer != null && layersContainer.visibility == View.VISIBLE
+        get() = binding.layersContainer.visibility == View.VISIBLE
 
     private val isStylesVisible: Boolean
-        get() = mapStyleContainer != null && mapStyleContainer.visibility == View.VISIBLE
+        get() = binding.mapStyleContainer.visibility == View.VISIBLE
 
     fun setSearchEnabled(enabled: Boolean) {
-        if (cardSearch != null) {
-            if (enabled) {
-                searchCard.visibility = View.VISIBLE
-            } else {
-                searchCard.visibility = View.GONE
-            }
+        if (enabled) {
+            binding.searchCard.visibility = View.VISIBLE
+        } else {
+            binding.searchCard.visibility = View.GONE
         }
     }
 
@@ -341,10 +337,7 @@ class AdvancedMapFragment : BaseMapFragment() {
         initArgs()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_map, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_map
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -363,13 +356,13 @@ class AdvancedMapFragment : BaseMapFragment() {
             }
         })
 
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(mMapCallback)
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(mMapCallback)
 
         initViews()
 
-        cardSearch.setOnItemClickListener { _, _, position, _ ->
-            val sel = cardSearch?.getAddress(position) ?: return@setOnItemClickListener
+        binding.cardSearch.setOnItemClickListener { _, _, position, _ ->
+            val sel = binding.cardSearch.getAddress(position) ?: return@setOnItemClickListener
             val lat = sel.latitude
             val lon = sel.longitude
             val pos = LatLng(lat, lon)
@@ -420,50 +413,50 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun initViews() {
-        placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        placesList.adapter = placeRecyclerAdapter
-        LinearSnapHelper().attachToRecyclerView(placesList)
+        binding.placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.placesList.adapter = placeRecyclerAdapter
+        LinearSnapHelper().attachToRecyclerView(binding.placesList)
 
-        placesListCard.visibility = View.GONE
-        layersContainer.visibility = View.GONE
+        binding.placesListCard.visibility = View.GONE
+        binding.layersContainer.visibility = View.GONE
 
-        zoomCard.setOnClickListener { zoomClick() }
-        layersCard.setOnClickListener { toggleLayers() }
-        myCard.setOnClickListener {
+        binding.zoomCard.setOnClickListener { zoomClick() }
+        binding.layersCard.setOnClickListener { toggleLayers() }
+        binding.myCard.setOnClickListener {
             hideLayers()
             hideStyles()
             moveToMyLocation()
         }
-        markersCard.setOnClickListener { toggleMarkers() }
-        radiusCard.setOnClickListener { toggleRadius() }
-        backCard.setOnClickListener { invokeBack() }
+        binding.markersCard.setOnClickListener { toggleMarkers() }
+        binding.radiusCard.setOnClickListener { toggleRadius() }
+        binding.backCard.setOnClickListener { invokeBack() }
 
-        typeNormal.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_NORMAL) }
-        typeSatellite.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_SATELLITE) }
-        typeHybrid.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_HYBRID) }
-        typeTerrain.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_TERRAIN) }
+        binding.typeNormal.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_NORMAL) }
+        binding.typeSatellite.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_SATELLITE) }
+        binding.typeHybrid.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_HYBRID) }
+        binding.typeTerrain.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_TERRAIN) }
 
-        styleDay.setOnClickListener { styleClick(0) }
-        styleRetro.setOnClickListener { styleClick(1) }
-        styleSilver.setOnClickListener { styleClick(2) }
-        styleNight.setOnClickListener { styleClick(3) }
-        styleDark.setOnClickListener { styleClick(4) }
-        styleAubergine.setOnClickListener { styleClick(5) }
+        binding.styleDay.setOnClickListener { styleClick(0) }
+        binding.styleRetro.setOnClickListener { styleClick(1) }
+        binding.styleSilver.setOnClickListener { styleClick(2) }
+        binding.styleNight.setOnClickListener { styleClick(3) }
+        binding.styleDark.setOnClickListener { styleClick(4) }
+        binding.styleAubergine.setOnClickListener { styleClick(5) }
 
         if (!isBack) {
-            backCard.visibility = View.GONE
+            binding.backCard.visibility = View.GONE
         }
         if (!isSearch) {
-            searchCard.visibility = View.GONE
+            binding.searchCard.visibility = View.GONE
         }
         if (!isRadius) {
-            radiusCard.visibility = View.GONE
+            binding.radiusCard.visibility = View.GONE
         }
         if (!isStyles || !Module.isPro) {
-            markersCard.visibility = View.GONE
+            binding.markersCard.visibility = View.GONE
         }
         if (!isZoom) {
-            zoomCard.visibility = View.GONE
+            binding.zoomCard.visibility = View.GONE
         }
 
         hideStyles()
@@ -521,9 +514,9 @@ class AdvancedMapFragment : BaseMapFragment() {
         }
         placeRecyclerAdapter.data = places
         if (places.isEmpty()) {
-            placesListCard.visibility = View.GONE
+            binding.placesListCard.visibility = View.GONE
         } else {
-            placesListCard.visibility = View.VISIBLE
+            binding.placesListCard.visibility = View.VISIBLE
         }
     }
 
@@ -548,26 +541,26 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun showStyles() {
-        mapStyleContainer.visibility = View.VISIBLE
+        binding.mapStyleContainer.visibility = View.VISIBLE
     }
 
     private fun toggleLayers() {
         when {
             isLayersVisible -> hideLayers()
             isStylesVisible -> hideStyles()
-            else -> layersContainer.visibility = View.VISIBLE
+            else -> binding.layersContainer.visibility = View.VISIBLE
         }
     }
 
     private fun hideLayers() {
         if (isLayersVisible) {
-            layersContainer.visibility = View.GONE
+            binding.layersContainer.visibility = View.GONE
         }
     }
 
     private fun hideStyles() {
         if (isStylesVisible) {
-            mapStyleContainer.visibility = View.GONE
+            binding.mapStyleContainer.visibility = View.GONE
         }
     }
 
@@ -577,35 +570,35 @@ class AdvancedMapFragment : BaseMapFragment() {
             mListener?.onZoomClick(isFullscreen)
         }
         if (isFullscreen) {
-            zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
+            binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
         } else {
             restoreScaleButton()
         }
     }
 
     override fun onResume() {
-        mapView?.onResume()
+        binding.mapView.onResume()
         super.onResume()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView?.onLowMemory()
+        binding.mapView.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView?.onDestroy()
+        binding.mapView.onDestroy()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView?.onPause()
+        binding.mapView.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView?.onStop()
+        binding.mapView.onStop()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -623,7 +616,7 @@ class AdvancedMapFragment : BaseMapFragment() {
     }
 
     private fun restoreScaleButton() {
-        zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
+        binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
     }
 
     companion object {

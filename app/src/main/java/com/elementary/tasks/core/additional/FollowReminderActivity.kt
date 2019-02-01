@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.additional
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -16,13 +15,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.binding.activities.FollowReminderActivityBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.databinding.ActivityFollowBinding
 import java.util.*
 
 /**
@@ -44,7 +43,7 @@ import java.util.*
  * limitations under the License.
  */
 @Suppress("DEPRECATION")
-class FollowReminderActivity : ThemedActivity<FollowReminderActivityBinding>(), CompoundButton.OnCheckedChangeListener {
+class FollowReminderActivity : ThemedActivity<ActivityFollowBinding>(), CompoundButton.OnCheckedChangeListener {
 
     private lateinit var viewModel: ReminderViewModel
 
@@ -121,8 +120,6 @@ class FollowReminderActivity : ThemedActivity<FollowReminderActivityBinding>(), 
     }
 
     override fun layoutRes(): Int = R.layout.activity_follow
-
-    override fun newBinding(activity: Activity): FollowReminderActivityBinding = FollowReminderActivityBinding(activity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

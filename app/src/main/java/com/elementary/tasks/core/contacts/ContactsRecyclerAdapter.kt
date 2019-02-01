@@ -1,9 +1,7 @@
 package com.elementary.tasks.core.contacts
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -41,8 +39,7 @@ class ContactsRecyclerAdapter : ListAdapter<ContactItem, ContactHolder>(ContactD
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
-        return ContactHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false),
-                themeUtil.isDark) { performClick(it) }
+        return ContactHolder(parent, themeUtil.isDark) { performClick(it) }
     }
 
     private fun performClick(it: Int) {

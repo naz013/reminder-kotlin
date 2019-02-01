@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
-import com.elementary.tasks.core.binding.holders.ListItemMessageBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.databinding.ListItemMessageBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -53,7 +53,7 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
     }
 
     inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemMessageBinding>(parent,
-            R.layout.list_item_message, { ListItemMessageBinding(it) }) {
+            R.layout.list_item_message) {
         fun bind(item: SmsTemplate) {
             binding.messageView.text = item.title
             if (item.isSelected) {

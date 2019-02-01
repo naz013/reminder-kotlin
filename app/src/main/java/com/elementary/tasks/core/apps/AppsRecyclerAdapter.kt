@@ -1,16 +1,14 @@
 package com.elementary.tasks.core.apps
 
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import kotlinx.android.synthetic.main.list_item_application.view.*
+import com.elementary.tasks.databinding.ListItemApplicationBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,27 +33,27 @@ class AppsRecyclerAdapter : ListAdapter<ApplicationItem, AppsRecyclerAdapter.App
     var actionsListener: ActionsListener<ApplicationItem>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder {
-        return ApplicationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_application, parent, false))
+        return ApplicationViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class ApplicationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ApplicationViewHolder(parent: ViewGroup) : HolderBinding<ListItemApplicationBinding>(parent, R.layout.list_item_application) {
         fun bind(item: ApplicationItem) {
-            itemView.itemName.text = item.name
-            loadImage(itemView.itemImage, item.drawable)
+            binding.itemName.text = item.name
+            loadImage(binding.itemImage, item.drawable)
         }
 
         init {
-            itemView.clickView.setOnClickListener {
+            binding.clickView.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
         }
     }
 
-    fun loadImage(imageView: ImageView, v: Drawable?) {
+    private fun loadImage(imageView: ImageView, v: Drawable?) {
         imageView.setImageDrawable(v)
     }
 }

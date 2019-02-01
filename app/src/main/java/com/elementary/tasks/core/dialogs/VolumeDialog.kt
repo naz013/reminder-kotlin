@@ -1,11 +1,10 @@
 package com.elementary.tasks.core.dialogs
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -31,7 +30,7 @@ class VolumeDialog : BaseDialog() {
         super.onCreate(savedInstanceState)
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.loudness)
-        val b = LayoutInflater.from(this).inflate(R.layout.dialog_with_seek_and_title, null, false)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater, null, false)
         b.seekBar.max = 25
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -49,7 +48,7 @@ class VolumeDialog : BaseDialog() {
         val loudness = prefs.loudness
         b.seekBar.progress = loudness
         b.titleView.text = loudness.toString()
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ -> prefs.loudness = b.seekBar.progress }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
