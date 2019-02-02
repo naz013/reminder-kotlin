@@ -41,7 +41,6 @@ import javax.inject.Inject
 class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
 
     private lateinit var viewModel: GroupViewModel
-
     private var mItem: ReminderGroup? = null
 
     @Inject
@@ -147,13 +146,13 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
             binding.nameLayout.isErrorEnabled = true
             return
         }
+        val wasDefault = mItem?.isDefaultGroup ?: false
         val item = (mItem ?: ReminderGroup()).apply {
             this.groupColor = binding.colorSlider.selectedItem
             this.groupDateTime = TimeUtil.gmtDateTime
             this.groupTitle = text
             this.isDefaultGroup = binding.defaultCheck.isChecked
         }
-        val wasDefault = item.isDefaultGroup
         viewModel.saveGroup(item, wasDefault)
     }
 
