@@ -47,7 +47,9 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
     fun setModel(monthPagerItem: MonthPagerItem) {
         this.mItem = monthPagerItem
         Timber.d("setModel: $monthPagerItem")
-        binding.monthView?.setDate(monthPagerItem.year, monthPagerItem.month + 1)
+        if (isResumed) {
+            binding.monthView.setDate(monthPagerItem.year, monthPagerItem.month + 1)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,13 +69,13 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
         super.onViewCreated(view, savedInstanceState)
         val item = mItem
         if (item != null) {
-            binding.monthView?.setDate(item.year, item.month + 1)
-            binding.monthView?.setDateClick(object : MonthView.OnDateClick {
+            binding.monthView.setDate(item.year, item.month + 1)
+            binding.monthView.setDateClick(object : MonthView.OnDateClick {
                 override fun onClick(dateTime: DateTime) {
                     callback?.onDateClick(TimeUtil.convertDateTimeToDate(dateTime))
                 }
             })
-            binding.monthView?.setDateLongClick(object : MonthView.OnDateLongClick {
+            binding.monthView.setDateLongClick(object : MonthView.OnDateLongClick {
                 override fun onLongClick(dateTime: DateTime) {
                     callback?.onDateLongClick(TimeUtil.convertDateTimeToDate(dateTime))
                 }
@@ -92,7 +94,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
                         launchDefault {
                             val data = mapData(list)
                             withUIContext {
-                                binding.monthView?.setEventsMap(data)
+                                if (isResumed) binding.monthView.setEventsMap(data)
                             }
                         }
                     }
