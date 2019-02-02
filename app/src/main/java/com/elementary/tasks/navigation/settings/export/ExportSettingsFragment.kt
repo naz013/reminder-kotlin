@@ -12,10 +12,9 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
 import com.elementary.tasks.core.work.SyncWorker
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
+import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.fragment_settings_export.*
-import kotlinx.android.synthetic.main.view_progress.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -39,7 +38,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ExportSettingsFragment : BaseCalendarFragment() {
+class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -67,20 +66,20 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             return findPosition(mDataList)
         }
     private val onSyncEnd: () -> Unit = {
-        progressView.visibility = View.INVISIBLE
-        syncButton.isEnabled = true
-        backupButton.isEnabled = true
-        exportButton.isEnabled = true
+        binding.progressView.visibility = View.INVISIBLE
+        binding.syncButton.isEnabled = true
+        binding.backupButton.isEnabled = true
+        binding.exportButton.isEnabled = true
     }
     private val onMessage: (String) -> Unit = {
-        progressMessageView.text = it
+        binding.progressMessageView.text = it
     }
     private val onProgress: (Boolean) -> Unit = {
         if (it) {
-            syncButton.isEnabled = false
-            backupButton.isEnabled = false
-            exportButton.isEnabled = false
-            progressView.visibility = View.VISIBLE
+            binding.syncButton.isEnabled = false
+            binding.backupButton.isEnabled = false
+            binding.exportButton.isEnabled = false
+            binding.progressView.visibility = View.VISIBLE
         } else {
             onSyncEnd.invoke()
         }
@@ -94,11 +93,11 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
-        cloudsPrefs.setOnClickListener { callback?.openFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
+        binding.cloudsPrefs.setOnClickListener { callback?.openFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
 
         initBackupPrefs()
         initExportToCalendarPrefs()
@@ -110,10 +109,10 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         initAutoBackupIntervalPrefs()
         initClearDataPrefs()
 
-        backupsPrefs.setOnClickListener {
+        binding.backupsPrefs.setOnClickListener {
             callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
         }
-        backupsPrefs.setDependentView(backupDataPrefs)
+        binding.backupsPrefs.setDependentView(binding.backupDataPrefs)
     }
 
     override fun onResume() {
@@ -143,8 +142,8 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun initBackupPrefs() {
-        backupDataPrefs.isChecked = prefs.isBackupEnabled
-        backupDataPrefs.setOnClickListener { changeBackupPrefs() }
+        binding.backupDataPrefs.isChecked = prefs.isBackupEnabled
+        binding.backupDataPrefs.setOnClickListener { changeBackupPrefs() }
         initSyncButton()
         initBackupButton()
         initExportButton()
@@ -152,14 +151,14 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     private fun initSyncButton() {
         if (prefs.isBackupEnabled) {
-            syncButton.isEnabled = true
-            syncButton.visibility = View.VISIBLE
-            syncButton.setOnClickListener { syncClick() }
+            binding.syncButton.isEnabled = true
+            binding.syncButton.visibility = View.VISIBLE
+            binding.syncButton.setOnClickListener { syncClick() }
             SyncWorker.listener = onProgress
             SyncWorker.onEnd = onSyncEnd
             SyncWorker.progress = onMessage
         } else {
-            syncButton.visibility = View.GONE
+            binding.syncButton.visibility = View.GONE
         }
     }
 
@@ -172,9 +171,9 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     private fun initExportButton() {
         if (prefs.isBackupEnabled) {
-            exportButton.isEnabled = true
-            exportButton.visibility = View.VISIBLE
-            exportButton.setOnClickListener { exportClick() }
+            binding.exportButton.isEnabled = true
+            binding.exportButton.visibility = View.VISIBLE
+            binding.exportButton.setOnClickListener { exportClick() }
             ExportAllDataWorker.onEnd = {
                 if (it != null) {
                     TelephonyUtil.sendFile(it, context!!)
@@ -182,7 +181,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
             }
             BackupWorker.listener = onProgress
         } else {
-            exportButton.visibility = View.GONE
+            binding.exportButton.visibility = View.GONE
         }
     }
 
@@ -195,14 +194,14 @@ class ExportSettingsFragment : BaseCalendarFragment() {
 
     private fun initBackupButton() {
         if (prefs.isBackupEnabled) {
-            backupButton.isEnabled = true
-            backupButton.visibility = View.VISIBLE
-            backupButton.setOnClickListener { backupClick() }
+            binding.backupButton.isEnabled = true
+            binding.backupButton.visibility = View.VISIBLE
+            binding.backupButton.setOnClickListener { backupClick() }
             BackupWorker.listener = onProgress
             BackupWorker.onEnd = onSyncEnd
             BackupWorker.progress = onMessage
         } else {
-            backupButton.visibility = View.GONE
+            binding.backupButton.visibility = View.GONE
         }
     }
 
@@ -214,8 +213,8 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun changeBackupPrefs() {
-        val isChecked = backupDataPrefs.isChecked
-        backupDataPrefs.isChecked = !isChecked
+        val isChecked = binding.backupDataPrefs.isChecked
+        binding.backupDataPrefs.isChecked = !isChecked
         prefs.isBackupEnabled = !isChecked
         initSyncButton()
         initBackupButton()
@@ -223,8 +222,8 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun initClearDataPrefs() {
-        cleanPrefs.setOnClickListener { showCleanDialog() }
-        cleanPrefs.setDependentView(backupDataPrefs)
+        binding.cleanPrefs.setOnClickListener { showCleanDialog() }
+        binding.cleanPrefs.setDependentView(binding.backupDataPrefs)
     }
 
     private fun showCleanDialog() {
@@ -269,15 +268,15 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun initAutoBackupIntervalPrefs() {
-        syncIntervalPrefs.setOnClickListener { showIntervalDialog() }
-        syncIntervalPrefs.setDependentView(autoBackupPrefs)
-        syncIntervalPrefs.setDependentView(backupDataPrefs)
+        binding.syncIntervalPrefs.setOnClickListener { showIntervalDialog() }
+        binding.syncIntervalPrefs.setDependentView(binding.autoBackupPrefs)
+        binding.syncIntervalPrefs.setDependentView(binding.backupDataPrefs)
         showBackupInterval()
     }
 
     private fun showBackupInterval() {
         val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
-        syncIntervalPrefs.setDetailText(items[intervalPosition].toString())
+        binding.syncIntervalPrefs.setDetailText(items[intervalPosition].toString())
     }
 
     private fun showIntervalDialog() {
@@ -309,16 +308,16 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun initAutoBackupPrefs() {
-        autoBackupPrefs.isChecked = prefs.isAutoBackupEnabled
-        autoBackupPrefs.setOnClickListener { changeAutoBackupPrefs() }
-        autoBackupPrefs.setDependentView(backupDataPrefs)
+        binding.autoBackupPrefs.isChecked = prefs.isAutoBackupEnabled
+        binding.autoBackupPrefs.setOnClickListener { changeAutoBackupPrefs() }
+        binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)
     }
 
     private fun changeAutoBackupPrefs() {
-        val isChecked = autoBackupPrefs.isChecked
-        autoBackupPrefs.isChecked = !isChecked
+        val isChecked = binding.autoBackupPrefs.isChecked
+        binding.autoBackupPrefs.isChecked = !isChecked
         prefs.isAutoBackupEnabled = !isChecked
-        if (autoBackupPrefs.isChecked) {
+        if (binding.autoBackupPrefs.isChecked) {
             AlarmReceiver().enableAutoSync(context!!)
         } else {
             AlarmReceiver().cancelAutoSync(context!!)
@@ -326,49 +325,49 @@ class ExportSettingsFragment : BaseCalendarFragment() {
     }
 
     private fun initSettingsBackupPrefs() {
-        syncSettingsPrefs.isChecked = prefs.isSettingsBackupEnabled
-        syncSettingsPrefs.setOnClickListener { changeSettingsBackupPrefs() }
-        syncSettingsPrefs.setDependentView(backupDataPrefs)
+        binding.syncSettingsPrefs.isChecked = prefs.isSettingsBackupEnabled
+        binding.syncSettingsPrefs.setOnClickListener { changeSettingsBackupPrefs() }
+        binding.syncSettingsPrefs.setDependentView(binding.backupDataPrefs)
     }
 
     private fun changeSettingsBackupPrefs() {
-        val isChecked = syncSettingsPrefs.isChecked
-        syncSettingsPrefs.isChecked = !isChecked
+        val isChecked = binding.syncSettingsPrefs.isChecked
+        binding.syncSettingsPrefs.isChecked = !isChecked
         prefs.isSettingsBackupEnabled = !isChecked
     }
 
     private fun initExportToStockPrefs() {
-        exportToStockPrefs.isChecked = prefs.isStockCalendarEnabled
-        exportToStockPrefs.setOnClickListener { changeExportToStockPrefs() }
+        binding.exportToStockPrefs.isChecked = prefs.isStockCalendarEnabled
+        binding.exportToStockPrefs.setOnClickListener { changeExportToStockPrefs() }
     }
 
     private fun changeExportToStockPrefs() {
-        val isChecked = exportToStockPrefs.isChecked
-        exportToStockPrefs.isChecked = !isChecked
+        val isChecked = binding.exportToStockPrefs.isChecked
+        binding.exportToStockPrefs.isChecked = !isChecked
         prefs.isStockCalendarEnabled = !isChecked
     }
 
     private fun initSelectCalendarPrefs() {
-        selectCalendarPrefs.setOnClickListener { showSelectCalendarDialog() }
-        selectCalendarPrefs.setDependentView(exportToCalendarPrefs)
+        binding.selectCalendarPrefs.setOnClickListener { showSelectCalendarDialog() }
+        binding.selectCalendarPrefs.setDependentView(binding.exportToCalendarPrefs)
         showCurrentCalendar()
     }
 
     private fun initEventDurationPrefs() {
-        eventDurationPrefs.setOnClickListener { showEventDurationDialog() }
-        eventDurationPrefs.setDependentView(exportToCalendarPrefs)
+        binding.eventDurationPrefs.setOnClickListener { showEventDurationDialog() }
+        binding.eventDurationPrefs.setDependentView(binding.exportToCalendarPrefs)
         showEventDuration()
     }
 
     private fun showEventDuration() {
-        eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+        binding.eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 prefs.calendarEventDuration.toString()))
     }
 
     private fun showEventDurationDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.event_duration)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
         b.seekBar.max = 120
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -386,7 +385,7 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         val duration = prefs.calendarEventDuration
         b.seekBar.progress = duration
         b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), duration.toString())
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ ->
             prefs.calendarEventDuration = b.seekBar.progress
             showEventDuration()
@@ -401,12 +400,12 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         if (!Permissions.ensurePermissions(activity!!, CALENDAR_CODE, Permissions.READ_CALENDAR)) {
             return
         }
-        val isChecked = exportToCalendarPrefs.isChecked
-        exportToCalendarPrefs.isChecked = !isChecked
+        val isChecked = binding.exportToCalendarPrefs.isChecked
+        binding.exportToCalendarPrefs.isChecked = !isChecked
         prefs.isCalendarEnabled = !isChecked
-        if (exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
+        if (binding.exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
             prefs.isCalendarEnabled = false
-            exportToCalendarPrefs.isChecked = false
+            binding.exportToCalendarPrefs.isChecked = false
         }
     }
 
@@ -447,15 +446,15 @@ class ExportSettingsFragment : BaseCalendarFragment() {
         val pos = findPosition(calendars)
         if (calendars.isNotEmpty() && pos != -1) {
             val name = calendars[pos].name
-            selectCalendarPrefs.setDetailText(name)
+            binding.selectCalendarPrefs.setDetailText(name)
         } else {
-            selectCalendarPrefs.setDetailText(null)
+            binding.selectCalendarPrefs.setDetailText(null)
         }
     }
 
     private fun initExportToCalendarPrefs() {
-        exportToCalendarPrefs.setOnClickListener { changeExportToCalendarPrefs() }
-        exportToCalendarPrefs.isChecked = prefs.isCalendarEnabled
+        binding.exportToCalendarPrefs.setOnClickListener { changeExportToCalendarPrefs() }
+        binding.exportToCalendarPrefs.isChecked = prefs.isCalendarEnabled
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

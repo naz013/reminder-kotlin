@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.create
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
@@ -29,23 +30,23 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.databinding.ActivityCreateReminderBinding
+import com.elementary.tasks.databinding.ListItemNavigationBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_create_reminder.*
-import kotlinx.android.synthetic.main.list_item_navigation.view.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
-class CreateReminderActivity : ThemedActivity(), ReminderInterface {
+class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
     private lateinit var viewModel: ReminderViewModel
     private lateinit var conversationViewModel: ConversationViewModel
     private lateinit var stateViewModel: StateViewModel
 
-    private var fragment: TypeFragment? = null
+    private var fragment: TypeFragment<*>? = null
 
     private var isEditing: Boolean = false
     private var mIsTablet = false
@@ -79,13 +80,14 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_create_reminder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
 
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
-        setContentView(R.layout.activity_create_reminder)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         initActionBar()
         initNavigation()
@@ -120,7 +122,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             EMAIL -> if (Permissions.ensurePermissions(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
                 replaceFragment(EmailFragment())
             } else {
-                navSpinner.setSelection(DATE)
+                binding.navSpinner.setSelection(DATE)
             }
             SKYPE -> replaceFragment(SkypeFragment())
             APP -> replaceFragment(ApplicationFragment())
@@ -130,12 +132,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             GPS -> if (hasGpsPermission(GPS)) {
                 replaceFragment(LocationFragment())
             } else {
-                navSpinner.setSelection(DATE)
+                binding.navSpinner.setSelection(DATE)
             }
             GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
                 replaceFragment(PlacesFragment())
             } else {
-                navSpinner.setSelection(DATE)
+                binding.navSpinner.setSelection(DATE)
             }
         }
     }
@@ -196,8 +198,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             }
             else -> {
                 var lastPos = prefs.lastUsedReminder
-                if (lastPos >= navSpinner.adapter.count) lastPos = 0
-                navSpinner.setSelection(lastPos)
+                if (lastPos >= binding.navSpinner.adapter.count) lastPos = 0
+                binding.navSpinner.setSelection(lastPos)
             }
         }
     }
@@ -214,7 +216,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
                 stateViewModel.reminder.groupTitle = group.groupTitle
             }
         }
-        val current = navSpinner.selectedItemPosition
+        val current = binding.navSpinner.selectedItemPosition
         var toSelect = 0
         when (reminder.type) {
             Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = DATE
@@ -245,7 +247,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         if (current == toSelect) {
             openScreen(toSelect)
         } else {
-            navSpinner.setSelection(toSelect)
+            binding.navSpinner.setSelection(toSelect)
         }
     }
 
@@ -267,13 +269,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             }
         }
         val adapter = TitleNavigationAdapter(list)
-        navSpinner.adapter = adapter
-        navSpinner.onItemSelectedListener = mOnTypeSelectListener
+        binding.navSpinner.adapter = adapter
+        binding.navSpinner.onItemSelectedListener = mOnTypeSelectListener
         Timber.d("initNavigation: ")
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
@@ -304,7 +306,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true, prefs, language)
     }
 
-    private fun replaceFragment(fragment: TypeFragment) {
+    private fun replaceFragment(fragment: TypeFragment<*>) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.main_container, fragment, null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -438,19 +440,19 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
         fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             CONTACTS_REQUEST_E -> if (Permissions.isAllGranted(grantResults)) {
-                navSpinner.setSelection(EMAIL)
+                binding.navSpinner.setSelection(EMAIL)
             } else {
-                navSpinner.setSelection(DATE)
+                binding.navSpinner.setSelection(DATE)
             }
             GPS_PLACE -> if (Permissions.isAllGranted(grantResults)) {
-                navSpinner.setSelection(GPS_PLACE)
+                binding.navSpinner.setSelection(GPS_PLACE)
             } else {
-                navSpinner.setSelection(DATE)
+                binding.navSpinner.setSelection(DATE)
             }
             GPS -> if (Permissions.isAllGranted(grantResults)) {
-                navSpinner.setSelection(GPS)
+                binding.navSpinner.setSelection(GPS)
             } else {
-                navSpinner.setSelection(DATE)
+                binding.navSpinner.setSelection(DATE)
             }
             331 -> if (Permissions.isAllGranted(grantResults)) {
                 selectAnyFile()
@@ -470,32 +472,32 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
     }
 
     override fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener) {
-        Snackbar.make(coordinator, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
+        Snackbar.make(binding.coordinator, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
     }
 
     override fun showSnackbar(title: String) {
-        Snackbar.make(coordinator, title, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.coordinator, title, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun setFullScreenMode(b: Boolean) {
         if (!mIsTablet) {
             if (b) {
-                appBar.visibility = View.GONE
+                binding.appBar.visibility = View.GONE
             } else {
-                appBar.visibility = View.VISIBLE
+                binding.appBar.visibility = View.VISIBLE
             }
         }
     }
 
     override fun updateScroll(y: Int) {
-        if (!mIsTablet) appBar.isSelected = y > 0
+        if (!mIsTablet) binding.appBar.isSelected = y > 0
     }
 
     override fun isTablet(): Boolean {
         return mIsTablet
     }
 
-    override fun setFragment(typeFragment: TypeFragment?) {
+    override fun setFragment(typeFragment: TypeFragment<*>?) {
         this.fragment = typeFragment
     }
 
@@ -527,22 +529,17 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface {
             return position.toLong()
         }
 
+        @SuppressLint("ViewHolder")
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var cView = convertView
-            if (cView == null) {
-                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)!!
-            }
+            val cView = ListItemNavigationBinding.inflate(layoutInflater)
             cView.txtTitle.text = items[position].title
-            return cView
+            return cView.root
         }
 
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var cView = convertView
-            if (cView == null) {
-                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)!!
-            }
+            val cView = ListItemNavigationBinding.inflate(layoutInflater)
             cView.txtTitle.text = items[position].title
-            return cView
+            return cView.root
         }
     }
 

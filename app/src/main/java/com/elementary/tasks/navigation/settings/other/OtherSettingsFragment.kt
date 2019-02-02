@@ -15,9 +15,9 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.DialogAboutBinding
+import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.dialog_about.view.*
-import kotlinx.android.synthetic.main.fragment_settings_other.*
 import java.util.*
 
 /**
@@ -38,7 +38,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class OtherSettingsFragment : BaseSettingsFragment() {
+class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>() {
 
     private val mDataList = ArrayList<Item>()
     private val translators: String
@@ -53,27 +53,27 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
-        helpPrefs.setOnClickListener {
+        binding.helpPrefs.setOnClickListener {
             callback?.openFragment(HelpFragment(), getString(R.string.help))
         }
-        aboutPrefs.setOnClickListener { showAboutDialog() }
-        ossPrefs.setOnClickListener { openOssScreen() }
-        permissionsPrefs.setOnClickListener { openPermissionsScreen() }
-        changesPrefs.setOnClickListener { openChangesScreen() }
-        ratePrefs.setOnClickListener { SuperUtil.launchMarket(context!!) }
-        tellFriendsPrefs.setOnClickListener { shareApplication() }
+        binding.aboutPrefs.setOnClickListener { showAboutDialog() }
+        binding.ossPrefs.setOnClickListener { openOssScreen() }
+        binding.permissionsPrefs.setOnClickListener { openPermissionsScreen() }
+        binding.changesPrefs.setOnClickListener { openChangesScreen() }
+        binding.ratePrefs.setOnClickListener { SuperUtil.launchMarket(context!!) }
+        binding.tellFriendsPrefs.setOnClickListener { shareApplication() }
         if (Module.isMarshmallow) {
-            permissionsPrefs.visibility = View.VISIBLE
-            addPermissionPrefs.visibility = View.VISIBLE
+            binding.permissionsPrefs.visibility = View.VISIBLE
+            binding.addPermissionPrefs.visibility = View.VISIBLE
         } else {
-            permissionsPrefs.visibility = View.GONE
-            addPermissionPrefs.visibility = View.GONE
+            binding.permissionsPrefs.visibility = View.GONE
+            binding.addPermissionPrefs.visibility = View.GONE
         }
-        addPermissionPrefs.setOnClickListener { showPermissionDialog() }
+        binding.addPermissionPrefs.setOnClickListener { showPermissionDialog() }
     }
 
     override fun getTitle(): String = getString(R.string.other)
@@ -171,19 +171,19 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     private fun showAboutDialog() {
         val builder = dialogues.getDialog(context!!)
-        val binding = LayoutInflater.from(context).inflate(R.layout.dialog_about, null)
+        val b = DialogAboutBinding.inflate(LayoutInflater.from(context))
         val name: String = if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
-        binding.appName.text = name.toUpperCase()
-        binding.translators_list.text = translators
+        b.appName.text = name.toUpperCase()
+        b.translatorsList.text = translators
         val pInfo: PackageInfo
         try {
             pInfo = context!!.packageManager.getPackageInfo(context!!.packageName, 0)
-            binding.appVersion.text = pInfo.versionName
+            b.appVersion.text = pInfo.versionName
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
 
-        builder.setView(binding)
+        builder.setView(b.root)
         builder.create().show()
     }
 

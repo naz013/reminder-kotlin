@@ -48,5 +48,5 @@ interface ReminderInterface {
 
     fun updateScroll(y: Int)
 
-    fun setFragment(typeFragment: TypeFragment?)
+    fun setFragment(typeFragment: TypeFragment<*>?)
 }

@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.DateTimeView
-import kotlinx.android.synthetic.main.fragment_reminder_year.*
+import com.elementary.tasks.databinding.FragmentReminderYearBinding
 import timber.log.Timber
 import java.util.*
 
@@ -31,7 +31,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class YearFragment : RepeatableTypeFragment() {
+class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
 
     private val time: Long
         get() {
@@ -47,20 +47,20 @@ class YearFragment : RepeatableTypeFragment() {
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
         var type = Reminder.BY_DAY_OF_YEAR
-        val isAction = actionView.hasAction()
+        val isAction = binding.actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
-            taskLayout.error = getString(R.string.task_summary_is_empty)
-            taskLayout.isErrorEnabled = true
+            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.isErrorEnabled = true
             return null
         }
         var number = ""
         if (isAction) {
-            number = actionView.number
+            number = binding.actionView.number
             if (TextUtils.isEmpty(number)) {
                 iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
-            type = if (actionView.type == ActionView.TYPE_CALL) {
+            type = if (binding.actionView.type == ActionView.TYPE_CALL) {
                 Reminder.BY_DAY_OF_YEAR_CALL
             } else {
                 Reminder.BY_DAY_OF_YEAR_SMS
@@ -95,36 +95,36 @@ class YearFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                dateTimeView = dateView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                windowTypeView = windowTypeView,
-                actionView = actionView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                dateTimeView = binding.dateView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                windowTypeView = binding.windowTypeView,
+                actionView = binding.actionView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tuneExtraView.hasAutoExtra = false
+        binding.tuneExtraView.hasAutoExtra = false
 
-        dateView.setDateFormat(TimeUtil.simpleDate(prefs.appLanguage))
-        dateView.setEventListener(object : DateTimeView.OnSelectListener {
+        binding.dateView.setDateFormat(TimeUtil.simpleDate(prefs.appLanguage))
+        binding.dateView.setEventListener(object : DateTimeView.OnSelectListener {
             override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
                 iFace.state.day = day
                 iFace.state.month = month
@@ -144,20 +144,20 @@ class YearFragment : RepeatableTypeFragment() {
         calendar.set(Calendar.YEAR, iFace.state.year)
         calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
         calendar.set(Calendar.MINUTE, iFace.state.minute)
-        dateView.dateTime = calendar.timeInMillis
+        binding.dateView.dateTime = calendar.timeInMillis
         editReminder()
     }
 
     override fun updateActions() {
-        if (actionView.hasAction()) {
-            tuneExtraView.hasAutoExtra = true
-            if (actionView.type == ActionView.TYPE_MESSAGE) {
-                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+        if (binding.actionView.hasAction()) {
+            binding.tuneExtraView.hasAutoExtra = true
+            if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+                binding.tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
             } else {
-                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
             }
         } else {
-            tuneExtraView.hasAutoExtra = false
+            binding.tuneExtraView.hasAutoExtra = false
         }
     }
 
@@ -171,7 +171,7 @@ class YearFragment : RepeatableTypeFragment() {
         calendar.set(Calendar.MONTH, reminder.monthOfYear)
         calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
         calendar.set(Calendar.MINUTE, iFace.state.minute)
-        dateView.dateTime = calendar.timeInMillis
+        binding.dateView.dateTime = calendar.timeInMillis
         iFace.state.day = reminder.dayOfMonth
         iFace.state.month = reminder.monthOfYear
     }

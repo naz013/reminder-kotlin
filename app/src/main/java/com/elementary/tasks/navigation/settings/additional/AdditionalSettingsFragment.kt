@@ -9,9 +9,9 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
+import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.fragment_settings_additional.*
 import java.util.*
 
 /**
@@ -32,7 +32,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AdditionalSettingsFragment : BaseSettingsFragment() {
+class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAdditionalBinding>() {
 
     private var mItemSelect: Int = 0
 
@@ -40,7 +40,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
@@ -48,14 +48,14 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         initMissedTimePrefs()
         initQuickSmsPrefs()
         initMessagesPrefs()
-        followReminderPrefs.setOnClickListener { changeFollowPrefs() }
-        followReminderPrefs.isChecked = prefs.isFollowReminderEnabled
+        binding.followReminderPrefs.setOnClickListener { changeFollowPrefs() }
+        binding.followReminderPrefs.isChecked = prefs.isFollowReminderEnabled
         initPriority()
     }
 
     private fun initPriority() {
-        priorityPrefs.setOnClickListener { showPriorityDialog() }
-        priorityPrefs.setDependentView(missedPrefs)
+        binding.priorityPrefs.setOnClickListener { showPriorityDialog() }
+        binding.priorityPrefs.setDependentView(binding.missedPrefs)
         showPriority()
     }
 
@@ -80,42 +80,42 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showPriority() {
-        priorityPrefs.setDetailText(priorityList()[prefs.missedCallPriority])
+        binding.priorityPrefs.setDetailText(priorityList()[prefs.missedCallPriority])
     }
 
     private fun initMessagesPrefs() {
-        val mMessagesPrefs = templatesPrefs
+        val mMessagesPrefs = binding.templatesPrefs
         mMessagesPrefs.setOnClickListener { callback?.openFragment(TemplatesFragment(), getString(R.string.messages)) }
-        mMessagesPrefs.setDependentView(quickSMSPrefs)
+        mMessagesPrefs.setDependentView(binding.quickSMSPrefs)
     }
 
     private fun initQuickSmsPrefs() {
-        quickSMSPrefs.setOnClickListener {changeQuickSmsPrefs()}
-        quickSMSPrefs.isChecked = prefs.isQuickSmsEnabled
+        binding.quickSMSPrefs.setOnClickListener {changeQuickSmsPrefs()}
+        binding.quickSMSPrefs.isChecked = prefs.isQuickSmsEnabled
     }
 
     private fun initMissedTimePrefs() {
-        missedTimePrefs.setOnClickListener { showTimePickerDialog() }
-        missedTimePrefs.setDependentView(missedPrefs)
+        binding.missedTimePrefs.setOnClickListener { showTimePickerDialog() }
+        binding.missedTimePrefs.setDependentView(binding.missedPrefs)
         showTime()
     }
 
     private fun showTime() {
-        missedTimePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+        binding.missedTimePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 prefs.missedReminderTime.toString()))
     }
 
     private fun initMissedPrefs() {
-        missedPrefs.setOnClickListener { changeMissedPrefs() }
-        missedPrefs.isChecked = prefs.isMissedReminderEnabled
+        binding.missedPrefs.setOnClickListener { changeMissedPrefs() }
+        binding.missedPrefs.isChecked = prefs.isMissedReminderEnabled
     }
 
     private fun changeFollowPrefs() {
         if (!Permissions.ensurePermissions(activity!!, FOLLOW, Permissions.READ_PHONE_STATE)) {
             return
         }
-        val isChecked = followReminderPrefs.isChecked
-        followReminderPrefs.isChecked = !isChecked
+        val isChecked = binding.followReminderPrefs.isChecked
+        binding.followReminderPrefs.isChecked = !isChecked
         prefs.isFollowReminderEnabled = !isChecked
     }
 
@@ -123,8 +123,8 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         if (!Permissions.ensurePermissions(activity!!, MISSED, Permissions.READ_PHONE_STATE)) {
             return
         }
-        val isChecked = missedPrefs.isChecked
-        missedPrefs.isChecked = !isChecked
+        val isChecked = binding.missedPrefs.isChecked
+        binding.missedPrefs.isChecked = !isChecked
         prefs.isMissedReminderEnabled = !isChecked
     }
 
@@ -132,15 +132,15 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         if (!Permissions.ensurePermissions(activity!!, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
             return
         }
-        val isChecked = quickSMSPrefs.isChecked
-        quickSMSPrefs.isChecked = !isChecked
+        val isChecked = binding.quickSMSPrefs.isChecked
+        binding.quickSMSPrefs.isChecked = !isChecked
         prefs.isQuickSmsEnabled = !isChecked
     }
 
     private fun showTimePickerDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.interval)
-        val b = LayoutInflater.from(context).inflate(R.layout.dialog_with_seek_and_title, null)
+        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
         b.seekBar.max = 60
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -159,7 +159,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         val time = prefs.missedReminderTime
         b.seekBar.progress = time
         b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), time.toString())
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ ->
             prefs.missedReminderTime = b.seekBar.progress
             showTime()

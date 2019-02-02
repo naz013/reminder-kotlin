@@ -5,14 +5,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.databinding.FragmentSettingsDeletePinBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_delete_pin.*
 
-class DisablePinFragment : BaseSettingsFragment() {
+class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding>() {
 
     private val mTextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            pinLayout.isErrorEnabled = false
+            binding.pinLayout.isErrorEnabled = false
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -28,9 +28,8 @@ class DisablePinFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        saveButton.setOnClickListener { savePin() }
-
-        pinField.addTextChangedListener(mTextWatcher)
+        binding.saveButton.setOnClickListener { savePin() }
+        binding.pinField.addTextChangedListener(mTextWatcher)
     }
 
     override fun onDestroy() {
@@ -39,19 +38,19 @@ class DisablePinFragment : BaseSettingsFragment() {
     }
 
     private fun savePin() {
-        val old = pinField.text.toString().trim()
+        val old = binding.pinField.text.toString().trim()
 
         var hasError = false
         if (old.length < 6) {
-            pinLayout.error = getString(R.string.wrong_pin)
-            pinLayout.isErrorEnabled = true
+            binding.pinLayout.error = getString(R.string.wrong_pin)
+            binding.pinLayout.isErrorEnabled = true
             hasError = true
         }
         if (!hasError) {
             if (old != prefs.pinCode) {
                 hasError = true
-                pinLayout.error = getString(R.string.pin_not_match)
-                pinLayout.isErrorEnabled = true
+                binding.pinLayout.error = getString(R.string.pin_not_match)
+                binding.pinLayout.isErrorEnabled = true
             }
         }
 

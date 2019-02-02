@@ -8,7 +8,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.onChanged
-import kotlinx.android.synthetic.main.fragment_reminder_email.*
+import com.elementary.tasks.databinding.FragmentReminderEmailBinding
 import timber.log.Timber
 
 /**
@@ -29,21 +29,21 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EmailFragment : RepeatableTypeFragment() {
+class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
 
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
-        val email = mail.text.toString().trim()
+        val email = binding.mail.text.toString().trim()
         if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*".toRegex())) {
             iFace.showSnackbar(getString(R.string.email_is_incorrect))
             return null
         }
-        val subjectString = subject.text.toString().trim()
+        val subjectString = binding.subject.text.toString().trim()
         if (TextUtils.isEmpty(subjectString)) {
             iFace.showSnackbar(getString(R.string.you_dont_insert_any_message))
             return null
         }
-        val startTime = dateView.dateTime
+        val startTime = binding.dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
@@ -65,40 +65,40 @@ class EmailFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                dateTimeView = dateView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                repeatView = repeatView,
-                windowTypeView = windowTypeView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                dateTimeView = binding.dateView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                repeatView = binding.repeatView,
+                windowTypeView = binding.windowTypeView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary?.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tuneExtraView.hint = getString(R.string.message)
-        tuneExtraView.hasAutoExtra = true
+        binding.tuneExtraView.hint = getString(R.string.message)
+        binding.tuneExtraView.hasAutoExtra = true
 
-        mail.onChanged {
+        binding.mail.onChanged {
             iFace.state.isEmailOrSubjectChanged = true
             iFace.state.email = it
         }
-        subject.onChanged {
+        binding.subject.onChanged {
             iFace.state.isEmailOrSubjectChanged = true
             iFace.state.subject = it
         }
@@ -108,11 +108,11 @@ class EmailFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         if (iFace.state.isEmailOrSubjectChanged) {
-            mail.setText(iFace.state.email)
-            subject.setText(iFace.state.subject)
+            binding.mail.setText(iFace.state.email)
+            binding.subject.setText(iFace.state.subject)
         } else {
-            mail.setText(iFace.state.reminder.target)
-            subject.setText(iFace.state.reminder.subject)
+            binding.mail.setText(iFace.state.reminder.target)
+            binding.subject.setText(iFace.state.reminder.subject)
         }
     }
 }

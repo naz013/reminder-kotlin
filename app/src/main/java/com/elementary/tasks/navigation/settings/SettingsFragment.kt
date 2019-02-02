@@ -18,7 +18,6 @@ import com.elementary.tasks.navigation.settings.reminders.RemindersSettingsFragm
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment
 import com.elementary.tasks.navigation.settings.voice.VoiceSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 /**
  * Copyright 2016 Nazar Suhovich

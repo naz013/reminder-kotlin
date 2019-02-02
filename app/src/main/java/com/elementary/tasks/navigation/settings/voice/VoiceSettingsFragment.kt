@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_voice.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,40 +26,40 @@ import kotlinx.android.synthetic.main.fragment_settings_voice.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class VoiceSettingsFragment : BaseSettingsFragment() {
+class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>() {
 
     private var mItemSelect: Int = 0
     override fun layoutRes(): Int = R.layout.fragment_settings_voice
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
         initLanguagePrefs()
-        timePrefs.setOnClickListener { callback?.openFragment(TimeOfDayFragment(), getString(R.string.time)) }
-        helpPrefs.setOnClickListener { callback?.openFragment(HelpFragment(), getString(R.string.help)) }
+        binding.timePrefs.setOnClickListener { callback?.openFragment(TimeOfDayFragment(), getString(R.string.time)) }
+        binding.helpPrefs.setOnClickListener { callback?.openFragment(HelpFragment(), getString(R.string.help)) }
         initConversationPrefs()
     }
 
     private fun initLanguagePrefs() {
-        languagePrefs.setOnClickListener { showLanguageDialog() }
+        binding.languagePrefs.setOnClickListener { showLanguageDialog() }
         showLanguage()
     }
 
     private fun showLanguage() {
-        languagePrefs.setDetailText(language.getLanguages(context!!)[prefs.voiceLocale])
+        binding.languagePrefs.setDetailText(language.getLanguages(context!!)[prefs.voiceLocale])
     }
 
     private fun initConversationPrefs() {
-        conversationPrefs.setOnClickListener { changeLivePrefs() }
-        conversationPrefs.isChecked = prefs.isLiveEnabled
+        binding.conversationPrefs.setOnClickListener { changeLivePrefs() }
+        binding.conversationPrefs.isChecked = prefs.isLiveEnabled
     }
 
     private fun changeLivePrefs() {
-        val isChecked = conversationPrefs.isChecked
+        val isChecked = binding.conversationPrefs.isChecked
         prefs.isLiveEnabled = !isChecked
-        conversationPrefs.isChecked = !isChecked
+        binding.conversationPrefs.isChecked = !isChecked
     }
 
     override fun getTitle(): String = getString(R.string.voice_control)

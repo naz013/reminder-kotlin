@@ -5,16 +5,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.databinding.FragmentSettingsChangePinBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_change_pin.*
 
-class ChangePinFragment : BaseSettingsFragment() {
+class ChangePinFragment : BaseSettingsFragment<FragmentSettingsChangePinBinding>() {
 
     private val mTextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            pinLayout.isErrorEnabled = false
-            pinConfirmLayout.isErrorEnabled = false
-            pinOldLayout.isErrorEnabled = false
+            binding.pinLayout.isErrorEnabled = false
+            binding.pinConfirmLayout.isErrorEnabled = false
+            binding.pinOldLayout.isErrorEnabled = false
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -30,11 +30,11 @@ class ChangePinFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        saveButton.setOnClickListener { savePin() }
+        binding.saveButton.setOnClickListener { savePin() }
 
-        pinField.addTextChangedListener(mTextWatcher)
-        pinConfirmField.addTextChangedListener(mTextWatcher)
-        pinOldField.addTextChangedListener(mTextWatcher)
+        binding.pinField.addTextChangedListener(mTextWatcher)
+        binding.pinConfirmField.addTextChangedListener(mTextWatcher)
+        binding.pinOldField.addTextChangedListener(mTextWatcher)
     }
 
     override fun onDestroy() {
@@ -43,38 +43,38 @@ class ChangePinFragment : BaseSettingsFragment() {
     }
 
     private fun savePin() {
-        val old = pinOldField.text.toString().trim()
-        val new = pinField.text.toString().trim()
-        val confirm = pinConfirmField.text.toString().trim()
+        val old = binding.pinOldField.text.toString().trim()
+        val new = binding.pinField.text.toString().trim()
+        val confirm = binding.pinConfirmField.text.toString().trim()
 
         var hasError = false
         if (old.length < 6) {
-            pinOldLayout.error = getString(R.string.wrong_pin)
-            pinOldLayout.isErrorEnabled = true
+            binding.pinOldLayout.error = getString(R.string.wrong_pin)
+            binding.pinOldLayout.isErrorEnabled = true
             hasError = true
         }
         if (new.length < 6) {
-            pinLayout.error = getString(R.string.wrong_pin)
-            pinLayout.isErrorEnabled = true
+            binding.pinLayout.error = getString(R.string.wrong_pin)
+            binding.pinLayout.isErrorEnabled = true
             hasError = true
         }
         if (confirm.length < 6) {
-            pinConfirmLayout.error = getString(R.string.wrong_pin)
-            pinConfirmLayout.isErrorEnabled = true
+            binding.pinConfirmLayout.error = getString(R.string.wrong_pin)
+            binding.pinConfirmLayout.isErrorEnabled = true
             hasError = true
         }
 
         if (!hasError) {
             if (old != prefs.pinCode) {
                 hasError = true
-                pinOldLayout.error = getString(R.string.pin_not_match)
-                pinOldLayout.isErrorEnabled = true
+                binding.pinOldLayout.error = getString(R.string.pin_not_match)
+                binding.pinOldLayout.isErrorEnabled = true
             } else if (new != confirm) {
                 hasError = true
-                pinLayout.error = getString(R.string.pin_not_match)
-                pinLayout.isErrorEnabled = true
-                pinConfirmLayout.error = getString(R.string.pin_not_match)
-                pinConfirmLayout.isErrorEnabled = true
+                binding.pinLayout.error = getString(R.string.pin_not_match)
+                binding.pinLayout.isErrorEnabled = true
+                binding.pinConfirmLayout.error = getString(R.string.pin_not_match)
+                binding.pinConfirmLayout.isErrorEnabled = true
             }
         }
 

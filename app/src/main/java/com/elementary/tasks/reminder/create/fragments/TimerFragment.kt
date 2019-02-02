@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.create.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -10,16 +9,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.UsedTime
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.bindProperty
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.used_time.UsedTimeViewModel
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.TimerPickerView
-import kotlinx.android.synthetic.main.fragment_reminder_timer.*
-import kotlinx.android.synthetic.main.list_item_used_time.view.*
+import com.elementary.tasks.databinding.FragmentReminderTimerBinding
+import com.elementary.tasks.databinding.ListItemUsedTimeBinding
 import timber.log.Timber
 
 /**
@@ -40,33 +38,33 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TimerFragment : RepeatableTypeFragment() {
+class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
     private val timesAdapter = TimesAdapter()
     lateinit var viewModel: UsedTimeViewModel
 
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
-        val after = timerPickerView.timerValue
+        val after = binding.timerPickerView.timerValue
         if (after == 0L) {
             iFace.showSnackbar(getString(R.string.you_dont_insert_timer_time))
             return null
         }
         var type = Reminder.BY_TIME
-        val isAction = actionView.hasAction()
+        val isAction = binding.actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
-            taskLayout.error = getString(R.string.task_summary_is_empty)
-            taskLayout.isErrorEnabled = true
+            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.isErrorEnabled = true
             return null
         }
         var number = ""
         if (isAction) {
-            number = actionView.number
+            number = binding.actionView.number
             if (TextUtils.isEmpty(number)) {
                 iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
-            type = if (actionView.type == ActionView.TYPE_CALL) {
+            type = if (binding.actionView.type == ActionView.TYPE_CALL) {
                 Reminder.BY_TIME_CALL
             } else {
                 Reminder.BY_TIME_SMS
@@ -93,46 +91,46 @@ class TimerFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                repeatView = repeatView,
-                windowTypeView = windowTypeView,
-                actionView = actionView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                repeatView = binding.repeatView,
+                windowTypeView = binding.windowTypeView,
+                actionView = binding.actionView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMostUsedList()
-        tuneExtraView.hasAutoExtra = false
+        binding.tuneExtraView.hasAutoExtra = false
 
-        timerPickerView.setListener(object : TimerPickerView.TimerListener {
+        binding.timerPickerView.setListener(object : TimerPickerView.TimerListener {
             override fun onTimerChange(time: Long) {
                 iFace.state.reminder.after = time
             }
         })
 
-        exclusionView.dialogues = dialogues
-        exclusionView.prefs = prefs
-        exclusionView.themeUtil = themeUtil
+        binding.exclusionView.dialogues = dialogues
+        binding.exclusionView.prefs = prefs
+        binding.exclusionView.themeUtil = themeUtil
 
-        exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
+        binding.exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
                 iFace.state.reminder.to) { hours, from, to ->
             iFace.state.reminder.hours = hours
             iFace.state.reminder.from = from
@@ -149,39 +147,39 @@ class TimerFragment : RepeatableTypeFragment() {
             if (it != null) {
                 timesAdapter.updateData(it)
                 if (it.isEmpty()) {
-                    mostUserTimes.visibility = View.GONE
+                    binding.mostUserTimes.hide()
                 } else {
-                    mostUserTimes.visibility = View.VISIBLE
+                    binding.mostUserTimes.show()
                 }
             } else {
-                mostUserTimes.visibility = View.GONE
+                binding.mostUserTimes.hide()
             }
         })
     }
 
     private fun initMostUsedList() {
-        mostUserTimes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.mostUserTimes.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         timesAdapter.listener = {
-            timerPickerView.timerValue = it.timeMills
+            binding.timerPickerView.timerValue = it.timeMills
         }
-        mostUserTimes.adapter = timesAdapter
+        binding.mostUserTimes.adapter = timesAdapter
     }
 
     override fun updateActions() {
-        if (actionView.hasAction()) {
-            tuneExtraView.hasAutoExtra = true
-            if (actionView.type == ActionView.TYPE_MESSAGE) {
-                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+        if (binding.actionView.hasAction()) {
+            binding.tuneExtraView.hasAutoExtra = true
+            if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+                binding.tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
             } else {
-                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
             }
         } else {
-            tuneExtraView.hasAutoExtra = false
+            binding.tuneExtraView.hasAutoExtra = false
         }
     }
 
     private fun editReminder() {
-        timerPickerView.timerValue = iFace.state.reminder.after
+        binding.timerPickerView.timerValue = iFace.state.reminder.after
     }
 
     inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {
@@ -208,16 +206,16 @@ class TimerFragment : RepeatableTypeFragment() {
         }
 
         inner class TimeHolder(viewGroup: ViewGroup) :
-                RecyclerView.ViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.list_item_used_time, viewGroup, false)) {
+                HolderBinding<ListItemUsedTimeBinding>(viewGroup, R.layout.list_item_used_time) {
 
             init {
-                itemView.chipItem.setOnClickListener {
+                binding.chipItem.setOnClickListener {
                     listener?.invoke(data[adapterPosition])
                 }
             }
 
             fun bind(usedTime: UsedTime) {
-                itemView.chipItem.text = usedTime.timeString
+                binding.chipItem.text = usedTime.timeString
             }
         }
     }
