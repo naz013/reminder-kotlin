@@ -43,6 +43,31 @@ fun <ViewT : View> Activity.bindView(@IdRes idRes: Int): Lazy<ViewT> {
     }
 }
 
+fun Date?.toHm(): TimeUtil.HM {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = System.currentTimeMillis()
+    if (this != null) calendar.time = this
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+    return TimeUtil.HM(hour, minute)
+}
+
+fun TimeUtil.HM.toDate(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = System.currentTimeMillis()
+    calendar.set(Calendar.HOUR_OF_DAY, hour)
+    calendar.set(Calendar.MINUTE, minute)
+    return calendar.time
+}
+
+fun TimeUtil.HM.toMillis(): Long {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = System.currentTimeMillis()
+    calendar.set(Calendar.HOUR_OF_DAY, hour)
+    calendar.set(Calendar.MINUTE, minute)
+    return calendar.timeInMillis
+}
+
 fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
 fun View.isNotVisible(): Boolean = visibility == View.INVISIBLE
