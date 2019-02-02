@@ -22,10 +22,9 @@ class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val binding = FragmentImageBinding.inflate(LayoutInflater.from(container.context), container, false)
-        val imageView = binding.ivPhoto
-        loadPhoto(imageView, position)
+        loadPhoto(binding.ivPhoto, position)
         container.addView(binding.root)
-        return binding
+        return binding.root
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
