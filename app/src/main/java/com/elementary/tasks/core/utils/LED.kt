@@ -49,10 +49,10 @@ object LED {
         }
     }
 
-    fun getAllNames(context: Context): Array<String> {
-        val colors = arrayOf<String>()
+    fun getAllNames(context: Context): List<String> {
+        val colors = mutableListOf<String>()
         for (i in 0 until LED.NUM_OF_LEDS) {
-            colors[i] = LED.getTitle(context, i)
+            colors.add(LED.getTitle(context, i))
         }
         return colors
     }

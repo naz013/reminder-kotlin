@@ -203,8 +203,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.led_color))
         val colors = LED.getAllNames(context!!)
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, colors)
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, colors)
         mItemSelect = prefs.ledColor
         builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
