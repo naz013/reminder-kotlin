@@ -7,8 +7,8 @@ import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_reminders.*
 import java.util.*
 
 /**
@@ -29,7 +29,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RemindersSettingsFragment : BaseSettingsFragment() {
+class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsRemindersBinding>() {
 
     private var mItemSelect: Int = 0
 
@@ -37,7 +37,7 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
@@ -50,13 +50,13 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initIgnorePrefs() {
-        doNotDisturbIgnorePrefs.setOnClickListener { showIgnoreDialog() }
-        doNotDisturbIgnorePrefs.setDependentView(doNotDisturbPrefs)
+        binding.doNotDisturbIgnorePrefs.setOnClickListener { showIgnoreDialog() }
+        binding.doNotDisturbIgnorePrefs.setDependentView(binding.doNotDisturbPrefs)
         showIgnore()
     }
 
     private fun showIgnore() {
-        doNotDisturbIgnorePrefs.setDetailText(ignoreList()[prefs.doNotDisturbIgnore])
+        binding.doNotDisturbIgnorePrefs.setDetailText(ignoreList()[prefs.doNotDisturbIgnore])
     }
 
     private fun showIgnoreDialog() {
@@ -80,13 +80,13 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initActionPrefs() {
-        doNotDisturbActionPrefs.setOnClickListener { showActionDialog() }
-        doNotDisturbActionPrefs.setDependentView(doNotDisturbPrefs)
+        binding.doNotDisturbActionPrefs.setOnClickListener { showActionDialog() }
+        binding.doNotDisturbActionPrefs.setDependentView(binding.doNotDisturbPrefs)
         showAction()
     }
 
     private fun showAction() {
-        doNotDisturbActionPrefs.setDetailText(actionList()[prefs.doNotDisturbAction])
+        binding.doNotDisturbActionPrefs.setDetailText(actionList()[prefs.doNotDisturbAction])
     }
 
     private fun showActionDialog() {
@@ -110,21 +110,21 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initTimesPrefs() {
-        doNotDisturbFromPrefs.setOnClickListener {
+        binding.doNotDisturbFromPrefs.setOnClickListener {
             showTimeDialog(prefs.doNotDisturbFrom) { i, j ->
                 prefs.doNotDisturbFrom = TimeUtil.getBirthdayTime(i, j)
                 showFromTime()
             }
         }
-        doNotDisturbFromPrefs.setDependentView(doNotDisturbPrefs)
+        binding.doNotDisturbFromPrefs.setDependentView(binding.doNotDisturbPrefs)
 
-        doNotDisturbToPrefs.setOnClickListener {
+        binding.doNotDisturbToPrefs.setOnClickListener {
             showTimeDialog(prefs.doNotDisturbTo) { i, j ->
                 prefs.doNotDisturbTo = TimeUtil.getBirthdayTime(i, j)
                 showToTime()
             }
         }
-        doNotDisturbToPrefs.setDependentView(doNotDisturbPrefs)
+        binding.doNotDisturbToPrefs.setDependentView(binding.doNotDisturbPrefs)
 
         showFromTime()
         showToTime()
@@ -141,26 +141,26 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showToTime() {
-        doNotDisturbToPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbTo, prefs.is24HourFormat, prefs.appLanguage))
+        binding.doNotDisturbToPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbTo, prefs.is24HourFormat, prefs.appLanguage))
     }
 
     private fun showFromTime() {
-        doNotDisturbFromPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbFrom, prefs.is24HourFormat, prefs.appLanguage))
+        binding.doNotDisturbFromPrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.doNotDisturbFrom, prefs.is24HourFormat, prefs.appLanguage))
     }
 
     private fun initDoNotDisturbPrefs() {
-        doNotDisturbPrefs.setOnClickListener { changeDoNotDisturb() }
-        doNotDisturbPrefs.isChecked = prefs.isDoNotDisturbEnabled
+        binding.doNotDisturbPrefs.setOnClickListener { changeDoNotDisturb() }
+        binding.doNotDisturbPrefs.isChecked = prefs.isDoNotDisturbEnabled
     }
 
     private fun changeDoNotDisturb() {
-        val isChecked = doNotDisturbPrefs.isChecked
-        doNotDisturbPrefs.isChecked = !isChecked
+        val isChecked = binding.doNotDisturbPrefs.isChecked
+        binding.doNotDisturbPrefs.isChecked = !isChecked
         prefs.isDoNotDisturbEnabled = !isChecked
     }
 
     private fun initDefaultPriority() {
-        defaultPriorityPrefs.setOnClickListener { showPriorityDialog() }
+        binding.defaultPriorityPrefs.setOnClickListener { showPriorityDialog() }
         showDefaultPriority()
     }
 
@@ -185,17 +185,17 @@ class RemindersSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showDefaultPriority() {
-        defaultPriorityPrefs.setDetailText(priorityList()[prefs.defaultPriority])
+        binding.defaultPriorityPrefs.setDetailText(priorityList()[prefs.defaultPriority])
     }
 
     private fun initCompletedPrefs() {
-        completedPrefs.setOnClickListener { changeCompleted() }
-        completedPrefs.isChecked = prefs.moveCompleted
+        binding.completedPrefs.setOnClickListener { changeCompleted() }
+        binding.completedPrefs.isChecked = prefs.moveCompleted
     }
 
     private fun changeCompleted() {
-        val isChecked = completedPrefs.isChecked
-        completedPrefs.isChecked = !isChecked
+        val isChecked = binding.completedPrefs.isChecked
+        binding.completedPrefs.isChecked = !isChecked
         prefs.moveCompleted = !isChecked
     }
 

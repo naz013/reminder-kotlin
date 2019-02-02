@@ -164,6 +164,7 @@ dependencies {
     implementation 'co.revely:gradient:1.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    kapt "androidx.databinding:databinding-compiler:3.4.0-beta03"
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -17,9 +17,8 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_cloud_drives.*
-import kotlinx.android.synthetic.main.view_progress.*
 import timber.log.Timber
 
 /**
@@ -40,7 +39,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentCloudDrives : BaseSettingsFragment() {
+class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
 
     private lateinit var viewModel: CloudViewModel
     private lateinit var mDropbox: DropboxLogin
@@ -49,9 +48,9 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     private val mDropboxCallback = object : DropboxLogin.LoginCallback {
         override fun onSuccess(b: Boolean) {
             if (b) {
-                linkDropbox.text = getString(R.string.disconnect)
+                binding.linkDropbox.text = getString(R.string.disconnect)
             } else {
-                linkDropbox.text = getString(R.string.connect)
+                binding.linkDropbox.text = getString(R.string.connect)
             }
             callback?.refreshMenu()
         }
@@ -74,7 +73,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateProgress(false)
-        progressMessageView.text = getString(R.string.please_wait)
+        binding.progressMessageView.text = getString(R.string.please_wait)
         mDropbox = DropboxLogin(activity!!, mDropboxCallback)
         mGoogleLogin = GoogleLogin(activity!!, prefs)
         mGoogleLogin.googleStatus = {
@@ -104,19 +103,19 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     private fun initGoogleTasksButton() {
         if (SuperUtil.isGooglePlayServicesAvailable(context!!)) {
-            tasksView.visibility = View.VISIBLE
-            linkGTasks.setOnClickListener { googleTasksButtonClick() }
+            binding.tasksView.visibility = View.VISIBLE
+            binding.linkGTasks.setOnClickListener { googleTasksButtonClick() }
         } else {
-            tasksView.visibility = View.GONE
+            binding.tasksView.visibility = View.GONE
         }
     }
 
     private fun initGoogleDriveButton() {
         if (SuperUtil.isGooglePlayServicesAvailable(context!!)) {
-            driveView.visibility = View.VISIBLE
-            linkGDrive.setOnClickListener { googleDriveButtonClick() }
+            binding.driveView.visibility = View.VISIBLE
+            binding.linkGDrive.setOnClickListener { googleDriveButtonClick() }
         } else {
-            driveView.visibility = View.GONE
+            binding.driveView.visibility = View.GONE
         }
     }
 
@@ -137,7 +136,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun initDropboxButton() {
-        linkDropbox.setOnClickListener { mDropbox.login() }
+        binding.linkDropbox.setOnClickListener { mDropbox.login() }
     }
 
     private fun switchGoogleTasksStatus() {
@@ -172,13 +171,13 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     private fun updateProgress(loading: Boolean) {
         if (loading) {
-            progressView.visibility = View.VISIBLE
+            binding.progressView.visibility = View.VISIBLE
         } else {
-            progressView.visibility = View.GONE
+            binding.progressView.visibility = View.GONE
         }
-        linkDropbox.isEnabled = !loading
-        linkGDrive.isEnabled = !loading
-        linkGTasks.isEnabled = !loading
+        binding.linkDropbox.isEnabled = !loading
+        binding.linkGDrive.isEnabled = !loading
+        binding.linkGTasks.isEnabled = !loading
     }
 
     private fun switchGoogleDriveStatus() {
@@ -241,14 +240,14 @@ class FragmentCloudDrives : BaseSettingsFragment() {
 
     private fun checkGoogleStatus() {
         if (mGoogleLogin.isGoogleDriveLogged) {
-            linkGDrive.text = getString(R.string.disconnect)
+            binding.linkGDrive.text = getString(R.string.disconnect)
         } else {
-            linkGDrive.text = getString(R.string.connect)
+            binding.linkGDrive.text = getString(R.string.connect)
         }
         if (mGoogleLogin.isGoogleTasksLogged) {
-            linkGTasks.text = getString(R.string.disconnect)
+            binding.linkGTasks.text = getString(R.string.disconnect)
         } else {
-            linkGTasks.text = getString(R.string.connect)
+            binding.linkGTasks.text = getString(R.string.connect)
         }
     }
 

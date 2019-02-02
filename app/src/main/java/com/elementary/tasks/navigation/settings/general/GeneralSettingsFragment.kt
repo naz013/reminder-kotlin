@@ -8,10 +8,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.general.home.PageIdentifier
 import com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity
-import kotlinx.android.synthetic.main.fragment_settings_general.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_settings_general.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GeneralSettingsFragment : BaseSettingsFragment() {
+class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
 
     private var mItemSelect: Int = 0
     private val currentTheme: String
@@ -48,7 +48,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
@@ -60,23 +60,23 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initColsPrefs() {
-        twoColsPrefs.isChecked = prefs.isTwoColsEnabled
-        twoColsPrefs.setOnClickListener { changeColsPrefs() }
+        binding.twoColsPrefs.isChecked = prefs.isTwoColsEnabled
+        binding.twoColsPrefs.setOnClickListener { changeColsPrefs() }
     }
 
     private fun changeColsPrefs() {
-        val b = twoColsPrefs.isChecked
+        val b = binding.twoColsPrefs.isChecked
         prefs.isTwoColsEnabled = !b
-        twoColsPrefs.isChecked = !b
+        binding.twoColsPrefs.isChecked = !b
     }
 
     private fun initHomePage() {
-        homePrefs.setOnClickListener { showHomePageDialog() }
+        binding.homePrefs.setOnClickListener { showHomePageDialog() }
         showHomePage()
     }
 
     private fun showHomePage() {
-        homePrefs.setDetailText(PageIdentifier.name(context!!, prefs.homePage))
+        binding.homePrefs.setDetailText(PageIdentifier.name(context!!, prefs.homePage))
     }
 
     private fun showHomePageDialog() {
@@ -103,12 +103,12 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initLanguagePrefs() {
-        language_prefs.setOnClickListener { showLanguageDialog() }
+        binding.languagePrefs.setOnClickListener { showLanguageDialog() }
         showLanguage()
     }
 
     private fun showLanguage() {
-        language_prefs.setDetailText(language.getScreenLocaleName(context!!))
+        binding.languagePrefs.setDetailText(language.getScreenLocaleName(context!!))
     }
 
     private fun showLanguageDialog() {
@@ -132,12 +132,12 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun init24TimePrefs() {
-        time24hourPrefs.setOnClickListener { showTimeFormatDialog() }
+        binding.time24hourPrefs.setOnClickListener { showTimeFormatDialog() }
         showTimeFormat()
     }
 
     private fun showTimeFormat() {
-        time24hourPrefs.setDetailText(currentFormat())
+        binding.time24hourPrefs.setDetailText(currentFormat())
     }
 
     private fun currentFormat(): String? {
@@ -175,8 +175,8 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initAppTheme() {
-        appThemePrefs.setDetailText(currentTheme)
-        appThemePrefs.setOnClickListener { selectTheme() }
+        binding.appThemePrefs.setDetailText(currentTheme)
+        binding.appThemePrefs.setOnClickListener { selectTheme() }
     }
 
     override fun getTitle(): String = getString(R.string.general)

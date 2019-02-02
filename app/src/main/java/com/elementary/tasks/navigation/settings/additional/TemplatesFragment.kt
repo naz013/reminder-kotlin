@@ -22,8 +22,8 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.databinding.FragmentSettingsTemplatesListBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_templates_list.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,7 +43,7 @@ import kotlinx.android.synthetic.main.fragment_settings_templates_list.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TemplatesFragment : BaseSettingsFragment() {
+class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBinding>() {
 
     private val adapter = TemplatesAdapter()
     private lateinit var viewModel: SmsTemplatesViewModel
@@ -53,7 +53,7 @@ class TemplatesFragment : BaseSettingsFragment() {
 
     private val searchModifier = object : SearchModifier<SmsTemplate>(null, {
         adapter.data = it
-        templatesList.smoothScrollToPosition(0)
+        binding.templatesList.smoothScrollToPosition(0)
         refreshView()
     }) {
         override fun filter(v: SmsTemplate): Boolean {
@@ -105,7 +105,7 @@ class TemplatesFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { openCreateScreen() }
+        binding.fab.setOnClickListener { openCreateScreen() }
         initTemplateList()
         initViewModel()
     }
@@ -125,9 +125,9 @@ class TemplatesFragment : BaseSettingsFragment() {
 
     private fun initTemplateList() {
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            templatesList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.templatesList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            templatesList.layoutManager = LinearLayoutManager(context)
+            binding.templatesList.layoutManager = LinearLayoutManager(context)
         }
         adapter.actionsListener = object : ActionsListener<SmsTemplate> {
             override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
@@ -143,8 +143,8 @@ class TemplatesFragment : BaseSettingsFragment() {
                 }
             }
         }
-        templatesList.adapter = adapter
-        ViewUtils.listenScrollableView(templatesList) {
+        binding.templatesList.adapter = adapter
+        ViewUtils.listenScrollableView(binding.templatesList) {
             setScroll(it)
         }
         refreshView()
@@ -177,11 +177,11 @@ class TemplatesFragment : BaseSettingsFragment() {
 
     private fun refreshView() {
         if (adapter.itemCount == 0) {
-            emptyItem.visibility = View.VISIBLE
-            templatesList.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
+            binding.templatesList.visibility = View.GONE
         } else {
-            emptyItem.visibility = View.GONE
-            templatesList.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
+            binding.templatesList.visibility = View.VISIBLE
         }
     }
 }

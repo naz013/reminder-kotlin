@@ -8,8 +8,8 @@ import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.FragmentSettingsSecurityBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_security.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -29,18 +29,18 @@ import kotlinx.android.synthetic.main.fragment_settings_security.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SecuritySettingsFragment : BaseSettingsFragment() {
+class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
 
     override fun layoutRes(): Int = R.layout.fragment_settings_security
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
-        changePinPrefs.setDependentView(pinSwitchPrefs)
-        changePinPrefs.setOnClickListener {
+        binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
+        binding.changePinPrefs.setOnClickListener {
             callback?.openFragment(ChangePinFragment(), getString(R.string.change_pin))
         }
 
@@ -50,29 +50,29 @@ class SecuritySettingsFragment : BaseSettingsFragment() {
 
     private fun initPhonePrefs() {
         if (Module.hasTelephony(context!!)) {
-            telephonyPrefs.isEnabled = true
-            telephonyPrefs.setOnClickListener { changePhonePrefs() }
-            telephonyPrefs.isChecked = prefs.isTelephonyEnabled
+            binding.telephonyPrefs.isEnabled = true
+            binding.telephonyPrefs.setOnClickListener { changePhonePrefs() }
+            binding.telephonyPrefs.isChecked = prefs.isTelephonyEnabled
         } else {
             prefs.isTelephonyEnabled = false
-            telephonyPrefs.isChecked = false
-            telephonyPrefs.isEnabled = false
+            binding.telephonyPrefs.isChecked = false
+            binding.telephonyPrefs.isEnabled = false
         }
     }
 
     private fun changePhonePrefs() {
-        val isChecked = telephonyPrefs.isChecked
-        telephonyPrefs.isChecked = !isChecked
+        val isChecked = binding.telephonyPrefs.isChecked
+        binding.telephonyPrefs.isChecked = !isChecked
         prefs.isTelephonyEnabled = !isChecked
     }
 
     private fun initPinPrefs() {
-        pinSwitchPrefs.setOnClickListener { changePinPrefs() }
-        pinSwitchPrefs.isChecked = prefs.hasPinCode
+        binding.pinSwitchPrefs.setOnClickListener { changePinPrefs() }
+        binding.pinSwitchPrefs.isChecked = prefs.hasPinCode
     }
 
     private fun changePinPrefs() {
-        val isChecked = pinSwitchPrefs.isChecked
+        val isChecked = binding.pinSwitchPrefs.isChecked
         if (isChecked) {
             callback?.openFragment(DisablePinFragment(), getString(R.string.disable_pin))
         } else {
@@ -81,28 +81,28 @@ class SecuritySettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initFingerPrefs() {
-        fingerprintSwitchPrefs.setOnClickListener { changeFingerPrefs() }
-        fingerprintSwitchPrefs.setDependentView(pinSwitchPrefs)
-        fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
+        binding.fingerprintSwitchPrefs.setOnClickListener { changeFingerPrefs() }
+        binding.fingerprintSwitchPrefs.setDependentView(binding.pinSwitchPrefs)
+        binding.fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
 
         FingerInitializer(context!!, null, object : FingerInitializer.ReadyListener {
             override fun onFailToCreate() {
-                fingerprintSwitchPrefs.visibility = View.GONE
+                binding.fingerprintSwitchPrefs.visibility = View.GONE
             }
 
             override fun onReady(context: Context, fingerprintUiHelper: FingerprintHelper) {
                 if (fingerprintUiHelper.canUseFinger(context)) {
-                    fingerprintSwitchPrefs.visibility = View.VISIBLE
+                    binding.fingerprintSwitchPrefs.visibility = View.VISIBLE
                 } else {
-                    fingerprintSwitchPrefs.visibility = View.GONE
+                    binding.fingerprintSwitchPrefs.visibility = View.GONE
                 }
             }
         })
     }
 
     private fun changeFingerPrefs() {
-        val isChecked = fingerprintSwitchPrefs.isChecked
-        fingerprintSwitchPrefs.isChecked = !isChecked
+        val isChecked = binding.fingerprintSwitchPrefs.isChecked
+        binding.fingerprintSwitchPrefs.isChecked = !isChecked
         prefs.useFingerprint = !isChecked
     }
 

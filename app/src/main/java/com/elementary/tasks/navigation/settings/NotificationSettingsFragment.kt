@@ -10,8 +10,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.fragment_settings_notification.*
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
+import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
 import java.io.File
 import java.util.*
 
@@ -33,7 +33,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotificationSettingsFragment : BaseSettingsFragment() {
+class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
 
     private var mItemSelect: Int = 0
     private val localeAdapter: ArrayAdapter<String>
@@ -43,7 +43,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
@@ -79,13 +79,13 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initUnlockPriorityPrefs() {
-        unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
-        unlockPriorityPrefs.setDependentView(unlockScreenPrefs)
+        binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
+        binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
         showPriority()
     }
 
     private fun showPriority() {
-        unlockPriorityPrefs.setDetailText(unlockList()[prefs.unlockPriority])
+        binding.unlockPriorityPrefs.setDetailText(unlockList()[prefs.unlockPriority])
     }
 
     private fun showPriorityDialog() {
@@ -109,42 +109,42 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSmartFold() {
-        smartFoldPrefs.isChecked = prefs.isFoldingEnabled
-        smartFoldPrefs.setOnClickListener { changeSmartFoldMode() }
+        binding.smartFoldPrefs.isChecked = prefs.isFoldingEnabled
+        binding.smartFoldPrefs.setOnClickListener { changeSmartFoldMode() }
     }
 
     private fun initWearNotification() {
-        wearPrefs.isChecked = prefs.isWearEnabled
-        wearPrefs.setOnClickListener { changeWearNotification() }
+        binding.wearPrefs.isChecked = prefs.isWearEnabled
+        binding.wearPrefs.setOnClickListener { changeWearNotification() }
     }
 
     private fun changeWearNotification() {
-        val isChecked = wearPrefs.isChecked
+        val isChecked = binding.wearPrefs.isChecked
         prefs.isWearEnabled = !isChecked
-        wearPrefs.isChecked = !isChecked
+        binding.wearPrefs.isChecked = !isChecked
     }
 
     private fun changeSmartFoldMode() {
-        val isChecked = smartFoldPrefs.isChecked
+        val isChecked = binding.smartFoldPrefs.isChecked
         prefs.isFoldingEnabled = !isChecked
-        smartFoldPrefs.isChecked = !isChecked
+        binding.smartFoldPrefs.isChecked = !isChecked
     }
 
     private fun changeIgnoreWindowTypePrefs() {
-        val isChecked = ignore_window_type.isChecked
-        ignore_window_type.isChecked = !isChecked
+        val isChecked = binding.ignoreWindowType.isChecked
+        binding.ignoreWindowType.isChecked = !isChecked
         prefs.isIgnoreWindowType = !isChecked
     }
 
     private fun initIgnoreWindowTypePrefs() {
-        ignore_window_type.setOnClickListener { changeIgnoreWindowTypePrefs() }
-        ignore_window_type.isChecked = prefs.isIgnoreWindowType
+        binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
+        binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
     }
 
     private fun showRepeatTimeDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.interval)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
         b.seekBar.max = 60
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -164,7 +164,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         b.seekBar.progress = repeatTime
         b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 repeatTime.toString())
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ ->
             prefs.notificationRepeatTime = b.seekBar.progress
             showRepeatTime()
@@ -177,26 +177,26 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initRepeatTimePrefs() {
-        repeatIntervalPrefs.setValue(prefs.notificationRepeatTime)
-        repeatIntervalPrefs.setOnClickListener { showRepeatTimeDialog() }
-        repeatIntervalPrefs.setDependentView(repeatNotificationOptionPrefs)
+        binding.repeatIntervalPrefs.setValue(prefs.notificationRepeatTime)
+        binding.repeatIntervalPrefs.setOnClickListener { showRepeatTimeDialog() }
+        binding.repeatIntervalPrefs.setDependentView(binding.repeatNotificationOptionPrefs)
         showRepeatTime()
     }
 
     private fun showRepeatTime() {
-        repeatIntervalPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+        binding.repeatIntervalPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 prefs.notificationRepeatTime.toString()))
     }
 
     private fun changeRepeatPrefs() {
-        val isChecked = repeatNotificationOptionPrefs.isChecked
-        repeatNotificationOptionPrefs.isChecked = !isChecked
+        val isChecked = binding.repeatNotificationOptionPrefs.isChecked
+        binding.repeatNotificationOptionPrefs.isChecked = !isChecked
         prefs.isNotificationRepeatEnabled = !isChecked
     }
 
     private fun initRepeatPrefs() {
-        repeatNotificationOptionPrefs.setOnClickListener { changeRepeatPrefs() }
-        repeatNotificationOptionPrefs.isChecked = prefs.isNotificationRepeatEnabled
+        binding.repeatNotificationOptionPrefs.setOnClickListener { changeRepeatPrefs() }
+        binding.repeatNotificationOptionPrefs.isChecked = prefs.isNotificationRepeatEnabled
     }
 
     private fun showLedColorDialog() {
@@ -222,41 +222,41 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showLedColor() {
-        chooseLedColorPrefs.setDetailText(LED.getTitle(context!!, prefs.ledColor))
+        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(context!!, prefs.ledColor))
     }
 
     private fun initLedColorPrefs() {
-        chooseLedColorPrefs.setOnClickListener { showLedColorDialog() }
-        chooseLedColorPrefs.setDependentView(ledPrefs)
+        binding.chooseLedColorPrefs.setOnClickListener { showLedColorDialog() }
+        binding.chooseLedColorPrefs.setDependentView(binding.ledPrefs)
         showLedColor()
     }
 
     private fun changeLedPrefs() {
-        val isChecked = ledPrefs.isChecked
-        ledPrefs.isChecked = !isChecked
+        val isChecked = binding.ledPrefs.isChecked
+        binding.ledPrefs.isChecked = !isChecked
         prefs.isLedEnabled = !isChecked
     }
 
     private fun initLedPrefs() {
-        ledPrefs.setOnClickListener { changeLedPrefs() }
-        ledPrefs.isChecked = prefs.isLedEnabled
+        binding.ledPrefs.setOnClickListener { changeLedPrefs() }
+        binding.ledPrefs.isChecked = prefs.isLedEnabled
     }
 
     private fun initSnoozeTimePrefs() {
-        delayForPrefs.setOnClickListener { showSnoozeDialog() }
-        delayForPrefs.setValue(prefs.snoozeTime)
+        binding.delayForPrefs.setOnClickListener { showSnoozeDialog() }
+        binding.delayForPrefs.setValue(prefs.snoozeTime)
         showSnooze()
     }
 
     private fun showSnooze() {
-        delayForPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+        binding.delayForPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 prefs.snoozeTime.toString()))
     }
 
     private fun showSnoozeDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.snooze_time)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
         b.seekBar.max = 60
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -276,7 +276,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         b.seekBar.progress = snoozeTime
         b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 snoozeTime.toString())
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ ->
             prefs.snoozeTime = b.seekBar.progress
             showSnooze()
@@ -289,69 +289,69 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeAutoCallPrefs() {
-        val isChecked = autoCallPrefs.isChecked
+        val isChecked = binding.autoCallPrefs.isChecked
         if (!isChecked) {
             if (Permissions.ensurePermissions(activity!!, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
-                autoCallPrefs.isChecked = !isChecked
+                binding.autoCallPrefs.isChecked = !isChecked
                 prefs.isAutoCallEnabled = !isChecked
             } else {
-                autoCallPrefs.isChecked = isChecked
+                binding.autoCallPrefs.isChecked = isChecked
                 prefs.isAutoCallEnabled = isChecked
             }
         } else {
-            autoCallPrefs.isChecked = !isChecked
+            binding.autoCallPrefs.isChecked = !isChecked
             prefs.isAutoCallEnabled = !isChecked
         }
     }
 
     private fun initAutoCallPrefs() {
-        autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
-        autoCallPrefs.isChecked = prefs.isAutoCallEnabled
-        autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
+        binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
+        binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
+        binding.autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
     }
 
     private fun changeAutoLaunchPrefs() {
-        val isChecked = autoLaunchPrefs.isChecked
-        autoLaunchPrefs.isChecked = !isChecked
+        val isChecked = binding.autoLaunchPrefs.isChecked
+        binding.autoLaunchPrefs.isChecked = !isChecked
         prefs.isAutoLaunchEnabled = !isChecked
     }
 
     private fun initAutoLaunchPrefs() {
-        autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
-        autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
+        binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
+        binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
     }
 
     private fun changeAutoSmsPrefs() {
-        val isChecked = silentSMSOptionPrefs.isChecked
+        val isChecked = binding.silentSMSOptionPrefs.isChecked
         if (!isChecked) {
             if (Permissions.ensurePermissions(activity!!, PERM_AUTO_SMS, Permissions.SEND_SMS)) {
-                silentSMSOptionPrefs.isChecked = !isChecked
+                binding.silentSMSOptionPrefs.isChecked = !isChecked
                 prefs.isAutoSmsEnabled = !isChecked
             } else {
-                silentSMSOptionPrefs.isChecked = isChecked
+                binding.silentSMSOptionPrefs.isChecked = isChecked
                 prefs.isAutoSmsEnabled = isChecked
             }
         } else {
-            silentSMSOptionPrefs.isChecked = !isChecked
+            binding.silentSMSOptionPrefs.isChecked = !isChecked
             prefs.isAutoSmsEnabled = !isChecked
         }
     }
 
     private fun initAutoSmsPrefs() {
-        silentSMSOptionPrefs.setOnClickListener { changeAutoSmsPrefs() }
-        silentSMSOptionPrefs.isChecked = prefs.isAutoSmsEnabled
-        silentSMSOptionPrefs.isEnabled = prefs.isTelephonyAllowed
+        binding.silentSMSOptionPrefs.setOnClickListener { changeAutoSmsPrefs() }
+        binding.silentSMSOptionPrefs.isChecked = prefs.isAutoSmsEnabled
+        binding.silentSMSOptionPrefs.isEnabled = prefs.isTelephonyAllowed
     }
 
     private fun changeUnlockPrefs() {
-        val isChecked = unlockScreenPrefs.isChecked
-        unlockScreenPrefs.isChecked = !isChecked
+        val isChecked = binding.unlockScreenPrefs.isChecked
+        binding.unlockScreenPrefs.isChecked = !isChecked
         prefs.isDeviceUnlockEnabled = !isChecked
     }
 
     private fun initUnlockPrefs() {
-        unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
-        unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
+        binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
+        binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
     }
 
     private fun showTtsLocaleDialog() {
@@ -376,7 +376,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     private fun showTtsLocale() {
         val locale = prefs.ttsLocale
         val i = language.getLocalePosition(locale)
-        localePrefs.setDetailText(language.getLocaleNames(context!!)[i])
+        binding.localePrefs.setDetailText(language.getLocaleNames(context!!)[i])
     }
 
     private fun saveTtsLocalePrefs() {
@@ -385,20 +385,20 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initTtsLocalePrefs() {
-        localePrefs.setOnClickListener { showTtsLocaleDialog() }
-        localePrefs.setDependentView(ttsPrefs)
+        binding.localePrefs.setOnClickListener { showTtsLocaleDialog() }
+        binding.localePrefs.setDependentView(binding.ttsPrefs)
         showTtsLocale()
     }
 
     private fun changeTtsPrefs() {
-        val isChecked = ttsPrefs.isChecked
-        ttsPrefs.isChecked = !isChecked
+        val isChecked = binding.ttsPrefs.isChecked
+        binding.ttsPrefs.isChecked = !isChecked
         prefs.isTtsEnabled = !isChecked
     }
 
     private fun initTtsPrefs() {
-        ttsPrefs.setOnClickListener { changeTtsPrefs() }
-        ttsPrefs.isChecked = prefs.isTtsEnabled
+        binding.ttsPrefs.setOnClickListener { changeTtsPrefs() }
+        binding.ttsPrefs.isChecked = prefs.isTtsEnabled
     }
 
     private fun changeIncreasePrefs() {
@@ -417,14 +417,14 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeIncrease() {
-        val isChecked = increasePrefs.isChecked
-        increasePrefs.isChecked = !isChecked
+        val isChecked = binding.increasePrefs.isChecked
+        binding.increasePrefs.isChecked = !isChecked
         prefs.isIncreasingLoudnessEnabled = !isChecked
     }
 
     private fun initIncreasingLoudnessPrefs() {
-        increasePrefs.setOnClickListener { changeIncreasePrefs() }
-        increasePrefs.isChecked = prefs.isIncreasingLoudnessEnabled
+        binding.increasePrefs.setOnClickListener { changeIncreasePrefs() }
+        binding.increasePrefs.isChecked = prefs.isIncreasingLoudnessEnabled
     }
 
     private fun showLoudnessDialog() {
@@ -434,7 +434,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         }
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.loudness)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
         b.seekBar.max = 25
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -452,7 +452,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         val loudness = prefs.loudness
         b.seekBar.progress = loudness
         b.titleView.text = loudness.toString()
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ ->
             prefs.loudness = b.seekBar.progress
             showLoudness()
@@ -464,12 +464,12 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initLoudnessPrefs() {
-        volumePrefs.setOnClickListener { showLoudnessDialog() }
+        binding.volumePrefs.setOnClickListener { showLoudnessDialog() }
         showLoudness()
     }
 
     private fun showLoudness() {
-        volumePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.loudness) + " %d",
+        binding.volumePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.loudness) + " %d",
                 prefs.loudness))
     }
 
@@ -498,7 +498,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initReminderTypePrefs() {
-        typePrefs.setOnClickListener { showReminderTypeDialog() }
+        binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
         showReminderType()
     }
 
@@ -527,24 +527,24 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun showReminderType() {
         val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
-        typePrefs.setDetailText(types[prefs.reminderType])
+        binding.typePrefs.setDetailText(types[prefs.reminderType])
     }
 
     private fun initSoundStreamPrefs() {
-        streamPrefs.setOnClickListener { showStreamDialog() }
-        streamPrefs.setDependentView(systemPrefs)
+        binding.streamPrefs.setOnClickListener { showStreamDialog() }
+        binding.streamPrefs.setDependentView(binding.systemPrefs)
         showStream()
     }
 
     private fun showStream() {
         val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
-        streamPrefs.setDetailText(types[prefs.soundStream - 3])
+        binding.streamPrefs.setDetailText(types[prefs.soundStream - 3])
     }
 
     private fun changeSystemLoudnessPrefs() {
         if (SuperUtil.hasVolumePermission(context!!)) {
-            val isChecked = systemPrefs.isChecked
-            systemPrefs.isChecked = !isChecked
+            val isChecked = binding.systemPrefs.isChecked
+            binding.systemPrefs.isChecked = !isChecked
             prefs.isSystemLoudnessEnabled = !isChecked
         } else {
             openNotificationsSettings()
@@ -552,27 +552,27 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSystemLoudnessPrefs() {
-        systemPrefs.setOnClickListener { changeSystemLoudnessPrefs() }
-        systemPrefs.isChecked = prefs.isSystemLoudnessEnabled
+        binding.systemPrefs.setOnClickListener { changeSystemLoudnessPrefs() }
+        binding.systemPrefs.isChecked = prefs.isSystemLoudnessEnabled
     }
 
     private fun initMelodyPrefs() {
-        chooseSoundPrefs.setOnClickListener { showSoundDialog() }
+        binding.chooseSoundPrefs.setOnClickListener { showSoundDialog() }
         showMelody()
     }
 
     private fun showMelody() {
         val filePath = prefs.melodyFile
         if (filePath == "" || filePath.matches(Constants.DEFAULT.toRegex())) {
-            chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
+            binding.chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
         } else if (!filePath.matches("".toRegex())) {
             val sound = File(filePath)
             val fileName = sound.name
             val pos = fileName.lastIndexOf(".")
             val fileNameS = fileName.substring(0, pos)
-            chooseSoundPrefs.setDetailText(fileNameS)
+            binding.chooseSoundPrefs.setDetailText(fileNameS)
         } else {
-            chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
+            binding.chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
         }
     }
 
@@ -605,19 +605,19 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeInfiniteSoundPrefs() {
-        val isChecked = infiniteSoundOptionPrefs.isChecked
-        infiniteSoundOptionPrefs.isChecked = !isChecked
+        val isChecked = binding.infiniteSoundOptionPrefs.isChecked
+        binding.infiniteSoundOptionPrefs.isChecked = !isChecked
         prefs.isInfiniteSoundEnabled = !isChecked
     }
 
     private fun initInfiniteSoundPrefs() {
-        infiniteSoundOptionPrefs.setOnClickListener { changeInfiniteSoundPrefs() }
-        infiniteSoundOptionPrefs.isChecked = prefs.isInfiniteSoundEnabled
+        binding.infiniteSoundOptionPrefs.setOnClickListener { changeInfiniteSoundPrefs() }
+        binding.infiniteSoundOptionPrefs.isChecked = prefs.isInfiniteSoundEnabled
     }
 
     private fun changeSoundPrefs() {
-        val isChecked = soundOptionPrefs.isChecked
-        soundOptionPrefs.isChecked = !isChecked
+        val isChecked = binding.soundOptionPrefs.isChecked
+        binding.soundOptionPrefs.isChecked = !isChecked
         prefs.isSoundInSilentModeEnabled = !isChecked
         if (!SuperUtil.checkNotificationPermission(activity!!)) {
             SuperUtil.askNotificationPermission(activity!!, dialogues)
@@ -627,49 +627,49 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSoundInSilentModePrefs() {
-        soundOptionPrefs.setOnClickListener { changeSoundPrefs() }
-        soundOptionPrefs.isChecked = prefs.isSoundInSilentModeEnabled
+        binding.soundOptionPrefs.setOnClickListener { changeSoundPrefs() }
+        binding.soundOptionPrefs.isChecked = prefs.isSoundInSilentModeEnabled
     }
 
     private fun changeInfiniteVibratePrefs() {
-        val isChecked = infiniteVibrateOptionPrefs.isChecked
-        infiniteVibrateOptionPrefs.isChecked = !isChecked
+        val isChecked = binding.infiniteVibrateOptionPrefs.isChecked
+        binding.infiniteVibrateOptionPrefs.isChecked = !isChecked
         prefs.isInfiniteVibrateEnabled = !isChecked
     }
 
     private fun initInfiniteVibratePrefs() {
-        infiniteVibrateOptionPrefs.setOnClickListener { changeInfiniteVibratePrefs() }
-        infiniteVibrateOptionPrefs.isChecked = prefs.isInfiniteVibrateEnabled
-        infiniteVibrateOptionPrefs.setDependentView(vibrationOptionPrefs)
+        binding.infiniteVibrateOptionPrefs.setOnClickListener { changeInfiniteVibratePrefs() }
+        binding.infiniteVibrateOptionPrefs.isChecked = prefs.isInfiniteVibrateEnabled
+        binding.infiniteVibrateOptionPrefs.setDependentView(binding.vibrationOptionPrefs)
     }
 
     private fun changeVibratePrefs() {
-        val isChecked = vibrationOptionPrefs.isChecked
-        vibrationOptionPrefs.isChecked = !isChecked
+        val isChecked = binding.vibrationOptionPrefs.isChecked
+        binding.vibrationOptionPrefs.isChecked = !isChecked
         prefs.isVibrateEnabled = !isChecked
     }
 
     private fun initVibratePrefs() {
-        vibrationOptionPrefs.setOnClickListener { changeVibratePrefs() }
-        vibrationOptionPrefs.isChecked = prefs.isVibrateEnabled
+        binding.vibrationOptionPrefs.setOnClickListener { changeVibratePrefs() }
+        binding.vibrationOptionPrefs.isChecked = prefs.isVibrateEnabled
     }
 
     private fun changeSbIconPrefs() {
-        val isChecked = statusIconPrefs.isChecked
-        statusIconPrefs.isChecked = !isChecked
+        val isChecked = binding.statusIconPrefs.isChecked
+        binding.statusIconPrefs.isChecked = !isChecked
         prefs.isSbIconEnabled = !isChecked
         notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
     }
 
     private fun initSbIconPrefs() {
-        statusIconPrefs.setOnClickListener { changeSbIconPrefs() }
-        statusIconPrefs.isChecked = prefs.isSbIconEnabled
-        statusIconPrefs.setDependentView(permanentNotificationPrefs)
+        binding.statusIconPrefs.setOnClickListener { changeSbIconPrefs() }
+        binding.statusIconPrefs.isChecked = prefs.isSbIconEnabled
+        binding.statusIconPrefs.setDependentView(binding.permanentNotificationPrefs)
     }
 
     private fun changeSbPrefs() {
-        val isChecked = permanentNotificationPrefs.isChecked
-        permanentNotificationPrefs.isChecked = !isChecked
+        val isChecked = binding.permanentNotificationPrefs.isChecked
+        binding.permanentNotificationPrefs.isChecked = !isChecked
         prefs.isSbNotificationEnabled = !isChecked
         if (prefs.isSbNotificationEnabled) {
             notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
@@ -679,19 +679,19 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initSbPrefs() {
-        permanentNotificationPrefs.setOnClickListener { changeSbPrefs() }
-        permanentNotificationPrefs.isChecked = prefs.isSbNotificationEnabled
+        binding.permanentNotificationPrefs.setOnClickListener { changeSbPrefs() }
+        binding.permanentNotificationPrefs.isChecked = prefs.isSbNotificationEnabled
     }
 
     private fun changeManualPrefs() {
-        val isChecked = notificationDismissPrefs.isChecked
-        notificationDismissPrefs.isChecked = !isChecked
+        val isChecked = binding.notificationDismissPrefs.isChecked
+        binding.notificationDismissPrefs.isChecked = !isChecked
         prefs.isManualRemoveEnabled = !isChecked
     }
 
     private fun initManualPrefs() {
-        notificationDismissPrefs.setOnClickListener { changeManualPrefs() }
-        notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
+        binding.notificationDismissPrefs.setOnClickListener { changeManualPrefs() }
+        binding.notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
     }
 
     override fun getTitle(): String = getString(R.string.notification)
