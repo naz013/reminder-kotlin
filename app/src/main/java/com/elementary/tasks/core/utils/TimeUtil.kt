@@ -666,4 +666,6 @@ object TimeUtil {
     data class DateItem(val calendar: Calendar, val year: Int)
 
     data class DMY(val day: String, val month: String, val year: String)
+
+    data class HM(val hour: Int, val minute: Int)
 }
