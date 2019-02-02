@@ -11,7 +11,7 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_select_theme.*
+import com.elementary.tasks.databinding.ActivitySelectThemeBinding
 import java.util.*
 
 /**
@@ -32,39 +32,39 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SelectThemeActivity : ThemedActivity() {
+class SelectThemeActivity : ThemedActivity<ActivitySelectThemeBinding>() {
 
     private lateinit var themes: List<Theme>
+
+    override fun layoutRes(): Int = R.layout.activity_select_theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         themes = createThemes()
-
-        setContentView(R.layout.activity_select_theme)
         initToolbar()
 
-        warningCard.visibility = View.GONE
+        binding.warningCard.visibility = View.GONE
 
-        colorSliderBg.setColors(themeUtil.themeColorsForSlider())
-        colorSliderBg.setListener { position, _ ->
+        binding.colorSliderBg.setColors(themeUtil.themeColorsForSlider())
+        binding.colorSliderBg.setListener { position, _ ->
             prefs.appTheme = position
             prefs.isUiChanged = true
             onColorSelect(themes[position])
             checkCompat()
         }
-        colorSliderBg.setSelection(0)
-        colorSliderBg.setSelection(prefs.appTheme)
+        binding.colorSliderBg.setSelection(0)
+        binding.colorSliderBg.setSelection(prefs.appTheme)
 
-        colorSlider.setColors(themeUtil.accentColorsForSlider())
-        colorSlider.setListener { position, color ->
+        binding.colorSlider.setColors(themeUtil.accentColorsForSlider())
+        binding.colorSlider.setListener { position, color ->
             prefs.appThemeColor = position
             prefs.isUiChanged = true
-            bgTitle.setTextColor(color)
-            accentTitle.setTextColor(color)
+            binding.bgTitle.setTextColor(color)
+            binding.accentTitle.setTextColor(color)
             checkCompat()
         }
-        colorSlider.setSelection(0)
-        colorSlider.setSelection(prefs.appThemeColor)
+        binding.colorSlider.setSelection(0)
+        binding.colorSlider.setSelection(prefs.appThemeColor)
 
         onColorSelect(themes[prefs.appTheme])
         checkCompat()
@@ -75,9 +75,9 @@ class SelectThemeActivity : ThemedActivity() {
         val accent = prefs.appThemeColor
 
         if (isBad(bgColor, accent)) {
-            warningCard.visibility = View.VISIBLE
+            binding.warningCard.visibility = View.VISIBLE
         } else {
-            warningCard.visibility = View.GONE
+            binding.warningCard.visibility = View.GONE
         }
     }
 
@@ -120,10 +120,10 @@ class SelectThemeActivity : ThemedActivity() {
     }
 
     private fun initToolbar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.title = getString(R.string.theme_color)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, false)
+        binding.toolbar.title = getString(R.string.theme_color)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, false)
     }
 
     private fun createThemes(): List<Theme> {
@@ -216,21 +216,21 @@ class SelectThemeActivity : ThemedActivity() {
     }
 
     private fun onColorSelect(theme: Theme) {
-        bgTitle.text = getString(R.string.background) + " - " + theme.name
-        warningCard.setCardBackgroundColor(theme.bgColor)
-        toolbar.setBackgroundColor(theme.barColor)
+        binding.bgTitle.text = getString(R.string.background) + " - " + theme.name
+        binding.warningCard.setCardBackgroundColor(theme.bgColor)
+        binding.toolbar.setBackgroundColor(theme.barColor)
         window.statusBarColor = theme.barColor
-        windowBackground.setBackgroundColor(theme.barColor)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, theme.isDark)
+        binding.windowBackground.setBackgroundColor(theme.barColor)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, theme.isDark)
         if (theme.isDark) {
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            warningText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.warningText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            warningText.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.warningText.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
-        colorSliderBg.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
-        colorSlider.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSliderBg.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setSelectorColorResource(if (theme.isDark) R.color.pureWhite else R.color.pureBlack)
     }
 
     companion object {

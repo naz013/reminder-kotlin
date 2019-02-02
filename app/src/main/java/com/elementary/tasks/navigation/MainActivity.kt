@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
@@ -22,6 +21,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.binding.views.NavHeaderBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -55,6 +55,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
 
     private var fragment: BaseFragment<*>? = null
     private var mNoteView: QuickNoteCoordinator? = null
+    private var mHeaderView: NavHeaderBinding? = null
 
     private lateinit var viewModel: ConversationViewModel
 
@@ -173,11 +174,10 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
 
     private fun checkDoNotDisturb() {
         Timber.d("checkDoNotDisturb: ")
-        val view = binding.navView.getHeaderView(0)
         if (prefs.applyDoNotDisturb(0)) {
-            view.doNoDisturbIcon.visibility = View.VISIBLE
+            mHeaderView?.doNoDisturbIcon?.show()
         } else {
-            view.doNoDisturbIcon.visibility = View.GONE
+            mHeaderView?.doNoDisturbIcon?.hide()
         }
     }
 
@@ -281,20 +281,19 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     private fun initNavigation() {
         binding.navView.isVerticalScrollBarEnabled = false
         binding.navView.setNavigationItemSelectedListener(this)
-        val view = binding.navView.getHeaderView(0)
-        view.sale_badge.visibility = View.GONE
-        view.update_badge.visibility = View.GONE
-        view.doNoDisturbIcon.visibility = View.GONE
-        val nameView = view.findViewById<TextView>(R.id.appNameBannerPro)
+        mHeaderView = NavHeaderBinding(binding.navView.getHeaderView(0))
+        mHeaderView?.saleBadge?.visibility = View.GONE
+        mHeaderView?.updateBadge?.visibility = View.GONE
+        mHeaderView?.doNoDisturbIcon?.visibility = View.GONE
         if (Module.isPro) {
-            nameView.visibility = View.VISIBLE
+            mHeaderView?.appNameBannerPro?.visibility = View.VISIBLE
         } else {
-            nameView.visibility = View.GONE
+            mHeaderView?.appNameBannerPro?.visibility = View.GONE
         }
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            view.playServicesWarning.visibility = View.GONE
+            mHeaderView?.playServicesWarning?.visibility = View.GONE
         } else {
-            view.playServicesWarning.visibility = View.VISIBLE
+            mHeaderView?.playServicesWarning?.visibility = View.VISIBLE
         }
         setMenuVisible()
     }
@@ -431,30 +430,26 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
 
     override fun onSale(discount: String, expiryDate: String) {
         val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
-        val view = binding.navView.getHeaderView(0)
         if (TextUtils.isEmpty(expiry)) {
-            view.sale_badge.visibility = View.GONE
+            mHeaderView?.saleBadge?.visibility = View.GONE
         } else {
-            view.sale_badge.visibility = View.VISIBLE
-            view.sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+            mHeaderView?.saleBadge?.visibility = View.VISIBLE
+            mHeaderView?.saleBadge?.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
         }
     }
 
     override fun noSale() {
-        val view = binding.navView.getHeaderView(0)
-        view.sale_badge.visibility = View.GONE
+        mHeaderView?.saleBadge?.visibility = View.GONE
     }
 
     override fun onUpdate(version: String) {
-        val view = binding.navView.getHeaderView(0)
-        view.update_badge.visibility = View.VISIBLE
-        view.update_badge.text = getString(R.string.update_available) + ": " + version
-        view.update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
+        mHeaderView?.updateBadge?.visibility = View.VISIBLE
+        mHeaderView?.updateBadge?.text = getString(R.string.update_available) + ": " + version
+        mHeaderView?.updateBadge?.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
     }
 
     override fun noUpdate() {
-        val view = binding.navView.getHeaderView(0)
-        view.update_badge.visibility = View.GONE
+        mHeaderView?.updateBadge?.visibility = View.GONE
     }
 
     override fun invoke(view: View, action: GlobalButtonObservable.Action) {

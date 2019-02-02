@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
-import kotlinx.android.synthetic.main.activity_template.*
+import com.elementary.tasks.databinding.ActivityTemplateBinding
 import java.io.IOException
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TemplateActivity : ThemedActivity() {
+class TemplateActivity : ThemedActivity<ActivityTemplateBinding>() {
 
     private lateinit var viewModel: SmsTemplateViewModel
     private var mItem: SmsTemplate? = null
@@ -50,9 +50,10 @@ class TemplateActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_template
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_template)
         initActionBar()
         loadTemplate()
     }
@@ -110,19 +111,19 @@ class TemplateActivity : ThemedActivity() {
 
     private fun showTemplate(smsTemplate: SmsTemplate) {
         this.mItem = smsTemplate
-        toolbar.title = getString(R.string.edit_template)
+        binding.toolbar.title = getString(R.string.edit_template)
         if (!viewModel.isEdited) {
-            messageInput.setText(smsTemplate.title)
+            binding.messageInput.setText(smsTemplate.title)
             viewModel.isEdited = true
         }
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -148,10 +149,10 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun saveTemplate() {
-        val text = messageInput.text.toString().trim()
+        val text = binding.messageInput.text.toString().trim()
         if (text.isEmpty()) {
-            messageLayout.error = getString(R.string.must_be_not_empty)
-            messageLayout.isErrorEnabled = true
+            binding.messageLayout.error = getString(R.string.must_be_not_empty)
+            binding.messageLayout.isErrorEnabled = true
             return
         }
         val date = TimeUtil.gmtDateTime

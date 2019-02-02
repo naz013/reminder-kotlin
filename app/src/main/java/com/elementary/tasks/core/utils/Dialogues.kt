@@ -11,9 +11,10 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import com.elementary.tasks.R
+import com.elementary.tasks.databinding.DialogBottomColorSliderBinding
+import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.view_color_slider.view.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,20 +42,20 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
     fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = themeUtil.colorsForSlider(),
                         onChange: (Int) -> Unit) {
         val dialog = BottomSheetDialog(activity)
-        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_bottom_color_slider, null, false)
+        val b = DialogBottomColorSliderBinding.inflate(LayoutInflater.from(activity))
         b.colorSlider.setColors(colors)
         b.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         b.colorSlider.setSelection(current)
         b.colorSlider.setListener { i, _ ->
             onChange.invoke(i)
         }
-        dialog.setContentView(b)
+        dialog.setContentView(b.root)
         dialog.show()
     }
 
     fun showRadiusBottomDialog(activity: Activity, current: Int, listener: (Int) -> String) {
         val dialog = BottomSheetDialog(activity)
-        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_bottom_seek_and_title, null, false)
+        val b = DialogBottomSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
         b.seekBar.max = MAX_DEF_RADIUS
         if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
             b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
@@ -87,7 +88,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         })
         b.seekBar.progress = current
         b.titleView.text = listener.invoke(current)
-        dialog.setContentView(b)
+        dialog.setContentView(b.root)
         dialog.show()
     }
 
@@ -96,11 +97,11 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
                         onDone: (Int) -> Unit) {
         val builder = getDialog(activity)
         builder.setTitle(title)
-        val bind = LayoutInflater.from(activity).inflate(R.layout.view_color_slider, null, false)
+        val bind = com.elementary.tasks.databinding.ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
         bind.colorSlider.setColors(colors)
         bind.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bind.colorSlider.setSelection(current)
-        builder.setView(bind)
+        builder.setView(bind.root)
         builder.setPositiveButton(R.string.save) { dialog, _ ->
             val selected = bind.colorSlider.selectedItem
             dialog.dismiss()
@@ -117,7 +118,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
     fun showRadiusDialog(activity: Activity, current: Int, listener: OnValueSelectedListener<Int>) {
         val builder = getDialog(activity)
         builder.setTitle(R.string.radius)
-        val b = LayoutInflater.from(activity).inflate(R.layout.dialog_with_seek_and_title, null, false)
+        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
         b.seekBar.max = MAX_DEF_RADIUS
         if (b.seekBar.max < current && b.seekBar.max < MAX_RADIUS) {
             b.seekBar.max = (current + (b.seekBar.max * 0.2)).toInt()
@@ -149,7 +150,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
         })
         b.seekBar.progress = current
         b.titleView.text = listener.getTitle(current)
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ -> listener.onSelected(b.seekBar.progress) }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
@@ -159,16 +160,6 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
 
     fun getDialog(context: Context): AlertDialog.Builder {
         return AlertDialog.Builder(context, themeUtil.dialogStyle)
-    }
-
-    fun showLCAM(context: Context, listener: ((Int) -> Unit)?, vararg actions: String) {
-        val builder = getDialog(context)
-        builder.setItems(actions) { dialog, item ->
-            dialog.dismiss()
-            listener?.invoke(item)
-        }
-        val alert = builder.create()
-        alert.show()
     }
 
     interface OnValueSelectedListener<T> {

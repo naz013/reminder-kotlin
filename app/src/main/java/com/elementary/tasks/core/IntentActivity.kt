@@ -8,6 +8,7 @@ import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.databinding.ActivityIntroBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.settings.additional.TemplateActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -16,7 +17,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import javax.inject.Inject
 
-class IntentActivity: ThemedActivity<Nothing>() {
+class IntentActivity: ThemedActivity<ActivityIntroBinding>() {
 
     @Inject
     lateinit var backupTool: BackupTool

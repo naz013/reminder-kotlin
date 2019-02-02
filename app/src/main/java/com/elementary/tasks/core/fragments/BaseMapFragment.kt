@@ -9,7 +9,6 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,18 +30,11 @@ import javax.inject.Inject
  */
 abstract class BaseMapFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var dialogues: Dialogues
+    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
+    var prefs: Prefs = ReminderApp.appComponent.prefs()
+    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
 
     private var mMapType = GoogleMap.MAP_TYPE_TERRAIN
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     protected fun setStyle(map: GoogleMap, mapType: Int = mMapType) {
         mMapType = mapType
