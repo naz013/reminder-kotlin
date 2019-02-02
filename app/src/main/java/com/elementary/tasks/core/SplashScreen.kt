@@ -6,12 +6,13 @@ import android.os.Bundle
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.databinding.ActivityIntroBinding
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.intro.IntroActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 
-class SplashScreen : ThemedActivity<Nothing>() {
+class SplashScreen : ThemedActivity<ActivityIntroBinding>() {
 
     override fun layoutRes(): Int = 0
 

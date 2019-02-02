@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
@@ -43,7 +42,6 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     val listHeader: TextView = binding.listHeader
 
     init {
-        ReminderApp.appComponent.inject(this)
         if (editable) {
             binding.itemCheck.visibility = View.VISIBLE
         } else {

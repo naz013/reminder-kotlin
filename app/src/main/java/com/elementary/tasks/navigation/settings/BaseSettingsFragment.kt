@@ -5,7 +5,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,12 +26,7 @@ import javax.inject.Inject
  */
 abstract class BaseSettingsFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
 
-    @Inject
-    lateinit var language: Language
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    var language: Language = ReminderApp.appComponent.language()
 
     protected fun priorityList(): Array<String> {
         return arrayOf(

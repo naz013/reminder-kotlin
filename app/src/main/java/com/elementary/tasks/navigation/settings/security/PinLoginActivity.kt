@@ -11,8 +11,8 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.navigation.MainActivity
-import kotlinx.android.synthetic.main.activity_pin_login.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -32,20 +32,21 @@ import kotlinx.android.synthetic.main.activity_pin_login.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, FingerprintHelper.Callback {
+class PinLoginActivity : ThemedActivity<ActivityPinLoginBinding>(), FingerInitializer.ReadyListener, FingerprintHelper.Callback {
 
     private var fingerprintHelper: FingerprintHelper? = null
     private var isBack = false
 
+    override fun layoutRes(): Int = R.layout.activity_pin_login
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isBack = intent.getBooleanExtra(ARG_BACK, false)
-        setContentView(R.layout.activity_pin_login)
 
-        if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
-        else appNameBannerPro.visibility = View.GONE
+        if (Module.isPro) binding.appNameBannerPro.visibility = View.VISIBLE
+        else binding.appNameBannerPro.visibility = View.GONE
 
-        pinView.callback = {
+        binding.pinView.callback = {
             if (it.length == 6) {
                 tryLogin(it)
             }
@@ -53,14 +54,14 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
         if (prefs.useFingerprint) {
             FingerInitializer(this, this, this)
         } else {
-            fingerIcon.visibility = View.GONE
+            binding.fingerIcon.visibility = View.GONE
         }
     }
 
     private fun tryLogin(pin: String) {
         if (pin.length < 6) {
             Toast.makeText(this, R.string.wrong_pin, Toast.LENGTH_SHORT).show()
-            pinView.clearPin()
+            binding.pinView.clearPin()
             return
         }
 
@@ -68,7 +69,7 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
             onSuccess()
         } else {
             Toast.makeText(this, R.string.pin_not_match, Toast.LENGTH_SHORT).show()
-            pinView.clearPin()
+            binding.pinView.clearPin()
         }
     }
 
@@ -89,28 +90,28 @@ class PinLoginActivity : ThemedActivity(), FingerInitializer.ReadyListener, Fing
     override fun onReady(context: Context, fingerprintUiHelper: FingerprintHelper) {
         this.fingerprintHelper = fingerprintUiHelper
         if (fingerprintUiHelper.canUseFinger(this)) {
-            fingerIcon.visibility = View.VISIBLE
+            binding.fingerIcon.visibility = View.VISIBLE
             fingerprintUiHelper.startListening(null)
         } else {
-            fingerIcon.visibility = View.GONE
+            binding.fingerIcon.visibility = View.GONE
         }
     }
 
     override fun onFailToCreate() {
-        fingerIcon.visibility = View.GONE
+        binding.fingerIcon.visibility = View.GONE
     }
 
     override fun onIdle() {
-        fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_secondary)
+        binding.fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_secondary)
     }
 
     override fun onAuthenticated() {
-        fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_green)
+        binding.fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_green)
         onSuccess()
     }
 
     override fun onError() {
-        fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_red)
+        binding.fingerIcon.setImageResource(R.drawable.ic_twotone_fingerprint_red)
     }
 
     override fun onDestroy() {

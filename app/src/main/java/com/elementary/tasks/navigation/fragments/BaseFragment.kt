@@ -10,7 +10,6 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,23 +33,14 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     var callback: FragmentCallback? = null
         private set
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var dialogues: Dialogues
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var buttonObservable: GlobalButtonObservable
-    @Inject
-    lateinit var notifier: Notifier
+    var prefs: Prefs = ReminderApp.appComponent.prefs()
+    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
+    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
+    var buttonObservable: GlobalButtonObservable = ReminderApp.appComponent.buttonObservable()
+    var notifier: Notifier = ReminderApp.appComponent.notifier()
     var isDark = false
         private set
     private var mLastScroll: Int = 0
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

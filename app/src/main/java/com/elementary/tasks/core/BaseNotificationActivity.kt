@@ -19,7 +19,6 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,8 +42,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
 
     private var tts: TextToSpeech? = null
     private var mWakeLock: PowerManager.WakeLock? = null
-    @Inject
-    lateinit var soundStackHolder: SoundStackHolder
+    var soundStackHolder: SoundStackHolder = ReminderApp.appComponent.soundStack()
 
     private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
@@ -126,10 +124,6 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
             }
             return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     protected open fun showSendingError() {
 

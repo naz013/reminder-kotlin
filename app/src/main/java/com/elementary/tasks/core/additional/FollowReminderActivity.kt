@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
@@ -114,10 +113,6 @@ class FollowReminderActivity : ThemedActivity<ActivityFollowBinding>(), Compound
             Reminder.BY_DATE_CALL
         else
             Reminder.BY_DATE_SMS
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.activity_follow
 

@@ -20,7 +20,6 @@ import com.elementary.tasks.core.views.*
 import com.github.florent37.expansionpanel.ExpansionLayout
 import com.google.android.material.textfield.TextInputEditText
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,21 +44,14 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
     lateinit var iFace: ReminderInterface
         private set
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var dialogues: Dialogues
-    @Inject
-    lateinit var themeUtil: ThemeUtil
+    var prefs: Prefs = ReminderApp.appComponent.prefs()
+    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
+    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
 
     private var melodyView: MelodyView? = null
     private var attachmentView: AttachmentView? = null
     private var groupView: GroupView? = null
     private var actionView: ActionView? = null
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     abstract fun prepare(): Reminder?
 

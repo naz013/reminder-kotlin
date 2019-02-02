@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings
 import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.CalendarUtils
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -25,10 +24,5 @@ import javax.inject.Inject
  */
 abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseSettingsFragment<B>() {
 
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    var calendarUtils: CalendarUtils = ReminderApp.appComponent.calendarUtils()
 }
