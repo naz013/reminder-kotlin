@@ -182,7 +182,7 @@ object MemoryUtil {
         inputStream.close()
         val res = total.toString()
         return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-//            Timber.d("readFileToJson: $res")
+            Timber.d("readFileToJson: $res")
             res
         } else {
             Timber.d("readFileToJson: Bad JSON")
@@ -208,7 +208,7 @@ object MemoryUtil {
             inputStream.close()
             val res = total.toString()
             return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-//                Timber.d("readFileToJson: $res")
+                Timber.d("readFileToJson: $res")
                 res
             } else {
                 Timber.d("readFileToJson: Bad JSON")

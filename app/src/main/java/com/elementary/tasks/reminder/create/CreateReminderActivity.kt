@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.Menu
@@ -47,6 +48,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     private lateinit var stateViewModel: StateViewModel
 
     private var fragment: TypeFragment<*>? = null
+    private var mUri: Uri? = null
 
     private var isEditing: Boolean = false
     private var mIsTablet = false
@@ -179,16 +181,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                 stateViewModel.reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
                 editReminder(stateViewModel.reminder, false)
             }
-            intent.data != null -> try {
-                val uri = intent.data ?: return
-                val scheme = uri.scheme
-                val reminder = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getReminder(uri.path, null) ?: Reminder()
-                } else Reminder()
-                editReminder(reminder, false)
-            } catch (e: java.lang.Exception) {
-                Timber.d("loadReminder: ${e.message}")
-            }
+            intent.data != null -> readFromIntent()
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
                     val reminder = intent.getSerializableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
@@ -200,6 +193,23 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                 var lastPos = prefs.lastUsedReminder
                 if (lastPos >= binding.navSpinner.adapter.count) lastPos = 0
                 binding.navSpinner.setSelection(lastPos)
+            }
+        }
+    }
+
+    private fun readFromIntent() {
+        mUri = intent.data
+        if (Permissions.ensurePermissions(this, SD_PERM, Permissions.READ_EXTERNAL)) {
+            mUri?.let {
+                try {
+                    val scheme = it.scheme
+                    val reminder = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                        backupTool.getReminder(it.path, null) ?: Reminder()
+                    } else Reminder()
+                    editReminder(reminder, false)
+                } catch (e: java.lang.Exception) {
+                    Timber.d("loadReminder: ${e.message}")
+                }
             }
         }
     }
@@ -457,6 +467,9 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
             331 -> if (Permissions.isAllGranted(grantResults)) {
                 selectAnyFile()
             }
+            SD_PERM -> if (Permissions.isAllGranted(grantResults)) {
+                readFromIntent()
+            }
         }
     }
 
@@ -561,6 +574,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         private const val MENU_ITEM_DELETE = 12
         private const val CONTACTS_REQUEST_E = 501
         private const val FILE_REQUEST = 323
+        private const val SD_PERM = 555
 
         private const val ARG_LOGGED = "arg_logged"
 
