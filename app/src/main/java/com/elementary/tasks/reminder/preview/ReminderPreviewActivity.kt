@@ -237,6 +237,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         binding.taskText.text = reminder.summary
         binding.type.text = ReminderUtils.getTypeString(this, reminder.type)
         binding.itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
+        binding.idView.setText(reminder.uuId)
 
         showDueAndRepeat(reminder)
         showBefore(reminder)
@@ -456,9 +457,13 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     }
 
     private fun shareReminder() {
+        if (!Permissions.ensurePermissions(this, SD_PERM, Permissions.WRITE_EXTERNAL)) {
+            return
+        }
         reminder?.let {
             launchDefault {
                 val path = backupTool.exportReminder(it)
+                Timber.d("shareReminder: $path")
                 if (path != null) {
                     withUIContext {
                         TelephonyUtil.sendFile(File(path), this@ReminderPreviewActivity)
@@ -606,6 +611,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
             when (requestCode) {
                 CALL_PERM -> fabClick()
                 SMS_PERM -> fabClick()
+                SD_PERM -> shareReminder()
             }
         }
     }
@@ -613,5 +619,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     companion object {
         private const val CALL_PERM = 612
         private const val SMS_PERM = 613
+        private const val SD_PERM = 614
     }
 }
