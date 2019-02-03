@@ -86,7 +86,7 @@ object DayViewProvider {
                         val baseTime = item.dateTime
                         var localItem = item
                         do {
-                            eventTime = TimeCount.getNextMonthDayTime(localItem)
+                            eventTime = TimeCount.getNextMonthDayTime(localItem, calendar.timeInMillis)
                             calendar.timeInMillis = eventTime
                             if (eventTime == baseTime) {
                                 continue
