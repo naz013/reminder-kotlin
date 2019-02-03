@@ -10,9 +10,10 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.isVisible
 import com.elementary.tasks.core.views.ActionView
+import com.elementary.tasks.databinding.FragmentReminderPlaceBinding
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.fragment_reminder_place.*
 import timber.log.Timber
 
 /**
@@ -33,7 +34,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesFragment : RadiusTypeFragment() {
+class PlacesFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
     private var mPlacesMap: PlacesMapFragment? = null
     private val mListener = object : MapListener {
@@ -51,9 +52,9 @@ class PlacesFragment : RadiusTypeFragment() {
                     map.isFullscreen = false
                     iFace.setFullScreenMode(false)
                 }
-                if (mapContainer.visibility == View.VISIBLE) {
-                    ViewUtils.fadeOutAnimation(mapContainer)
-                    ViewUtils.fadeInAnimation(scrollView)
+                if (binding.mapContainer.visibility == View.VISIBLE) {
+                    ViewUtils.fadeOutAnimation(binding.mapContainer)
+                    ViewUtils.fadeInAnimation(binding.scrollView)
                 }
             }
         }
@@ -73,19 +74,19 @@ class PlacesFragment : RadiusTypeFragment() {
             return null
         }
         if (TextUtils.isEmpty(reminder.summary)) {
-            taskLayout.error = getString(R.string.task_summary_is_empty)
-            taskLayout.isErrorEnabled = true
+            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.isErrorEnabled = true
             map.invokeBack()
             return null
         }
         var number = ""
-        if (actionView.hasAction()) {
-            number = actionView.number
+        if (binding.actionView.hasAction()) {
+            number = binding.actionView.number
             if (TextUtils.isEmpty(number)) {
                 iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
-            type = if (actionView.type == ActionView.TYPE_CALL) {
+            type = if (binding.actionView.type == ActionView.TYPE_CALL) {
                 Reminder.BY_PLACES_CALL
             } else {
                 Reminder.BY_PLACES_SMS
@@ -97,9 +98,9 @@ class PlacesFragment : RadiusTypeFragment() {
         reminder.type = type
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
-        reminder.hasReminder = attackDelay.isChecked
-        if (attackDelay.isChecked) {
-            val startTime = dateView.dateTime
+        reminder.hasReminder = binding.attackDelay.isChecked
+        if (binding.attackDelay.isChecked) {
+            val startTime = binding.dateView.dateTime
             reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
             reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
             Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
@@ -114,34 +115,34 @@ class PlacesFragment : RadiusTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                dateTimeView = dateView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                windowTypeView = windowTypeView,
-                actionView = actionView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                dateTimeView = binding.dateView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                windowTypeView = binding.windowTypeView,
+                actionView = binding.actionView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!isTablet()) {
-            mapContainer.visibility = View.GONE
-            mapButton.visibility = View.VISIBLE
+            binding.mapContainer.visibility = View.GONE
+            binding.mapButton.visibility = View.VISIBLE
         } else {
-            mapContainer.visibility = View.VISIBLE
-            mapButton.visibility = View.GONE
+            binding.mapContainer.visibility = View.VISIBLE
+            binding.mapButton.visibility = View.GONE
         }
 
         val placesMap = PlacesMapFragment()
@@ -154,48 +155,48 @@ class PlacesFragment : RadiusTypeFragment() {
         placesMap.markerRadius = prefs.radius
         placesMap.setMarkerStyle(prefs.markerStyle)
         fragmentManager?.beginTransaction()
-                ?.replace(mapFrame.id, placesMap)
+                ?.replace(binding.mapFrame.id, placesMap)
                 ?.addToBackStack(null)
                 ?.commit()
         this.mPlacesMap = placesMap
 
-        tuneExtraView.hasAutoExtra = false
+        binding.tuneExtraView.hasAutoExtra = false
 
-        delayLayout.visibility = View.GONE
-        attackDelay.setOnCheckedChangeListener { _, isChecked ->
+        binding.delayLayout.visibility = View.GONE
+        binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
             iFace.state.isDelayAdded = isChecked
             if (isChecked) {
-                delayLayout.visibility = View.VISIBLE
+                binding.delayLayout.visibility = View.VISIBLE
             } else {
-                delayLayout.visibility = View.GONE
+                binding.delayLayout.visibility = View.GONE
             }
         }
-        attackDelay.isChecked = iFace.state.isDelayAdded
-        mapButton.setOnClickListener { toggleMap() }
+        binding.attackDelay.isChecked = iFace.state.isDelayAdded
+        binding.mapButton.setOnClickListener { toggleMap() }
         editReminder()
     }
 
     override fun updateActions() {
-        if (actionView.hasAction()) {
-            tuneExtraView.hasAutoExtra = true
-            if (actionView.type == ActionView.TYPE_MESSAGE) {
-                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+        if (binding.actionView.hasAction()) {
+            binding.tuneExtraView.hasAutoExtra = true
+            if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+                binding.tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
             } else {
-                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
             }
         } else {
-            tuneExtraView.hasAutoExtra = false
+            binding.tuneExtraView.hasAutoExtra = false
         }
     }
 
     private fun toggleMap() {
         if (!isTablet()) {
-            if (mapContainer != null && mapContainer.visibility == View.VISIBLE) {
-                ViewUtils.fadeOutAnimation(mapContainer)
-                ViewUtils.fadeInAnimation(scrollView)
+            if (binding.mapContainer.isVisible()) {
+                ViewUtils.fadeOutAnimation(binding.mapContainer)
+                ViewUtils.fadeInAnimation(binding.scrollView)
             } else {
-                ViewUtils.fadeOutAnimation(scrollView)
-                ViewUtils.fadeInAnimation(mapContainer)
+                ViewUtils.fadeOutAnimation(binding.scrollView)
+                ViewUtils.fadeInAnimation(binding.mapContainer)
             }
         }
     }
@@ -208,8 +209,8 @@ class PlacesFragment : RadiusTypeFragment() {
         val reminder = iFace.state.reminder
         Timber.d("editReminder: %s", reminder)
         if (reminder.eventTime != "" && reminder.hasReminder) {
-            dateView.setDateTime(reminder.eventTime)
-            attackDelay.isChecked = true
+            binding.dateView.setDateTime(reminder.eventTime)
+            binding.attackDelay.isChecked = true
         }
     }
 }

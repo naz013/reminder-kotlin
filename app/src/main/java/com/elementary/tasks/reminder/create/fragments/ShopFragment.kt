@@ -12,8 +12,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
-import kotlinx.android.synthetic.main.fragment_reminder_shop.*
 import timber.log.Timber
 
 /**
@@ -34,7 +34,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShopFragment : RepeatableTypeFragment() {
+class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
 
     private val mAdapter = ShopListRecyclerAdapter()
     private val mActionListener = object : ShopListRecyclerAdapter.ActionListener {
@@ -63,9 +63,9 @@ class ShopFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = 0
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
-        reminder.hasReminder = attackDelay.isChecked
-        if (attackDelay.isChecked) {
-            val startTime = dateView.dateTime
+        reminder.hasReminder = binding.attackDelay.isChecked
+        if (binding.attackDelay.isChecked) {
+            val startTime = binding.dateView.dateTime
             val time = TimeUtil.getGmtFromDateTime(startTime)
             Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
             if (!TimeCount.isCurrent(time)) {
@@ -85,64 +85,64 @@ class ShopFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                dateTimeView = dateView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                windowTypeView = windowTypeView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                dateTimeView = binding.dateView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                windowTypeView = binding.windowTypeView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tuneExtraView.hasAutoExtra = false
+        binding.tuneExtraView.hasAutoExtra = false
 
-        todoList.layoutManager = LinearLayoutManager(context)
+        binding.todoList.layoutManager = LinearLayoutManager(context)
         mAdapter.listener = mActionListener
-        todoList.adapter = mAdapter
-        shopEdit.setOnEditorActionListener { _, actionId, event ->
+        binding.todoList.adapter = mAdapter
+        binding.shopEdit.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
                 addNewItem()
                 return@setOnEditorActionListener true
             }
             false
         }
-        addButton.setOnClickListener { addNewItem() }
+        binding.addButton.setOnClickListener { addNewItem() }
 
-        attackDelay.setOnCheckedChangeListener { _, isChecked ->
+        binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
             iFace.state.isDelayAdded = isChecked
             if (isChecked) {
-                delayLayout.visibility = View.VISIBLE
+                binding.delayLayout.visibility = View.VISIBLE
             } else {
-                delayLayout.visibility = View.GONE
+                binding.delayLayout.visibility = View.GONE
             }
         }
-        delayLayout.visibility = View.GONE
-        attackDelay.isChecked = iFace.state.isDelayAdded
+        binding.delayLayout.visibility = View.GONE
+        binding.attackDelay.isChecked = iFace.state.isDelayAdded
 
         editReminder()
     }
 
     private fun addNewItem() {
-        val task = shopEdit.text.toString().trim()
+        val task = binding.shopEdit.text.toString().trim()
         if (task == "") {
-            shopLayout.error = getString(R.string.must_be_not_empty)
-            shopLayout.isErrorEnabled = true
+            binding.shopLayout.error = getString(R.string.must_be_not_empty)
+            binding.shopLayout.isErrorEnabled = true
             return
         }
         mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
-        shopEdit.setText("")
+        binding.shopEdit.setText("")
         iFace.state.shopItems = mAdapter.data
     }
 
@@ -151,7 +151,7 @@ class ShopFragment : RepeatableTypeFragment() {
         if (iFace.state.isShopItemsEdited) {
             mAdapter.data = reminder.shoppings
             iFace.state.shopItems = reminder.shoppings
-            attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
+            binding.attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
         } else {
             mAdapter.data = iFace.state.shopItems
         }

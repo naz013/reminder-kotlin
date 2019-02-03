@@ -16,27 +16,28 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.databinding.ActivityIntroBinding
 import com.elementary.tasks.login.LoginActivity
-import kotlinx.android.synthetic.main.activity_intro.*
 
-class IntroActivity : ThemedActivity() {
+class IntroActivity : ThemedActivity<ActivityIntroBinding>() {
+
+    override fun layoutRes(): Int = R.layout.activity_intro
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_intro)
 
         val mPagerAdapter = SlidePagerAdapter(supportFragmentManager)
-        viewPager.adapter = mPagerAdapter
-        indicator.setViewPager(viewPager)
+        binding.viewPager.adapter = mPagerAdapter
+        binding.indicator.setViewPager(binding.viewPager)
 
-        skip_button.setOnClickListener { moveToNextScreen() }
-        next_button.setOnClickListener { moveForward() }
+        binding.skipButton.setOnClickListener { moveToNextScreen() }
+        binding.nextButton.setOnClickListener { moveForward() }
 
         initCheckbox()
     }
 
     private fun initCheckbox() {
-        setViewHTML(terms_check_box, getString(R.string.i_accept))
+        setViewHTML(binding.termsCheckBox, getString(R.string.i_accept))
     }
 
     private fun makeLinkClickable(strBuilder: SpannableStringBuilder, span: URLSpan) {
@@ -69,15 +70,15 @@ class IntroActivity : ThemedActivity() {
     }
 
     private fun moveForward() {
-        if (viewPager.currentItem >= 4) {
+        if (binding.viewPager.currentItem >= 4) {
             moveToNextScreen()
         } else {
-            viewPager.currentItem = viewPager.currentItem + 1
+            binding.viewPager.currentItem = binding.viewPager.currentItem + 1
         }
     }
 
     private fun moveToNextScreen() {
-        if (!terms_check_box.isChecked) {
+        if (!binding.termsCheckBox.isChecked) {
             Toast.makeText(this, getString(R.string.privacy_warming), Toast.LENGTH_SHORT).show()
             return
         }
@@ -91,10 +92,10 @@ class IntroActivity : ThemedActivity() {
     }
 
     override fun onBackPressed() {
-        if (viewPager.currentItem == 0) {
+        if (binding.viewPager.currentItem == 0) {
             super.onBackPressed()
         } else {
-            viewPager.currentItem = viewPager.currentItem - 1
+            binding.viewPager.currentItem = binding.viewPager.currentItem - 1
         }
     }
 

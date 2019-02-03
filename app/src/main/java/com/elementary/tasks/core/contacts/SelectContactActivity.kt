@@ -19,7 +19,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import kotlinx.android.synthetic.main.activity_contacts_list.*
+import com.elementary.tasks.databinding.ActivityContactsListBinding
 import kotlinx.coroutines.Job
 
 /**
@@ -40,13 +40,13 @@ import kotlinx.coroutines.Job
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SelectContactActivity : ThemedActivity() {
+class SelectContactActivity : ThemedActivity<ActivityContactsListBinding>() {
 
     private lateinit var viewModel: SelectContactViewModel
     private val adapter: ContactsRecyclerAdapter = ContactsRecyclerAdapter()
     private val searchModifier = object : SearchModifier<ContactItem>(null, {
         adapter.submitList(it)
-        contactsList.smoothScrollToPosition(0)
+        binding.contactsList.smoothScrollToPosition(0)
         refreshView(it.size)
     }) {
         override fun filter(v: ContactItem): Boolean {
@@ -55,14 +55,15 @@ class SelectContactActivity : ThemedActivity() {
     }
     private var mLoader: Job? = null
 
+    override fun layoutRes(): Int = R.layout.activity_contacts_list
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SelectContactViewModel::class.java)
         viewModel.contentResolver = contentResolver
         viewModel.loadContacts()
 
-        setContentView(R.layout.activity_contacts_list)
-        loaderView.visibility = View.GONE
+        binding.loaderView.visibility = View.GONE
 
         initActionBar()
         initSearchView()
@@ -96,19 +97,19 @@ class SelectContactActivity : ThemedActivity() {
             }
         }
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
-            contactsList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.contactsList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            contactsList.layoutManager = LinearLayoutManager(this)
+            binding.contactsList.layoutManager = LinearLayoutManager(this)
         }
-        contactsList.adapter = adapter
-        contactsList.isNestedScrollingEnabled = false
-        ViewUtils.listenScrollableView(scroller) {
-            toolbarView.isSelected = it > 0
+        binding.contactsList.adapter = adapter
+        binding.contactsList.isNestedScrollingEnabled = false
+        ViewUtils.listenScrollableView(binding.scroller) {
+            binding.toolbarView.isSelected = it > 0
         }
     }
 
     private fun initSearchView() {
-        searchField.addTextChangedListener(object : TextWatcher {
+        binding.searchField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
@@ -183,21 +184,21 @@ class SelectContactActivity : ThemedActivity() {
     override fun onPause() {
         super.onPause()
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.hideSoftInputFromWindow(searchField.windowToken, 0)
+        imm?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
     }
 
     private fun initActionBar() {
-        backButton.setOnClickListener { onBackPressed() }
+        binding.backButton.setOnClickListener { onBackPressed() }
     }
 
     private fun hideProgress() {
-        loaderView.visibility = View.GONE
-        typeIcon.isEnabled = true
+        binding.loaderView.visibility = View.GONE
+        binding.typeIcon.isEnabled = true
     }
 
     private fun showProgress() {
-        loaderView.visibility = View.VISIBLE
-        typeIcon.isEnabled = false
+        binding.loaderView.visibility = View.VISIBLE
+        binding.typeIcon.isEnabled = false
     }
 
     private fun onContactSelected(number: String, name: String) {
@@ -212,11 +213,11 @@ class SelectContactActivity : ThemedActivity() {
 
     private fun refreshView(count: Int) {
         if (count > 0) {
-            emptyItem.visibility = View.GONE
-            scroller.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
+            binding.scroller.visibility = View.VISIBLE
         } else {
-            scroller.visibility = View.GONE
-            emptyItem.visibility = View.VISIBLE
+            binding.scroller.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 

@@ -8,11 +8,11 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
+import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.list.PlacesFragment
 import com.google.android.gms.maps.GoogleMap
-import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
-import kotlinx.android.synthetic.main.fragment_settings_location.*
 import java.util.*
 
 /**
@@ -33,7 +33,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LocationSettingsFragment : BaseSettingsFragment() {
+class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
 
     private var mItemSelect: Int = 0
 
@@ -41,20 +41,20 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
         initMapTypePrefs()
         initMarkerStylePrefs()
-        trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }
-        notificationOptionPrefs.setOnClickListener { changeNotificationPrefs() }
+        binding.trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }
+        binding.notificationOptionPrefs.setOnClickListener { changeNotificationPrefs() }
         if (Module.hasLocation(context!!)) {
-            placesPrefs.setOnClickListener { openPlacesScreen() }
-            placesPrefs.visibility = View.VISIBLE
+            binding.placesPrefs.setOnClickListener { openPlacesScreen() }
+            binding.placesPrefs.visibility = View.VISIBLE
         } else {
-            placesPrefs.visibility = View.GONE
+            binding.placesPrefs.visibility = View.GONE
         }
-        notificationOptionPrefs.isChecked = prefs.isDistanceNotificationEnabled
+        binding.notificationOptionPrefs.isChecked = prefs.isDistanceNotificationEnabled
         initRadiusPrefs()
     }
 
@@ -63,10 +63,10 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initMapStylePrefs() {
-        mapStylePrefs.setOnClickListener { openMapStylesFragment() }
-        mapStylePrefs.setDetailText(getString(themeUtil.styleName))
-        mapStylePrefs.setViewResource(themeUtil.mapStylePreview)
-        mapStylePrefs.isEnabled = prefs.mapType == GoogleMap.MAP_TYPE_NORMAL
+        binding.mapStylePrefs.setOnClickListener { openMapStylesFragment() }
+        binding.mapStylePrefs.setDetailText(getString(themeUtil.styleName))
+        binding.mapStylePrefs.setViewResource(themeUtil.mapStylePreview)
+        binding.mapStylePrefs.isEnabled = prefs.mapType == GoogleMap.MAP_TYPE_NORMAL
     }
 
     private fun openMapStylesFragment() {
@@ -74,7 +74,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initMarkerStylePrefs() {
-        markerStylePrefs.setOnClickListener { showStyleDialog() }
+        binding.markerStylePrefs.setOnClickListener { showStyleDialog() }
         showMarkerStyle()
     }
 
@@ -92,21 +92,21 @@ class LocationSettingsFragment : BaseSettingsFragment() {
                 .withColor(themeUtil.getNoteLightColor(prefs.markerStyle))
                 .tint()
                 .get()
-        markerStylePrefs.setViewDrawable(pointer)
+        binding.markerStylePrefs.setViewDrawable(pointer)
     }
 
     private fun initMapTypePrefs() {
-        mapTypePrefs.setOnClickListener { showMapTypeDialog() }
+        binding.mapTypePrefs.setOnClickListener { showMapTypeDialog() }
         showMapType()
     }
 
     private fun showMapType() {
         val types = resources.getStringArray(R.array.map_types)
-        mapTypePrefs.setDetailText(types[getPosition(prefs.mapType)])
+        binding.mapTypePrefs.setDetailText(types[getPosition(prefs.mapType)])
     }
 
     private fun initRadiusPrefs() {
-        radiusPrefs.setOnClickListener { showRadiusPickerDialog() }
+        binding.radiusPrefs.setOnClickListener { showRadiusPickerDialog() }
         showRadius()
     }
 
@@ -121,11 +121,11 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     private fun showTrackerOptionsDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.tracking_settings)
-        val b = layoutInflater.inflate(R.layout.dialog_tracking_settings_layout, null)
+        val b = DialogTrackingSettingsLayoutBinding.inflate(layoutInflater)
         val time = prefs.trackTime - 1
         b.timeBar.progress = time
         b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), (time + 1).toString())
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ ->
             prefs.trackTime = b.timeBar.progress + 1
         }
@@ -166,13 +166,13 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun changeNotificationPrefs() {
-        val isChecked = notificationOptionPrefs.isChecked
-        notificationOptionPrefs.isChecked = !isChecked
+        val isChecked = binding.notificationOptionPrefs.isChecked
+        binding.notificationOptionPrefs.isChecked = !isChecked
         prefs.isDistanceNotificationEnabled = !isChecked
     }
 
     private fun showRadius() {
-        radiusPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
+        binding.radiusPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
                 prefs.radius.toString()))
     }
 

@@ -3,8 +3,8 @@ package com.elementary.tasks.navigation.settings.other
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
+import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_web_view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,14 +24,14 @@ import kotlinx.android.synthetic.main.fragment_settings_web_view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class OssFragment : BaseSettingsFragment() {
+class OssFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 
     override fun layoutRes(): Int = R.layout.fragment_settings_web_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val url = "file:///android_asset/files/oss.html"
-        web_view.loadUrl(url)
+        binding.webView.loadUrl(url)
     }
 
     override fun getTitle(): String = getString(R.string.open_source_licenses)

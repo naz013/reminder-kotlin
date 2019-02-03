@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
@@ -22,11 +21,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.binding.views.NavHeaderBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
+import com.elementary.tasks.databinding.ActivityMainBinding
 import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
 import com.elementary.tasks.groups.list.GroupsFragment
@@ -42,20 +43,19 @@ import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
 import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
+class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
         RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
 
     private lateinit var remotePrefs: RemotePrefs
     @Inject
     lateinit var buttonObservable: GlobalButtonObservable
 
-    private var fragment: BaseFragment? = null
+    private var fragment: BaseFragment<*>? = null
     private var mNoteView: QuickNoteCoordinator? = null
+    private var mHeaderView: NavHeaderBinding? = null
 
     private lateinit var viewModel: ConversationViewModel
 
@@ -73,10 +73,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_main
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         remotePrefs = RemotePrefs(this)
-        setContentView(R.layout.activity_main)
         initActionBar()
         initNavigation()
         initViewModel()
@@ -95,7 +96,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                     pos = PageIdentifier.menuId(this, 0)
                 }
                 prevItem = PageIdentifier.menuId(this, 0)
-                nav_view.setCheckedItem(pos)
+                binding.navView.setCheckedItem(pos)
                 openScreen(pos)
             }
             else -> initStartFragment()
@@ -104,7 +105,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun initQuickNote() {
         val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
-        mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
+        mNoteView = QuickNoteCoordinator(this, binding.quickNoteContainer, binding.quickNoteView,
                 noteViewModel, prefs, notifier)
     }
 
@@ -120,27 +121,27 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private fun initStartFragment() {
         Timber.d("initStartFragment: ")
         prevItem = PageIdentifier.menuId(this, prefs.homePage)
-        nav_view.setCheckedItem(prevItem)
+        binding.navView.setCheckedItem(prevItem)
         openScreen(prevItem)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.navigationIcon = ViewUtils.navIcon(this, isDark)
-        toolbar.setNavigationOnClickListener { onDrawerClick() }
+        binding.toolbar.navigationIcon = ViewUtils.navIcon(this, isDark)
+        binding.toolbar.setNavigationOnClickListener { onDrawerClick() }
     }
 
     private fun onDrawerClick() {
         if (this.fragment is BaseSettingsFragment) {
             onBackPressed()
         } else {
-            drawer_layout.openDrawer(GravityCompat.START)
+            binding.drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
-    private fun replaceFragment(fragment: BaseFragment, title: String) {
+    private fun replaceFragment(fragment: BaseFragment<*>, title: String) {
         clearBackStack()
         this.fragment = fragment
         val ft = supportFragmentManager.beginTransaction()
@@ -173,11 +174,10 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun checkDoNotDisturb() {
         Timber.d("checkDoNotDisturb: ")
-        val view = nav_view.getHeaderView(0)
         if (prefs.applyDoNotDisturb(0)) {
-            view.doNoDisturbIcon.visibility = View.VISIBLE
+            mHeaderView?.doNoDisturbIcon?.show()
         } else {
-            view.doNoDisturbIcon.visibility = View.GONE
+            mHeaderView?.doNoDisturbIcon?.hide()
         }
     }
 
@@ -223,15 +223,15 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onTitleChange(title: String) {
-        toolbar.title = title
+        binding.toolbar.title = title
     }
 
-    override fun onFragmentSelect(fragment: BaseFragment) {
+    override fun onFragmentSelect(fragment: BaseFragment<*>) {
         this.fragment = fragment
         if (this.fragment is BaseSettingsFragment) {
-            toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+            binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
         } else {
-            toolbar.navigationIcon = ViewUtils.navIcon(this, isDark)
+            binding.toolbar.navigationIcon = ViewUtils.navIcon(this, isDark)
         }
     }
 
@@ -242,7 +242,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
-    override fun openFragment(fragment: BaseFragment, tag: String, replace: Boolean) {
+    override fun openFragment(fragment: BaseFragment<*>, tag: String, replace: Boolean) {
         if (replace) {
             replaceFragment(fragment, tag)
         } else {
@@ -250,7 +250,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
-    override fun openFragment(fragment: BaseFragment, tag: String) {
+    override fun openFragment(fragment: BaseFragment<*>, tag: String) {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.main_container, fragment, tag)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -263,12 +263,12 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onScrollUpdate(y: Int) {
-        appBar.isSelected = y > 0
+        binding.appBar.isSelected = y > 0
     }
 
     override fun onMenuSelect(menu: Int) {
         prevItem = menu
-        nav_view.setCheckedItem(prevItem)
+        binding.navView.setCheckedItem(prevItem)
     }
 
     override fun hideKeyboard() {
@@ -279,36 +279,35 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun initNavigation() {
-        nav_view.isVerticalScrollBarEnabled = false
-        nav_view.setNavigationItemSelectedListener(this)
-        val view = nav_view.getHeaderView(0)
-        view.sale_badge.visibility = View.GONE
-        view.update_badge.visibility = View.GONE
-        view.doNoDisturbIcon.visibility = View.GONE
-        val nameView = view.findViewById<TextView>(R.id.appNameBannerPro)
+        binding.navView.isVerticalScrollBarEnabled = false
+        binding.navView.setNavigationItemSelectedListener(this)
+        mHeaderView = NavHeaderBinding(binding.navView.getHeaderView(0))
+        mHeaderView?.saleBadge?.visibility = View.GONE
+        mHeaderView?.updateBadge?.visibility = View.GONE
+        mHeaderView?.doNoDisturbIcon?.visibility = View.GONE
         if (Module.isPro) {
-            nameView.visibility = View.VISIBLE
+            mHeaderView?.appNameBannerPro?.visibility = View.VISIBLE
         } else {
-            nameView.visibility = View.GONE
+            mHeaderView?.appNameBannerPro?.visibility = View.GONE
         }
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            view.playServicesWarning.visibility = View.GONE
+            mHeaderView?.playServicesWarning?.visibility = View.GONE
         } else {
-            view.playServicesWarning.visibility = View.VISIBLE
+            mHeaderView?.playServicesWarning?.visibility = View.VISIBLE
         }
         setMenuVisible()
     }
 
     private fun setMenuVisible() {
-        val menu = nav_view.menu
+        val menu = binding.navView.menu
         menu.getItem(5)?.isVisible = GTasks.getInstance(this)?.isLogged ?: false
         menu.getItem(7)?.isVisible = Module.hasLocation(this)
         menu.getItem(11)?.isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else if (mNoteView != null && mNoteView?.isNoteVisible == true) {
             mNoteView?.hideNoteView()
         } else {
@@ -321,7 +320,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             if (fragment is SettingsFragment || fragment is FeedbackFragment) {
                 if (beforeSettings != 0) {
                     prevItem = beforeSettings
-                    nav_view.setCheckedItem(beforeSettings)
+                    binding.navView.setCheckedItem(beforeSettings)
                     openScreen(beforeSettings)
                     beforeSettings = 0
                 } else {
@@ -367,7 +366,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawer_layout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         Handler().postDelayed({
             if (prevItem == item.itemId && (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro)) {
                 return@postDelayed
@@ -431,30 +430,26 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onSale(discount: String, expiryDate: String) {
         val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
-        val view = nav_view.getHeaderView(0)
         if (TextUtils.isEmpty(expiry)) {
-            view.sale_badge.visibility = View.GONE
+            mHeaderView?.saleBadge?.visibility = View.GONE
         } else {
-            view.sale_badge.visibility = View.VISIBLE
-            view.sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+            mHeaderView?.saleBadge?.visibility = View.VISIBLE
+            mHeaderView?.saleBadge?.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
         }
     }
 
     override fun noSale() {
-        val view = nav_view.getHeaderView(0)
-        view.sale_badge.visibility = View.GONE
+        mHeaderView?.saleBadge?.visibility = View.GONE
     }
 
     override fun onUpdate(version: String) {
-        val view = nav_view.getHeaderView(0)
-        view.update_badge.visibility = View.VISIBLE
-        view.update_badge.text = getString(R.string.update_available) + ": " + version
-        view.update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
+        mHeaderView?.updateBadge?.visibility = View.VISIBLE
+        mHeaderView?.updateBadge?.text = getString(R.string.update_available) + ": " + version
+        mHeaderView?.updateBadge?.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
     }
 
     override fun noUpdate() {
-        val view = nav_view.getHeaderView(0)
-        view.update_badge.visibility = View.GONE
+        mHeaderView?.updateBadge?.visibility = View.GONE
     }
 
     override fun invoke(view: View, action: GlobalButtonObservable.Action) {

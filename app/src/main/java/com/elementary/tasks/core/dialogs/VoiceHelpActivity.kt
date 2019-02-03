@@ -9,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_voice_help.*
+import com.elementary.tasks.databinding.ActivityVoiceHelpBinding
 import java.util.*
 
 /**
@@ -30,14 +30,15 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class VoiceHelpActivity : ThemedActivity() {
+class VoiceHelpActivity : ThemedActivity<ActivityVoiceHelpBinding>() {
+
+    override fun layoutRes(): Int = R.layout.activity_voice_help
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_voice_help)
         initActionBar()
-        webView.settings.javaScriptEnabled = true
-        webView.webViewClient = object : WebViewClient() {
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
@@ -45,15 +46,15 @@ class VoiceHelpActivity : ThemedActivity() {
                 return true
             }
         }
-        webView.webChromeClient = WebChromeClient()
-        webView.loadUrl(getHelpUrl(language.getVoiceLocale(prefs.voiceLocale)))
+        binding.webView.webChromeClient = WebChromeClient()
+        binding.webView.loadUrl(getHelpUrl(language.getVoiceLocale(prefs.voiceLocale)))
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.title = getString(R.string.help)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.title = getString(R.string.help)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

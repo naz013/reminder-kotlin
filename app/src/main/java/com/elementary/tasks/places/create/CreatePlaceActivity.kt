@@ -18,8 +18,8 @@ import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
+import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.activity_create_place.*
 import javax.inject.Inject
 
 /**
@@ -40,7 +40,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
+class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
 
     private lateinit var viewModel: PlaceViewModel
     private lateinit var stateViewModel: CreatePlaceViewModel
@@ -56,12 +56,13 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_create_place
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stateViewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
         stateViewModel.isPlaceEdited = savedInstanceState != null
 
-        setContentView(R.layout.activity_create_place)
         initActionBar()
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, true, false, false,
@@ -77,9 +78,9 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        backButton.setOnClickListener { finish() }
+        binding.backButton.setOnClickListener { finish() }
     }
 
     private fun initViewModel(id: String) {
@@ -125,9 +126,9 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     private fun showPlace(place: Place?) {
         this.mItem = place
         place?.let {
-            titleView.text = getString(R.string.edit_place)
+            binding.titleView.text = getString(R.string.edit_place)
             if (!stateViewModel.isPlaceEdited) {
-                placeName.setText(place.name)
+                binding.placeName.setText(place.name)
                 stateViewModel.place = place
                 stateViewModel.isPlaceEdited = true
                 showPlaceOnMap()
@@ -137,13 +138,13 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     private fun addPlace() {
         if (stateViewModel.place.hasLatLng()) {
-            var name: String = placeName.text.toString().trim()
+            var name: String = binding.placeName.text.toString().trim()
             if (name == "") {
                 name = stateViewModel.place.name
             }
             if (name == "") {
-                placeLayout.error = getString(R.string.must_be_not_empty)
-                placeLayout.isErrorEnabled = true
+                binding.placeLayout.error = getString(R.string.must_be_not_empty)
+                binding.placeLayout.isErrorEnabled = true
                 return
             }
             val latitude = stateViewModel.place.latitude
@@ -206,8 +207,8 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
             this.longitude = place.longitude
             this.name = address
         }
-        if (placeName.text.toString().trim() == "") {
-            placeName.setText(address)
+        if (binding.placeName.text.toString().trim() == "") {
+            binding.placeName.setText(address)
         }
     }
 

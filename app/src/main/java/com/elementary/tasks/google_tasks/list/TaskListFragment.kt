@@ -2,17 +2,15 @@ package com.elementary.tasks.google_tasks.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -22,10 +20,9 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
+import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
-import kotlinx.android.synthetic.main.fragment_google_list.*
-import kotlinx.android.synthetic.main.view_progress.*
 import javax.inject.Inject
 
 /**
@@ -46,7 +43,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TaskListFragment : Fragment() {
+class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
 
     private val adapter = TasksRecyclerAdapter()
     private lateinit var viewModel: GoogleTaskListViewModel
@@ -84,13 +81,11 @@ class TaskListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_google_list, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_google_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressMessageView.text = getString(R.string.please_wait)
+        binding.progressMessageView.text = getString(R.string.please_wait)
         updateProgress(false)
         initEmpty()
         initList()
@@ -129,9 +124,9 @@ class TaskListFragment : Fragment() {
 
     private fun updateProgress(b: Boolean) {
         if (b) {
-            progressView.visibility = View.VISIBLE
+            binding.progressView.visibility = View.VISIBLE
         } else {
-            progressView.visibility = View.GONE
+            binding.progressView.visibility = View.GONE
         }
     }
 
@@ -142,15 +137,15 @@ class TaskListFragment : Fragment() {
     }
 
     private fun initList() {
-        swipeRefresh.setOnRefreshListener {
-            swipeRefresh.isRefreshing = false
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = false
             viewModel.sync()
         }
 
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
         adapter.actionsListener = object : ActionsListener<GoogleTask> {
             override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
@@ -162,7 +157,7 @@ class TaskListFragment : Fragment() {
                 }
             }
         }
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
     }
 
     private fun editTask(googleTask: GoogleTask) {
@@ -172,16 +167,16 @@ class TaskListFragment : Fragment() {
     }
 
     private fun initEmpty() {
-        emptyItem.visibility = View.VISIBLE
-        emptyText.setText(R.string.no_google_tasks)
+        binding.emptyItem.visibility = View.VISIBLE
+        binding.emptyText.setText(R.string.no_google_tasks)
         reloadView(0)
     }
 
     private fun reloadView(count: Int) {
         if (count > 0) {
-            emptyItem.visibility = View.GONE
+            binding.emptyItem.visibility = View.GONE
         } else {
-            emptyItem.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 

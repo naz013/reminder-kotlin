@@ -1,17 +1,16 @@
 package com.elementary.tasks.notes.editor.layers
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.drawing.Background
 import com.elementary.tasks.core.drawing.Drawing
 import com.elementary.tasks.core.drawing.Image
 import com.elementary.tasks.core.drawing.Text
 import com.elementary.tasks.core.interfaces.Observer
-import kotlinx.android.synthetic.main.list_item_layer.view.*
+import com.elementary.tasks.databinding.ListItemLayerBinding
 import java.util.*
 
 /**
@@ -71,14 +70,14 @@ class LayersRecyclerAdapter : RecyclerView.Adapter<LayersRecyclerAdapter.ViewHol
         mCallback?.onItemAdded()
     }
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemLayerBinding>(parent, R.layout.list_item_layer) {
         fun bind(drawing: Drawing) {
-            itemView.layerName.text = getName(itemView.context, drawing)
-            itemView.layerView.drawing = drawing
+            binding.layerName.text = getName(itemView.context, drawing)
+            binding.layerView.drawing = drawing
             if (adapterPosition == index) {
-                itemView.selectionView.setBackgroundResource(R.color.redPrimary)
+                binding.selectionView.setBackgroundResource(R.color.redPrimary)
             } else {
-                itemView.selectionView.setBackgroundResource(android.R.color.transparent)
+                binding.selectionView.setBackgroundResource(android.R.color.transparent)
             }
         }
 
@@ -94,7 +93,7 @@ class LayersRecyclerAdapter : RecyclerView.Adapter<LayersRecyclerAdapter.ViewHol
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LayersRecyclerAdapter.ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_layer, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: LayersRecyclerAdapter.ViewHolder, position: Int) {

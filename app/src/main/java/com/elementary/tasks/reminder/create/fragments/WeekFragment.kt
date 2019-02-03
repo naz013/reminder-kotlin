@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.ActionView
-import kotlinx.android.synthetic.main.fragment_reminder_weekdays.*
+import com.elementary.tasks.databinding.FragmentReminderWeekdaysBinding
 import timber.log.Timber
 import java.util.*
 
@@ -33,7 +33,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class WeekFragment : RepeatableTypeFragment() {
+class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
 
     private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         iFace.state.hour = hourOfDay
@@ -42,7 +42,7 @@ class WeekFragment : RepeatableTypeFragment() {
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
         val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
-        timeField.text = formattedTime
+        binding.timeField.text = formattedTime
     }
 
     private val time: Long
@@ -57,10 +57,10 @@ class WeekFragment : RepeatableTypeFragment() {
         }
 
     val days: List<Int>
-        get() = IntervalUtil.getWeekRepeat(mondayCheck.isChecked,
-                tuesdayCheck.isChecked, wednesdayCheck.isChecked,
-                thursdayCheck.isChecked, fridayCheck.isChecked,
-                saturdayCheck.isChecked, sundayCheck.isChecked)
+        get() = IntervalUtil.getWeekRepeat(binding.mondayCheck.isChecked,
+                binding.tuesdayCheck.isChecked, binding.wednesdayCheck.isChecked,
+                binding.thursdayCheck.isChecked, binding.fridayCheck.isChecked,
+                binding.saturdayCheck.isChecked, binding.sundayCheck.isChecked)
 
     private val mCheckListener: CompoundButton.OnCheckedChangeListener =  CompoundButton.OnCheckedChangeListener { _, _ ->
         calculateNextDate()
@@ -69,20 +69,20 @@ class WeekFragment : RepeatableTypeFragment() {
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
         var type = Reminder.BY_WEEK
-        val isAction = actionView.hasAction()
+        val isAction = binding.actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
-            taskLayout.error = getString(R.string.task_summary_is_empty)
-            taskLayout.isErrorEnabled = true
+            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.isErrorEnabled = true
             return null
         }
         var number = ""
         if (isAction) {
-            number = actionView.number
+            number = binding.actionView.number
             if (TextUtils.isEmpty(number)) {
                 iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
-            type = if (actionView.type == ActionView.TYPE_CALL) {
+            type = if (binding.actionView.type == ActionView.TYPE_CALL) {
                 Reminder.BY_WEEK_CALL
             } else {
                 Reminder.BY_WEEK_SMS
@@ -113,46 +113,46 @@ class WeekFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                windowTypeView = windowTypeView,
-                actionView = actionView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                windowTypeView = binding.windowTypeView,
+                actionView = binding.actionView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sundayCheck.setOnCheckedChangeListener(mCheckListener)
-        saturdayCheck.setOnCheckedChangeListener(mCheckListener)
-        fridayCheck.setOnCheckedChangeListener(mCheckListener)
-        thursdayCheck.setOnCheckedChangeListener(mCheckListener)
-        wednesdayCheck.setOnCheckedChangeListener(mCheckListener)
-        tuesdayCheck.setOnCheckedChangeListener(mCheckListener)
-        mondayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.sundayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.saturdayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.fridayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.thursdayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.wednesdayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.tuesdayCheck.setOnCheckedChangeListener(mCheckListener)
+        binding.mondayCheck.setOnCheckedChangeListener(mCheckListener)
 
-        timeField.setOnClickListener {
+        binding.timeField.setOnClickListener {
             TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
                     prefs.is24HourFormat, iFace.state.hour, iFace.state.minute, mTimeSelect)
         }
-        timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
+        binding.timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
 
-        tuneExtraView.hasAutoExtra = false
+        binding.tuneExtraView.hasAutoExtra = false
         calculateNextDate()
         editReminder()
     }
@@ -160,7 +160,7 @@ class WeekFragment : RepeatableTypeFragment() {
     private fun calculateNextDate() {
         val weekdays = days
         if (!IntervalUtil.isWeekday(weekdays)) {
-            calculatedNextTime.text = ""
+            binding.calculatedNextTime.text = ""
             return
         }
         val reminder = Reminder()
@@ -169,19 +169,19 @@ class WeekFragment : RepeatableTypeFragment() {
         reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         val startTime = TimeCount.getNextWeekdayTime(reminder)
-        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
+        binding.calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     override fun updateActions() {
-        if (actionView.hasAction()) {
-            tuneExtraView.hasAutoExtra = true
-            if (actionView.type == ActionView.TYPE_MESSAGE) {
-                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+        if (binding.actionView.hasAction()) {
+            binding.tuneExtraView.hasAutoExtra = true
+            if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+                binding.tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
             } else {
-                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
             }
         } else {
-            tuneExtraView.hasAutoExtra = false
+            binding.tuneExtraView.hasAutoExtra = false
         }
     }
 
@@ -194,18 +194,18 @@ class WeekFragment : RepeatableTypeFragment() {
     }
 
     private fun setCheckForDays(weekdays: List<Int>) {
-        sundayCheck.isChecked = weekdays[0] == 1
-        mondayCheck.isChecked = weekdays[1] == 1
-        tuesdayCheck.isChecked = weekdays[2] == 1
-        wednesdayCheck.isChecked = weekdays[3] == 1
-        thursdayCheck.isChecked = weekdays[4] == 1
-        fridayCheck.isChecked = weekdays[5] == 1
-        saturdayCheck.isChecked = weekdays[6] == 1
+        binding.sundayCheck.isChecked = weekdays[0] == 1
+        binding.mondayCheck.isChecked = weekdays[1] == 1
+        binding.tuesdayCheck.isChecked = weekdays[2] == 1
+        binding.wednesdayCheck.isChecked = weekdays[3] == 1
+        binding.thursdayCheck.isChecked = weekdays[4] == 1
+        binding.fridayCheck.isChecked = weekdays[5] == 1
+        binding.saturdayCheck.isChecked = weekdays[6] == 1
     }
 
     private fun editReminder() {
         val reminder = iFace.state.reminder
-        timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
+        binding.timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormat, prefs.appLanguage)
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)

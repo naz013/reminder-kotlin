@@ -11,8 +11,8 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.widget_current_tasks_config.*
+import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -32,27 +32,28 @@ import kotlinx.android.synthetic.main.widget_current_tasks_config.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EventsWidgetConfigActivity : ThemedActivity() {
+class EventsWidgetConfigActivity : ThemedActivity<ActivityWidgetCurrentTasksConfigBinding>() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
     private var textSize: Int = 0
 
+    override fun layoutRes(): Int = R.layout.activity_widget_current_tasks_config
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_current_tasks_config)
 
-        fabSave.setOnClickListener { showTextSizeDialog() }
-        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        bgColorSlider.setListener { position, _ ->
-            headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+        binding.fabSave.setOnClickListener { showTextSizeDialog() }
+        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setListener { position, _ ->
+            binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
 
-        listItemBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        listItemBgColorSlider.setListener { position, _ ->
-            listItemCard.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+        binding.listItemBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.listItemBgColorSlider.setListener { position, _ ->
+            binding.listItemCard.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateText(position)
         }
 
@@ -66,45 +67,45 @@ class EventsWidgetConfigActivity : ThemedActivity() {
         val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
 
         val headerBg = sp.getInt(WIDGET_HEADER_BG + widgetID, 0)
-        bgColorSlider.setSelection(headerBg)
+        binding.bgColorSlider.setSelection(headerBg)
         updateIcons(headerBg)
 
         val itemBg = sp.getInt(WIDGET_ITEM_BG + widgetID, 0)
-        listItemBgColorSlider.setSelection(itemBg)
+        binding.listItemBgColorSlider.setSelection(itemBg)
         updateText(itemBg)
     }
 
     private fun updateText(code: Int) {
         if (WidgetUtils.isDarkBg(code)) {
-            statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
+            binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
                     ContextCompat.getColor(this, R.color.pureWhite)))
-            taskText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            taskNumber.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            taskTime.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            leftTime.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.taskText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.taskNumber.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.taskTime.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.leftTime.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
+            binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
                     ContextCompat.getColor(this, R.color.pureBlack)))
-            taskText.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            taskNumber.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            taskTime.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            leftTime.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.taskText.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.taskNumber.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.taskTime.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.leftTime.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }
 
     private fun updateIcons(code: Int) {
         if (WidgetUtils.isDarkBg(code)) {
-            btn_settings.setImageResource(R.drawable.ic_twotone_settings_white)
-            btn_add_task.setImageResource(R.drawable.ic_twotone_add_white)
-            btn_voice.setImageResource(R.drawable.ic_twotone_mic_white)
-            widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_white)
+            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_white)
+            binding.btnVoice.setImageResource(R.drawable.ic_twotone_mic_white)
+            binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            btn_settings.setImageResource(R.drawable.ic_twotone_settings_24px)
-            btn_add_task.setImageResource(R.drawable.ic_twotone_add_24px)
-            btn_voice.setImageResource(R.drawable.ic_twotone_mic_24px)
-            widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_24px)
+            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_24px)
+            binding.btnVoice.setImageResource(R.drawable.ic_twotone_mic_24px)
+            binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }
 
@@ -126,7 +127,7 @@ class EventsWidgetConfigActivity : ThemedActivity() {
     private fun showTextSizeDialog() {
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.text_size)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null, false)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater, null, false)
         b.seekBar.max = 13
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -145,7 +146,7 @@ class EventsWidgetConfigActivity : ThemedActivity() {
         b.seekBar.progress = 2
         textSize = 2 + 12
         b.titleView.text = textSize.toString()
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
             dialogInterface.dismiss()
             savePrefs()
@@ -160,8 +161,8 @@ class EventsWidgetConfigActivity : ThemedActivity() {
         val sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE)
 
         sp.edit()
-                .putInt(WIDGET_HEADER_BG + widgetID, bgColorSlider.selectedItem)
-                .putInt(WIDGET_ITEM_BG + widgetID, listItemBgColorSlider.selectedItem)
+                .putInt(WIDGET_HEADER_BG + widgetID, binding.bgColorSlider.selectedItem)
+                .putInt(WIDGET_ITEM_BG + widgetID, binding.listItemBgColorSlider.selectedItem)
                 .putFloat(WIDGET_TEXT_SIZE + widgetID, textSize.toFloat())
                 .apply()
 

@@ -22,9 +22,8 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
-import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
-import kotlinx.android.synthetic.main.fragment_settings_birthdays_settings.*
-import kotlinx.android.synthetic.main.view_progress.*
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
+import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
 import java.util.*
 
 /**
@@ -45,19 +44,19 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTimeSetListener {
+class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var viewModel: BirthdaysViewModel
     private var mItemSelect: Int = 0
 
     private val onProgress: (Boolean) -> Unit = {
         if (it) {
-            progressMessageView.text = getString(R.string.please_wait)
-            scanButton.isEnabled = false
-            progressView.visibility = View.VISIBLE
+            binding.progressMessageView.text = getString(R.string.please_wait)
+            binding.scanButton.isEnabled = false
+            binding.progressView.visibility = View.VISIBLE
         } else {
-            progressView.visibility = View.INVISIBLE
-            scanButton.isEnabled = true
+            binding.progressView.visibility = View.INVISIBLE
+            binding.scanButton.isEnabled = true
         }
     }
 
@@ -65,7 +64,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
@@ -88,8 +87,8 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initPriority() {
-        priorityPrefs.setOnClickListener { showPriorityDialog() }
-        priorityPrefs.setDependentView(birthReminderPrefs)
+        binding.priorityPrefs.setOnClickListener { showPriorityDialog() }
+        binding.priorityPrefs.setDependentView(binding.birthReminderPrefs)
         showPriority()
     }
 
@@ -114,7 +113,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun showPriority() {
-        priorityPrefs.setDetailText(priorityList()[prefs.birthdayPriority])
+        binding.priorityPrefs.setDetailText(priorityList()[prefs.birthdayPriority])
     }
 
     private fun initViewModel() {
@@ -132,15 +131,15 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initNotificationPrefs() {
-        birthdayNotificationPrefs.setOnClickListener { callback?.openFragment(BirthdayNotificationFragment(), getString(R.string.birthday_notification)) }
-        birthdayNotificationPrefs.setDependentView(birthReminderPrefs)
+        binding.birthdayNotificationPrefs.setOnClickListener { callback?.openFragment(BirthdayNotificationFragment(), getString(R.string.birthday_notification)) }
+        binding.birthdayNotificationPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun initScanButton() {
         if (prefs.isContactBirthdaysEnabled) {
-            scanButton.isEnabled = true
-            scanButton.visibility = View.VISIBLE
-            scanButton.setOnClickListener { scanForBirthdays() }
+            binding.scanButton.isEnabled = true
+            binding.scanButton.visibility = View.VISIBLE
+            binding.scanButton.setOnClickListener { scanForBirthdays() }
             ScanContactsWorker.onEnd = {
                 val message = if (it == 0) {
                     getString(R.string.no_new_birthdays)
@@ -152,7 +151,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
             }
             ScanContactsWorker.listener = onProgress
         } else {
-            scanButton.visibility = View.GONE
+            binding.scanButton.visibility = View.GONE
         }
     }
 
@@ -165,15 +164,15 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initContactsAutoPrefs() {
-        autoScanPrefs.isChecked = prefs.isContactAutoCheckEnabled
-        autoScanPrefs.setOnClickListener { changeAutoPrefs() }
-        autoScanPrefs.setDependentView(useContactsPrefs)
-        autoScanPrefs.setDependentView(birthReminderPrefs)
+        binding.autoScanPrefs.isChecked = prefs.isContactAutoCheckEnabled
+        binding.autoScanPrefs.setOnClickListener { changeAutoPrefs() }
+        binding.autoScanPrefs.setDependentView(binding.useContactsPrefs)
+        binding.autoScanPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun changeAutoPrefs() {
-        val isChecked = autoScanPrefs.isChecked
-        autoScanPrefs.isChecked = !isChecked
+        val isChecked = binding.autoScanPrefs.isChecked
+        binding.autoScanPrefs.isChecked = !isChecked
         prefs.isContactAutoCheckEnabled = !isChecked
         if (!isChecked) {
             AlarmReceiver().enableBirthdayCheckAlarm()
@@ -183,25 +182,25 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initContactsPrefs() {
-        useContactsPrefs.isChecked = prefs.isContactBirthdaysEnabled
-        useContactsPrefs.setOnClickListener { changeContactsPrefs() }
-        useContactsPrefs.setDependentView(birthReminderPrefs)
+        binding.useContactsPrefs.isChecked = prefs.isContactBirthdaysEnabled
+        binding.useContactsPrefs.setOnClickListener { changeContactsPrefs() }
+        binding.useContactsPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun changeContactsPrefs() {
         if (!Permissions.ensurePermissions(activity!!, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
             return
         }
-        val isChecked = useContactsPrefs.isChecked
-        useContactsPrefs.isChecked = !isChecked
+        val isChecked = binding.useContactsPrefs.isChecked
+        binding.useContactsPrefs.isChecked = !isChecked
         prefs.isContactBirthdaysEnabled = !isChecked
         initScanButton()
     }
 
     private fun initBirthdayTimePrefs() {
-        reminderTimePrefs.setOnClickListener { showTimeDialog() }
-        reminderTimePrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.birthdayTime, prefs.is24HourFormat, prefs.appLanguage))
-        reminderTimePrefs.setDependentView(birthReminderPrefs)
+        binding.reminderTimePrefs.setOnClickListener { showTimeDialog() }
+        binding.reminderTimePrefs.setValueText(TimeUtil.getBirthdayVisualTime(prefs.birthdayTime, prefs.is24HourFormat, prefs.appLanguage))
+        binding.reminderTimePrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun showTimeDialog() {
@@ -212,15 +211,15 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initDaysToPrefs() {
-        daysToPrefs.setOnClickListener { showDaysToDialog() }
-        daysToPrefs.setValue(prefs.daysToBirthday)
-        daysToPrefs.setDependentView(birthReminderPrefs)
+        binding.daysToPrefs.setOnClickListener { showDaysToDialog() }
+        binding.daysToPrefs.setValue(prefs.daysToBirthday)
+        binding.daysToPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun showDaysToDialog() {
         val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.days_to_birthday)
-        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
+        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
         b.seekBar.max = 5
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -238,7 +237,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
         val daysToBirthday = prefs.daysToBirthday
         b.seekBar.progress = daysToBirthday
         b.titleView.text = daysToBirthday.toString()
-        builder.setView(b)
+        builder.setView(b.root)
         builder.setPositiveButton(R.string.ok) { _, _ -> saveDays(b.seekBar.progress) }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
@@ -252,15 +251,15 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initPermanentPrefs() {
-        birthdayPermanentPrefs.isChecked = prefs.isBirthdayPermanentEnabled
-        birthdayPermanentPrefs.setOnClickListener { changeBirthdayPermanentPrefs() }
-        birthdayPermanentPrefs.setDependentView(birthReminderPrefs)
+        binding.birthdayPermanentPrefs.isChecked = prefs.isBirthdayPermanentEnabled
+        binding.birthdayPermanentPrefs.setOnClickListener { changeBirthdayPermanentPrefs() }
+        binding.birthdayPermanentPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun changeBirthdayPermanentPrefs() {
         if (context == null) return
-        val isChecked = birthdayPermanentPrefs.isChecked
-        birthdayPermanentPrefs.isChecked = !isChecked
+        val isChecked = binding.birthdayPermanentPrefs.isChecked
+        binding.birthdayPermanentPrefs.isChecked = !isChecked
         prefs.isBirthdayPermanentEnabled = !isChecked
         if (!isChecked) {
             context?.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
@@ -272,27 +271,27 @@ class BirthdaySettingsFragment : BaseCalendarFragment(), TimePickerDialog.OnTime
     }
 
     private fun initBirthdaysWidgetPrefs() {
-        widgetShowPrefs.isChecked = prefs.isBirthdayInWidgetEnabled
-        widgetShowPrefs.setOnClickListener { changeWidgetPrefs() }
-        widgetShowPrefs.setDependentView(birthReminderPrefs)
+        binding.widgetShowPrefs.isChecked = prefs.isBirthdayInWidgetEnabled
+        binding.widgetShowPrefs.setOnClickListener { changeWidgetPrefs() }
+        binding.widgetShowPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
     private fun changeWidgetPrefs() {
-        val isChecked = widgetShowPrefs.isChecked
-        widgetShowPrefs.isChecked = !isChecked
+        val isChecked = binding.widgetShowPrefs.isChecked
+        binding.widgetShowPrefs.isChecked = !isChecked
         prefs.isBirthdayInWidgetEnabled = !isChecked
         UpdatesHelper.updateCalendarWidget(context!!)
         UpdatesHelper.updateWidget(context!!)
     }
 
     private fun initBirthdayReminderPrefs() {
-        birthReminderPrefs.setOnClickListener { changeBirthdayPrefs() }
-        birthReminderPrefs.isChecked = prefs.isBirthdayReminderEnabled
+        binding.birthReminderPrefs.setOnClickListener { changeBirthdayPrefs() }
+        binding.birthReminderPrefs.isChecked = prefs.isBirthdayReminderEnabled
     }
 
     private fun changeBirthdayPrefs() {
-        val isChecked = birthReminderPrefs.isChecked
-        birthReminderPrefs.isChecked = !isChecked
+        val isChecked = binding.birthReminderPrefs.isChecked
+        binding.birthReminderPrefs.isChecked = !isChecked
         prefs.isBirthdayReminderEnabled = !isChecked
         if (!isChecked) {
             EventJobService.enableBirthdayAlarm(prefs)

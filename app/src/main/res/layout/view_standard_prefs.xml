@@ -1,81 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:colorBackground"
-    android:orientation="vertical"
-    android:padding="24dp">
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/stroke_width"
-        android:textAppearance="?textAppearanceCaption"
-        android:textColor="?attr/colorAccent" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal">
+        android:background="?android:colorBackground"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/labelLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1px"
-            android:textAppearance="?textAppearanceCaption" />
+            android:text="@string/stroke_width"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?attr/colorAccent" />
 
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/widthSeekStandard"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="40" />
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/labelLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1px"
+                android:textAppearance="?textAppearanceCaption" />
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/widthSeekStandard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="40" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/labelRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="40px"
+                android:textAppearance="?textAppearanceCaption" />
+
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/labelRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="40px"
-            android:textAppearance="?textAppearanceCaption" />
+            android:layout_marginTop="8dp"
+            android:text="@string/opacity"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?attr/colorAccent" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/labelLeftOpacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textAppearance="?textAppearanceCaption" />
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/opacitySeek"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="255" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/labelRightOpacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100%"
+                android:textAppearance="?textAppearanceCaption" />
+
+        </LinearLayout>
     </LinearLayout>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/opacity"
-        android:textAppearance="?textAppearanceCaption"
-        android:textColor="?attr/colorAccent" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/labelLeftOpacity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0%"
-            android:textAppearance="?textAppearanceCaption" />
-
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/opacitySeek"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:max="255" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/labelRightOpacity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="100%"
-            android:textAppearance="?textAppearanceCaption" />
-
-    </LinearLayout>
-</LinearLayout>
+</layout>

@@ -1,13 +1,13 @@
 package com.elementary.tasks.core.additional
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.ThemeUtil
-import kotlinx.android.synthetic.main.list_item_message.view.*
+import com.elementary.tasks.databinding.ListItemMessageBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,7 +40,7 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_message, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -52,19 +52,20 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
         return mDataList.size
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemMessageBinding>(parent,
+            R.layout.list_item_message) {
         fun bind(item: SmsTemplate) {
-            itemView.messageView.text = item.title
+            binding.messageView.text = item.title
             if (item.isSelected) {
-                itemView.bgView.setBackgroundColor(ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(itemView.context), 12))
+                binding.bgView.setBackgroundColor(ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(itemView.context), 12))
             } else {
-                itemView.bgView.setBackgroundResource(android.R.color.transparent)
+                binding.bgView.setBackgroundResource(android.R.color.transparent)
             }
         }
 
         init {
-            itemView.clickView.setOnClickListener { selectItem(adapterPosition) }
-            itemView.buttonMore.visibility = View.GONE
+            binding.clickView.setOnClickListener { selectItem(adapterPosition) }
+            binding.buttonMore.visibility = View.GONE
         }
     }
 

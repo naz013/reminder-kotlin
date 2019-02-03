@@ -18,12 +18,11 @@ import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.view_progress.*
 import java.util.*
 
 /**
@@ -44,20 +43,21 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LoginActivity : ThemedActivity() {
+class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
 
     private lateinit var viewModel: LoginViewModel
 
     private var googleLogin: GoogleLogin? = null
     private var dropboxLogin: DropboxLogin? = null
 
+    override fun layoutRes(): Int = R.layout.activity_login
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
 
-        setContentView(R.layout.activity_login)
-        if (Module.isPro) appNameBannerPro.visibility = View.VISIBLE
-        else appNameBannerPro.visibility = View.GONE
+        if (Module.isPro) binding.appNameBannerPro.visibility = View.VISIBLE
+        else binding.appNameBannerPro.visibility = View.GONE
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
             googleLogin = GoogleLogin(this, prefs)
         }
@@ -82,8 +82,8 @@ class LoginActivity : ThemedActivity() {
     private fun observeStates() {
         viewModel.isLoading.observe(this, Observer { isLoading ->
             isLoading?.let {
-                if (it) progressView.visibility = View.VISIBLE
-                else progressView.visibility = View.INVISIBLE
+                if (it) binding.progressView.visibility = View.VISIBLE
+                else binding.progressView.visibility = View.INVISIBLE
                 setEnabling(!it)
             }
         })
@@ -94,7 +94,7 @@ class LoginActivity : ThemedActivity() {
         })
         viewModel.message.observe(this, Observer {
             if (it != null && it != 0) {
-                progressMessageView.text = getString(it)
+                binding.progressMessageView.text = getString(it)
             }
         })
     }
@@ -119,14 +119,14 @@ class LoginActivity : ThemedActivity() {
 
     private fun initButtons() {
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            google_button.visibility = View.VISIBLE
-            google_button.setOnClickListener { googleLoginClick() }
+            binding.googleButton.visibility = View.VISIBLE
+            binding.googleButton.setOnClickListener { googleLoginClick() }
         } else {
-            google_button.visibility = View.GONE
+            binding.googleButton.visibility = View.GONE
         }
-        local_button.setOnClickListener { restoreLocalData() }
-        dropbox_button.setOnClickListener { loginToDropbox() }
-        skip_button.setOnClickListener { openApplication() }
+        binding.localButton.setOnClickListener { restoreLocalData() }
+        binding.dropboxButton.setOnClickListener { loginToDropbox() }
+        binding.skipButton.setOnClickListener { openApplication() }
     }
 
     private fun initGroups() {
@@ -206,10 +206,10 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun setEnabling(b: Boolean) {
-        dropbox_button.isEnabled = b
-        google_button.isEnabled = b
-        local_button.isEnabled = b
-        skip_button.isEnabled = b
+        binding.dropboxButton.isEnabled = b
+        binding.googleButton.isEnabled = b
+        binding.localButton.isEnabled = b
+        binding.skipButton.isEnabled = b
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

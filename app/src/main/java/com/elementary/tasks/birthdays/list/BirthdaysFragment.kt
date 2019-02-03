@@ -24,8 +24,8 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
+import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import kotlinx.android.synthetic.main.fragment_places.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,7 +45,7 @@ import kotlinx.android.synthetic.main.fragment_places.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdaysFragment : BaseNavigationFragment(), (List<Birthday>) -> Unit {
+class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
     private lateinit var viewModel: BirthdaysViewModel
     private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> viewModel.deleteBirthday(birthday) })
@@ -111,7 +111,7 @@ class BirthdaysFragment : BaseNavigationFragment(), (List<Birthday>) -> Unit {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { addPlace() }
+        binding.fab.setOnClickListener { addPlace() }
         initList()
         initViewModel()
     }
@@ -133,9 +133,9 @@ class BirthdaysFragment : BaseNavigationFragment(), (List<Birthday>) -> Unit {
 
     private fun initList() {
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
 
         mAdapter.actionsListener = object : ActionsListener<Birthday> {
@@ -145,8 +145,8 @@ class BirthdaysFragment : BaseNavigationFragment(), (List<Birthday>) -> Unit {
                 }
             }
         }
-        recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(recyclerView) {
+        binding.recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(binding.recyclerView) {
             setScroll(it)
         }
         refreshView(0)
@@ -154,15 +154,15 @@ class BirthdaysFragment : BaseNavigationFragment(), (List<Birthday>) -> Unit {
 
     private fun refreshView(count: Int) {
         if (count == 0) {
-            emptyItem.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.VISIBLE
         } else {
-            emptyItem.visibility = View.GONE
+            binding.emptyItem.visibility = View.GONE
         }
     }
 
     override fun invoke(result: List<Birthday>) {
         mAdapter.submitList(result)
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
         refreshView(result.size)
     }
 

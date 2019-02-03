@@ -13,12 +13,12 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.dialogs.DialogExclusionPickerBinding
+import com.elementary.tasks.core.binding.views.ExclusionPickerViewBinding
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
-import kotlinx.android.synthetic.main.view_exclusion_picker.view.*
 import java.util.*
 
 /**
@@ -41,6 +41,7 @@ import java.util.*
  */
 class ExclusionPickerView : LinearLayout {
 
+    private lateinit var binding: ExclusionPickerViewBinding
     var onExclusionUpdateListener: ((hours: List<Int>, from: String, to: String) -> Unit)? = null
     private var mHours: MutableList<Int> = mutableListOf()
     private var mFrom: String = ""
@@ -61,9 +62,9 @@ class ExclusionPickerView : LinearLayout {
             return ids
         }
 
-    private val customizationView: View
+    private val customizationView: DialogExclusionPickerBinding
         get() {
-            val binding = LayoutInflater.from(context).inflate(R.layout.dialog_exclusion_picker, null)
+            val binding = DialogExclusionPickerBinding(LayoutInflater.from(context).inflate(R.layout.dialog_exclusion_picker, null))
             binding.selectInterval.isChecked = true
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
@@ -124,14 +125,16 @@ class ExclusionPickerView : LinearLayout {
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_exclusion_picker, this)
         orientation = LinearLayout.VERTICAL
-        text.setOnClickListener {
+        binding = ExclusionPickerViewBinding(this)
+
+        binding.text.setOnClickListener {
             openExclusionDialog()
         }
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.exclusion), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.exclusion))
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.exclusion))
     }
 
     private fun openExclusionDialog() {
@@ -139,7 +142,7 @@ class ExclusionPickerView : LinearLayout {
         val builder = dialogues.getDialog(context)
         builder.setTitle(R.string.exclusion)
         val b = customizationView
-        builder.setView(b)
+        builder.setView(b.view)
         builder.setPositiveButton(R.string.ok) { _, _ -> saveExclusion(b) }
         builder.setNegativeButton(R.string.remove_exclusion) { _, _ -> clearExclusion() }
         builder.create().show()
@@ -152,7 +155,7 @@ class ExclusionPickerView : LinearLayout {
         onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
     }
 
-    private fun saveExclusion(b: View) {
+    private fun saveExclusion(b: DialogExclusionPickerBinding) {
         when {
             b.selectHours.isChecked -> {
                 mHours = selectedList
@@ -174,7 +177,7 @@ class ExclusionPickerView : LinearLayout {
 
     private fun showNoExclusion() {
         if (mHours.isEmpty() && mFrom == "" && mTo == "") {
-            text.text = context.getString(R.string.not_selected)
+            binding.text.text = context.getString(R.string.not_selected)
         }
     }
 
@@ -184,7 +187,7 @@ class ExclusionPickerView : LinearLayout {
             message += "$mFrom "
             message += context.getString(R.string.to) + " "
             message += mTo
-            text.text = message
+            binding.text.text = message
         } else {
             showNoExclusion()
         }
@@ -193,7 +196,7 @@ class ExclusionPickerView : LinearLayout {
     private fun showHours() {
         if (!mHours.isEmpty()) {
             val message = mHours.joinToString(separator = ", ")
-            text.text = message
+            binding.text.text = message
         } else {
             showNoExclusion()
         }
@@ -203,7 +206,7 @@ class ExclusionPickerView : LinearLayout {
         return "$hour:$minute"
     }
 
-    private fun initButtons(b: View) {
+    private fun initButtons(b: DialogExclusionPickerBinding) {
         setId(b.zero, b.one, b.two, b.three, b.four, b.five, b.six, b.seven, b.eight, b.nine, b.ten,
                 b.eleven, b.twelve, b.thirteen, b.fourteen, b.fifteen, b.sixteen, b.seventeen,
                 b.eighteen, b.nineteen, b.twenty, b.twentyOne, b.twentyThree, b.twentyTwo)

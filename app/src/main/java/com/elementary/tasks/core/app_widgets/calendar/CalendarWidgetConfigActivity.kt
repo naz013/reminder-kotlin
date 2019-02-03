@@ -9,7 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.widget_calendar_config.*
+import com.elementary.tasks.databinding.ActivityWidgetCalendarConfigBinding
 import java.util.*
 
 /**
@@ -30,24 +30,25 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CalendarWidgetConfigActivity : ThemedActivity() {
+class CalendarWidgetConfigActivity : ThemedActivity<ActivityWidgetCalendarConfigBinding>() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
 
+    override fun layoutRes(): Int = R.layout.activity_widget_calendar_config
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_calendar_config)
-        fabSave.setOnClickListener { savePrefs() }
-        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        bgColorSlider.setListener { position, _ ->
+        binding.fabSave.setOnClickListener { savePrefs() }
+        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setListener { position, _ ->
             updateContent(position)
         }
 
-        headerBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        headerBgColorSlider.setListener { position, _ ->
-            headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+        binding.headerBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.headerBgColorSlider.setListener { position, _ ->
+            binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateHeader(position)
 
         }
@@ -62,16 +63,16 @@ class CalendarWidgetConfigActivity : ThemedActivity() {
         val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
 
         val headerBg = sp.getInt(WIDGET_HEADER_BG + widgetID, 0)
-        headerBgColorSlider.setSelection(headerBg)
+        binding.headerBgColorSlider.setSelection(headerBg)
         updateHeader(headerBg)
 
         val itemBg = sp.getInt(WIDGET_BG + widgetID, 0)
-        bgColorSlider.setSelection(itemBg)
+        binding.bgColorSlider.setSelection(itemBg)
         updateContent(itemBg)
     }
 
     private fun updateContent(code: Int) {
-        widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(code))
+        binding.widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(code))
     }
 
     private fun updateHeader(code: Int) {
@@ -81,12 +82,12 @@ class CalendarWidgetConfigActivity : ThemedActivity() {
             ContextCompat.getColor(this, R.color.pureBlack)
         }
 
-        btn_settings.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_settings_24px, color))
-        btn_add_task.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_add_24px, color))
-        btn_voice.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_mic_24px, color))
-        btn_next.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_mic_24px, color))
-        btn_prev.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_keyboard_arrow_left_24px, color))
-        widgetTitle.setTextColor(color)
+        binding.btnSettings.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_settings_24px, color))
+        binding.btnAddTask.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_add_24px, color))
+        binding.btnVoice.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_mic_24px, color))
+        binding.btnNext.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_keyboard_arrow_right_24px, color))
+        binding.btnPrev.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_keyboard_arrow_left_24px, color))
+        binding.widgetTitle.setTextColor(color)
     }
 
     private fun readIntent() {
@@ -113,8 +114,8 @@ class CalendarWidgetConfigActivity : ThemedActivity() {
         val year = cal.get(Calendar.YEAR)
 
         sp.edit()
-                .putInt(WIDGET_HEADER_BG + widgetID, headerBgColorSlider.selectedItem)
-                .putInt(WIDGET_BG + widgetID, bgColorSlider.selectedItem)
+                .putInt(WIDGET_HEADER_BG + widgetID, binding.headerBgColorSlider.selectedItem)
+                .putInt(WIDGET_BG + widgetID, binding.bgColorSlider.selectedItem)
                 .putInt(CALENDAR_WIDGET_MONTH + widgetID, month)
                 .putInt(CALENDAR_WIDGET_YEAR + widgetID, year)
                 .apply()

@@ -33,13 +33,13 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.views.GridMarginDecoration
+import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import kotlinx.android.synthetic.main.activity_create_note.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
@@ -65,7 +65,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
+class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSelectionUtil.UriCallback {
 
     private var isBgDark = false
 
@@ -153,6 +153,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_create_note
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stateViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
@@ -160,15 +162,13 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
         isBgDark = isDark
 
-        setContentView(R.layout.activity_create_note)
-
         initActionBar()
         initMenu()
         hideRecording()
-        remindDate.setOnClickListener { dateDialog() }
-        remindTime.setOnClickListener { timeDialog() }
-        micButton.setOnClickListener { micClick() }
-        discardReminder.setOnClickListener { stateViewModel.isReminderAttached.postValue(false) }
+        binding.remindDate.setOnClickListener { dateDialog() }
+        binding.remindTime.setOnClickListener { timeDialog() }
+        binding.micButton.setOnClickListener { micClick() }
+        binding.discardReminder.setOnClickListener { stateViewModel.isReminderAttached.postValue(false) }
         initImagesList()
 
         if (savedInstanceState == null) {
@@ -181,17 +181,17 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private fun initFromState() {
         val pair = newPair()
 
-        colorSlider.setSelection(pair.first)
-        opacityBar.progress = pair.second
+        binding.colorSlider.setSelection(pair.first)
+        binding.opacityBar.progress = pair.second
     }
 
     override fun onStart() {
         super.onStart()
         photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
 
-        ViewUtils.registerDragAndDrop(this, layoutContainer, true, themeUtil.getSecondaryColor(), {
+        ViewUtils.registerDragAndDrop(this, binding.layoutContainer, true, themeUtil.getSecondaryColor(), {
             if (it.itemCount > 0) {
-                taskMessage.setText(taskMessage.text.toString().trim() + "\n" + it.getItemAt(0).text.toString())
+                binding.taskMessage.setText(binding.taskMessage.text.toString().trim() + "\n" + it.getItemAt(0).text.toString())
             }
         }, ClipDescription.MIMETYPE_TEXT_PLAIN)
 
@@ -213,17 +213,17 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         })
         stateViewModel.time.observe(this, Observer {
             if (it != null) {
-                remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
+                binding.remindTime.text = TimeUtil.getTime(it, prefs.is24HourFormat, prefs.appLanguage)
             }
         })
         stateViewModel.date.observe(this, Observer {
             if (it != null) {
-                remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
+                binding.remindDate.text = TimeUtil.getDate(it, prefs.appLanguage)
             }
         })
         stateViewModel.isReminderAttached.observe(this, Observer {
             if (it != null) {
-                remindContainer.visibility = if (it) View.VISIBLE else View.GONE
+                binding.remindContainer.visibility = if (it) View.VISIBLE else View.GONE
             }
         })
         stateViewModel.fontStyle.observe(this, Observer {
@@ -249,8 +249,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         val opacity = prefs.noteColorOpacity
         stateViewModel.colorOpacity.postValue(newPair(color, opacity))
 
-        colorSlider.setSelection(color)
-        opacityBar.progress = opacity
+        binding.colorSlider.setSelection(color)
+        binding.opacityBar.progress = opacity
 
         stateViewModel.fontStyle.postValue(0)
         stateViewModel.time.postValue(System.currentTimeMillis())
@@ -260,16 +260,16 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private fun newColor(): Int = Random().nextInt(ThemeUtil.NOTE_COLORS)
 
     private fun setText(text: String?) {
-        taskMessage.setText(text)
-        taskMessage.setSelection(taskMessage.text.toString().length)
+        binding.taskMessage.setText(text)
+        binding.taskMessage.setSelection(binding.taskMessage.text.toString().length)
     }
 
     private fun showRecording() {
-        recordingView.visibility = View.VISIBLE
+        binding.recordingView.visibility = View.VISIBLE
     }
 
     private fun hideRecording() {
-        recordingView.visibility = View.GONE
+        binding.recordingView.visibility = View.GONE
     }
 
     private fun initRecognizer() {
@@ -321,25 +321,25 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun initMenu() {
         if (Module.hasMicrophone(this)) {
-            micButton.visibility = View.VISIBLE
+            binding.micButton.visibility = View.VISIBLE
         } else {
-            micButton.visibility = View.GONE
+            binding.micButton.visibility = View.GONE
         }
 
-        colorButton.setOnClickListener { toggleColorView() }
-        imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
-        reminderButton.setOnClickListener { switchReminder() }
-        fontButton.setOnClickListener { showStyleDialog() }
+        binding.colorButton.setOnClickListener { toggleColorView() }
+        binding.imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
+        binding.reminderButton.setOnClickListener { switchReminder() }
+        binding.fontButton.setOnClickListener { showStyleDialog() }
 
-        colorSlider.setColors(themeUtil.noteColorsForSlider())
-        colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        colorSlider.setListener { position, _ ->
+        binding.colorSlider.setColors(themeUtil.noteColorsForSlider())
+        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setListener { position, _ ->
             stateViewModel.colorOpacity.postValue(newPair(color = position))
             if (prefs.isNoteColorRememberingEnabled) {
                 prefs.lastNoteColor = position
             }
         }
-        opacityBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.opacityBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 prefs.noteColorOpacity = progress
                 stateViewModel.colorOpacity.postValue(newPair(opacity = progress))
@@ -367,27 +367,27 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         } else {
             ContextCompat.getColor(this, R.color.pureBlack)
         }
-        taskMessage.setTextColor(textColor)
-        taskMessage.setHintTextColor(textColor)
-        taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {
+        binding.taskMessage.setTextColor(textColor)
+        binding.taskMessage.setHintTextColor(textColor)
+        binding.taskMessage.backgroundTintList = ContextCompat.getColorStateList(this, if (isBgDark) {
             R.color.pureWhite
         } else {
             R.color.pureBlack
         })
-        remindDate.setTextColor(textColor)
-        remindTime.setTextColor(textColor)
+        binding.remindDate.setTextColor(textColor)
+        binding.remindTime.setTextColor(textColor)
     }
 
     private fun toggleColorView() {
         if (isColorPickerHidden()) {
-            colorLayout.visibility = View.VISIBLE
+            binding.colorLayout.visibility = View.VISIBLE
         } else {
-            colorLayout.visibility = View.GONE
+            binding.colorLayout.visibility = View.GONE
         }
     }
 
     private fun isColorPickerHidden(): Boolean {
-        return colorLayout.visibility == View.GONE
+        return !binding.colorLayout.isVisible()
     }
 
     private fun isReminderAdded(): Boolean = stateViewModel.isReminderAttached.value ?: false
@@ -440,25 +440,25 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
-        taskMessage.textSize = (prefs.noteTextSize + 12).toFloat()
+        setSupportActionBar(binding.toolbar)
+        binding.taskMessage.textSize = (prefs.noteTextSize + 12).toFloat()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        ViewUtils.listenScrollableView(touchView) {
-            appBar.isSelected = it > 0
+        ViewUtils.listenScrollableView(binding.touchView) {
+            binding.appBar.isSelected = it > 0
         }
 
-        toolbar.inflateMenu(R.menu.activity_create_note)
+        binding.toolbar.inflateMenu(R.menu.activity_create_note)
     }
 
     private fun updateIcons() {
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
-        ViewUtils.tintOverflowButton(toolbar, isBgDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isBgDark)
+        ViewUtils.tintOverflowButton(binding.toolbar, isBgDark)
         invalidateOptionsMenu()
-        discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
+        binding.discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
     }
 
     private fun loadNoteFromFile(filePath: String, uri: Uri?) {
@@ -486,8 +486,8 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         Timber.d("showNote: $noteWithImages")
         if (noteWithImages != null && !stateViewModel.isNoteEdited) {
             val note = noteWithImages.note ?: return
-            colorSlider.setSelection(note.color)
-            opacityBar.progress = note.opacity
+            binding.colorSlider.setSelection(note.color)
+            binding.opacityBar.progress = note.opacity
             setText(note.summary)
             stateViewModel.fontStyle.postValue(note.style)
             stateViewModel.images.postValue(noteWithImages.images)
@@ -509,9 +509,9 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 }
             }
         }
-        imagesList.layoutManager = KeepLayoutManager(this, 6, imagesGridAdapter)
-        imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
-        imagesList.adapter = imagesGridAdapter
+        binding.imagesList.layoutManager = KeepLayoutManager(this, 6, imagesGridAdapter)
+        binding.imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
+        binding.imagesList.adapter = imagesGridAdapter
     }
 
     private fun openImagePreview(position: Int) {
@@ -536,11 +536,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun hideProgress() {
-        recordingView.visibility = View.GONE
+        binding.recordingView.visibility = View.GONE
     }
 
     private fun showProgress() {
-        recordingView.visibility = View.VISIBLE
+        binding.recordingView.visibility = View.VISIBLE
     }
 
     private fun shareNote() {
@@ -590,14 +590,14 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun createObject(): NoteWithImages? {
-        val text = taskMessage.text.toString().trim()
+        val text = binding.taskMessage.text.toString().trim()
         val images = imagesGridAdapter.data
         if (TextUtils.isEmpty(text) && images.isEmpty()) {
-            taskMessage.error = getString(R.string.must_be_not_empty)
+            binding.taskMessage.error = getString(R.string.must_be_not_empty)
             return null
         }
 
-        val pair = stateViewModel.colorOpacity.value ?: Pair(newColor(), opacityBar.progress)
+        val pair = stateViewModel.colorOpacity.value ?: Pair(newColor(), binding.opacityBar.progress)
 
         var noteWithImages = mItem
         var note = noteWithImages?.note
@@ -735,21 +735,21 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun updateFontStyle(fontStyle: Int) {
-        taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
+        binding.taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
     }
 
     private fun updateBackground(color: Int, opacity: Int) {
         Timber.d("updateBackground: $color, $opacity")
 
         val lightColorSemi = themeUtil.getNoteLightColor(color, opacity)
-        layoutContainer.setBackgroundColor(lightColorSemi)
-        toolbar.setBackgroundColor(lightColorSemi)
-        appBar.setBackgroundColor(lightColorSemi)
+        binding.layoutContainer.setBackgroundColor(lightColorSemi)
+        binding.toolbar.setBackgroundColor(lightColorSemi)
+        binding.appBar.setBackgroundColor(lightColorSemi)
 
         val lightColor = themeUtil.getNoteLightColor(color, 100)
         window.statusBarColor = lightColor
-        bottomBar.setCardBackgroundColor(lightColor)
-        bottomBar.invalidate()
+        binding.bottomBar.setCardBackgroundColor(lightColor)
+        binding.bottomBar.invalidate()
     }
 
     private fun showStyleDialog() {
@@ -804,7 +804,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         super.onDestroy()
         lifecycle.removeObserver(stateViewModel)
         lifecycle.removeObserver(viewModel)
-        hideKeyboard(taskMessage.windowToken)
+        hideKeyboard(binding.taskMessage.windowToken)
         releaseSpeech()
     }
 

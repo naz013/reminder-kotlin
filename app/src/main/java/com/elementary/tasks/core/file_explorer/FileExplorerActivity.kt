@@ -20,7 +20,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
-import kotlinx.android.synthetic.main.activity_file_explorer.*
+import com.elementary.tasks.databinding.ActivityFileExplorerBinding
 import timber.log.Timber
 import java.io.File
 
@@ -42,7 +42,7 @@ import java.io.File
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FileExplorerActivity : ThemedActivity() {
+class FileExplorerActivity : ThemedActivity<ActivityFileExplorerBinding>() {
 
     private lateinit var viewModel: SelectFileViewModel
     private var mFileName: String = ""
@@ -59,6 +59,8 @@ class FileExplorerActivity : ThemedActivity() {
     }
     private var mSound: Sound? = null
 
+    override fun layoutRes(): Int = R.layout.activity_file_explorer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SelectFileViewModel::class.java)
@@ -69,14 +71,12 @@ class FileExplorerActivity : ThemedActivity() {
         })
         viewModel.isLoading.observe(this, androidx.lifecycle.Observer { isLoading ->
             isLoading?.let {
-                if (it) loaderView.visibility = View.VISIBLE
-                else loaderView.visibility = View.GONE
+                if (it) binding.loaderView.visibility = View.VISIBLE
+                else binding.loaderView.visibility = View.GONE
             }
         })
 
         mSound = Sound(this, prefs)
-
-        setContentView(R.layout.activity_file_explorer)
 
         viewModel.filType = intent.getStringExtra(Constants.FILE_TYPE) ?: ""
         if (viewModel.filType == "") viewModel.filType = TYPE_MUSIC
@@ -109,7 +109,7 @@ class FileExplorerActivity : ThemedActivity() {
         val sel = File(item.filePath)
         if (sel.isDirectory) {
             viewModel.str.add(mFileName)
-            searchField.setText("")
+            binding.searchField.setText("")
             viewModel.loadFileList(sel, false)
         } else if (item.isUp) {
             moveUp()
@@ -164,7 +164,7 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun initPlayer() {
-        playerLayout.visibility = View.GONE
+        binding.playerLayout.visibility = View.GONE
     }
 
     private fun initRecyclerView() {
@@ -179,19 +179,19 @@ class FileExplorerActivity : ThemedActivity() {
             }
         }
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(this)
+            binding.recyclerView.layoutManager = LinearLayoutManager(this)
         }
-        recyclerView.adapter = mAdapter
-        recyclerView.isNestedScrollingEnabled = false
-        ViewUtils.listenScrollableView(scroller) {
-            toolbarView.isSelected = it > 0
+        binding.recyclerView.adapter = mAdapter
+        binding.recyclerView.isNestedScrollingEnabled = false
+        ViewUtils.listenScrollableView(binding.scroller) {
+            binding.toolbarView.isSelected = it > 0
         }
     }
 
     private fun initSearch() {
-        searchField.addTextChangedListener(object : TextWatcher {
+        binding.searchField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
@@ -207,38 +207,38 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun initButtons() {
-        backButton.setOnClickListener { onBackPressed() }
-        saveButton.setOnClickListener { saveChoice() }
-        pauseButton.setOnClickListener { pause() }
-        stopButton.setOnClickListener { stop() }
-        playButton.setOnClickListener { play() }
+        binding.backButton.setOnClickListener { onBackPressed() }
+        binding.saveButton.setOnClickListener { saveChoice() }
+        binding.pauseButton.setOnClickListener { pause() }
+        binding.stopButton.setOnClickListener { stop() }
+        binding.playButton.setOnClickListener { play() }
     }
 
     private fun showList(count: Int) {
         if (count == 0) {
             Toast.makeText(this, getString(R.string.no_files), Toast.LENGTH_SHORT).show()
         }
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
         refreshView(count)
     }
 
     private fun play() {
         if (mSound?.isPlaying == false) {
-            if (playerLayout.visibility == View.GONE) {
-                playerLayout.visibility = View.VISIBLE
+            if (binding.playerLayout.visibility == View.GONE) {
+                binding.playerLayout.visibility = View.VISIBLE
             }
             if (mSound?.isPaused == true && mSound?.isSameFile(mFilePath) == true) {
                 mSound?.resume()
             } else {
                 mSound?.play(mFilePath)
-                currentMelody.text = mFileName
+                binding.currentMelody.text = mFileName
             }
         } else {
             if (mSound?.isSameFile(mFilePath) == true) {
                 return
             }
             mSound?.play(mFilePath)
-            currentMelody.text = mFileName
+            binding.currentMelody.text = mFileName
         }
     }
 
@@ -252,7 +252,7 @@ class FileExplorerActivity : ThemedActivity() {
         if (mSound?.isPlaying == true) {
             mSound?.stop(true)
         }
-        playerLayout.visibility = View.GONE
+        binding.playerLayout.visibility = View.GONE
     }
 
     private fun isMelody(file: String?): Boolean {
@@ -302,11 +302,11 @@ class FileExplorerActivity : ThemedActivity() {
 
     private fun refreshView(count: Int) {
         if (count > 0) {
-            emptyItem.visibility = View.GONE
-            scroller.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
+            binding.scroller.visibility = View.VISIBLE
         } else {
-            scroller.visibility = View.GONE
-            emptyItem.visibility = View.VISIBLE
+            binding.scroller.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 

@@ -1,77 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground"
-    android:scrollbars="none">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground"
+        android:scrollbars="none">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/defaultPriorityPrefs"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/default_priority"
-            app:prefs_type="none" />
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/completedPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_fiber_pin_24px"
-            app:prefs_primary_text="@string/completed_reminders"
-            app:prefs_secondary_text_off="@string/do_not_move"
-            app:prefs_secondary_text_on="@string/move_to_trash"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/defaultPriorityPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/default_priority"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/doNotDisturbPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/do_not_disturb"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/completedPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_fiber_pin_24px"
+                app:prefs_primary_text="@string/completed_reminders"
+                app:prefs_secondary_text_off="@string/do_not_move"
+                app:prefs_secondary_text_on="@string/move_to_trash"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/doNotDisturbFromPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/from"
-            app:prefs_type="text" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/doNotDisturbPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/do_not_disturb"
+                app:prefs_type="check_switch" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/doNotDisturbToPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/to"
-            app:prefs_type="text" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/doNotDisturbFromPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/from"
+                app:prefs_type="text" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/doNotDisturbActionPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/events_that_occured_during"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/doNotDisturbToPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/to"
+                app:prefs_type="text" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/doNotDisturbIgnorePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/ignore_when_priority"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/doNotDisturbActionPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/events_that_occured_during"
+                app:prefs_type="none" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/doNotDisturbIgnorePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/ignore_when_priority"
+                app:prefs_type="none" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

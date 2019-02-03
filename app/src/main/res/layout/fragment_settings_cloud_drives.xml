@@ -1,100 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:layout_marginStart="@dimen/material_margin"
-        android:layout_marginEnd="@dimen/material_margin"
-        android:animateLayoutChanges="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/view_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_gravity="center|top"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/dropboxTitle"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/progressView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dropbox"
-                android:textAppearance="?textAppearanceHeadline5" />
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="invisible">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/linkDropbox"
-                android:layout_width="wrap_content"
+                <androidx.core.widget.ContentLoadingProgressBar
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:id="@+id/progressMessageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:textAppearance="?textAppearanceSubtitle1"
+                    tools:text="@string/please_wait" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?colorOnSecondary" />
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/dropboxTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dropbox"
+                    android:textAppearance="?textAppearanceHeadline5" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/linkDropbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/connect"
+                    android:textAppearance="?textAppearanceButton"
+                    android:textColor="?colorOnSecondary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/driveView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/gDriveTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/google_drive"
+                    android:textAppearance="?textAppearanceHeadline5" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/linkGDrive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/connect"
+                    android:textAppearance="?textAppearanceButton"
+                    android:textColor="?colorOnSecondary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tasksView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/gTasksTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/google_tasks"
+                    android:textAppearance="?textAppearanceHeadline5" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/linkGTasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/connect"
+                    android:textAppearance="?textAppearanceButton"
+                    android:textColor="?colorOnSecondary" />
+
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/driveView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="24dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/gDriveTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/google_drive"
-                android:textAppearance="?textAppearanceHeadline5" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/linkGDrive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?colorOnSecondary" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/tasksView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/gTasksTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/google_tasks"
-                android:textAppearance="?textAppearanceHeadline5" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/linkGTasks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?colorOnSecondary" />
-
-        </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+</layout>

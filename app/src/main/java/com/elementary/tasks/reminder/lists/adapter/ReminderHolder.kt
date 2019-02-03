@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.lists.adapter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,7 +10,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
-import kotlinx.android.synthetic.main.list_item_reminder.view.*
+import com.elementary.tasks.databinding.ListItemReminderBinding
 import java.util.*
 
 /**
@@ -34,33 +33,33 @@ import java.util.*
  */
 class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, showMore: Boolean = true,
                      private val listener: ((View, Int, ListActions) -> Unit)? = null) :
-        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
+        BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder) {
 
-    val listHeader: TextView = itemView.listHeader
+    val listHeader: TextView = binding.listHeader
 
     init {
         if (editable) {
-            itemView.itemCheck.visibility = View.VISIBLE
+            binding.itemCheck.visibility = View.VISIBLE
         } else {
-            itemView.itemCheck.visibility = View.GONE
+            binding.itemCheck.visibility = View.GONE
         }
         if (!hasHeader) {
-            itemView.listHeader.visibility = View.GONE
+            binding.listHeader.visibility = View.GONE
         }
-        itemView.todoList.visibility = View.GONE
-        itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+        binding.todoList.visibility = View.GONE
+        binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        binding.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
 
         if (showMore) {
-            itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-            itemView.button_more.visibility = View.VISIBLE
+            binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+            binding.buttonMore.visibility = View.VISIBLE
         } else {
-            itemView.button_more.visibility = View.GONE
+            binding.buttonMore.visibility = View.GONE
         }
     }
 
     fun setData(reminder: Reminder) {
-        itemView.taskText.text = reminder.summary
+        binding.taskText.text = reminder.summary
         loadDate(reminder)
         loadCheck(reminder)
         loadContact(reminder)
@@ -74,43 +73,43 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
 
     private fun loadGroup(reminder: Reminder) {
         val colorStateList = ColorStateList.valueOf(themeUtil.getCategoryColor(reminder.groupColor))
-        itemView.chipPriority.chipStrokeColor = colorStateList
-        itemView.chipType.chipStrokeColor = colorStateList
-        itemView.chipGroup.chipStrokeColor = colorStateList
-        itemView.chipGroup.text = reminder.groupTitle
+        binding.chipPriority.chipStrokeColor = colorStateList
+        binding.chipType.chipStrokeColor = colorStateList
+        binding.chipGroup.chipStrokeColor = colorStateList
+        binding.chipGroup.text = reminder.groupTitle
     }
 
     private fun loadPriority(type: Int) {
-        itemView.chipPriority.text = ReminderUtils.getPriorityTitle(itemView.context, type)
+        binding.chipPriority.text = ReminderUtils.getPriorityTitle(itemView.context, type)
     }
 
     private fun loadType(type: Int) {
-        itemView.chipType.text = ReminderUtils.getTypeString(itemView.context, type)
+        binding.chipType.text = ReminderUtils.getTypeString(itemView.context, type)
     }
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            itemView.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
+            binding.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
         } else {
-            itemView.remainingTime.text = ""
+            binding.remainingTime.text = ""
         }
     }
 
     private fun loadRepeat(model: Reminder) {
-        val context = itemView.repeatInterval.context
+        val context = binding.repeatInterval.context
         when {
-            Reminder.isBase(model.type, Reminder.BY_MONTH) -> itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), model.repeatInterval.toString())
-            Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = ReminderUtils.getRepeatString(context, prefs, model.weekdays)
-            Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> itemView.repeatInterval.text = itemView.repeatInterval.context.getString(R.string.yearly)
-            else -> itemView.repeatInterval.text = IntervalUtil.getInterval(context, model.repeatInterval)
+            Reminder.isBase(model.type, Reminder.BY_MONTH) -> binding.repeatInterval.text = String.format(binding.repeatInterval.context.getString(R.string.xM), model.repeatInterval.toString())
+            Reminder.isBase(model.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = ReminderUtils.getRepeatString(context, prefs, model.weekdays)
+            Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeatInterval.text = binding.repeatInterval.context.getString(R.string.yearly)
+            else -> binding.repeatInterval.text = IntervalUtil.getInterval(context, model.repeatInterval)
         }
     }
 
     private fun loadContainer(type: Int) {
         if (Reminder.isBase(type, Reminder.BY_LOCATION) || Reminder.isBase(type, Reminder.BY_OUT) || Reminder.isBase(type, Reminder.BY_PLACES)) {
-            itemView.endContainer.visibility = View.GONE
+            binding.endContainer.visibility = View.GONE
         } else {
-            itemView.endContainer.visibility = View.VISIBLE
+            binding.endContainer.visibility = View.VISIBLE
         }
     }
 
@@ -118,36 +117,36 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
         val is24 = prefs.is24HourFormat
         if (Reminder.isGpsType(model.type)) {
             val place = model.places[0]
-            itemView.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, model.places.size)
+            binding.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, model.places.size)
             return
         }
-        itemView.taskDate.text = TimeUtil.getRealDateTime(model.eventTime, model.delay, is24, prefs.appLanguage)
+        binding.taskDate.text = TimeUtil.getRealDateTime(model.eventTime, model.delay, is24, prefs.appLanguage)
     }
 
     private fun loadCheck(item: Reminder?) {
         if (item == null || item.isRemoved) {
-            itemView.itemCheck.visibility = View.GONE
+            binding.itemCheck.visibility = View.GONE
             return
         }
-        itemView.itemCheck.isChecked = item.isActive
+        binding.itemCheck.isChecked = item.isActive
     }
 
     private fun loadContact(model: Reminder) {
         val type = model.type
         val number = model.target
         if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
-            itemView.reminder_phone.visibility = View.VISIBLE
-            itemView.reminder_phone.text = number
+            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.text = number
         } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
-            itemView.reminder_phone.visibility = View.VISIBLE
-            val name = Contacts.getNameFromNumber(number, itemView.reminder_phone.context)
+            binding.reminderPhone.visibility = View.VISIBLE
+            val name = Contacts.getNameFromNumber(number, binding.reminderPhone.context)
             if (name == null) {
-                itemView.reminder_phone.text = number
+                binding.reminderPhone.text = number
             } else {
-                itemView.reminder_phone.text = "$name($number)"
+                binding.reminderPhone.text = "$name($number)"
             }
         } else if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-            val packageManager = itemView.reminder_phone.context.packageManager
+            val packageManager = binding.reminderPhone.context.packageManager
             var applicationInfo: ApplicationInfo? = null
             try {
                 applicationInfo = packageManager.getApplicationInfo(number, 0)
@@ -155,21 +154,21 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
             }
 
             val name = (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
-            itemView.reminder_phone.visibility = View.VISIBLE
-            itemView.reminder_phone.text = "$name/$number"
+            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.text = "$name/$number"
         } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
-            val name = Contacts.getNameFromMail(number, itemView.reminder_phone.context)
-            itemView.reminder_phone.visibility = View.VISIBLE
+            val name = Contacts.getNameFromMail(number, binding.reminderPhone.context)
+            binding.reminderPhone.visibility = View.VISIBLE
             if (name == null) {
-                itemView.reminder_phone.text = number
+                binding.reminderPhone.text = number
             } else {
-                itemView.reminder_phone.text = "$name($number)"
+                binding.reminderPhone.text = "$name($number)"
             }
         } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
-            itemView.reminder_phone.visibility = View.VISIBLE
-            itemView.reminder_phone.text = number
+            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.text = number
         } else {
-            itemView.reminder_phone.visibility = View.GONE
+            binding.reminderPhone.visibility = View.GONE
         }
     }
 }

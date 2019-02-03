@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.onChanged
-import kotlinx.android.synthetic.main.fragment_reminder_skype.*
+import com.elementary.tasks.databinding.FragmentReminderSkypeBinding
 import timber.log.Timber
 
 /**
@@ -30,7 +30,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SkypeFragment : RepeatableTypeFragment() {
+class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
 
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
@@ -39,17 +39,17 @@ class SkypeFragment : RepeatableTypeFragment() {
             return null
         }
         if (TextUtils.isEmpty(reminder.summary)) {
-            taskLayout.error = getString(R.string.task_summary_is_empty)
-            taskLayout.isErrorEnabled = true
+            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.isErrorEnabled = true
             return null
         }
-        val number = skypeContact.text.toString().trim()
+        val number = binding.skypeContact.text.toString().trim()
         if (TextUtils.isEmpty(number)) {
             iFace.showSnackbar(getString(R.string.you_dont_insert_number))
             return null
         }
-        val type = getType(skypeGroup.checkedRadioButtonId)
-        val startTime = dateView.dateTime
+        val type = getType(binding.skypeGroup.checkedRadioButtonId)
+        val startTime = binding.dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
@@ -80,37 +80,37 @@ class SkypeFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                dateTimeView = dateView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                repeatView = repeatView,
-                windowTypeView = windowTypeView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                dateTimeView = binding.dateView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                repeatView = binding.repeatView,
+                windowTypeView = binding.windowTypeView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tuneExtraView.hasAutoExtra = false
-        skypeContact.onChanged {
+        binding.tuneExtraView.hasAutoExtra = false
+        binding.skypeContact.onChanged {
             iFace.state.skypeContact = it
         }
-        skypeContact.setText(iFace.state.skypeContact)
+        binding.skypeContact.setText(iFace.state.skypeContact)
         editReminder()
     }
 
@@ -127,12 +127,12 @@ class SkypeFragment : RepeatableTypeFragment() {
     private fun editReminder() {
         val reminder = iFace.state.reminder
         when (reminder.type) {
-            Reminder.BY_SKYPE_CALL -> skypeCall.isChecked = true
-            Reminder.BY_SKYPE_VIDEO -> skypeVideo.isChecked = true
-            Reminder.BY_SKYPE -> skypeChat.isChecked = true
+            Reminder.BY_SKYPE_CALL -> binding.skypeCall.isChecked = true
+            Reminder.BY_SKYPE_VIDEO -> binding.skypeVideo.isChecked = true
+            Reminder.BY_SKYPE -> binding.skypeChat.isChecked = true
         }
         if (reminder.target != "") {
-            skypeContact.setText(reminder.target)
+            binding.skypeContact.setText(reminder.target)
         }
     }
 }

@@ -15,9 +15,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
-import kotlinx.android.synthetic.main.fragment_settings_events_import.*
-import kotlinx.android.synthetic.main.view_progress.*
 import kotlinx.coroutines.Job
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
@@ -42,7 +41,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedChangeListener {
+class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(), CompoundButton.OnCheckedChangeListener {
 
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()
@@ -68,16 +67,16 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button.setOnClickListener{ importEvents() }
+        binding.button.setOnClickListener{ importEvents() }
 
-        progressMessageView.text = getString(R.string.please_wait)
-        progressView.visibility = View.GONE
+        binding.progressMessageView.text = getString(R.string.please_wait)
+        binding.progressView.visibility = View.GONE
 
-        syncInterval.setOnClickListener { showIntervalDialog() }
+        binding.syncInterval.setOnClickListener { showIntervalDialog() }
 
-        autoCheck.setOnCheckedChangeListener(this)
-        autoCheck.isChecked = prefs.isAutoEventsCheckEnabled
-        syncInterval.isEnabled = false
+        binding.autoCheck.setOnCheckedChangeListener(this)
+        binding.autoCheck.isChecked = prefs.isAutoEventsCheckEnabled
+        binding.syncInterval.isEnabled = false
     }
 
     private fun showIntervalDialog() {
@@ -132,7 +131,7 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
             }
         }
         val spinnerArrayAdapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, spinnerArray)
-        eventCalendar.adapter = spinnerArrayAdapter
+        binding.eventCalendar.adapter = spinnerArrayAdapter
     }
 
     override fun onBackStackResume() {
@@ -152,12 +151,12 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
             Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
             return
         }
-        if (eventCalendar.selectedItemPosition == 0) {
+        if (binding.eventCalendar.selectedItemPosition == 0) {
             Toast.makeText(context, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show()
             return
         }
         val map = HashMap<String, Int>()
-        val selectedPosition = eventCalendar.selectedItemPosition - 1
+        val selectedPosition = binding.eventCalendar.selectedItemPosition - 1
         map[EVENT_KEY] = list[selectedPosition].id
         val isEnabled = prefs.isCalendarEnabled
         if (!isEnabled) {
@@ -194,7 +193,7 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
 
     private fun autoCheck(isChecked: Boolean) {
         prefs.isAutoEventsCheckEnabled = isChecked
-        syncInterval.isEnabled = isChecked
+        binding.syncInterval.isEnabled = isChecked
         val alarm = AlarmReceiver()
         if (isChecked) {
             alarm.enableEventCheck(context!!)
@@ -205,8 +204,8 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
 
     private fun import(map: HashMap<String, Int>) {
         val ctx = context ?: return
-        button.isEnabled = false
-        progressView.visibility = View.VISIBLE
+        binding.button.isEnabled = false
+        binding.progressView.visibility = View.VISIBLE
         mJob = launchDefault {
             val currTime = System.currentTimeMillis()
             var eventsCount = 0
@@ -266,8 +265,8 @@ class FragmentEventsImport : BaseCalendarFragment(), CompoundButton.OnCheckedCha
             }
 
             withUIContext {
-                button.isEnabled = true
-                progressView.visibility = View.GONE
+                binding.button.isEnabled = true
+                binding.progressView.visibility = View.GONE
 
                 if (eventsCount == 0) {
                     Toast.makeText(ctx, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show()

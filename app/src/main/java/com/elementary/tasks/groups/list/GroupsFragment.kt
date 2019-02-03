@@ -2,9 +2,7 @@ package com.elementary.tasks.groups.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,9 +15,9 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
+import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import kotlinx.android.synthetic.main.fragment_groups.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,18 +37,16 @@ import kotlinx.android.synthetic.main.fragment_groups.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GroupsFragment : BaseNavigationFragment() {
+class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
     private lateinit var viewModel: GroupsViewModel
     private var mAdapter: GroupsRecyclerAdapter = GroupsRecyclerAdapter()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_groups, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_groups
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { addGroup() }
+        binding.fab.setOnClickListener { addGroup() }
         initGroupsList()
         initViewModel()
     }
@@ -97,12 +93,12 @@ class GroupsFragment : BaseNavigationFragment() {
         }
 
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
-        recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(recyclerView) {
+        binding.recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(binding.recyclerView) {
             setScroll(it)
         }
 
@@ -132,11 +128,11 @@ class GroupsFragment : BaseNavigationFragment() {
 
     private fun refreshView() {
         if (mAdapter.itemCount == 0) {
-            emptyItem.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
         } else {
-            emptyItem.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 }

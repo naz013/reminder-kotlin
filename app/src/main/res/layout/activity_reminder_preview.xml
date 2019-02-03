@@ -1,422 +1,425 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="?android:colorBackground"
-            android:orientation="vertical"
-            android:stateListAnimator="@animator/toolbar_animator"
-            tools:targetApi="lollipop">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?android:colorBackground"
-                app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
-                tools:title="Test" />
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="ifContentScrolls">
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/material_margin"
-                android:layout_marginEnd="@dimen/material_margin"
-                android:orientation="vertical">
+                android:layout_height="?actionBarSize"
+                android:background="?android:colorBackground"
+                android:orientation="vertical"
+                android:stateListAnimator="@animator/toolbar_animator"
+                tools:targetApi="lollipop">
 
-                <ImageView
-                    android:id="@+id/itemPhoto"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:layout_marginTop="16dp"
-                    android:scaleType="centerCrop"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_alarm_clock" />
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?android:colorBackground"
+                    app:navigationIcon="@drawable/ic_twotone_arrow_back_24px"
+                    tools:title="Test" />
+            </com.google.android.material.appbar.AppBarLayout>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:maxLines="2"
-                    android:textAppearance="?textAppearanceHeadline5"
-                    tools:text="Timer" />
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="ifContentScrolls">
 
                 <LinearLayout
-                    android:id="@+id/switchWrapper"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
+                    android:layout_marginStart="@dimen/material_margin"
+                    android:layout_marginEnd="@dimen/material_margin"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/itemPhoto"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_marginTop="16dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_alarm_clock" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/statusText"
+                        android:id="@+id/type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?textAppearanceHeadline6"
-                        tools:text="Enabled" />
+                        android:layout_marginTop="16dp"
+                        android:maxLines="2"
+                        android:textAppearance="?textAppearanceHeadline5"
+                        tools:text="Timer" />
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/statusSwitch"
+                    <LinearLayout
+                        android:id="@+id/switchWrapper"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:clickable="false" />
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/statusText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?textAppearanceHeadline6"
+                            tools:text="Enabled" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/statusSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:clickable="false" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        app:srcCompat="@drawable/ic_twotone_title_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/taskText"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            app:srcCompat="@drawable/ic_twotone_title_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:id="@+id/timeView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/taskText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_alarm_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/time"
+                    <LinearLayout
+                        android:id="@+id/timeView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_alarm_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:id="@+id/locationView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_place_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/location"
+                    <LinearLayout
+                        android:id="@+id/locationView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_place_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/group"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_local_offer_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:id="@+id/numberView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/group"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_person_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/number"
+                    <LinearLayout
+                        android:id="@+id/numberView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_person_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:id="@+id/attachmentView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_attachment_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/attachment"
+                    <LinearLayout
+                        android:id="@+id/attachmentView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_attachment_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:id="@+id/repeatView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/attachment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_repeat_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/repeat"
+                    <LinearLayout
+                        android:id="@+id/repeatView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_repeat_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:id="@+id/beforeView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/repeat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/before"
+                    <LinearLayout
+                        android:id="@+id/beforeView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_notifications_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/before"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_music_note_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/melody"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_music_note_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/melody"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@null"
-                        app:srcCompat="@drawable/ic_twotone_mobile_screen_share_24px"
-                        app:tint="?android:textColorPrimary" />
+                    </LinearLayout>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/window_type_view"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="Test" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_twotone_mobile_screen_share_24px"
+                            app:tint="?android:textColorPrimary" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/window_type_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="Test" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/todoList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/list_margin"
+                        android:clipToPadding="false"
+                        android:minHeight="56dp"
+                        android:overScrollMode="never"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        tools:listitem="@layout/list_item_shop_task" />
+
+                    <LinearLayout
+                        android:id="@+id/mapContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="320dp"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:transitionName="map"
+                        android:visibility="gone">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/dataContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp" />
                 </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/todoList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:clipToPadding="false"
-                    android:minHeight="56dp"
-                    android:overScrollMode="never"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    tools:listitem="@layout/list_item_shop_task" />
-
-                <LinearLayout
-                    android:id="@+id/mapContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="320dp"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical"
-                    android:transitionName="map"
-                    android:visibility="gone">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/dataContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp" />
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/attachmentsView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
-            android:orientation="vertical"
-            android:stateListAnimator="@animator/card_animator"
-            android:visibility="gone"
-            app:cardCornerRadius="5dp"
-            tools:targetApi="lollipop">
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/attachmentsView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:stateListAnimator="@animator/card_animator"
+                android:visibility="gone"
+                app:cardCornerRadius="5dp"
+                tools:targetApi="lollipop">
 
-                <ImageView
-                    android:id="@+id/attachmentImage"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:scaleType="centerCrop"
-                    android:transitionName="image" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <ImageView
+                        android:id="@+id/attachmentImage"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:scaleType="centerCrop"
+                        android:transitionName="image" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/fab"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"
-            android:elevation="4dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="20dp"
-            android:text="@string/make_call"
-            android:textAllCaps="true"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?colorOnSecondary"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:backgroundTint="?colorSecondary"
-            app:cornerRadius="32dp"
-            app:icon="@drawable/ic_twotone_call_24px"
-            app:iconPadding="12dp"
-            app:iconSize="24dp"
-            app:iconTint="?colorOnSecondary"
-            tools:targetApi="lollipop" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
-</RelativeLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fab"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:elevation="4dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="20dp"
+                android:text="@string/make_call"
+                android:textAllCaps="true"
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?colorOnSecondary"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:backgroundTint="?colorSecondary"
+                app:cornerRadius="32dp"
+                app:icon="@drawable/ic_twotone_call_24px"
+                app:iconPadding="12dp"
+                app:iconSize="24dp"
+                app:iconTint="?colorOnSecondary"
+                tools:targetApi="lollipop" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

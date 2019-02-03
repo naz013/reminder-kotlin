@@ -23,9 +23,9 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
+import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.places.create.CreatePlaceActivity
-import kotlinx.android.synthetic.main.fragment_places.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,7 +45,7 @@ import kotlinx.android.synthetic.main.fragment_places.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesFragment : BaseSettingsFragment() {
+class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
     private lateinit var viewModel: PlacesViewModel
 
@@ -55,7 +55,7 @@ class PlacesFragment : BaseSettingsFragment() {
 
     private val searchModifier = object : SearchModifier<Place>(null, {
         mAdapter.submitList(it)
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
         refreshView(it.size)
     }) {
         override fun filter(v: Place): Boolean {
@@ -109,7 +109,7 @@ class PlacesFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { addPlace() }
+        binding.fab.setOnClickListener { addPlace() }
         initList()
         initViewModel()
     }
@@ -141,9 +141,9 @@ class PlacesFragment : BaseSettingsFragment() {
 
     private fun initList() {
         if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
         mAdapter.actionsListener = object : ActionsListener<Place> {
             override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
@@ -155,8 +155,8 @@ class PlacesFragment : BaseSettingsFragment() {
                 }
             }
         }
-        recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(recyclerView) {
+        binding.recyclerView.adapter = mAdapter
+        ViewUtils.listenScrollableView(binding.recyclerView) {
             setScroll(it)
         }
         refreshView(0)
@@ -179,9 +179,9 @@ class PlacesFragment : BaseSettingsFragment() {
 
     private fun refreshView(count: Int) {
         if (count == 0) {
-            emptyItem.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.VISIBLE
         } else {
-            emptyItem.visibility = View.GONE
+            binding.emptyItem.visibility = View.GONE
         }
     }
 

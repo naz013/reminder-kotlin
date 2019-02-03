@@ -5,9 +5,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -21,10 +19,8 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.PlacesApi
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.BitmapUtils
-import com.elementary.tasks.core.utils.DrawableHelper
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.databinding.FragmentPlacesMapBinding
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
@@ -35,7 +31,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_places_map.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,7 +54,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PlacesMapFragment : BaseMapFragment() {
+class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
     private var mMap: GoogleMap? = null
 
@@ -133,10 +128,10 @@ class PlacesMapFragment : BaseMapFragment() {
         }
 
     private val isLayersVisible: Boolean
-        get() = layersContainer != null && layersContainer.visibility == View.VISIBLE
+        get() = binding.layersContainer.isVisible()
 
     private val isStylesVisible: Boolean
-        get() = mapStyleContainer != null && mapStyleContainer.visibility == View.VISIBLE
+        get() = binding.mapStyleContainer.isVisible()
 
     fun setListener(listener: MapListener) {
         this.mMapListener = listener
@@ -243,24 +238,25 @@ class PlacesMapFragment : BaseMapFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initArgs()
-        return inflater.inflate(R.layout.fragment_places_map, container, false)
     }
+
+    override fun layoutRes(): Int = R.layout.fragment_places_map
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         markerRadius = prefs.radius
         isDark = themeUtil.isDark
 
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(mMapCallback)
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(mMapCallback)
 
         initViews()
         createStyleDrawable()
 
-        cardSearch.setOnEditorActionListener { _, actionId, event ->
+        binding.cardSearch.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
                 hideKeyboard()
                 loadPlaces()
@@ -293,36 +289,36 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun initViews() {
-        placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        LinearSnapHelper().attachToRecyclerView(placesList)
+        binding.placesList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        LinearSnapHelper().attachToRecyclerView(binding.placesList)
 
-        placesListCard.visibility = View.GONE
-        layersContainer.visibility = View.GONE
+        binding.placesListCard.visibility = View.GONE
+        binding.layersContainer.visibility = View.GONE
 
-        zoomCard.setOnClickListener { zoomClick() }
-        layersCard.setOnClickListener { toggleLayers() }
-        markersCard.setOnClickListener { toggleMarkers() }
-        radiusCard.setOnClickListener { toggleRadius() }
-        cardClear.setOnClickListener { loadPlaces() }
-        backCard.setOnClickListener { invokeBack() }
+        binding.zoomCard.setOnClickListener { zoomClick() }
+        binding.layersCard.setOnClickListener { toggleLayers() }
+        binding.markersCard.setOnClickListener { toggleMarkers() }
+        binding.radiusCard.setOnClickListener { toggleRadius() }
+        binding.cardClear.setOnClickListener { loadPlaces() }
+        binding.backCard.setOnClickListener { invokeBack() }
 
-        typeNormal.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_NORMAL) }
-        typeSatellite.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_SATELLITE) }
-        typeHybrid.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_HYBRID) }
-        typeTerrain.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_TERRAIN) }
+        binding.typeNormal.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_NORMAL) }
+        binding.typeSatellite.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_SATELLITE) }
+        binding.typeHybrid.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_HYBRID) }
+        binding.typeTerrain.setOnClickListener { typeClick(GoogleMap.MAP_TYPE_TERRAIN) }
 
-        styleDay.setOnClickListener { styleClick(0) }
-        styleRetro.setOnClickListener { styleClick(1) }
-        styleSilver.setOnClickListener { styleClick(2) }
-        styleNight.setOnClickListener { styleClick(3) }
-        styleDark.setOnClickListener { styleClick(4) }
-        styleAubergine.setOnClickListener { styleClick(5) }
+        binding.styleDay.setOnClickListener { styleClick(0) }
+        binding.styleRetro.setOnClickListener { styleClick(1) }
+        binding.styleSilver.setOnClickListener { styleClick(2) }
+        binding.styleNight.setOnClickListener { styleClick(3) }
+        binding.styleDark.setOnClickListener { styleClick(4) }
+        binding.styleAubergine.setOnClickListener { styleClick(5) }
 
         if (!Module.isPro) {
-            markersCard.visibility = View.GONE
+            binding.markersCard.visibility = View.GONE
         }
         if (!isZoom) {
-            zoomCard.visibility = View.GONE
+            binding.zoomCard.visibility = View.GONE
         }
         hideStyles()
         hideLayers()
@@ -352,7 +348,7 @@ class PlacesMapFragment : BaseMapFragment() {
 
     private fun hideKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.hideSoftInputFromWindow(cardSearch.windowToken, 0)
+        imm?.hideSoftInputFromWindow(binding.cardSearch.windowToken, 0)
     }
 
     @SuppressLint("MissingPermission")
@@ -363,7 +359,7 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun loadPlaces() {
-        val req = cardSearch.text.toString().trim().toLowerCase()
+        val req = binding.cardSearch.text.toString().trim().toLowerCase()
         if (req.matches("".toRegex())) return
         cancelSearchTask()
         call = RequestBuilder.getSearch(req)
@@ -393,11 +389,11 @@ class PlacesMapFragment : BaseMapFragment() {
             }
         })
         if (spinnerArray.size > 0) {
-            placesListCard.visibility = View.VISIBLE
-            placesList.adapter = placesAdapter
+            binding.placesListCard.show()
+            binding.placesList.adapter = placesAdapter
             addMarkers()
         } else {
-            placesListCard.visibility = View.GONE
+            binding.placesListCard.hide()
         }
     }
 
@@ -421,7 +417,7 @@ class PlacesMapFragment : BaseMapFragment() {
     }
 
     private fun showStyles() {
-        mapStyleContainer.visibility = View.VISIBLE
+        binding.mapStyleContainer.show()
     }
 
     private fun toggleRadius() {
@@ -448,19 +444,19 @@ class PlacesMapFragment : BaseMapFragment() {
         when {
             isLayersVisible -> hideLayers()
             isStylesVisible -> hideStyles()
-            else -> layersContainer.visibility = View.VISIBLE
+            else -> binding.layersContainer.show()
         }
     }
 
     private fun hideStyles() {
         if (isStylesVisible) {
-            mapStyleContainer.visibility = View.GONE
+            binding.mapStyleContainer.hide()
         }
     }
 
     private fun hideLayers() {
         if (isLayersVisible) {
-            layersContainer.visibility = View.GONE
+            binding.layersContainer.hide()
         }
     }
 
@@ -470,42 +466,42 @@ class PlacesMapFragment : BaseMapFragment() {
             mMapListener?.onZoomClick(isFullscreen)
         }
         if (isFullscreen) {
-            zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
+            binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_exit_24px)
         } else {
             restoreScaleButton()
         }
     }
 
     private fun restoreScaleButton() {
-        zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
+        binding.zoomIcon.setImageResource(R.drawable.ic_twotone_fullscreen_24px)
     }
 
     override fun onResume() {
-        mapView?.onResume()
+        binding.mapView.onResume()
         super.onResume()
         startTracking()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView?.onLowMemory()
+        binding.mapView.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView?.onDestroy()
+        binding.mapView.onDestroy()
         cancelTracking()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView?.onPause()
+        binding.mapView.onPause()
         cancelTracking()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView?.onStop()
+        binding.mapView.onStop()
         cancelTracking()
     }
 

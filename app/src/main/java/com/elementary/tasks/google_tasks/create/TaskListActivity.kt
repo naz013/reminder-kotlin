@@ -14,8 +14,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
-import kotlinx.android.synthetic.main.activity_create_task_list.*
-import kotlinx.android.synthetic.main.view_progress.*
+import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,7 +34,7 @@ import kotlinx.android.synthetic.main.view_progress.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TaskListActivity : ThemedActivity() {
+class TaskListActivity : ThemedActivity<ActivityCreateTaskListBinding>() {
 
     private lateinit var viewModel: GoogleTaskListViewModel
     private lateinit var stateViewModel: StateViewModel
@@ -43,20 +42,20 @@ class TaskListActivity : ThemedActivity() {
     private var mItem: GoogleTaskList? = null
     private var mIsLoading = false
 
+    override fun layoutRes(): Int = R.layout.activity_create_task_list
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
-
-        setContentView(R.layout.activity_create_task_list)
-        progressMessageView.text = getString(R.string.please_wait)
+        binding.progressMessageView.text = getString(R.string.please_wait)
         updateProgress(false)
 
         initActionBar()
-        colorSlider.setColors(themeUtil.colorsForSlider())
-        colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setColors(themeUtil.colorsForSlider())
+        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {
-            colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
+            binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
             updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
         }
 
@@ -64,7 +63,7 @@ class TaskListActivity : ThemedActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(ARG_COLOR, colorSlider.selectedItem)
+        outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
         outState.putBoolean(ARG_LOADING, mIsLoading)
         super.onSaveInstanceState(outState)
     }
@@ -72,19 +71,19 @@ class TaskListActivity : ThemedActivity() {
     private fun updateProgress(b: Boolean) {
         mIsLoading = b
         if (b) {
-            progressView.visibility = View.VISIBLE
+            binding.progressView.visibility = View.VISIBLE
         } else {
-            progressView.visibility = View.GONE
+            binding.progressView.visibility = View.GONE
         }
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.setTitle(R.string.new_tasks_list)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.setTitle(R.string.new_tasks_list)
     }
 
     private fun initViewModel(id: String) {
@@ -108,24 +107,24 @@ class TaskListActivity : ThemedActivity() {
 
     private fun editTaskList(googleTaskList: GoogleTaskList) {
         this.mItem = googleTaskList
-        toolbar.title = getString(R.string.edit_task_list)
+        binding.toolbar.title = getString(R.string.edit_task_list)
         if (!stateViewModel.isEdited) {
-            editField.setText(googleTaskList.title)
+            binding.editField.setText(googleTaskList.title)
             if (googleTaskList.def == 1) {
-                defaultCheck.isChecked = true
-                defaultCheck.isEnabled = false
+                binding.defaultCheck.isChecked = true
+                binding.defaultCheck.isEnabled = false
             }
-            colorSlider.setSelection(googleTaskList.color)
+            binding.colorSlider.setSelection(googleTaskList.color)
             stateViewModel.isEdited = true
         }
     }
 
     private fun saveTaskList() {
         if (mIsLoading) return
-        val listName = editField.text.toString().trim()
+        val listName = binding.editField.text.toString().trim()
         if (listName == "") {
-            nameLayout.error = getString(R.string.must_be_not_empty)
-            nameLayout.isErrorEnabled = true
+            binding.nameLayout.error = getString(R.string.must_be_not_empty)
+            binding.nameLayout.isErrorEnabled = true
             return
         }
         var isNew = false
@@ -135,9 +134,9 @@ class TaskListActivity : ThemedActivity() {
             isNew = true
         }
         item.title = listName
-        item.color = colorSlider.selectedItem
+        item.color = binding.colorSlider.selectedItem
         item.updated = System.currentTimeMillis()
-        if (defaultCheck.isChecked) {
+        if (binding.defaultCheck.isChecked) {
             item.def = 1
             val defList = viewModel.defaultTaskList.value
             if (defList != null) {

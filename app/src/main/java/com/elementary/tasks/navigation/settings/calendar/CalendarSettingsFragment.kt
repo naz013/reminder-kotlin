@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_calendar.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_settings_calendar.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CalendarSettingsFragment : BaseSettingsFragment() {
+class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBinding>() {
 
     private var mItemSelect: Int = 0
 
@@ -34,17 +34,17 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
         initFuturePrefs()
         initRemindersPrefs()
         initFirstDayPrefs()
-        eventsImportPrefs.setOnClickListener { callback?.openFragment(FragmentEventsImport(), getString(R.string.import_events)) }
+        binding.eventsImportPrefs.setOnClickListener { callback?.openFragment(FragmentEventsImport(), getString(R.string.import_events)) }
 
-        reminderColorPrefs.setDependentView(reminderInCalendarPrefs)
-        reminderColorPrefs.setOnClickListener {
+        binding.reminderColorPrefs.setDependentView(binding.reminderInCalendarPrefs)
+        binding.reminderColorPrefs.setOnClickListener {
             showColorPopup(prefs.reminderColor, getString(R.string.reminders_color)) { color ->
                 prefs.reminderColor = color
                 initRemindersColorPrefs()
@@ -52,7 +52,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         }
         initRemindersColorPrefs()
 
-        themeColorPrefs.setOnClickListener {
+        binding.themeColorPrefs.setOnClickListener {
             showColorPopup(prefs.todayColor, getString(R.string.today_color)) { color ->
                 prefs.todayColor = color
                 initTodayColorPrefs()
@@ -60,7 +60,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         }
         initTodayColorPrefs()
 
-        selectedColorPrefs.setOnClickListener {
+        binding.selectedColorPrefs.setOnClickListener {
             showColorPopup(prefs.birthdayColor, getString(R.string.birthdays_color)) { color ->
                 prefs.birthdayColor = color
                 initBirthdaysColorPrefs()
@@ -76,13 +76,13 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initFirstDayPrefs() {
-        startDayPrefs.setOnClickListener { showFirstDayDialog() }
+        binding.startDayPrefs.setOnClickListener { showFirstDayDialog() }
         showFirstDay()
     }
 
     private fun showFirstDay() {
         val items = arrayOf(getString(R.string.sunday), getString(R.string.monday))
-        startDayPrefs.setDetailText(items[prefs.startDay])
+        binding.startDayPrefs.setDetailText(items[prefs.startDay])
     }
 
     private fun showFirstDayDialog() {
@@ -106,38 +106,38 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initRemindersColorPrefs() {
-        reminderColorPrefs.setViewColor(themeUtil.colorReminderCalendar())
+        binding.reminderColorPrefs.setViewColor(themeUtil.colorReminderCalendar())
     }
 
     private fun initRemindersPrefs() {
-        reminderInCalendarPrefs.isChecked = prefs.isRemindersInCalendarEnabled
-        reminderInCalendarPrefs.setOnClickListener { changeRemindersPrefs() }
+        binding.reminderInCalendarPrefs.isChecked = prefs.isRemindersInCalendarEnabled
+        binding.reminderInCalendarPrefs.setOnClickListener { changeRemindersPrefs() }
     }
 
     private fun changeRemindersPrefs() {
-        val isChecked = reminderInCalendarPrefs.isChecked
-        reminderInCalendarPrefs.isChecked = !isChecked
+        val isChecked = binding.reminderInCalendarPrefs.isChecked
+        binding.reminderInCalendarPrefs.isChecked = !isChecked
         prefs.isRemindersInCalendarEnabled = !isChecked
     }
 
     private fun initFuturePrefs() {
-        featureRemindersPrefs.isChecked = prefs.isFutureEventEnabled
-        featureRemindersPrefs.setOnClickListener { changeFuturePrefs() }
+        binding.featureRemindersPrefs.isChecked = prefs.isFutureEventEnabled
+        binding.featureRemindersPrefs.setOnClickListener { changeFuturePrefs() }
     }
 
     private fun changeFuturePrefs() {
-        val isChecked = featureRemindersPrefs.isChecked
-        featureRemindersPrefs.isChecked = !isChecked
+        val isChecked = binding.featureRemindersPrefs.isChecked
+        binding.featureRemindersPrefs.isChecked = !isChecked
         prefs.isFutureEventEnabled = !isChecked
     }
 
     override fun getTitle(): String = getString(R.string.calendar)
 
     private fun initBirthdaysColorPrefs() {
-        selectedColorPrefs.setViewColor(themeUtil.colorBirthdayCalendar())
+        binding.selectedColorPrefs.setViewColor(themeUtil.colorBirthdayCalendar())
     }
 
     private fun initTodayColorPrefs() {
-        themeColorPrefs.setViewColor(themeUtil.colorCurrentCalendar())
+        binding.themeColorPrefs.setViewColor(themeUtil.colorCurrentCalendar())
     }
 }

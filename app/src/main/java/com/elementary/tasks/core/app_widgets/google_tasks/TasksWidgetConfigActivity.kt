@@ -12,7 +12,7 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.widget_google_tasks_config.*
+import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,26 +32,27 @@ import kotlinx.android.synthetic.main.widget_google_tasks_config.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TasksWidgetConfigActivity : ThemedActivity() {
+class TasksWidgetConfigActivity : ThemedActivity<ActivityWidgetGoogleTasksConfigBinding>() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
 
+    override fun layoutRes(): Int = R.layout.activity_widget_google_tasks_config
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        setContentView(R.layout.widget_google_tasks_config)
 
-        fabSave.setOnClickListener { savePrefs() }
-        bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        bgColorSlider.setListener { position, _ ->
-            headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+        binding.fabSave.setOnClickListener { savePrefs() }
+        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setListener { position, _ ->
+            binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
 
-        listItemBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
-        listItemBgColorSlider.setListener { position, _ ->
-            listItemCard.setBackgroundResource(WidgetUtils.newWidgetBg(position))
+        binding.listItemBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.listItemBgColorSlider.setListener { position, _ ->
+            binding.listItemCard.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateText(position)
         }
 
@@ -68,17 +69,17 @@ class TasksWidgetConfigActivity : ThemedActivity() {
 
     private fun updateText(code: Int) {
         if (WidgetUtils.isDarkBg(code)) {
-            statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
+            binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
                     ContextCompat.getColor(this, R.color.pureWhite)))
-            task.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            note.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
-            taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.task.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.note.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
+            binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_check,
                     ContextCompat.getColor(this, R.color.pureBlack)))
-            task.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            note.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
-            taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.task.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.note.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.taskDate.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }
 
@@ -101,31 +102,31 @@ class TasksWidgetConfigActivity : ThemedActivity() {
         val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
 
         val headerBg = sp.getInt(WIDGET_HEADER_BG + widgetID, 0)
-        bgColorSlider.setSelection(headerBg)
+        binding.bgColorSlider.setSelection(headerBg)
         updateIcons(headerBg)
 
         val itemBg = sp.getInt(WIDGET_ITEM_BG + widgetID, 0)
-        listItemBgColorSlider.setSelection(itemBg)
+        binding.listItemBgColorSlider.setSelection(itemBg)
         updateText(itemBg)
     }
 
     private fun updateIcons(code: Int) {
         if (WidgetUtils.isDarkBg(code)) {
-            btn_settings.setImageResource(R.drawable.ic_twotone_settings_white)
-            btn_add_task.setImageResource(R.drawable.ic_twotone_add_white)
-            widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
+            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_white)
+            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_white)
+            binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            btn_settings.setImageResource(R.drawable.ic_twotone_settings_24px)
-            btn_add_task.setImageResource(R.drawable.ic_twotone_add_24px)
-            widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
+            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_24px)
+            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_24px)
+            binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }
 
     private fun savePrefs() {
         val sp = getSharedPreferences(WIDGET_PREF, Context.MODE_PRIVATE)
         sp.edit()
-                .putInt(WIDGET_HEADER_BG + widgetID, bgColorSlider.selectedItem)
-                .putInt(WIDGET_ITEM_BG + widgetID, listItemBgColorSlider.selectedItem)
+                .putInt(WIDGET_HEADER_BG + widgetID, binding.bgColorSlider.selectedItem)
+                .putInt(WIDGET_ITEM_BG + widgetID, binding.listItemBgColorSlider.selectedItem)
                 .apply()
         val appWidgetManager = AppWidgetManager.getInstance(this)
         TasksWidget.updateWidget(this, appWidgetManager, sp, widgetID)

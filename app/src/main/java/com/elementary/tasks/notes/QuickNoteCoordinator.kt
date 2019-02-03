@@ -13,9 +13,9 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
-import kotlinx.android.synthetic.main.view_note_card.view.*
-import kotlinx.android.synthetic.main.view_note_reminder_card.view.*
-import kotlinx.android.synthetic.main.view_note_status_card.view.*
+import com.elementary.tasks.databinding.ViewNoteCardBinding
+import com.elementary.tasks.databinding.ViewNoteReminderCardBinding
+import com.elementary.tasks.databinding.ViewNoteStatusCardBinding
 import java.util.*
 
 /**
@@ -77,15 +77,15 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
     }
 
     private fun addFirstCard() {
-        val binding = LayoutInflater.from(context).inflate(R.layout.view_note_card, noteList, false)
+        val binding = ViewNoteCardBinding.inflate(LayoutInflater.from(context), noteList, false)
         binding.buttonSave.setOnClickListener { saveNote(binding) }
         binding.noteCard.visibility = View.GONE
 
-        noteList.addView(binding)
+        noteList.addView(binding.root)
         binding.noteCard.visibility = View.VISIBLE
     }
 
-    private fun saveNote(binding: View) {
+    private fun saveNote(binding: ViewNoteCardBinding) {
         val text = binding.quickNote.text.toString().trim()
         if (TextUtils.isEmpty(text)) {
             binding.nameLayout.error = context.getString(R.string.must_be_not_empty)
@@ -114,7 +114,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
     }
 
     private fun addReminderCard(item: NoteWithImages) {
-        val cardBinding = LayoutInflater.from(context).inflate(R.layout.view_note_reminder_card, noteList, false)
+        val cardBinding = ViewNoteReminderCardBinding.inflate(LayoutInflater.from(context), noteList, false)
 
         cardBinding.buttonYes.setOnClickListener {
             cardBinding.buttonNo.isEnabled = false
@@ -129,7 +129,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         }
         cardBinding.noteReminderCard.visibility = View.GONE
 
-        noteList.addView(cardBinding)
+        noteList.addView(cardBinding.root)
         cardBinding.noteReminderCard.visibility = View.VISIBLE
     }
 
@@ -159,7 +159,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
     }
 
     private fun addNotificationCard(item: NoteWithImages) {
-        val cardBinding = LayoutInflater.from(context).inflate(R.layout.view_note_status_card, noteList, false)
+        val cardBinding = ViewNoteStatusCardBinding.inflate(LayoutInflater.from(context), noteList, false)
 
         cardBinding.buttonYesStatus.setOnClickListener {
             cardBinding.buttonNoStatus.isEnabled = false
@@ -169,7 +169,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         cardBinding.buttonNoStatus.setOnClickListener { hideNoteView() }
         cardBinding.noteStatusCard.visibility = View.GONE
 
-        noteList.addView(cardBinding)
+        noteList.addView(cardBinding.root)
         cardBinding.noteStatusCard.visibility = View.VISIBLE
     }
 

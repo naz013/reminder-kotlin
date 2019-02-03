@@ -7,17 +7,16 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.SwitchCompat
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.Module
-import kotlinx.android.synthetic.main.view_prefs.view.*
+import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.show
 import timber.log.Timber
 import java.util.*
 
@@ -41,21 +40,14 @@ import java.util.*
  */
 class PrefsView : RelativeLayout {
 
-    private lateinit var checkBox: CheckBox
-    private lateinit var switchView: SwitchCompat
-    private lateinit var title: TextView
-    private lateinit var detail: TextView
-    private lateinit var prefsValue: TextView
-    private lateinit var dividerTop: View
-    private lateinit var dividerBottom: View
-    private lateinit var prefsView: View
+    private lateinit var binding: PrefsViewBinding
 
     var isChecked: Boolean = false
         set(checked) {
             field = checked
             if (viewType == CHECK)
-                checkBox.isChecked = checked
-            else if (viewType == SWITCH) switchView.isChecked = checked
+                binding.prefsCheck.isChecked = checked
+            else if (viewType == SWITCH) binding.prefsSwitch.isChecked = checked
             refreshDetailText()
             for (listener in mOnCheckedListeners) {
                 listener.onCheckedChange(checked)
@@ -88,15 +80,9 @@ class PrefsView : RelativeLayout {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         View.inflate(context, R.layout.view_prefs, this)
+        binding = PrefsViewBinding(this)
         descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
-        title = findViewById(R.id.prefsPrimaryText)
-        detail = findViewById(R.id.prefsSecondaryText)
-        prefsValue = findViewById(R.id.prefsValue)
-        checkBox = findViewById(R.id.prefsCheck)
-        dividerTop = findViewById(R.id.dividerTop)
-        dividerBottom = findViewById(R.id.dividerBottom)
-        prefsView = findViewById(R.id.prefsView)
-        switchView = findViewById(R.id.prefs_switch)
+
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(
                     attrs, R.styleable.PrefsView, 0, 0)
@@ -121,7 +107,7 @@ class PrefsView : RelativeLayout {
                 iconId = a.getResourceId(R.styleable.PrefsView_prefs_icon, 0)
                 val primaryColor = a.getColor(R.styleable.PrefsView_prefs_primary_text_color, -1)
                 if (primaryColor != -1) {
-                    title.setTextColor(primaryColor)
+                    binding.prefsPrimaryText.setTextColor(primaryColor)
                 }
             } catch (e: Exception) {
                 Timber.d("init: ${e.message}")
@@ -129,10 +115,10 @@ class PrefsView : RelativeLayout {
                 a.recycle()
             }
             if (iconId != 0 && SHOW_ICON) {
-                iconView.visibility = View.VISIBLE
-                iconView.setImageResource(iconId)
+                binding.iconView.show()
+                binding.iconView.setImageResource(iconId)
             } else {
-                iconView.visibility = View.GONE
+                binding.iconView.hide()
             }
             setTitleText(titleText)
             setDividerTop(divTop)
@@ -218,53 +204,53 @@ class PrefsView : RelativeLayout {
     private fun setView() {
         hideAll()
         when (viewType) {
-            CHECK -> checkBox.visibility = View.VISIBLE
-            SWITCH -> switchView.visibility = View.VISIBLE
-            TEXT -> prefsValue.visibility = View.VISIBLE
-            VIEW -> prefsView.visibility = View.VISIBLE
+            CHECK -> binding.prefsCheck.show()
+            SWITCH -> binding.prefsSwitch.show()
+            TEXT -> binding.prefsValue.show()
+            VIEW -> binding.prefsView.show()
         }
     }
 
     private fun hideAll() {
-        checkBox.visibility = View.GONE
-        switchView.visibility = View.GONE
-        prefsValue.visibility = View.GONE
-        prefsView.visibility = View.GONE
+        binding.prefsCheck.hide()
+        binding.prefsSwitch.hide()
+        binding.prefsValue.hide()
+        binding.prefsView.hide()
     }
 
     private fun setTitleText(text: String) {
-        title.text = text
+        binding.prefsPrimaryText.text = text
     }
 
     fun setDetailText(text: String?) {
         if (isCheckable && hasOnOff()) {
             if (isChecked) {
-                detail.text = mOnText
+                binding.prefsSecondaryText.text = mOnText
             } else {
-                detail.text = mOffText
+                binding.prefsSecondaryText.text = mOffText
             }
-            detail.visibility = View.VISIBLE
+            binding.prefsSecondaryText.show()
         } else {
             if (TextUtils.isEmpty(text)) {
-                detail.visibility = View.GONE
+                binding.prefsSecondaryText.hide()
             } else {
-                detail.text = text
-                detail.visibility = View.VISIBLE
+                binding.prefsSecondaryText.text = text
+                binding.prefsSecondaryText.show()
             }
         }
     }
 
     fun setValue(value: Int) {
-        prefsValue.text = value.toString()
+        binding.prefsValue.text = value.toString()
     }
 
     fun setValueText(text: String) {
-        prefsValue.text = text
+        binding.prefsValue.text = text
     }
 
     fun setViewColor(@ColorInt color: Int) {
         if (color != 0) {
-            prefsView.setBackgroundColor(color)
+            binding.prefsView.setBackgroundColor(color)
         }
     }
 
@@ -275,13 +261,13 @@ class PrefsView : RelativeLayout {
             } else {
                 AppCompatResources.getDrawable(context, resource)
             }
-            prefsView.background = drawableTop
+            binding.prefsView.background = drawableTop
         }
     }
 
     fun setViewDrawable(drawable: Drawable?) {
         if (drawable != null) {
-            prefsView.background = drawable
+            binding.prefsView.background = drawable
         }
     }
 
@@ -293,28 +279,28 @@ class PrefsView : RelativeLayout {
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        switchView.isEnabled = enabled
-        checkBox.isEnabled = enabled
-        prefsView.isEnabled = enabled
-        prefsValue.isEnabled = enabled
-        detail.isEnabled = enabled
-        title.isEnabled = enabled
-        iconView.isEnabled = enabled
+        binding.prefsSwitch.isEnabled = enabled
+        binding.prefsCheck.isEnabled = enabled
+        binding.prefsView.isEnabled = enabled
+        binding.prefsValue.isEnabled = enabled
+        binding.prefsSecondaryText.isEnabled = enabled
+        binding.prefsPrimaryText.isEnabled = enabled
+        binding.iconView.isEnabled = enabled
     }
 
     private fun setDividerTop(divider: Boolean) {
         if (divider) {
-            dividerTop.visibility = View.VISIBLE
+            binding.dividerTop.show()
         } else {
-            dividerTop.visibility = View.GONE
+            binding.dividerTop.hide()
         }
     }
 
     private fun setDividerBottom(divider: Boolean) {
         if (divider) {
-            dividerBottom.visibility = View.VISIBLE
+            binding.dividerBottom.show()
         } else {
-            dividerBottom.visibility = View.GONE
+            binding.dividerBottom.hide()
         }
     }
 

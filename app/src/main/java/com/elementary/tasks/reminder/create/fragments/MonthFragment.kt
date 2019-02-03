@@ -11,7 +11,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.toCalendar
 import com.elementary.tasks.core.views.ActionView
-import kotlinx.android.synthetic.main.fragment_reminder_month.*
+import com.elementary.tasks.databinding.FragmentReminderMonthBinding
 import timber.log.Timber
 import java.util.*
 
@@ -33,7 +33,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class MonthFragment : RepeatableTypeFragment() {
+class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
     private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         iFace.state.hour = hourOfDay
@@ -41,7 +41,7 @@ class MonthFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
+        binding.timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
         calculateNextDate()
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -66,20 +66,20 @@ class MonthFragment : RepeatableTypeFragment() {
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
         var type = Reminder.BY_MONTH
-        val isAction = actionView.hasAction()
+        val isAction = binding.actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
-            taskLayout.error = getString(R.string.task_summary_is_empty)
-            taskLayout.isErrorEnabled = true
+            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.isErrorEnabled = true
             return null
         }
         var number = ""
         if (isAction) {
-            number = actionView.number
+            number = binding.actionView.number
             if (TextUtils.isEmpty(number)) {
                 iFace.showSnackbar(getString(R.string.you_dont_insert_number))
                 return null
             }
-            type = if (actionView.type == ActionView.TYPE_CALL) {
+            type = if (binding.actionView.type == ActionView.TYPE_CALL) {
                 Reminder.BY_MONTH_CALL
             } else {
                 Reminder.BY_MONTH_SMS
@@ -112,51 +112,51 @@ class MonthFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                repeatView = repeatView,
-                windowTypeView = windowTypeView,
-                actionView = actionView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                repeatView = binding.repeatView,
+                windowTypeView = binding.windowTypeView,
+                actionView = binding.actionView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        monthDayField.setOnClickListener {
+        binding.monthDayField.setOnClickListener {
             TimeUtil.showDatePicker(activity!!, themeUtil.dialogStyle, prefs, iFace.state.year,
                     iFace.state.month, iFace.state.day, mDateSelect)
         }
-        timeField.setOnClickListener {
+        binding.timeField.setOnClickListener {
             TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormat,
                     iFace.state.hour, iFace.state.minute, mTimeSelect)
         }
-        timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
-        repeatView.defaultValue = 1
+        binding.timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
+        binding.repeatView.defaultValue = 1
 
-        tuneExtraView.hasAutoExtra = false
-        lastCheck.setOnCheckedChangeListener { _, b ->
+        binding.tuneExtraView.hasAutoExtra = false
+        binding.lastCheck.setOnCheckedChangeListener { _, b ->
             iFace.state.isLastDay = b
             changeUi(b)
         }
 
         if (!iFace.state.isLastDay) {
-            dayCheck.isChecked = true
+            binding.dayCheck.isChecked = true
         }
         changeUi(iFace.state.isLastDay)
 
@@ -175,19 +175,19 @@ class MonthFragment : RepeatableTypeFragment() {
         }
         Timber.d("calculateNextDate: $reminder")
         val startTime = TimeCount.getNextMonthDayTime(reminder)
-        calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
+        binding.calculatedNextTime.text = TimeUtil.getFullDateTime(startTime, prefs.is24HourFormat, prefs.appLanguage)
     }
 
     override fun updateActions() {
-        if (actionView.hasAction()) {
-            tuneExtraView.hasAutoExtra = true
-            if (actionView.type == ActionView.TYPE_MESSAGE) {
-                tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+        if (binding.actionView.hasAction()) {
+            binding.tuneExtraView.hasAutoExtra = true
+            if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+                binding.tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
             } else {
-                tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
             }
         } else {
-            tuneExtraView.hasAutoExtra = false
+            binding.tuneExtraView.hasAutoExtra = false
         }
     }
 
@@ -196,15 +196,15 @@ class MonthFragment : RepeatableTypeFragment() {
             iFace.state.day = System.currentTimeMillis().toCalendar().get(Calendar.DAY_OF_MONTH)
         }
         Timber.d("showSelectedDay: ${iFace.state.day}")
-        monthDayField.text = getZeroedInt(iFace.state.day)
+        binding.monthDayField.text = getZeroedInt(iFace.state.day)
     }
 
     private fun changeUi(b: Boolean) {
         if (b) {
-            day_view.visibility = View.GONE
+            binding.dayView.visibility = View.GONE
             iFace.state.day = 0
         } else {
-            day_view.visibility = View.VISIBLE
+            binding.dayView.visibility = View.VISIBLE
             showSelectedDay()
         }
         calculateNextDate()
@@ -220,13 +220,13 @@ class MonthFragment : RepeatableTypeFragment() {
 
     private fun editReminder() {
         val reminder = iFace.state.reminder
-        timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
+        binding.timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
                 prefs.is24HourFormat, prefs.appLanguage)
         if (iFace.state.isLastDay && reminder.dayOfMonth == 0) {
-            lastCheck.isChecked = true
+            binding.lastCheck.isChecked = true
         } else {
             iFace.state.day = reminder.dayOfMonth
-            dayCheck.isChecked = true
+            binding.dayCheck.isChecked = true
             showSelectedDay()
         }
         calculateNextDate()

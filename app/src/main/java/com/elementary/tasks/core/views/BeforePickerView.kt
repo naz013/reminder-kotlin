@@ -11,8 +11,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.BeforePickerViewBinding
 import com.elementary.tasks.core.utils.TimeCount
-import kotlinx.android.synthetic.main.view_remind_before.view.*
 import timber.log.Timber
 
 /**
@@ -35,6 +35,7 @@ import timber.log.Timber
  */
 class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedListener {
 
+    private lateinit var binding: BeforePickerViewBinding
     private val seconds = 0
     private val minutes = 1
     private val hours = 2
@@ -81,32 +82,34 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
     private fun init(context: Context, attrs: AttributeSet?) {
         View.inflate(context, R.layout.view_remind_before, this)
         orientation = LinearLayout.HORIZONTAL
+        binding = BeforePickerViewBinding(this)
+
         mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.before_time), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.before_time))
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.before_time))
 
-        before_type_view.onItemSelectedListener = this
-        before_value_view.addTextChangedListener(this)
-        before_value_view.setOnFocusChangeListener { _, hasFocus ->
+        binding.beforeTypeView.onItemSelectedListener = this
+        binding.beforeValueView.addTextChangedListener(this)
+        binding.beforeValueView.setOnFocusChangeListener { _, hasFocus ->
             if (mImm == null) return@setOnFocusChangeListener
             if (!hasFocus) {
-                mImm?.hideSoftInputFromWindow(before_value_view.windowToken, 0)
+                mImm?.hideSoftInputFromWindow(binding.beforeValueView.windowToken, 0)
             } else {
-                mImm?.showSoftInput(before_value_view, 0)
+                mImm?.showSoftInput(binding.beforeValueView, 0)
             }
         }
-        before_value_view.setOnClickListener {
+        binding.beforeValueView.setOnClickListener {
             if (mImm == null) return@setOnClickListener
-            if (!mImm!!.isActive(before_value_view)) {
-                mImm?.showSoftInput(before_value_view, 0)
+            if (!mImm!!.isActive(binding.beforeValueView)) {
+                mImm?.showSoftInput(binding.beforeValueView, 0)
             }
         }
         mRepeatValue = 0
-        before_value_view.setText(mRepeatValue.toString())
+        binding.beforeValueView.setText(mRepeatValue.toString())
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(attrs, R.styleable.BeforePickerView, 0, 0)
             try {
@@ -117,7 +120,7 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
                 a.recycle()
             }
         }
-        before_type_view.setSelection(mState)
+        binding.beforeTypeView.setSelection(mState)
     }
 
     private fun setState(state: Int) {
@@ -126,7 +129,7 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
     }
 
     private fun updateEditField() {
-        before_value_view.setSelection(before_value_view.text.toString().length)
+        binding.beforeValueView.setSelection(binding.beforeValueView.text.toString().length)
     }
 
     fun setBefore(mills: Long) {
@@ -138,34 +141,34 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
             mills % (TimeCount.DAY * 7) == 0L -> {
                 val progress = mills / (TimeCount.DAY * 7)
                 setProgress(progress.toInt())
-                before_type_view.setSelection(weeks)
+                binding.beforeTypeView.setSelection(weeks)
             }
             mills % TimeCount.DAY == 0L -> {
                 val progress = mills / TimeCount.DAY
                 setProgress(progress.toInt())
-                before_type_view.setSelection(days)
+                binding.beforeTypeView.setSelection(days)
             }
             mills % TimeCount.HOUR == 0L -> {
                 val progress = mills / TimeCount.HOUR
                 setProgress(progress.toInt())
-                before_type_view.setSelection(hours)
+                binding.beforeTypeView.setSelection(hours)
             }
             mills % TimeCount.MINUTE == 0L -> {
                 val progress = mills / TimeCount.MINUTE
                 setProgress(progress.toInt())
-                before_type_view.setSelection(minutes)
+                binding.beforeTypeView.setSelection(minutes)
             }
             mills % TimeCount.SECOND == 0L -> {
                 val progress = mills / TimeCount.SECOND
                 setProgress(progress.toInt())
-                before_type_view.setSelection(seconds)
+                binding.beforeTypeView.setSelection(seconds)
             }
         }
     }
 
     private fun setProgress(i: Int) {
         mRepeatValue = i
-        before_value_view.setText(i.toString())
+        binding.beforeValueView.setText(i.toString())
         updateEditField()
     }
 
@@ -178,7 +181,7 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
             mRepeatValue = Integer.parseInt(s.toString())
             onBeforeChangedListener?.onChanged(beforeValue)
         } catch (e: NumberFormatException) {
-            before_value_view.setText("0")
+            binding.beforeValueView.setText("0")
         }
     }
 

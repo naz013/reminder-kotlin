@@ -9,11 +9,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.export.backups.InfoAdapter
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
-import kotlinx.android.synthetic.main.fragment_settings_backups.*
-import kotlinx.android.synthetic.main.view_progress.*
 import kotlinx.coroutines.Job
 import java.io.File
 import java.io.IOException
@@ -37,7 +36,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BackupsFragment : BaseSettingsFragment() {
+class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
     private var mAdapter: InfoAdapter? = null
     private var mJob: Job? = null
@@ -87,11 +86,11 @@ class BackupsFragment : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initProgress()
-        ViewUtils.listenScrollableView(scrollView) {
+        ViewUtils.listenScrollableView(binding.scrollView) {
             setScroll(it)
         }
 
-        mAdapter = InfoAdapter(itemsContainer) {
+        mAdapter = InfoAdapter(binding.itemsContainer) {
             if (it != null) {
                 deleteFiles(getFolders(it), it)
             }
@@ -101,7 +100,7 @@ class BackupsFragment : BaseSettingsFragment() {
     }
 
     private fun initProgress() {
-        progressMessageView.setText(R.string.please_wait)
+        binding.progressMessageView.setText(R.string.please_wait)
         hideProgress()
     }
 
@@ -164,11 +163,11 @@ class BackupsFragment : BaseSettingsFragment() {
     }
 
     private fun showProgress() {
-        progressView.visibility = View.VISIBLE
+        binding.progressView.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
-        progressView.visibility = View.GONE
+        binding.progressView.visibility = View.GONE
     }
 
     private fun deleteFiles(params: List<File?>, type: Info) {

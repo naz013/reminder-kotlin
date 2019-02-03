@@ -1,62 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_margin"
-        android:layout_marginEnd="@dimen/list_margin"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/homePrefs"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/start_screen"
-            app:prefs_type="none" />
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/language_prefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_language_24px"
-            app:prefs_primary_text="@string/application_language"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/homePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/start_screen"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/appThemePrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_icon="@drawable/ic_twotone_style_24px"
-            app:prefs_primary_text="@string/theme"
-            app:prefs_secondary_text="@string/auto"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/language_prefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_language_24px"
+                app:prefs_primary_text="@string/application_language"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/time24hourPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/_24_hour_time_format"
-            app:prefs_type="none" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/appThemePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_style_24px"
+                app:prefs_primary_text="@string/theme"
+                app:prefs_secondary_text="@string/auto"
+                app:prefs_type="none" />
 
-        <com.elementary.tasks.core.views.PrefsView
-            android:id="@+id/twoColsPrefs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:prefs_divider_bottom="true"
-            app:prefs_primary_text="@string/colums_in_lists"
-            app:prefs_secondary_text_off="@string/show_one_column"
-            app:prefs_secondary_text_on="@string/show_two_columns"
-            app:prefs_type="check_switch" />
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/time24hourPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/_24_hour_time_format"
+                app:prefs_type="none" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/twoColsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/colums_in_lists"
+                app:prefs_secondary_text_off="@string/show_one_column"
+                app:prefs_secondary_text_on="@string/show_two_columns"
+                app:prefs_type="check_switch" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
