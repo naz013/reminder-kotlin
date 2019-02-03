@@ -1,19 +1,18 @@
 package com.elementary.tasks.birthdays.list
 
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.list_item_birthday.view.*
+import com.elementary.tasks.databinding.ListItemBirthdayBinding
 import javax.inject.Inject
 
 /**
@@ -35,7 +34,7 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val listener: ((View, Int, ListActions) -> Unit)? = null) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_birthday, parent, false)) {
+        HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday) {
 
     @Inject
     lateinit var prefs: Prefs
@@ -43,23 +42,23 @@ class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val li
     init {
         ReminderApp.appComponent.inject(this)
         if (showMore) {
-            itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-            itemView.button_more.visibility = View.VISIBLE
+            binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+            binding.buttonMore.visibility = View.VISIBLE
         } else {
-            itemView.button_more.visibility = View.GONE
+            binding.buttonMore.visibility = View.GONE
         }
-        itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
     }
 
     fun setData(item: Birthday) {
-        itemView.eventText.text = item.name
+        binding.eventText.text = item.name
         if (TextUtils.isEmpty(item.number)) {
-            itemView.eventNumber.visibility = View.GONE
+            binding.eventNumber.visibility = View.GONE
         } else {
-            itemView.eventNumber.visibility = View.VISIBLE
-            itemView.eventNumber.text = item.number
+            binding.eventNumber.visibility = View.VISIBLE
+            binding.eventNumber.text = item.number
         }
-        loadBirthday(itemView.eventDate, item.date)
+        loadBirthday(binding.eventDate, item.date)
     }
 
     private fun loadBirthday(textView: TextView, fullDate: String) {

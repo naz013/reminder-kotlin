@@ -8,11 +8,11 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.dialogs.DialogSelectExtraBinding
+import com.elementary.tasks.core.binding.views.TuneExtraViewBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.fromReminder
-import kotlinx.android.synthetic.main.dialog_select_extra.view.*
-import kotlinx.android.synthetic.main.view_tune_extra.view.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -34,13 +34,14 @@ import kotlinx.android.synthetic.main.view_tune_extra.view.*
  */
 class TuneExtraView : LinearLayout {
 
+    private lateinit var binding: TuneExtraViewBinding
     var onExtraUpdateListener: ((extra: Extra) -> Unit)? = null
     var extra: Extra = Extra()
         set(value) {
             field = value
             if (!value.useGlobal) {
                 field = value
-                text.text = fromExtra(value)
+                binding.text.text = fromExtra(value)
                 onExtraUpdateListener?.invoke(value)
             } else {
                 noExtra()
@@ -50,14 +51,14 @@ class TuneExtraView : LinearLayout {
     var hasAutoExtra: Boolean = false
         set(value) {
             field = value
-            text.text = fromExtra(extra)
+            binding.text.text = fromExtra(extra)
             onExtraUpdateListener?.invoke(extra)
         }
     var dialogues: Dialogues? = null
 
-    private val customizationView: View
+    private val customizationView: DialogSelectExtraBinding
         get() {
-            val binding = LayoutInflater.from(context).inflate(R.layout.dialog_select_extra, null)
+            val binding = DialogSelectExtraBinding(LayoutInflater.from(context).inflate(R.layout.dialog_select_extra, null))
             binding.extraSwitch.setOnCheckedChangeListener { _, isChecked ->
                 binding.autoCheck.isEnabled = !isChecked
                 binding.repeatCheck.isEnabled = !isChecked
@@ -126,19 +127,20 @@ class TuneExtraView : LinearLayout {
     }
 
     private fun noExtra() {
-        text.text = context.getString(R.string.default_string)
+        binding.text.text = context.getString(R.string.default_string)
     }
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_tune_extra, this)
         orientation = LinearLayout.VERTICAL
+        binding = TuneExtraViewBinding(this)
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.update_additional_parameters), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.update_additional_parameters))
-        text.setOnClickListener {
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.update_additional_parameters))
+        binding.text.setOnClickListener {
             openCustomizationDialog()
         }
         extra = Extra().fromReminder(Reminder())
@@ -149,12 +151,12 @@ class TuneExtraView : LinearLayout {
         val builder = dialogues.getDialog(context)
         builder.setTitle(R.string.personalization)
         val b = customizationView
-        builder.setView(b)
+        builder.setView(b.view)
         builder.setPositiveButton(R.string.ok) { _, _ -> saveExtraResults(b) }
         builder.create().show()
     }
 
-    private fun saveExtraResults(b: View) {
+    private fun saveExtraResults(b: DialogSelectExtraBinding) {
         val extra = extra
         extra.useGlobal = b.extraSwitch.isChecked
         extra.auto = b.autoCheck.isChecked

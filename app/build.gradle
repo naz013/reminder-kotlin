@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
@@ -16,6 +15,7 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
+    dataBinding { enabled = true }
     signingConfigs {
         freeApp {
             storeFile file('justreminder.jks')
@@ -164,6 +164,8 @@ dependencies {
     implementation 'co.revely:gradient:1.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    kapt 'com.android.tools.build.jetifier:jetifier-core:1.0.0-beta02'
+    annotationProcessor 'com.android.tools.build.jetifier:jetifier-core:1.0.0-beta02'
 }
 
 apply plugin: 'com.google.gms.google-services'

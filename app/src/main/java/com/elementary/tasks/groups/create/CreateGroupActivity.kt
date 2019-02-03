@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
-import kotlinx.android.synthetic.main.activity_create_group.*
+import com.elementary.tasks.databinding.ActivityCreateGroupBinding
 import java.io.IOException
 import javax.inject.Inject
 
@@ -38,10 +38,9 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CreateGroupActivity : ThemedActivity() {
+class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
 
     private lateinit var viewModel: GroupViewModel
-
     private var mItem: ReminderGroup? = null
 
     @Inject
@@ -51,45 +50,46 @@ class CreateGroupActivity : ThemedActivity() {
         ReminderApp.appComponent.inject(this)
     }
 
+    override fun layoutRes(): Int = R.layout.activity_create_group
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_group)
         initActionBar()
 
-        colorSlider.setColors(themeUtil.colorsForSlider())
-        colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setColors(themeUtil.colorsForSlider())
+        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {
-            colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
+            binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
         }
 
         loadGroup()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(ARG_COLOR, colorSlider.selectedItem)
+        outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
         super.onSaveInstanceState(outState)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.setTitle(R.string.create_group)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.setTitle(R.string.create_group)
     }
 
     private fun showGroup(reminderGroup: ReminderGroup) {
         this.mItem = reminderGroup
         if (!viewModel.isEdited) {
-            nameInput.setText(reminderGroup.groupTitle)
-            colorSlider.setSelection(reminderGroup.groupColor)
-            defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
-            defaultCheck.isChecked = reminderGroup.isDefaultGroup
+            binding.nameInput.setText(reminderGroup.groupTitle)
+            binding.colorSlider.setSelection(reminderGroup.groupColor)
+            binding.defaultCheck.isEnabled = !reminderGroup.isDefaultGroup
+            binding.defaultCheck.isChecked = reminderGroup.isDefaultGroup
             viewModel.isEdited = true
         }
-        toolbar.setTitle(R.string.change_group)
+        binding.toolbar.setTitle(R.string.change_group)
         invalidateOptionsMenu()
     }
 
@@ -140,19 +140,19 @@ class CreateGroupActivity : ThemedActivity() {
     }
 
     private fun saveGroup() {
-        val text = nameInput.text.toString().trim()
+        val text = binding.nameInput.text.toString().trim()
         if (text.isEmpty()) {
-            nameLayout.error = getString(R.string.must_be_not_empty)
-            nameLayout.isErrorEnabled = true
+            binding.nameLayout.error = getString(R.string.must_be_not_empty)
+            binding.nameLayout.isErrorEnabled = true
             return
         }
+        val wasDefault = mItem?.isDefaultGroup ?: false
         val item = (mItem ?: ReminderGroup()).apply {
-            this.groupColor = colorSlider.selectedItem
+            this.groupColor = binding.colorSlider.selectedItem
             this.groupDateTime = TimeUtil.gmtDateTime
             this.groupTitle = text
-            this.isDefaultGroup = defaultCheck.isChecked
+            this.isDefaultGroup = binding.defaultCheck.isChecked
         }
-        val wasDefault = item.isDefaultGroup
         viewModel.saveGroup(item, wasDefault)
     }
 

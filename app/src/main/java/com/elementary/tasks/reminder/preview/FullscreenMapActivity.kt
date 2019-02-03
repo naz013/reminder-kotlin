@@ -1,8 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
@@ -16,8 +14,8 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.activity_fullscreen_map.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -37,27 +35,25 @@ import kotlinx.android.synthetic.main.activity_fullscreen_map.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FullscreenMapActivity : ThemedActivity() {
+class FullscreenMapActivity : ThemedActivity<ActivityFullscreenMapBinding>() {
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
 
     private var reminder: Reminder? = null
-    private val mUiHandler = Handler(Looper.getMainLooper())
     private var placeIndex = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+    override fun layoutRes(): Int = R.layout.activity_fullscreen_map
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         with(window) {
             requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
             exitTransition = Explode()
         }
+        super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_fullscreen_map)
-
-        mapButton.setOnClickListener {
+        binding.mapButton.setOnClickListener {
             val reminder = reminder ?: return@setOnClickListener
             if (placeIndex < reminder.places.size - 1) {
                 placeIndex++
@@ -132,7 +128,7 @@ class FullscreenMapActivity : ThemedActivity() {
         })
         googleMap.setOnMarkerClick(null)
         supportFragmentManager.beginTransaction()
-                .replace(mapContainer.id, googleMap)
+                .replace(binding.mapContainer.id, googleMap)
                 .addToBackStack(null)
                 .commit()
         this.mGoogleMap = googleMap

@@ -16,7 +16,7 @@ import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
-import kotlinx.android.synthetic.main.activity_missed_dialog.*
+import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import timber.log.Timber
 import java.sql.Date
 
@@ -38,7 +38,7 @@ import java.sql.Date
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class MissedCallDialogActivity : BaseNotificationActivity() {
+class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>() {
 
     private lateinit var viewModel: MissedCallViewModel
 
@@ -83,13 +83,14 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         }
     }
 
+    override fun layoutRes(): Int = R.layout.activity_missed_dialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_missed_dialog)
 
-        contactPhoto.borderColor = themeUtil.getNoteLightColor()
-        contactPhoto.visibility = View.GONE
+        binding.contactPhoto.borderColor = themeUtil.getNoteLightColor()
+        binding.contactPhoto.visibility = View.GONE
 
         initButtons()
 
@@ -106,15 +107,15 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     private fun initButtons() {
-        buttonOk.setOnClickListener { removeMissed() }
-        buttonSms.setOnClickListener { sendSMS() }
-        buttonCall.setOnClickListener { makeCall() }
+        binding.buttonOk.setOnClickListener { removeMissed() }
+        binding.buttonSms.setOnClickListener { sendSMS() }
+        binding.buttonCall.setOnClickListener { makeCall() }
         if (prefs.isTelephonyAllowed) {
-            buttonSms.visibility = View.VISIBLE
-            buttonCall.visibility = View.VISIBLE
+            binding.buttonSms.visibility = View.VISIBLE
+            binding.buttonCall.visibility = View.VISIBLE
         } else {
-            buttonSms.visibility = View.INVISIBLE
-            buttonCall.visibility = View.INVISIBLE
+            binding.buttonSms.visibility = View.INVISIBLE
+            binding.buttonCall.visibility = View.INVISIBLE
         }
     }
 
@@ -161,19 +162,19 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             val conID = Contacts.getIdFromNumber(missedCall.number, this)
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
-                contactPhoto.setImageURI(photo)
+                binding.contactPhoto.setImageURI(photo)
             } else {
-                contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: missedCall.number))
+                binding.contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: missedCall.number))
             }
         } else {
-            contactPhoto.visibility = View.INVISIBLE
+            binding.contactPhoto.visibility = View.INVISIBLE
         }
 
-        remText.setText(R.string.last_called)
-        reminder_time.text = formattedTime
+        binding.remText.setText(R.string.last_called)
+        binding.reminderTime.text = formattedTime
 
-        contactName.text = name
-        contactNumber.text = missedCall.number
+        binding.contactName.text = name
+        binding.contactNumber.text = missedCall.number
 
         showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
         init()

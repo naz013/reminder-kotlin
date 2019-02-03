@@ -1,11 +1,12 @@
 package com.elementary.tasks.core.arch
 
-import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -22,14 +23,10 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseHolder(view: View) : RecyclerView.ViewHolder(view) {
+abstract class BaseHolder<B : ViewDataBinding>(parent: ViewGroup, @LayoutRes res: Int)
+    : HolderBinding<B>(parent, res) {
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var themeUtil: ThemeUtil
+    var prefs: Prefs = ReminderApp.appComponent.prefs()
+    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
 
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 }

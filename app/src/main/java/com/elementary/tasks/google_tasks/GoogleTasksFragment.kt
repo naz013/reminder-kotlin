@@ -13,13 +13,13 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
+import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.google_tasks.list.PageCallback
 import com.elementary.tasks.google_tasks.list.pager.TaskPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import kotlinx.android.synthetic.main.fragment_google_tasks.*
 import timber.log.Timber
 
 /**
@@ -40,16 +40,16 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
+class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>(), PageCallback {
 
     private lateinit var viewModel: GoogleTaskListsViewModel
     private var googleTaskLists = listOf<GoogleTaskList>()
     private var taskPagerAdapter: TaskPagerAdapter? = null
     private var defaultGoogleTaskList: GoogleTaskList? = null
     private val mListenersList: MutableList<(List<GoogleTaskList>) -> Unit> = mutableListOf()
-    private var currentPos: Int = 0
+    private val currentPos: Int
         get() {
-            return pager.currentItem
+            return binding.pager.currentItem
         }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -104,7 +104,7 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab.setOnClickListener { addNewTask() }
+        binding.fab.setOnClickListener { addNewTask() }
         initViewModel()
     }
 
@@ -154,24 +154,24 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
         val pos = prefs.lastGoogleList
 
         taskPagerAdapter = TaskPagerAdapter(childFragmentManager, pages)
-        pager.offscreenPageLimit = 5
-        pager.adapter = taskPagerAdapter
-        pager.addOnPageChangeListener(mPageChangeListener)
-        pager.currentItem = if (pos < googleTaskLists.size) pos else 0
+        binding.pager.offscreenPageLimit = 5
+        binding.pager.adapter = taskPagerAdapter
+        binding.pager.addOnPageChangeListener(mPageChangeListener)
+        binding.pager.currentItem = if (pos < googleTaskLists.size) pos else 0
 
         notifyFragments(googleTaskLists)
 
-        refreshCurrent(pager.currentItem)
+        refreshCurrent(binding.pager.currentItem)
     }
 
     override fun onBackStackResume() {
         super.onBackStackResume()
-        pager.addOnPageChangeListener(mPageChangeListener)
+        binding.pager.addOnPageChangeListener(mPageChangeListener)
     }
 
     override fun onPause() {
         super.onPause()
-        pager.removeOnPageChangeListener(mPageChangeListener)
+        binding.pager.removeOnPageChangeListener(mPageChangeListener)
     }
 
     private fun notifyFragments(googleTaskLists: MutableList<GoogleTaskList>) {
@@ -189,13 +189,13 @@ class GoogleTasksFragment : BaseNavigationFragment(), PageCallback {
     }
 
     private fun refreshFab() {
-        if (pager.currentItem > 0) {
-            fab.show()
+        if (binding.pager.currentItem > 0) {
+            binding.fab.show()
         } else {
             if (defaultGoogleTaskList == null) {
-                fab.hide()
+                binding.fab.hide()
             } else {
-                fab.show()
+                binding.fab.show()
             }
         }
     }

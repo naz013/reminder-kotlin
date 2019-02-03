@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.onChanged
-import kotlinx.android.synthetic.main.fragment_reminder_application.*
+import com.elementary.tasks.databinding.FragmentReminderApplicationBinding
 import timber.log.Timber
 
 /**
@@ -34,10 +34,10 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ApplicationFragment : RepeatableTypeFragment() {
+class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBinding>() {
 
     private val type: Int
-        get() = if (application.isChecked) {
+        get() = if (binding.application.isChecked) {
             Reminder.BY_DATE_APP
         } else {
             Reminder.BY_DATE_LINK
@@ -64,7 +64,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
                 return null
             }
         } else {
-            number = urlField.text.toString().trim()
+            number = binding.urlField.text.toString().trim()
             if (TextUtils.isEmpty(number) || number.matches(".*https?://".toRegex())) {
                 iFace.showSnackbar(getString(R.string.you_dont_insert_link))
                 return null
@@ -72,7 +72,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
             if (!number.startsWith("http://") && !number.startsWith("https://"))
                 number = "http://$number"
         }
-        val startTime = dateView.dateTime
+        val startTime = binding.dateView.dateTime
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
@@ -92,51 +92,51 @@ class ApplicationFragment : RepeatableTypeFragment() {
 
     override fun provideViews() {
         setViews(
-                scrollView = scrollView,
-                expansionLayout = moreLayout,
-                ledPickerView = ledView,
-                calendarCheck = exportToCalendar,
-                tasksCheck = exportToTasks,
-                extraView = tuneExtraView,
-                melodyView = melodyView,
-                attachmentView = attachmentView,
-                groupView = groupView,
-                summaryView = taskSummary,
-                beforePickerView = beforeView,
-                dateTimeView = dateView,
-                loudnessPickerView = loudnessView,
-                priorityPickerView = priorityView,
-                repeatLimitView = repeatLimitView,
-                repeatView = repeatView,
-                windowTypeView = windowTypeView
+                scrollView = binding.scrollView,
+                expansionLayout = binding.moreLayout,
+                ledPickerView = binding.ledView,
+                calendarCheck = binding.exportToCalendar,
+                tasksCheck = binding.exportToTasks,
+                extraView = binding.tuneExtraView,
+                melodyView = binding.melodyView,
+                attachmentView = binding.attachmentView,
+                groupView = binding.groupView,
+                summaryView = binding.taskSummary,
+                beforePickerView = binding.beforeView,
+                dateTimeView = binding.dateView,
+                loudnessPickerView = binding.loudnessView,
+                priorityPickerView = binding.priorityView,
+                repeatLimitView = binding.repeatLimitView,
+                repeatView = binding.repeatView,
+                windowTypeView = binding.windowTypeView
         )
     }
 
     override fun onNewHeader(newHeader: String) {
-        cardSummary?.text = newHeader
+        binding.cardSummary?.text = newHeader
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tuneExtraView.hasAutoExtra = true
-        tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
+        binding.tuneExtraView.hasAutoExtra = true
+        binding.tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
 
-        pickApplication.setOnClickListener {
+        binding.pickApplication.setOnClickListener {
             activity?.startActivityForResult(Intent(activity, SelectApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
         }
-        urlLayout.visibility = View.GONE
-        urlField.setText(iFace.state.link)
-        urlField.onChanged {
+        binding.urlLayout.visibility = View.GONE
+        binding.urlField.setText(iFace.state.link)
+        binding.urlField.onChanged {
             iFace.state.link = it
         }
-        application.setOnCheckedChangeListener { _, b ->
+        binding.application.setOnCheckedChangeListener { _, b ->
             iFace.state.isLink = !b
             if (!b) {
-                applicationLayout.visibility = View.GONE
-                urlLayout.visibility = View.VISIBLE
+                binding.applicationLayout.visibility = View.GONE
+                binding.urlLayout.visibility = View.VISIBLE
             } else {
-                urlLayout.visibility = View.GONE
-                applicationLayout.visibility = View.VISIBLE
+                binding.urlLayout.visibility = View.GONE
+                binding.applicationLayout.visibility = View.VISIBLE
             }
         }
         editReminder()
@@ -146,15 +146,15 @@ class ApplicationFragment : RepeatableTypeFragment() {
         val reminder = iFace.state.reminder
         if (reminder.target != "") {
             if (!iFace.state.isLink && Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
-                application.isChecked = true
+                binding.application.isChecked = true
                 iFace.state.app = reminder.target
                 iFace.state.isLink = false
-                applicationName.text = appName
+                binding.applicationName.text = appName
             } else {
-                browser.isChecked = true
+                binding.browser.isChecked = true
                 iFace.state.link = reminder.target
                 iFace.state.isLink = true
-                urlField.setText(reminder.target)
+                binding.urlField.setText(reminder.target)
             }
         }
     }
@@ -162,7 +162,7 @@ class ApplicationFragment : RepeatableTypeFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
             iFace.state.app = data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
-            applicationName.text = appName
+            binding.applicationName.text = appName
         }
     }
 }

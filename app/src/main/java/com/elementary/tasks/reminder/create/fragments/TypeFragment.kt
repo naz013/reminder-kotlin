@@ -7,14 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
@@ -22,7 +20,6 @@ import com.elementary.tasks.core.views.*
 import com.github.florent37.expansionpanel.ExpansionLayout
 import com.google.android.material.textfield.TextInputEditText
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,39 +39,25 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class TypeFragment : Fragment() {
+abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     lateinit var iFace: ReminderInterface
         private set
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var dialogues: Dialogues
-    @Inject
-    lateinit var themeUtil: ThemeUtil
+    var prefs: Prefs = ReminderApp.appComponent.prefs()
+    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
+    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
 
     private var melodyView: MelodyView? = null
     private var attachmentView: AttachmentView? = null
     private var groupView: GroupView? = null
     private var actionView: ActionView? = null
 
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
-
     abstract fun prepare(): Reminder?
-
-    @LayoutRes
-    abstract fun layoutRes(): Int
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         iFace = context as ReminderInterface
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(layoutRes(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -295,22 +278,28 @@ abstract class TypeFragment : Fragment() {
             iFace.state.reminder.groupTitle = reminderGroup.groupTitle
         } catch (e: Exception) {
         }
-        groupView?.reminderGroup = reminderGroup
-        updateHeader()
+        if (isResumed) {
+            groupView?.reminderGroup = reminderGroup
+            updateHeader()
+        }
     }
 
     private fun updateHeader() {
-        onNewHeader(getSummary())
+        if (isResumed) onNewHeader(getSummary())
     }
 
     fun onMelodySelect(path: String) {
         iFace.state.reminder.melodyPath = path
-        melodyView?.file = path
+        if (isResumed) {
+            melodyView?.file = path
+        }
     }
 
     fun onAttachmentSelect(uri: Uri) {
         iFace.state.reminder.attachmentFile = uri.toString()
-        attachmentView?.setUri(uri)
+        if (isResumed) {
+            attachmentView?.setUri(uri)
+        }
     }
 
     private fun selectContact() {

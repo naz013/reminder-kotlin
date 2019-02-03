@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.view_url_field.view.*
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
@@ -202,8 +201,8 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
 
     private fun showUrlDialog() {
         val builder = dialogues.getDialog(activity)
-        val view = LayoutInflater.from(activity).inflate(R.layout.view_url_field, null, false)
-        builder.setView(view)
+        val view = com.elementary.tasks.databinding.ViewUrlFieldBinding.inflate(LayoutInflater.from(activity))
+        builder.setView(view.root)
         builder.setPositiveButton(R.string.download) { dialog, _ ->
             dialog.dismiss()
             downloadUrl(view.urlField.text.toString().trim())

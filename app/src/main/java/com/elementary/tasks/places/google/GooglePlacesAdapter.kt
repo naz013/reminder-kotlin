@@ -1,12 +1,12 @@
 package com.elementary.tasks.places.google
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.interfaces.SimpleListener
-import kotlinx.android.synthetic.main.list_item_google_place.view.*
+import com.elementary.tasks.databinding.ListItemGooglePlaceBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,24 +40,24 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemGooglePlaceBinding>(parent, R.layout.list_item_google_place) {
         fun bind(googlePlaceItem: GooglePlaceItem) {
-            itemView.text1.text = googlePlaceItem.name
-            itemView.text2.text = googlePlaceItem.address
-            itemView.placeIcon.setImageResource(getIcon(googlePlaceItem.types))
-            itemView.placeCheck.isChecked = googlePlaceItem.isSelected
+            binding.text1.text = googlePlaceItem.name
+            binding.text2.text = googlePlaceItem.address
+            binding.placeIcon.setImageResource(getIcon(googlePlaceItem.types))
+            binding.placeCheck.isChecked = googlePlaceItem.isSelected
             if (itemCount > 1 && adapterPosition == last) {
-                itemView.placeCheck.visibility = View.GONE
-                itemView.placeIcon.visibility = View.GONE
-                itemView.text2.text = ""
+                binding.placeCheck.visibility = View.GONE
+                binding.placeIcon.visibility = View.GONE
+                binding.text2.text = ""
             } else {
-                itemView.placeCheck.visibility = View.VISIBLE
-                itemView.placeIcon.visibility = View.VISIBLE
+                binding.placeCheck.visibility = View.VISIBLE
+                binding.placeIcon.visibility = View.VISIBLE
             }
         }
 
         init {
-            itemView.listItem.setOnClickListener { view ->
+            binding.listItem.setOnClickListener { view ->
                 if (itemCount > 1 && adapterPosition == last) {
                     array.forEach {
                         it.isSelected = true
@@ -67,7 +67,7 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
                     mEventListener?.onItemClicked(adapterPosition, view)
                 }
             }
-            itemView.placeCheck.setOnClickListener {
+            binding.placeCheck.setOnClickListener {
                 array[adapterPosition].isSelected = !array[adapterPosition].isSelected
                 notifyItemChanged(adapterPosition)
             }
@@ -75,7 +75,7 @@ class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_google_place, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

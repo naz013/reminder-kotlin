@@ -11,10 +11,8 @@ import android.widget.LinearLayout
 import android.widget.TimePicker
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import kotlinx.android.synthetic.main.view_date_time.view.*
+import com.elementary.tasks.core.binding.views.DateTimeViewBinding
+import com.elementary.tasks.core.utils.*
 import java.text.DateFormat
 import java.util.*
 import javax.inject.Inject
@@ -39,6 +37,7 @@ import javax.inject.Inject
  */
 class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
+    private lateinit var binding: DateTimeViewBinding
     private var mHour: Int = 0
     private var mMinute: Int = 0
     private var mYear: Int = 0
@@ -88,14 +87,16 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private fun init(context: Context) {
         orientation = LinearLayout.VERTICAL
         View.inflate(context, R.layout.view_date_time, this)
+        binding = DateTimeViewBinding(this)
+
         descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams = params
         setDateFormat(TimeUtil.fullDate(prefs.appLanguage))
 
-        dateField.setOnClickListener(mDateClick)
-        timeField.setOnClickListener { selectTime() }
+        binding.dateField.setOnClickListener(mDateClick)
+        binding.timeField.setOnClickListener { selectTime() }
         updateDateTime(0)
     }
 
@@ -105,24 +106,24 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     override fun setOnClickListener(l: View.OnClickListener?) {
-        if (isSingleMode) dateField.setOnClickListener(l)
+        if (isSingleMode) binding.dateField.setOnClickListener(l)
     }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
-        dateField.setOnLongClickListener(l)
-        timeField.setOnLongClickListener(l)
+        binding.dateField.setOnLongClickListener(l)
+        binding.timeField.setOnLongClickListener(l)
     }
 
     fun setSingleText(text: String?) {
         isSingleMode = text != null
         if (!isSingleMode) {
-            timeField.visibility = View.VISIBLE
-            dateField.setOnClickListener(mDateClick)
+            binding.timeField.show()
+            binding.dateField.setOnClickListener(mDateClick)
             updateDateTime(0)
         } else {
-            dateField.text = text
-            dateField.setOnClickListener(null)
-            timeField.visibility = View.GONE
+            binding.dateField.text = text
+            binding.dateField.setOnClickListener(null)
+            binding.timeField.hide()
         }
     }
 
@@ -150,7 +151,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private fun updateDate(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        dateField.text = TimeUtil.getDate(cal.time, mDateFormat)
+        binding.dateField.text = TimeUtil.getDate(cal.time, mDateFormat)
         mListener?.onDateSelect(mills, mDay, mMonth, mYear)
         onDateChangeListener?.onChanged(dateTime)
     }
@@ -158,7 +159,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private fun updateTime(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormat, prefs.appLanguage)
+        binding.timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormat, prefs.appLanguage)
         mListener?.onTimeSelect(mills, mHour, mMinute)
         onDateChangeListener?.onChanged(dateTime)
     }

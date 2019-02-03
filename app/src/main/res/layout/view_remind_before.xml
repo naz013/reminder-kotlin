@@ -32,7 +32,7 @@
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/before_value_view"
+                    android:id="@+id/beforeValueView"
                     android:textAppearance="?textAppearanceBody1"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                     tools:text="10" />
 
                 <Spinner
-                    android:id="@+id/before_type_view"
+                    android:id="@+id/beforeTypeView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:entries="@array/before_times"

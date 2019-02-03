@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.graphics.Typeface
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +15,7 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import kotlinx.android.synthetic.main.list_item_email.view.*
+import com.elementary.tasks.databinding.ListItemEmailBinding
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -41,7 +40,6 @@ import java.util.*
 class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private var mContext: Context? = null
-    private var mTypeface: Typeface? = null
     private var mData: List<EmailItem> = ArrayList()
     private var adapter: EmailAdapter? = null
 
@@ -80,13 +78,6 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         adapter?.filter?.filter(s)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (mTypeface != null) {
-            typeface = mTypeface
-        }
-    }
-
     private inner class EmailAdapter(items: List<EmailItem>) : BaseAdapter(), Filterable {
 
         private var items: List<EmailItem> = ArrayList()
@@ -118,10 +109,13 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
             if (v == null) {
                 v = LayoutInflater.from(mContext).inflate(R.layout.list_item_email, viewGroup, false)
             }
-            if (v != null) {
+            v?.let {
                 val item = items[i]
-                v.nameView.text = item.name
-                v.emailView.text = item.email
+                return ListItemEmailBinding.bind(it).run {
+                    nameView.text = item.name
+                    emailView.text = item.email
+                    this.root
+                }
             }
             return v
         }

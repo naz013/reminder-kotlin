@@ -11,9 +11,9 @@ import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
-import kotlinx.android.synthetic.main.fragment_settings_tests.*
 import java.util.*
 
 /**
@@ -34,26 +34,26 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TestsFragment : BaseSettingsFragment() {
+class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
     override fun layoutRes(): Int = R.layout.fragment_settings_tests
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        birthdayDialogWindow.setOnClickListener { openBirthdayScreen() }
-        reminderDialogWindow.setOnClickListener { openReminderScreen() }
+        binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen() }
+        binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
 
-        missedCallWindow.setOnClickListener {
+        binding.missedCallWindow.setOnClickListener {
             MissedCallDialogActivity.mockTest(context!!,
                     MissedCall(number = "2454548", dateTime = System.currentTimeMillis()))
         }
 
-        quickSmsWindow.setOnClickListener {
+        binding.quickSmsWindow.setOnClickListener {
             QuickSmsActivity.openScreen(context!!, "2454548")
         }
 
-        afterCallWindow.setOnClickListener {
+        binding.afterCallWindow.setOnClickListener {
             FollowReminderActivity.mockScreen(context!!, "2454548", System.currentTimeMillis())
         }
     }
@@ -82,7 +82,7 @@ class TestsFragment : BaseSettingsFragment() {
             val secKey = if (TextUtils.isEmpty(number)) "0" else number.substring(1)
             this.key = "$name|$secKey"
 
-            this.dayMonth = day.toString() + "|" + month
+            this.dayMonth = "$day|$month"
         }
         ShowBirthdayActivity.mockTest(context!!, birthday)
     }

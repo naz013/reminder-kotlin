@@ -4,31 +4,28 @@ import android.content.Context
 import android.os.Bundle
 import android.os.IBinder
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
-import javax.inject.Inject
 
-abstract class ThemedActivity : AppCompatActivity() {
+abstract class ThemedActivity<B : ViewDataBinding> : AppCompatActivity() {
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var language: Language
-    @Inject
-    lateinit var dialogues: Dialogues
-    @Inject
-    lateinit var notifier: Notifier
+    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
+    var prefs: Prefs = ReminderApp.appComponent.prefs()
+    var language: Language = ReminderApp.appComponent.language()
+    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
+    var notifier: Notifier = ReminderApp.appComponent.notifier()
+    protected lateinit var binding: B
     var isDark = false
         private set
 
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
-
     protected open fun applyTheme(): Boolean = true
+
+    @LayoutRes
+    abstract fun layoutRes(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +33,10 @@ abstract class ThemedActivity : AppCompatActivity() {
             setTheme(themeUtil.styleWithAccent)
         }
         isDark = themeUtil.isDark
+
+        if (layoutRes() != 0) {
+            binding = DataBindingUtil.setContentView(this, layoutRes())
+        }
     }
 
     override fun onStart() {

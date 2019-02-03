@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
@@ -14,12 +15,12 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.databinding.DialogActionPickerBinding
 import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.day_view.day.CalendarEventsAdapter
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import kotlinx.android.synthetic.main.dialog_action_picker.view.*
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*
@@ -42,7 +43,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseCalendarFragment : BaseNavigationFragment() {
+abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
 
     protected var dateMills: Long = 0
     private var mDialog: AlertDialog? = null
@@ -56,7 +57,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
 
     protected fun showActionDialog(showEvents: Boolean, list: List<EventModel> = listOf()) {
         val builder = dialogues.getDialog(context!!)
-        val binding = LayoutInflater.from(context).inflate(R.layout.dialog_action_picker, null)
+        val binding = DialogActionPickerBinding.inflate(LayoutInflater.from(context))
         binding.addBirth.setOnClickListener {
             mDialog?.dismiss()
             addBirthday()
@@ -84,7 +85,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
             val monthTitle = DateUtils.formatDateTime(activity, dateMills, DayViewFragment.MONTH_YEAR_FLAG).toString()
             binding.dateLabel.text = monthTitle
         }
-        builder.setView(binding)
+        builder.setView(binding.root)
         builder.setOnDismissListener {
             job?.cancel()
         }
@@ -96,7 +97,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
         Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
     }
 
-    private fun loadEvents(binding: View, list: List<EventModel>) {
+    private fun loadEvents(binding: DialogActionPickerBinding, list: List<EventModel>) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = dateMills
         val year = calendar.get(Calendar.YEAR)
@@ -150,7 +151,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
         }
     }
 
-    private fun showList(binding: View, res: ArrayList<EventModel>) {
+    private fun showList(binding: DialogActionPickerBinding, res: ArrayList<EventModel>) {
         val adapter = CalendarEventsAdapter()
         adapter.setEventListener(object : ActionsListener<EventModel> {
             override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {

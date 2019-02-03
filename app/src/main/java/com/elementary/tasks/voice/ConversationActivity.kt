@@ -29,9 +29,9 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.util.*
@@ -54,7 +54,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ConversationActivity : ThemedActivity() {
+class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
 
     private var speech: SpeechRecognizer? = null
 
@@ -137,16 +137,17 @@ class ConversationActivity : ThemedActivity() {
         }
     }
 
+    override fun layoutRes(): Int = R.layout.activity_conversation
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isRotated = savedInstanceState != null
-        setContentView(R.layout.activity_conversation)
-        micButton.setOnClickListener { micClick() }
-        recordingView.setOnClickListener {
+        binding.micButton.setOnClickListener { micClick() }
+        binding.recordingView.setOnClickListener {
             stopView()
             viewModel.removePartial()
         }
-        settingsButton.setOnClickListener { showSettingsPopup() }
+        binding.settingsButton.setOnClickListener { showSettingsPopup() }
         initList()
         checkTts()
         initViewModel()
@@ -185,7 +186,7 @@ class ConversationActivity : ThemedActivity() {
         viewModel.replies.observe(this, Observer {
             if (it != null) {
                 mAdapter.submitList(it)
-                conversationList.scrollToPosition(0)
+                binding.conversationList.scrollToPosition(0)
                 Timber.d("initViewModel: $it")
             }
         })
@@ -239,8 +240,8 @@ class ConversationActivity : ThemedActivity() {
 
     private fun stopView() {
         releaseSpeech()
-        recordingView.visibility = View.GONE
-        micButton.visibility = View.VISIBLE
+        binding.recordingView.visibility = View.GONE
+        binding.micButton.visibility = View.VISIBLE
     }
 
     private fun addObjectResponse(reply: Reply) {
@@ -503,7 +504,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.would_you_like_to_save_it))
         mAskAction = object : AskAction {
             override fun onYes() {
-                viewModel.saveNote(note, false, false)
+                viewModel.saveNote(note, showToast = false, addQuickNote = false)
                 addResponse(getLocalized(R.string.note_saved))
                 if (prefs.isNoteReminderEnabled) {
                     postMicClick({ askQuickReminder(note) }, 1000)
@@ -568,7 +569,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun showSettingsPopup() {
-        val popupMenu = PopupMenu(this, settingsButton)
+        val popupMenu = PopupMenu(this, binding.settingsButton)
         popupMenu.inflate(R.menu.activity_conversation)
         popupMenu.menu.getItem(0).title = getLocalized(R.string.language)
         popupMenu.menu.getItem(1).title = getLocalized(R.string.tell_about_event)
@@ -639,8 +640,8 @@ class ConversationActivity : ThemedActivity() {
     private fun initList() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
-        conversationList.layoutManager = layoutManager
-        conversationList.adapter = mAdapter
+        binding.conversationList.layoutManager = layoutManager
+        binding.conversationList.adapter = mAdapter
     }
 
     private fun initRecognizer() {
@@ -665,8 +666,8 @@ class ConversationActivity : ThemedActivity() {
             stopView()
             return
         }
-        recordingView.visibility = View.VISIBLE
-        micButton.visibility = View.INVISIBLE
+        binding.recordingView.visibility = View.VISIBLE
+        binding.micButton.visibility = View.INVISIBLE
         initRecognizer()
     }
 
@@ -686,12 +687,12 @@ class ConversationActivity : ThemedActivity() {
 
     private fun releaseSpeech() {
         try {
-            if (speech != null) {
-                speech?.stopListening()
-                speech?.cancel()
-                speech?.destroy()
-                speech = null
+            speech?.let {
+                it.stopListening()
+                it.cancel()
+                it.destroy()
             }
+            speech = null
         } catch (ignored: IllegalArgumentException) {
         }
         isListening = false

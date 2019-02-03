@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.theartofdev.edmodo.cropper.CropImageView
-        android:id="@+id/cropImageView"
+    <RelativeLayout
+        android:id="@+id/background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cropBackgroundColor="@color/whitePrimary30"
-        app:cropBorderCornerColor="@android:color/transparent"
-        app:cropBorderLineColor="@color/whitePrimary"
-        app:cropBorderLineThickness="2dp"
-        app:cropGuidelines="off"
-        app:cropShape="rectangle" />
+        android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/rotateLeftButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/acc_rotate_left"
-        app:srcCompat="@drawable/ic_twotone_rotate_left_24px"
-        app:tint="?colorSecondary" />
+        <com.theartofdev.edmodo.cropper.CropImageView
+            android:id="@+id/cropImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cropBackgroundColor="@color/whitePrimary30"
+            app:cropBorderCornerColor="@android:color/transparent"
+            app:cropBorderLineColor="@color/whitePrimary"
+            app:cropBorderLineThickness="2dp"
+            app:cropGuidelines="off"
+            app:cropShape="rectangle" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/rotateRightButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/acc_rotate_right"
-        app:srcCompat="@drawable/ic_twotone_rotate_right_24px"
-        app:tint="?colorSecondary" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/rotateLeftButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/acc_rotate_left"
+            app:srcCompat="@drawable/ic_twotone_rotate_left_24px"
+            app:tint="?colorSecondary" />
 
-</RelativeLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/rotateRightButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/acc_rotate_right"
+            app:srcCompat="@drawable/ic_twotone_rotate_right_24px"
+            app:tint="?colorSecondary" />
+
+    </RelativeLayout>
+</layout>

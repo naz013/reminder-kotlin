@@ -1,171 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:stateListAnimator="@animator/toolbar_animator"
-        tools:targetApi="lollipop">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?android:colorBackground"
-            app:title="@string/new_task" />
+            android:layout_height="?actionBarSize"
+            android:stateListAnimator="@animator/toolbar_animator"
+            tools:targetApi="lollipop">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:colorBackground"
+                app:title="@string/new_task" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/material_margin"
-            android:layout_marginEnd="@dimen/material_margin"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical">
-
-            <include layout="@layout/view_progress" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nameLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:boxBackgroundColor="?colorSecondary12"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editField"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/task"
-                    android:maxLength="120"
-                    android:maxLines="3"
-                    android:textAppearance="?textAppearanceSubtitle1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/detailsLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:boxBackgroundColor="?colorSecondary12"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/detailsField"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/details"
-                    android:maxLength="120"
-                    android:maxLines="3"
-                    android:textAppearance="?textAppearanceSubtitle1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                android:layout_marginStart="@dimen/material_margin"
+                android:layout_marginEnd="@dimen/material_margin"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_today_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <TextView
-                    android:id="@+id/dateField"
+                <LinearLayout
+                    android:id="@+id/progressView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    tools:text="Tue, 5 Nov 2015" />
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="invisible">
 
-            </LinearLayout>
+                    <androidx.core.widget.ContentLoadingProgressBar
+                        style="@style/Widget.AppCompat.ProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
 
-            <com.elementary.tasks.core.views.DividerView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp" />
+                    <TextView
+                        android:id="@+id/progressMessageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        tools:text="@string/please_wait" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_access_time_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <TextView
-                    android:id="@+id/timeField"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nameLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    tools:text="14:05" />
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="?colorSecondary12"
+                    app:boxCornerRadiusTopEnd="5dp"
+                    app:boxCornerRadiusTopStart="5dp">
 
-            </LinearLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/task"
+                        android:maxLength="120"
+                        android:maxLines="3"
+                        android:textAppearance="?textAppearanceSubtitle1" />
 
-            <com.elementary.tasks.core.views.DividerView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_view_list_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <TextView
-                    android:id="@+id/listText"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/detailsLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:textAllCaps="true"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="Reminder" />
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="?colorSecondary12"
+                    app:boxCornerRadiusTopEnd="5dp"
+                    app:boxCornerRadiusTopStart="5dp">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/detailsField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/details"
+                        android:maxLength="120"
+                        android:maxLines="3"
+                        android:textAppearance="?textAppearanceSubtitle1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_today_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <TextView
+                        android:id="@+id/dateField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="16dp"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        tools:text="Tue, 5 Nov 2015" />
+
+                </LinearLayout>
+
+                <com.elementary.tasks.core.views.DividerView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_access_time_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <TextView
+                        android:id="@+id/timeField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="16dp"
+                        android:textAppearance="?textAppearanceSubtitle1"
+                        tools:text="14:05" />
+
+                </LinearLayout>
+
+                <com.elementary.tasks.core.views.DividerView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_view_list_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <TextView
+                        android:id="@+id/listText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="16dp"
+                        android:textAllCaps="true"
+                        android:textAppearance="?textAppearanceHeadline6"
+                        tools:text="Reminder" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

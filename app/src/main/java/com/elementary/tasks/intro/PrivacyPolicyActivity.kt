@@ -12,7 +12,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_privacy_policy.*
+import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
 /**
  * Copyright 2019 Nazar Suhovich
@@ -32,18 +32,19 @@ import kotlinx.android.synthetic.main.activity_privacy_policy.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PrivacyPolicyActivity : ThemedActivity() {
+class PrivacyPolicyActivity : ThemedActivity<ActivityPrivacyPolicyBinding>() {
 
     private val url = Constants.WEB_URL + "privacy-policy"
+
+    override fun layoutRes(): Int = R.layout.activity_privacy_policy
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_privacy_policy)
         initActionBar()
 
-        web_view.settings.javaScriptEnabled = true
-        web_view.webViewClient = object : WebViewClient() {
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
@@ -55,15 +56,15 @@ class PrivacyPolicyActivity : ThemedActivity() {
                 }
             }
         }
-        web_view.webChromeClient = WebChromeClient()
-        web_view.loadUrl(url)
+        binding.webView.webChromeClient = WebChromeClient()
+        binding.webView.loadUrl(url)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.title = getString(R.string.privacy_policy)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.title = getString(R.string.privacy_policy)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

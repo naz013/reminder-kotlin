@@ -1,420 +1,423 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/taskLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:boxBackgroundColor="?colorSecondary12"
-            app:boxCornerRadiusTopEnd="5dp"
-            app:boxCornerRadiusTopStart="5dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/taskSummary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/remind_me"
-                android:textAppearance="?textAppearanceSubtitle1" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_access_time_24px"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/timeField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:textAppearance="?textAppearanceHeadline6"
-                tools:text="14:05" />
-
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:overScrollMode="never"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ToggleButton
-                    android:id="@+id/mondayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/toggle_blue"
-                    android:checked="true"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/mon"
-                    android:textOn="@string/mon" />
-
-                <ToggleButton
-                    android:id="@+id/tuesdayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/tue"
-                    android:textOn="@string/tue" />
-
-                <ToggleButton
-                    android:id="@+id/wednesdayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/wed"
-                    android:textOn="@string/wed" />
-
-                <ToggleButton
-                    android:id="@+id/thursdayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/thu"
-                    android:textOn="@string/thu" />
-
-                <ToggleButton
-                    android:id="@+id/fridayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/fri"
-                    android:textOn="@string/fri" />
-
-                <ToggleButton
-                    android:id="@+id/saturdayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/sat"
-                    android:textOn="@string/sat" />
-
-                <ToggleButton
-                    android:id="@+id/sundayCheck"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/toggle_blue"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceOverline"
-                    android:textColor="@color/weekday_text_selector"
-                    android:textOff="@string/sun"
-                    android:textOn="@string/sun" />
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_functions_24px"
-                app:tint="?android:textColorPrimary" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/calculatedNextTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:textAppearance="?textAppearanceBody1"
-                tools:text="25" />
-
-        </LinearLayout>
-
-        <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.github.florent37.expansionpanel.ExpansionHeader
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/taskLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:expansion_headerIndicator="@id/headerIndicator"
-                app:expansion_layout="@id/moreLayout"
-                app:expansion_toggleOnClick="true">
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:boxBackgroundColor="?colorSecondary12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
 
-                <RelativeLayout
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taskSummary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
+                    android:hint="@string/remind_me"
+                    android:textAppearance="?textAppearanceSubtitle1" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/cardSummary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_toStartOf="@+id/headerIndicator"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textAppearance="?textAppearanceSubtitle1"
-                        tools:text="@string/date_and_time" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/headerIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical|end"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/ic_twotone_chevron_right_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                </RelativeLayout>
-
-            </com.github.florent37.expansionpanel.ExpansionHeader>
-
-            <com.github.florent37.expansionpanel.ExpansionLayout
-                android:id="@+id/moreLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:expansion_expanded="false">
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_access_time_24px"
+                    app:tint="?android:textColorPrimary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/timeField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:textAppearance="?textAppearanceHeadline6"
+                    tools:text="14:05" />
+
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
                 <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/mondayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/toggle_blue"
+                        android:checked="true"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/mon"
+                        android:textOn="@string/mon" />
+
+                    <ToggleButton
+                        android:id="@+id/tuesdayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/toggle_blue"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/tue"
+                        android:textOn="@string/tue" />
+
+                    <ToggleButton
+                        android:id="@+id/wednesdayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/toggle_blue"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/wed"
+                        android:textOn="@string/wed" />
+
+                    <ToggleButton
+                        android:id="@+id/thursdayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/toggle_blue"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/thu"
+                        android:textOn="@string/thu" />
+
+                    <ToggleButton
+                        android:id="@+id/fridayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/toggle_blue"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/fri"
+                        android:textOn="@string/fri" />
+
+                    <ToggleButton
+                        android:id="@+id/saturdayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/toggle_blue"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/sat"
+                        android:textOn="@string/sat" />
+
+                    <ToggleButton
+                        android:id="@+id/sundayCheck"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/toggle_blue"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceOverline"
+                        android:textColor="@color/weekday_text_selector"
+                        android:textOff="@string/sun"
+                        android:textOn="@string/sun" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_functions_24px"
+                    app:tint="?android:textColorPrimary" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/calculatedNextTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginStart="12dp"
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="25" />
 
-                    <com.elementary.tasks.core.views.GroupView
-                        android:id="@+id/groupView"
+            </LinearLayout>
+
+            <com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.github.florent37.expansionpanel.ExpansionHeader
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:expansion_headerIndicator="@id/headerIndicator"
+                    app:expansion_layout="@id/moreLayout"
+                    app:expansion_toggleOnClick="true">
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="16dp" />
+                        android:layout_margin="16dp">
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/cardSummary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="8dp"
+                            android:layout_toStartOf="@+id/headerIndicator"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:textAppearance="?textAppearanceSubtitle1"
+                            tools:text="@string/date_and_time" />
 
-                    <com.elementary.tasks.core.views.BeforePickerView
-                        android:id="@+id/beforeView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp"
-                        app:before_type="minutes" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/headerIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical|end"
+                            android:adjustViewBounds="true"
+                            app:srcCompat="@drawable/ic_twotone_chevron_right_24px"
+                            app:tint="?android:textColorPrimary" />
 
-                    <com.elementary.tasks.core.views.RepeatLimitView
-                        android:id="@+id/repeatLimitView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                    </RelativeLayout>
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                </com.github.florent37.expansionpanel.ExpansionHeader>
 
-                    <com.elementary.tasks.core.views.PriorityPickerView
-                        android:id="@+id/priorityView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                <com.github.florent37.expansionpanel.ExpansionLayout
+                    android:id="@+id/moreLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:expansion_expanded="false">
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
-
-                    <com.elementary.tasks.core.views.WindowTypeView
-                        android:id="@+id/windowTypeView"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                        android:orientation="vertical">
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                        <com.elementary.tasks.core.views.GroupView
+                            android:id="@+id/groupView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="16dp" />
 
-                    <com.elementary.tasks.core.views.MelodyView
-                        android:id="@+id/melodyView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
 
-                    <com.elementary.tasks.core.views.LoudnessPickerView
-                        android:id="@+id/loudnessView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                        <com.elementary.tasks.core.views.BeforePickerView
+                            android:id="@+id/beforeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp"
+                            app:before_type="minutes" />
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                        <com.elementary.tasks.core.views.RepeatLimitView
+                            android:id="@+id/repeatLimitView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
 
-                    <com.elementary.tasks.core.views.AttachmentView
-                        android:id="@+id/attachmentView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
 
-                    <com.elementary.tasks.core.views.DividerView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                        <com.elementary.tasks.core.views.PriorityPickerView
+                            android:id="@+id/priorityView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
 
-                    <com.elementary.tasks.core.views.LedPickerView
-                        android:id="@+id/ledView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
 
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/exportToCalendar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:paddingStart="@dimen/checkbox_padding"
-                        android:paddingEnd="@dimen/checkbox_padding"
-                        android:text="@string/add_to_calendar"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:visibility="visible" />
+                        <com.elementary.tasks.core.views.WindowTypeView
+                            android:id="@+id/windowTypeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
 
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/exportToTasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:paddingStart="@dimen/checkbox_padding"
-                        android:paddingEnd="@dimen/checkbox_padding"
-                        android:text="@string/google_tasks"
-                        android:textAppearance="?textAppearanceBody1"
-                        android:visibility="visible" />
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
 
-                    <com.elementary.tasks.core.views.ActionView
-                        android:id="@+id/actionView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="16dp" />
+                        <com.elementary.tasks.core.views.MelodyView
+                            android:id="@+id/melodyView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
 
-                    <com.elementary.tasks.core.views.TuneExtraView
-                        android:id="@+id/tuneExtraView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp" />
+                        <com.elementary.tasks.core.views.LoudnessPickerView
+                            android:id="@+id/loudnessView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="16dp" />
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
 
-                </LinearLayout>
-            </com.github.florent37.expansionpanel.ExpansionLayout>
-        </com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout>
+                        <com.elementary.tasks.core.views.AttachmentView
+                            android:id="@+id/attachmentView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
 
-        <com.elementary.tasks.core.views.DividerView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp" />
+                        <com.elementary.tasks.core.views.DividerView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+                        <com.elementary.tasks.core.views.LedPickerView
+                            android:id="@+id/ledView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/exportToCalendar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:paddingStart="@dimen/checkbox_padding"
+                            android:paddingEnd="@dimen/checkbox_padding"
+                            android:text="@string/add_to_calendar"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:visibility="visible" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/exportToTasks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:paddingStart="@dimen/checkbox_padding"
+                            android:paddingEnd="@dimen/checkbox_padding"
+                            android:text="@string/google_tasks"
+                            android:textAppearance="?textAppearanceBody1"
+                            android:visibility="visible" />
+
+                        <com.elementary.tasks.core.views.ActionView
+                            android:id="@+id/actionView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="16dp" />
+
+                        <com.elementary.tasks.core.views.TuneExtraView
+                            android:id="@+id/tuneExtraView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp" />
+
+                    </LinearLayout>
+                </com.github.florent37.expansionpanel.ExpansionLayout>
+            </com.github.florent37.expansionpanel.viewgroup.ExpansionsViewGroupLinearLayout>
+
+            <com.elementary.tasks.core.views.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

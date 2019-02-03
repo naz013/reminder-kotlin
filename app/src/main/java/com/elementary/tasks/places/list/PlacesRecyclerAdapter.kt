@@ -1,7 +1,5 @@
 package com.elementary.tasks.places.list
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
@@ -10,7 +8,7 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
-import kotlinx.android.synthetic.main.list_item_place.view.*
+import com.elementary.tasks.databinding.ListItemPlaceBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,28 +32,28 @@ class PlacesRecyclerAdapter : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolde
 
     var actionsListener: ActionsListener<Place>? = null
 
-    inner class ViewHolder(itemView: View) : BaseHolder(itemView) {
+    inner class ViewHolder(parent: ViewGroup) : BaseHolder<ListItemPlaceBinding>(parent, R.layout.list_item_place) {
         fun bind(item: Place) {
-            itemView.textView.text = item.name
+            binding.textView.text = item.name
             DrawableHelper.withContext(itemView.context)
                     .withDrawable(R.drawable.ic_twotone_place_24px)
                     .withColor(themeUtil.getNoteLightColor(item.marker))
                     .tint()
-                    .applyTo(itemView.markerImage)
+                    .applyTo(binding.markerImage)
         }
 
         init {
-            itemView.itemCard.setOnClickListener {
+            binding.itemCard.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            itemView.buttonMore.setOnClickListener {
+            binding.buttonMore.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_place, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

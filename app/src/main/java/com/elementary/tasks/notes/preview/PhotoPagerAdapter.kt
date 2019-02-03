@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
-import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ImageFile
+import com.elementary.tasks.databinding.FragmentImageBinding
 import com.github.chrisbanes.photoview.PhotoView
-import kotlinx.android.synthetic.main.fragment_image.view.*
 
 class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter() {
 
@@ -22,11 +21,10 @@ class PhotoPagerAdapter(private val mPhotosUrl: List<ImageFile>) : PagerAdapter(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val binding = LayoutInflater.from(container.context).inflate(R.layout.fragment_image, container, false)
-        val imageView = binding.iv_photo
-        loadPhoto(imageView, position)
-        container.addView(binding)
-        return binding
+        val binding = FragmentImageBinding.inflate(LayoutInflater.from(container.context), container, false)
+        loadPhoto(binding.ivPhoto, position)
+        container.addView(binding.root)
+        return binding.root
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {

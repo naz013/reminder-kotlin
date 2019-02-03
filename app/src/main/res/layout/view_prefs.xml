@@ -77,7 +77,7 @@
                     android:visibility="gone" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/prefs_switch"
+                    android:id="@+id/prefsSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:clickable="false"

@@ -12,8 +12,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.views.RepeatViewBinding
 import com.elementary.tasks.core.utils.TimeCount
-import kotlinx.android.synthetic.main.view_repeat.view.*
 import timber.log.Timber
 
 /**
@@ -36,6 +36,7 @@ import timber.log.Timber
  */
 class RepeatView : LinearLayout, TextWatcher {
 
+    private lateinit var binding: RepeatViewBinding
     private var mRepeatListener: OnRepeatListener? = null
     var onRepeatChangeListener: OnRepeatChangeListener? = null
     private var mImm: InputMethodManager? = null
@@ -78,31 +79,31 @@ class RepeatView : LinearLayout, TextWatcher {
                 fitInterval(mills, TimeCount.DAY * 7) -> {
                     val progress = mills / (TimeCount.DAY * 7)
                     setProgress(progress.toInt())
-                    repeatType.setSelection(WEEKS)
+                    binding.repeatType.setSelection(WEEKS)
                 }
                 fitInterval(mills, TimeCount.DAY) -> {
                     val progress = mills / TimeCount.DAY
                     setProgress(progress.toInt())
-                    repeatType.setSelection(DAYS)
+                    binding.repeatType.setSelection(DAYS)
                 }
                 fitInterval(mills, TimeCount.HOUR) -> {
                     val progress = mills / TimeCount.HOUR
                     setProgress(progress.toInt())
-                    repeatType.setSelection(HOURS)
+                    binding.repeatType.setSelection(HOURS)
                 }
                 fitInterval(mills, TimeCount.MINUTE) -> {
                     val progress = mills / TimeCount.MINUTE
                     setProgress(progress.toInt())
-                    repeatType.setSelection(MINUTES)
+                    binding.repeatType.setSelection(MINUTES)
                 }
                 fitInterval(mills, TimeCount.SECOND) -> {
                     val progress = mills / TimeCount.SECOND
                     setProgress(progress.toInt())
-                    repeatType.setSelection(SECONDS)
+                    binding.repeatType.setSelection(SECONDS)
                 }
                 else -> {
                     setProgress(mills.toInt())
-                    repeatType.setSelection(0)
+                    binding.repeatType.setSelection(0)
                 }
             }
         }
@@ -126,14 +127,16 @@ class RepeatView : LinearLayout, TextWatcher {
     private fun init(context: Context, attrs: AttributeSet?) {
         View.inflate(context, R.layout.view_repeat, this)
         orientation = LinearLayout.HORIZONTAL
+        binding = RepeatViewBinding(this)
+
         mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        hintIcon.setOnLongClickListener {
+        binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.repeat), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
-        TooltipCompat.setTooltipText(hintIcon, context.getString(R.string.repeat))
-        repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.repeat))
+        binding.repeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
                 if (!mIsLocked) setState(i)
             }
@@ -142,19 +145,19 @@ class RepeatView : LinearLayout, TextWatcher {
 
             }
         }
-        repeatTitle.addTextChangedListener(this)
-        repeatTitle.setOnFocusChangeListener { _, hasFocus ->
+        binding.repeatTitle.addTextChangedListener(this)
+        binding.repeatTitle.setOnFocusChangeListener { _, hasFocus ->
             if (mImm == null) return@setOnFocusChangeListener
             if (!hasFocus) {
-                mImm?.hideSoftInputFromWindow(repeatTitle.windowToken, 0)
+                mImm?.hideSoftInputFromWindow(binding.repeatTitle.windowToken, 0)
             } else {
-                mImm?.showSoftInput(repeatTitle, 0)
+                mImm?.showSoftInput(binding.repeatTitle, 0)
             }
         }
-        repeatTitle.setOnClickListener {
+        binding.repeatTitle.setOnClickListener {
             if (mImm == null) return@setOnClickListener
-            if (mImm?.isActive(repeatTitle) == false) {
-                mImm?.showSoftInput(repeatTitle, 0)
+            if (mImm?.isActive(binding.repeatTitle) == false) {
+                mImm?.showSoftInput(binding.repeatTitle, 0)
             }
         }
         if (attrs != null) {
@@ -173,10 +176,10 @@ class RepeatView : LinearLayout, TextWatcher {
         if (mState == MONTHS && mIsLocked) {
             val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times_month))
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            repeatType.adapter = spinnerAdapter
-            repeatType.isEnabled = false
+            binding.repeatType.adapter = spinnerAdapter
+            binding.repeatType.isEnabled = false
         } else {
-            repeatType.isEnabled = true
+            binding.repeatType.isEnabled = true
         }
         setState(mState)
     }
@@ -191,7 +194,7 @@ class RepeatView : LinearLayout, TextWatcher {
     }
 
     private fun updateEditField() {
-        repeatTitle.setSelection(repeatTitle.text.toString().length)
+        binding.repeatTitle.setSelection(binding.repeatTitle.text.toString().length)
     }
 
     private fun setProgress(i: Int) {
@@ -200,12 +203,12 @@ class RepeatView : LinearLayout, TextWatcher {
                 setDefaultField()
             } else {
                 mRepeatValue = i
-                repeatTitle.setText(i.toString())
+                binding.repeatTitle.setText(i.toString())
                 updateEditField()
             }
         } else {
             mRepeatValue = i
-            repeatTitle.setText(i.toString())
+            binding.repeatTitle.setText(i.toString())
             updateEditField()
         }
     }
@@ -230,8 +233,8 @@ class RepeatView : LinearLayout, TextWatcher {
 
     private fun setDefaultField() {
         mRepeatValue = defaultValue
-        repeatTitle.setText(defaultValue.toString())
-        repeatTitle.setSelection(repeatTitle.text.toString().length)
+        binding.repeatTitle.setText(defaultValue.toString())
+        binding.repeatTitle.setSelection(binding.repeatTitle.text.toString().length)
     }
 
     override fun afterTextChanged(s: Editable) {

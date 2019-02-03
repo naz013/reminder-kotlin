@@ -1,96 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?android:colorBackground"
-            app:contentInsetEnd="0dp"
-            app:contentInsetStart="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/titleView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/new_place"
-                    android:textAppearance="?textAppearanceHeadline6" />
-
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/placeLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:boxBackgroundColor="?colorSecondary12"
-            app:boxCornerRadiusTopEnd="5dp"
-            app:boxCornerRadiusTopStart="5dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/placeName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/name"
-                android:maxLines="1"
-                android:textAppearance="?textAppearanceSubtitle1" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:layout_marginTop="8dp" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.card.MaterialCardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/appBar"
-        android:layout_marginTop="-16dp"
-        android:layout_marginBottom="-15dp"
-        android:paddingBottom="15dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="4dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/fragment_container"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:colorBackground"
+            app:elevation="0dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?android:colorBackground"
+                app:contentInsetEnd="0dp"
+                app:contentInsetStart="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/backButton"
+                        android:layout_width="?actionBarSize"
+                        android:layout_height="?actionBarSize"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_arrow_back_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/titleView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/new_place"
+                        android:textAppearance="?textAppearanceHeadline6" />
+
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/placeLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:boxBackgroundColor="?colorSecondary12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/placeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceSubtitle1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_marginTop="8dp" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="14dp"
-            android:orientation="vertical" />
+            android:layout_below="@+id/appBar"
+            android:layout_marginTop="-16dp"
+            android:layout_marginBottom="-15dp"
+            android:paddingBottom="15dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="4dp">
 
-    </com.google.android.material.card.MaterialCardView>
-</RelativeLayout>
+            <LinearLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="14dp"
+                android:orientation="vertical" />
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+</layout>

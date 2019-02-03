@@ -76,8 +76,10 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         }
     }
 
-    fun getAddress(position: Int): Address {
-        return foundPlaces[position]
+    fun getAddress(position: Int): Address? {
+        return if (position < foundPlaces.size) {
+            foundPlaces[position]
+        } else null
     }
 
     private fun performTypeValue(s: String) {

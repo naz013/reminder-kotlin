@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.view.MotionEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
@@ -18,7 +19,6 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,12 +38,11 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseNotificationActivity : ThemedActivity() {
+abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>() {
 
     private var tts: TextToSpeech? = null
     private var mWakeLock: PowerManager.WakeLock? = null
-    @Inject
-    lateinit var soundStackHolder: SoundStackHolder
+    var soundStackHolder: SoundStackHolder = ReminderApp.appComponent.soundStack()
 
     private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
@@ -125,10 +124,6 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             }
             return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     protected open fun showSendingError() {
 

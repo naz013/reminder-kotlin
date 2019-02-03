@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import com.elementary.tasks.R
+import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import kotlinx.android.synthetic.main.fragment_settings_web_view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,10 +26,10 @@ import kotlinx.android.synthetic.main.fragment_settings_web_view.*
  * limitations under the License.
  */
 
-abstract class BaseWebViewFragment : BaseSettingsFragment() {
+abstract class BaseWebViewFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 
     protected val webView: WebView
-        get() = web_view
+        get() = binding.webView
 
     protected abstract val url: String
 
@@ -37,8 +37,8 @@ abstract class BaseWebViewFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setExtraParams(web_view)
-        web_view.loadUrl(url)
+        setExtraParams(binding.webView)
+        binding.webView.loadUrl(url)
     }
 
     protected open fun setExtraParams(webView: WebView) {

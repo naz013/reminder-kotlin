@@ -2,11 +2,9 @@ package com.elementary.tasks.month_view
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
+import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
@@ -14,9 +12,9 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.views.MonthView
+import com.elementary.tasks.databinding.FragmentMonthViewBinding
 import com.elementary.tasks.day_view.day.EventModel
 import hirondelle.date4j.DateTime
-import kotlinx.android.synthetic.main.fragment_month_view.*
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.util.*
@@ -39,7 +37,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class MonthFragment : Fragment() {
+class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
 
     private var callback: MonthCallback? = null
     private var mItem: MonthPagerItem? = null
@@ -49,7 +47,9 @@ class MonthFragment : Fragment() {
     fun setModel(monthPagerItem: MonthPagerItem) {
         this.mItem = monthPagerItem
         Timber.d("setModel: $monthPagerItem")
-        monthView?.setDate(monthPagerItem.year, monthPagerItem.month + 1)
+        if (isResumed) {
+            binding.monthView.setDate(monthPagerItem.year, monthPagerItem.month + 1)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,21 +63,19 @@ class MonthFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_month_view, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_month_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val item = mItem
         if (item != null) {
-            monthView?.setDate(item.year, item.month + 1)
-            monthView?.setDateClick(object : MonthView.OnDateClick {
+            binding.monthView.setDate(item.year, item.month + 1)
+            binding.monthView.setDateClick(object : MonthView.OnDateClick {
                 override fun onClick(dateTime: DateTime) {
                     callback?.onDateClick(TimeUtil.convertDateTimeToDate(dateTime))
                 }
             })
-            monthView?.setDateLongClick(object : MonthView.OnDateLongClick {
+            binding.monthView.setDateLongClick(object : MonthView.OnDateLongClick {
                 override fun onLongClick(dateTime: DateTime) {
                     callback?.onDateLongClick(TimeUtil.convertDateTimeToDate(dateTime))
                 }
@@ -96,7 +94,7 @@ class MonthFragment : Fragment() {
                         launchDefault {
                             val data = mapData(list)
                             withUIContext {
-                                monthView?.setEventsMap(data)
+                                if (isResumed) binding.monthView.setEventsMap(data)
                             }
                         }
                     }

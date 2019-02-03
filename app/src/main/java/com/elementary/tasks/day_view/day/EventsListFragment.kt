@@ -1,14 +1,12 @@
 package com.elementary.tasks.day_view.day
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.BirthdayResolver
+import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -16,9 +14,9 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
-import kotlinx.android.synthetic.main.fragment_events_list.*
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,7 +39,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EventsListFragment : Fragment() {
+class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
     private var callback: DayCallback? = null
     private val mAdapter = CalendarEventsAdapter()
@@ -77,9 +75,7 @@ class EventsListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_events_list, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_events_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,19 +91,19 @@ class EventsListFragment : Fragment() {
             }
         })
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = mAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = mAdapter
 
         reloadView()
     }
 
     private fun reloadView() {
         if (mAdapter.itemCount > 0) {
-            recyclerView.visibility = View.VISIBLE
-            emptyItem.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
+            binding.emptyItem.visibility = View.GONE
         } else {
-            recyclerView.visibility = View.GONE
-            emptyItem.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+            binding.emptyItem.visibility = View.VISIBLE
         }
     }
 

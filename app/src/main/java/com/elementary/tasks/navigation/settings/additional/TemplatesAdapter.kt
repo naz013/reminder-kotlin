@@ -1,14 +1,14 @@
 package com.elementary.tasks.navigation.settings.additional
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import kotlinx.android.synthetic.main.list_item_message.view.*
+import com.elementary.tasks.databinding.ListItemMessageBinding
 import java.util.*
 
 /**
@@ -47,24 +47,24 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_message, parent, false))
+        return ViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    internal inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemMessageBinding>(parent, R.layout.list_item_message) {
         fun bind(item: SmsTemplate) {
-            itemView.messageView.text = item.title
+            binding.messageView.text = item.title
         }
 
         init {
-            itemView.buttonMore.visibility = View.VISIBLE
-            itemView.clickView.setOnClickListener {
+            binding.buttonMore.visibility = View.VISIBLE
+            binding.clickView.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            itemView.buttonMore.setOnClickListener {
+            binding.buttonMore.setOnClickListener {
                 actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
             }
         }

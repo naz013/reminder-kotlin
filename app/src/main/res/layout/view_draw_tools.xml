@@ -1,105 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:colorBackground"
-    android:orientation="vertical"
-    android:padding="24dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:background="?android:colorBackground"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/penButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_pen"
-            app:tint="?android:textColorPrimary" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fillToolButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_format_color_fill_24px"
-            app:tint="?android:textColorPrimary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/penButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_pen"
+                app:tint="?android:textColorPrimary" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageToolButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_image_24px"
-            app:tint="?android:textColorPrimary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fillToolButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_format_color_fill_24px"
+                app:tint="?android:textColorPrimary" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/textButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_text_fields_24px"
-            app:tint="?android:textColorPrimary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageToolButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_image_24px"
+                app:tint="?android:textColorPrimary" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/lineButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_vector_line"
-            app:tint="?android:textColorPrimary" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/textButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_text_fields_24px"
+                app:tint="?android:textColorPrimary" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/lineButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_vector_line"
+                app:tint="?android:textColorPrimary" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/rectangleButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_square_outline"
+                app:tint="?android:textColorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/circleButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_circle_outline"
+                app:tint="?android:textColorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ellipseButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_ellipse_vector_format"
+                app:tint="?android:textColorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cubicBezierButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_vector_curve"
+                app:tint="?android:textColorPrimary" />
+
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/rectangleButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_square_outline"
-            app:tint="?android:textColorPrimary" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/circleButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_circle_outline"
-            app:tint="?android:textColorPrimary" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ellipseButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_ellipse_vector_format"
-            app:tint="?android:textColorPrimary" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/cubicBezierButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_vector_curve"
-            app:tint="?android:textColorPrimary" />
-
-    </LinearLayout>
-</LinearLayout>
+</layout>

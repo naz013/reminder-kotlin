@@ -13,7 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_send_feedback.*
+import com.elementary.tasks.databinding.ActivitySendFeedbackBinding
 
 /**
  * Copyright 2019 Nazar Suhovich
@@ -33,18 +33,19 @@ import kotlinx.android.synthetic.main.activity_send_feedback.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SendFeedbackActivity : ThemedActivity() {
+class SendFeedbackActivity : ThemedActivity<ActivitySendFeedbackBinding>() {
 
     private val url = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
+
+    override fun layoutRes(): Int = R.layout.activity_send_feedback
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_send_feedback)
         initActionBar()
 
-        web_view.settings.javaScriptEnabled = true
-        web_view.webViewClient = object : WebViewClient() {
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
@@ -56,15 +57,15 @@ class SendFeedbackActivity : ThemedActivity() {
                 }
             }
         }
-        web_view.webChromeClient = WebChromeClient()
-        web_view.loadUrl(url)
+        binding.webView.webChromeClient = WebChromeClient()
+        binding.webView.loadUrl(url)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        toolbar.title = getString(R.string.feedback)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.title = getString(R.string.feedback)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -77,18 +78,18 @@ class SendFeedbackActivity : ThemedActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_refresh -> {
-                web_view.reload()
+                binding.webView.reload()
                 return true
             }
             R.id.action_forward -> {
-                if (web_view.canGoForward()) {
-                    web_view.goForward()
+                if (binding.webView.canGoForward()) {
+                    binding.webView.goForward()
                 }
                 return true
             }
             R.id.action_back -> {
-                if (web_view.canGoBack()) {
-                    web_view.goBack()
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack()
                 }
                 return true
             }

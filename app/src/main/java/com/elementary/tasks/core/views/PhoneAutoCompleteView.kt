@@ -17,7 +17,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import kotlinx.android.synthetic.main.list_item_email.view.*
+import com.elementary.tasks.databinding.ListItemEmailBinding
 import java.util.*
 
 /**
@@ -122,10 +122,13 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
             if (v == null) {
                 v = LayoutInflater.from(context).inflate(R.layout.list_item_email, viewGroup, false)
             }
-            if (v != null) {
+            v?.let {
                 val item = items[i]
-                v.nameView.text = item.name
-                v.emailView.text = item.phone
+                return ListItemEmailBinding.bind(it).run {
+                    nameView.text = item.name
+                    emailView.text = item.phone
+                    this.root
+                }
             }
             return v
         }

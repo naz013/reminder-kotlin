@@ -19,7 +19,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
-import kotlinx.android.synthetic.main.activity_quick_sms.*
+import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,22 +40,23 @@ import kotlinx.android.synthetic.main.activity_quick_sms.*
  * limitations under the License.
  */
 @Suppress("DEPRECATION")
-class QuickSmsActivity : ThemedActivity() {
+class QuickSmsActivity : ThemedActivity<ActivityQuickSmsBinding>() {
 
     private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
     private var number: String = ""
 
+    override fun layoutRes(): Int = R.layout.activity_quick_sms
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         number = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
-        setContentView(R.layout.activity_quick_sms)
 
-        messagesList.layoutManager = LinearLayoutManager(this)
-        messagesList.adapter = mAdapter
+        binding.messagesList.layoutManager = LinearLayoutManager(this)
+        binding.messagesList.adapter = mAdapter
 
-        buttonSend.setOnClickListener { startSending() }
+        binding.buttonSend.setOnClickListener { startSending() }
         val name = Contacts.getNameFromNumber(number, this) ?: ""
-        contactInfo.text = "$name\n$number"
+        binding.contactInfo.text = "$name\n$number"
 
         initViewModel()
     }
