@@ -43,7 +43,6 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -78,6 +77,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private var mItem: NoteWithImages? = null
     private var mReminder: Reminder? = null
     private var speech: SpeechRecognizer? = null
+    private var mUri: Uri? = null
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -399,10 +399,9 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private fun loadNote() {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
-        val data = intent.data
-        if (data != null) {
-            val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
-            loadNoteFromFile(filePath, data)
+        mUri = intent.data
+        if (mUri != null) {
+            loadNoteFromFile()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
                 val note = intent.getSerializableExtra(Constants.INTENT_ITEM) as NoteWithImages?
@@ -461,24 +460,32 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         binding.discardReminder.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_cancel_24px, isBgDark))
     }
 
-    private fun loadNoteFromFile(filePath: String, uri: Uri?) {
-        try {
-            mItem = if (uri != null) {
-                val scheme = uri.scheme
-                if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getNote(uri.path, null)
-                } else {
-                    null
-                }
-            } else {
-                backupTool.getNote(filePath, null)
-            }
-            showNote(mItem)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
+    private fun loadNoteFromFile() {
+        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+            return
         }
+        val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
+        if (mUri != null) {
+            mUri?.let {
+                try {
+                    val scheme = it.scheme
+                    mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                        backupTool.getNote(it.path, null)
+                    } else {
+                        null
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } else {
+            try {
+                mItem = backupTool.getNote(filePath, null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        showNote(mItem)
     }
 
     private fun showNote(noteWithImages: NoteWithImages?) {
@@ -833,6 +840,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             when (requestCode) {
                 AUDIO_CODE -> micClick()
                 SEND_CODE -> shareNote()
+                SD_REQ -> loadNoteFromFile()
             }
         }
     }
@@ -855,6 +863,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
 
     companion object {
         const val MENU_ITEM_DELETE = 12
+        private const val SD_REQ = 555
         private const val EDIT_CODE = 11223
         private const val AUDIO_CODE = 255000
         private const val SEND_CODE = 25501

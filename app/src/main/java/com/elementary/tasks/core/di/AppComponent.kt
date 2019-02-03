@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.di
 
-import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.IntentActivity
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
@@ -51,7 +50,6 @@ import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.places.google.LocationPlacesAdapter
-import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.voice.ConversationAdapter
 import dagger.Component
@@ -90,6 +88,7 @@ interface AppComponent {
     fun notifier(): Notifier
     fun buttonObservable(): GlobalButtonObservable
     fun soundStack(): SoundStackHolder
+    fun backupTool(): BackupTool
 
     fun inject(viewModel: BaseDbViewModel)
     fun inject(viewModel: BaseNotesViewModel)
@@ -144,12 +143,10 @@ interface AppComponent {
 
     fun inject(activity: CreateNoteActivity)
     fun inject(activity: MainActivity)
-    fun inject(activity: CreateReminderActivity)
     fun inject(activity: ReminderPreviewActivity)
     fun inject(activity: ImagePreviewActivity)
     fun inject(activity: ImageEditActivity)
     fun inject(activity: NotePreviewActivity)
-    fun inject(activity: AddBirthdayActivity)
     fun inject(activity: CreateGroupActivity)
     fun inject(activity: TaskListActivity)
     fun inject(activity: TaskActivity)
