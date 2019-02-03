@@ -84,13 +84,13 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_trash, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_trash, menu)
 
-        menu?.findItem(R.id.action_delete_all)?.isVisible = false
+        menu.findItem(R.id.action_delete_all)?.isVisible = false
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
 
-        mSearchMenu = menu?.findItem(R.id.action_search)
+        mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?

@@ -57,21 +57,21 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.tasks_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.tasks_menu, menu)
         val googleTaskList = currentTaskList()
         if (googleTaskList != null) {
-            menu?.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
+            menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
             if (googleTaskList.def != 1) {
-                menu?.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
+                menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
             }
-            menu?.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
+            menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_add_list -> {
                 startActivity(Intent(context, TaskListActivity::class.java))
                 return true

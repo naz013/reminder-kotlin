@@ -42,7 +42,7 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
         private set
     private var mLastScroll: Int = 0
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (callback == null) {
             try {

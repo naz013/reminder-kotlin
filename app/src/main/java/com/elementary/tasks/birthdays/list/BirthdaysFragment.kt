@@ -78,9 +78,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_trash, menu)
-        menu?.findItem(R.id.action_delete_all)?.isVisible = false
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_trash, menu)
+        menu.findItem(R.id.action_delete_all)?.isVisible = false
 
         val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
         if (isDark) {
@@ -90,9 +90,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
             val black = ContextCompat.getColor(context!!, R.color.pureBlack)
             DrawableCompat.setTint(searchIcon!!, black)
         }
-        menu?.getItem(0)?.icon = searchIcon
+        menu.getItem(0)?.icon = searchIcon
 
-        mSearchMenu = menu?.findItem(R.id.action_search)
+        mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?

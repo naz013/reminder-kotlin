@@ -31,7 +31,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/priority_lowest"
-                android:textAppearance="?textAppearanceBody2" />
+                android:textAppearance="?textAppearanceBody2"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipLow"
@@ -39,7 +43,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/priority_low"
-                android:textAppearance="?textAppearanceBody2" />
+                android:textAppearance="?textAppearanceBody2"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipNormal"
@@ -48,7 +56,11 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/priority_normal"
-                android:textAppearance="?textAppearanceBody2" />
+                android:textAppearance="?textAppearanceBody2"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipHigh"
@@ -56,7 +68,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/priority_high"
-                android:textAppearance="?textAppearanceBody2" />
+                android:textAppearance="?textAppearanceBody2"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipHighest"
@@ -64,7 +80,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/priority_highest"
-                android:textAppearance="?textAppearanceBody2" />
+                android:textAppearance="?textAppearanceBody2"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp" />
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
 </merge>
