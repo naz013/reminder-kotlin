@@ -63,13 +63,13 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.day_view_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.day_view_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_voice -> {
                 buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
                 return true

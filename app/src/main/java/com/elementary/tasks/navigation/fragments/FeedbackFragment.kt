@@ -69,8 +69,8 @@ class FeedbackFragment : BaseWebViewFragment() {
         activity?.invalidateOptionsMenu()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_feedback, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_feedback, menu)
 
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_refresh_24px, isDark)
         ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_local_post_office_24px, isDark)
@@ -78,8 +78,8 @@ class FeedbackFragment : BaseWebViewFragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_refresh -> {
                 webView.reload()
                 return true

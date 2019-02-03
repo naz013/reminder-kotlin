@@ -94,16 +94,16 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.notes_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.notes_menu, menu)
 
-        menu?.getItem(1)?.title = if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
+        menu.getItem(1)?.title = if (enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
 
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
         ViewUtils.tintMenuIcon(context!!, menu, 1, if (enableGrid) R.drawable.ic_twotone_view_quilt_24px else R.drawable.ic_twotone_view_list_24px, isDark)
         ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_sort_24px, isDark)
 
-        mSearchMenu = menu?.findItem(R.id.action_search)
+        mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?
@@ -153,8 +153,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         binding.progressView.visibility = View.VISIBLE
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_order -> showDialog()
             R.id.action_list -> {
                 enableGrid = !enableGrid

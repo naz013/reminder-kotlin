@@ -87,19 +87,19 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_active_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_active_menu, menu)
 
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
         if (Module.hasMicrophone(context!!)) {
-            menu?.getItem(1)?.isVisible = true
+            menu.getItem(1)?.isVisible = true
             ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_mic_24px, isDark)
         } else {
-            menu?.getItem(1)?.isVisible = false
+            menu.getItem(1)?.isVisible = false
         }
         ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_filter_list_24px, isDark)
 
-        mSearchMenu = menu?.findItem(R.id.action_search)
+        mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?
@@ -111,14 +111,14 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             mSearchView?.setOnQueryTextListener(queryTextListener)
         }
         val isNotEmpty = searchModifier.hasOriginal()
-        menu?.getItem(0)?.isVisible = isNotEmpty
-        menu?.getItem(2)?.isVisible = false
+        menu.getItem(0)?.isVisible = isNotEmpty
+        menu.getItem(2)?.isVisible = false
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_voice -> if (callback != null) {
                 buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
             }

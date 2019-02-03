@@ -33,6 +33,10 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/full_screen"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp"
                 android:textAppearance="?textAppearanceBody2" />
 
             <com.google.android.material.chip.Chip
@@ -41,6 +45,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/simple"
+                android:textColor="@color/chip_text_colors"
+                app:chipBackgroundColor="@color/chip_bg_colors"
+                app:chipStrokeColor="?colorSecondary"
+                app:chipStrokeWidth="1dp"
                 android:textAppearance="?textAppearanceBody2" />
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>

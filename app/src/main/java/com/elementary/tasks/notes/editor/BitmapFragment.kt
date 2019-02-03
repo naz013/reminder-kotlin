@@ -26,7 +26,7 @@ abstract class BitmapFragment<B : ViewDataBinding> : BaseNavigationFragment<B>()
 
     protected var editInterface: EditInterface? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         val ei = editInterface
         if (ei == null) {

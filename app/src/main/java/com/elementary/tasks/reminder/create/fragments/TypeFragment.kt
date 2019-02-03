@@ -55,7 +55,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     abstract fun prepare(): Reminder?
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         iFace = context as ReminderInterface
     }

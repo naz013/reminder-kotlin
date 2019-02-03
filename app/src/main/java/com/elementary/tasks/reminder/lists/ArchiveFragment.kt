@@ -80,13 +80,13 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.fragment_trash, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_trash, menu)
 
         ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
         ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_delete_sweep_24px, isDark)
 
-        mSearchMenu = menu?.findItem(R.id.action_search)
+        mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?
@@ -99,14 +99,13 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
         }
 
         val isNotEmpty = viewModel.events.value?.size ?: 0 > 0
-        menu?.getItem(0)?.isVisible = isNotEmpty
-        menu?.getItem(1)?.isVisible = isNotEmpty
+        menu.getItem(0)?.isVisible = isNotEmpty
+        menu.getItem(1)?.isVisible = isNotEmpty
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item == null) return false
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_delete_all -> {
                 viewModel.deleteAll(mAdapter.data)
