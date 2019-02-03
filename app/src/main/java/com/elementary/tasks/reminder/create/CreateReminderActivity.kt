@@ -39,7 +39,6 @@ import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
 class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
@@ -59,8 +58,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
 
-    @Inject
-    lateinit var backupTool: BackupTool
+    private var backupTool: BackupTool = ReminderApp.appComponent.backupTool()
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -76,10 +74,6 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         if (reminder != null) {
             editReminder(reminder)
         }
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun layoutRes(): Int = R.layout.activity_create_reminder
@@ -181,7 +175,10 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                 stateViewModel.reminder.eventTime = TimeUtil.getGmtFromDateTime(date)
                 editReminder(stateViewModel.reminder, false)
             }
-            intent.data != null -> readFromIntent()
+            intent.data != null -> {
+                mUri = intent.data
+                readFromIntent()
+            }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
                     val reminder = intent.getSerializableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
@@ -198,7 +195,6 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     private fun readFromIntent() {
-        mUri = intent.data
         if (Permissions.ensurePermissions(this, SD_PERM, Permissions.READ_EXTERNAL)) {
             mUri?.let {
                 try {

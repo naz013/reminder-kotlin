@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.settings.additional
 
 import android.content.ContentResolver
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,14 +11,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
-import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -42,6 +39,7 @@ class TemplateActivity : ThemedActivity<ActivityTemplateBinding>() {
 
     private lateinit var viewModel: SmsTemplateViewModel
     private var mItem: SmsTemplate? = null
+    private var mUri: Uri? = null
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -63,27 +61,31 @@ class TemplateActivity : ThemedActivity<ActivityTemplateBinding>() {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
-            try {
-                val name = intent.data
-                val scheme = name!!.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getTemplate(name.path, null)
-                } else null
-                val item = mItem
-                if (item != null) {
-                    showTemplate(item)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            }
+            mUri = intent.data
+            readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
                 val item = intent.getSerializableExtra(Constants.INTENT_ITEM) as SmsTemplate?
                 if (item != null) {
                     showTemplate(item)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun readUri() {
+        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+            return
+        }
+        mUri?.let {
+            try {
+                val scheme = it.scheme
+                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                    backupTool.getTemplate(it.path, null)
+                } else null
+                mItem?.let { item -> showTemplate(item) }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -171,7 +173,15 @@ class TemplateActivity : ThemedActivity<ActivityTemplateBinding>() {
         return true
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == SD_REQ && Permissions.isAllGranted(grantResults)) {
+            readUri()
+        }
+    }
+
     companion object {
         private const val MENU_ITEM_DELETE = 12
+        private const val SD_REQ = 555
     }
 }

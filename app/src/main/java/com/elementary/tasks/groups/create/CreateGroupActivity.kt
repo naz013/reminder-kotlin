@@ -1,6 +1,7 @@
 package com.elementary.tasks.groups.create
 
 import android.content.ContentResolver
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,14 +11,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
-import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -42,6 +39,7 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
 
     private lateinit var viewModel: GroupViewModel
     private var mItem: ReminderGroup? = null
+    private var mUri: Uri? = null
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -97,23 +95,29 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
-            try {
-                val name = intent.data ?: return
-                val scheme = name.scheme
-                val item = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getGroup(name.path, null)
-                } else null
-                item?.let { showGroup(it) }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            }
+            mUri = intent.data
+            readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
                 (intent.getSerializableExtra(Constants.INTENT_ITEM) as ReminderGroup?)?.let {
                     showGroup(it)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun readUri() {
+        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+            return
+        }
+        mUri?.let {
+            try {
+                val scheme = it.scheme
+                (if (ContentResolver.SCHEME_CONTENT != scheme) {
+                    backupTool.getGroup(it.path, null)
+                } else null)?.let { item -> showGroup(item) }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -192,8 +196,16 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
         mItem?.let { viewModel.deleteGroup(it) }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == SD_REQ && Permissions.isAllGranted(grantResults)) {
+            readUri()
+        }
+    }
+
     companion object {
         private const val MENU_ITEM_DELETE = 12
+        private const val SD_REQ = 555
         private const val ARG_COLOR = "arg_color"
     }
 }

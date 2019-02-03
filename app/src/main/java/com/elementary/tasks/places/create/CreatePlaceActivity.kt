@@ -1,6 +1,7 @@
 package com.elementary.tasks.places.create
 
 import android.content.ContentResolver
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
@@ -48,6 +50,7 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
     private var mGoogleMap: AdvancedMapFragment? = null
 
     private var mItem: Place? = null
+    private var mUri: Uri? = null
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -103,19 +106,28 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
+            mUri = intent.data
+            readUri()
+        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
-                val name = intent.data ?: return
-                val scheme = name.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getPlace(name.path, null)
-                } else null
+                mItem = intent.getSerializableExtra(Constants.INTENT_ITEM) as Place?
                 showPlace(mItem)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+        }
+    }
+
+    private fun readUri() {
+        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+            return
+        }
+        mUri?.let {
             try {
-                mItem = intent.getSerializableExtra(Constants.INTENT_ITEM) as Place?
+                val scheme = it.scheme
+                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                    backupTool.getPlace(it.path, null)
+                } else null
                 showPlace(mItem)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -224,7 +236,15 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == SD_REQ && Permissions.isAllGranted(grantResults)) {
+            readUri()
+        }
+    }
+
     companion object {
+        private const val SD_REQ = 555
         private const val MENU_ITEM_DELETE = 12
     }
 }

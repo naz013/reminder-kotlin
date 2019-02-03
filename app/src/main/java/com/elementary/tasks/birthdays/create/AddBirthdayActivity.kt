@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
@@ -24,7 +25,6 @@ import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import timber.log.Timber
 import java.text.ParseException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,8 +48,8 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
-    @Inject
-    lateinit var backupTool: BackupTool
+    private var mUri: Uri? = null
+    private val backupTool: BackupTool = ReminderApp.appComponent.backupTool()
 
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         val calendar = Calendar.getInstance()
@@ -58,10 +58,6 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
         calendar.set(Calendar.MONTH, monthOfYear)
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         viewModel.date.postValue(calendar.timeInMillis)
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun layoutRes(): Int = R.layout.activity_add_birthday
@@ -139,16 +135,8 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
         initViewModel(id)
         when {
             intent.data != null -> {
-                try {
-                    val name = intent.data ?: return
-                    val scheme = name.scheme
-                    mBirthday = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                        backupTool.getBirthday(name.path, null)
-                    } else null
-                    showBirthday(mBirthday)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                mUri = intent.data
+                readUri()
             }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
@@ -164,6 +152,23 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
                 if ((viewModel.date.value ?: 0L) == 0L) {
                     viewModel.date.postValue(System.currentTimeMillis())
                 }
+            }
+        }
+    }
+
+    private fun readUri() {
+        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+            return
+        }
+        mUri?.let {
+            try {
+                val scheme = it.scheme
+                mBirthday = if (ContentResolver.SCHEME_CONTENT != scheme) {
+                    backupTool.getBirthday(it.path, null)
+                } else null
+                showBirthday(mBirthday)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
@@ -311,10 +316,14 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
             CONTACT_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 saveBirthday()
             }
+            SD_REQ -> if (Permissions.isAllGranted(grantResults)) {
+
+            }
         }
     }
 
     companion object {
+        private const val SD_REQ = 555
         private const val MENU_ITEM_DELETE = 12
         private const val CONTACT_PERM = 102
         private const val ARG_LOGGED = "arg_logged"
