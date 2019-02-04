@@ -40,15 +40,13 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
         launchDefault {
             val outputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            addImage(ImageFile(outputStream.toByteArray()))
-        }
-    }
-
-    private suspend fun addImage(imageFile: ImageFile) {
-        val list = images.value ?: listOf()
-        list.toMutableList().add(imageFile)
-        withUIContext {
-            images.postValue(list)
+            val imageFile = ImageFile(outputStream.toByteArray())
+            val list = images.value ?: listOf()
+            val mutable = list.toMutableList()
+            mutable.add(imageFile)
+            withUIContext {
+                images.postValue(mutable)
+            }
         }
     }
 
@@ -84,11 +82,16 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             }
-
             if (bitmapImage != null) {
                 val outputStream = ByteArrayOutputStream()
                 bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                addImage(ImageFile(outputStream.toByteArray()))
+                val imageFile = ImageFile(outputStream.toByteArray())
+                val list = images.value ?: listOf()
+                val mutable = list.toMutableList()
+                mutable.add(imageFile)
+                withUIContext {
+                    images.postValue(mutable)
+                }
             }
         }
     }

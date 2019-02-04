@@ -14,7 +14,7 @@
             android:id="@+id/stateReady"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -30,7 +30,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/removeButton"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -39,9 +39,11 @@
                 android:layout_marginEnd="8dp"
                 android:alpha="100"
                 android:background="@drawable/drawable_secondary"
-                app:srcCompat="@drawable/ic_twotone_cancel_24px" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_cancel_24px"
+                app:tint="?colorOnSecondary" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/editButton"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -50,7 +52,9 @@
                 android:layout_toStartOf="@+id/removeButton"
                 android:alpha="100"
                 android:background="@drawable/drawable_secondary"
-                app:srcCompat="@drawable/ic_twotone_edit_24px" />
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_edit_24px"
+                app:tint="?colorOnSecondary" />
 
         </RelativeLayout>
 
@@ -59,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="?colorSecondary12"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
