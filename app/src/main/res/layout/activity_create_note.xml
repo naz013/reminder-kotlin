@@ -36,6 +36,7 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/clickView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/material_margin"
@@ -98,7 +99,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="60dp" />
+                        android:layout_height="112dp" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
