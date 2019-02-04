@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -37,6 +38,7 @@ import timber.log.Timber
  */
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
+    private var mImm: InputMethodManager? = null
     private var foundPlaces: MutableList<Address> = mutableListOf()
     private var mAdapter: AddressAdapter? = null
     private var isEnabledInner = true
@@ -54,6 +56,8 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun init() {
+        mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
@@ -69,10 +73,17 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         imeOptions = EditorInfo.IME_ACTION_SEARCH
         setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performTypeValue(text.toString().trim { it <= ' ' })
+                performTypeValue(text.toString().trim())
+                hideKb()
                 return@setOnEditorActionListener true
             }
             false
+        }
+    }
+
+    private fun hideKb() {
+        if (mImm?.isActive(this) == true) {
+            mImm?.hideSoftInputFromWindow(this.windowToken, 0)
         }
     }
 
@@ -97,10 +108,11 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         super.setOnItemClickListener { adapterView, view, i, l1 ->
             if (mAdapter != null) {
                 isEnabledInner = false
-                setText(mAdapter!!.getName(i))
+                setText(mAdapter?.getName(i) ?: "")
                 isEnabledInner = true
             }
             l?.onItemClick(adapterView, view, i, l1)
+            hideKb()
         }
     }
 
@@ -122,7 +134,10 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         }
 
         fun getName(position: Int): String {
-            return formName(getItem(position)!!)
+            val name = getItem(position)?.let {
+                formName(it)
+            }
+            return name ?: ""
         }
     }
 

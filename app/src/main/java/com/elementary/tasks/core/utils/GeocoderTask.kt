@@ -40,6 +40,7 @@ object GeocoderTask {
             withUIContext {
                 listener?.invoke(addresses)
             }
+            mJob = null
         }
     }
 
