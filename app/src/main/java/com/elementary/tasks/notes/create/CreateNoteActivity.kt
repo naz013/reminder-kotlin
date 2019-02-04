@@ -32,7 +32,6 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
-import com.elementary.tasks.core.views.GridMarginDecoration
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.notes.editor.ImageEditActivity
@@ -522,7 +521,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             }
         }
         binding.imagesList.layoutManager = KeepLayoutManager(this, 6, imagesGridAdapter)
-        binding.imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
         binding.imagesList.adapter = imagesGridAdapter
     }
 
