@@ -38,12 +38,25 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
 
     fun addBitmap(bitmap: Bitmap) {
         launchDefault {
+            val imageFile = ImageFile(state = DecodeImages.State.Loading)
+            var list = images.value ?: listOf()
+            var mutable = list.toMutableList()
+            val position = mutable.size
+            mutable.add(imageFile)
+            withUIContext {
+                images.postValue(mutable)
+            }
+
             val outputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            val imageFile = ImageFile(outputStream.toByteArray())
-            val list = images.value ?: listOf()
-            val mutable = list.toMutableList()
-            mutable.add(imageFile)
+            imageFile.apply {
+                image = outputStream.toByteArray()
+                state = DecodeImages.State.Ready
+            }
+
+            list = images.value ?: listOf()
+            mutable = list.toMutableList()
+            mutable[position] = imageFile
             withUIContext {
                 images.postValue(mutable)
             }
@@ -77,6 +90,14 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
     private fun addImageFromUri(context: Context, uri: Uri?) {
         if (uri == null) return
         launchDefault {
+            val imageFile = ImageFile(state = DecodeImages.State.Loading)
+            var list = images.value ?: listOf()
+            var mutable = list.toMutableList()
+            val position = mutable.size
+            mutable.add(imageFile)
+            withUIContext {
+                images.postValue(mutable)
+            }
             var bitmapImage: Bitmap? = null
             try {
                 bitmapImage = BitmapUtils.decodeUriToBitmap(context, uri)
@@ -86,10 +107,15 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
             if (bitmapImage != null) {
                 val outputStream = ByteArrayOutputStream()
                 bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                val imageFile = ImageFile(outputStream.toByteArray())
-                val list = images.value ?: listOf()
-                val mutable = list.toMutableList()
-                mutable.add(imageFile)
+
+                imageFile.apply {
+                    image = outputStream.toByteArray()
+                    state = DecodeImages.State.Ready
+                }
+
+                list = images.value ?: listOf()
+                mutable = list.toMutableList()
+                mutable[position] = imageFile
                 withUIContext {
                     images.postValue(mutable)
                 }
