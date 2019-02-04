@@ -169,6 +169,10 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         binding.remindTime.setOnClickListener { timeDialog() }
         binding.micButton.setOnClickListener { micClick() }
         binding.discardReminder.setOnClickListener { stateViewModel.isReminderAttached.postValue(false) }
+        binding.clickView.setOnClickListener {
+            Timber.d("onCreate: on outside touch")
+            hideKeyboard(binding.taskMessage.windowToken)
+        }
         initImagesList()
 
         if (savedInstanceState == null) {
