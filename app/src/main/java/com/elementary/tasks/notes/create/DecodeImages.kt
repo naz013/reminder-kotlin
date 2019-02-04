@@ -8,8 +8,10 @@ import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
+
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,6 +63,12 @@ object DecodeImages {
 
     private fun addImageFromUri(context: Context, uri: Uri?, image: ImageFile): ImageFile {
         if (uri == null) {
+            image.state = DecodeImages.State.Error
+            return image
+        }
+        val type = context.contentResolver.getType(uri) ?: ""
+        Timber.d("addImageFromUri: $type")
+        if (!type.contains("image")) {
             image.state = DecodeImages.State.Error
             return image
         }

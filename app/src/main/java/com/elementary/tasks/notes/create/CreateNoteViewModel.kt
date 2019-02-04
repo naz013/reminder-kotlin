@@ -82,7 +82,11 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
     fun setImage(imageFile: ImageFile, position: Int) {
         val list = (images.value ?: listOf()).toMutableList()
         if (position < list.size) {
-            list[position] = imageFile
+            if (imageFile.state == DecodeImages.State.Error) {
+                list.removeAt(position)
+            } else {
+                list[position] = imageFile
+            }
             images.postValue(list)
         }
     }
