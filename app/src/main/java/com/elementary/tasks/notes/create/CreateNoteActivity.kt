@@ -237,6 +237,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         })
         stateViewModel.images.observe(this, Observer {
             if (it != null) {
+                Timber.d("observeStates: images -> $it")
                 imagesGridAdapter.submitList(it)
             }
         })
