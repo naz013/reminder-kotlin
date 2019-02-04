@@ -3,12 +3,11 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-
 import com.elementary.tasks.BuildConfig
-
-import java.io.File
-
 import timber.log.Timber
+import java.io.File
+import java.util.*
+
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -33,6 +32,27 @@ object UriUtil {
 
     const val URI_MIME = "application/x-arc-uri-list"
     const val ANY_MIME = "any"
+
+    fun obtainPath(context: Context, uri: Uri, onReady: (Boolean, String?) -> Unit) {
+        launchIo {
+            try {
+                val id = UUID.randomUUID().toString()
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val dir = MemoryUtil.imagesDir
+                if (dir == null || inputStream == null) {
+                    withUIContext { onReady.invoke(false, null) }
+                } else {
+                    val file = File(dir.absolutePath + "/" + id)
+                    file.copyInputStreamToFile(inputStream)
+                    val filePath = file.absolutePath
+                    withUIContext { onReady.invoke(true, filePath) }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withUIContext { onReady.invoke(false, null) }
+            }
+        }
+    }
 
     fun getUri(context: Context, filePath: String): Uri {
         Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)

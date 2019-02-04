@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.AttachmentViewBinding
+import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import timber.log.Timber
@@ -36,11 +37,11 @@ class AttachmentView : LinearLayout {
     private lateinit var binding: AttachmentViewBinding
     var onFileUpdateListener: ((path: String) -> Unit)? = null
     var onFileSelectListener: (() -> Unit)? = null
-    private var content: String = ""
-        private set(value) {
+    var content: String = ""
+        set(value) {
             field = value
             if (value != "") {
-                binding.text.text = Uri.parse(value).lastPathSegment
+                binding.text.text = value
                 binding.removeButton.show()
                 onFileUpdateListener?.invoke(value)
             } else {
@@ -63,6 +64,14 @@ class AttachmentView : LinearLayout {
     fun setUri(uri: Uri) {
         Timber.d("setUri: ${uri.path}")
         content = uri.toString()
+        UriUtil.obtainPath(context, uri) { success, path ->
+            Timber.d("setUri: $success, $path")
+            content = if (success && path != null) {
+                path
+            } else {
+                ""
+            }
+        }
     }
 
     private fun noFile() {
@@ -93,7 +102,6 @@ class AttachmentView : LinearLayout {
     }
 
     private fun addClick() {
-        Timber.d("init: $content")
         if (content == "") {
             onFileSelectListener?.invoke()
         }

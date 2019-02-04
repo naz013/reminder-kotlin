@@ -400,6 +400,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PinLoginActivity.REQ_CODE) {
             if (resultCode != Activity.RESULT_OK) {
                 finish()
@@ -417,13 +418,11 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                     fragment?.onVoiceAction(StringUtils.capitalize(text))
                 }
             }
-        }
-        if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
             val melodyPath = data?.getStringExtra(Constants.FILE_PICKED) ?: ""
             fragment?.onMelodySelect(melodyPath)
             showCurrentMelody()
-        }
-        if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 fragment?.onAttachmentSelect(it)
             }

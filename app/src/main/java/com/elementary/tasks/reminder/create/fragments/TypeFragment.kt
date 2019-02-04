@@ -296,10 +296,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
     }
 
     fun onAttachmentSelect(uri: Uri) {
-        iFace.state.reminder.attachmentFile = uri.toString()
-        if (isResumed) {
-            attachmentView?.setUri(uri)
-        }
+        attachmentView?.setUri(uri)
     }
 
     private fun selectContact() {
