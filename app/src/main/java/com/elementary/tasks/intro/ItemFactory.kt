@@ -1,8 +1,7 @@
 package com.elementary.tasks.intro
 
 import android.content.Context
-import androidx.annotation.DrawableRes
-
+import androidx.annotation.RawRes
 import com.elementary.tasks.R
 
 /**
@@ -23,21 +22,19 @@ import com.elementary.tasks.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 internal object ItemFactory {
 
     fun getItem(context: Context, position: Int): IntroItem? {
         when (position) {
-            0 -> return createItem(context.getString(R.string.reminder), context.getString(R.string.reminder_descr), R.drawable.ic_bell_illustration)
-            1 -> return createItem(context.getString(R.string.notes_support), context.getString(R.string.notes_descr), R.drawable.ic_note_ill)
-            2 -> return createItem(context.getString(R.string.google_integration), context.getString(R.string.google_descr), R.drawable.ic_search_ill)
-            3 -> return createItem(context.getString(R.string.location_events), context.getString(R.string.location_descr), R.drawable.ic_map_ill)
-            4 -> return createItem(context.getString(R.string.sync), context.getString(R.string.sync_descr), R.drawable.ic_drive_ill, R.drawable.ic_dropbox_ill)
+            0 -> return createItem(context.getString(R.string.reminder), context.getString(R.string.reminder_descr), R.raw.intro_tasks)
+            1 -> return createItem(context.getString(R.string.notes_support), context.getString(R.string.notes_descr), R.raw.intro_notes)
+            2 -> return createItem(context.getString(R.string.location_events), context.getString(R.string.location_descr), R.raw.intro_map)
+            3 -> return createItem(context.getString(R.string.sync), context.getString(R.string.sync_descr), R.raw.intro_backup)
         }
         return null
     }
 
-    private fun createItem(string: String, description: String, @DrawableRes vararg icons: Int): IntroItem {
-        return IntroItem(string, description, *icons)
+    private fun createItem(string: String, description: String, @RawRes icon: Int): IntroItem {
+        return IntroItem(string, description, icon)
     }
 }

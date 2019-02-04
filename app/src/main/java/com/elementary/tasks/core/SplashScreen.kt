@@ -6,13 +6,14 @@ import android.os.Bundle
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
-import com.elementary.tasks.databinding.ActivityIntroBinding
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.intro.IntroActivity
+import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 
-class SplashScreen : ThemedActivity<ActivityIntroBinding>() {
+class SplashScreen : ThemedActivity<ActivityLoginBinding>() {
 
     override fun layoutRes(): Int = 0
 
@@ -63,7 +64,8 @@ class SplashScreen : ThemedActivity<ActivityIntroBinding>() {
     }
 
     private fun openIntroScreen() {
-        startActivity(Intent(this, IntroActivity::class.java))
+        Module.checkComponents(this)
+        startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 
