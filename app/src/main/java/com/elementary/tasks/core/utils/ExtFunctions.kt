@@ -14,6 +14,8 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.views.*
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.io.File
+import java.io.InputStream
 import java.util.*
 
 /**
@@ -31,6 +33,14 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+fun File.copyInputStreamToFile(inputStream: InputStream) {
+    inputStream.use { input ->
+        this.outputStream().use { fileOut ->
+            input.copyTo(fileOut)
+        }
+    }
+}
+
 fun <ViewT : View> View.bindView(@IdRes idRes: Int): Lazy<ViewT> {
     return lazyUnSynchronized {
         findViewById<ViewT>(idRes)
@@ -220,7 +230,7 @@ fun MelodyView.bindProperty(value: String, listener: ((String) -> Unit)) {
 }
 
 fun AttachmentView.bindProperty(value: String, listener: ((String) -> Unit)) {
-    this.setUri(Uri.parse(value))
+    this.content = value
     this.onFileUpdateListener = {
         listener.invoke(it)
     }

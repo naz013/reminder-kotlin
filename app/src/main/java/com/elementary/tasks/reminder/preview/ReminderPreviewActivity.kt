@@ -397,36 +397,44 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         return if (windowType == 0) getString(R.string.full_screen) else getString(R.string.simple)
     }
 
+    private val imageTarget: Target = object : Target {
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            Timber.d("onPrepareLoad: ")
+        }
+
+        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            Timber.d("onBitmapFailed: $e")
+            binding.attachmentsView.visibility = View.GONE
+        }
+
+        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+            Timber.d("onBitmapLoaded: ${bitmap != null}")
+            binding.attachmentsView.visibility = View.VISIBLE
+            binding.attachmentImage.setImageBitmap(bitmap)
+            binding.attachmentsView.setOnClickListener {
+                reminder?.let {
+                    val options = ActivityOptions.makeSceneTransitionAnimation(this@ReminderPreviewActivity,
+                            binding.attachmentImage, "image")
+                    startActivity(Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
+                            .putExtra(Constants.INTENT_ITEM, it.attachmentFile),
+                            options.toBundle())
+                }
+            }
+        }
+    }
+
     private fun showAttachment(reminder: Reminder) {
         Timber.d("showAttachment: ${reminder.attachmentFile}")
         if (reminder.attachmentFile != "") {
-            val uri = Uri.parse(reminder.attachmentFile)
             binding.attachment.text = reminder.attachmentFile
             binding.attachmentView.visibility = View.VISIBLE
-
-            Picasso.get().load(uri).into(object : Target {
-                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                    Timber.d("onPrepareLoad: ")
-                }
-
-                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                    Timber.d("onBitmapFailed: $e")
-                    binding.attachmentsView.visibility = View.GONE
-                }
-
-                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                    Timber.d("onBitmapLoaded: ${bitmap != null}")
-                    binding.attachmentsView.visibility = View.VISIBLE
-                    binding.attachmentImage.setImageBitmap(bitmap)
-                    binding.attachmentsView.setOnClickListener {
-                        val options = ActivityOptions.makeSceneTransitionAnimation(this@ReminderPreviewActivity,
-                                binding.attachmentImage, "image")
-                        startActivity(Intent(this@ReminderPreviewActivity, AttachmentPreviewActivity::class.java)
-                                .putExtra(Constants.INTENT_ITEM, reminder.attachmentFile),
-                                options.toBundle())
-                    }
-                }
-            })
+            val file = File(reminder.attachmentFile)
+            if (file.exists()) {
+                Picasso.get().load(file).into(imageTarget)
+            } else {
+                val uri = Uri.parse(reminder.attachmentFile)
+                Picasso.get().load(uri).into(imageTarget)
+            }
         } else {
             binding.attachmentView.visibility = View.GONE
             binding.attachmentsView.visibility = View.GONE

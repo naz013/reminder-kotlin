@@ -11,6 +11,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityAttachmentPreviewBinding
 import com.squareup.picasso.Picasso
+import java.io.File
 
 /**
  * Copyright 2019 Nazar Suhovich
@@ -45,11 +46,18 @@ class AttachmentPreviewActivity : ThemedActivity<ActivityAttachmentPreviewBindin
     }
 
     private fun showImages() {
-        val uri = Uri.parse(intent.getStringExtra(Constants.INTENT_ITEM) ?: "")
-        binding.toolbar.title = uri.lastPathSegment
-        Picasso.get()
-                .load(uri)
-                .into(binding.ivPhoto)
+        val path = intent.getStringExtra(Constants.INTENT_ITEM) ?: ""
+        binding.toolbar.title = path
+        val file = File(path)
+        if (file.exists()) {
+            Picasso.get().load(file).into(binding.ivPhoto)
+        } else {
+            val uri = Uri.parse(path)
+            binding.toolbar.title = uri.lastPathSegment
+            Picasso.get()
+                    .load(uri)
+                    .into(binding.ivPhoto)
+        }
     }
 
     private fun initActionBar() {
