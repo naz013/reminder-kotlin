@@ -56,9 +56,10 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
         } else if (clipData != null) {
             val count = images.value?.size ?: 0
             DecodeImages.startDecoding(context, clipData, count, {
-                val list = (images.value ?: listOf()).toMutableList()
-                list.addAll(it)
-                images.postValue(it)
+                val list = images.value ?: listOf()
+                val mutable = list.toMutableList()
+                mutable.addAll(it)
+                images.postValue(mutable)
             }, { i, imageFile ->
                 setImage(imageFile, i)
             })

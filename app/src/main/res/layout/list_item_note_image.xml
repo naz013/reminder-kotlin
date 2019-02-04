@@ -5,10 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_height"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp">
+        android:layout_height="@dimen/image_height">
 
         <RelativeLayout
             android:id="@+id/stateReady"
