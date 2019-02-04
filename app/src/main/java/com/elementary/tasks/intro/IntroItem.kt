@@ -1,6 +1,6 @@
 package com.elementary.tasks.intro
 
-import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -20,21 +20,4 @@ import androidx.annotation.DrawableRes
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class IntroItem(var title: String?, var description: String?, @DrawableRes vararg images: Int) {
-    @DrawableRes
-    private var images: IntArray? = null
-
-    init {
-        this.images = images
-    }
-
-    @DrawableRes
-    fun getImages(): IntArray? {
-        return images
-    }
-
-    fun setImages(@DrawableRes images: IntArray) {
-        this.images = IntArray(images.size)
-        System.arraycopy(images, 0, this.images!!, 0, this.images!!.size)
-    }
-}
+data class IntroItem(val title: String?, val description: String?, @RawRes val image: Int = 0)

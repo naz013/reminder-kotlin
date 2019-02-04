@@ -384,9 +384,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".login.LoginActivity"
-            android:excludeFromRecents="true" />
-        <activity android:name=".intro.IntroActivity" />
+            android:name=".login.LoginActivity" />
 
         <receiver
             android:name=".core.services.CallReceiver"

@@ -43,14 +43,8 @@ class PageFragment : BindingFragment<FragmentIntroPageBinding>() {
         val item = ItemFactory.getItem(activity!!, position)
         if (item != null) {
             binding.title.text = item.title
-            binding.description.text = item.description
-            binding.imageOne.setImageResource(item.getImages()!![0])
-            if (item.getImages()?.size ?: 1 > 1) {
-                binding.imageTwo.setImageResource(item.getImages()!![1])
-                binding.imageTwo.visibility = View.VISIBLE
-            } else {
-                binding.imageTwo.visibility = View.INVISIBLE
-            }
+            binding.animationView.setAnimation(item.image)
+            binding.animationView.playAnimation()
         }
     }
 

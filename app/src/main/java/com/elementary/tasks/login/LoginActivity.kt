@@ -6,8 +6,18 @@ import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.URLSpan
 import android.view.View
+import android.widget.CheckBox
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
@@ -20,9 +30,13 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.groups.GroupsUtil
+import com.elementary.tasks.intro.PageFragment
+import com.elementary.tasks.intro.PrivacyPolicyActivity
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import java.util.*
 
 /**
@@ -50,6 +64,8 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
     private var googleLogin: GoogleLogin? = null
     private var dropboxLogin: DropboxLogin? = null
 
+    private var scrollJob: Job? = null
+
     override fun layoutRes(): Int = R.layout.activity_login
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +82,46 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
                 if (b) viewModel.loadDataFromDropbox()
             }
         })
+
+        val mPagerAdapter = SlidePagerAdapter(supportFragmentManager)
+        binding.viewPager.adapter = mPagerAdapter
+        binding.indicator.setViewPager(binding.viewPager)
+
         initButtons()
+        initCheckbox()
+    }
+
+    private fun initCheckbox() {
+        setViewHTML(binding.termsCheckBox, getString(R.string.i_accept))
+    }
+
+    private fun makeLinkClickable(strBuilder: SpannableStringBuilder, span: URLSpan) {
+        val start = strBuilder.getSpanStart(span)
+        val end = strBuilder.getSpanEnd(span)
+        val flags = strBuilder.getSpanFlags(span)
+        strBuilder.setSpan(object : ClickableSpan() {
+            override fun onClick(view: View) {
+                if (span.url.contains(TERMS_URL)) {
+                    openTermsScreen()
+                }
+            }
+        }, start, end, flags)
+        strBuilder.removeSpan(span)
+    }
+
+    private fun openTermsScreen() {
+        startActivity(Intent(this, PrivacyPolicyActivity::class.java))
+    }
+
+    private fun setViewHTML(text: CheckBox, html: String) {
+        val sequence = Html.fromHtml(html)
+        val strBuilder = SpannableStringBuilder(sequence)
+        val urls = strBuilder.getSpans(0, sequence.length, URLSpan::class.java)
+        for (span in urls) {
+            makeLinkClickable(strBuilder, span)
+        }
+        text.text = strBuilder
+        text.movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun onStart() {
@@ -102,6 +157,30 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
     override fun onResume() {
         super.onResume()
         dropboxLogin?.checkDropboxStatus()
+        startScroll()
+    }
+
+    private fun showNextSlide() {
+        val current = binding.viewPager.currentItem
+        if (current in 0..2) {
+            binding.viewPager.currentItem = current + 1
+        } else {
+            binding.viewPager.currentItem = 0
+        }
+    }
+
+    private fun startScroll() {
+        scrollJob = launchDefault {
+            while (true) {
+                delay(2000)
+                withUIContext { showNextSlide() }
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        scrollJob?.cancel()
     }
 
     private fun finishRestoring() {
@@ -120,13 +199,13 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
     private fun initButtons() {
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
             binding.googleButton.visibility = View.VISIBLE
-            binding.googleButton.setOnClickListener { googleLoginClick() }
+            binding.googleButton.setOnClickListener { verifyTerms { googleLoginClick() } }
         } else {
             binding.googleButton.visibility = View.GONE
         }
-        binding.localButton.setOnClickListener { restoreLocalData() }
-        binding.dropboxButton.setOnClickListener { loginToDropbox() }
-        binding.skipButton.setOnClickListener { openApplication() }
+        binding.localButton.setOnClickListener { verifyTerms { restoreLocalData() } }
+        binding.dropboxButton.setOnClickListener { verifyTerms { loginToDropbox() } }
+        binding.skipButton.setOnClickListener { verifyTerms { openApplication() } }
     }
 
     private fun initGroups() {
@@ -146,6 +225,14 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
             return
         }
         viewModel.loadDataFromLocal()
+    }
+
+    private fun verifyTerms(onSuccess: () -> Unit) {
+        if (!binding.termsCheckBox.isChecked) {
+            Toast.makeText(this, getString(R.string.privacy_warming), Toast.LENGTH_SHORT).show()
+            return
+        }
+        onSuccess.invoke()
     }
 
     private fun openApplication() {
@@ -210,6 +297,7 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
         binding.googleButton.isEnabled = b
         binding.localButton.isEnabled = b
         binding.skipButton.isEnabled = b
+        binding.termsCheckBox.isEnabled = b
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -228,9 +316,19 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
         }
     }
 
+    private inner class SlidePagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+        override fun getItem(position: Int): Fragment {
+            return PageFragment.newInstance(position)
+        }
+        override fun getCount(): Int {
+            return 4
+        }
+    }
+
     companion object {
         private const val PERM = 103
         private const val PERM_DROPBOX = 104
         private const val PERM_LOCAL = 105
+        private const val TERMS_URL = "termsopen.com"
     }
 }
