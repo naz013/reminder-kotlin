@@ -27,11 +27,11 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object UriUtil {
 
     const val URI_MIME = "application/x-arc-uri-list"
     const val ANY_MIME = "any"
+    const val IMAGE_MIME = "image/*"
 
     fun obtainPath(context: Context, uri: Uri, onReady: (Boolean, String?) -> Unit) {
         launchIo {

@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.create
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -192,16 +193,44 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         super.onStart()
         photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
 
-        ViewUtils.registerDragAndDrop(this, binding.layoutContainer, true, themeUtil.getSecondaryColor(), {
+        ViewUtils.registerDragAndDrop(this, binding.clickView, true, themeUtil.getSecondaryColor(), {
             if (it.itemCount > 0) {
-                binding.taskMessage.setText(binding.taskMessage.text.toString().trim() + "\n" + it.getItemAt(0).text.toString())
+                parseDrop(it)
             }
-        }, ClipDescription.MIMETYPE_TEXT_PLAIN)
+        }, ClipDescription.MIMETYPE_TEXT_PLAIN, UriUtil.ANY_MIME)
 
         observeStates()
 
         if (prefs.hasPinCode && !stateViewModel.isLogged) {
             PinLoginActivity.verify(this)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun parseDrop(clipData: ClipData) {
+        Timber.d("parseDrop: ${clipData.itemCount}, ${clipData.description}")
+        launchDefault {
+            var text = ""
+            for (i in 0 until clipData.itemCount) {
+                if (!clipData.getItemAt(i).text.isNullOrEmpty()) {
+                    text = clipData.getItemAt(i).text.toString()
+                }
+            }
+
+            if (text != "") {
+                withUIContext {
+                    val oldText = binding.taskMessage.text.toString().trim()
+                    if (oldText.trim() == "") {
+                        binding.taskMessage.setText(text)
+                    } else {
+                        binding.taskMessage.setText("$oldText\n$text")
+                    }
+                }
+            } else {
+                withUIContext {
+                    stateViewModel.addMultiple(null, clipData, this@CreateNoteActivity)
+                }
+            }
         }
     }
 
@@ -607,7 +636,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             return null
         }
 
-        val pair = stateViewModel.colorOpacity.value ?: Pair(newColor(), binding.opacityBar.progress)
+        val pair = stateViewModel.colorOpacity.value
+                ?: Pair(newColor(), binding.opacityBar.progress)
 
         var noteWithImages = mItem
         var note = noteWithImages?.note
