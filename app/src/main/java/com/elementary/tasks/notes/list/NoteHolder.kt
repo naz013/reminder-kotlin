@@ -103,12 +103,8 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
         }
         binding.buttonMore.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
 
-        if (themeUtil.isAlmostTransparent(item.getOpacity())) {
-            if (themeUtil.isDark) {
-                binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
-            } else {
-                binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
-            }
+        if ((themeUtil.isAlmostTransparent(item.getOpacity()) && themeUtil.isDark) || themeUtil.isColorDark(color)) {
+            binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
         } else {
             binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
         }
