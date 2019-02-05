@@ -74,7 +74,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/list_margin"
                 android:layout_marginEnd="@dimen/list_margin"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:itemCount="5"
+                tools:listitem="@layout/list_item_note" />
 
         </LinearLayout>
 
