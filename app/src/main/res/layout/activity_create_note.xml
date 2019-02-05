@@ -27,8 +27,7 @@
             android:id="@+id/layoutContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            android:background="@color/orangeAccent">
+            android:animateLayoutChanges="true">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/touchView"
