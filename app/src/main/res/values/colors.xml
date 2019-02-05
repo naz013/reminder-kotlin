@@ -202,27 +202,81 @@
     <color name="secondaryLivingCoral">#FA7268</color>
     <color name="secondaryLivingCoral12">#1EFA7268</color>
 
-    <color name="note1">#86E3CE</color>
-    <color name="note2">#D0E6A5</color>
-    <color name="note3">#FFDD94</color>
-    <color name="note4">#FA897B</color>
-    <color name="note5">#CCABD8</color>
+    <string-array name="note_palette_one" >
+        <item>#86E3CE</item>
+        <item>#D0E6A5</item>
+        <item>#FFDD94</item>
+        <item>#FA897B</item>
+        <item>#CCABD8</item>
 
-    <color name="note6">#F5CEC7</color>
-    <color name="note7">#E79796</color>
-    <color name="note8">#FFC98B</color>
-    <color name="note9">#FFB284</color>
-    <color name="note10">#C6C09C</color>
+        <item>#F5CEC7</item>
+        <item>#E79796</item>
+        <item>#FFC98B</item>
+        <item>#FFB284</item>
+        <item>#C6C09C</item>
 
-    <color name="note11">#AAC9CE</color>
-    <color name="note12">#B6B4C2</color>
-    <color name="note13">#C9BBC8</color>
-    <color name="note14">#E5C1CD</color>
-    <color name="note15">#F3DBCF</color>
+        <item>#AAC9CE</item>
+        <item>#B6B4C2</item>
+        <item>#C9BBC8</item>
+        <item>#E5C1CD</item>
+        <item>#F3DBCF</item>
 
-    <color name="note16">#80BEAF</color>
-    <color name="note17">#B3DDD1</color>
-    <color name="note18">#D1DCE2</color>
-    <color name="note19">#F5B994</color>
-    <color name="note20">#EE9C6C</color>
+        <item>#80BEAF</item>
+        <item>#B3DDD1</item>
+        <item>#D1DCE2</item>
+        <item>#F5B994</item>
+        <item>#EE9C6C</item>
+    </string-array>
+
+    <string-array name="note_palette_two" >
+        <item>#CCABD8</item>
+        <item>#8474A1</item>
+        <item>#6EC6CA</item>
+        <item>#08979D</item>
+        <item>#055B5C</item>
+
+        <item>#FCF5EF</item>
+        <item>#FEA735</item>
+        <item>#FE7235</item>
+        <item>#00C3FF</item>
+        <item>#0077FF</item>
+
+        <item>#513485</item>
+        <item>#7E5AB8</item>
+        <item>#D79CD2</item>
+        <item>#FDD51E</item>
+        <item>#758B5C</item>
+
+        <item>#999999</item>
+        <item>#555555</item>
+        <item>#FB6602</item>
+        <item>#F6A705</item>
+        <item>#AF948F</item>
+    </string-array>
+
+    <string-array name="note_palette_three" >
+        <item>#AB0068</item>
+        <item>#E00702</item>
+        <item>#FF6C02</item>
+        <item>#FEC106</item>
+        <item>#FF4747</item>
+
+        <item>#00BCB4</item>
+        <item>#C4E86B</item>
+        <item>#FFB547</item>
+        <item>#7EC384</item>
+        <item>#3F8756</item>
+
+        <item>#45625D</item>
+        <item>#6AA5A9</item>
+        <item>#FFCEBE</item>
+        <item>#CD2C6C</item>
+        <item>#5F023A</item>
+
+        <item>#108292</item>
+        <item>#8B776D</item>
+        <item>#463C52</item>
+        <item>#9D94BA</item>
+        <item>#D1D5E8</item>
+    </string-array>
 </resources>

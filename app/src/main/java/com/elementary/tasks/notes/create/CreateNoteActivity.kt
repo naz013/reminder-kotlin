@@ -14,10 +14,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.TextUtils
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -34,6 +31,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
+import com.elementary.tasks.databinding.DialogSelectPaletteBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
@@ -237,8 +235,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private fun observeStates() {
         stateViewModel.colorOpacity.observe(this, Observer {
             if (it != null) {
-                updateDarkness(it.second)
-                updateBackground(it.first, it.second)
+                updateDarkness(it)
+                updateBackground(it)
                 updateTextColors()
                 updateIcons()
             }
@@ -269,6 +267,17 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
                 imagesGridAdapter.submitList(it)
             }
         })
+        stateViewModel.palette.observe(this, Observer {
+            if (it != null) {
+                prefs.notePalette = it
+                binding.colorSlider.setColors(themeUtil.noteColorsForSlider(it))
+                val pair = newPair()
+                updateDarkness(pair)
+                updateBackground(pair, it)
+                updateTextColors()
+                updateIcons()
+            }
+        })
     }
 
     private fun initDefaults() {
@@ -281,6 +290,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         }
         val opacity = prefs.noteColorOpacity
         stateViewModel.colorOpacity.postValue(newPair(color, opacity))
+        stateViewModel.palette.postValue(prefs.notePalette)
 
         binding.colorSlider.setSelection(color)
         binding.opacityBar.progress = opacity
@@ -289,6 +299,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         stateViewModel.time.postValue(System.currentTimeMillis())
         stateViewModel.date.postValue(System.currentTimeMillis())
     }
+
+    private fun palette(): Int = stateViewModel.palette.value ?: 0
 
     private fun newColor(): Int = Random().nextInt(ThemeUtil.NOTE_COLORS)
 
@@ -363,8 +375,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         binding.imageButton.setOnClickListener { photoSelectionUtil.selectImage() }
         binding.reminderButton.setOnClickListener { switchReminder() }
         binding.fontButton.setOnClickListener { showStyleDialog() }
+        binding.paletteButton.setOnClickListener { showPaletteDialog() }
 
-        binding.colorSlider.setColors(themeUtil.noteColorsForSlider())
         binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         binding.colorSlider.setListener { position, _ ->
             stateViewModel.colorOpacity.postValue(newPair(color = position))
@@ -386,11 +398,10 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         })
     }
 
-    private fun updateDarkness(opacity: Int) {
-        isBgDark = if (themeUtil.isAlmostTransparent(opacity)) {
-            isDark
-        } else {
-            false
+    private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
+        isBgDark = when {
+            themeUtil.isAlmostTransparent(pair.second) -> isDark
+            else -> themeUtil.isColorDark(themeUtil.getNoteLightColor(pair.first, pair.second, palette))
         }
     }
 
@@ -529,6 +540,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             binding.colorSlider.setSelection(note.color)
             binding.opacityBar.progress = note.opacity
             setText(note.summary)
+            stateViewModel.palette.postValue(note.palette)
             stateViewModel.fontStyle.postValue(note.style)
             stateViewModel.images.postValue(noteWithImages.images)
             stateViewModel.colorOpacity.postValue(newPair(note.color, note.opacity))
@@ -648,6 +660,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         note.date = TimeUtil.gmtDateTime
         note.color = pair.first
         note.style = stateViewModel.fontStyle.value ?: 0
+        note.palette = palette()
         note.opacity = pair.second
 
         if (noteWithImages == null) {
@@ -778,15 +791,15 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         binding.taskMessage.typeface = AssetsUtil.getTypeface(this, fontStyle)
     }
 
-    private fun updateBackground(color: Int, opacity: Int) {
-        Timber.d("updateBackground: $color, $opacity")
+    private fun updateBackground(pair: Pair<Int, Int>, palette: Int = palette()) {
+        Timber.d("updateBackground: $pair, $palette")
 
-        val lightColorSemi = themeUtil.getNoteLightColor(color, opacity)
+        val lightColorSemi = themeUtil.getNoteLightColor(pair.first, pair.second, palette)
         binding.layoutContainer.setBackgroundColor(lightColorSemi)
         binding.toolbar.setBackgroundColor(lightColorSemi)
         binding.appBar.setBackgroundColor(lightColorSemi)
 
-        val lightColor = themeUtil.getNoteLightColor(color, 100)
+        val lightColor = themeUtil.getNoteLightColor(pair.first, 100, palette)
         window.statusBarColor = lightColor
         binding.bottomBar.setCardBackgroundColor(lightColor)
         binding.bottomBar.invalidate()
@@ -824,6 +837,55 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun showPaletteDialog() {
+        val builder = dialogues.getDialog(this)
+        val bind = DialogSelectPaletteBinding.inflate(layoutInflater)
+
+        when (palette()) {
+            1 -> bind.paletteTwo.isChecked = true
+            2 -> bind.paletteThree.isChecked = true
+            else -> bind.paletteOne.isChecked = true
+        }
+
+        bind.colorSliderOne.setColors(themeUtil.noteColorsForSlider(0))
+        bind.colorSliderTwo.setColors(themeUtil.noteColorsForSlider(1))
+        bind.colorSliderThree.setColors(themeUtil.noteColorsForSlider(2))
+
+        bind.colorSliderOne.isEnabled = false
+        bind.colorSliderTwo.isEnabled = false
+        bind.colorSliderThree.isEnabled = false
+
+        val buttons = arrayOf(bind.paletteOne, bind.paletteTwo, bind.paletteThree)
+
+        bind.paletteOne.setOnCheckedChangeListener { buttonView, isChecked -> updateCheck(buttonView, isChecked, *buttons) }
+        bind.paletteTwo.setOnCheckedChangeListener { buttonView, isChecked -> updateCheck(buttonView, isChecked, *buttons) }
+        bind.paletteThree.setOnCheckedChangeListener { buttonView, isChecked -> updateCheck(buttonView, isChecked, *buttons) }
+
+        builder.setView(bind.root)
+        builder.setPositiveButton(R.string.save) { dialog, _ ->
+            val selected = when {
+                bind.paletteTwo.isChecked -> 1
+                bind.paletteThree.isChecked -> 2
+                else -> 0
+            }
+            dialog.dismiss()
+            stateViewModel.palette.postValue(selected)
+        }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    private fun updateCheck(view: View, isChecked: Boolean, vararg radioButtons: RadioButton) {
+        if (!isChecked) return
+        radioButtons.forEach {
+            if (view.id != it.id) {
+                it.isChecked = false
+            }
+        }
     }
 
     private fun dateDialog() {

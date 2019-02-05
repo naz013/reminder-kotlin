@@ -213,13 +213,31 @@
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <com.github.naz013.colorslider.ColorSlider
-                            android:id="@+id/colorSlider"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="36dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
+                            android:layout_marginEnd="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/paletteButton"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:scaleType="centerInside"
+                                app:srcCompat="@drawable/ic_twotone_settings_24px"
+                                app:tint="@color/pureBlack" />
+
+                            <com.github.naz013.colorslider.ColorSlider
+                                android:id="@+id/colorSlider"
+                                android:layout_width="match_parent"
+                                android:layout_height="36dp"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"

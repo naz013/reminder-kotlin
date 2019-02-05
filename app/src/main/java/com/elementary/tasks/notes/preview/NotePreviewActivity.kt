@@ -178,15 +178,16 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
     private fun showNote(noteWithImages: NoteWithImages?) {
         this.mNote = noteWithImages
         if (noteWithImages != null) {
+            val noteColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity(), noteWithImages.getPalette())
             showImages(noteWithImages.images)
             binding.noteText.text = noteWithImages.getSummary()
             binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
-            window.statusBarColor = themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity())
-            binding.windowBackground.setBackgroundColor(themeUtil.getNoteLightColor(noteWithImages.getColor(), noteWithImages.getOpacity()))
+            window.statusBarColor = noteColor
+            binding.windowBackground.setBackgroundColor(noteColor)
             isBgDark = if (themeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
                 isDark
             } else {
-                false
+                themeUtil.isColorDark(noteColor)
             }
             updateTextColors()
             updateIcons()

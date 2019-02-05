@@ -29,6 +29,8 @@ data class OldNote(
         var date: String = "",
         @SerializedName("color")
         var color: Int = 0,
+        @SerializedName("palette")
+        var palette: Int = 0,
         @SerializedName("style")
         var style: Int = 0,
         @SerializedName("images")
@@ -42,6 +44,7 @@ data class OldNote(
         this.uniqueId = note.uniqueId
         this.style = note.style
         this.color = note.color
+        this.palette = note.palette
         this.date = note.date
         this.key = note.key
         this.summary = note.summary
