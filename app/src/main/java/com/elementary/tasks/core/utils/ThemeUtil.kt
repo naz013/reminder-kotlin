@@ -7,6 +7,7 @@ import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -363,8 +364,16 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     }
 
     @ColorInt
-    fun getNoteLightColor(code: Int, opacity: Int): Int {
-        return adjustAlpha(getNoteColor(code), opacity)
+    fun getNoteLightColor(code: Int, opacity: Int, palette: Int = prefs.notePalette): Int {
+        return adjustAlpha(getNoteColor(code, palette), opacity)
+    }
+
+    fun isColorDark(color: Int): Boolean {
+        val darkness = 1 - (0.299 * android.graphics.Color.red(color) + 0.587
+                * android.graphics.Color.green(color) + 0.114
+                * android.graphics.Color.blue(color)) / 255
+        Timber.d("isColorDark: $darkness")
+        return darkness >= 0.5
     }
 
     object Color {
@@ -437,58 +446,26 @@ class ThemeUtil @Inject constructor(private val context: Context, private val pr
     }
 
     @ColorInt
-    fun noteColorsForSlider(): IntArray {
-        return intArrayOf(
-                getColor(R.color.note1),
-                getColor(R.color.note2),
-                getColor(R.color.note3),
-                getColor(R.color.note4),
-                getColor(R.color.note5),
-                getColor(R.color.note6),
-                getColor(R.color.note7),
-                getColor(R.color.note8),
-                getColor(R.color.note9),
-                getColor(R.color.note10),
-                getColor(R.color.note11),
-                getColor(R.color.note12),
-                getColor(R.color.note13),
-                getColor(R.color.note14),
-                getColor(R.color.note15),
-                getColor(R.color.note16),
-                getColor(R.color.note17),
-                getColor(R.color.note18),
-                getColor(R.color.note19),
-                getColor(R.color.note20)
-        )
+    private fun obtainPalette(palette: Int): IntArray {
+        val list = mutableListOf<Int>()
+        val hexArray = when (palette) {
+            0 -> context.resources.getStringArray(R.array.note_palette_one)
+            1 -> context.resources.getStringArray(R.array.note_palette_two)
+            2 -> context.resources.getStringArray(R.array.note_palette_three)
+            else -> context.resources.getStringArray(R.array.note_palette_one)
+        }
+        for (hex in hexArray) {
+            list.add(android.graphics.Color.parseColor(hex))
+        }
+        return list.toTypedArray().toIntArray()
     }
 
     @ColorInt
-    fun getNoteColor(code: Int = prefs.appThemeColor): Int {
-        val color: Int
-        when (code) {
-            0 -> color = R.color.note1
-            1 -> color = R.color.note2
-            2 -> color = R.color.note3
-            3 -> color = R.color.note4
-            4 -> color = R.color.note5
-            5 -> color = R.color.note6
-            6 -> color = R.color.note7
-            7 -> color = R.color.note8
-            8 -> color = R.color.note9
-            9 -> color = R.color.note10
-            10 -> color = R.color.note11
-            11 -> color = R.color.note12
-            12 -> color = R.color.note13
-            13 -> color = R.color.note14
-            14 -> color = R.color.note15
-            15 -> color = R.color.note16
-            16 -> color = R.color.note17
-            17 -> color = R.color.note18
-            18 -> color = R.color.note19
-            19 -> color = R.color.note20
-            else -> color = R.color.note1
-        }
-        return getColor(color)
+    fun noteColorsForSlider(palette: Int = prefs.notePalette): IntArray = obtainPalette(palette)
+
+    @ColorInt
+    fun getNoteColor(code: Int = prefs.appThemeColor, palette: Int = prefs.notePalette): Int {
+        return obtainPalette(palette)[code]
     }
 
     @ColorInt

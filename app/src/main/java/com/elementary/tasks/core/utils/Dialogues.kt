@@ -14,6 +14,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.databinding.DialogBottomColorSliderBinding
 import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
+import com.elementary.tasks.databinding.ViewColorSliderBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -97,7 +98,7 @@ class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
                         onDone: (Int) -> Unit) {
         val builder = getDialog(activity)
         builder.setTitle(title)
-        val bind = com.elementary.tasks.databinding.ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
+        val bind = ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
         bind.colorSlider.setColors(colors)
         bind.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
         bind.colorSlider.setSelection(current)

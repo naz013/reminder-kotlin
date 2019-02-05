@@ -20,6 +20,7 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
     var time: MutableLiveData<Long> = MutableLiveData()
     var colorOpacity: MutableLiveData<Pair<Int, Int>> = MutableLiveData()
     var fontStyle: MutableLiveData<Int> = MutableLiveData()
+    var palette: MutableLiveData<Int> = MutableLiveData()
     var isReminderAttached: MutableLiveData<Boolean> = MutableLiveData()
     var images: MutableLiveData<List<ImageFile>> = MutableLiveData()
 

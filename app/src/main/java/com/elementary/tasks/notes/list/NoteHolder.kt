@@ -93,12 +93,13 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
         loadImage(binding.imagesView, item)
         loadNote(binding.noteTv, item)
 
-        binding.bgView.setBackgroundColor(themeUtil.getNoteLightColor(item.getColor(), item.getOpacity()))
+        val color = themeUtil.getNoteLightColor(item.getColor(), item.getOpacity(), item.getPalette())
+        binding.bgView.setBackgroundColor(color)
 
         val isDarkIcon = if (themeUtil.isAlmostTransparent(item.getOpacity())) {
             themeUtil.isDark
         } else {
-            false
+            themeUtil.isColorDark(color)
         }
         binding.buttonMore.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
 

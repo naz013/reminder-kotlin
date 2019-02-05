@@ -279,7 +279,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     }
 
     private fun selectColor(note: NoteWithImages) {
-        dialogues.showColorDialog(activity!!, note.getColor(), getString(R.string.color), themeUtil.noteColorsForSlider()) {
+        dialogues.showColorDialog(activity!!, note.getColor(), getString(R.string.color),
+                themeUtil.noteColorsForSlider(note.getPalette())) {
             note.note?.color = it
             viewModel.saveNote(note)
         }

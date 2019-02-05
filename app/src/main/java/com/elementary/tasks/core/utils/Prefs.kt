@@ -78,6 +78,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         return false
     }
 
+    var notePalette: Int
+        get() = getInt(PrefsConstants.NOTE_PALETTE)
+        set(value) = putInt(PrefsConstants.NOTE_PALETTE, value)
+
     var homePage: String
         get() = getString(PrefsConstants.HOME_PAGE)
         set(value) = putString(PrefsConstants.HOME_PAGE, value)
