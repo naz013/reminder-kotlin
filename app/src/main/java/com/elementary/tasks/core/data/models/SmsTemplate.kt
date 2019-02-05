@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.utils.TimeUtil
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
 
@@ -27,10 +28,14 @@ import java.util.*
  */
 @Entity
 class SmsTemplate : Serializable {
+    @SerializedName("title")
     var title: String = ""
+    @SerializedName("key")
     @PrimaryKey
     var key: String = ""
+    @SerializedName("date")
     var date: String = ""
+    @Transient
     var isSelected: Boolean = false
 
     constructor() {

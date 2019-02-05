@@ -7,6 +7,7 @@ import com.elementary.tasks.core.data.converters.PlacesTypeConverter
 import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
 
@@ -36,55 +37,104 @@ import java.util.*
         ListIntTypeConverter::class
 )
 data class Reminder(
+        @SerializedName("summary")
         var summary: String = "",
+        @SerializedName("noteId")
         var noteId: String = "",
+        @SerializedName("reminderType")
         var reminderType: Int = 0,
+        @SerializedName("groupUuId")
         var groupUuId: String = "",
+        @SerializedName("uuId")
         @PrimaryKey
         var uuId: String = UUID.randomUUID().toString(),
+        @SerializedName("eventTime")
         var eventTime: String = "",
+        @SerializedName("startTime")
         var startTime: String = "",
+        @SerializedName("eventCount")
         var eventCount: Long = 0,
+        @SerializedName("color")
         var color: Int = 0,
+        @SerializedName("delay")
         var delay: Int = 0,
+        @SerializedName("vibrate")
         var vibrate: Boolean = false,
+        @SerializedName("repeatNotification")
         var repeatNotification: Boolean = false,
+        @SerializedName("notifyByVoice")
         var notifyByVoice: Boolean = false,
+        @SerializedName("awake")
+        @Deprecated("Not supported in newer OS versions")
         var awake: Boolean = false,
+        @SerializedName("unlock")
         var unlock: Boolean = false,
+        @SerializedName("exportToTasks")
         var exportToTasks: Boolean = false,
+        @SerializedName("exportToCalendar")
         var exportToCalendar: Boolean = false,
+        @SerializedName("useGlobal")
         var useGlobal: Boolean = true,
+        @SerializedName("from")
         var from: String = "",
+        @SerializedName("to")
         var to: String = "",
+        @SerializedName("hours")
         var hours: List<Int> = ArrayList(),
+        @SerializedName("fileName")
         var fileName: String = "",
+        @SerializedName("melodyPath")
         var melodyPath: String = "",
+        @SerializedName("volume")
         var volume: Int = -1,
+        @SerializedName("dayOfMonth")
         var dayOfMonth: Int = 0,
+        @SerializedName("monthOfYear")
         var monthOfYear: Int = 0,
+        @SerializedName("repeatInterval")
         var repeatInterval: Long = 0,
+        @SerializedName("repeatLimit")
         var repeatLimit: Int = 0,
+        @SerializedName("after")
         var after: Long = 0,
+        @SerializedName("weekdays")
         var weekdays: List<Int> = ArrayList(),
+        @SerializedName("type")
         var type: Int = 0,
+        @SerializedName("target")
         var target: String = "",
+        @SerializedName("subject")
         var subject: String = "",
+        @SerializedName("attachmentFile")
         @Deprecated("Use #attachmentFiles property")
         var attachmentFile: String = "",
+        @SerializedName("attachmentFiles")
         var attachmentFiles: List<String> = ArrayList(),
+        @SerializedName("auto")
         var auto: Boolean = false,
+        @SerializedName("places")
         var places: List<Place> = ArrayList(),
+        @SerializedName("shoppings")
         var shoppings: List<ShopItem> = ArrayList(),
+        @SerializedName("uniqueId")
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+        @SerializedName("isActive")
         var isActive: Boolean = true,
+        @SerializedName("isRemoved")
         var isRemoved: Boolean = false,
+        @SerializedName("isNotificationShown")
         var isNotificationShown: Boolean = false,
+        @SerializedName("isLocked")
         var isLocked: Boolean = false,
+        @SerializedName("hasReminder")
         var hasReminder: Boolean = false,
+        @SerializedName("duration")
         var duration: Long = 0,
+        @SerializedName("remindBefore")
         var remindBefore: Long = 0,
+        @SerializedName("windowType")
         var windowType: Int = 0,
+        @SerializedName("priority")
         var priority: Int = 2,
         @ColumnInfo(name = "groupTitle")
         @Transient

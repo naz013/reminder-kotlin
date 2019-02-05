@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.interfaces.RecyclerInterface
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*
 
@@ -28,17 +29,29 @@ import java.util.*
  */
 @Entity
 data class Birthday(
+        @SerializedName("name")
         var name: String = "",
+        @SerializedName("date")
         var date: String = "",
+        @SerializedName("number")
         var number: String = "",
+        @SerializedName("key")
         var key: String = "",
+        @SerializedName("showedYear")
         var showedYear: Int = 0,
+        @SerializedName("contactId")
         var contactId: Long = 0L,
+        @SerializedName("day")
         var day: Int = 0,
+        @SerializedName("month")
         var month: Int = 0,
+        @SerializedName("uniqueId")
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+        @SerializedName("dayMonth")
         var dayMonth: String = "",
-        @PrimaryKey var uuId: String = UUID.randomUUID().toString()
+        @SerializedName("uuId")
+        @PrimaryKey
+        var uuId: String = UUID.randomUUID().toString()
 ) : RecyclerInterface, Serializable {
 
     override val viewType: Int
