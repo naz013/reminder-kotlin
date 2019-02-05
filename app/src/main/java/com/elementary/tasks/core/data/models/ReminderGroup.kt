@@ -28,7 +28,6 @@ import java.util.*
  */
 @Entity
 class ReminderGroup : Serializable {
-
     @SerializedName("title")
     var groupTitle: String = ""
     @SerializedName("uuId")
