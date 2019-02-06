@@ -27,6 +27,11 @@ class GroupsRecyclerAdapter : ListAdapter<ReminderGroup, GroupHolder>(GroupDiffC
 
     var actionsListener: ActionsListener<ReminderGroup>? = null
 
+    override fun submitList(list: List<ReminderGroup>?) {
+        super.submitList(list)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
         return GroupHolder(parent) { view, i, listActions ->
             if (actionsListener != null) {

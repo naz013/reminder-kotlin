@@ -56,7 +56,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     @Inject
     lateinit var backupTool: BackupTool
 
-    private var mAdapter: NotesRecyclerAdapter = NotesRecyclerAdapter()
+    private var mAdapter = NotesRecyclerAdapter()
     private var enableGrid = false
 
     private val filterController = SearchModifier(null, null)
@@ -281,8 +281,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     private fun selectColor(note: NoteWithImages) {
         dialogues.showColorDialog(activity!!, note.getColor(), getString(R.string.color),
                 themeUtil.noteColorsForSlider(note.getPalette())) {
-            note.note?.color = it
-            viewModel.saveNote(note)
+            viewModel.saveNoteColor(note, it)
         }
     }
 
@@ -297,8 +296,8 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     }
 
     override fun invoke(result: List<NoteWithImages>) {
+        Timber.d("invoke: $result")
         mAdapter.submitList(result)
-        binding.recyclerView.smoothScrollToPosition(0)
         refreshView(result.size)
     }
 }

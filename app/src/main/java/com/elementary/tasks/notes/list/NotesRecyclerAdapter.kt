@@ -27,6 +27,11 @@ class NotesRecyclerAdapter : ListAdapter<NoteWithImages, NoteHolder>(NoteDIffCal
 
     var actionsListener: ActionsListener<NoteWithImages>? = null
 
+    override fun submitList(list: List<NoteWithImages>?) {
+        super.submitList(list)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         return NoteHolder(parent) { view, i, listActions ->
             if (actionsListener != null) {
