@@ -349,7 +349,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     override fun attachFile() {
-        if (Permissions.ensurePermissions(this, 331, Permissions.READ_EXTERNAL)) {
+        if (Permissions.ensurePermissions(this, 331, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             selectAnyFile()
         }
     }

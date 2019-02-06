@@ -90,9 +90,6 @@ class AttachmentView : LinearLayout {
         binding.text.setOnClickListener {
             addClick()
         }
-        binding.hintIcon.setOnClickListener {
-            addClick()
-        }
         binding.hintIcon.setOnLongClickListener {
             Toast.makeText(context, context.getString(R.string.attachment), Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
