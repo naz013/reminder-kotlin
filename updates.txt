@@ -1,0 +1,9 @@
+Make backup before update.
+
+- New simple design;
+- Add priority for events (reminders, birthdays and missed calls);
+- Do not disturb mode;
+- Repeat interval for monthly reminders;
+- Birthdays page.
+
+More: https://wp.me/paDFQH-cR
