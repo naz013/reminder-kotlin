@@ -42,10 +42,15 @@ object UriUtil {
                 if (dir == null || inputStream == null) {
                     withUIContext { onReady.invoke(false, null) }
                 } else {
-                    val file = File(dir.absolutePath + "/" + id)
-                    file.copyInputStreamToFile(inputStream)
-                    val filePath = file.absolutePath
-                    withUIContext { onReady.invoke(true, filePath) }
+                    val file = File("$dir/$id")
+                    Timber.d("obtainPath: $file")
+                    if (file.createNewFile()) {
+                        file.copyInputStreamToFile(inputStream)
+                        val filePath = file.absolutePath
+                        withUIContext { onReady.invoke(true, filePath) }
+                    } else {
+                        withUIContext { onReady.invoke(false, null) }
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
