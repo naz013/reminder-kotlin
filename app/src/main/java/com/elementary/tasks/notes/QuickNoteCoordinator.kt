@@ -102,6 +102,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
         } else {
             item.color = Random().nextInt(ThemeUtil.NOTE_COLORS)
         }
+        item.palette = prefs.notePalette
         val noteWithImages = NoteWithImages()
         noteWithImages.note = item
 
