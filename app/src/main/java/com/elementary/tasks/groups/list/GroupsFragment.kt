@@ -59,7 +59,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
         viewModel = ViewModelProviders.of(this).get(GroupsViewModel::class.java)
         viewModel.allGroups.observe(this, Observer { groups ->
             if (groups != null) {
-                showGroups(groups)
+                showGroups(groups.toList())
             }
         })
     }

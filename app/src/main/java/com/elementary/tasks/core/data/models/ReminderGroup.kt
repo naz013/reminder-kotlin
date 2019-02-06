@@ -27,25 +27,21 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-class ReminderGroup : Serializable {
-    @SerializedName("title")
-    var groupTitle: String = ""
-    @SerializedName("uuId")
-    @PrimaryKey
-    var groupUuId: String = ""
-    @SerializedName("color")
-    var groupColor: Int = 0
-    @SerializedName("dateTime")
-    var groupDateTime: String = ""
-    @SerializedName("isDefaultGroup")
-    var isDefaultGroup: Boolean = false
-
-    constructor() {
-        this.groupUuId = UUID.randomUUID().toString()
-    }
+data class ReminderGroup(
+        @SerializedName("title")
+        var groupTitle: String = "",
+        @SerializedName("uuId")
+        @PrimaryKey
+        var groupUuId: String = UUID.randomUUID().toString(),
+        @SerializedName("color")
+        var groupColor: Int = 0,
+        @SerializedName("dateTime")
+        var groupDateTime: String = "",
+        @SerializedName("isDefaultGroup")
+        var isDefaultGroup: Boolean = false) : Serializable {
 
     @Ignore
-    constructor(title: String, color: Int) {
+    constructor(title: String, color: Int) : this() {
         this.groupTitle = title
         this.groupUuId = UUID.randomUUID().toString()
         this.groupColor = color
@@ -53,14 +49,10 @@ class ReminderGroup : Serializable {
     }
 
     @Ignore
-    constructor(title: String, uuId: String, color: Int, dateTime: String) {
+    constructor(title: String, uuId: String, color: Int, dateTime: String) : this() {
         this.groupTitle = title
         this.groupUuId = uuId
         this.groupColor = color
         this.groupDateTime = dateTime
-    }
-
-    override fun toString(): String {
-        return "ReminderGroup(groupTitle='$groupTitle', groupUuId='$groupUuId', groupColor=$groupColor, groupDateTime='$groupDateTime')"
     }
 }

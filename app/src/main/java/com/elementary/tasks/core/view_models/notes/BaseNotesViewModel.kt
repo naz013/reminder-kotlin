@@ -63,6 +63,22 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
         }
     }
 
+    fun saveNoteColor(note: NoteWithImages, color: Int) {
+        val v = note.note ?: return
+        note.note?.color = color
+        postInProgress(true)
+        launchDefault {
+            runBlocking {
+                appDb.notesDao().insert(v)
+            }
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+            withUIContext {
+                postInProgress(false)
+                postCommand(Commands.SAVED)
+            }
+        }
+    }
+
     fun saveNote(note: NoteWithImages) {
         val v = note.note ?: return
         postInProgress(true)
