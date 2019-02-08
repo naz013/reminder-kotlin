@@ -10,7 +10,6 @@ import com.elementary.tasks.core.app_widgets.buttons.CombinedButtonsWidget
 import com.elementary.tasks.core.app_widgets.buttons.CombinedWidgetConfigActivity
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.app_widgets.calendar.*
-import com.elementary.tasks.core.app_widgets.events.EventEditService
 import com.elementary.tasks.core.app_widgets.events.EventsService
 import com.elementary.tasks.core.app_widgets.events.EventsWidget
 import com.elementary.tasks.core.app_widgets.events.EventsWidgetConfigActivity
@@ -135,8 +134,7 @@ object Module {
                     CalendarMonthService::class.java,
                     VoiceWidgetDialog::class.java,
                     CalendarUpdateMinusService::class.java,
-                    CalendarUpdateService::class.java,
-                    EventEditService::class.java)
+                    CalendarUpdateService::class.java)
         } else {
             setState(context, pm, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                     CombinedButtonsWidget::class.java,
@@ -156,8 +154,7 @@ object Module {
                     CalendarMonthService::class.java,
                     VoiceWidgetDialog::class.java,
                     CalendarUpdateMinusService::class.java,
-                    CalendarUpdateService::class.java,
-                    EventEditService::class.java)
+                    CalendarUpdateService::class.java)
         }
     }
 

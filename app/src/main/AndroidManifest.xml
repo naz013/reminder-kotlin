@@ -406,8 +406,6 @@
             android:name=".core.services.GeolocationService"
             android:enabled="false" />
 
-        <service android:name=".core.app_widgets.events.EventEditService" />
-
         <receiver
             android:name=".core.app_widgets.buttons.CombinedButtonsWidget"
             android:icon="@mipmap/ic_launcher"

@@ -116,8 +116,8 @@ class EventJobService : Job() {
     }
 
     private fun start(context: Context, id: String) {
-        val intent = Intent(context, ReminderActionService::class.java)
-        intent.action = ReminderActionService.ACTION_RUN
+        val intent = Intent(context, ReminderActionReceiver::class.java)
+        intent.action = ReminderActionReceiver.ACTION_RUN
         intent.putExtra(Constants.INTENT_ID, id)
         context.sendBroadcast(intent)
     }

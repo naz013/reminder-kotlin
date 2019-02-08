@@ -242,9 +242,9 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 val fillInIntent = Intent()
                 fillInIntent.putExtra(Constants.INTENT_ID, item.id)
                 if (item.type == CalendarItem.Type.REMINDER) {
-                    fillInIntent.putExtra(EventEditService.TYPE, true)
+                    fillInIntent.putExtra(EventActionReceiver.TYPE, true)
                 } else {
-                    fillInIntent.putExtra(EventEditService.TYPE, false)
+                    fillInIntent.putExtra(EventActionReceiver.TYPE, false)
                 }
                 rv.setOnClickFillInIntent(R.id.taskDate, fillInIntent)
                 rv.setOnClickFillInIntent(R.id.taskTime, fillInIntent)
@@ -295,7 +295,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
 
             val fillInIntent = Intent()
             fillInIntent.putExtra(Constants.INTENT_ID, item.id)
-            fillInIntent.putExtra(EventEditService.TYPE, true)
+            fillInIntent.putExtra(EventActionReceiver.TYPE, true)
             rv.setOnClickFillInIntent(R.id.taskText, fillInIntent)
             rv.setOnClickFillInIntent(R.id.listItemCard, fillInIntent)
             rv.setOnClickFillInIntent(R.id.todoList, fillInIntent)

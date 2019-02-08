@@ -91,8 +91,8 @@ class EventsWidget : AppWidgetProvider() {
                 rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureBlack))
             }
 
-            val startActivityIntent = Intent(context, EventEditService::class.java)
-            val startActivityPendingIntent = PendingIntent.getService(context, 0, startActivityIntent, 0)
+            val startActivityIntent = Intent(context, EventActionReceiver::class.java)
+            val startActivityPendingIntent = PendingIntent.getBroadcast(context, 0, startActivityIntent, 0)
             rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent)
 
             val adapter = Intent(context, EventsService::class.java)

@@ -10,8 +10,8 @@ import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.BirthdayActionService
-import com.elementary.tasks.core.services.ReminderActionService
+import com.elementary.tasks.core.services.BirthdayActionReceiver
+import com.elementary.tasks.core.services.ReminderActionReceiver
 import timber.log.Timber
 import java.util.*
 
@@ -55,7 +55,7 @@ object ReminderUtils {
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         val intent = PendingIntent.getBroadcast(context, birthday.uniqueId,
-                BirthdayActionService.show(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
+                BirthdayActionReceiver.show(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
         builder.setContentIntent(intent)
         builder.setAutoCancel(false)
         builder.setOngoing(true)
@@ -98,16 +98,16 @@ object ReminderUtils {
         builder.setContentText(context.getString(R.string.birthday))
 
         val piDismiss = PendingIntent.getBroadcast(context, birthday.uniqueId,
-                BirthdayActionService.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
+                BirthdayActionReceiver.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
         builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
 
         if (prefs.isTelephonyAllowed && !TextUtils.isEmpty(birthday.number)) {
             val piCall = PendingIntent.getBroadcast(context, birthday.uniqueId,
-                    BirthdayActionService.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
+                    BirthdayActionReceiver.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
             builder.addAction(R.drawable.ic_twotone_call_white, context.getString(R.string.make_call), piCall)
 
             val piSms = PendingIntent.getBroadcast(context, birthday.uniqueId,
-                    BirthdayActionService.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
+                    BirthdayActionReceiver.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT)
             builder.addAction(R.drawable.ic_twotone_send_white, context.getString(R.string.send_sms), piSms)
         }
 
@@ -121,14 +121,14 @@ object ReminderUtils {
     fun showSimpleReminder(context: Context, prefs: Prefs, id: String) {
         Timber.d("showSimpleReminder: ")
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
-        val dismissIntent = Intent(context, ReminderActionService::class.java)
-        dismissIntent.action = ReminderActionService.ACTION_HIDE
+        val dismissIntent = Intent(context, ReminderActionReceiver::class.java)
+        dismissIntent.action = ReminderActionReceiver.ACTION_HIDE
         dismissIntent.putExtra(Constants.INTENT_ID, id)
         val piDismiss = PendingIntent.getBroadcast(context, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        val notificationIntent = Intent(context, ReminderActionService::class.java)
-        notificationIntent.action = ReminderActionService.ACTION_SHOW
+        val notificationIntent = Intent(context, ReminderActionReceiver::class.java)
+        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
         notificationIntent.putExtra(Constants.INTENT_ID, id)
         val intent = PendingIntent.getBroadcast(context, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         builder.setContentIntent(intent)

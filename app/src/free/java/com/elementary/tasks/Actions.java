@@ -23,6 +23,7 @@ public class Actions {
         public static final String ACTION_RUN = "com.elementary.tasks.reminder.RUN";
         public static final String ACTION_SHOW_FULL = "com.elementary.tasks.reminder.SHOW_SCREEN";
         public static final String ACTION_HIDE_SIMPLE = "com.elementary.tasks.reminder.SIMPLE_HIDE";
+        public static final String ACTION_EDIT_EVENT = "com.elementary.tasks.reminder.EVENT_EDIT";
     }
 
     public class Birthday {

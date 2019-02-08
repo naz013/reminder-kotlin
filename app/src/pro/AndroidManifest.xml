@@ -27,7 +27,7 @@
         </receiver>
 
         <receiver
-            android:name="com.elementary.tasks.core.services.ReminderActionService"
+            android:name="com.elementary.tasks.core.services.ReminderActionReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.elementary.tasks.pro.reminder.SHOW_SCREEN" />
@@ -36,12 +36,19 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.elementary.tasks.core.services.BirthdayActionService"
+            android:name="com.elementary.tasks.core.services.BirthdayActionReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.elementary.tasks.pro.birthday.SHOW_SCREEN" />
                 <action android:name="com.elementary.tasks.pro.birthday.CALL" />
                 <action android:name="com.elementary.tasks.pro.birthday.SMS" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.elementary.tasks.core.app_widgets.events.EventActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.pro.reminder.EVENT_EDIT" />
             </intent-filter>
         </receiver>
     </application>
