@@ -1,8 +1,10 @@
 package com.elementary.tasks.core.view_models.reminders
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -212,10 +214,13 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         }
     }
 
-    fun saveReminder(reminder: Reminder) {
+    fun saveReminder(reminder: Reminder, context: Context? = null) {
         postInProgress(true)
         launchDefault {
-            appDb.reminderDao().insert(reminder)
+            runBlocking {
+                appDb.reminderDao().insert(reminder)
+            }
+            if (context != null) UpdatesHelper.updateTasksWidget(context)
             backupReminder(reminder.uuId)
             withUIContext {
                 postInProgress(false)

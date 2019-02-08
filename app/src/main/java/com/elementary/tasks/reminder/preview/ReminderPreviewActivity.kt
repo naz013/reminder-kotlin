@@ -317,13 +317,13 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                 item.isChecked = !item.isChecked
                 shoppingAdapter.updateData()
                 reminder.shoppings = shoppingAdapter.data
-                viewModel.saveReminder(reminder)
+                viewModel.saveReminder(reminder, this@ReminderPreviewActivity)
             }
 
             override fun onItemDelete(position: Int) {
                 shoppingAdapter.delete(position)
                 reminder.shoppings = shoppingAdapter.data
-                viewModel.saveReminder(reminder)
+                viewModel.saveReminder(reminder, this@ReminderPreviewActivity)
             }
         }
         shoppingAdapter.data = reminder.shoppings

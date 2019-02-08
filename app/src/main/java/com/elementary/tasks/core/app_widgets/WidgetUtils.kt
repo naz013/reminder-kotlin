@@ -9,7 +9,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 
 /**
@@ -60,55 +59,26 @@ object WidgetUtils {
         rv.setImageViewResource(viewId, iconId)
     }
 
-    @ColorRes
-    fun getColor(code: Int): Int {
-        var color = 0
-        when (code) {
-            0 -> color = R.color.whitePrimary
-            1 -> color = R.color.redPrimary
-            2 -> color = R.color.purplePrimary
-            3 -> color = R.color.greenLightPrimary
-            4 -> color = R.color.greenPrimary
-            5 -> color = R.color.blueLightPrimary
-            6 -> color = R.color.bluePrimary
-            7 -> color = R.color.yellowPrimary
-            8 -> color = R.color.orangePrimary
-            9 -> color = R.color.cyanPrimary
-            10 -> color = R.color.pinkPrimary
-            11 -> color = R.color.tealPrimary
-            12 -> color = R.color.amberPrimary
-            13 -> color = android.R.color.transparent
-            else -> if (Module.isPro) {
-                when (code) {
-                    14 -> color = R.color.purpleDeepPrimary
-                    15 -> color = R.color.orangeDeepPrimary
-                    16 -> color = R.color.limePrimary
-                    17 -> color = R.color.indigoPrimary
-                }
-            } else {
-                color = R.color.bluePrimary
-            }
-        }
-        return color
-    }
-
     @DrawableRes
     fun newWidgetBg(code: Int): Int {
         return when (code) {
             0 -> R.drawable.widget_bg_transparent
-            1 -> R.drawable.widget_bg_white
-            2 -> R.drawable.widget_bg_light1
-            3 -> R.drawable.widget_bg_light2
-            4 -> R.drawable.widget_bg_light3
-            5 -> R.drawable.widget_bg_light4
-            6 -> R.drawable.widget_bg_dark1
-            7 -> R.drawable.widget_bg_dark2
-            8 -> R.drawable.widget_bg_dark3
-            9 -> R.drawable.widget_bg_dark4
-            10 -> R.drawable.widget_bg_black
+            1 -> R.drawable.widget_bg_white_20
+            2 -> R.drawable.widget_bg_white_40
+            3 -> R.drawable.widget_bg_white_60
+            4 -> R.drawable.widget_bg_white
+            5 -> R.drawable.widget_bg_light1
+            6 -> R.drawable.widget_bg_light2
+            7 -> R.drawable.widget_bg_light3
+            8 -> R.drawable.widget_bg_light4
+            9 -> R.drawable.widget_bg_dark1
+            10 -> R.drawable.widget_bg_dark2
+            11 -> R.drawable.widget_bg_dark3
+            12 -> R.drawable.widget_bg_dark4
+            13 -> R.drawable.widget_bg_black
             else -> R.drawable.widget_bg_black
         }
     }
 
-    fun isDarkBg(code: Int): Boolean = code > 5
+    fun isDarkBg(code: Int): Boolean = code > 8
 }

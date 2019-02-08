@@ -2,6 +2,9 @@
 <resources>
 
     <color name="pureWhite">#FFFFFF</color>
+    <color name="pureWhite20">#33FFFFFF</color>
+    <color name="pureWhite40">#66FFFFFF</color>
+    <color name="pureWhite60">#99FFFFFF</color>
     <color name="pureWhite12">#1EFFFFFF</color>
 
     <color name="retroYellow">#fffeb3</color>

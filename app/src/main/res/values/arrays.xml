@@ -3,6 +3,9 @@
 
     <integer-array name="widget_colors">
         <item>@android:color/transparent</item>
+        <item>@color/pureWhite20</item>
+        <item>@color/pureWhite40</item>
+        <item>@color/pureWhite60</item>
         <item>@color/pureWhite</item>
         <item>@color/lightBg1</item>
         <item>@color/lightBg2</item>

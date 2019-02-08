@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
+import com.elementary.tasks.Actions
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.WidgetUtils
@@ -64,7 +65,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
         data.clear()
         map.clear()
         val is24 = prefs.is24HourFormat
-        val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false)
+        val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(active = true, removed = false)
         for (item in reminderItems) {
             val type = item.type
             val summary = item.summary
@@ -93,6 +94,11 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                     time = TimeUtil.getTime(calendar1.time, is24, prefs.appLanguage)
                 }
                 Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> {
+                    if (item.hasReminder) {
+                        val dT = TimeCount.getNextDateTime(eventTime, prefs)
+                        date = dT[0]
+                        time = dT[1]
+                    }
                     viewType = 2
                     map[id] = item
                 }
@@ -117,7 +123,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             do {
                 mDay = calendar.get(Calendar.DAY_OF_MONTH)
                 mMonth = calendar.get(Calendar.MONTH)
-                val list = AppDb.getAppDatabase(mContext).birthdaysDao().getAll(mDay.toString() + "|" + mMonth)
+                val list = AppDb.getAppDatabase(mContext).birthdaysDao().getAll("$mDay|$mMonth")
                 for (item in list) {
                     val birthday = item.date
                     val name = item.name
@@ -187,6 +193,12 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
         val itemTextSize = sp.getFloat(EventsWidgetConfigActivity.WIDGET_TEXT_SIZE + widgetID, 0f)
         val itemBgColor = sp.getInt(EventsWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
 
+        val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
+            ContextCompat.getColor(mContext, R.color.pureWhite)
+        } else {
+            ContextCompat.getColor(mContext, R.color.pureBlack)
+        }
+
         var rv: RemoteViews? = null
         if (i >= count) {
             return null
@@ -197,11 +209,6 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
 
             rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
 
-            val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
-                ContextCompat.getColor(mContext, R.color.pureWhite)
-            } else {
-                ContextCompat.getColor(mContext, R.color.pureBlack)
-            }
             rv.setTextColor(R.id.taskText, textColor)
             rv.setTextColor(R.id.taskDate, textColor)
             rv.setTextColor(R.id.taskNumber, textColor)
@@ -232,7 +239,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 rv.setTextViewText(R.id.taskNumber, number)
                 rv.setViewVisibility(R.id.taskNumber, View.VISIBLE)
             } else {
-                rv.setViewVisibility(R.id.taskNumber, View.INVISIBLE)
+                rv.setViewVisibility(R.id.taskNumber, View.GONE)
             }
             rv.setTextViewText(R.id.taskDate, item.dayDate)
             rv.setTextViewText(R.id.taskTime, item.time)
@@ -241,6 +248,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             if (item.id != null) {
                 val fillInIntent = Intent()
                 fillInIntent.putExtra(Constants.INTENT_ID, item.id)
+                fillInIntent.action = Actions.Reminder.ACTION_EDIT_EVENT
                 if (item.type == CalendarItem.Type.REMINDER) {
                     fillInIntent.putExtra(EventActionReceiver.TYPE, true)
                 } else {
@@ -256,28 +264,36 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
         if (item.viewType == 2) {
             rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_shop_list)
             rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
-            val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
-                ContextCompat.getColor(mContext, R.color.pureWhite)
-            } else {
-                ContextCompat.getColor(mContext, R.color.pureBlack)
-            }
+
+            rv.setImageViewBitmap(R.id.statusIcon, ViewUtils.createIcon(mContext, R.drawable.ic_twotone_shopping_cart_24px, textColor))
 
             val task = item.name
             rv.setTextViewText(R.id.taskText, task)
             rv.setTextColor(R.id.taskText, textColor)
             rv.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
+            val reminder = map[item.id]
+            val lists = reminder?.shoppings ?: listOf()
+
+            if (reminder != null && reminder.hasReminder) {
+                rv.setTextViewText(R.id.taskDate, item.dayDate)
+                rv.setTextViewText(R.id.taskTime, item.time)
+                rv.setViewVisibility(R.id.dateTimeView, View.VISIBLE)
+            } else {
+                rv.setViewVisibility(R.id.dateTimeView, View.GONE)
+            }
+
             var count = 0
-            val lists = map[item.id]?.shoppings ?: listOf()
+
             rv.removeAllViews(R.id.todoList)
+
+            val checkedIcon = ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_24px, textColor)
+            val unCheckedIcon = ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_outline_blank_24px, textColor)
+
             for (list in lists) {
                 val view = RemoteViews(mContext.packageName, R.layout.list_item_widget_shop_item)
-                val icon = if (list.isChecked) {
-                    ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_24px, textColor)
-                } else {
-                    ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_outline_blank_24px, textColor)
-                }
-                rv.setImageViewBitmap(R.id.checkView, icon)
+                val icon = if (list.isChecked) checkedIcon else unCheckedIcon
+                view.setImageViewBitmap(R.id.checkView, icon)
                 view.setTextColor(R.id.shopText, textColor)
                 view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
                 count++

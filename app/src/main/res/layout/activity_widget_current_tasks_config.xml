@@ -19,155 +19,168 @@
             android:textAppearance="?textAppearanceHeadline4"
             app:fontFamily="@font/lobster_regular" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="156dp"
-            android:layout_marginStart="@dimen/material_margin"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/material_margin"
-            android:orientation="vertical">
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp">
 
-            <LinearLayout
-                android:id="@+id/headerBg"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/widget_bg_dark1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/widgetTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:singleLine="true"
-                    android:text="@string/events"
-                    android:textAppearance="?textAppearanceHeadline5"
-                    android:textSize="18sp"
-                    tools:ignore="RtlSymmetry" />
-
-                <ImageView
-                    android:id="@+id/btn_settings"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="centerInside"
-                    tools:srcCompat="@drawable/ic_twotone_settings_24px" />
-
-                <ImageView
-                    android:id="@+id/btn_voice"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="centerInside"
-                    tools:srcCompat="@drawable/ic_twotone_mic_24px" />
-
-                <ImageView
-                    android:id="@+id/btn_add_task"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="centerInside"
-                    tools:srcCompat="@drawable/ic_twotone_add_24px" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/widgetBg"
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/widget_preview_bg" />
+
+            <LinearLayout
+                android:id="@+id/widgetView"
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/material_margin"
+                android:layout_marginEnd="@dimen/material_margin"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/listItemCard"
+                    android:id="@+id/headerBg"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:layout_height="50dp"
+                    android:background="@drawable/widget_bg_dark1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/widgetTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:singleLine="true"
+                        android:text="@string/events"
+                        android:textAppearance="?textAppearanceHeadline5"
+                        android:textSize="18sp"
+                        tools:ignore="RtlSymmetry" />
 
                     <ImageView
-                        android:id="@+id/statusIcon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:scaleType="centerInside" />
+                        android:id="@+id/btn_settings"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="centerInside"
+                        tools:srcCompat="@drawable/ic_twotone_settings_24px" />
+
+                    <ImageView
+                        android:id="@+id/btn_voice"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="centerInside"
+                        tools:srcCompat="@drawable/ic_twotone_mic_24px" />
+
+                    <ImageView
+                        android:id="@+id/btn_add_task"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="centerInside"
+                        tools:srcCompat="@drawable/ic_twotone_add_24px" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/widgetBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/listItemCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+
+                        <ImageView
+                            android:id="@+id/statusIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:scaleType="centerInside" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/taskText"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:singleLine="true"
+                                    android:text="Task"
+                                    android:textColor="@color/pureBlack"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/taskDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:singleLine="true"
+                                    android:text="July 25, 2019"
+                                    android:textColor="@color/pureBlack"
+                                    tools:ignore="HardcodedText" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/taskNumber"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:singleLine="true"
+                                    android:text="+1234567890"
+                                    android:textColor="@color/pureBlack"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/taskTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:singleLine="true"
+                                    android:text="10:00 AM"
+                                    android:textColor="@color/pureBlack"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
 
                             <TextView
-                                android:id="@+id/taskText"
-                                android:layout_width="0dp"
+                                android:id="@+id/leftTime"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center"
                                 android:singleLine="true"
-                                android:text="Task"
-                                android:textColor="@color/pureBlack"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView
-                                android:id="@+id/taskDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:singleLine="true"
-                                android:text="July 25, 2019"
+                                android:text="25 minutes"
                                 android:textColor="@color/pureBlack"
                                 tools:ignore="HardcodedText" />
 
                         </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="4dp"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/taskNumber"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:singleLine="true"
-                                android:text="+1234567890"
-                                android:textColor="@color/pureBlack"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView
-                                android:id="@+id/taskTime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:singleLine="true"
-                                android:text="10:00 AM"
-                                android:textColor="@color/pureBlack"
-                                tools:ignore="HardcodedText" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/leftTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="25 minutes"
-                            android:textColor="@color/pureBlack"
-                            tools:ignore="HardcodedText" />
-
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
         <ScrollView
             android:layout_width="match_parent"
