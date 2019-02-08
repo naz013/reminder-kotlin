@@ -27,7 +27,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ReminderActionService : BaseBroadcast() {
+class ReminderActionReceiver : BaseBroadcast() {
 
     private fun showReminder(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
