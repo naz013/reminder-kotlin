@@ -85,6 +85,8 @@ class VoiceWidgetDialog : FragmentActivity() {
                 notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
             }
             finish()
+        } else {
+            finish()
         }
     }
 
