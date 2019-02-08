@@ -65,7 +65,7 @@ class VoiceResultDialog : BaseDialog() {
             dialogInterface.dismiss()
             CreateReminderActivity.openLogged(this,
                     Intent(this@VoiceResultDialog, CreateReminderActivity::class.java)
-                            .putExtra(Constants.INTENT_ID, reminder.uniqueId))
+                            .putExtra(Constants.INTENT_ID, reminder.uuId))
             finish()
         }
         alert.setPositiveButton(R.string.ok) { dialog, _ ->
