@@ -79,10 +79,11 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
                     actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.REMOVE)
                 }
                 if (actionsListener != null && Module.isPro) {
-                    binding.editButton.visibility = View.VISIBLE
-                    binding.editButton.setOnClickListener { view ->
-                        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
-                    }
+                    binding.editButton.visibility = View.GONE
+//                    binding.editButton.visibility = View.VISIBLE
+//                    binding.editButton.setOnClickListener { view ->
+//                        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
+//                    }
                 } else {
                     binding.editButton.visibility = View.GONE
                 }
