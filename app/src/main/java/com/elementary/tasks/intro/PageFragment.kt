@@ -42,7 +42,6 @@ class PageFragment : BindingFragment<FragmentIntroPageBinding>() {
         super.onViewCreated(view, savedInstanceState)
         val item = ItemFactory.getItem(activity!!, position)
         if (item != null) {
-            binding.title.text = item.title
             binding.animationView.setAnimation(item.image)
             binding.animationView.playAnimation()
         }
