@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.graphics.Typeface
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +12,6 @@ import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
@@ -40,9 +38,8 @@ import java.util.*
  */
 class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
-    private var mTypeface: Typeface? = null
     private var mData: List<PhoneItem> = ArrayList()
-    private var adapter: EmailAdapter? = null
+    private var adapter: PhoneAdapter? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -68,6 +65,8 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
             }
         })
+        adapter = PhoneAdapter(listOf())
+        setAdapter(adapter)
         reloadContacts()
     }
 
@@ -75,7 +74,7 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
         if (Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
             loadContacts {
                 mData = it
-                setAdapter(EmailAdapter(it))
+                adapter?.notifyDataSetChanged()
             }
         }
     }
@@ -84,14 +83,7 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
         adapter?.filter?.filter(s)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (mTypeface != null) {
-            typeface = mTypeface
-        }
-    }
-
-    private inner class EmailAdapter(items: List<PhoneItem>) : BaseAdapter(), Filterable {
+    private inner class PhoneAdapter(items: List<PhoneItem>) : BaseAdapter(), Filterable {
 
         private var items: List<PhoneItem> = ArrayList()
         private var filter: ValueFilter? = null
@@ -118,19 +110,25 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
         }
 
         override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
-            var v = view
-            if (v == null) {
-                v = LayoutInflater.from(context).inflate(R.layout.list_item_email, viewGroup, false)
-            }
-            v?.let {
-                val item = items[i]
-                return ListItemEmailBinding.bind(it).run {
-                    nameView.text = item.name
-                    emailView.text = item.phone
-                    this.root
+            val newView: View?
+            val item = items[i]
+            if (view == null) {
+                val v = ListItemEmailBinding.inflate(LayoutInflater.from(context), viewGroup, false)
+                v.nameView.text = item.name
+                v.emailView.text = item.phone
+                val h = ViewHolder()
+                h.binding = v
+                newView = v.root
+                newView.tag = h
+            } else {
+                val h = view.tag as ViewHolder
+                h.binding?.let {
+                    it.nameView.text = item.name
+                    it.emailView.text = item.phone
                 }
+                newView = h.binding?.root
             }
-            return v
+            return newView
         }
 
         override fun getFilter(): Filter? {
@@ -140,16 +138,12 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
             return filter
         }
 
-        internal inner class ValueFilter : Filter() {
+        inner class ValueFilter : Filter() {
             override fun performFiltering(constraint: CharSequence?): Filter.FilterResults {
+                val matcher = constraint?.toString()?.trim()?.toLowerCase() ?: ""
                 val results = Filter.FilterResults()
-                if (constraint != null && constraint.isNotEmpty()) {
-                    val filterList = ArrayList<PhoneItem>()
-                    for (i in mData.indices) {
-                        if ((mData[i].phone + " " + mData[i].name).toLowerCase().contains(constraint.toString().toLowerCase())) {
-                            filterList.add(mData[i])
-                        }
-                    }
+                if (matcher.isNotEmpty()) {
+                    val filterList = mData.filter { it.name.toLowerCase().contains(matcher) || it.phone.contains(matcher) }
                     results.count = filterList.size
                     results.values = filterList
                 } else {
@@ -194,6 +188,10 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
                 callback?.invoke(list)
             }
         }
+    }
+
+    internal class ViewHolder {
+        var binding: ListItemEmailBinding? = null
     }
 
     data class PhoneItem(val name: String, val phone: String)
