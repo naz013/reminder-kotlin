@@ -54,7 +54,8 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     private var hasLocation = false
     override val state: StateViewModel
         get() = stateViewModel
-    override var defGroup: ReminderGroup? = null
+    override val defGroup: ReminderGroup?
+        get() = stateViewModel.group
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
 
@@ -156,7 +157,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         })
         viewModel.allGroups.observe(this, Observer {
             if (it != null && it.isNotEmpty()) {
-                defGroup = it[0]
+                stateViewModel.group = it[0]
                 showGroup(it[0])
             }
         })

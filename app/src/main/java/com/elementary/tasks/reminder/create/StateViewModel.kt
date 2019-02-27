@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder.create
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import java.util.*
 
@@ -10,6 +11,7 @@ class StateViewModel : ViewModel(), LifecycleObserver {
 
     var shopItems: List<ShopItem> = listOf()
     var reminder: Reminder = Reminder()
+    var group: ReminderGroup? = null
 
     var isShopItemsEdited: Boolean = false
     var isLogged: Boolean = false

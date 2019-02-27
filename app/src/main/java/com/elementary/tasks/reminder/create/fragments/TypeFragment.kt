@@ -269,6 +269,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
             }
         }
         iFace.setFragment(this)
+        updateHeader()
     }
 
     fun onGroupUpdate(reminderGroup: ReminderGroup) {
