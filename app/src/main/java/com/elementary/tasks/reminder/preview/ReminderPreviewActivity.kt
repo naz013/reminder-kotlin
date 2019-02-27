@@ -237,7 +237,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         binding.taskText.text = reminder.summary
         binding.type.text = ReminderUtils.getTypeString(this, reminder.type)
         binding.itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
-        binding.idView.setText(reminder.uuId)
+        binding.idView.text = reminder.uuId
 
         showDueAndRepeat(reminder)
         showBefore(reminder)

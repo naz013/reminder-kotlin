@@ -238,7 +238,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
     protected fun showWearNotification(secondaryText: String) {
         Timber.d("showWearNotification: $secondaryText")
         val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
-        wearableNotificationBuilder.setSmallIcon(R.drawable.ic_notification_nv_white)
+        wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         wearableNotificationBuilder.setContentTitle(summary)
         wearableNotificationBuilder.setContentText(secondaryText)
         wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
