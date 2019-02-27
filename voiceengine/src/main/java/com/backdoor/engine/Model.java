@@ -3,6 +3,7 @@ package com.backdoor.engine;
 import com.backdoor.engine.misc.Action;
 import com.backdoor.engine.misc.ActionType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class Model {
     private String dateTime;
     private long repeatInterval;
     private ActionType type;
-    private List<Integer> weekdays;
+    private List<Integer> weekdays = new ArrayList<>();
     private Action action;
     private boolean hasCalendar;
 
