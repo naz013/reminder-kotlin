@@ -143,3 +143,10 @@
 -keep public class com.evernote.android.job.JobRescheduleService
 -keep public class com.evernote.android.job.gcm.PlatformGcmService
 -keep public class com.evernote.android.job.work.PlatformWorker
+
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
