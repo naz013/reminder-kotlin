@@ -77,7 +77,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         getManager(context)?.notify(note.uniqueId, builder.build())
         if (isWear) {
             val wearableNotificationBuilder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-            wearableNotificationBuilder.setSmallIcon(R.drawable.ic_note_nv_white)
+            wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_note_white)
             wearableNotificationBuilder.setContentTitle(content)
             wearableNotificationBuilder.setContentText(context.getString(R.string.note))
             wearableNotificationBuilder.setOngoing(false)
