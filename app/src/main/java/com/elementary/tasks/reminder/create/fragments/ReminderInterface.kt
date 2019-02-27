@@ -24,7 +24,7 @@ import com.elementary.tasks.reminder.create.StateViewModel
  */
 interface ReminderInterface {
 
-    var defGroup: ReminderGroup?
+    val defGroup: ReminderGroup?
 
     var canExportToTasks: Boolean
 
