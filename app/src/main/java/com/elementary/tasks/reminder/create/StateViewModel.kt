@@ -38,6 +38,9 @@ class StateViewModel : ViewModel(), LifecycleObserver {
     var minute: Int = 0
 
     var timer: Long = 0
+    var isPaused: Boolean = false
+    var original: Reminder? = null
+    var isSaving: Boolean = false
 
     init {
         val calendar = Calendar.getInstance()

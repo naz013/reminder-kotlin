@@ -214,7 +214,11 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     private fun editReminder(reminder: Reminder, stop: Boolean = true) {
         Timber.d("editReminder: ")
         stateViewModel.reminder = reminder
-        if (stop) viewModel.pauseReminder(reminder)
+        if (stop) {
+            viewModel.pauseReminder(reminder)
+            stateViewModel.original = reminder.copy()
+            stateViewModel.isPaused = true
+        }
         else {
             val group = defGroup
             if (reminder.groupUuId.isBlank() && group != null) {
@@ -381,6 +385,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
             it.prepare()?.let { item ->
                 Timber.d("save: %s", item)
                 viewModel.reminder.removeObserver(mReminderObserver)
+                stateViewModel.isSaving = true
                 viewModel.saveAndStartReminder(item, isEditing)
             }
         }
@@ -512,6 +517,9 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
 
     override fun onDestroy() {
         super.onDestroy()
+        if (stateViewModel.isPaused && !stateViewModel.isSaving) {
+            stateViewModel.original?.let { viewModel.resumeReminder(it) }
+        }
         UpdatesHelper.updateWidget(this)
         UpdatesHelper.updateCalendarWidget(this)
     }
