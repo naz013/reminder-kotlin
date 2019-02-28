@@ -252,17 +252,6 @@
                 app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/silentSMSOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_send_24px"
-                app:prefs_primary_text="@string/send_sms"
-                app:prefs_secondary_text_off="@string/send_messages_manually"
-                app:prefs_secondary_text_on="@string/send_messages_auto"
-                app:prefs_type="check_switch" />
-
-            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/autoLaunchPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

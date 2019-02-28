@@ -36,7 +36,6 @@ object PrefsConstants {
     const val SILENT_SOUND = "sound_status"
     const val WAKE_STATUS = "wake_status"
     const val INFINITE_SOUND = "infinite_sound"
-    const val SILENT_SMS = "silent_sms"
     const val CONTACT_BIRTHDAYS = "use_contacts"
     const val BIRTHDAY_REMINDER = "birthdays_reminder"
     const val START_DAY = "start_day"

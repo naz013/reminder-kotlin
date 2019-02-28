@@ -2,13 +2,15 @@ package com.elementary.tasks.reminder.preview
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
-import android.telephony.SmsManager
 import android.text.TextUtils
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -26,7 +28,6 @@ import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
-import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -91,16 +92,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         get() {
             val reminder = mReminder ?: return false
             var has = prefs.isAutoLaunchEnabled
-            if (!isGlobal) {
-                has = reminder.auto
-            }
-            return has
-        }
-
-    private val isAutoEnabled: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var has = prefs.isAutoSmsEnabled
             if (!isGlobal) {
                 has = reminder.auto
             }
@@ -413,17 +404,10 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
                 binding.contactName.text = reminder.target
                 binding.contactNumber.text = reminder.target
             }
-            if (!prefs.isAutoSmsEnabled) {
-                binding.contactBlock.visibility = View.VISIBLE
-                binding.buttonAction.text = getString(R.string.send)
-                binding.buttonAction.contentDescription = getString(R.string.acc_button_send_message)
-                binding.buttonAction.visibility = View.VISIBLE
-            } else {
-                binding.contactBlock.visibility = View.INVISIBLE
-                binding.buttonAction.visibility = View.INVISIBLE
-                binding.buttonDelay.hide()
-                binding.buttonDelayFor.hide()
-            }
+            binding.contactBlock.visibility = View.VISIBLE
+            binding.buttonAction.text = getString(R.string.send)
+            binding.buttonAction.contentDescription = getString(R.string.acc_button_send_message)
+            binding.buttonAction.visibility = View.VISIBLE
             binding.container.visibility = View.VISIBLE
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
             binding.remText.setText(R.string.e_mail)
@@ -509,9 +493,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
         init()
 
-        if (Reminder.isKind(reminder.type, Reminder.Kind.SMS) && isAutoEnabled) {
-            sendSMS()
-        } else if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) && isAutoCallEnabled) {
+        if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) && isAutoCallEnabled) {
             call()
         } else if (isAppType && isAutoLaunchEnabled) {
             openApplication(reminder)
@@ -650,19 +632,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     private fun sendSMS() {
         val reminder = mReminder ?: return
         if (TextUtils.isEmpty(summary)) return
-        if (!Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS)) {
-            return
-        }
-        onProgressShow(getString(R.string.please_wait))
-        val action = "SMS_SENT"
-        val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
-        registerReceiver(SendReceiver(mSendListener), IntentFilter(action))
-        val sms = SmsManager.getDefault()
-        try {
-            sms.sendTextMessage(reminder.target, null, summary, sentPI, null)
-        } catch (e: SecurityException) {
-            Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
-        }
+        TelephonyUtil.sendSms(this, reminder.target, summary)
     }
 
     private fun showNotification() {
@@ -967,9 +937,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             CALL_PERM -> if (Permissions.isAllGranted(grantResults)) {
                 makeCall()
             }
-            SMS_PERM -> if (Permissions.isAllGranted(grantResults)) {
-                sendSMS()
-            }
         }
     }
 
@@ -998,7 +965,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     companion object {
         private const val CALL_PERM = 612
-        private const val SMS_PERM = 613
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val ARG_IS_ROTATED = "arg_rotated"

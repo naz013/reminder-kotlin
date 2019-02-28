@@ -62,7 +62,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         initTtsPrefs()
         initTtsLocalePrefs()
         initUnlockPrefs()
-        initAutoSmsPrefs()
         initAutoLaunchPrefs()
         initSnoozeTimePrefs()
         initLedPrefs()
@@ -318,28 +317,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     private fun initAutoLaunchPrefs() {
         binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
         binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
-    }
-
-    private fun changeAutoSmsPrefs() {
-        val isChecked = binding.silentSMSOptionPrefs.isChecked
-        if (!isChecked) {
-            if (Permissions.ensurePermissions(activity!!, PERM_AUTO_SMS, Permissions.SEND_SMS)) {
-                binding.silentSMSOptionPrefs.isChecked = !isChecked
-                prefs.isAutoSmsEnabled = !isChecked
-            } else {
-                binding.silentSMSOptionPrefs.isChecked = isChecked
-                prefs.isAutoSmsEnabled = isChecked
-            }
-        } else {
-            binding.silentSMSOptionPrefs.isChecked = !isChecked
-            prefs.isAutoSmsEnabled = !isChecked
-        }
-    }
-
-    private fun initAutoSmsPrefs() {
-        binding.silentSMSOptionPrefs.setOnClickListener { changeAutoSmsPrefs() }
-        binding.silentSMSOptionPrefs.isChecked = prefs.isAutoSmsEnabled
-        binding.silentSMSOptionPrefs.isEnabled = prefs.isTelephonyAllowed
     }
 
     private fun changeUnlockPrefs() {
@@ -725,7 +702,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
                 PERM_AUTO_CALL -> changeAutoCallPrefs()
-                PERM_AUTO_SMS -> changeAutoSmsPrefs()
             }
         }
     }
@@ -746,6 +722,5 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         private const val PERM_BT = 1425
         private const val PERM_SD = 1426
         private const val PERM_AUTO_CALL = 1427
-        private const val PERM_AUTO_SMS = 1428
     }
 }

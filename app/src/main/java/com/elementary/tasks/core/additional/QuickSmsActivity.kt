@@ -1,11 +1,8 @@
 package com.elementary.tasks.core.additional
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.telephony.SmsManager
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -14,10 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 
@@ -78,9 +74,6 @@ class QuickSmsActivity : ThemedActivity<ActivityQuickSmsBinding>() {
     }
 
     private fun startSending() {
-        if (!Permissions.ensurePermissions(this, REQ_SMS, Permissions.SEND_SMS)) {
-            return
-        }
         val position = mAdapter.selectedPosition
         val item = mAdapter.getItem(position)
         if (item != null) {
@@ -99,19 +92,9 @@ class QuickSmsActivity : ThemedActivity<ActivityQuickSmsBinding>() {
     }
 
     private fun sendSMS(number: String?, message: String?) {
-        val action = "SMS_SENT"
-        val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
-        registerReceiver(SendReceiver { b ->
-            if (b) {
-                removeFlags()
-            } else {
-                sendError()
-            }
-        }, IntentFilter(action))
-        val sms = SmsManager.getDefault()
-        try {
-            sms.sendTextMessage(number, null, message, sentPI, null)
-        } catch (e: SecurityException) {
+        if (number != null) {
+            TelephonyUtil.sendSms(this, number, message)
+        } else {
             sendError()
         }
     }
@@ -124,18 +107,7 @@ class QuickSmsActivity : ThemedActivity<ActivityQuickSmsBinding>() {
         removeFlags()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQ_SMS -> if (Permissions.isAllGranted(grantResults)) {
-                startSending()
-            }
-        }
-    }
-
     companion object {
-
-        private const val REQ_SMS = 425
 
         fun openScreen(context: Context, number: String) {
             context.startActivity(Intent(context, QuickSmsActivity::class.java)

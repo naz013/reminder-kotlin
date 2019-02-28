@@ -319,7 +319,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
 
     private fun sendSMS() {
-        if (Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS) && mBirthday != null) {
+        if (mBirthday != null) {
             TelephonyUtil.sendSms(mBirthday?.number ?: "", this)
             updateBirthday(mBirthday)
         }
@@ -352,7 +352,6 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
                 CALL_PERM -> makeCall()
-                SMS_PERM -> sendSMS()
             }
         }
     }
@@ -360,7 +359,6 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     companion object {
 
         private const val CALL_PERM = 612
-        private const val SMS_PERM = 613
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val ARG_IS_ROTATED = "arg_rotated"

@@ -369,10 +369,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.UNLOCK_DEVICE)
         set(value) = putBoolean(PrefsConstants.UNLOCK_DEVICE, value)
 
-    var isAutoSmsEnabled: Boolean
-        get() = getBoolean(PrefsConstants.SILENT_SMS)
-        set(value) = putBoolean(PrefsConstants.SILENT_SMS, value)
-
     var isAutoLaunchEnabled: Boolean
         get() = getBoolean(PrefsConstants.APPLICATION_AUTO_LAUNCH)
         set(value) = putBoolean(PrefsConstants.APPLICATION_AUTO_LAUNCH, value)
@@ -803,9 +799,6 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.CALENDAR_IMAGE)) {
             putBoolean(PrefsConstants.CALENDAR_IMAGE, false)
-        }
-        if (!hasKey(PrefsConstants.SILENT_SMS)) {
-            putBoolean(PrefsConstants.SILENT_SMS, false)
         }
         if (!hasKey(PrefsConstants.ITEM_PREVIEW)) {
             putBoolean(PrefsConstants.ITEM_PREVIEW, true)
