@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.elementary.tasks.core.data.dao.*
 import com.elementary.tasks.core.data.models.*
+
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -38,7 +41,7 @@ import com.elementary.tasks.core.data.models.*
     Birthday::class,
     ImageFile::class,
     SmsTemplate::class
-], version = 1, exportSchema = false)
+], version = 2, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
@@ -57,10 +60,16 @@ abstract class AppDb : RoomDatabase() {
 
         private var INSTANCE: AppDb? = null
 
+        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DROP INDEX index_UsedTime_id")
+            }
+        }
+
         fun getAppDatabase(context: Context): AppDb {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "app_db")
-                        .fallbackToDestructiveMigration()
+                        .addMigrations(MIGRATION_1_2)
                         .allowMainThreadQueries()
                         .build()
             }

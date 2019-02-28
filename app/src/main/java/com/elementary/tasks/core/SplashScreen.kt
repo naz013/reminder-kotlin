@@ -6,7 +6,6 @@ import android.os.Bundle
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.login.LoginActivity
@@ -64,7 +63,6 @@ class SplashScreen : ThemedActivity<ActivityLoginBinding>() {
     }
 
     private fun openIntroScreen() {
-        Module.checkComponents(this)
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }

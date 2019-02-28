@@ -27,18 +27,23 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface ReminderGroupDao {
 
+    @Transaction
     @Query("SELECT * FROM ReminderGroup WHERE isDefaultGroup=:isDef LIMIT 1")
     fun defaultGroup(isDef: Boolean = true): ReminderGroup?
 
+    @Transaction
     @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
     fun all(): List<ReminderGroup>
 
+    @Transaction
     @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
     fun loadAll(): LiveData<List<ReminderGroup>>
 
+    @Transaction
     @Query("SELECT * FROM ReminderGroup WHERE isDefaultGroup='true' ORDER BY isDefaultGroup LIMIT 1")
     fun loadDefault(): LiveData<ReminderGroup>
 
+    @Transaction
     @Insert(onConflict = REPLACE)
     fun insert(reminderGroup: ReminderGroup)
 
