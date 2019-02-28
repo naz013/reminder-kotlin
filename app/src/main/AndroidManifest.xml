@@ -387,7 +387,7 @@
 
         <receiver
             android:name=".core.services.CallReceiver"
-            android:enabled="false">
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -403,7 +403,7 @@
 
         <service
             android:name=".core.services.GeolocationService"
-            android:enabled="false" />
+            android:enabled="true" />
 
         <receiver
             android:name=".core.app_widgets.buttons.CombinedButtonsWidget"
@@ -549,10 +549,10 @@
 
         <service
             android:name=".core.app_widgets.calendar.CalendarUpdateMinusService"
-            android:enabled="false" />
+            android:enabled="true" />
         <service
             android:name=".core.app_widgets.calendar.CalendarUpdateService"
-            android:enabled="false" />
+            android:enabled="true" />
 
         <service
             android:name="com.evernote.android.job.gcm.PlatformGcmService"
