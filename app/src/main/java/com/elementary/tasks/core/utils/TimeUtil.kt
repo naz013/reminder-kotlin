@@ -7,6 +7,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.R
 import hirondelle.date4j.DateTime
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -228,25 +229,31 @@ object TimeUtil {
         }
         val fromHm = hourMinute(fromMillis)
         val toHm = hourMinute(toMillis)
+        Timber.d("doNotDisturbRange: HM $fromHm, $toHm")
         val compare = compareHm(fromHm, toHm)
-        if (compare > 0) {
+        if (compare < 0) {
             if (toMillis < fromMillis) {
                 toMillis += AlarmManager.INTERVAL_DAY
             }
         } else if (compare == 0) {
             return LongRange(0, 0)
         }
-        return LongRange(fromMillis, toMillis)
+        Timber.d("doNotDisturbRange: millis $fromMillis, $toMillis")
+        return if (fromMillis > toMillis) {
+            LongRange(toMillis, fromMillis)
+        } else {
+            LongRange(fromMillis, toMillis)
+        }
     }
 
-    private fun compareHm(first: Pair<Int, Int>, second: Pair<Int, Int>): Int {
+    private fun compareHm(from: Pair<Int, Int>, to: Pair<Int, Int>): Int {
         return when {
-            first.first == second.first -> when {
-                first.second == second.second -> 0
-                first.second > second.second -> -1
+            from.first == to.first -> when {
+                from.second == to.second -> 0
+                from.second > to.second -> -1
                 else -> 1
             }
-            first.first > second.first -> -1
+            from.first > to.first -> -1
             else -> 1
         }
     }

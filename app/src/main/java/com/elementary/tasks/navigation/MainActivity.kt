@@ -158,6 +158,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
+        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
         if (prefs.isUiChanged) {
             prefs.isUiChanged = false
             recreate()
@@ -173,10 +174,11 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     }
 
     private fun checkDoNotDisturb() {
-        Timber.d("checkDoNotDisturb: ")
         if (prefs.applyDoNotDisturb(0)) {
+            Timber.d("checkDoNotDisturb: active")
             mHeaderView?.doNoDisturbIcon?.show()
         } else {
+            Timber.d("checkDoNotDisturb: not active")
             mHeaderView?.doNoDisturbIcon?.hide()
         }
     }
@@ -186,6 +188,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
         prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
         prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
+        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
         buttonObservable.removeObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
         buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
         if (!Module.isPro) {
@@ -282,18 +285,18 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         binding.navView.isVerticalScrollBarEnabled = false
         binding.navView.setNavigationItemSelectedListener(this)
         mHeaderView = NavHeaderBinding(binding.navView.getHeaderView(0))
-        mHeaderView?.saleBadge?.visibility = View.GONE
-        mHeaderView?.updateBadge?.visibility = View.GONE
-        mHeaderView?.doNoDisturbIcon?.visibility = View.GONE
+        mHeaderView?.saleBadge?.hide()
+        mHeaderView?.updateBadge?.hide()
+        mHeaderView?.doNoDisturbIcon?.hide()
         if (Module.isPro) {
-            mHeaderView?.appNameBannerPro?.visibility = View.VISIBLE
+            mHeaderView?.appNameBannerPro?.show()
         } else {
-            mHeaderView?.appNameBannerPro?.visibility = View.GONE
+            mHeaderView?.appNameBannerPro?.hide()
         }
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            mHeaderView?.playServicesWarning?.visibility = View.GONE
+            mHeaderView?.playServicesWarning?.hide()
         } else {
-            mHeaderView?.playServicesWarning?.visibility = View.VISIBLE
+            mHeaderView?.playServicesWarning?.show()
         }
         setMenuVisible()
     }
