@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.os.Environment
 import android.util.Base64
+import android.util.Base64DataException
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import timber.log.Timber
@@ -172,12 +173,16 @@ object MemoryUtil {
         val r = BufferedReader(InputStreamReader(output64))
         val total = StringBuilder()
         var line: String?
-        do {
-            line = r.readLine()
-            if (line != null) {
-                total.append(line)
-            }
-        } while (line != null)
+        try {
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+        } catch (e: Base64DataException) {
+            throw IOException("Bad JSON")
+        }
         output64.close()
         inputStream.close()
         val res = total.toString()
