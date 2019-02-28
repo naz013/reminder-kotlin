@@ -212,7 +212,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     private fun editReminder(reminder: Reminder, stop: Boolean = true) {
-        Timber.d("editReminder: ")
+        Timber.d("editReminder: $stop, $reminder")
         stateViewModel.reminder = reminder
         if (stop) {
             viewModel.pauseReminder(reminder)
@@ -231,7 +231,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         var toSelect = 0
         when (reminder.type) {
             Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> toSelect = DATE
-            Reminder.BY_TIME -> toSelect = TIMER
+            Reminder.BY_TIME, Reminder.BY_TIME_CALL, Reminder.BY_TIME_SMS -> toSelect = TIMER
             Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> toSelect = WEEK
             Reminder.BY_DATE_EMAIL -> toSelect = EMAIL
             Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> toSelect = SKYPE
@@ -245,8 +245,9 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                         Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS,
                         Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL, Reminder.BY_OUT -> toSelect = GPS
                         else -> if (Module.isPro) {
-                            when (reminder.type) {
-                                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> toSelect = GPS_PLACE
+                            toSelect = when (reminder.type) {
+                                Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> GPS_PLACE
+                                else -> DATE
                             }
                         }
                     }
