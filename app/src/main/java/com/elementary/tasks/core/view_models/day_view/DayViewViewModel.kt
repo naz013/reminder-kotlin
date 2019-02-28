@@ -228,7 +228,7 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
                             val reminder = t1.model as Reminder
                             time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
                         }
-                        (time1 - time2).toInt()
+                        time1.compareTo(time2)
                     })
                     withUIContext { notifyObserver(eventsPagerItem, res) }
                 }
