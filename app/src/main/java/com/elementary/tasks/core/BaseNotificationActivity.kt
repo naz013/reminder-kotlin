@@ -64,14 +64,6 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
             Timber.d("Initialization Failed!")
         }
     }
-    protected var mSendListener = { isSent: Boolean ->
-        onProgressHidden()
-        if (isSent) {
-            finish()
-        } else {
-            showSendingError()
-        }
-    }
 
     protected abstract val melody: String
 
@@ -112,13 +104,15 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
     protected open val soundUri: Uri
         get() {
             if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody)) {
-                return UriUtil.getUri(this, melody)
+                val uri = UriUtil.getUri(this, melody)
+                if (uri != null) return uri
             } else {
                 val defMelody = prefs.melodyFile
                 if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                     val sound = File(defMelody)
                     if (sound.exists()) {
-                        return UriUtil.getUri(this, sound)
+                        val uri = UriUtil.getUri(this, sound)
+                        if (uri != null) return uri
                     }
                 }
             }

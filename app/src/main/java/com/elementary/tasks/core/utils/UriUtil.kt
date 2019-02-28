@@ -59,19 +59,27 @@ object UriUtil {
         }
     }
 
-    fun getUri(context: Context, filePath: String): Uri {
+    fun getUri(context: Context, filePath: String): Uri? {
         Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)
         return if (Module.isNougat) {
-            FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
+            try {
+                FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
+            } catch (e: java.lang.Exception) {
+                null
+            }
         } else {
             Uri.fromFile(File(filePath))
         }
     }
 
-    fun getUri(context: Context, file: File): Uri {
+    fun getUri(context: Context, file: File): Uri? {
         Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)
         return if (Module.isNougat) {
-            FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
+            try {
+                FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
+            } catch (e: java.lang.Exception) {
+                null
+            }
         } else {
             Uri.fromFile(file)
         }
