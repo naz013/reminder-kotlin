@@ -21,7 +21,6 @@ import org.dmfs.rfc5545.recur.RecurrenceRule
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,12 +42,7 @@ import javax.inject.Inject
  */
 class AlarmReceiver : BaseBroadcast() {
 
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private var calendarUtils: CalendarUtils = ReminderApp.appComponent.calendarUtils()
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
