@@ -125,7 +125,7 @@ interface AppComponent {
     fun inject(factory: EventsFactory)
     fun inject(dropbox: Dropbox)
     fun inject(locationTracker: LocationTracker)
-    fun inject(baseBroadcast: BaseBroadcast)
+    fun inject(broadcast: BaseBroadcast)
     fun inject(geolocationService: GeolocationService)
     fun inject(eventJobService: EventJobService)
     fun inject(voiceWidgetDialog: VoiceWidgetDialog)
