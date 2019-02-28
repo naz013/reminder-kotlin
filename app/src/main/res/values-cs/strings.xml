@@ -693,5 +693,6 @@
     <string name="black">Černá</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">Tyto barvy se nedoporučují používat společně</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Služby Google Play nebyly nalezeny, některé funkce jsou zakázány!</string>
+    <string name="none">Žádný</string>
 
 </resources>
