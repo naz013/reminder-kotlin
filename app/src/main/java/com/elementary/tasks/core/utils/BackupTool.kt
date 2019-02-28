@@ -119,21 +119,27 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getTemplate(cr: ContentResolver, name: Uri): SmsTemplate? {
-        val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), SmsTemplate::class.java))
-        return item.get()
+        return try {
+            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), SmsTemplate::class.java))
+            item.get()
+        } catch (e: java.lang.Exception) {
+            null
+        }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getTemplate(filePath: String?, json: String?): SmsTemplate? {
-        return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), SmsTemplate::class.java))
-            item.get()
-        } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, SmsTemplate::class.java))
-            item.get()
-        } else {
+        return try {
+            return if (filePath != null && MemoryUtil.isSdPresent) {
+                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), SmsTemplate::class.java))
+                item.get()
+            } else if (json != null) {
+                val item = WeakReference(Gson().fromJson(json, SmsTemplate::class.java))
+                item.get()
+            } else {
+                null
+            }
+        } catch (e: java.lang.Exception) {
             null
         }
     }
@@ -180,21 +186,27 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getPlace(cr: ContentResolver, name: Uri): Place? {
-        val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Place::class.java))
-        return item.get()
+        return try {
+            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Place::class.java))
+            return item.get()
+        } catch (e: java.lang.Exception) {
+            null
+        }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getPlace(filePath: String?, json: String?): Place? {
-        return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Place::class.java))
-            item.get()
-        } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, Place::class.java))
-            item.get()
-        } else {
+        return try {
+            return if (filePath != null && MemoryUtil.isSdPresent) {
+                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Place::class.java))
+                item.get()
+            } else if (json != null) {
+                val item = WeakReference(Gson().fromJson(json, Place::class.java))
+                item.get()
+            } else {
+                null
+            }
+        } catch (e: java.lang.Exception) {
             null
         }
     }
@@ -241,21 +253,27 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getBirthday(cr: ContentResolver, name: Uri): Birthday? {
-        val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Birthday::class.java))
-        return item.get()
+        return try {
+            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Birthday::class.java))
+            return item.get()
+        } catch (e: java.lang.Exception) {
+            null
+        }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getBirthday(filePath: String?, json: String?): Birthday? {
-        return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Birthday::class.java))
-            item.get()
-        } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, Birthday::class.java))
-            item.get()
-        } else {
+        return try {
+            return if (filePath != null && MemoryUtil.isSdPresent) {
+                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Birthday::class.java))
+                item.get()
+            } else if (json != null) {
+                val item = WeakReference(Gson().fromJson(json, Birthday::class.java))
+                item.get()
+            } else {
+                null
+            }
+        } catch (e: java.lang.Exception) {
             null
         }
     }
@@ -314,21 +332,28 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         return false
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getGroup(cr: ContentResolver, name: Uri): ReminderGroup? {
-        val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), ReminderGroup::class.java))
-        return item.get()
+        return try {
+            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), ReminderGroup::class.java))
+            return item.get()
+        } catch (e: java.lang.Exception) {
+            null
+        }
     }
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getGroup(filePath: String?, json: String?): ReminderGroup? {
-        return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), ReminderGroup::class.java))
-            item.get()
-        } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, ReminderGroup::class.java))
-            item.get()
-        } else {
+        return try {
+            return if (filePath != null && MemoryUtil.isSdPresent) {
+                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), ReminderGroup::class.java))
+                item.get()
+            } else if (json != null) {
+                val item = WeakReference(Gson().fromJson(json, ReminderGroup::class.java))
+                item.get()
+            } else {
+                null
+            }
+        } catch (e: java.lang.Exception) {
             null
         }
     }
@@ -408,31 +433,30 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         return null
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getReminder(cr: ContentResolver, name: Uri): Reminder? {
-        var reminder: Reminder? = null
-        try {
-            reminder = Gson().fromJson(readFileToJson(cr, name), Reminder::class.java)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
-        return reminder
-    }
-
-    @Throws(IOException::class, IllegalStateException::class)
-    fun getReminder(filePath: String?, json: String?): Reminder? {
-        return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Reminder::class.java))
-            item.get()
-        } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, Reminder::class.java))
-            item.get()
-        } else {
+        return try {
+            return Gson().fromJson(readFileToJson(cr, name), Reminder::class.java)
+        } catch (e: java.lang.Exception) {
             null
         }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
+    fun getReminder(filePath: String?, json: String?): Reminder? {
+        return try {
+            return if (filePath != null && MemoryUtil.isSdPresent) {
+                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Reminder::class.java))
+                item.get()
+            } else if (json != null) {
+                val item = WeakReference(Gson().fromJson(json, Reminder::class.java))
+                item.get()
+            } else {
+                null
+            }
+        } catch (e: java.lang.Exception) {
+            null
+        }
+    }
+
     fun getNote(cr: ContentResolver, uri: Uri): NoteWithImages? {
         Timber.d("getNote: $uri")
         try {
@@ -451,31 +475,34 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getNote(filePath: String?, json: String?): NoteWithImages? {
         Timber.d("getNote: $filePath, $json")
-        if (filePath != null && MemoryUtil.isSdPresent) {
-            val oldNote = Gson().fromJson(readFileToJson(filePath), OldNote::class.java)
-                    ?: return null
-            val noteWithImages = NoteWithImages()
-            oldNote.images.forEach {
-                it.noteId = oldNote.key
+        return try {
+            if (filePath != null && MemoryUtil.isSdPresent) {
+                val oldNote = Gson().fromJson(readFileToJson(filePath), OldNote::class.java)
+                        ?: return null
+                val noteWithImages = NoteWithImages()
+                oldNote.images.forEach {
+                    it.noteId = oldNote.key
+                }
+                noteWithImages.note = Note(oldNote)
+                noteWithImages.images = oldNote.images
+                return noteWithImages
+            } else if (json != null) {
+                val weakNote = WeakReference(Gson().fromJson(json, OldNote::class.java))
+                val oldNote = weakNote.get() ?: return null
+                val noteWithImages = NoteWithImages()
+                oldNote.images.forEach {
+                    it.noteId = oldNote.key
+                }
+                noteWithImages.note = Note(oldNote)
+                noteWithImages.images = oldNote.images
+                return noteWithImages
+            } else {
+                return null
             }
-            noteWithImages.note = Note(oldNote)
-            noteWithImages.images = oldNote.images
-            return noteWithImages
-        } else if (json != null) {
-            val weakNote = WeakReference(Gson().fromJson(json, OldNote::class.java))
-            val oldNote = weakNote.get() ?: return null
-            val noteWithImages = NoteWithImages()
-            oldNote.images.forEach {
-                it.noteId = oldNote.key
-            }
-            noteWithImages.note = Note(oldNote)
-            noteWithImages.images = oldNote.images
-            return noteWithImages
-        } else {
-            return null
+        } catch (e: java.lang.Exception) {
+            null
         }
     }
 
