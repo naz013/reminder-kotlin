@@ -63,6 +63,14 @@
                 app:prefs_secondary_text_on="@string/show_notifications_on_wear_devices"
                 app:prefs_type="check_switch" />
 
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/bgImagePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/background"
+                app:prefs_type="none" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

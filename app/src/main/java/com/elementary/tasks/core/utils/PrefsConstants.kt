@@ -127,6 +127,7 @@ object PrefsConstants {
     const val DO_NOT_DISTURB_IGNORE = "do_not_disturb_ignore"
     const val DO_NOT_DISTURB_ACTION = "do_not_disturb_action"
     const val NOTE_PALETTE = "note_palette"
+    const val SCREEN_BACKGROUND_IMAGE = "screen_bg_image"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

@@ -565,6 +565,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         get() = getString(PrefsConstants.DROPBOX_TOKEN)
         set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
+    var screenImage: String
+        get() = getString(PrefsConstants.SCREEN_BACKGROUND_IMAGE)
+        set(token) = putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, token)
+
     var isIgnoreWindowType: Boolean
         get() = getBoolean(PrefsConstants.IGNORE_WINDOW_TYPE)
         set(value) = putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, value)
@@ -605,6 +609,7 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
             editor.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
             editor.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
             editor.putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
+            editor.putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, Constants.NONE)
             editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
             editor.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
             editor.putInt(PrefsConstants.MISSED_CALL_PRIORITY, 2)
@@ -736,6 +741,9 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.BIRTHDAY_REMINDER_TIME)) {
             putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, "12:00")
+        }
+        if (!hasKey(PrefsConstants.SCREEN_BACKGROUND_IMAGE)) {
+            putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, Constants.NONE)
         }
         if (!hasKey(PrefsConstants.DO_NOT_DISTURB_FROM)) {
             putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
