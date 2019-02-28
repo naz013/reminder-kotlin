@@ -341,7 +341,6 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    @Throws(IOException::class, IllegalStateException::class)
     fun getGroup(filePath: String?, json: String?): ReminderGroup? {
         return try {
             return if (filePath != null && MemoryUtil.isSdPresent) {
