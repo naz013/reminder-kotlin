@@ -102,7 +102,6 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
             context.startActivity(intent)
         } catch (ignored: ActivityNotFoundException) {
         }
-
     }
 
     /**
@@ -132,7 +131,7 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
         if (c != null && c.moveToFirst()) {
             do {
                 val mID = c.getInt(c.getColumnIndex(mProjection[0]))
-                val title = c.getString(c.getColumnIndex(mProjection[2]))
+                val title = c.getString(c.getColumnIndex(mProjection[2])) ?: ""
                 ids.add(CalendarItem(title, mID))
             } while (c.moveToNext())
         }
@@ -158,10 +157,10 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
                 CalendarContract.Events.CALENDAR_ID + "='" + id + "'", null, "dtstart ASC")
         if (c != null && c.moveToFirst()) {
             do {
-                val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE))
-                val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION))
-                val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE))
-                val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE))
+                val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
+                val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION)) ?: ""
+                val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE)) ?: ""
+                val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE)) ?: ""
                 val calendarId = c.getInt(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
                 val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
                 val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
