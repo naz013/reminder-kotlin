@@ -57,7 +57,7 @@ class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapt
         fun bind(item: SmsTemplate) {
             binding.messageView.text = item.title
             if (item.isSelected) {
-                binding.bgView.setBackgroundColor(ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(itemView.context), 12))
+                binding.bgView.setBackgroundColor(ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(itemView.context), 50))
             } else {
                 binding.bgView.setBackgroundResource(android.R.color.transparent)
             }
