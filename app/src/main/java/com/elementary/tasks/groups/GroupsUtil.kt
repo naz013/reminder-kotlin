@@ -4,6 +4,7 @@ import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.ReminderGroup
+import java.lang.Exception
 import java.util.*
 
 /**
@@ -30,10 +31,13 @@ object GroupsUtil {
         val random = Random()
         val def = ReminderGroup(context.getString(R.string.general), random.nextInt(16))
         def.isDefaultGroup = true
-        val dao = AppDb.getAppDatabase(context).reminderGroupDao()
-        dao.insert(def)
-        dao.insert(ReminderGroup(context.getString(R.string.work), random.nextInt(16)))
-        dao.insert(ReminderGroup(context.getString(R.string.personal), random.nextInt(16)))
+        try {
+            val appDb = AppDb.getAppDatabase(context)
+            appDb.reminderGroupDao().insert(def)
+            appDb.reminderGroupDao().insert(ReminderGroup(context.getString(R.string.work), random.nextInt(16)))
+            appDb.reminderGroupDao().insert(ReminderGroup(context.getString(R.string.personal), random.nextInt(16)))
+        } catch (e: Exception) {
+        }
         return def.groupUuId
     }
 
