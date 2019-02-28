@@ -41,8 +41,12 @@ class FileRecyclerAdapter : ListAdapter<FileItem, FileRecyclerAdapter.ContactVie
         notifyDataSetChanged()
     }
 
-    fun getFileItem(position: Int): FileItem {
-        return super.getItem(position)
+    fun getFileItem(position: Int): FileItem? {
+        return if (position < 0 || position >= itemCount) {
+            null
+        } else {
+            super.getItem(position)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
