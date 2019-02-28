@@ -693,5 +693,6 @@
     <string name="black">Siyah</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">Bu renkleri birlikte kullanmanız önerilmez.</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Servisleri bulunamadı, bazı işlevler devre dışı!</string>
+    <string name="none">Yok</string>
 
 </resources>

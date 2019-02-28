@@ -693,5 +693,6 @@
     <string name="black">Чорний</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">Не рекомендується використовувати ці кольори разом</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Служб Google Play не знайдено, деякі функції вимкнено!</string>
+    <string name="none">Немає</string>
 
 </resources>

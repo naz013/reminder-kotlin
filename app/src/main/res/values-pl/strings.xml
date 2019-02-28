@@ -693,5 +693,6 @@
     <string name="black">Czarny</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">Nie zaleca się używania tych kolorów razem</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Nie znaleziono Usług Google Play, niektóre funkcje są wyłączone!</string>
+    <string name="none">Żaden</string>
 
 </resources>

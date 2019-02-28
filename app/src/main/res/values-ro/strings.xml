@@ -693,5 +693,6 @@
     <string name="black">Negru</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">Nu este recomandat să folosiți aceste culori împreună</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Serviciile Google Play nu au fost găsite, unele funcții sunt dezactivate!</string>
+    <string name="none">Nici unul</string>
 
 </resources>
