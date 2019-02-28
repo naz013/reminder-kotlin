@@ -95,14 +95,14 @@ class FileExplorerActivity : ThemedActivity<ActivityFileExplorerBinding>() {
     }
 
     private fun longClick(position: Int) {
-        val item = mAdapter.getFileItem(position)
+        val item = mAdapter.getFileItem(position) ?: return
         if (isImage(item.fileName)) {
             showFullImage()
         }
     }
 
     private fun selectFile(position: Int) {
-        val item = mAdapter.getFileItem(position)
+        val item = mAdapter.getFileItem(position) ?: return
         Timber.d("selectFile: $item")
         mFileName = item.fileName
         mFilePath = item.filePath
