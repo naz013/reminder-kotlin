@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.text.format.DateFormat
 import com.elementary.tasks.R
 import com.google.android.gms.maps.GoogleMap
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -66,6 +67,7 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
     fun applyDoNotDisturb(priority: Int, millis: Long = System.currentTimeMillis()): Boolean {
         if (isDoNotDisturbEnabled) {
+            Timber.d("applyDoNotDisturb: enabled, $millis")
             val range = TimeUtil.doNotDisturbRange(doNotDisturbFrom, doNotDisturbTo)
             return if (range.contains(millis)) {
                 if (doNotDisturbIgnore == 5) {
@@ -120,7 +122,10 @@ class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
 
     var doNotDisturbIgnore: Int
         get() = getInt(PrefsConstants.DO_NOT_DISTURB_IGNORE)
-        set(value) = putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, value)
+        set(value) {
+            putInt(PrefsConstants.DO_NOT_DISTURB_IGNORE, value)
+            notifyKey(PrefsConstants.DO_NOT_DISTURB_IGNORE)
+        }
 
     var doNotDisturbAction: Int
         get() = getInt(PrefsConstants.DO_NOT_DISTURB_ACTION)
