@@ -77,17 +77,18 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is VoiceHolder -> holder.bind(getItem(position).content as String)
-            is VoiceResponseHolder -> holder.bind(getItem(position).content as String)
-            is ReminderHolder -> holder.setData(getItem(position).content as Reminder)
-            is NoteHolder -> holder.setData(getItem(position).content as NoteWithImages)
-            is GroupHolder -> holder.setData(getItem(position).content as ReminderGroup)
-            is BirthdayHolder -> {
-                holder.setData(getItem(position).content as Birthday)
+        val content = getItem(position).content
+        when  {
+            holder is VoiceHolder -> holder.bind(content as String)
+            holder is VoiceResponseHolder -> holder.bind(content as String)
+            holder is ReminderHolder -> holder.setData(content as Reminder)
+            holder is NoteHolder && content is NoteWithImages -> holder.setData(content)
+            holder is GroupHolder -> holder.setData(content as ReminderGroup)
+            holder is BirthdayHolder -> {
+                holder.setData(content as Birthday)
             }
-            is ShoppingHolder -> holder.setData(getItem(position).content as Reminder)
-            is AskHolder -> holder.setAskAction(getItem(position).content as AskAction)
+            holder is ShoppingHolder -> holder.setData(content as Reminder)
+            holder is AskHolder -> holder.setAskAction(content as AskAction)
         }
     }
 
