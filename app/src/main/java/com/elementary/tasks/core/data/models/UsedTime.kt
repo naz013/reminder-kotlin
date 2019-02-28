@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [(Index("id")), (Index("timeString")), (Index("timeMills"))])
+@Entity(indices = [(Index("timeString")), (Index("timeMills"))])
 data class UsedTime(
         @PrimaryKey(autoGenerate = true) var id: Long = 0,
         var timeString: String = "",
