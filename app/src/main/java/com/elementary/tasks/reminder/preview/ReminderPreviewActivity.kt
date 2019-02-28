@@ -2,9 +2,7 @@ package com.elementary.tasks.reminder.preview
 
 import android.app.ActivityOptions
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
@@ -12,7 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.telephony.SmsManager
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
@@ -30,7 +27,6 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
-import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -80,13 +76,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     private val mUiHandler = Handler(Looper.getMainLooper())
     private var reminder: Reminder? = null
     private var shoppingAdapter = ShopListRecyclerAdapter()
-    private var mSendListener = { isSent: Boolean ->
-        if (isSent) {
-            finish()
-        } else {
-            showSendingError()
-        }
-    }
 
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
         openFullMap()
@@ -108,24 +97,9 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         initViewModel(id)
     }
 
-    private fun showSendingError() {
-        Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
-    }
-
     private fun sendSMS(reminder: Reminder) {
         if (TextUtils.isEmpty(reminder.summary)) return
-        if (!Permissions.ensurePermissions(this, SMS_PERM, Permissions.SEND_SMS)) {
-            return
-        }
-        val action = "SMS_SENT"
-        val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
-        registerReceiver(SendReceiver(mSendListener), IntentFilter(action))
-        val sms = SmsManager.getDefault()
-        try {
-            sms.sendTextMessage(reminder.target, null, reminder.summary, sentPI, null)
-        } catch (e: SecurityException) {
-            Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
-        }
+        TelephonyUtil.sendSms(this, reminder.target, reminder.summary)
     }
 
     private fun makeCall(reminder: Reminder) {
@@ -618,7 +592,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
                 CALL_PERM -> fabClick()
-                SMS_PERM -> fabClick()
                 SD_PERM -> shareReminder()
             }
         }
@@ -626,7 +599,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
 
     companion object {
         private const val CALL_PERM = 612
-        private const val SMS_PERM = 613
         private const val SD_PERM = 614
     }
 }

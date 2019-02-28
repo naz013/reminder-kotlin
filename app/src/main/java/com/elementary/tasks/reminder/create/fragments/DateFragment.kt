@@ -106,10 +106,10 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
 
     override fun updateActions() {
         if (binding.actionView.hasAction()) {
-            binding.tuneExtraView.hasAutoExtra = true
             if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
-                binding.tuneExtraView.hint = getString(R.string.enable_sending_sms_automatically)
+                binding.tuneExtraView.hasAutoExtra = false
             } else {
+                binding.tuneExtraView.hasAutoExtra = true
                 binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
             }
         } else {

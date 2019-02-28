@@ -114,9 +114,6 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
         if (!Permissions.checkPermission(activity!!, Permissions.WRITE_EXTERNAL)) {
             mDataList.add(Item(getString(R.string.write_external_storage), Permissions.WRITE_EXTERNAL))
         }
-        if (!Permissions.checkPermission(activity!!, Permissions.SEND_SMS)) {
-            mDataList.add(Item(getString(R.string.send_sms), Permissions.SEND_SMS))
-        }
         return if (mDataList.size == 0) {
             Toast.makeText(context, R.string.all_permissions_are_enabled, Toast.LENGTH_SHORT).show()
             false

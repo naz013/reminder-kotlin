@@ -38,8 +38,6 @@ object Permissions {
     const val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
     const val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
     const val CALL_PHONE = Manifest.permission.CALL_PHONE
-    const val SEND_SMS = Manifest.permission.SEND_SMS
-    const val MANAGE_DOCUMENTS = Manifest.permission.MANAGE_DOCUMENTS
     const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
     const val BLUETOOTH = Manifest.permission.BLUETOOTH
     const val CAMERA = Manifest.permission.CAMERA

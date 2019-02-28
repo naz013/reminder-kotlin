@@ -44,7 +44,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
 
     private fun sendSms(context: Context, intent: Intent) {
         val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
-        if (item != null && Permissions.checkPermission(context, Permissions.SEND_SMS)) {
+        if (item != null) {
             TelephonyUtil.sendSms(item.number, context)
             updateBirthday(context, item)
             finish(context, notifier, item.uniqueId)

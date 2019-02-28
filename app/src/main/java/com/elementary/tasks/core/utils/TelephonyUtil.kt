@@ -105,6 +105,20 @@ object TelephonyUtil {
         }
     }
 
+    fun sendSms(context: Context, number: String, message: String?) {
+        if (TextUtils.isEmpty(number)) {
+            return
+        }
+        val smsIntent = Intent(Intent.ACTION_VIEW)
+        smsIntent.data = Uri.parse("sms:$number")
+        smsIntent.putExtra("sms_body", message)
+        try {
+            context.startActivity(smsIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun makeCall(number: String, context: Context) {
         if (TextUtils.isEmpty(number)) {
