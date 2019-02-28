@@ -60,6 +60,7 @@ abstract class AppDb : RoomDatabase() {
         fun getAppDatabase(context: Context): AppDb {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "app_db")
+                        .fallbackToDestructiveMigration()
                         .allowMainThreadQueries()
                         .build()
             }
