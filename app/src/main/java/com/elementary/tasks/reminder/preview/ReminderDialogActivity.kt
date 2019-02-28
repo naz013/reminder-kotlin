@@ -34,6 +34,7 @@ import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -200,6 +201,26 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         binding.progressOverlay.setOnTouchListener { v, _ -> v.performClick() }
         binding.subjectContainer.visibility = View.GONE
         binding.contactBlock.visibility = View.INVISIBLE
+
+        if (prefs.screenImage != Constants.NONE) {
+            binding.bgImage.visibility = View.VISIBLE
+            if (prefs.screenImage == Constants.DEFAULT) {
+                binding.bgImage.setImageResource(R.drawable.widget_preview_bg)
+            } else {
+                val imageFile = File(prefs.screenImage)
+                if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL) && imageFile.exists()) {
+                    Picasso.get()
+                            .load(imageFile)
+                            .resize(1080, 1080)
+                            .centerCrop()
+                            .into(binding.bgImage)
+                } else {
+                    binding.bgImage.setImageResource(R.drawable.widget_preview_bg)
+                }
+            }
+        } else {
+            binding.bgImage.visibility = View.INVISIBLE
+        }
 
         initButtons()
 

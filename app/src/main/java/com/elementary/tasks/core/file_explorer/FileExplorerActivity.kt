@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +19,8 @@ import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ActivityFileExplorerBinding
+import com.elementary.tasks.databinding.ListItemImageBinding
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 
@@ -96,6 +96,8 @@ class FileExplorerActivity : ThemedActivity<ActivityFileExplorerBinding>() {
 
     private fun longClick(position: Int) {
         val item = mAdapter.getFileItem(position) ?: return
+        mFileName = item.fileName
+        mFilePath = item.filePath
         if (isImage(item.fileName)) {
             showFullImage()
         }
@@ -135,14 +137,13 @@ class FileExplorerActivity : ThemedActivity<ActivityFileExplorerBinding>() {
     private fun showFullImage() {
         val builder = dialogues.getDialog(this)
         builder.setTitle(mFileName)
-        val imageView = ImageView(this)
-        val layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, MeasureUtils.dp2px(this, 256))
-        imageView.layoutParams = layoutParams
-        Glide.with(this)
+        val imageView = ListItemImageBinding.inflate(LayoutInflater.from(this))
+        Picasso.get()
                 .load(File(mFilePath))
-                .into(imageView)
-        builder.setView(imageView)
+                .resize(512, 512)
+                .centerCrop()
+                .into(imageView.photoView)
+        builder.setView(imageView.root)
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             dialog.dismiss()
             sendFile()

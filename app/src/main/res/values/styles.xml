@@ -20,7 +20,7 @@
         <item name="android:tint">@color/whitePrimary</item>
     </style>
 
-    <style name="ToolbarTextStyle" parent="Text.H6"></style>
+    <style name="ToolbarTextStyle" parent="Text.H6" />
 
     <style name="Text.H1" parent="@style/TextAppearance.MaterialComponents.Headline1">
         <item name="android:fontFamily">@font/merriweathersans_light</item>
@@ -113,6 +113,7 @@
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorSecondary12">@color/secondary_12</item>
+        <item name="colorSecondary50">@color/secondary_50</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
 
@@ -137,6 +138,7 @@
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorSecondary12">@color/secondary_12</item>
+        <item name="colorSecondary50">@color/secondary_50</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
 

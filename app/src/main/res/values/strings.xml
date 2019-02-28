@@ -695,5 +695,6 @@
     <string name="black">Black</string>
     <string name="it_s_not_recommended_to_use_this_colors_together">It\'s not recommended to use this colors together</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services not found, some functionality is disabled!</string>
+    <string name="none">None</string>
 
 </resources>

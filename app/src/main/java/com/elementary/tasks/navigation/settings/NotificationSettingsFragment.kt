@@ -74,7 +74,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         initSmartFold()
         initWearNotification()
         initUnlockPriorityPrefs()
-        Permissions.ensurePermissions(activity!!, PERM_SD, Permissions.READ_EXTERNAL)
+        initImagePrefs()
     }
 
     private fun initUnlockPriorityPrefs() {
@@ -670,6 +670,58 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         binding.notificationDismissPrefs.isChecked = prefs.isManualRemoveEnabled
     }
 
+    private fun initImagePrefs() {
+        binding.bgImagePrefs.setOnClickListener { showImageDialog() }
+        showImage()
+    }
+
+    private fun showImageDialog() {
+        val builder = dialogues.getDialog(context!!)
+        builder.setCancelable(true)
+        builder.setTitle(R.string.background)
+        val types = arrayOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
+        mItemSelect = when (prefs.screenImage) {
+            Constants.NONE -> 0
+            Constants.DEFAULT -> 1
+            else -> 2
+        }
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            if (which != -1) {
+                mItemSelect = which
+            }
+        }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            when (mItemSelect) {
+                0 -> prefs.screenImage = Constants.NONE
+                1 -> prefs.screenImage = Constants.DEFAULT
+                2 -> openImagePicker()
+            }
+            showImage()
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
+        dialog.show()
+    }
+
+    private fun showImage() {
+        val title = when (prefs.screenImage) {
+            Constants.NONE -> getString(R.string.none)
+            Constants.DEFAULT -> getString(R.string.default_string)
+            else -> {
+                val file = File(prefs.screenImage)
+                if (file.exists()) {
+                    file.name
+                } else {
+                    getString(R.string.default_string)
+                }
+            }
+        }
+        binding.bgImagePrefs.setDetailText(title)
+    }
+
     override fun getTitle(): String = getString(R.string.notification)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -689,9 +741,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 if (filePath != null) {
                     val file = File(filePath)
                     if (file.exists()) {
-                        val uri = UriUtil.getUri(context!!, file)
-                        prefs.reminderImage = uri.toString()
+                        prefs.screenImage = filePath
+                    } else {
+                        prefs.screenImage = Constants.DEFAULT
                     }
+                    showImage()
                 }
             }
         }
@@ -702,7 +756,16 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         if (Permissions.isAllGranted(grantResults)) {
             when (requestCode) {
                 PERM_AUTO_CALL -> changeAutoCallPrefs()
+                PERM_IMAGE -> openImagePicker()
             }
+        }
+    }
+
+    private fun openImagePicker() {
+        if (Permissions.ensurePermissions(activity!!, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
+            startActivityForResult(
+                    Intent(context, FileExplorerActivity::class.java).putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO),
+                    Constants.ACTION_REQUEST_GALLERY)
         }
     }
 
@@ -720,7 +783,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
         private const val MELODY_CODE = 125
         private const val PERM_BT = 1425
-        private const val PERM_SD = 1426
         private const val PERM_AUTO_CALL = 1427
+        private const val PERM_IMAGE = 1428
     }
 }
