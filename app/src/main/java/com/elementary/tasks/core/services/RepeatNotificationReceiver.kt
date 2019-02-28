@@ -80,7 +80,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         alarmMgr?.cancel(alarmIntent)
     }
 
-    private fun getSoundUri(melody: String?, context: Context): Uri {
+    private fun getSoundUri(melody: String?, context: Context): Uri? {
         return if (!TextUtils.isEmpty(melody)) {
             UriUtil.getUri(context, melody!!)
         } else {
@@ -110,9 +110,10 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         }
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
-            val uri = getSoundUri(reminder.melodyPath, context)
-            context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            builder.setSound(uri)
+            getSoundUri(reminder.melodyPath, context)?.let {
+                context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                builder.setSound(it)
+            }
         }
         if (prefs.isVibrateEnabled) {
             val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {

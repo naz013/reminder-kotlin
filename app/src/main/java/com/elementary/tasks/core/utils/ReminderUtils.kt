@@ -37,7 +37,7 @@ object ReminderUtils {
 
     const val DAY_CHECKED = 1
 
-    private fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri {
+    private fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri? {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
             UriUtil.getUri(context, melody)
         } else {
@@ -68,9 +68,10 @@ object ReminderUtils {
             } else {
                 prefs.melodyFile
             }
-            val uri = getSoundUri(context, prefs, melodyPath)
-            context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            builder.setSound(uri)
+            getSoundUri(context, prefs, melodyPath)?.let {
+                context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                builder.setSound(it)
+            }
         }
         var vibrate = prefs.isVibrateEnabled
         if (Module.isPro && !isGlobal(prefs)) {
@@ -142,9 +143,10 @@ object ReminderUtils {
             context.getString(R.string.app_name)
         }
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
-            val uri = getSoundUri(context, prefs, reminder.melodyPath)
-            context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            builder.setSound(uri)
+            getSoundUri(context, prefs, reminder.melodyPath)?.let {
+                context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                builder.setSound(it)
+            }
         }
         if (prefs.isVibrateEnabled) {
             val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
