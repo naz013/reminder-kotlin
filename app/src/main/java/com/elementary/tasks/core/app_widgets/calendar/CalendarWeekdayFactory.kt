@@ -7,14 +7,14 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import hirondelle.date4j.DateTime
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -34,18 +34,13 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
     private val mWeekdaysList = ArrayList<String>()
     private val mWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val startDayOfWeek = SUNDAY
 
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
 
     override fun onCreate() {
         mWeekdaysList.clear()

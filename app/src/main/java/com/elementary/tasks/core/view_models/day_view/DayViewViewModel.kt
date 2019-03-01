@@ -113,7 +113,7 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
         private val reminderData = ArrayList<EventModel>()
         private val birthdayData = ArrayList<EventModel>()
         private val birthdays = appDb.birthdaysDao().loadAll()
-        private val reminders = appDb.reminderDao().loadType(true, false)
+        private val reminders = appDb.reminderDao().loadType(active = true, removed = false)
 
         private var eventsPagerItem: EventsPagerItem? = null
         private var job: Job? = null

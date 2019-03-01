@@ -10,7 +10,6 @@ import com.dropbox.core.v2.DbxClientV2
 import com.dropbox.core.v2.files.WriteMode
 import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -20,9 +19,10 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.groups.GroupsUtil
 import okhttp3.OkHttpClient
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.io.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,7 +42,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Dropbox {
+class Dropbox : KoinComponent {
 
     private val dbxFolder = "/Reminders/"
     private val dbxNoteFolder = "/Notes/"
@@ -53,25 +53,13 @@ class Dropbox {
     private val dbxSettingsFolder = "/Settings/"
 
     private var mDBApi: DbxClientV2? = null
-    @Inject lateinit var prefs: Prefs
-    @Inject lateinit var backupTool: BackupTool
-    @Inject lateinit var appDb: AppDb
+    private val prefs: Prefs by inject()
+    private val backupTool: BackupTool by inject()
+    private val appDb: AppDb by inject()
 
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
-
-    /**
-     * Check if user has already connected to Dropbox from this application.
-     *
-     * @return Boolean
-     */
     val isLinked: Boolean
         get() = mDBApi != null && prefs.dropboxToken != ""
 
-    /**
-     * Start connection to Dropbox.
-     */
     fun startSession() {
         var token: String? = prefs.dropboxToken
         if (token == "") {

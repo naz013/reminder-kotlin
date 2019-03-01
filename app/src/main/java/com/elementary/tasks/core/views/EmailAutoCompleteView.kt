@@ -15,7 +15,6 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
-import java.lang.ref.WeakReference
 import java.util.*
 
 /**

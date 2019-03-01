@@ -3,10 +3,11 @@ package com.elementary.tasks.core.arch
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -24,9 +25,9 @@ import com.elementary.tasks.core.utils.ThemeUtil
  * limitations under the License.
  */
 abstract class BaseHolder<B : ViewDataBinding>(parent: ViewGroup, @LayoutRes res: Int)
-    : HolderBinding<B>(parent, res) {
+    : HolderBinding<B>(parent, res), KoinComponent {
 
-    var prefs: Prefs = ReminderApp.appComponent.prefs()
-    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
+    protected val prefs: Prefs by inject()
+    protected val themeUtil: ThemeUtil by inject()
 
 }

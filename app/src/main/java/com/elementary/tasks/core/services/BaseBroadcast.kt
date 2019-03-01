@@ -1,10 +1,10 @@
 package com.elementary.tasks.core.services
 
 import androidx.legacy.content.WakefulBroadcastReceiver
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -21,14 +21,9 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class BaseBroadcast : WakefulBroadcastReceiver() {
+abstract class BaseBroadcast : WakefulBroadcastReceiver(), KoinComponent {
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var notifier: Notifier
+    protected val prefs: Prefs by inject()
+    protected val notifier: Notifier by inject()
 
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 }

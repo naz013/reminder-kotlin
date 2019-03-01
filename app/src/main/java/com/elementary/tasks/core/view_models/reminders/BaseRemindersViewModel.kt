@@ -3,7 +3,6 @@ package com.elementary.tasks.core.view_models.reminders
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
@@ -14,9 +13,9 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.runBlocking
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -47,11 +46,9 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
     val groups = mutableListOf<ReminderGroup>()
     var defaultGroup: ReminderGroup? = null
 
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
+    val calendarUtils: CalendarUtils by inject()
 
     init {
-        ReminderApp.appComponent.inject(this)
         launchDefault {
             val defGroup = appDb.reminderGroupDao().defaultGroup(true)
             defaultGroup = defGroup

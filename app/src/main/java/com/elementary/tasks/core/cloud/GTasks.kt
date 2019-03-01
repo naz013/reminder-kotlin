@@ -2,11 +2,9 @@ package com.elementary.tasks.core.cloud
 
 import android.content.Context
 import android.text.TextUtils
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.google.api.client.extensions.android.http.AndroidHttp
@@ -19,10 +17,11 @@ import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
 import com.google.api.services.tasks.model.TaskLists
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -42,23 +41,18 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GTasks private constructor(context: Context) {
+class GTasks private constructor(context: Context) : KoinComponent {
 
     private var tasksService: Tasks? = null
 
-    @Inject
-    lateinit var appDb: AppDb
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var backupTool: BackupTool
+    private val appDb: AppDb by inject()
+    private val prefs: Prefs by inject()
 
     var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
         private set
 
     init {
-        ReminderApp.appComponent.inject(this)
         val user = prefs.tasksUser
         if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
             Timber.d("GTasks: user -> $user")

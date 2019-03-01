@@ -7,12 +7,11 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -35,19 +34,11 @@ import javax.inject.Inject
 class VoiceWidgetDialog : FragmentActivity() {
 
     private lateinit var viewModel: ConversationViewModel
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var notifier: Notifier
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var language: Language
+    private val themeUtil: ThemeUtil by inject()
+    private val notifier: Notifier by inject()
+    private val prefs: Prefs by inject()
+    private val language: Language by inject()
     private var mIsLogged = false
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

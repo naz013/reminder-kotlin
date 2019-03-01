@@ -9,7 +9,6 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Configs
@@ -17,8 +16,9 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import hirondelle.date4j.DateTime
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -38,7 +38,8 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CalendarMonthFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class CalendarMonthFactory constructor(private val mContext: Context, intent: Intent) :
+        RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
     private val mDateTimeList = ArrayList<DateTime>()
     private val mPagerData = ArrayList<WidgetItem>()
@@ -47,14 +48,8 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
     private var mMonth: Int = 0
     private var mYear: Int = 0
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
+    private val themeUtil: ThemeUtil by inject()
 
     override fun onCreate() {
         mDateTimeList.clear()

@@ -2,10 +2,9 @@ package com.elementary.tasks.core.contacts
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,18 +24,11 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsRecyclerAdapter : ListAdapter<ContactItem, ContactHolder>(ContactDiffCallback()) {
+class ContactsRecyclerAdapter : ListAdapter<ContactItem, ContactHolder>(ContactDiffCallback()), KoinComponent {
 
     var clickListener: ((name: String, number: String) -> Unit)? = null
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val themeUtil: ThemeUtil by inject()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactHolder {
         return ContactHolder(parent, themeUtil.isDark) { performClick(it) }

@@ -10,12 +10,12 @@ import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.TimePicker
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.binding.views.DateTimeViewBinding
 import com.elementary.tasks.core.utils.*
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.text.DateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,7 +35,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, KoinComponent {
 
     private lateinit var binding: DateTimeViewBinding
     private var mHour: Int = 0
@@ -50,14 +50,8 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
 
     private val mDateClick = View.OnClickListener{ selectDate() }
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
+    private val themeUtil: ThemeUtil by inject()
 
     var dateTime: Long
         get() {

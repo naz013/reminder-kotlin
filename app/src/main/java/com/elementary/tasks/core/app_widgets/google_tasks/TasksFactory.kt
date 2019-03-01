@@ -8,7 +8,6 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
@@ -17,9 +16,10 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.google_tasks.create.TasksConstants
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -39,17 +39,13 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID)
-    @Inject lateinit var themeUtil: ThemeUtil
+    private val themeUtil: ThemeUtil by inject()
     private val mData = ArrayList<GoogleTask>()
     private val map = HashMap<String, Int>()
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onCreate() {
         mData.clear()

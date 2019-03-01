@@ -2,12 +2,13 @@ package com.elementary.tasks.core.app_widgets
 
 import android.app.AlarmManager
 import android.content.Context
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,21 +32,18 @@ import java.util.*
  * limitations under the License.
  */
 
-class WidgetDataProvider(private val mContext: Context) {
+class WidgetDataProvider(private val mContext: Context) : KoinComponent {
 
     private val data: MutableList<Item> = ArrayList()
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private var hour: Int = 0
     private var minute: Int = 0
     private var isFeature: Boolean = false
+    private val appDb: AppDb by inject()
 
     enum class WidgetType {
         BIRTHDAY,
         REMINDER
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     fun setTime(hour: Int, minute: Int) {
@@ -101,7 +99,7 @@ class WidgetDataProvider(private val mContext: Context) {
     }
 
     private fun loadReminders() {
-        val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false)
+        val reminderItems = appDb.reminderDao().getAll(active = true, removed = false)
         for (item in reminderItems) {
             val mType = item.type
             var eventTime = item.dateTime
@@ -177,7 +175,7 @@ class WidgetDataProvider(private val mContext: Context) {
     }
 
     private fun loadBirthdays() {
-        val list = AppDb.getAppDatabase(mContext).birthdaysDao().all()
+        val list = appDb.birthdaysDao().all()
         for (item in list) {
             var date: Date? = null
             try {

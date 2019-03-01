@@ -8,16 +8,17 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
+import org.koin.android.ext.android.inject
 
 abstract class ThemedActivity<B : ViewDataBinding> : AppCompatActivity() {
 
-    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
-    var prefs: Prefs = ReminderApp.appComponent.prefs()
-    var language: Language = ReminderApp.appComponent.language()
-    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
-    var notifier: Notifier = ReminderApp.appComponent.notifier()
+    val themeUtil: ThemeUtil by inject()
+    val prefs: Prefs by inject()
+    val language: Language by inject()
+    val dialogues: Dialogues by inject()
+    val notifier: Notifier by inject()
+
     protected lateinit var binding: B
     var isDark = false
         private set

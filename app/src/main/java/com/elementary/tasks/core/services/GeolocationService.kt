@@ -7,14 +7,13 @@ import android.os.IBinder
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,12 +38,7 @@ class GeolocationService : Service() {
     private var mTracker: LocationTracker? = null
     private var isNotificationEnabled: Boolean = false
     private var stockRadius: Int = 0
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -73,7 +67,7 @@ class GeolocationService : Service() {
 
     private fun checkReminders(locationA: Location) {
         launchDefault {
-            for (reminder in AppDb.getAppDatabase(applicationContext).reminderDao().getAll(true, false)) {
+            for (reminder in AppDb.getAppDatabase(applicationContext).reminderDao().getAll(active = true, removed = false)) {
                 if (Reminder.isGpsType(reminder.type)) {
                     checkDistance(locationA, reminder)
                 }

@@ -4,13 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
+import org.koin.standalone.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,12 +36,7 @@ class CallReceiver : BaseBroadcast() {
     private var prevState: Int = 0
     private var startCallTime: Long = 0
 
-    @Inject
-    lateinit var appDb: AppDb
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val appDb: AppDb by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         mContext = context

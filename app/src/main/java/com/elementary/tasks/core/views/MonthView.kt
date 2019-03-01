@@ -7,19 +7,18 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IntRange
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import hirondelle.date4j.DateTime
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,7 +39,7 @@ import javax.inject.Inject
  * limitations under the License.
  */
 
-class MonthView : View, View.OnTouchListener {
+class MonthView : View, View.OnTouchListener, KoinComponent {
 
     private var mYear: Int = 0
     private var mMonth: Int = 0
@@ -86,14 +85,8 @@ class MonthView : View, View.OnTouchListener {
         }
     }
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val themeUtil: ThemeUtil by inject()
+    private val prefs: Prefs by inject()
 
     constructor(context: Context) : super(context) {
         init(context)
