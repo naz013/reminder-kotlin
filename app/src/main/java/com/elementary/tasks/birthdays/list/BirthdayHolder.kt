@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.ListActions
@@ -13,7 +12,8 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.databinding.ListItemBirthdayBinding
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -34,13 +34,11 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val listener: ((View, Int, ListActions) -> Unit)? = null) :
-        HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday) {
+        HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday), KoinComponent {
 
-    @Inject
-    lateinit var prefs: Prefs
+    private val prefs: Prefs by inject()
 
     init {
-        ReminderApp.appComponent.inject(this)
         if (showMore) {
             binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
             binding.buttonMore.visibility = View.VISIBLE

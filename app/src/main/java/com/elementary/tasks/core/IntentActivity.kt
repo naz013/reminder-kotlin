@@ -3,7 +3,6 @@ package com.elementary.tasks.core
 import android.content.ContentResolver
 import android.content.Intent
 import android.os.Bundle
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.BackupTool
@@ -14,17 +13,12 @@ import com.elementary.tasks.navigation.settings.additional.TemplateActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 class IntentActivity: ThemedActivity<ActivityLoginBinding>() {
 
-    @Inject
-    lateinit var backupTool: BackupTool
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val backupTool: BackupTool by inject()
 
     override fun layoutRes(): Int = 0
 

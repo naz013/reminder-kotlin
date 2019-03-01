@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -20,8 +19,8 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
+import org.koin.standalone.inject
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -44,8 +43,7 @@ import javax.inject.Inject
 class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note) {
 
-    @Inject
-    lateinit var imagesSingleton: ImagesSingleton
+    private val imagesSingleton: ImagesSingleton by inject()
     var hasMore = true
         set(value) {
             field = value
@@ -53,7 +51,6 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
         }
 
     init {
-        ReminderApp.appComponent.inject(this)
         hoverClick(binding.bgView) {
             listener?.invoke(it, adapterPosition, ListActions.OPEN)
         }

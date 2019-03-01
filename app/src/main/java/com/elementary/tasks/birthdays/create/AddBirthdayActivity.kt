@@ -14,7 +14,6 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -22,6 +21,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.ParseException
 import java.util.*
@@ -49,7 +49,7 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
     private var mUri: Uri? = null
-    private val backupTool: BackupTool = ReminderApp.appComponent.backupTool()
+    private val backupTool: BackupTool by inject()
 
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         val calendar = Calendar.getInstance()

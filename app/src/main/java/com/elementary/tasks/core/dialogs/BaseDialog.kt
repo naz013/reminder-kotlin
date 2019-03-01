@@ -2,11 +2,10 @@ package com.elementary.tasks.core.dialogs
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -28,16 +27,9 @@ import javax.inject.Inject
  */
 abstract class BaseDialog : FragmentActivity() {
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-    @Inject
-    lateinit var dialogues: Dialogues
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    protected val themeUtil: ThemeUtil by inject()
+    protected val dialogues: Dialogues by inject()
+    protected val prefs: Prefs by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

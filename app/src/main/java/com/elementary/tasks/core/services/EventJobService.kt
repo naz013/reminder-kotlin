@@ -3,7 +3,6 @@ package com.elementary.tasks.core.services
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
@@ -15,9 +14,10 @@ import com.evernote.android.job.Job
 import com.evernote.android.job.JobManager
 import com.evernote.android.job.JobRequest
 import com.evernote.android.job.util.support.PersistableBundleCompat
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -37,14 +37,9 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EventJobService : Job() {
+class EventJobService : Job(), KoinComponent {
 
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
 
     override fun onRunJob(params: Job.Params): Job.Result {
         Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)

@@ -13,8 +13,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -42,7 +42,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
 
     private var tts: TextToSpeech? = null
     private var mWakeLock: PowerManager.WakeLock? = null
-    var soundStackHolder: SoundStackHolder = ReminderApp.appComponent.soundStack()
+    private val soundStackHolder: SoundStackHolder by inject()
 
     private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {

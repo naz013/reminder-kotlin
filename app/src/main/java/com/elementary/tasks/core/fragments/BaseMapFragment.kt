@@ -2,13 +2,13 @@ package com.elementary.tasks.core.fragments
 
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,9 +30,9 @@ import com.google.android.gms.maps.model.MapStyleOptions
  */
 abstract class BaseMapFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
-    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
-    var prefs: Prefs = ReminderApp.appComponent.prefs()
-    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
+    protected val themeUtil: ThemeUtil by inject()
+    protected val prefs: Prefs by inject()
+    protected val dialogues: Dialogues by inject()
 
     private var mMapType = GoogleMap.MAP_TYPE_TERRAIN
 

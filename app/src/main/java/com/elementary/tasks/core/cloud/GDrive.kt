@@ -2,7 +2,6 @@ package com.elementary.tasks.core.cloud
 
 import android.content.Context
 import android.text.TextUtils
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -16,11 +15,12 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,23 +40,19 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GDrive private constructor(context: Context) {
+class GDrive private constructor(context: Context) : KoinComponent {
 
     private var driveService: Drive? = null
 
-    @Inject
-    lateinit var appDb: AppDb
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var backupTool: BackupTool
+    private val appDb: AppDb by inject()
+    private val prefs: Prefs by inject()
+    private val backupTool: BackupTool by inject()
 
     var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
         private set
 
     init {
-        ReminderApp.appComponent.inject(this)
         val user = prefs.driveUser
         if (SuperUtil.isGooglePlayServicesAvailable(context) && user.matches(".*@.*".toRegex())) {
             Timber.d("GDrive: user -> $user")

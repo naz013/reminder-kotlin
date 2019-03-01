@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.view_models.notes
 
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -15,8 +14,8 @@ import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.SingleBackupWorker
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import kotlinx.coroutines.runBlocking
+import org.koin.standalone.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -38,12 +37,7 @@ import javax.inject.Inject
  */
 abstract class BaseNotesViewModel : BaseDbViewModel() {
 
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    protected val calendarUtils: CalendarUtils by inject()
 
     fun deleteNote(noteWithImages: NoteWithImages) {
         val note = noteWithImages.note ?: return

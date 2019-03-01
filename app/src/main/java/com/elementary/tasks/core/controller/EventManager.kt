@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.controller
 
 import android.content.Context
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -9,7 +8,8 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -29,21 +29,13 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class EventManager(val reminder: Reminder) : EventControl {
-    @Inject
-    lateinit var context: Context
-    @Inject
-    lateinit var db: AppDb
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var notifier: Notifier
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
+abstract class EventManager(val reminder: Reminder) : EventControl, KoinComponent {
 
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    protected val context: Context by inject()
+    protected val db: AppDb by inject()
+    protected val prefs: Prefs by inject()
+    protected val notifier: Notifier by inject()
+    protected val calendarUtils: CalendarUtils by inject()
 
     protected fun save() {
         db.reminderDao().insert(reminder)

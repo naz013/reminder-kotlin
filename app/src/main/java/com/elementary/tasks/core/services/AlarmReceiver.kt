@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.AsyncTask
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -18,6 +17,8 @@ import com.elementary.tasks.core.work.BackupDataWorker
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -40,9 +41,9 @@ import java.util.concurrent.TimeUnit
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AlarmReceiver : BaseBroadcast() {
+class AlarmReceiver : BaseBroadcast(), KoinComponent {
 
-    private var calendarUtils: CalendarUtils = ReminderApp.appComponent.calendarUtils()
+    private val calendarUtils: CalendarUtils by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action

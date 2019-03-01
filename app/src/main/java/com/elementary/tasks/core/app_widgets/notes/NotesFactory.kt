@@ -8,13 +8,13 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -34,14 +34,10 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
     private val notes = ArrayList<NoteWithImages>()
-    @Inject lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val themeUtil: ThemeUtil by inject()
 
     override fun onCreate() {
         notes.clear()

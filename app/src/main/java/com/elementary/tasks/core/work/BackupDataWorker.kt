@@ -5,22 +5,16 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.IoHelper
 import com.elementary.tasks.core.utils.Prefs
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
-class BackupDataWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class BackupDataWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var backupTool: BackupTool
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
+    private val backupTool: BackupTool by inject()
 
     override fun doWork(): Result {
         IoHelper(applicationContext, prefs, backupTool).backup()

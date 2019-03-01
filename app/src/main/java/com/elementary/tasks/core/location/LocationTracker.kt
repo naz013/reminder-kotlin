@@ -3,12 +3,11 @@ package com.elementary.tasks.core.location
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
-import com.elementary.tasks.ReminderApp
-
 import com.elementary.tasks.core.utils.Prefs
 import com.google.android.gms.location.*
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,7 +27,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LocationTracker(private val mContext: Context?, private val mCallback: ((lat: Double, lng: Double) -> Unit)?) {
+class LocationTracker(private val mContext: Context?, private val mCallback: ((lat: Double, lng: Double) -> Unit)?) : KoinComponent {
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -42,11 +41,9 @@ class LocationTracker(private val mContext: Context?, private val mCallback: ((l
         }
     }
 
-    @Inject
-    lateinit var prefs: Prefs
+    private val prefs: Prefs by inject()
 
     init {
-        ReminderApp.appComponent.inject(this)
         updateListener()
     }
 

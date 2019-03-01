@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.view_models.google_tasks
 
 import android.content.Context
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -11,8 +10,8 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import kotlinx.coroutines.runBlocking
+import org.koin.standalone.inject
 import java.io.IOException
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -34,12 +33,7 @@ import javax.inject.Inject
  */
 abstract class BaseTaskListsViewModel : BaseDbViewModel() {
 
-    @Inject
-    lateinit var context: Context
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    protected val context: Context by inject()
 
     fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(context)

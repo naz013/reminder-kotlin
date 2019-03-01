@@ -10,19 +10,19 @@ import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
 import java.util.HashMap
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.Comparator
 
 /**
@@ -43,18 +43,13 @@ import kotlin.Comparator
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EventsFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class EventsFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
     private val data = ArrayList<CalendarItem>()
     private val map = HashMap<String, Reminder>()
-    @Inject
-    lateinit var prefs: Prefs
+    private val prefs: Prefs by inject()
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onCreate() {
         data.clear()

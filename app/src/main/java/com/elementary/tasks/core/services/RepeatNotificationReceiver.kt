@@ -10,13 +10,13 @@ import android.text.TextUtils
 import androidx.core.app.NotificationCompat
 import androidx.legacy.content.WakefulBroadcastReceiver
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,18 +36,12 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
+class RepeatNotificationReceiver : WakefulBroadcastReceiver(), KoinComponent {
 
     private var alarmMgr: AlarmManager? = null
     private var alarmIntent: PendingIntent? = null
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var appDb: AppDb
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
+    private val appDb: AppDb by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""

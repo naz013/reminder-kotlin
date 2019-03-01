@@ -14,7 +14,6 @@ import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -30,9 +29,9 @@ import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -74,15 +73,11 @@ class ConversationViewModel : BaseRemindersViewModel() {
     private val mReplies = mutableListOf<Reply>()
     private var hasPartial = false
 
-    @Inject
-    lateinit var recognizer: Recognizer
-    @Inject
-    lateinit var language: Language
-    @Inject
-    lateinit var context: Context
+    private val recognizer: Recognizer by inject()
+    private val language: Language by inject()
+    private val context: Context by inject()
 
     init {
-        ReminderApp.appComponent.inject(this)
         clearConversation()
     }
 
@@ -295,7 +290,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
                         }
                     }
                 } else if (types == ActionType.NOTE) {
-                    saveNote(createNote(model.summary), true, true)
+                    saveNote(createNote(model.summary), showToast = true, addQuickNote = true)
                 } else if (types == ActionType.REMINDER) {
                     saveReminder(model, isWidget)
                 } else if (types == ActionType.GROUP) {
@@ -321,7 +316,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
     fun disableAllReminders(showToast: Boolean) {
         postInProgress(true)
         launchDefault {
-            for (reminder in appDb.reminderDao().getAll(true, false)) {
+            for (reminder in appDb.reminderDao().getAll(active = true, removed = false)) {
                 stopReminder(reminder)
             }
             withUIContext {
@@ -337,7 +332,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
     fun emptyTrash(showToast: Boolean) {
         postInProgress(true)
         launchDefault {
-            val archived = appDb.reminderDao().getAll(false, true)
+            val archived = appDb.reminderDao().getAll(active = false, removed = true)
             for (reminder in archived) {
                 deleteReminder(reminder, false)
                 calendarUtils.deleteEvents(reminder.uuId)

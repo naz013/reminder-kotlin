@@ -8,10 +8,10 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
-import javax.inject.Inject
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,7 +31,7 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-open class BaseDbViewModel : ViewModel(), LifecycleObserver {
+open class BaseDbViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
     private val _result = MutableLiveData<Commands>()
     val result: LiveData<Commands> = _result
@@ -40,14 +40,8 @@ open class BaseDbViewModel : ViewModel(), LifecycleObserver {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    @Inject
-    lateinit var appDb: AppDb
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    protected val appDb: AppDb by inject()
+    protected val prefs: Prefs by inject()
 
     protected fun postInProgress(isInProgress: Boolean) {
         _isInProgress.postValue(isInProgress)
