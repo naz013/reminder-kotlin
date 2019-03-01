@@ -85,6 +85,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
 
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
+        canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         initActionBar()
         initNavigation()

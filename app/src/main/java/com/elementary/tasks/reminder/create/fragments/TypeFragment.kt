@@ -85,7 +85,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
         actionView?.let {
             if (prefs.isTelephonyAllowed) {
-                it.visibility = View.VISIBLE
+                it.show()
                 it.setActivity(activity!!)
                 it.setContactClickListener(View.OnClickListener { selectContact() })
                 it.bindProperty(iFace.state.reminder.target) { number ->
@@ -101,7 +101,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
                     }
                 }
             } else {
-                it.visibility = View.GONE
+                it.hide()
             }
         }
         loudnessPickerView?.let {
@@ -193,32 +193,32 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
         }
         ledPickerView?.let {
             if (Module.isPro) {
-                it.visibility = View.VISIBLE
+                it.show()
                 it.bindProperty(iFace.state.reminder.color) { color ->
                     iFace.state.reminder.color = color
                 }
             } else {
-                it.visibility = View.GONE
+                it.hide()
             }
         }
         calendarCheck?.let {
             if (iFace.canExportToCalendar) {
-                it.visibility = View.VISIBLE
+                it.show()
                 it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
                     iFace.state.reminder.exportToCalendar = isChecked
                 }
             } else {
-                it.visibility = View.GONE
+                it.hide()
             }
         }
         tasksCheck?.let {
             if (iFace.canExportToTasks) {
-                it.visibility = View.VISIBLE
+                it.show()
                 it.bindProperty(iFace.state.reminder.exportToTasks) { isChecked ->
                     iFace.state.reminder.exportToTasks = isChecked
                 }
             } else {
-                it.visibility = View.GONE
+                it.hide()
             }
         }
         extraView?.let {
