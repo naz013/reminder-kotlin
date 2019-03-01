@@ -45,7 +45,7 @@ class ReminderApp : MultiDexApplication() {
         super.onCreate()
         Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        startKoin(this, components(this))
+        startKoin(this, components())
 
         Timber.plant(Timber.DebugTree())
         JobManager.create(this).addJobCreator { EventJobService() }

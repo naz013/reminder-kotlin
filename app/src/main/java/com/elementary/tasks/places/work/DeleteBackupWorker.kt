@@ -8,7 +8,6 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.SuperUtil
 import java.io.File
 import java.io.IOException
 

@@ -9,7 +9,6 @@ import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchIo
 import com.google.gson.Gson
 import java.io.File

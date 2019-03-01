@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.CtxHolder
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import org.koin.standalone.KoinComponent
@@ -31,11 +32,12 @@ import org.koin.standalone.inject
  */
 abstract class EventManager(val reminder: Reminder) : EventControl, KoinComponent {
 
-    protected val context: Context by inject()
+    private val ctxHolder: CtxHolder by inject()
     protected val db: AppDb by inject()
     protected val prefs: Prefs by inject()
     protected val notifier: Notifier by inject()
     protected val calendarUtils: CalendarUtils by inject()
+    protected val context: Context = ctxHolder.context
 
     protected fun save() {
         db.reminderDao().insert(reminder)

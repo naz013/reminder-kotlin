@@ -18,7 +18,6 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.binding.views.NavHeaderBinding
@@ -43,15 +42,14 @@ import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
 import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
         RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
 
     private lateinit var remotePrefs: RemotePrefs
-    @Inject
-    lateinit var buttonObservable: GlobalButtonObservable
+    private val buttonObservable: GlobalButtonObservable by inject()
 
     private var fragment: BaseFragment<*>? = null
     private var mNoteView: QuickNoteCoordinator? = null
@@ -67,10 +65,6 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         Handler(Looper.getMainLooper()).post {
             checkDoNotDisturb()
         }
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun layoutRes(): Int = R.layout.activity_main

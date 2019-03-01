@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.ImageFile
@@ -39,10 +38,10 @@ import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -77,10 +76,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private var speech: SpeechRecognizer? = null
     private var mUri: Uri? = null
 
-    @Inject
-    lateinit var backupTool: BackupTool
-    @Inject
-    lateinit var imagesSingleton: ImagesSingleton
+    private val backupTool: BackupTool by inject()
+    private val imagesSingleton: ImagesSingleton by inject()
 
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle) {
@@ -146,10 +143,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         stateViewModel.time.postValue(c.timeInMillis)
     }
     private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.activity_create_note
 

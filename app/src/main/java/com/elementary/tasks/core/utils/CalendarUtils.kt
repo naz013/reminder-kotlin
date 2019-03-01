@@ -14,8 +14,6 @@ import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,8 +33,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class CalendarUtils @Inject constructor(private val context: Context, private val prefs: Prefs, private val appDb: AppDb){
+class CalendarUtils(private val context: Context, private val prefs: Prefs, private val appDb: AppDb){
 
     /**
      * Add event to calendar.

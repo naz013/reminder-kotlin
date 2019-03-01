@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils
 import android.content.ContentResolver
 import android.net.Uri
 import android.text.TextUtils
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -17,8 +16,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,12 +35,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class BackupTool @Inject constructor(private val appDb: AppDb) {
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+class BackupTool(private val appDb: AppDb) {
 
     fun exportAll(): File? {
         val allData = AllData(

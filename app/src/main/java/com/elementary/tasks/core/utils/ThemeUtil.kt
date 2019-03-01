@@ -9,8 +9,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,8 +28,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class ThemeUtil @Inject constructor(private val context: Context, private val prefs: Prefs) {
+class ThemeUtil(private val context: Context, private val prefs: Prefs) {
 
     val isDark: Boolean
         get() {

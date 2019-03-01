@@ -4,30 +4,26 @@ import android.content.Context
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.utils.CtxHolder
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.google.api.services.tasks.model.TaskLists
 import kotlinx.coroutines.Job
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
-class CloudViewModel : ViewModel(), LifecycleObserver {
+class CloudViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
-    @Inject
-    lateinit var appDb: AppDb
-    @Inject
-    lateinit var context: Context
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val ctxHolder: CtxHolder by inject()
+    private val appDb: AppDb by inject()
+    private val context: Context = ctxHolder.context
 
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()
     var isReady: MutableLiveData<Boolean> = MutableLiveData()

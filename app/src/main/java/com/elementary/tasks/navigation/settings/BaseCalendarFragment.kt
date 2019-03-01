@@ -1,8 +1,8 @@
 package com.elementary.tasks.navigation.settings
 
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.CalendarUtils
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -24,5 +24,5 @@ import com.elementary.tasks.core.utils.CalendarUtils
  */
 abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseSettingsFragment<B>() {
 
-    var calendarUtils: CalendarUtils = ReminderApp.appComponent.calendarUtils()
+    protected val calendarUtils: CalendarUtils by inject()
 }

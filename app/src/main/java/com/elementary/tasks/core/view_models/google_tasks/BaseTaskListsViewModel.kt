@@ -5,6 +5,7 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.utils.CtxHolder
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -33,7 +34,8 @@ import java.io.IOException
  */
 abstract class BaseTaskListsViewModel : BaseDbViewModel() {
 
-    protected val context: Context by inject()
+    private val ctxHolder: CtxHolder by inject()
+    protected val context: Context = ctxHolder.context
 
     fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
         val google = GTasks.getInstance(context)

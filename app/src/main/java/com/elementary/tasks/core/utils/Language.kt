@@ -6,8 +6,6 @@ import android.content.res.Configuration
 import android.os.Build
 import com.elementary.tasks.R
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,8 +25,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class Language @Inject constructor(private val prefs: Prefs){
+class Language(private val prefs: Prefs){
 
     /**
      * Holder locale for tts.

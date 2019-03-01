@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.services.AlarmReceiver
@@ -15,10 +14,10 @@ import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
+import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,8 +39,7 @@ import javax.inject.Inject
  */
 class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
-    @Inject
-    lateinit var backupTool: BackupTool
+    private val backupTool: BackupTool by inject()
 
     private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
     private var mItemSelect: Int = 0
@@ -83,10 +81,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         } else {
             onSyncEnd.invoke()
         }
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_export

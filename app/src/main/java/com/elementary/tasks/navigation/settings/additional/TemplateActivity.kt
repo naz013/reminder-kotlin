@@ -8,14 +8,13 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,12 +40,7 @@ class TemplateActivity : ThemedActivity<ActivityTemplateBinding>() {
     private var mItem: SmsTemplate? = null
     private var mUri: Uri? = null
 
-    @Inject
-    lateinit var backupTool: BackupTool
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val backupTool: BackupTool by inject()
 
     override fun layoutRes(): Int = R.layout.activity_template
 

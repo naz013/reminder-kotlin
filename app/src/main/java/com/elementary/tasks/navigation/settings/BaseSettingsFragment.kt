@@ -2,9 +2,9 @@ package com.elementary.tasks.navigation.settings
 
 import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,7 +26,7 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
  */
 abstract class BaseSettingsFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
 
-    var language: Language = ReminderApp.appComponent.language()
+    protected val language: Language by inject()
 
     protected fun priorityList(): Array<String> {
         return arrayOf(

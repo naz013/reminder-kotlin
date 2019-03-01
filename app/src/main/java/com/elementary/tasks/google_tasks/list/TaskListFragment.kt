@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -23,7 +22,7 @@ import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewMode
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,12 +49,7 @@ class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
     private var mId: String = ""
     private var mGoogleTaskListsMap: MutableMap<String, GoogleTaskList> = mutableMapOf()
 
-    @Inject
-    lateinit var prefs: Prefs
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val prefs: Prefs by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

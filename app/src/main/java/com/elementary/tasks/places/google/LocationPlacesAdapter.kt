@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -12,8 +11,9 @@ import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemLocationBinding
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,17 +33,12 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>() {
+class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>(), KoinComponent {
 
     private val mDataList = ArrayList<Reminder>()
     var actionsListener: ActionsListener<Reminder>? = null
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val themeUtil: ThemeUtil by inject()
 
     fun setData(list: List<Reminder>) {
         this.mDataList.clear()

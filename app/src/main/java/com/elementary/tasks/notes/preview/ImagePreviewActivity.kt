@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding
+import org.koin.android.ext.android.inject
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,12 +32,7 @@ import javax.inject.Inject
  */
 class ImagePreviewActivity : ThemedActivity<ActivityImagePreviewBinding>() {
 
-    @Inject
-    lateinit var imagesSingleton: ImagesSingleton
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val imagesSingleton: ImagesSingleton by inject()
 
     override fun layoutRes(): Int = R.layout.activity_image_preview
 

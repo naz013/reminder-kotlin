@@ -16,8 +16,6 @@ import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.ViewColorSliderBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,8 +35,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
+class Dialogues(private val themeUtil: ThemeUtil) {
 
     fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = themeUtil.colorsForSlider(),
                         onChange: (Int) -> Unit) {

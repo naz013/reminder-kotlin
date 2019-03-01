@@ -23,8 +23,6 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,8 +42,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class Notifier @Inject constructor(private val context: Context, private val prefs: Prefs, private val themeUtil: ThemeUtil) {
+class Notifier(private val context: Context, private val prefs: Prefs, private val themeUtil: ThemeUtil) {
 
     init {
         createChannels(context)
@@ -209,7 +206,7 @@ class Notifier @Inject constructor(private val context: Context, private val pre
         val resultPendingInt = stackInt.getPendingIntent(0, 0)
         remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)
         remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt)
-        val reminders = AppDb.getAppDatabase(context).reminderDao().getAll(true, false).toMutableList()
+        val reminders = AppDb.getAppDatabase(context).reminderDao().getAll(active = true, removed = false).toMutableList()
         val count = reminders.size
         for (i in reminders.indices.reversed()) {
             val item = reminders[i]

@@ -101,6 +101,7 @@ dependencies {
     }
     implementation project(':voiceengine')
 
+    implementation 'org.koin:koin-android:1.0.2'
     implementation "org.koin:koin-androidx-scope:1.0.2"
     implementation "org.koin:koin-androidx-viewmodel:1.0.2"
 
@@ -167,8 +168,6 @@ dependencies {
     implementation 'co.revely:gradient:1.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    kapt 'com.android.tools.build.jetifier:jetifier-core:1.0.0-beta04'
-    annotationProcessor 'com.android.tools.build.jetifier:jetifier-core:1.0.0-beta04'
 
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.1.1'

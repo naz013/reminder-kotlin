@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
@@ -37,6 +36,8 @@ import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
@@ -44,7 +45,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
 
     private lateinit var viewModel: ReminderViewModel
     private lateinit var conversationViewModel: ConversationViewModel
-    private lateinit var stateViewModel: StateViewModel
+    private val stateViewModel: StateViewModel by viewModel()
 
     private var fragment: TypeFragment<*>? = null
     private var mUri: Uri? = null
@@ -59,7 +60,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
 
-    private var backupTool: BackupTool = ReminderApp.appComponent.backupTool()
+    private val backupTool: BackupTool by inject()
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -81,8 +82,6 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
-
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
         canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
