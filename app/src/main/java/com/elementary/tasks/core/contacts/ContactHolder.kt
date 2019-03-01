@@ -49,7 +49,7 @@ class ContactHolder(parent: ViewGroup, val isDark: Boolean, callback: ((Int) -> 
     private fun loadNameIcon(contactItem: ContactItem, imageView: ImageView) {
         BitmapUtils.imageFromName(contactItem.name) {
             if (it != null) {
-                imageView.setImageDrawable(it)
+                Glide.with(imageView).load(it).into(imageView)
             } else {
                 imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_person_24px, isDark))
             }
