@@ -151,6 +151,35 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                 showNote(it)
             }
         })
+        viewModel.calendarEvent.observe(this, Observer {
+            if (it != null) {
+                showCalendarEvents(it)
+            }
+        })
+    }
+
+    private fun showCalendarEvents(events: List<CalendarUtils.EventItem>) {
+        Timber.d("showCalendarEvents: $events")
+        for (e in events) {
+            val binding = GoogleEventHolder(binding.dataContainer) { _, event, listActions ->
+                if (listActions == ListActions.OPEN && event != null) {
+                    openCalendar(event.id)
+                }
+            }
+            binding.bind(e)
+            this.binding.dataContainer.addView(binding.itemView)
+        }
+    }
+
+    private fun openCalendar(id: Long) {
+        if (id <= 0L) return
+        val uri = Uri.parse("content://com.android.calendar/events/$id")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        try {
+            startActivity(intent)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun showTask(pair: Pair<GoogleTaskList?, GoogleTask?>) {

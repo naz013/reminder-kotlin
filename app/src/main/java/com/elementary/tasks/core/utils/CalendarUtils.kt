@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.utils
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Context
@@ -74,8 +73,10 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
         }
     }
 
-    @SuppressLint("MissingPermission")
     fun deleteEvents(id: String) {
+        if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
+            return
+        }
         val events = appDb.calendarEventsDao().getByReminder(id).toMutableList()
         val cr = context.contentResolver
         for (i in events.indices.reversed()) {
@@ -84,6 +85,50 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
                     CalendarContract.Events._ID + "='" + event.eventId + "'", null)
             appDb.calendarEventsDao().delete(event)
         }
+    }
+
+    fun loadEvents(reminderId: String): List<EventItem> {
+        if (!Permissions.checkPermission(context, Permissions.WRITE_CALENDAR)) {
+            return listOf()
+        }
+        val list = mutableListOf<EventItem>()
+        val events = appDb.calendarEventsDao().getByReminder(reminderId).toMutableList()
+        for (e in events) {
+            val event = getEvent(e.eventId)
+            if (event != null) {
+                list.add(event)
+            }
+        }
+        return list
+    }
+
+    fun getEvent(id: Long): EventItem? {
+        if (id == 0L) return null
+        try {
+            val contentResolver = context.contentResolver
+            val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
+                    arrayOf(CalendarContract.Events.TITLE, CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND, CalendarContract.Events.RRULE, CalendarContract.Events.RDATE, CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ALL_DAY),
+                    CalendarContract.Events._ID+ "='" + id + "'", null, "dtstart ASC")
+            if (c != null && c.moveToFirst()) {
+                val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
+                val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION)) ?: ""
+                val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE)) ?: ""
+                val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE)) ?: ""
+                val calendarId = c.getInt(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
+                val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
+                val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
+                val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
+                val eventID = c.getLong(c.getColumnIndex(CalendarContract.Events._ID))
+
+                c.close()
+
+                return EventItem(title, description, rrule, rDate,
+                        calendarId, allDay, dtStart, dtEnd, eventID)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     /**
@@ -106,12 +151,6 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
         }
     }
 
-    /**
-     * Holder list of available GTasks calendars.
-     *
-     * @return List of CalendarItem's.
-     */
-    @SuppressLint("MissingPermission")
     fun getCalendarsList(): List<CalendarItem> {
         if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR)) {
             return listOf()
@@ -141,37 +180,33 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
         return ids
     }
 
-    /**
-     * Holder list of events for calendar.
-     *
-     * @param id calendar identifier.
-     * @return List of EventItem's.
-     */
-    @Throws(SecurityException::class)
     fun getEvents(id: Int): List<EventItem> {
         val list = ArrayList<EventItem>()
         if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
             return list
         }
-        val contentResolver = context.contentResolver
-        val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
-                arrayOf(CalendarContract.Events.TITLE, CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND, CalendarContract.Events.RRULE, CalendarContract.Events.RDATE, CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ALL_DAY),
-                CalendarContract.Events.CALENDAR_ID + "='" + id + "'", null, "dtstart ASC")
-        if (c != null && c.moveToFirst()) {
-            do {
-                val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
-                val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION)) ?: ""
-                val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE)) ?: ""
-                val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE)) ?: ""
-                val calendarId = c.getInt(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
-                val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
-                val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
-                val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
-                val eventID = c.getLong(c.getColumnIndex(CalendarContract.Events._ID))
-                list.add(EventItem(title, description, rrule, rDate,
-                        calendarId, allDay, dtStart, dtEnd, eventID))
-            } while (c.moveToNext())
-            c.close()
+        try {
+            val contentResolver = context.contentResolver
+            val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
+                    arrayOf(CalendarContract.Events.TITLE, CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND, CalendarContract.Events.RRULE, CalendarContract.Events.RDATE, CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ALL_DAY),
+                    CalendarContract.Events.CALENDAR_ID + "='" + id + "'", null, "dtstart ASC")
+            if (c != null && c.moveToFirst()) {
+                do {
+                    val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
+                    val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION)) ?: ""
+                    val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE)) ?: ""
+                    val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE)) ?: ""
+                    val calendarId = c.getInt(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
+                    val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
+                    val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
+                    val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
+                    val eventID = c.getLong(c.getColumnIndex(CalendarContract.Events._ID))
+                    list.add(EventItem(title, description, rrule, rDate,
+                            calendarId, allDay, dtStart, dtEnd, eventID))
+                } while (c.moveToNext())
+                c.close()
+            }
+        } catch (e: Exception) {
         }
         return list
     }
