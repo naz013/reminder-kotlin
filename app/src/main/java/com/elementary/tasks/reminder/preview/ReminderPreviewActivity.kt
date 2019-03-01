@@ -19,7 +19,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -42,10 +41,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -69,8 +68,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
-    @Inject
-    lateinit var backupTool: BackupTool
+    private val backupTool: BackupTool by inject()
 
     private val list = ArrayList<Long>()
     private val mUiHandler = Handler(Looper.getMainLooper())
@@ -80,10 +78,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
         openFullMap()
         false
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun layoutRes(): Int = R.layout.activity_reminder_preview

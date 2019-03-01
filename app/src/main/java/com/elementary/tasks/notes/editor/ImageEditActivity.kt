@@ -7,14 +7,13 @@ import android.view.View
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityImageEditBinding
 import com.elementary.tasks.notes.preview.ImagesSingleton
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -41,12 +40,7 @@ class ImageEditActivity : ThemedActivity<ActivityImageEditBinding>(), EditInterf
     private var currentImage: ByteArray? = null
     private var state = 0
 
-    @Inject
-    lateinit var imagesSingleton: ImagesSingleton
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val imagesSingleton: ImagesSingleton by inject()
 
     override fun layoutRes(): Int = R.layout.activity_image_edit
 

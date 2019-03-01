@@ -8,8 +8,6 @@ import com.google.android.gms.maps.GoogleMap
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -29,8 +27,7 @@ import javax.inject.Singleton
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Singleton
-class Prefs @Inject constructor(context: Context) : SharedPrefs(context) {
+class Prefs(context: Context) : SharedPrefs(context) {
 
     private val observersMap = mutableMapOf<String, List<((String) -> Unit)>>()
 

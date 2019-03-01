@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -28,9 +27,9 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.filters.SearchModifier
 import com.elementary.tasks.notes.list.filters.SortModifier
 import com.elementary.tasks.notes.preview.NotePreviewActivity
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -53,8 +52,7 @@ import javax.inject.Inject
 class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<NoteWithImages>) -> Unit {
 
     private lateinit var viewModel: NotesViewModel
-    @Inject
-    lateinit var backupTool: BackupTool
+    private val backupTool: BackupTool by inject()
 
     private var mAdapter = NotesRecyclerAdapter()
     private var enableGrid = false
@@ -83,10 +81,6 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     private val mCloseListener = {
         filterController.setSearchValue("")
         true
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
@@ -20,8 +19,9 @@ import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -41,15 +41,10 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDiffCallback()) {
+class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDiffCallback()), KoinComponent {
 
     var showMore: ((Int) -> Unit)? = null
-    @Inject
-    lateinit var language: Language
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val language: Language by inject()
 
     override fun submitList(list: List<Reply>?) {
         Timber.d("submitList: $list")

@@ -11,7 +11,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -19,6 +18,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.*
 import com.github.florent37.expansionpanel.ExpansionLayout
 import com.google.android.material.textfield.TextInputEditText
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 /**
@@ -44,9 +44,9 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
     lateinit var iFace: ReminderInterface
         private set
 
-    var prefs: Prefs = ReminderApp.appComponent.prefs()
-    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
-    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
+    protected val prefs: Prefs by inject()
+    protected val dialogues: Dialogues by inject()
+    protected val themeUtil: ThemeUtil by inject()
 
     private var melodyView: MelodyView? = null
     private var attachmentView: AttachmentView? = null

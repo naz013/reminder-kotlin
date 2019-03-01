@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
+import org.koin.android.ext.android.inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,11 +33,11 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     var callback: FragmentCallback? = null
         private set
-    var prefs: Prefs = ReminderApp.appComponent.prefs()
-    var dialogues: Dialogues = ReminderApp.appComponent.dialogues()
-    var themeUtil: ThemeUtil = ReminderApp.appComponent.themeUtil()
-    var buttonObservable: GlobalButtonObservable = ReminderApp.appComponent.buttonObservable()
-    var notifier: Notifier = ReminderApp.appComponent.notifier()
+    protected val prefs: Prefs by inject()
+    protected val dialogues: Dialogues by inject()
+    protected val themeUtil: ThemeUtil by inject()
+    protected val buttonObservable: GlobalButtonObservable by inject()
+    protected val notifier: Notifier by inject()
     var isDark = false
         private set
     private var mLastScroll: Int = 0

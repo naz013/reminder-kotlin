@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -27,8 +26,8 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import org.koin.android.ext.android.inject
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -60,14 +59,8 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
 
     private val mUiHandler = Handler(Looper.getMainLooper())
 
-    @Inject
-    lateinit var backupTool: BackupTool
-    @Inject
-    lateinit var imagesSingleton: ImagesSingleton
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val backupTool: BackupTool by inject()
+    private val imagesSingleton: ImagesSingleton by inject()
 
     override fun layoutRes(): Int = R.layout.activity_note_preview
 

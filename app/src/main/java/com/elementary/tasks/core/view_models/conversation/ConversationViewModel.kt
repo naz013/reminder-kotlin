@@ -73,9 +73,10 @@ class ConversationViewModel : BaseRemindersViewModel() {
     private val mReplies = mutableListOf<Reply>()
     private var hasPartial = false
 
+    private val ctxHolder: CtxHolder by inject()
     private val recognizer: Recognizer by inject()
     private val language: Language by inject()
-    private val context: Context by inject()
+    private val context: Context = ctxHolder.context
 
     init {
         clearConversation()

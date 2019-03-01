@@ -5,35 +5,25 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import java.io.IOException
-import javax.inject.Inject
 
-class LoginViewModel : ViewModel(), LifecycleObserver {
+class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
-    @Inject
-    lateinit var appDb: AppDb
-    @Inject
-    lateinit var backupTool: BackupTool
-    @Inject
-    lateinit var prefs: Prefs
-    @Inject
-    lateinit var context: Context
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val ctxHolder: CtxHolder by inject()
+    private val appDb: AppDb by inject()
+    private val backupTool: BackupTool by inject()
+    private val prefs: Prefs by inject()
+    private val context: Context = ctxHolder.context
 
     var message: MutableLiveData<Int> = MutableLiveData()
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()

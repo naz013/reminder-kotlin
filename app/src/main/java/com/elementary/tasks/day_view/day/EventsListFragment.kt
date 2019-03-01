@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.Birthday
@@ -18,8 +17,8 @@ import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,12 +49,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
             deleteAction = {reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
             allGroups = { return@ReminderResolver callback?.getViewModel()?.groups ?: listOf() })
     private var mItem: EventsPagerItem? = null
-    @Inject
-    lateinit var dialogues: Dialogues
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
+    private val dialogues: Dialogues by inject()
 
     fun getModel(): EventsPagerItem? = mItem
 
