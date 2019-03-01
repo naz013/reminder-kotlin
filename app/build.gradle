@@ -10,8 +10,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 220
-        versionName '7.0.8'
+        versionCode 221
+        versionName '7.0.9'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -40,7 +40,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 191
+            versionCode 192
         }
     }
     packagingOptions {
