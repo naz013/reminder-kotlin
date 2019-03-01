@@ -52,46 +52,52 @@ object BitmapUtils {
             Color.parseColor("#E91E63")
     )
 
-    fun imageFromName(userName: String?): Drawable? {
-        if (userName == null || userName.isEmpty()) return null
-        val words = userName.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val init: String
-        if (words.size >= 2) {
-            val word1 = words[0]
-            val word2 = words[1]
-            init = if (word1.isNotEmpty() && word2.isNotEmpty()) {
-                word1.toUpperCase().substring(0, 1) + word2.toUpperCase().substring(0, 1)
-            } else if (word1.length > 1) {
-                word1.toUpperCase().substring(0, 2)
-            } else if (word2.length > 1) {
-                word2.toUpperCase().substring(0, 2)
+    fun imageFromName(userName: String?, callback: ((Drawable?) -> Unit)?) {
+        if (userName == null || userName.isEmpty()) {
+            callback?.invoke(null)
+            return
+        }
+        launchDefault {
+            val words = userName.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val init: String
+            if (words.size >= 2) {
+                val word1 = words[0]
+                val word2 = words[1]
+                init = if (word1.isNotEmpty() && word2.isNotEmpty()) {
+                    word1.toUpperCase().substring(0, 1) + word2.toUpperCase().substring(0, 1)
+                } else if (word1.length > 1) {
+                    word1.toUpperCase().substring(0, 2)
+                } else if (word2.length > 1) {
+                    word2.toUpperCase().substring(0, 2)
+                } else {
+                    val w = userName.toUpperCase()
+                    if (w.length > 1) {
+                        w.substring(0, 2)
+                    } else {
+                        w
+                    }
+                }
             } else {
                 val w = userName.toUpperCase()
-                if (w.length > 1) {
+                init = if (w.length > 1) {
                     w.substring(0, 2)
                 } else {
                     w
                 }
             }
-        } else {
-            val w = userName.toUpperCase()
-            init = if (w.length > 1) {
-                w.substring(0, 2)
-            } else {
-                w
-            }
+            Timber.d("imageFromName: %s", init)
+            val drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .width(150)
+                    .height(150)
+                    .textColor(Color.WHITE)
+                    .useFont(Typeface.DEFAULT)
+                    .bold()
+                    .toUpperCase()
+                    .endConfig()
+                    .buildRound(init, COLORS[Random().nextInt(COLORS.size)])
+            withUIContext { callback?.invoke(drawable) }
         }
-        Timber.d("imageFromName: %s", init)
-        return TextDrawable.builder()
-                .beginConfig()
-                .width(250)
-                .height(250)
-                .textColor(Color.WHITE)
-                .useFont(Typeface.DEFAULT)
-                .bold()
-                .toUpperCase()
-                .endConfig()
-                .buildRound(init, COLORS[Random().nextInt(COLORS.size)])
     }
 
     fun getDescriptor(drawable: Drawable): BitmapDescriptor {
