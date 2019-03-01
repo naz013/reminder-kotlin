@@ -340,7 +340,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
             val archived = appDb.reminderDao().getAll(false, true)
             for (reminder in archived) {
                 deleteReminder(reminder, false)
-                calendarUtils.deleteEvents(reminder.uniqueId)
+                calendarUtils.deleteEvents(reminder.uuId)
             }
             withUIContext {
                 postInProgress(false)

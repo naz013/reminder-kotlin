@@ -202,7 +202,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
             runBlocking {
                 EventControlFactory.getController(reminder).stop()
                 appDb.reminderDao().delete(reminder)
-                calendarUtils.deleteEvents(reminder.uniqueId)
+                calendarUtils.deleteEvents(reminder.uuId)
             }
 
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
