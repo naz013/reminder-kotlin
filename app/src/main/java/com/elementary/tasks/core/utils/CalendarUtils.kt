@@ -13,6 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -67,7 +68,8 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
                     val eventID = java.lang.Long.parseLong(event.lastPathSegment ?: "")
                     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, event.toString(), eventID))
                 }
-            } catch (ignored: Exception) {
+            } catch (e: Exception) {
+                Timber.d("addEvent: ${e.message}")
             }
         }
     }
