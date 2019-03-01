@@ -5,6 +5,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.launchIo
 import timber.log.Timber
 
@@ -32,6 +33,8 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
     val note: LiveData<NoteWithImages> = _note
     private val _googleTask = MutableLiveData<Pair<GoogleTaskList?, GoogleTask?>>()
     val googleTask: LiveData<Pair<GoogleTaskList?, GoogleTask?>> = _googleTask
+    private val _calendarEvent = MutableLiveData<List<CalendarUtils.EventItem>>()
+    val calendarEvent: LiveData<List<CalendarUtils.EventItem>> = _calendarEvent
 
     var reminder: LiveData<Reminder>
     private val mObserver = Observer<Reminder> {
@@ -50,6 +53,8 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
             if (googleTask != null) {
                 _googleTask.postValue(Pair(appDb.googleTaskListsDao().getById(googleTask.listId), googleTask))
             }
+            val events = calendarUtils.loadEvents(reminder.uuId)
+            _calendarEvent.postValue(events)
         }
     }
 
