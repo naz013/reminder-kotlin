@@ -47,11 +47,12 @@ class ContactHolder(parent: ViewGroup, val isDark: Boolean, callback: ((Int) -> 
     }
 
     private fun loadNameIcon(contactItem: ContactItem, imageView: ImageView) {
-        val drawable = BitmapUtils.imageFromName(contactItem.name)
-        if (drawable != null) {
-            imageView.setImageDrawable(drawable)
-        } else {
-            imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_person_24px, isDark))
+        BitmapUtils.imageFromName(contactItem.name) {
+            if (it != null) {
+                imageView.setImageDrawable(it)
+            } else {
+                imageView.setImageDrawable(ViewUtils.tintIcon(imageView.context, R.drawable.ic_twotone_person_24px, isDark))
+            }
         }
     }
 }

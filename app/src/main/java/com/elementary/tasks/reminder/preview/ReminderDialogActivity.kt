@@ -347,7 +347,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
                 if (photo != null) {
                     contactPhoto.setImageURI(photo)
                 } else {
-                    contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: reminder.target))
+                    BitmapUtils.imageFromName(name ?: reminder.target) {
+                        contactPhoto.setImageDrawable(it)
+                    }
                 }
 
                 binding.contactInfo.text = userTitle
@@ -404,7 +406,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
                 if (photo != null) {
                     contactPhoto.setImageURI(photo)
                 } else {
-                    contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: reminder.target))
+                    BitmapUtils.imageFromName(name ?: reminder.target) {
+                        contactPhoto.setImageDrawable(it)
+                    }
                 }
 
                 binding.contactName.text = name

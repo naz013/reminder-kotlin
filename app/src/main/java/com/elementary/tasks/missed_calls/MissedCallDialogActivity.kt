@@ -164,7 +164,9 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
             if (photo != null) {
                 binding.contactPhoto.setImageURI(photo)
             } else {
-                binding.contactPhoto.setImageDrawable(BitmapUtils.imageFromName(name ?: missedCall.number))
+                BitmapUtils.imageFromName(name ?: missedCall.number) {
+                    binding.contactPhoto.setImageDrawable(it)
+                }
             }
         } else {
             binding.contactPhoto.visibility = View.INVISIBLE
