@@ -54,5 +54,5 @@ interface CalendarEventsDao {
     fun getByKey(id: String): CalendarEvent?
 
     @Query("SELECT * FROM CalendarEvent WHERE reminderId=:id")
-    fun getByReminder(id: Int): List<CalendarEvent>
+    fun getByReminder(id: String): List<CalendarEvent>
 }

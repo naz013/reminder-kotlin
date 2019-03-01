@@ -75,7 +75,7 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
     }
 
     @SuppressLint("MissingPermission")
-    fun deleteEvents(id: Int) {
+    fun deleteEvents(id: String) {
         val events = appDb.calendarEventsDao().getByReminder(id).toMutableList()
         val cr = context.contentResolver
         for (i in events.indices.reversed()) {
