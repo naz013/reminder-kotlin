@@ -63,6 +63,8 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
                 binding.saturdayCheck.isChecked, binding.sundayCheck.isChecked)
 
     private val mCheckListener: CompoundButton.OnCheckedChangeListener =  CompoundButton.OnCheckedChangeListener { _, _ ->
+        iFace.state.weekdays = days
+        iFace.state.isWeekdaysSaved = true
         calculateNextDate()
     }
 
@@ -88,7 +90,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
                 Reminder.BY_WEEK_SMS
             }
         }
-        val weekdays = days
+        val weekdays = iFace.state.weekdays
         if (!IntervalUtil.isWeekday(weekdays)) {
             iFace.showSnackbar(getString(R.string.you_dont_select_any_day))
             return null
@@ -209,6 +211,9 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
                 prefs.is24HourFormat, prefs.appLanguage)
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)
+        }
+        if (iFace.state.isWeekdaysSaved) {
+            setCheckForDays(iFace.state.weekdays)
         }
         calculateNextDate()
     }
