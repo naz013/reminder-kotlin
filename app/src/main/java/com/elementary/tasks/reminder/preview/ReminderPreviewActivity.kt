@@ -150,6 +150,11 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                 showCalendarEvents(it)
             }
         })
+        viewModel.clearExtraData.observe(this, Observer {
+            if (it != null && it) {
+                binding.dataContainer.removeAllViewsInLayout()
+            }
+        })
     }
 
     private fun showCalendarEvents(events: List<CalendarUtils.EventItem>) {
@@ -158,6 +163,8 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
             val binding = GoogleEventHolder(binding.dataContainer) { _, event, listActions ->
                 if (listActions == ListActions.OPEN && event != null) {
                     openCalendar(event.id)
+                } else if (listActions == ListActions.REMOVE && event != null) {
+                    reminder?.let { viewModel.deleteEvent(event, it) }
                 }
             }
             binding.bind(e)
@@ -293,8 +300,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         } else {
             binding.fab.visibility = View.GONE
         }
-
-        binding.dataContainer.removeAllViewsInLayout()
     }
 
     private fun showBefore(reminder: Reminder) {

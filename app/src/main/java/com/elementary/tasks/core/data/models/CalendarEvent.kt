@@ -27,11 +27,7 @@ import java.util.*
 class CalendarEvent(var reminderId: String, var event: String, var eventId: Long) {
 
     @PrimaryKey
-    var uuId: String = ""
-
-    init {
-        this.uuId = UUID.randomUUID().toString()
-    }
+    var uuId: String = UUID.randomUUID().toString()
 
     override fun toString(): String {
         return "CalendarEvent(reminderId='$reminderId', event='$event', eventId=$eventId, uuId='$uuId')"

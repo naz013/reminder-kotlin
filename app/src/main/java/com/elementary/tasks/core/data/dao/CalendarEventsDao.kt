@@ -55,4 +55,7 @@ interface CalendarEventsDao {
 
     @Query("SELECT * FROM CalendarEvent WHERE reminderId=:id")
     fun getByReminder(id: String): List<CalendarEvent>
+
+    @Query("DELETE FROM CalendarEvent WHERE uuId=:id")
+    fun deleteById(id: String)
 }

@@ -6,7 +6,8 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import timber.log.Timber
 
 /**
@@ -35,6 +36,7 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
     val googleTask: LiveData<Pair<GoogleTaskList?, GoogleTask?>> = _googleTask
     private val _calendarEvent = MutableLiveData<List<CalendarUtils.EventItem>>()
     val calendarEvent: LiveData<List<CalendarUtils.EventItem>> = _calendarEvent
+    val clearExtraData = MutableLiveData<Boolean>()
 
     var reminder: LiveData<Reminder>
     private val mObserver = Observer<Reminder> {
@@ -47,7 +49,8 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
     }
 
     fun loadExtra(reminder: Reminder) {
-        launchIo {
+        launchDefault {
+            withUIContext { clearExtraData.postValue(true) }
             _note.postValue(appDb.notesDao().getById(reminder.noteId))
             val googleTask = appDb.googleTasksDao().getByReminderId(reminder.uuId)
             if (googleTask != null) {
@@ -55,6 +58,16 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
             }
             val events = calendarUtils.loadEvents(reminder.uuId)
             _calendarEvent.postValue(events)
+        }
+    }
+
+    fun deleteEvent(eventItem: CalendarUtils.EventItem, reminder: Reminder) {
+        launchDefault {
+            if (eventItem.localId.isNotBlank()) {
+                appDb.calendarEventsDao().deleteById(eventItem.localId)
+            }
+            calendarUtils.deleteEvent(eventItem.id)
+            loadExtra(reminder)
         }
     }
 
