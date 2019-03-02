@@ -10,6 +10,7 @@ import java.util.*
 class StateViewModel : ViewModel(), LifecycleObserver {
 
     var shopItems: List<ShopItem> = listOf()
+    var weekdays: List<Int> = listOf()
     var reminder: Reminder = Reminder()
     var group: ReminderGroup? = null
 
@@ -23,6 +24,8 @@ class StateViewModel : ViewModel(), LifecycleObserver {
     var isEmailOrSubjectChanged: Boolean = false
     var isLeave: Boolean = false
     var isLastDay: Boolean = false
+    var isWeekdaysSaved: Boolean = false
+    var isAppSaved: Boolean = false
 
     var app: String = ""
     var link: String = ""

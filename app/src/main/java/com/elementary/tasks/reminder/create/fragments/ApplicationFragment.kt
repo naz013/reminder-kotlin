@@ -128,6 +128,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
         binding.urlField.setText(iFace.state.link)
         binding.urlField.onChanged {
             iFace.state.link = it
+            iFace.state.isAppSaved = true
         }
         binding.application.setOnCheckedChangeListener { _, b ->
             iFace.state.isLink = !b
@@ -157,11 +158,21 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
                 binding.urlField.setText(reminder.target)
             }
         }
+        if (iFace.state.isAppSaved) {
+            if (!iFace.state.isLink) {
+                binding.application.isChecked = true
+                binding.applicationName.text = appName
+            } else {
+                binding.browser.isChecked = true
+                binding.urlField.setText(iFace.state.link)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
             iFace.state.app = data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
+            iFace.state.isAppSaved = true
             binding.applicationName.text = appName
         }
     }
