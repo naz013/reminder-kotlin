@@ -3,7 +3,9 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
+import com.elementary.tasks.places.create.CreatePlaceViewModel
 import com.elementary.tasks.reminder.create.StateViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.ext.koin.viewModel
@@ -28,6 +30,8 @@ fun utilModule() = module {
 
 fun viewModels() = module {
     viewModel { StateViewModel() }
+    viewModel { CreatePlaceViewModel() }
+    viewModel { CreateNoteViewModel() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {
