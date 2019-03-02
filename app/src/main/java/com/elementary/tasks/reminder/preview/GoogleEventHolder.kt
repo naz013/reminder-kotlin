@@ -30,6 +30,7 @@ class GoogleEventHolder (parent: ViewGroup, listener: ((View, CalendarUtils.Even
 
     init {
         binding.viewButton.setOnClickListener { listener?.invoke(it, eventItem, ListActions.OPEN) }
+        binding.buttonDelete.setOnClickListener { listener?.invoke(it, eventItem, ListActions.REMOVE) }
     }
 
     fun bind(eventItem: CalendarUtils.EventItem) {
