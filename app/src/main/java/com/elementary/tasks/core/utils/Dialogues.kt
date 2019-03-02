@@ -160,6 +160,12 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         return AlertDialog.Builder(context, themeUtil.dialogStyle)
     }
 
+    fun getNullableDialog(context: Context?): AlertDialog.Builder? {
+        return if (context != null) {
+            AlertDialog.Builder(context, themeUtil.dialogStyle)
+        } else null
+    }
+
     interface OnValueSelectedListener<T> {
         fun onSelected(t: T)
         fun getTitle(t: T): String
@@ -182,7 +188,8 @@ class Dialogues(private val themeUtil: ThemeUtil) {
             popupMenu.show()
         }
 
-        fun setFullWidthDialog(dialog: AlertDialog, activity: Activity) {
+        fun setFullWidthDialog(dialog: AlertDialog, activity: Activity?) {
+            if (activity == null) return
             val window = dialog.window
             window?.setGravity(Gravity.CENTER)
             window?.setLayout((getScreenWidth(activity) * .9).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)

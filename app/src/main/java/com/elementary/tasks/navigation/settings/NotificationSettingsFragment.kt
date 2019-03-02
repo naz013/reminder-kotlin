@@ -199,24 +199,25 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showLedColorDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.led_color))
-        val colors = LED.getAllNames(context!!)
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, colors)
-        mItemSelect = prefs.ledColor
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.ledColor = mItemSelect
-            showLedColor()
-            dialog.dismiss()
+        dialogues.getNullableDialog(context)?.let { builder ->
+            builder.setTitle(getString(R.string.led_color))
+            val colors = LED.getAllNames(context!!)
+            val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, colors)
+            mItemSelect = prefs.ledColor
+            builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.ledColor = mItemSelect
+                showLedColor()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.setOnCancelListener { mItemSelect = 0 }
+            dialog.setOnDismissListener { mItemSelect = 0 }
+            dialog.show()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun showLedColor() {
@@ -251,39 +252,44 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 prefs.snoozeTime.toString()))
     }
 
+    private fun snoozeFormat(progress: Int): String {
+        if (!isAdded) return ""
+        return String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                progress.toString())
+    }
+
     private fun showSnoozeDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.snooze_time)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 60
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                        progress.toString())
+        dialogues.getNullableDialog(context)?.let { builder ->
+            builder.setTitle(R.string.snooze_time)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 60
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = snoozeFormat(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val snoozeTime = prefs.snoozeTime
+            b.seekBar.progress = snoozeTime
+            b.titleView.text = snoozeFormat(snoozeTime)
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ ->
+                prefs.snoozeTime = b.seekBar.progress
+                showSnooze()
+                initSnoozeTimePrefs()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val snoozeTime = prefs.snoozeTime
-        b.seekBar.progress = snoozeTime
-        b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                snoozeTime.toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            prefs.snoozeTime = b.seekBar.progress
-            showSnooze()
-            initSnoozeTimePrefs()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, activity)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun changeAutoCallPrefs() {
@@ -331,22 +337,23 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showTtsLocaleDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.language))
-        val locale = prefs.ttsLocale
-        mItemSelect = language.getLocalePosition(locale)
-        builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            saveTtsLocalePrefs()
-            dialog.dismiss()
+        dialogues.getNullableDialog(context)?.let { builder ->
+            builder.setTitle(getString(R.string.language))
+            val locale = prefs.ttsLocale
+            mItemSelect = language.getLocalePosition(locale)
+            builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                saveTtsLocalePrefs()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.setOnCancelListener { mItemSelect = 0 }
+            dialog.setOnDismissListener { mItemSelect = 0 }
+            dialog.show()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun showTtsLocale() {
@@ -408,35 +415,36 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             openNotificationsSettings()
             return
         }
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.loudness)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 25
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = progress.toString()
+        dialogues.getNullableDialog(context)?.let {  builder ->
+            builder.setTitle(R.string.loudness)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 25
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = progress.toString()
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val loudness = prefs.loudness
+            b.seekBar.progress = loudness
+            b.titleView.text = loudness.toString()
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ ->
+                prefs.loudness = b.seekBar.progress
+                showLoudness()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val loudness = prefs.loudness
-        b.seekBar.progress = loudness
-        b.titleView.text = loudness.toString()
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            prefs.loudness = b.seekBar.progress
-            showLoudness()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, activity)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun initLoudnessPrefs() {
@@ -450,27 +458,28 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showStreamDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.sound_stream))
-        val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
-        val stream = prefs.soundStream
-        mItemSelect = stream - 3
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            if (which != -1) {
-                mItemSelect = which
+        dialogues.getNullableDialog(context)?.let { builder ->
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.sound_stream))
+            val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
+            val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
+            val stream = prefs.soundStream
+            mItemSelect = stream - 3
+            builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+                if (which != -1) {
+                    mItemSelect = which
+                }
             }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.soundStream = mItemSelect + 3
+                showStream()
+                dialog.dismiss()
+            }
+            val dialog = builder.create()
+            dialog.setOnCancelListener { mItemSelect = 0 }
+            dialog.setOnDismissListener { mItemSelect = 0 }
+            dialog.show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.soundStream = mItemSelect + 3
-            showStream()
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun initReminderTypePrefs() {
