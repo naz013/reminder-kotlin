@@ -7,6 +7,7 @@ import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.day_view.day.EventModel
+import java.lang.Exception
 import java.text.ParseException
 import java.util.*
 
@@ -145,7 +146,7 @@ object DayViewProvider {
             var date: Date? = null
             try {
                 date = TimeUtil.BIRTH_DATE_FORMAT.parse(item.date)
-            } catch (e: ParseException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
