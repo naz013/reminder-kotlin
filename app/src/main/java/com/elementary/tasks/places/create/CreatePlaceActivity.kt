@@ -22,6 +22,7 @@ import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,7 +45,7 @@ import org.koin.android.ext.android.inject
 class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
 
     private lateinit var viewModel: PlaceViewModel
-    private lateinit var stateViewModel: CreatePlaceViewModel
+    private val stateViewModel: CreatePlaceViewModel by viewModel()
 
     private var mGoogleMap: AdvancedMapFragment? = null
 
@@ -57,7 +58,6 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stateViewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
         stateViewModel.isPlaceEdited = savedInstanceState != null
 
         initActionBar()
