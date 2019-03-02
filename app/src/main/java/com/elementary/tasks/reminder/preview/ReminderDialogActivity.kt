@@ -810,7 +810,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         Timber.d("showReminderNotification: $id")
         val notificationIntent = Intent(this, activity.javaClass)
-        notificationIntent.putExtra(Constants.INTENT_ID, id)
+        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         val intent = PendingIntent.getActivity(this, id, notificationIntent, 0)
@@ -908,7 +908,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         builder.setContentTitle(summary)
 
         val notificationIntent = Intent(this, activityClass.javaClass)
-        notificationIntent.putExtra(Constants.INTENT_ID, id)
+        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         val intent = PendingIntent.getActivity(this, id, notificationIntent, 0)
