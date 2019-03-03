@@ -150,3 +150,8 @@
 
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
+
+-keep public class com.elementary.tasks.core.network.places.**
+-keep public class com.elementary.tasks.core.network.places.** {
+  public protected *;
+}
