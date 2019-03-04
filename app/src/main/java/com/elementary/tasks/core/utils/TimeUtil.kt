@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
 import com.elementary.tasks.R
 import hirondelle.date4j.DateTime
@@ -12,6 +13,7 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -150,10 +152,23 @@ object TimeUtil {
 
     fun showDatePicker(context: Context, theme: Int, prefs: Prefs,
                        year: Int, month: Int, dayOfMonth: Int, listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
-        val dialog = DatePickerDialog(context, theme, listener, year, month, dayOfMonth)
+        val dialog = if (isBrokenSamsungDevice()) {
+            DatePickerDialog(context, android.R.style.Theme_Holo_Dialog, listener, year, month, dayOfMonth)
+        } else {
+            DatePickerDialog(context, theme, listener, year, month, dayOfMonth)
+        }
         dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
         dialog.show()
         return dialog
+    }
+
+    private fun isBrokenSamsungDevice(): Boolean {
+        return Build.MANUFACTURER.equals("samsung", ignoreCase = true) && isBetweenAndroidVersions(
+                Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.LOLLIPOP_MR1)
+    }
+
+    private fun isBetweenAndroidVersions(min: Int, max: Int): Boolean {
+        return Build.VERSION.SDK_INT in min..max
     }
 
     fun getFutureBirthdayDate(birthdayTime: Long, fullDate: String): DateItem? {
