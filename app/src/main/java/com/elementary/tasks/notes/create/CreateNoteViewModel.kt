@@ -98,10 +98,14 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
             val imageFile = ImageFile(state = DecodeImages.State.Loading)
             var list = images.value ?: listOf()
             var mutable = list.toMutableList()
-            val position = mutable.size
             mutable.add(imageFile)
-            withUIContext {
-                images.postValue(mutable)
+            val position = mutable.size - 1
+            if (position < 0) {
+                return@launchDefault
+            } else {
+                withUIContext {
+                    images.postValue(mutable)
+                }
             }
             var bitmapImage: Bitmap? = null
             try {
