@@ -24,11 +24,11 @@ data class EventModel(
         val day: Int,
         val month: Int,
         val year: Int,
+        val dt: Long,
         val color: Int
 ) {
     companion object {
         const val REMINDER = 0
-        const val SHOPPING = 1
         const val BIRTHDAY = 2
     }
 }
