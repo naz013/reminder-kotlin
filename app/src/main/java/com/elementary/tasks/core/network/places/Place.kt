@@ -29,16 +29,13 @@ class Place {
     var geometry: Geometry? = null
     @SerializedName("icon")
     @Expose
-    var icon: String = ""
+    var icon: String? = ""
     @SerializedName("id")
     @Expose
     var id: String = ""
     @SerializedName("name")
     @Expose
-    var name: String = ""
-    @SerializedName("opening_hours")
-    @Expose
-    var openingHours: OpeningHours? = null
+    var name: String? = ""
     @SerializedName("photos")
     @Expose
     var photos: List<Photo> = listOf()
@@ -48,19 +45,13 @@ class Place {
     @SerializedName("scope")
     @Expose
     var scope: String = ""
-    @SerializedName("alt_ids")
-    @Expose
-    var altIds: List<AltId> = listOf()
     @SerializedName("reference")
     @Expose
     var reference: String = ""
     @SerializedName("types")
     @Expose
     var types: List<String> = listOf()
-    @SerializedName("vicinity")
-    @Expose
-    var vicinity: String = ""
     @SerializedName("formatted_address")
     @Expose
-    var formattedAddress: String = ""
+    var formattedAddress: String? = ""
 }

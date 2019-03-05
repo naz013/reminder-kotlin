@@ -27,11 +27,11 @@ object PlaceParser {
 
     fun getDetails(place: Place): GooglePlaceItem {
         val model = GooglePlaceItem()
-        model.name = place.name
+        model.name = place.name ?: ""
         model.id = place.id
-        model.icon = place.icon
-        model.address = place.formattedAddress
-        model.position = getCoordinates(place.geometry!!.location)
+        model.icon = place.icon ?: ""
+        model.address = place.formattedAddress ?: ""
+        model.position = getCoordinates(place.geometry?.location)
         model.types = place.types
         return model
     }
