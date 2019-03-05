@@ -46,7 +46,7 @@ object RequestBuilder {
     fun getNearby(lat: Double, lng: Double, name: String): Call<PlacesResponse> {
         val req = name.replace("\\s+".toRegex(), "+")
         val params = LinkedHashMap<String, String>()
-        params["location"] = lat.toString() + "," + lng
+        params["location"] = "$lat,$lng"
         params["radius"] = "50000"
         params["name"] = req
         params["language"] = language

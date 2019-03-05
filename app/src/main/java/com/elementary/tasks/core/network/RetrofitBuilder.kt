@@ -46,10 +46,11 @@ object RetrofitBuilder {
     private val client: OkHttpClient
         get() {
             val interceptor = HttpLoggingInterceptor()
-            if (BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG) {
                 interceptor.level = HttpLoggingInterceptor.Level.BODY
-            else
+            } else {
                 interceptor.level = HttpLoggingInterceptor.Level.NONE
+            }
             return OkHttpClient.Builder()
                     .addInterceptor(interceptor).build()
         }
