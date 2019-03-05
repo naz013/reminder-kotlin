@@ -50,8 +50,11 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     private val eventsList: MutableList<EventModel> = mutableListOf()
 
     private var startDayOfWeek = SUNDAY
-    private val weekdayAdapter: WeekdayArrayAdapter
-        get() = WeekdayArrayAdapter(activity!!, android.R.layout.simple_list_item_1, daysOfWeek, isDark)
+    private val weekdayAdapter: WeekdayArrayAdapter?
+        get() {
+            val ctx = activity ?: return null
+            return WeekdayArrayAdapter(ctx, android.R.layout.simple_list_item_1, daysOfWeek, isDark)
+        }
 
     private val daysOfWeek: ArrayList<String>
         get() {

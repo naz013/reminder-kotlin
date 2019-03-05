@@ -206,7 +206,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
 
     private fun makeCall() {
         if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
-            TelephonyUtil.makeCall(mMissedCall!!.number, this@MissedCallDialogActivity)
+            TelephonyUtil.makeCall(mMissedCall?.number ?: "", this)
             removeMissed()
         }
     }
