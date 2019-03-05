@@ -38,7 +38,7 @@
             app:counterEnabled="true"
             app:counterMaxLength="120">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.elementary.tasks.core.views.FixedTextInputEditText
                 android:id="@+id/messageInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

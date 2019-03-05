@@ -25,7 +25,7 @@
                 app:boxCornerRadiusTopEnd="5dp"
                 app:boxCornerRadiusTopStart="5dp">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.elementary.tasks.core.views.FixedTextInputEditText
                     android:id="@+id/taskSummary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     app:boxCornerRadiusTopEnd="5dp"
                     app:boxCornerRadiusTopStart="5dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.elementary.tasks.core.views.FixedTextInputEditText
                         android:id="@+id/shopEdit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
