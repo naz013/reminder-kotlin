@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -59,7 +58,7 @@ class MonthViewViewModel private constructor(private val addReminders: Boolean,
         private val reminderData = ArrayList<EventModel>()
         private val birthdayData = ArrayList<EventModel>()
         private val birthdays = appDb.birthdaysDao().loadAll()
-        private val reminders = appDb.reminderDao().loadType(true, false)
+        private val reminders = appDb.reminderDao().loadType(active = true, removed = false)
 
         private var monthPagerItem: MonthPagerItem? = null
         private var job: Job? = null
@@ -149,33 +148,7 @@ class MonthViewViewModel private constructor(private val addReminders: Boolean,
                 if (!sort) {
                     withUIContext { notifyObserver(monthPagerItem, res) }
                 } else {
-                    res.sortWith(Comparator { eventsItem, t1 ->
-                        var time1: Long = 0
-                        var time2: Long = 0
-                        if (eventsItem.model is Birthday) {
-                            val item = eventsItem.model as Birthday
-                            val dateItem = TimeUtil.getFutureBirthdayDate(birthTime, item.date)
-                            if (dateItem != null) {
-                                val calendar = dateItem.calendar
-                                time1 = calendar.timeInMillis
-                            }
-                        } else if (eventsItem.model is Reminder) {
-                            val reminder = eventsItem.model as Reminder
-                            time1 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-                        }
-                        if (t1.model is Birthday) {
-                            val item = t1.model as Birthday
-                            val dateItem = TimeUtil.getFutureBirthdayDate(birthTime, item.date)
-                            if (dateItem != null) {
-                                val calendar = dateItem.calendar
-                                time2 = calendar.timeInMillis
-                            }
-                        } else if (t1.model is Reminder) {
-                            val reminder = t1.model as Reminder
-                            time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-                        }
-                        time1.compareTo(time2)
-                    })
+                    res.sortWith(Comparator { eventsItem, t1 -> eventsItem.dt.compareTo(t1.dt) })
                     withUIContext { notifyObserver(monthPagerItem, res) }
                 }
             }

@@ -7,8 +7,6 @@ import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.day_view.day.EventModel
-import java.lang.Exception
-import java.text.ParseException
 import java.util.*
 
 /**
@@ -46,7 +44,7 @@ object DayViewProvider {
                 var mMonth = calendar.get(Calendar.MONTH)
                 var mYear = calendar.get(Calendar.YEAR)
                 if (eventTime > 0) {
-                    data.add(EventModel(item.viewType, item, mDay, mMonth, mYear, 0))
+                    data.add(EventModel(item.viewType, item, mDay, mMonth, mYear, eventTime, 0))
                 } else {
                     continue
                 }
@@ -75,7 +73,7 @@ object DayViewProvider {
                                 val localItem = Reminder(item, true).apply {
                                     this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
                                 }
-                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, 0))
+                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, eventTime, 0))
                             }
                         } while (days < max)
                     } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
@@ -100,7 +98,7 @@ object DayViewProvider {
                                 localItem = Reminder(localItem, true).apply {
                                     this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
                                 }
-                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, 0))
+                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, eventTime, 0))
                             }
                         } while (days < max)
                     } else {
@@ -126,7 +124,7 @@ object DayViewProvider {
                                 val localItem = Reminder(item, true).apply {
                                     this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
                                 }
-                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, 0))
+                                data.add(EventModel(item.viewType, localItem, mDay, mMonth, mYear, eventTime, 0))
                             }
                         } while (days < max)
                     }
@@ -161,7 +159,7 @@ object DayViewProvider {
                 calendar1.set(Calendar.DAY_OF_MONTH, bDay)
                 calendar1.set(Calendar.HOUR_OF_DAY, hour)
                 calendar1.set(Calendar.MINUTE, minute)
-                data.add(EventModel(EventModel.BIRTHDAY, item, bDay, bMonth, bYear, 0))
+                data.add(EventModel(EventModel.BIRTHDAY, item, bDay, bMonth, bYear, calendar1.timeInMillis, 0))
             }
         }
         return data
