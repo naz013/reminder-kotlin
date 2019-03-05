@@ -152,7 +152,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    @Throws(IOException::class)
     private fun removeAllCopies(fileName: String) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -161,14 +160,18 @@ class GDrive private constructor(context: Context) : KoinComponent {
                 .setSpaces("appDataFolder")
                 .setFields("nextPageToken, files(id, name)")
                 .setQ("mimeType = 'text/plain' and name contains '$fileName'")
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                service.files().delete(f.id).execute()
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null)
+        try {
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    service.files().delete(f.id).execute()
+                }
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     @Throws(IOException::class)
