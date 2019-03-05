@@ -77,12 +77,14 @@ class GTasks private constructor(context: Context) : KoinComponent {
         instance = null
     }
 
-    @Throws(IOException::class)
     fun taskLists(): TaskLists? {
-        return if (!isLogged || tasksService == null) null else tasksService?.tasklists()?.list()?.execute()
+        return try {
+            if (!isLogged || tasksService == null) null else tasksService?.tasklists()?.list()?.execute()
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    @Throws(IOException::class)
     fun insertTask(item: GoogleTask): Boolean {
         if (!isLogged || TextUtils.isEmpty(item.title) || tasksService == null) {
             return false
@@ -118,45 +120,51 @@ class GTasks private constructor(context: Context) : KoinComponent {
                 appDb.googleTasksDao().insert(item)
                 return true
             }
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Exception) {
             return false
         }
         return false
     }
 
-    @Throws(IOException::class)
     fun updateTaskStatus(status: String, googleTask: GoogleTask) {
         if (!isLogged || tasksService == null) return
-        val task = tasksService?.tasks()?.get(googleTask.listId, googleTask.taskId)?.execute() ?: return
-        task.status = status
-        if (status == TASKS_NEED_ACTION) {
-            task.completed = Data.NULL_DATE_TIME
-        }
-        task.updated = DateTime(System.currentTimeMillis())
-        val result = tasksService?.tasks()?.update(googleTask.listId, task.id, task)?.execute()
-        if (result != null) {
-            googleTask.update(result)
-            appDb.googleTasksDao().insert(googleTask)
+        try {
+            val task = tasksService?.tasks()?.get(googleTask.listId, googleTask.taskId)?.execute() ?: return
+            task.status = status
+            if (status == TASKS_NEED_ACTION) {
+                task.completed = Data.NULL_DATE_TIME
+            }
+            task.updated = DateTime(System.currentTimeMillis())
+            val result = tasksService?.tasks()?.update(googleTask.listId, task.id, task)?.execute()
+            if (result != null) {
+                googleTask.update(result)
+                appDb.googleTasksDao().insert(googleTask)
+            }
+        } catch (e: Exception) {
         }
     }
 
-    @Throws(IOException::class)
     fun deleteTask(item: GoogleTask) {
         if (!isLogged || item.listId == "" || tasksService == null) return
-        tasksService?.tasks()?.delete(item.listId, item.taskId)?.execute()
+        try {
+            tasksService?.tasks()?.delete(item.listId, item.taskId)?.execute()
+        } catch (e: Exception) {
+        }
     }
 
-    @Throws(IOException::class)
     fun updateTask(item: GoogleTask) {
         if (!isLogged || tasksService == null) return
-        val task = tasksService?.tasks()?.get(item.listId, item.taskId)?.execute() ?: return
-        task.status = TASKS_NEED_ACTION
-        task.title = item.title
-        task.completed = Data.NULL_DATE_TIME
-        if (item.dueDate != 0L) task.due = DateTime(item.dueDate)
-        if (item.notes != "") task.notes = item.notes
-        task.updated = DateTime(System.currentTimeMillis())
-        tasksService?.tasks()?.update(item.listId, task.id, task)?.execute()
+        try {
+            val task = tasksService?.tasks()?.get(item.listId, item.taskId)?.execute() ?: return
+            task.status = TASKS_NEED_ACTION
+            task.title = item.title
+            task.completed = Data.NULL_DATE_TIME
+            if (item.dueDate != 0L) task.due = DateTime(item.dueDate)
+            if (item.notes != "") task.notes = item.notes
+            task.updated = DateTime(System.currentTimeMillis())
+            tasksService?.tasks()?.update(item.listId, task.id, task)?.execute()
+        } catch (e: Exception) {
+        }
     }
 
     fun getTasks(listId: String): List<Task> {
@@ -164,10 +172,9 @@ class GTasks private constructor(context: Context) : KoinComponent {
         if (!isLogged || tasksService == null) return taskLists
         try {
             taskLists = tasksService?.tasks()?.list(listId)?.execute()?.items ?: arrayListOf()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         return taskLists
     }
 
@@ -179,24 +186,25 @@ class GTasks private constructor(context: Context) : KoinComponent {
             val result = tasksService?.tasklists()?.insert(taskList)?.execute() ?: return
             val item = GoogleTaskList(result, color)
             appDb.googleTaskListsDao().insert(item)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
-    @Throws(IOException::class)
     fun updateTasksList(listTitle: String, listId: String?) {
         if (!isLogged || listId == null || tasksService == null) {
             return
         }
-        val taskList = tasksService?.tasklists()?.get(listId)?.execute() ?: return
-        taskList.title = listTitle
-        tasksService?.tasklists()?.update(listId, taskList)?.execute()
-        val item = appDb.googleTaskListsDao().getById(listId)
-        if (item != null) {
-            item.update(taskList)
-            appDb.googleTaskListsDao().insert(item)
+        try {
+            val taskList = tasksService?.tasklists()?.get(listId)?.execute() ?: return
+            taskList.title = listTitle
+            tasksService?.tasklists()?.update(listId, taskList)?.execute()
+            val item = appDb.googleTaskListsDao().getById(listId)
+            if (item != null) {
+                item.update(taskList)
+                appDb.googleTaskListsDao().insert(item)
+            }
+        } catch (e: Exception) {
         }
     }
 
