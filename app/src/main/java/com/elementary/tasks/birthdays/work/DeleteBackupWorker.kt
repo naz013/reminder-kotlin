@@ -8,7 +8,6 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.SuperUtil
 import java.io.File
 import java.io.IOException
 
@@ -19,10 +18,10 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
         if (uuId.isNotEmpty()) {
             deleteSingleFile(uuId + FileConfig.FILE_NAME_BIRTHDAY)
         } else {
-            val ids = inputData.getStringArray(Constants.INTENT_IDS) ?: return Result.SUCCESS
+            val ids = inputData.getStringArray(Constants.INTENT_IDS) ?: return Result.success()
             ids.forEach { deleteSingleFile(it + FileConfig.FILE_NAME_BIRTHDAY) }
         }
-        return Result.SUCCESS
+        return Result.success()
     }
 
     private fun deleteSingleFile(fileName: String) {

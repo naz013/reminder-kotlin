@@ -18,7 +18,7 @@ class BackupDataWorker(context: Context, workerParams: WorkerParameters) : Worke
 
     override fun doWork(): Result {
         IoHelper(applicationContext, prefs, backupTool).backup()
-        return Result.SUCCESS
+        return Result.success()
     }
 
     companion object {

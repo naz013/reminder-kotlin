@@ -25,7 +25,7 @@ class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
                 cacheFiles(uuId + FileConfig.FILE_NAME_NOTE, Gson().toJson(OldNote(note)))
             }
         }
-        return Result.SUCCESS
+        return Result.success()
     }
 
     private fun cacheFiles(fileName: String, data: String) {

@@ -29,6 +29,6 @@ class UpdateTaskWorker(context: Context, workerParams: WorkerParameters) : Worke
                 }
             }
         }
-        return Result.SUCCESS
+        return Result.success()
     }
 }
