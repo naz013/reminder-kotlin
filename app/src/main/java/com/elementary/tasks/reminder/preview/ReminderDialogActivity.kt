@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.preview
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -555,17 +554,17 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         val mime = MimeTypeMap.getSingleton()
         val intent = Intent(Intent.ACTION_VIEW)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        if (Module.isNougat) {
-            val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
-            intent.data = uri
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        } else {
-            intent.setDataAndType(Uri.parse("file://$path"),
-                    mime.getMimeTypeFromExtension(fileExt(reminder.attachmentFile).substring(1)))
-        }
         try {
+            if (Module.isNougat) {
+                val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(path))
+                intent.data = uri
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            } else {
+                intent.setDataAndType(Uri.parse("file://$path"),
+                        mime.getMimeTypeFromExtension(fileExt(reminder.attachmentFile).substring(1)))
+            }
             startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(this, R.string.cant_find_app_for_that_file_type, Toast.LENGTH_LONG).show()
         }
     }
