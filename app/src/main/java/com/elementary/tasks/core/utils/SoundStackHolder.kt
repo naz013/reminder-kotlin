@@ -23,7 +23,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SoundStackHolder(context: Context, prefs: Prefs) : Sound.PlaybackCallback {
+class SoundStackHolder(private val context: Context, private val prefs: Prefs) : Sound.PlaybackCallback {
     var sound: Sound? = null
         private set
 
@@ -63,6 +63,7 @@ class SoundStackHolder(context: Context, prefs: Prefs) : Sound.PlaybackCallback 
         isHeadset = SuperUtil.isHeadsetUsing(context)
         hasVolumePermission = SuperUtil.hasVolumePermission(context)
         isSystemLoudnessEnabled = prefs.isSystemLoudnessEnabled
+        isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
         isIncreasingLoudnessEnabled = prefs.isIncreasingLoudnessEnabled
         if (isSystemLoudnessEnabled) mSystemStream = prefs.soundStream
         if (mAudioManager == null) {
@@ -75,8 +76,16 @@ class SoundStackHolder(context: Context, prefs: Prefs) : Sound.PlaybackCallback 
             mAudioManager = context.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH))
                 mAudioManager?.mode = AudioManager.MODE_NORMAL
-            isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
         }
+    }
+
+    fun initParams() {
+        isHeadset = SuperUtil.isHeadsetUsing(context)
+        hasVolumePermission = SuperUtil.hasVolumePermission(context)
+        isSystemLoudnessEnabled = prefs.isSystemLoudnessEnabled
+        isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
+        isIncreasingLoudnessEnabled = prefs.isIncreasingLoudnessEnabled
+        if (isSystemLoudnessEnabled) mSystemStream = prefs.soundStream
     }
 
     fun setMaxVolume(maxVolume: Int) {
