@@ -695,5 +695,6 @@
     <string name="it_s_not_recommended_to_use_this_colors_together">この色を一緒に使用することはお勧めできません</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Playサービスが見つかりません。一部の機能は無効になっています。</string>
     <string name="none">無し</string>
+    <string name="enable_data_backup_to_keep_your_reminders_in_safe">リマインダを安全に保つためにデータバックアップを有効に</string>
 
 </resources>

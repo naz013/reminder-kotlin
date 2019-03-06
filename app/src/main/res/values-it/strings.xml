@@ -694,5 +694,6 @@
     <string name="it_s_not_recommended_to_use_this_colors_together">Non è consigliabile utilizzare questi colori insieme</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services non trovato, alcune funzionalità sono disabilitate!</string>
     <string name="none">Nessuna</string>
+    <string name="enable_data_backup_to_keep_your_reminders_in_safe">Abilita il backup dei dati per mantenere i tuoi ricordi in sicurezza</string>
 
 </resources>

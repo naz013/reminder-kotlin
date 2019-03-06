@@ -694,5 +694,6 @@
     <string name="it_s_not_recommended_to_use_this_colors_together">यह एक साथ इस रंग का उपयोग करने के लिए अनुशंसित नहीं है</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play सेवाएँ नहीं मिलीं, कुछ कार्यक्षमता अक्षम है!</string>
     <string name="none">कोई नहीं</string>
+    <string name="enable_data_backup_to_keep_your_reminders_in_safe">अपने अनुस्मारक को सुरक्षित रखने के लिए डेटा बैकअप सक्षम करें</string>
 
 </resources>

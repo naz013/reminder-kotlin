@@ -12,5 +12,6 @@ class NavHeaderBinding(view: View) : Binding(view) {
     val saleBadge: TextView by bindView(R.id.sale_badge)
     val updateBadge: TextView by bindView(R.id.update_badge)
     val playServicesWarning: TextView by bindView(R.id.playServicesWarning)
+    val backupBadge: TextView by bindView(R.id.backupBadge)
     val doNoDisturbIcon: ImageView by bindView(R.id.doNoDisturbIcon)
 }

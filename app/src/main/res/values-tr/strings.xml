@@ -694,5 +694,6 @@
     <string name="it_s_not_recommended_to_use_this_colors_together">Bu renkleri birlikte kullanmanız önerilmez.</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Servisleri bulunamadı, bazı işlevler devre dışı!</string>
     <string name="none">Yok</string>
+    <string name="enable_data_backup_to_keep_your_reminders_in_safe">Hatırlatıcılarınızı güvende tutmak için veri yedeklemeyi etkinleştirin</string>
 
 </resources>

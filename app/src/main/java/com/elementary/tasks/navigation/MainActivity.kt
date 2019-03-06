@@ -63,7 +63,11 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     private var pressedTime: Long = 0
     private val prefsObserver: (String) -> Unit = {
         Handler(Looper.getMainLooper()).post {
-            checkDoNotDisturb()
+            if (it == PrefsConstants.DATA_BACKUP) {
+                checkBackupPrefs()
+            } else {
+                checkDoNotDisturb()
+            }
         }
     }
 
@@ -153,6 +157,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
+        prefs.addObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
         if (prefs.isUiChanged) {
             prefs.isUiChanged = false
             recreate()
@@ -167,6 +172,14 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         checkDoNotDisturb()
     }
 
+    private fun checkBackupPrefs() {
+        if (prefs.isBackupEnabled) {
+            mHeaderView?.backupBadge?.hide()
+        } else {
+            mHeaderView?.backupBadge?.show()
+        }
+    }
+
     private fun checkDoNotDisturb() {
         if (prefs.applyDoNotDisturb(0)) {
             Timber.d("checkDoNotDisturb: active")
@@ -179,6 +192,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
 
     override fun onPause() {
         super.onPause()
+        prefs.removeObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
         prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
         prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
         prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)

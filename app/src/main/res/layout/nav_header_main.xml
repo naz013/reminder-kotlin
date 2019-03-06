@@ -60,6 +60,16 @@
             tools:text="New update" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/backupBadge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textAppearance="?textAppearanceCaption"
+            android:textColor="?colorSecondary"
+            android:visibility="visible"
+            android:text="@string/enable_data_backup_to_keep_your_reminders_in_safe" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/playServicesWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
