@@ -28,6 +28,6 @@ class SaveNewTaskWorker(context: Context, workerParams: WorkerParameters) : Work
                 }
             }
         }
-        return Result.SUCCESS
+        return Result.success()
     }
 }

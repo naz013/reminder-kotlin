@@ -18,7 +18,7 @@ class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : W
 
     override fun doWork(): Result {
         IoHelper(applicationContext, prefs, backupTool).backupSettings()
-        return Result.SUCCESS
+        return Result.success()
     }
 
     companion object {

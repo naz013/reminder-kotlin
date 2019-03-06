@@ -27,7 +27,7 @@ class SingleBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
             }
         }
-        return Result.SUCCESS
+        return Result.success()
     }
 
     private fun cacheFiles(fileName: String, data: String) {

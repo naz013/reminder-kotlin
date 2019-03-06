@@ -21,12 +21,12 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
                 deleteSingleFile(uuId + FileConfig.FILE_NAME_REMINDER)
             }
         } else {
-            val ids = inputData.getStringArray(Constants.INTENT_IDS) ?: return Result.SUCCESS
+            val ids = inputData.getStringArray(Constants.INTENT_IDS) ?: return Result.success()
             launchIo {
                 ids.forEach { deleteSingleFile(it + FileConfig.FILE_NAME_REMINDER) }
             }
         }
-        return Result.SUCCESS
+        return Result.success()
     }
 
     private fun deleteSingleFile(fileName: String) {
