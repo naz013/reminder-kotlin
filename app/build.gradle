@@ -10,8 +10,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 229
-        versionName '7.0.17'
+        versionCode 230
+        versionName '7.0.18'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 200
+            versionCode 201
         }
     }
     packagingOptions {
@@ -116,13 +116,13 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
 
-    implementation ('android.arch.work:work-runtime:1.0.0-alpha11') {
+    implementation ('android.arch.work:work-runtime:1.0.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
     implementation ('android.arch.work:work-firebase:1.0.0-alpha11') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-    implementation ('android.arch.work:work-runtime-ktx:1.0.0-alpha11') {
+    implementation ('android.arch.work:work-runtime-ktx:1.0.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 
