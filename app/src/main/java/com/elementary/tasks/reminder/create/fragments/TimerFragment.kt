@@ -71,8 +71,6 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
             }
         }
 
-        viewModel.saveTime(after)
-
         reminder.target = number
         reminder.type = type
         reminder.after = after
@@ -84,6 +82,9 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
             iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
+
+        viewModel.saveTime(after)
+
         return reminder
     }
 
