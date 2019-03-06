@@ -241,7 +241,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         if (isScreenResumed) {
             return
         }
-        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
         builder.setContentTitle(name)
         builder.setAutoCancel(false)
         builder.priority = NotificationCompat.PRIORITY_MAX

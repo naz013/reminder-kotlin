@@ -818,7 +818,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
             builder.priority = NotificationCompat.PRIORITY_LOW
         } else {
-            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
             builder.priority = priority()
             if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
                             (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
@@ -889,7 +889,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
             builder.priority = NotificationCompat.PRIORITY_LOW
         } else {
-            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
             builder.priority = priority()
             if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
                             (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
