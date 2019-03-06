@@ -47,11 +47,11 @@ class GeolocationService : Service() {
         Timber.d("onDestroy: ")
     }
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("onStartCommand: ")
         isNotificationEnabled = prefs.isDistanceNotificationEnabled
         stockRadius = prefs.radius
