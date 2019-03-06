@@ -262,7 +262,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         if (isScreenResumed) {
             return
         }
-        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years, prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
