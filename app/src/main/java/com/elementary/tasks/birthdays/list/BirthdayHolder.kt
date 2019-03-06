@@ -7,10 +7,7 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemBirthdayBinding
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -63,8 +60,14 @@ class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val li
         val is24 = prefs.is24HourFormat
         val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), fullDate)
         if (dateItem != null) {
-            textView.text = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.calendar.timeInMillis, is24, prefs.appLanguage),
+            var message = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.millis, is24, prefs.appLanguage),
                     "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year, prefs.appLanguage))
+
+            if (dateItem.millis > System.currentTimeMillis()) {
+                message += "\n"
+                message += TimeCount.getRemaining(textView.context, dateItem.millis, prefs.appLanguage)
+            }
+            textView.text = message
         }
     }
 }

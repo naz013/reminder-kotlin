@@ -170,6 +170,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
             remotePrefs.addSaleObserver(this)
         }
         checkDoNotDisturb()
+        checkBackupPrefs()
     }
 
     private fun checkBackupPrefs() {

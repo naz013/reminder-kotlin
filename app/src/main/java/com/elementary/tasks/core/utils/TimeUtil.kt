@@ -200,7 +200,7 @@ object TimeUtil {
             if (calendar.timeInMillis < System.currentTimeMillis()) {
                 calendar.add(Calendar.YEAR, 1)
             }
-            return DateItem(calendar, year)
+            return DateItem(calendar.timeInMillis, year)
         }
         return null
     }
@@ -685,7 +685,7 @@ object TimeUtil {
         }
     }
 
-    data class DateItem(val calendar: Calendar, val year: Int)
+    data class DateItem(val millis: Long, val year: Int)
 
     data class DMY(val day: String, val month: String, val year: String)
 
