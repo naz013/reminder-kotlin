@@ -405,7 +405,10 @@ class Prefs(context: Context) : SharedPrefs(context) {
 
     var isBackupEnabled: Boolean
         get() = getBoolean(PrefsConstants.DATA_BACKUP)
-        set(value) = putBoolean(PrefsConstants.DATA_BACKUP, value)
+        set(value) {
+            putBoolean(PrefsConstants.DATA_BACKUP, value)
+            notifyKey(PrefsConstants.DATA_BACKUP)
+        }
 
     var isAutoBackupEnabled: Boolean
         get() = getBoolean(PrefsConstants.AUTO_BACKUP)

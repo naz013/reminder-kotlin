@@ -694,5 +694,6 @@
     <string name="it_s_not_recommended_to_use_this_colors_together">Nu este recomandat să folosiți aceste culori împreună</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Serviciile Google Play nu au fost găsite, unele funcții sunt dezactivate!</string>
     <string name="none">Nici unul</string>
+    <string name="enable_data_backup_to_keep_your_reminders_in_safe">Activați backupul de date pentru a vă menține mementourile în siguranță</string>
 
 </resources>
