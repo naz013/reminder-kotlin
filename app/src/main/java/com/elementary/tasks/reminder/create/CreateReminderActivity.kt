@@ -213,10 +213,10 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
 
     private fun editReminder(reminder: Reminder, stop: Boolean = true) {
         Timber.d("editReminder: $stop, $reminder")
-        stateViewModel.reminder = reminder.copy()
+        stateViewModel.reminder = reminder
         if (stop) {
             viewModel.pauseReminder(reminder)
-            stateViewModel.original = reminder.copy()
+            stateViewModel.original = reminder
             stateViewModel.isPaused = true
         }
         else {

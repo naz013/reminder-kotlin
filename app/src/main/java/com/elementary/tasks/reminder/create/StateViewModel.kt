@@ -46,8 +46,12 @@ class StateViewModel : ViewModel(), LifecycleObserver {
     var isSaving: Boolean = false
 
     init {
+        setDateTime()
+    }
+
+    private fun setDateTime(millis: Long = System.currentTimeMillis()) {
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.timeInMillis = millis
         day = calendar.get(Calendar.DAY_OF_MONTH)
         month = calendar.get(Calendar.MONTH)
         year = calendar.get(Calendar.YEAR)

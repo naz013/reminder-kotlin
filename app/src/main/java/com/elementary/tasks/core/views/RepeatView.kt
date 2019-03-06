@@ -37,7 +37,6 @@ import timber.log.Timber
 class RepeatView : LinearLayout, TextWatcher {
 
     private lateinit var binding: RepeatViewBinding
-    private var mRepeatListener: OnRepeatListener? = null
     var onRepeatChangeListener: OnRepeatChangeListener? = null
     private var mImm: InputMethodManager? = null
 
@@ -187,10 +186,7 @@ class RepeatView : LinearLayout, TextWatcher {
     private fun setState(state: Int) {
         if (mState == state) return
         this.mState = state
-    }
-
-    fun setListener(listener: OnRepeatListener?) {
-        this.mRepeatListener = listener
+        onRepeatChangeListener?.onChanged(repeat)
     }
 
     private fun updateEditField() {
@@ -227,7 +223,6 @@ class RepeatView : LinearLayout, TextWatcher {
         } catch (e: NumberFormatException) {
             setDefaultField()
         }
-        mRepeatListener?.onProgress(mRepeatValue)
         onRepeatChangeListener?.onChanged(repeat)
     }
 
@@ -238,10 +233,6 @@ class RepeatView : LinearLayout, TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable) {
-    }
-
-    interface OnRepeatListener {
-        fun onProgress(progress: Int)
     }
 
     interface OnRepeatChangeListener {
