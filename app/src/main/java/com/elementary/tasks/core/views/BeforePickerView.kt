@@ -179,10 +179,10 @@ class BeforePickerView : LinearLayout, TextWatcher, AdapterView.OnItemSelectedLi
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         try {
             mRepeatValue = Integer.parseInt(s.toString())
-            onBeforeChangedListener?.onChanged(beforeValue)
         } catch (e: NumberFormatException) {
             binding.beforeValueView.setText("0")
         }
+        onBeforeChangedListener?.onChanged(beforeValue)
     }
 
     override fun afterTextChanged(s: Editable) {
