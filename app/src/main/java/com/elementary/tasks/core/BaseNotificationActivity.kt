@@ -139,6 +139,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
 
     protected fun init() {
         setUpScreenOptions()
+        soundStackHolder.initParams()
         soundStackHolder.setMaxVolume(maxVolume)
     }
 
