@@ -152,8 +152,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 val item = eventsItem.item as Birthday
                 val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), item.date)
                 if (dateItem != null) {
-                    val calendar = dateItem.calendar
-                    time1 = calendar.timeInMillis
+                    time1 = dateItem.millis
                 }
             } else if (eventsItem.item is Reminder) {
                 val reminder = eventsItem.item as Reminder
@@ -163,8 +162,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 val item = o2.item as Birthday
                 val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), item.date)
                 if (dateItem != null) {
-                    val calendar = dateItem.calendar
-                    time2 = calendar.timeInMillis
+                    time2 = dateItem.millis
                 }
             } else if (o2.item is Reminder) {
                 val reminder = o2.item as Reminder

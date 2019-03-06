@@ -198,6 +198,18 @@ object TimeCount {
         return context.getString(res)
     }
 
+    fun getDiffDays(eventTime: Long, base: Long = System.currentTimeMillis()): Long {
+        val difference = eventTime - base
+        return if (difference >= 0) {
+            difference / DAY
+        } else {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = eventTime
+            calendar.add(Calendar.YEAR, 1)
+            getDiffDays(calendar.timeInMillis, base)
+        }
+    }
+
     fun getNextWeekdayTime(startTime: Long, weekdays: List<Int>, delay: Long): Long {
         val cc = Calendar.getInstance()
         cc.timeInMillis = startTime

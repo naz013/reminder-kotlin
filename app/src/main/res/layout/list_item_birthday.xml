@@ -50,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:maxLines="2"
+                    android:maxLines="3"
                     android:textAppearance="?textAppearanceBody2"
                     tools:text="Date" />
 

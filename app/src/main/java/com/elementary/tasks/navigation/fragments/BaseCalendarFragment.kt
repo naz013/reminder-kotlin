@@ -129,7 +129,7 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
                     val item = eventsItem.model as Birthday
                     val dateItem = TimeUtil.getFutureBirthdayDate(bTime, item.date)
                     if (dateItem != null) {
-                        time1 = dateItem.calendar.timeInMillis
+                        time1 = dateItem.millis
                     }
                 } else if (eventsItem.model is Reminder) {
                     val reminder = eventsItem.model as Reminder
@@ -139,7 +139,7 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
                     val item = t1.model as Birthday
                     val dateItem = TimeUtil.getFutureBirthdayDate(bTime, item.date)
                     if (dateItem != null) {
-                        time2 = dateItem.calendar.timeInMillis
+                        time2 = dateItem.millis
                     }
                 } else if (t1.model is Reminder) {
                     val reminder = t1.model as Reminder
