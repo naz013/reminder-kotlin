@@ -695,4 +695,5 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services not found, some functionality is disabled!</string>
     <string name="none">None</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Enable data backup to keep your reminders in safe</string>
+    <string name="x_weeks">%s weeks</string>
 </resources>

@@ -695,5 +695,6 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">未找到Google Play服务，某些功能已停用！</string>
     <string name="none">没有</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">启用数据备份以确保您的提醒安全</string>
+    <string name="x_weeks">%s 周</string>
 
 </resources>
