@@ -44,20 +44,23 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
             return null
         }
         val startTime = binding.dateView.dateTime
-        if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
-            return null
-        }
-        reminder.subject = subjectString
-        reminder.target = email
+        Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
 
-        reminder.type = Reminder.BY_DATE_EMAIL
-        reminder.startTime = reminder.eventTime
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-        if (!TimeCount.isCurrent(reminder.eventTime)) {
+        if (!TimeCount.isCurrent(startTime)) {
             iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
+
+        if (!validBefore(startTime, reminder)) {
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            return null
+        }
+
+        reminder.subject = subjectString
+        reminder.target = email
+        reminder.type = Reminder.BY_DATE_EMAIL
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+        reminder.startTime = reminder.eventTime
         return reminder
     }
 
