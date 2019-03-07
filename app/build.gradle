@@ -10,8 +10,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 230
-        versionName '7.0.18'
+        versionCode 231
+        versionName '7.0.19'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 201
+            versionCode 202
         }
     }
     packagingOptions {
@@ -154,7 +154,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
