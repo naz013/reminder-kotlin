@@ -695,5 +695,6 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">Сервисы Google Play не найдены, некоторые функции отключены!</string>
     <string name="none">Нет</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Включите резервное копирование данных, чтобы сохранить ваши напоминания в безопасности</string>
+    <string name="x_weeks">%s недель</string>
 
 </resources>

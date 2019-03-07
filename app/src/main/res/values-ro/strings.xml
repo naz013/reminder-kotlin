@@ -695,5 +695,6 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">Serviciile Google Play nu au fost găsite, unele funcții sunt dezactivate!</string>
     <string name="none">Nici unul</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Activați backupul de date pentru a vă menține mementourile în siguranță</string>
+    <string name="x_weeks">%s săptămâni</string>
 
 </resources>

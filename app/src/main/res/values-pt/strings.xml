@@ -695,5 +695,6 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services não encontrado, algumas funcionalidades estão desativadas!</string>
     <string name="none">Nenhum</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Ative o backup de dados para manter seus lembretes em segurança</string>
+    <string name="x_weeks">%s semanas</string>
 
 </resources>

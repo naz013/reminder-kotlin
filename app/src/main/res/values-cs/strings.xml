@@ -695,5 +695,6 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">Služby Google Play nebyly nalezeny, některé funkce jsou zakázány!</string>
     <string name="none">Žádný</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Aktivujte zálohování dat, chcete-li, aby vaše připomenutí byla v bezpečí</string>
+    <string name="x_weeks">%s týdnů</string>
 
 </resources>

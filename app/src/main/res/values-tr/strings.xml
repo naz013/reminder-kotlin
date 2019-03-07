@@ -695,5 +695,6 @@
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Servisleri bulunamadı, bazı işlevler devre dışı!</string>
     <string name="none">Yok</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Hatırlatıcılarınızı güvende tutmak için veri yedeklemeyi etkinleştirin</string>
+    <string name="x_weeks">%s hafta</string>
 
 </resources>
