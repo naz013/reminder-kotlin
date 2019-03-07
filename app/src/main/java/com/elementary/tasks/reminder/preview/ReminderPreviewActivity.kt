@@ -13,7 +13,6 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -211,8 +210,8 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     }
 
     private fun showMapData(reminder: Reminder) {
-        binding.mapContainer.visibility = View.VISIBLE
-        binding.location.visibility = View.VISIBLE
+        binding.mapContainer.show()
+        binding.location.show()
 
         var places = ""
         reminder.places.forEach {
@@ -251,14 +250,14 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         if (Reminder.isGpsType(reminder.type)) {
             initMap()
         } else {
-            binding.locationView.visibility = View.GONE
-            binding.mapContainer.visibility = View.GONE
+            binding.locationView.hide()
+            binding.mapContainer.hide()
         }
         if (reminder.shoppings.isNotEmpty()) {
-            binding.todoList.visibility = View.VISIBLE
+            binding.todoList.show()
             loadData(reminder)
         } else {
-            binding.todoList.visibility = View.GONE
+            binding.todoList.hide()
         }
         if (reminder.isActive && !reminder.isRemoved) {
             when {
@@ -266,49 +265,48 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                     if (prefs.isTelephonyAllowed) {
                         binding.fab.setIconResource(R.drawable.ic_twotone_send_24px)
                         binding.fab.text = getString(R.string.send_sms)
-                        binding.fab.visibility = View.VISIBLE
+                        binding.fab.show()
                     } else {
-                        binding.fab.visibility = View.GONE
+                        binding.fab.hide()
                     }
                 }
                 Reminder.isKind(reminder.type, Reminder.Kind.CALL) -> {
                     if (prefs.isTelephonyAllowed) {
                         binding.fab.setIconResource(R.drawable.ic_twotone_call_24px)
                         binding.fab.text = getString(R.string.make_call)
-                        binding.fab.visibility = View.VISIBLE
+                        binding.fab.show()
                     } else {
-                        binding.fab.visibility = View.GONE
+                        binding.fab.hide()
                     }
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_APP) -> {
                     binding.fab.setIconResource(R.drawable.ic_twotone_open_in_new_24px)
                     binding.fab.text = getString(R.string.open_app)
-                    binding.fab.visibility = View.VISIBLE
+                    binding.fab.show()
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK) -> {
                     binding.fab.setIconResource(R.drawable.ic_twotone_open_in_browser_24px)
                     binding.fab.text = getString(R.string.open_link)
-                    binding.fab.visibility = View.VISIBLE
+                    binding.fab.show()
                 }
                 Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL) -> {
                     binding.fab.setIconResource(R.drawable.ic_twotone_local_post_office_24px)
                     binding.fab.text = getString(R.string.send)
-                    binding.fab.visibility = View.VISIBLE
+                    binding.fab.show()
                 }
-                else -> binding.fab.visibility = View.GONE
+                else -> binding.fab.hide()
             }
         } else {
-            binding.fab.visibility = View.GONE
+            binding.fab.hide()
         }
     }
 
     private fun showBefore(reminder: Reminder) {
-        val beforeStr = IntervalUtil.getInterval(this, reminder.remindBefore)
-        if (beforeStr.isEmpty() || beforeStr == "0") {
-            binding.beforeView.visibility = View.GONE
+        if (reminder.remindBefore == 0L) {
+            binding.beforeView.hide()
         } else {
-            binding.beforeView.visibility = View.VISIBLE
-            binding.before.text = beforeStr
+            binding.beforeView.show()
+            binding.before.text = IntervalUtil.getBeforeTime(this, reminder.remindBefore)
         }
     }
 
@@ -337,7 +335,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     private fun showDueAndRepeat(reminder: Reminder) {
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
-            binding.timeView.visibility = View.VISIBLE
+            binding.timeView.show()
             binding.time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormat, prefs.appLanguage)
             when {
                 Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> binding.repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
@@ -345,10 +343,10 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                 Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeat.text = getString(R.string.yearly)
                 else -> binding.repeat.text = IntervalUtil.getInterval(this, reminder.repeatInterval)
             }
-            binding.repeatView.visibility = View.VISIBLE
+            binding.repeatView.show()
         } else {
-            binding.timeView.visibility = View.GONE
-            binding.repeatView.visibility = View.GONE
+            binding.timeView.hide()
+            binding.repeatView.hide()
         }
     }
 
@@ -356,10 +354,10 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         val numberStr = reminder.target
         if (!TextUtils.isEmpty(numberStr)) {
             binding.number.text = numberStr
-            binding.numberView.visibility = View.VISIBLE
+            binding.numberView.show()
         } else {
-            binding.number.visibility = View.GONE
-            binding.numberView.visibility = View.GONE
+            binding.number.hide()
+            binding.numberView.hide()
         }
     }
 
@@ -406,12 +404,12 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
 
         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
             Timber.d("onBitmapFailed: $e")
-            binding.attachmentsView.visibility = View.GONE
+            binding.attachmentsView.hide()
         }
 
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
             Timber.d("onBitmapLoaded: ${bitmap != null}")
-            binding.attachmentsView.visibility = View.VISIBLE
+            binding.attachmentsView.show()
             binding.attachmentImage.setImageBitmap(bitmap)
             binding.attachmentsView.setOnClickListener {
                 reminder?.let {
@@ -429,7 +427,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         Timber.d("showAttachment: ${reminder.attachmentFile}")
         if (reminder.attachmentFile != "") {
             binding.attachment.text = reminder.attachmentFile
-            binding.attachmentView.visibility = View.VISIBLE
+            binding.attachmentView.show()
             val file = File(reminder.attachmentFile)
             if (file.exists()) {
                 Picasso.get().load(file).into(imageTarget)
@@ -438,8 +436,8 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                 Picasso.get().load(uri).into(imageTarget)
             }
         } else {
-            binding.attachmentView.visibility = View.GONE
-            binding.attachmentsView.visibility = View.GONE
+            binding.attachmentView.hide()
+            binding.attachmentsView.hide()
         }
     }
 
@@ -551,9 +549,9 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     private fun initViews() {
         binding.switchWrapper.setOnClickListener { switchClick() }
         binding.fab.setOnClickListener { fabClick() }
-        binding.mapContainer.visibility = View.GONE
-        binding.attachmentsView.visibility = View.GONE
-        binding.fab.visibility = View.GONE
+        binding.mapContainer.hide()
+        binding.attachmentsView.hide()
+        binding.fab.hide()
     }
 
     private fun fabClick() {

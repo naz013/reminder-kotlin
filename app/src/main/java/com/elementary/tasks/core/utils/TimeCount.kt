@@ -34,6 +34,7 @@ object TimeCount {
     const val HOUR: Long = MINUTE * 60
     private const val HALF_DAY: Long = HOUR * 12
     const val DAY: Long = HALF_DAY * 2
+    const val WEEK: Long = DAY * 7
 
     fun isCurrent(eventTime: String?): Boolean {
         return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis()

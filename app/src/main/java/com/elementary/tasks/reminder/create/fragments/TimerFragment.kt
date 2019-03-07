@@ -75,16 +75,22 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
         reminder.type = type
         reminder.after = after
         val startTime = TimeCount.generateNextTimer(reminder, true)
-        reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-        if (!TimeCount.isCurrent(reminder.eventTime)) {
+        Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
+
+        if (!validBefore(startTime, reminder)) {
+            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            return null
+        }
+
+        if (!TimeCount.isCurrent(startTime - reminder.remindBefore)) {
             iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
 
-        viewModel.saveTime(after)
+        reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
 
+        viewModel.saveTime(after)
         return reminder
     }
 

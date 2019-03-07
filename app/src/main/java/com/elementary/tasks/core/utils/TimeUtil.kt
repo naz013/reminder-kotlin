@@ -354,6 +354,10 @@ object TimeUtil {
         return calendar.timeInMillis
     }
 
+    fun logTime(date: Long = System.currentTimeMillis()): String {
+        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date(date))
+    }
+
     fun getFullDateTime(date: Long, is24: Boolean, lang: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date

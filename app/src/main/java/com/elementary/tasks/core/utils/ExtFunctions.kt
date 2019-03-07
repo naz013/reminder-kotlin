@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
-import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View

@@ -209,8 +209,8 @@ class EventJobService : Job(), KoinComponent {
         fun enableReminder(reminder: Reminder?) {
             if (reminder == null) return
             var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            Timber.d("enableReminder: ${TimeUtil.getFullDateTime(due, true)}")
-            Timber.d("enableReminder: noe -> ${TimeUtil.getFullDateTime(System.currentTimeMillis(), true)}")
+            Timber.d("enableReminder: ${TimeUtil.logTime(due)}")
+            Timber.d("enableReminder: noe -> ${TimeUtil.logTime()}")
             if (due == 0L) {
                 return
             }
@@ -224,12 +224,12 @@ class EventJobService : Job(), KoinComponent {
                 calendar.set(Calendar.MILLISECOND, 0)
                 due = calendar.timeInMillis
             }
-            val mills = due - System.currentTimeMillis()
-            if (mills <= 0) {
-                return
+            var millis = due - System.currentTimeMillis()
+            if (millis < 0) {
+               millis = 100L
             }
             JobRequest.Builder(reminder.uuId)
-                    .setExact(mills)
+                    .setExact(millis)
                     .setRequiresCharging(false)
                     .setRequiresDeviceIdle(false)
                     .setRequiresBatteryNotLow(false)

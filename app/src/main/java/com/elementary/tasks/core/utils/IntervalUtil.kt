@@ -55,9 +55,29 @@ object IntervalUtil {
         return false
     }
 
-    fun getInterval(mContext: Context, mills: Long): String {
-        var code = mills
-        val tmp = mills / TimeCount.MINUTE
+    fun getBeforeTime(mContext: Context, millis: Long): String {
+        if (millis / TimeCount.DAY > 0L) {
+            return if (millis / TimeCount.WEEK > 0L) {
+                String.format(mContext.getString(R.string.x_weeks), (millis / TimeCount.WEEK).toString())
+            } else {
+                String.format(mContext.getString(R.string.x_days), (millis / TimeCount.DAY).toString())
+            }
+        } else {
+            return if (millis / TimeCount.HOUR > 0L) {
+                String.format(mContext.getString(R.string.x_hours), (millis / TimeCount.HOUR).toString())
+            } else {
+                if (millis / TimeCount.MINUTE > 0L) {
+                    String.format(mContext.getString(R.string.x_minutes), (millis / TimeCount.MINUTE).toString())
+                } else {
+                    String.format(mContext.getString(R.string.x_seconds), (millis / TimeCount.SECOND).toString())
+                }
+            }
+        }
+    }
+
+    fun getInterval(mContext: Context, millis: Long): String {
+        var code = millis
+        val tmp = millis / TimeCount.MINUTE
         val interval: String
         when {
             tmp > 1000 -> {
