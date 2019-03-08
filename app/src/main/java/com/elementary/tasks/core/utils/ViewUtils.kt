@@ -88,7 +88,8 @@ object ViewUtils {
         }
     }
 
-    fun isHorizontal(context: Context): Boolean {
+    fun isHorizontal(context: Context?): Boolean {
+        if (context == null) return false
         return context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 

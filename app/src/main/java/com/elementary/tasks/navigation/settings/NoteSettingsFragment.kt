@@ -100,103 +100,109 @@ class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>(
     }
 
     private fun showTextSizePickerDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.text_size)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 18
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = String.format(Locale.getDefault(), "%d pt", progress + 12)
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.text_size)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 18
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = String.format(Locale.getDefault(), "%d pt", progress + 12)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val textSize = prefs.noteTextSize
+            b.seekBar.progress = textSize
+            b.titleView.text = String.format(Locale.getDefault(), "%d pt", textSize + 12)
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+                prefs.noteTextSize = b.seekBar.progress
+                showTextSize()
+                dialogInterface.dismiss()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val textSize = prefs.noteTextSize
-        b.seekBar.progress = textSize
-        b.titleView.text = String.format(Locale.getDefault(), "%d pt", textSize + 12)
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            prefs.noteTextSize = b.seekBar.progress
-            showTextSize()
-            dialogInterface.dismiss()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showTimePickerDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.time)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 120
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                        progress.toString())
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.time)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 120
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                            progress.toString())
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val time = prefs.noteReminderTime
+            b.seekBar.progress = time
+            b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                    time.toString())
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+                prefs.noteReminderTime = b.seekBar.progress
+                showNoteTime()
+                dialogInterface.dismiss()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val time = prefs.noteReminderTime
-        b.seekBar.progress = time
-        b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                time.toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            prefs.noteReminderTime = b.seekBar.progress
-            showNoteTime()
-            dialogInterface.dismiss()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showOpacityPickerDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.color_saturation)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 100
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = String.format(Locale.getDefault(), "%d%%", progress)
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.color_saturation)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 100
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = String.format(Locale.getDefault(), "%d%%", progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val opacity = prefs.noteColorOpacity
+            b.seekBar.progress = opacity
+            b.titleView.text = String.format(Locale.getDefault(), "%d%%", opacity)
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+                prefs.noteColorOpacity = b.seekBar.progress
+                showNoteColorSaturation()
+                dialogInterface.dismiss()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val opacity = prefs.noteColorOpacity
-        b.seekBar.progress = opacity
-        b.titleView.text = String.format(Locale.getDefault(), "%d%%", opacity)
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            prefs.noteColorOpacity = b.seekBar.progress
-            showNoteColorSaturation()
-            dialogInterface.dismiss()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 }
