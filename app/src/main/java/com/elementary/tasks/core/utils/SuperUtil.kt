@@ -125,8 +125,9 @@ object SuperUtil {
         unlockOn(activity, window)
     }
 
-    fun hasVolumePermission(context: Context): Boolean {
+    fun hasVolumePermission(context: Context?): Boolean {
         if (Module.isNougat) {
+            if (context == null) return false
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
             return notificationManager != null && notificationManager.isNotificationPolicyAccessGranted
         }

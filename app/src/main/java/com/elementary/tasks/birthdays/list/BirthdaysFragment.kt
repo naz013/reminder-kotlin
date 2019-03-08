@@ -82,27 +82,38 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
         inflater.inflate(R.menu.fragment_trash, menu)
         menu.findItem(R.id.action_delete_all)?.isVisible = false
 
-        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_twotone_search_24px)
-        if (isDark) {
-            val white = ContextCompat.getColor(context!!, R.color.whitePrimary)
-            DrawableCompat.setTint(searchIcon!!, white)
-        } else {
-            val black = ContextCompat.getColor(context!!, R.color.pureBlack)
-            DrawableCompat.setTint(searchIcon!!, black)
+        withContext {
+            val searchIcon = ContextCompat.getDrawable(it, R.drawable.ic_twotone_search_24px)
+            if (searchIcon != null) {
+                if (isDark) {
+                    val white = ContextCompat.getColor(it, R.color.whitePrimary)
+                    DrawableCompat.setTint(searchIcon, white)
+                } else {
+                    val black = ContextCompat.getColor(it, R.color.pureBlack)
+                    DrawableCompat.setTint(searchIcon, black)
+                }
+            }
+            menu.getItem(0)?.icon = searchIcon
         }
-        menu.getItem(0)?.icon = searchIcon
 
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        mSearchMenu?.let { searchMenu ->
+            mSearchView = searchMenu.actionView as SearchView?
+            val activity = activity
+            mSearchView?.let { searchView ->
+                if (searchManager != null && activity != null) {
+                    searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
+                }
+                searchView.setOnQueryTextListener(queryTextListener)
+                searchView.setOnCloseListener(mSearchCloseListener)
+            }
+        }
         if (mSearchMenu != null) {
-            mSearchView = mSearchMenu?.actionView as SearchView?
+
         }
         if (mSearchView != null) {
-            if (searchManager != null) {
-                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-            }
-            mSearchView?.setOnQueryTextListener(queryTextListener)
-            mSearchView?.setOnCloseListener(mSearchCloseListener)
+
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -117,7 +128,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     }
 
     private fun addPlace() {
-        AddBirthdayActivity.openLogged(context!!)
+        withContext { AddBirthdayActivity.openLogged(it) }
     }
 
     private fun initViewModel() {
@@ -132,7 +143,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     override fun getTitle(): String = getString(R.string.birthdays)
 
     private fun initList() {
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context)) {
             binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)

@@ -194,13 +194,8 @@ class Language(private val prefs: Prefs){
         return context.resources.getStringArray(R.array.app_languages)[prefs.appLanguage]
     }
 
-    fun getScreenLocaleNames(context: Context): List<String> {
-        val names = ArrayList<String>()
-        Collections.addAll(names, *context.resources.getStringArray(R.array.app_languages))
-        return names
-    }
-
-    fun getLocaleNames(context: Context): List<String> {
+    fun getLocaleNames(context: Context?): List<String> {
+        if (context == null) return emptyList()
         val names = ArrayList<String>()
         names.add(context.getString(R.string.english))
         names.add(context.getString(R.string.french))

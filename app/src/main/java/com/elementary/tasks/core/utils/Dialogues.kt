@@ -16,6 +16,7 @@ import com.elementary.tasks.databinding.DialogBottomSeekAndTitleBinding
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.ViewColorSliderBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -160,9 +161,13 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         return AlertDialog.Builder(context, themeUtil.dialogStyle)
     }
 
-    fun getNullableDialog(context: Context?): AlertDialog.Builder? {
+    fun getMaterialDialog(context: Context): MaterialAlertDialogBuilder {
+        return MaterialAlertDialogBuilder(context, themeUtil.dialogStyle)
+    }
+
+    fun getNullableDialog(context: Context?): MaterialAlertDialogBuilder? {
         return if (context != null) {
-            AlertDialog.Builder(context, themeUtil.dialogStyle)
+            getMaterialDialog(context)
         } else null
     }
 

@@ -36,8 +36,6 @@ import java.util.*
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
 
     private var mItemSelect: Int = 0
-    private val localeAdapter: ArrayAdapter<String>
-        get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, language.getLocaleNames(context!!))
 
     override fun layoutRes(): Int = R.layout.fragment_settings_notification
 
@@ -88,23 +86,23 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showPriorityDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.priority))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, unlockList())
-        mItemSelect = prefs.unlockPriority
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.priority))
+            mItemSelect = prefs.unlockPriority
+            builder.setSingleChoiceItems(unlockList(), mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.unlockPriority = mItemSelect
+                showPriority()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.unlockPriority = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showPriority() }
-        dialog.show()
     }
 
     private fun initSmartFold() {
@@ -141,38 +139,40 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showRepeatTimeDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.interval)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 60
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                        progress.toString())
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.interval)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 60
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                            progress.toString())
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val repeatTime = prefs.notificationRepeatTime
+            b.seekBar.progress = repeatTime
+            b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                    repeatTime.toString())
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ ->
+                prefs.notificationRepeatTime = b.seekBar.progress
+                showRepeatTime()
+                initRepeatTimePrefs()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val repeatTime = prefs.notificationRepeatTime
-        b.seekBar.progress = repeatTime
-        b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                repeatTime.toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            prefs.notificationRepeatTime = b.seekBar.progress
-            showRepeatTime()
-            initRepeatTimePrefs()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun initRepeatTimePrefs() {
@@ -199,10 +199,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showLedColorDialog() {
-        dialogues.getNullableDialog(context)?.let { builder ->
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
             builder.setTitle(getString(R.string.led_color))
-            val colors = LED.getAllNames(context!!)
-            val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, colors)
+            val colors = LED.getAllNames(it)
+            val adapter = ArrayAdapter(it, android.R.layout.simple_list_item_single_choice, colors)
             mItemSelect = prefs.ledColor
             builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
@@ -213,15 +214,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
-            val dialog = builder.create()
-            dialog.setOnCancelListener { mItemSelect = 0 }
-            dialog.setOnDismissListener { mItemSelect = 0 }
-            dialog.show()
+            builder.create().show()
         }
     }
 
     private fun showLedColor() {
-        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(context!!, prefs.ledColor))
+        withContext {
+            binding.chooseLedColorPrefs.setDetailText(LED.getTitle(it, prefs.ledColor))
+        }
     }
 
     private fun initLedColorPrefs() {
@@ -295,12 +295,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     private fun changeAutoCallPrefs() {
         val isChecked = binding.autoCallPrefs.isChecked
         if (!isChecked) {
-            if (Permissions.ensurePermissions(activity!!, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
-                binding.autoCallPrefs.isChecked = !isChecked
-                prefs.isAutoCallEnabled = !isChecked
-            } else {
-                binding.autoCallPrefs.isChecked = isChecked
-                prefs.isAutoCallEnabled = isChecked
+            withActivity {
+                if (Permissions.ensurePermissions(it, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
+                    binding.autoCallPrefs.isChecked = !isChecked
+                    prefs.isAutoCallEnabled = !isChecked
+                } else {
+                    binding.autoCallPrefs.isChecked = isChecked
+                    prefs.isAutoCallEnabled = isChecked
+                }
             }
         } else {
             binding.autoCallPrefs.isChecked = !isChecked
@@ -341,7 +343,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setTitle(getString(R.string.language))
             val locale = prefs.ttsLocale
             mItemSelect = language.getLocalePosition(locale)
-            builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
+            val names = language.getLocaleNames(context).toTypedArray()
+            builder.setSingleChoiceItems(names, mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 saveTtsLocalePrefs()
                 dialog.dismiss()
@@ -349,17 +352,16 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
-            val dialog = builder.create()
-            dialog.setOnCancelListener { mItemSelect = 0 }
-            dialog.setOnDismissListener { mItemSelect = 0 }
-            dialog.show()
+            builder.create().show()
         }
     }
 
     private fun showTtsLocale() {
         val locale = prefs.ttsLocale
         val i = language.getLocalePosition(locale)
-        binding.localePrefs.setDetailText(language.getLocaleNames(context!!)[i])
+        withContext {
+            binding.localePrefs.setDetailText(language.getLocaleNames(it)[i])
+        }
     }
 
     private fun saveTtsLocalePrefs() {
@@ -385,10 +387,12 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun changeIncreasePrefs() {
-        if (SuperUtil.hasVolumePermission(context!!)) {
-            changeIncrease()
-        } else {
-            openNotificationsSettings()
+        withContext {
+            if (SuperUtil.hasVolumePermission(it)) {
+                changeIncrease()
+            } else {
+                openNotificationsSettings()
+            }
         }
     }
 
@@ -411,7 +415,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showLoudnessDialog() {
-        if (!SuperUtil.hasVolumePermission(context!!)) {
+        if (!SuperUtil.hasVolumePermission(context)) {
             openNotificationsSettings()
             return
         }
@@ -462,10 +466,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.sound_stream))
             val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
-            val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
             val stream = prefs.soundStream
             mItemSelect = stream - 3
-            builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+            builder.setSingleChoiceItems(types, mItemSelect) { _, which ->
                 if (which != -1) {
                     mItemSelect = which
                 }
@@ -475,10 +478,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 showStream()
                 dialog.dismiss()
             }
-            val dialog = builder.create()
-            dialog.setOnCancelListener { mItemSelect = 0 }
-            dialog.setOnDismissListener { mItemSelect = 0 }
-            dialog.show()
+            builder.create().show()
         }
     }
 
@@ -488,26 +488,24 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showReminderTypeDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(R.string.notification_type)
-        val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
-        mItemSelect = prefs.reminderType
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            if (which != -1) {
-                mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(R.string.notification_type)
+            val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
+            mItemSelect = prefs.reminderType
+            builder.setSingleChoiceItems(types, mItemSelect) { _, which ->
+                if (which != -1) {
+                    mItemSelect = which
+                }
             }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.reminderType = mItemSelect
+                showReminderType()
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.reminderType = mItemSelect
-            showReminderType()
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun showReminderType() {
@@ -527,7 +525,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun changeSystemLoudnessPrefs() {
-        if (SuperUtil.hasVolumePermission(context!!)) {
+        if (SuperUtil.hasVolumePermission(context)) {
             val isChecked = binding.systemPrefs.isChecked
             binding.systemPrefs.isChecked = !isChecked
             prefs.isSystemLoudnessEnabled = !isChecked
@@ -562,31 +560,30 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showSoundDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.melody))
-        val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
-        mItemSelect = if (prefs.melodyFile == "" || prefs.melodyFile.matches(Constants.DEFAULT.toRegex())) {
-            0
-        } else {
-            1
-        }
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            if (mItemSelect == 0) {
-                prefs.melodyFile = Constants.DEFAULT
-                showMelody()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.melody))
+            val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
+            val adapter = ArrayAdapter(it, android.R.layout.simple_list_item_single_choice, types)
+            mItemSelect = if (prefs.melodyFile == "" || prefs.melodyFile.matches(Constants.DEFAULT.toRegex())) {
+                0
             } else {
-                dialog.dismiss()
-                startActivityForResult(Intent(context, FileExplorerActivity::class.java), MELODY_CODE)
+                1
             }
-            dialog.dismiss()
+            builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                if (mItemSelect == 0) {
+                    prefs.melodyFile = Constants.DEFAULT
+                    showMelody()
+                } else {
+                    dialog.dismiss()
+                    startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
+                }
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun changeInfiniteSoundPrefs() {
@@ -601,13 +598,15 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun changeSoundPrefs() {
-        val isChecked = binding.soundOptionPrefs.isChecked
-        binding.soundOptionPrefs.isChecked = !isChecked
-        prefs.isSoundInSilentModeEnabled = !isChecked
-        if (!SuperUtil.checkNotificationPermission(activity!!)) {
-            SuperUtil.askNotificationPermission(activity!!, dialogues)
-        } else {
-            Permissions.ensurePermissions(activity!!, PERM_BT, Permissions.BLUETOOTH)
+        withActivity {
+            val isChecked = binding.soundOptionPrefs.isChecked
+            binding.soundOptionPrefs.isChecked = !isChecked
+            prefs.isSoundInSilentModeEnabled = !isChecked
+            if (!SuperUtil.checkNotificationPermission(it)) {
+                SuperUtil.askNotificationPermission(it, dialogues)
+            } else {
+                Permissions.ensurePermissions(it, PERM_BT, Permissions.BLUETOOTH)
+            }
         }
     }
 
@@ -685,34 +684,33 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showImageDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(R.string.background)
-        val types = arrayOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
-        mItemSelect = when (prefs.screenImage) {
-            Constants.NONE -> 0
-            Constants.DEFAULT -> 1
-            else -> 2
-        }
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            if (which != -1) {
-                mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(R.string.background)
+            val types = arrayOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))
+            val adapter = ArrayAdapter(it, android.R.layout.simple_list_item_single_choice, types)
+            mItemSelect = when (prefs.screenImage) {
+                Constants.NONE -> 0
+                Constants.DEFAULT -> 1
+                else -> 2
             }
-        }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            when (mItemSelect) {
-                0 -> prefs.screenImage = Constants.NONE
-                1 -> prefs.screenImage = Constants.DEFAULT
-                2 -> openImagePicker()
+            builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
+                if (which != -1) {
+                    mItemSelect = which
+                }
             }
-            showImage()
-            dialog.dismiss()
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                when (mItemSelect) {
+                    0 -> prefs.screenImage = Constants.NONE
+                    1 -> prefs.screenImage = Constants.DEFAULT
+                    2 -> openImagePicker()
+                }
+                showImage()
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun showImage() {
@@ -746,7 +744,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 showMelody()
             }
             Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data!!.getStringExtra(Constants.FILE_PICKED)
+                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
                 if (filePath != null) {
                     val file = File(filePath)
                     if (file.exists()) {
@@ -771,10 +769,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun openImagePicker() {
-        if (Permissions.ensurePermissions(activity!!, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
-            startActivityForResult(
-                    Intent(context, FileExplorerActivity::class.java).putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO),
-                    Constants.ACTION_REQUEST_GALLERY)
+        withActivity {
+            if (Permissions.ensurePermissions(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
+                startActivityForResult(Intent(it, FileExplorerActivity::class.java).putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO),
+                        Constants.ACTION_REQUEST_GALLERY)
+            }
         }
     }
 
