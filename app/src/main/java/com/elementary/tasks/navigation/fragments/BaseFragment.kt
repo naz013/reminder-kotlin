@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation.fragments
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -65,6 +66,18 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     protected fun moveBack() {
         activity?.onBackPressed()
+    }
+
+    protected fun withActivity(action: (Activity) -> Unit) {
+        activity?.let {
+            action.invoke(it)
+        }
+    }
+
+    protected fun withContext(action: (Context) -> Unit) {
+        context?.let {
+            action.invoke(it)
+        }
     }
 
     open fun canGoBack(): Boolean = true

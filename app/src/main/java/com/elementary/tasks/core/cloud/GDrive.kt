@@ -799,46 +799,42 @@ class GDrive private constructor(context: Context) : KoinComponent {
         } while (request.pageToken != null && request.pageToken.length >= 0)
     }
 
-    /**
-     * Delete application folder from GTasks Drive.
-     */
-    @Throws(IOException::class)
     fun clean() {
         val service = driveService ?: return
         if (!isLogged) return
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                service.files().delete(f.id).execute()
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    service.files().delete(f.id).execute()
+                }
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: java.lang.Exception) {
+        }
     }
 
-    /**
-     * Remove all backup files from app folder.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun cleanFolder() {
         val service = driveService ?: return
         if (!isLogged) return
         val request = service.files().list()
                 .setSpaces("appDataFolder")
                 .setFields("nextPageToken, files(id, name)") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                service.files().delete(f.id).execute()
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+        try {
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    service.files().delete(f.id).execute()
+                }
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: java.lang.Exception) {
+        }
     }
 
     data class Metadata (val fileExt: String,
