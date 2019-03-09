@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.voice
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding
@@ -48,7 +47,9 @@ class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>
     }
 
     private fun showLanguage() {
-        binding.languagePrefs.setDetailText(language.getLanguages(context!!)[prefs.voiceLocale])
+        withContext {
+            binding.languagePrefs.setDetailText(language.getLanguages(it)[prefs.voiceLocale])
+        }
     }
 
     private fun initConversationPrefs() {
@@ -65,23 +66,24 @@ class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>
     override fun getTitle(): String = getString(R.string.voice_control)
 
     private fun showLanguageDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.language))
-        val locales = language.getLanguages(context!!)
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, locales)
-        mItemSelect = prefs.voiceLocale
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.language))
+            val locales = language.getLanguages(it).toTypedArray()
+            mItemSelect = prefs.voiceLocale
+            builder.setSingleChoiceItems(locales, mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.voiceLocale = mItemSelect
+                showLanguage()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                showLanguage()
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.voiceLocale = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showLanguage() }
-        dialog.show()
     }
 }

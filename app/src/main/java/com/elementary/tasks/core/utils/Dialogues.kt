@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Point
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -94,7 +93,7 @@ class Dialogues(private val themeUtil: ThemeUtil) {
     fun showColorDialog(activity: Activity, current: Int, title: String,
                         colors: IntArray = themeUtil.colorsForSlider(),
                         onDone: (Int) -> Unit) {
-        val builder = getDialog(activity)
+        val builder = getMaterialDialog(activity)
         builder.setTitle(title)
         val bind = ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
         bind.colorSlider.setColors(colors)
@@ -115,7 +114,7 @@ class Dialogues(private val themeUtil: ThemeUtil) {
     }
 
     fun showRadiusDialog(activity: Activity, current: Int, listener: OnValueSelectedListener<Int>) {
-        val builder = getDialog(activity)
+        val builder = getMaterialDialog(activity)
         builder.setTitle(R.string.radius)
         val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(activity))
         b.seekBar.max = MAX_DEF_RADIUS
@@ -157,6 +156,7 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         Dialogues.setFullWidthDialog(dialog, activity)
     }
 
+    @Deprecated("Use #getMaterialDialog")
     fun getDialog(context: Context): AlertDialog.Builder {
         return AlertDialog.Builder(context, themeUtil.dialogStyle)
     }
@@ -197,13 +197,7 @@ class Dialogues(private val themeUtil: ThemeUtil) {
             if (activity == null) return
             val window = dialog.window
             window?.setGravity(Gravity.CENTER)
-            window?.setLayout((getScreenWidth(activity) * .9).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-        }
-
-        private fun getScreenWidth(activity: Activity): Int {
-            val size = Point()
-            activity.windowManager.defaultDisplay.getSize(size)
-            return size.x
+            window?.setLayout((MeasureUtils.dp2px(activity, 380)), ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 }

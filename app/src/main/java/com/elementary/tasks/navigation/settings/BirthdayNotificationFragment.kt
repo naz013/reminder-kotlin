@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
@@ -34,9 +33,6 @@ import java.io.File
 class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthdayNotificationsBinding>() {
 
     private var mItemSelect: Int = 0
-    private val localeAdapter: ArrayAdapter<String>
-        get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice,
-                language.getLocaleNames(context!!))
 
     override fun layoutRes(): Int = R.layout.fragment_settings_birthday_notifications
 
@@ -67,26 +63,25 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
 
     private fun showLedColor() {
-        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(context!!, prefs.birthdayLedColor))
+        withContext {
+            binding.chooseLedColorPrefs.setDetailText(LED.getTitle(it, prefs.birthdayLedColor))
+        }
     }
 
     private fun showLedColorDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.led_color))
-        val colors = LED.getAllNames(context!!)
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, colors)
-        mItemSelect = prefs.birthdayLedColor
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.birthdayLedColor = mItemSelect
-            showLedColor()
-            dialog.dismiss()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.led_color))
+            val colors = LED.getAllNames(it).toTypedArray()
+            mItemSelect = prefs.birthdayLedColor
+            builder.setSingleChoiceItems(colors, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.birthdayLedColor = mItemSelect
+                showLedColor()
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun initLedPrefs() {
@@ -123,32 +118,29 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
 
     private fun showSoundDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.melody))
-        val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, types)
-        mItemSelect = if (prefs.birthdayMelody == "" || prefs.birthdayMelody.matches(Constants.DEFAULT.toRegex())) {
-            0
-        } else {
-            1
-        }
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            if (mItemSelect == 0) {
-                prefs.birthdayMelody = Constants.DEFAULT
-                showMelody()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.melody))
+            val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
+            mItemSelect = if (prefs.birthdayMelody == "" || prefs.birthdayMelody.matches(Constants.DEFAULT.toRegex())) {
+                0
             } else {
-                dialog.dismiss()
-                startActivityForResult(Intent(context, FileExplorerActivity::class.java), MELODY_CODE)
+                1
             }
-            dialog.dismiss()
+            builder.setSingleChoiceItems(types, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                if (mItemSelect == 0) {
+                    prefs.birthdayMelody = Constants.DEFAULT
+                    showMelody()
+                } else {
+                    dialog.dismiss()
+                    startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
+                }
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun initTtsLocalePrefs() {
@@ -161,26 +153,28 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     private fun showTtsLocale() {
         val locale = prefs.birthdayTtsLocale
         val i = language.getLocalePosition(locale)
-        binding.localePrefs.setDetailText(language.getLocaleNames(context!!)[i])
+        withContext {
+            binding.localePrefs.setDetailText(language.getLocaleNames(it)[i])
+        }
     }
 
     private fun showTtsLocaleDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.language))
-        val locale = prefs.birthdayTtsLocale
-        mItemSelect = language.getLocalePosition(locale)
-        builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            saveTtsLocalePrefs()
-            dialog.dismiss()
+        withContext {
+            val names = language.getLocaleNames(it).toTypedArray()
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.language))
+            val locale = prefs.birthdayTtsLocale
+            mItemSelect = language.getLocalePosition(locale)
+            builder.setSingleChoiceItems(names, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                saveTtsLocalePrefs()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun saveTtsLocalePrefs() {
@@ -274,9 +268,10 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     override fun getTitle(): String = getString(R.string.birthday_notification)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data!!.getStringExtra(Constants.FILE_PICKED)
+                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
                 if (filePath != null) {
                     val file = File(filePath)
                     if (file.exists()) {
@@ -289,7 +284,6 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
 
     companion object {
-
         private const val MELODY_CODE = 126
     }
 }

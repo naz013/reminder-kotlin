@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings.reminders
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -60,23 +59,23 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     }
 
     private fun showIgnoreDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.priority))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, ignoreList())
-        mItemSelect = prefs.doNotDisturbIgnore
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.priority))
+            mItemSelect = prefs.doNotDisturbIgnore
+            builder.setSingleChoiceItems(ignoreList(), mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.doNotDisturbIgnore = mItemSelect
+                showIgnore()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.doNotDisturbIgnore = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showIgnore() }
-        dialog.show()
     }
 
     private fun initActionPrefs() {
@@ -90,23 +89,23 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     }
 
     private fun showActionDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.events_that_occured_during))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, actionList())
-        mItemSelect = prefs.doNotDisturbAction
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.events_that_occured_during))
+            mItemSelect = prefs.doNotDisturbAction
+            builder.setSingleChoiceItems(actionList(), mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.doNotDisturbAction = mItemSelect
+                showAction()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.doNotDisturbAction = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showAction() }
-        dialog.show()
     }
 
     private fun initTimesPrefs() {
@@ -134,10 +133,12 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
         val calendar = TimeUtil.getBirthdayCalendar(time)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val min = calendar.get(Calendar.MINUTE)
-        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormat,
-                hour, min, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            callback.invoke(hourOfDay, minute)
-        })
+        withContext {
+            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat,
+                    hour, min, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                callback.invoke(hourOfDay, minute)
+            })
+        }
     }
 
     private fun showToTime() {
@@ -165,23 +166,23 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     }
 
     private fun showPriorityDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.default_priority))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, priorityList())
-        mItemSelect = prefs.defaultPriority
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.default_priority))
+            mItemSelect = prefs.defaultPriority
+            builder.setSingleChoiceItems(priorityList(), mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.defaultPriority = mItemSelect
+                showDefaultPriority()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.defaultPriority = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showDefaultPriority() }
-        dialog.show()
     }
 
     private fun showDefaultPriority() {

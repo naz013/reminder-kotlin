@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
@@ -48,11 +47,13 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
         initMarkerStylePrefs()
         binding.trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }
         binding.notificationOptionPrefs.setOnClickListener { changeNotificationPrefs() }
-        if (Module.hasLocation(context!!)) {
-            binding.placesPrefs.setOnClickListener { openPlacesScreen() }
-            binding.placesPrefs.visibility = View.VISIBLE
-        } else {
-            binding.placesPrefs.visibility = View.GONE
+        withContext {
+            if (Module.hasLocation(it)) {
+                binding.placesPrefs.setOnClickListener { openPlacesScreen() }
+                binding.placesPrefs.visibility = View.VISIBLE
+            } else {
+                binding.placesPrefs.visibility = View.GONE
+            }
         }
         binding.notificationOptionPrefs.isChecked = prefs.isDistanceNotificationEnabled
         initRadiusPrefs()
@@ -79,20 +80,24 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     }
 
     private fun showStyleDialog() {
-        dialogues.showColorDialog(activity!!, prefs.markerStyle,
-                getString(R.string.style_of_marker), themeUtil.colorsForSlider()) {
-            prefs.markerStyle = it
-            showMarkerStyle()
+        withActivity { act ->
+            dialogues.showColorDialog(act, prefs.markerStyle,
+                    getString(R.string.style_of_marker), themeUtil.colorsForSlider()) {
+                prefs.markerStyle = it
+                showMarkerStyle()
+            }
         }
     }
 
     private fun showMarkerStyle() {
-        val pointer = DrawableHelper.withContext(context!!)
-                .withDrawable(R.drawable.ic_twotone_place_24px)
-                .withColor(themeUtil.getNoteLightColor(prefs.markerStyle))
-                .tint()
-                .get()
-        binding.markerStylePrefs.setViewDrawable(pointer)
+        withContext {
+            val pointer = DrawableHelper.withContext(it)
+                    .withDrawable(R.drawable.ic_twotone_place_24px)
+                    .withColor(themeUtil.getNoteLightColor(prefs.markerStyle))
+                    .tint()
+                    .get()
+            binding.markerStylePrefs.setViewDrawable(pointer)
+        }
     }
 
     private fun initMapTypePrefs() {
@@ -119,41 +124,42 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     override fun getTitle(): String = getString(R.string.location)
 
     private fun showTrackerOptionsDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.tracking_settings)
-        val b = DialogTrackingSettingsLayoutBinding.inflate(layoutInflater)
-        val time = prefs.trackTime - 1
-        b.timeBar.progress = time
-        b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), (time + 1).toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            prefs.trackTime = b.timeBar.progress + 1
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.tracking_settings)
+            val b = DialogTrackingSettingsLayoutBinding.inflate(layoutInflater)
+            val time = prefs.trackTime - 1
+            b.timeBar.progress = time
+            b.timeTitle.text = String.format(Locale.getDefault(), getString(R.string.x_seconds), (time + 1).toString())
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ ->
+                prefs.trackTime = b.timeBar.progress + 1
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     private fun showMapTypeDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.map_type))
-        val types = arrayOf(getString(R.string.normal), getString(R.string.satellite), getString(R.string.terrain), getString(R.string.hybrid))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
-        val type = prefs.mapType
-        mItemSelect = getPosition(type)
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ ->
-            prefs.mapType = mItemSelect + 1
-            showMapType()
-            initMapStylePrefs()
-            dialogInterface.dismiss()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.map_type))
+            val types = arrayOf(getString(R.string.normal), getString(R.string.satellite),
+                    getString(R.string.terrain), getString(R.string.hybrid))
+            val type = prefs.mapType
+            mItemSelect = getPosition(type)
+            builder.setSingleChoiceItems(types, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ ->
+                prefs.mapType = mItemSelect + 1
+                showMapType()
+                initMapStylePrefs()
+                dialogInterface.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun getPosition(type: Int): Int {
@@ -178,16 +184,18 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
 
     private fun showRadiusPickerDialog() {
         val radius = prefs.radius
-        dialogues.showRadiusDialog(activity!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
-            override fun onSelected(t: Int) {
-                prefs.radius = t
-                showRadius()
-            }
+        withActivity {
+            dialogues.showRadiusDialog(it, radius, object : Dialogues.OnValueSelectedListener<Int> {
+                override fun onSelected(t: Int) {
+                    prefs.radius = t
+                    showRadius()
+                }
 
-            override fun getTitle(t: Int): String {
-                return String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
-                        t.toString())
-            }
-        })
+                override fun getTitle(t: Int): String {
+                    return String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
+                            t.toString())
+                }
+            })
+        }
     }
 }
