@@ -188,11 +188,10 @@ class GeolocationService : Service() {
         builder.setContentText(roundedDistance.toString())
         builder.priority = NotificationCompat.PRIORITY_LOW
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
-        startForeground(NOTIFICATION_ID, builder.build())
+        startForeground(reminder.uniqueId, builder.build())
     }
 
     private fun showDefaultNotification() {
-        if (!isNotificationEnabled) return
         val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
         if (Module.isPro) {
             builder.setContentText(getString(R.string.app_name_pro))

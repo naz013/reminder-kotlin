@@ -101,6 +101,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
     override fun pause(): Boolean {
         EventJobService.cancelReminder(reminder.uuId)
+        notifier.hideNotification(reminder.uniqueId)
         stopTracking(true)
         return true
     }
