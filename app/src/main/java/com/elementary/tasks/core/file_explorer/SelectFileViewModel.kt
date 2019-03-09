@@ -63,16 +63,8 @@ class SelectFileViewModel : ViewModel(), LifecycleObserver {
         }
 
         val dataList = list.asSequence().map { File(path, it) }
-                .sortedWith(Comparator { o1, o2 ->
-                    if (o1 == null) return@Comparator -1
-                    if (o2 == null) return@Comparator 1
-                    when {
-                        o1.isDirectory == o2.isDirectory -> o1.name.toLowerCase().compareTo(o2.name.toLowerCase())
-                        o1.isDirectory -> -1
-                        o1.isDirectory -> 1
-                        else -> 0
-                    }
-                })
+                .sortedBy { it.name }
+                .sortedBy { !it.isDirectory }
                 .map { FileItem(it.name, if (it.isDirectory) directoryIcon else 0, it.toString()) }
                 .toMutableList()
 
