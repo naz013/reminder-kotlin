@@ -142,6 +142,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
+    proImplementation 'com.google.firebase:firebase-database:16.1.0'
+    proImplementation 'com.github.kenglxn.QRGen:android:2.4.0'
+    proImplementation 'me.dm7.barcodescanner:zbar:1.9.13'
+    proImplementation 'com.github.tozny:java-aes-crypto:1.1.0'
+
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation ('com.github.bumptech.glide:glide:4.8.0') {
