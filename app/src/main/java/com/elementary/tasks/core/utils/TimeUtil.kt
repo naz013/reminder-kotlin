@@ -43,27 +43,27 @@ object TimeUtil {
     private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
     private val TIME_24 = SimpleDateFormat("HH:mm", Locale.US)
 
-    fun localizedDateFormat(pattern: String, lang: Int = 0): SimpleDateFormat = SimpleDateFormat(pattern, Language.getScreenLanguage(lang))
+    private fun localizedDateFormat(pattern: String, lang: Int = 0): SimpleDateFormat = SimpleDateFormat(pattern, Language.getScreenLanguage(lang))
 
-    fun dateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm", lang)
+    private fun dateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm", lang)
 
-    fun dateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, K:mm a", lang)
+    private fun dateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, hh:mm a", lang)
 
     fun fullDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy", lang)
 
-    fun fullDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy HH:mm", lang)
+    private fun fullDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy HH:mm", lang)
 
-    fun fullDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy K:mm a", lang)
+    private fun fullDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy hh:mm a", lang)
 
-    fun time24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("HH:mm", lang)
+    private fun time24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("HH:mm", lang)
 
-    fun time12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("K:mm a", lang)
+    private fun time12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("hh:mm a", lang)
 
     fun simpleDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM", lang)
 
-    fun simpleDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, HH:mm", lang)
+    private fun simpleDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, HH:mm", lang)
 
-    fun simpleDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, K:mm a", lang)
+    private fun simpleDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, hh:mm a", lang)
 
     fun date(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy", lang)
 
@@ -375,16 +375,17 @@ object TimeUtil {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = getDateTimeFromGmt(date)
         val loc = Locale(language.getTextLanguage(locale))
-        var format: DateFormat = SimpleDateFormat("EEEE, MMMM dd yyyy K:mm a", loc)
-        if (locale == 0) {
+        val format = if (locale == 0) {
             if (is24) {
-                format = SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc)
+                SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc)
+            } else {
+                SimpleDateFormat("EEEE, MMMM dd yyyy hh:mm a", loc)
             }
         } else {
-            format = if (is24) {
+            if (is24) {
                 SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc)
             } else {
-                SimpleDateFormat("EEEE, dd MMMM yyyy K:mm a", loc)
+                SimpleDateFormat("EEEE, dd MMMM yyyy hh:mm a", loc)
             }
         }
         return format.format(calendar.time)
@@ -462,7 +463,7 @@ object TimeUtil {
         }
     }
 
-    fun getGoogleTaskDate(date: Date, lang: Int = 0): String {
+    private fun getGoogleTaskDate(date: Date, lang: Int = 0): String {
         return fullDate(lang).format(date)
     }
 
