@@ -529,14 +529,13 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
                 calendar.timeInMillis = tmp + AlarmManager.INTERVAL_HALF_HOUR
             }
         } while (hour != -1)
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(R.string.choose_time)
         builder.setItems(time.toTypedArray()) { dialog, which ->
             dialog.dismiss()
             saveCopy(which)
         }
-        val alert = builder.create()
-        alert.show()
+        builder.create().show()
     }
 
     private fun saveCopy(which: Int) {

@@ -601,7 +601,7 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
     }
 
     private fun showLanguageDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(getString(R.string.language))
         val locales = language.getLanguages(this)
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, locales)
@@ -618,8 +618,7 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
         builder.setNegativeButton(getLocalized(R.string.cancel)) { dialog, _ ->
             dialog.dismiss()
         }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun playTts(text: String) {
@@ -709,7 +708,7 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
     }
 
     private fun showInstallTtsDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(R.string.would_you_like_to_install_tts)
         builder.setPositiveButton(R.string.install) { dialogInterface, _ ->
             dialogInterface.dismiss()

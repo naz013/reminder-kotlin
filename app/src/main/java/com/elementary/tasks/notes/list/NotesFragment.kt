@@ -241,22 +241,23 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
 
     private fun showDialog() {
         val items = arrayOf<CharSequence>(getString(R.string.by_date_az), getString(R.string.by_date_za), getString(R.string.name_az), getString(R.string.name_za))
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.order))
-        builder.setItems(items) { dialog, which ->
-            var value = ""
-            when (which) {
-                0 -> value = SortModifier.DATE_AZ
-                1 -> value = SortModifier.DATE_ZA
-                2 -> value = SortModifier.TEXT_AZ
-                3 -> value = SortModifier.TEXT_ZA
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.order))
+            builder.setItems(items) { dialog, which ->
+                var value = ""
+                when (which) {
+                    0 -> value = SortModifier.DATE_AZ
+                    1 -> value = SortModifier.DATE_ZA
+                    2 -> value = SortModifier.TEXT_AZ
+                    3 -> value = SortModifier.TEXT_ZA
+                }
+                prefs.noteOrder = value
+                sortController.setOrder(value)
+                dialog.dismiss()
             }
-            prefs.noteOrder = value
-            sortController.setOrder(value)
-            dialog.dismiss()
+            builder.create().show()
         }
-        val alert = builder.create()
-        alert.show()
     }
 
     override fun getTitle(): String = getString(R.string.notes)

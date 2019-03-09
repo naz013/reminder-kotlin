@@ -1,5 +1,9 @@
 package com.elementary.tasks.day_view.day
 
+import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.TimeUtil
+
 /**
  * Copyright 2018 Nazar Suhovich
  *
@@ -27,6 +31,17 @@ data class EventModel(
         val dt: Long,
         val color: Int
 ) {
+    fun getMillis(time: Long = 0): Long {
+        val o = model
+        return if (o is Reminder) {
+            TimeUtil.getDateTimeFromGmt(o.eventTime)
+        } else if (o is Birthday) {
+            TimeUtil.getFutureBirthdayDate(time, o.date)?.millis ?: 0L
+        } else {
+            0
+        }
+    }
+
     companion object {
         const val REMINDER = 0
         const val BIRTHDAY = 2

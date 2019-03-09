@@ -56,41 +56,43 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
             allGroups = { return@ReminderResolver listOf() })
 
     protected fun showActionDialog(showEvents: Boolean, list: List<EventModel> = listOf()) {
-        val builder = dialogues.getDialog(context!!)
-        val binding = DialogActionPickerBinding.inflate(LayoutInflater.from(context))
-        binding.addBirth.setOnClickListener {
-            mDialog?.dismiss()
-            addBirthday()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            val binding = DialogActionPickerBinding.inflate(LayoutInflater.from(it))
+            binding.addBirth.setOnClickListener {
+                mDialog?.dismiss()
+                addBirthday()
+            }
+            binding.addBirth.setOnLongClickListener {
+                showMessage(getString(R.string.add_birthday))
+                true
+            }
+            binding.addEvent.setOnClickListener {
+                mDialog?.dismiss()
+                addReminder()
+            }
+            binding.addEvent.setOnLongClickListener {
+                showMessage(getString(R.string.add_reminder_menu))
+                true
+            }
+            if (showEvents && list.isNotEmpty()) {
+                binding.loadingView.visibility = View.VISIBLE
+                binding.eventsList.layoutManager = LinearLayoutManager(it)
+                loadEvents(binding, list)
+            } else {
+                binding.loadingView.visibility = View.GONE
+            }
+            if (dateMills != 0L) {
+                val monthTitle = DateUtils.formatDateTime(activity, dateMills, DayViewFragment.MONTH_YEAR_FLAG).toString()
+                binding.dateLabel.text = monthTitle
+            }
+            builder.setView(binding.root)
+            builder.setOnDismissListener {
+                job?.cancel()
+            }
+            mDialog = builder.create()
+            mDialog?.show()
         }
-        binding.addBirth.setOnLongClickListener {
-            showMessage(getString(R.string.add_birthday))
-            true
-        }
-        binding.addEvent.setOnClickListener {
-            mDialog?.dismiss()
-            addReminder()
-        }
-        binding.addEvent.setOnLongClickListener {
-            showMessage(getString(R.string.add_reminder_menu))
-            true
-        }
-        if (showEvents && list.isNotEmpty()) {
-            binding.loadingView.visibility = View.VISIBLE
-            binding.eventsList.layoutManager = LinearLayoutManager(context)
-            loadEvents(binding, list)
-        } else {
-            binding.loadingView.visibility = View.GONE
-        }
-        if (dateMills != 0L) {
-            val monthTitle = DateUtils.formatDateTime(activity, dateMills, DayViewFragment.MONTH_YEAR_FLAG).toString()
-            binding.dateLabel.text = monthTitle
-        }
-        builder.setView(binding.root)
-        builder.setOnDismissListener {
-            job?.cancel()
-        }
-        mDialog = builder.create()
-        mDialog?.show()
     }
 
     private fun showMessage(string: String) {
@@ -122,36 +124,12 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
                 }
             }
             Timber.d("Search events: found -> %d", res.size)
-            res.sortWith(Comparator { eventsItem, t1 ->
-                var time1: Long = 0
-                var time2: Long = 0
-                if (eventsItem.model is Birthday) {
-                    val item = eventsItem.model as Birthday
-                    val dateItem = TimeUtil.getFutureBirthdayDate(bTime, item.date)
-                    if (dateItem != null) {
-                        time1 = dateItem.millis
-                    }
-                } else if (eventsItem.model is Reminder) {
-                    val reminder = eventsItem.model as Reminder
-                    time1 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-                }
-                if (t1.model is Birthday) {
-                    val item = t1.model as Birthday
-                    val dateItem = TimeUtil.getFutureBirthdayDate(bTime, item.date)
-                    if (dateItem != null) {
-                        time2 = dateItem.millis
-                    }
-                } else if (t1.model is Reminder) {
-                    val reminder = t1.model as Reminder
-                    time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-                }
-                (time1 - time2).toInt()
-            })
-            withUIContext { showList(binding, res) }
+            val sorted = res.asSequence().sortedBy { it.getMillis(bTime) }.toList()
+            withUIContext { showList(binding, sorted) }
         }
     }
 
-    private fun showList(binding: DialogActionPickerBinding, res: ArrayList<EventModel>) {
+    private fun showList(binding: DialogActionPickerBinding, res: List<EventModel>) {
         val adapter = CalendarEventsAdapter()
         adapter.setEventListener(object : ActionsListener<EventModel> {
             override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
@@ -173,16 +151,20 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
     }
 
     private fun addReminder() {
-        if (isAdded && activity != null) {
-            CreateReminderActivity.openLogged(activity!!, Intent(context, CreateReminderActivity::class.java)
-                    .putExtra(Constants.INTENT_DATE, dateMills))
+        if (isAdded) {
+            withActivity {
+                CreateReminderActivity.openLogged(it, Intent(it, CreateReminderActivity::class.java)
+                        .putExtra(Constants.INTENT_DATE, dateMills))
+            }
         }
     }
 
     private fun addBirthday() {
-        if (isAdded && activity != null) {
-            AddBirthdayActivity.openLogged(activity!!, Intent(context, AddBirthdayActivity::class.java)
-                    .putExtra(Constants.INTENT_DATE, dateMills))
+        if (isAdded) {
+            withActivity {
+                AddBirthdayActivity.openLogged(it, Intent(it, AddBirthdayActivity::class.java)
+                        .putExtra(Constants.INTENT_DATE, dateMills))
+            }
         }
     }
 }

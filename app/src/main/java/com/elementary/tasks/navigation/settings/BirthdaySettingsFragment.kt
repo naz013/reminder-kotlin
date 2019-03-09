@@ -4,7 +4,6 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.TimePicker
 import android.widget.Toast
@@ -93,23 +92,23 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun showPriorityDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.default_priority))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, priorityList())
-        mItemSelect = prefs.birthdayPriority
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.default_priority))
+            mItemSelect = prefs.birthdayPriority
+            builder.setSingleChoiceItems(priorityList(), mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.birthdayPriority = mItemSelect
+                showPriority()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.birthdayPriority = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showPriority() }
-        dialog.show()
     }
 
     private fun showPriority() {
@@ -156,11 +155,13 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun scanForBirthdays() {
-        if (!Permissions.ensurePermissions(activity!!, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
+                return@withActivity
+            }
+            onProgress.invoke(true)
+            ScanContactsWorker.scan(it)
         }
-        onProgress.invoke(true)
-        ScanContactsWorker.scan(context!!)
     }
 
     private fun initContactsAutoPrefs() {
@@ -188,13 +189,15 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun changeContactsPrefs() {
-        if (!Permissions.ensurePermissions(activity!!, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
+                return@withActivity
+            }
+            val isChecked = binding.useContactsPrefs.isChecked
+            binding.useContactsPrefs.isChecked = !isChecked
+            prefs.isContactBirthdaysEnabled = !isChecked
+            initScanButton()
         }
-        val isChecked = binding.useContactsPrefs.isChecked
-        binding.useContactsPrefs.isChecked = !isChecked
-        prefs.isContactBirthdaysEnabled = !isChecked
-        initScanButton()
     }
 
     private fun initBirthdayTimePrefs() {
@@ -207,7 +210,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         val calendar = TimeUtil.getBirthdayCalendar(prefs.birthdayTime)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
-        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormat, hour, minute, this)
+        withContext {
+            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat, hour, minute, this)
+        }
     }
 
     private fun initDaysToPrefs() {
@@ -217,32 +222,34 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun showDaysToDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.days_to_birthday)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-        b.seekBar.max = 5
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = progress.toString()
-            }
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.days_to_birthday)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 5
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = progress.toString()
+                }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
 
-            }
+                }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
 
-            }
-        })
-        val daysToBirthday = prefs.daysToBirthday
-        b.seekBar.progress = daysToBirthday
-        b.titleView.text = daysToBirthday.toString()
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { _, _ -> saveDays(b.seekBar.progress) }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
+                }
+            })
+            val daysToBirthday = prefs.daysToBirthday
+            b.seekBar.progress = daysToBirthday
+            b.titleView.text = daysToBirthday.toString()
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ -> saveDays(b.seekBar.progress) }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
+        }
     }
 
     private fun saveDays(progress: Int) {
@@ -257,16 +264,17 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun changeBirthdayPermanentPrefs() {
-        if (context == null) return
-        val isChecked = binding.birthdayPermanentPrefs.isChecked
-        binding.birthdayPermanentPrefs.isChecked = !isChecked
-        prefs.isBirthdayPermanentEnabled = !isChecked
-        if (!isChecked) {
-            context?.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
-            AlarmReceiver().enableBirthdayPermanentAlarm(context!!)
-        } else {
-            context?.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_HIDE))
-            AlarmReceiver().cancelBirthdayPermanentAlarm(context!!)
+        withContext {
+            val isChecked = binding.birthdayPermanentPrefs.isChecked
+            binding.birthdayPermanentPrefs.isChecked = !isChecked
+            prefs.isBirthdayPermanentEnabled = !isChecked
+            if (!isChecked) {
+                it.sendBroadcast(Intent(it, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
+                AlarmReceiver().enableBirthdayPermanentAlarm(it)
+            } else {
+                it.sendBroadcast(Intent(it, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_HIDE))
+                AlarmReceiver().cancelBirthdayPermanentAlarm(it)
+            }
         }
     }
 
@@ -277,11 +285,13 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun changeWidgetPrefs() {
-        val isChecked = binding.widgetShowPrefs.isChecked
-        binding.widgetShowPrefs.isChecked = !isChecked
-        prefs.isBirthdayInWidgetEnabled = !isChecked
-        UpdatesHelper.updateCalendarWidget(context!!)
-        UpdatesHelper.updateWidget(context!!)
+        withContext {
+            val isChecked = binding.widgetShowPrefs.isChecked
+            binding.widgetShowPrefs.isChecked = !isChecked
+            prefs.isBirthdayInWidgetEnabled = !isChecked
+            UpdatesHelper.updateCalendarWidget(it)
+            UpdatesHelper.updateWidget(it)
+        }
     }
 
     private fun initBirthdayReminderPrefs() {

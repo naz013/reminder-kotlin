@@ -66,7 +66,7 @@ class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
     }
 
     private fun showInstallSkypeDialog() {
-        val builder = dialogues.getDialog(context!!)
+        val builder = dialogues.getMaterialDialog(context!!)
         builder.setMessage(R.string.skype_is_not_installed)
         builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
             dialogInterface.dismiss()

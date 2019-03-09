@@ -292,27 +292,25 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
     }
 
     private fun showDeleteDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(getString(R.string.delete_this_note))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
             if (mNote != null) viewModel.deleteNote(mNote!!)
         }
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun showReminderDeleteDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(R.string.delete_this_reminder)
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
             deleteReminder()
         }
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun deleteReminder() {

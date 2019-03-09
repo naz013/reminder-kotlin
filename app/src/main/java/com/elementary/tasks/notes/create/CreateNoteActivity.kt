@@ -753,15 +753,14 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun deleteDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(getString(R.string.delete_this_note))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
             deleteNote()
         }
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun deleteNote() {
@@ -799,14 +798,14 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun showStyleDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(getString(R.string.font_style))
 
-        val contacts = AssetsUtil.getFontNames()
+        val names = AssetsUtil.getFontNames()
 
         val inflater = LayoutInflater.from(this)
         val adapter = object : ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_single_choice, contacts) {
+                android.R.layout.simple_list_item_single_choice, names) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
                 var cView = convertView
                 if (cView == null) {
@@ -815,7 +814,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
                 val textView = cView?.findViewById<TextView>(android.R.id.text1)
                 if (textView != null) {
                     textView.typeface = getTypeface(position)
-                    textView.text = contacts[position]
+                    textView.text = names[position]
                 }
                 return cView
             }
@@ -828,12 +827,11 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             stateViewModel.fontStyle.postValue(which)
         }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun showPaletteDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         val bind = DialogSelectPaletteBinding.inflate(layoutInflater)
 
         when (palette()) {

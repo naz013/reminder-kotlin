@@ -47,7 +47,7 @@ class VoiceResultDialog : BaseDialog() {
     }
 
     private fun showReminder(reminder: Reminder) {
-        val alert = dialogues.getDialog(this)
+        val alert = dialogues.getMaterialDialog(this)
         alert.setTitle(getString(R.string.saved))
 
         val parent = LinearLayout(this)

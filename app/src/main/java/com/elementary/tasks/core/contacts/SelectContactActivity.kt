@@ -149,7 +149,7 @@ class SelectContactActivity : ThemedActivity<ActivityContactsListBinding>() {
                     }
                     withUIContext {
                         hideProgress()
-                        val builder = dialogues.getDialog(this@SelectContactActivity)
+                        val builder = dialogues.getMaterialDialog(this@SelectContactActivity)
                         builder.setItems(numbers) { dialog, which ->
                             dialog.dismiss()
                             var number = numbers[which] as String
@@ -157,8 +157,7 @@ class SelectContactActivity : ThemedActivity<ActivityContactsListBinding>() {
                             number = number.substring(index + 2)
                             onContactSelected(number, name)
                         }
-                        val alert = builder.create()
-                        alert.show()
+                        builder.create().show()
                     }
                 }
             } else if (c.count == 1) {

@@ -219,7 +219,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         if (!appVersion.contains("beta")) {
             return
         }
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle("Beta")
         builder.setMessage("This version of application may work unstable!")
         builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.dismiss() }
@@ -423,7 +423,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     }
 
     private fun showProDialog() {
-        dialogues.getDialog(this)
+        dialogues.getMaterialDialog(this)
                 .setTitle(getString(R.string.buy_pro))
                 .setMessage(getString(R.string.pro_advantages) + "\n" +
                         getString(R.string.different_settings_for_birthdays) + "\n" +
