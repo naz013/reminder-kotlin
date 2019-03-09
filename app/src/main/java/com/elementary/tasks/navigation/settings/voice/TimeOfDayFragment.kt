@@ -3,13 +3,13 @@ package com.elementary.tasks.navigation.settings.voice
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.toDate
 import com.elementary.tasks.core.utils.toHm
 import com.elementary.tasks.databinding.FragmentSettingsTimeOfDayBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,7 +34,7 @@ import java.util.*
  */
 class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>(), View.OnClickListener {
 
-    private lateinit var viewModel: TimesViewModel
+    private val viewModel: TimesViewModel by viewModel()
     private var is24: Boolean = false
     private val format = SimpleDateFormat("HH:mm", Locale.getDefault())
 
@@ -42,7 +42,6 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TimesViewModel::class.java)
 
         binding.nightTime.setOnClickListener(this)
         binding.eveningTime.setOnClickListener(this)
@@ -168,10 +167,12 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
     }
 
     private fun timeDialog(h: Int, m: Int, callback: (hourOfDay: Int, minuteOfHour: Int) -> Unit) {
-        TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs.is24HourFormat, h, m,
-                TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            callback.invoke(hourOfDay, minute)
-        })
+        withContext {
+            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat, h, m,
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                        callback.invoke(hourOfDay, minute)
+                    })
+        }
     }
 
     override fun onClick(v: View) {

@@ -49,14 +49,16 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
     }
 
     private fun initPhonePrefs() {
-        if (Module.hasTelephony(context!!)) {
-            binding.telephonyPrefs.isEnabled = true
-            binding.telephonyPrefs.setOnClickListener { changePhonePrefs() }
-            binding.telephonyPrefs.isChecked = prefs.isTelephonyEnabled
-        } else {
-            prefs.isTelephonyEnabled = false
-            binding.telephonyPrefs.isChecked = false
-            binding.telephonyPrefs.isEnabled = false
+        withContext {
+            if (Module.hasTelephony(it)) {
+                binding.telephonyPrefs.isEnabled = true
+                binding.telephonyPrefs.setOnClickListener { changePhonePrefs() }
+                binding.telephonyPrefs.isChecked = prefs.isTelephonyEnabled
+            } else {
+                prefs.isTelephonyEnabled = false
+                binding.telephonyPrefs.isChecked = false
+                binding.telephonyPrefs.isEnabled = false
+            }
         }
     }
 
@@ -85,19 +87,21 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
         binding.fingerprintSwitchPrefs.setDependentView(binding.pinSwitchPrefs)
         binding.fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
 
-        FingerInitializer(context!!, null, object : FingerInitializer.ReadyListener {
-            override fun onFailToCreate() {
-                binding.fingerprintSwitchPrefs.visibility = View.GONE
-            }
-
-            override fun onReady(context: Context, fingerprintUiHelper: FingerprintHelper) {
-                if (fingerprintUiHelper.canUseFinger(context)) {
-                    binding.fingerprintSwitchPrefs.visibility = View.VISIBLE
-                } else {
+        withContext {
+            FingerInitializer(it, null, object : FingerInitializer.ReadyListener {
+                override fun onFailToCreate() {
                     binding.fingerprintSwitchPrefs.visibility = View.GONE
                 }
-            }
-        })
+
+                override fun onReady(context: Context, fingerprintUiHelper: FingerprintHelper) {
+                    if (fingerprintUiHelper.canUseFinger(context)) {
+                        binding.fingerprintSwitchPrefs.visibility = View.VISIBLE
+                    } else {
+                        binding.fingerprintSwitchPrefs.visibility = View.GONE
+                    }
+                }
+            })
+        }
     }
 
     private fun changeFingerPrefs() {

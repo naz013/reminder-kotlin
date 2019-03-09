@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.calendar
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
@@ -70,8 +69,10 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     }
 
     private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
-        dialogues.showColorDialog(activity!!, current, title, themeUtil.colorsForSlider()) {
-            onSave.invoke(it)
+        withActivity { act ->
+            dialogues.showColorDialog(act, current, title, themeUtil.colorsForSlider()) {
+                onSave.invoke(it)
+            }
         }
     }
 
@@ -86,23 +87,20 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     }
 
     private fun showFirstDayDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.first_day))
-        val items = arrayOf(getString(R.string.sunday), getString(R.string.monday))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, items)
-        mItemSelect = prefs.startDay
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ ->
-            prefs.startDay = mItemSelect
-            showFirstDay()
-            dialogInterface.dismiss()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.first_day))
+            val items = arrayOf(getString(R.string.sunday), getString(R.string.monday))
+            mItemSelect = prefs.startDay
+            builder.setSingleChoiceItems(items, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ ->
+                prefs.startDay = mItemSelect
+                showFirstDay()
+                dialogInterface.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun initRemindersColorPrefs() {

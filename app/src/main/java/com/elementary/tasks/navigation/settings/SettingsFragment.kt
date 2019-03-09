@@ -60,19 +60,25 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>() {
         binding.securitySettings.setOnClickListener { askPin() }
         binding.testsScreen.setOnClickListener { callback?.openFragment(TestsFragment(), "Tests") }
 
-        if (Module.hasLocation(context!!)) {
-            binding.locationSettings.setOnClickListener { callback?.openFragment(LocationSettingsFragment(), getString(R.string.location)) }
-            binding.locationSettings.visibility = View.VISIBLE
-        } else {
-            binding.locationSettings.visibility = View.GONE
+        withContext {
+            if (Module.hasLocation(it)) {
+                binding.locationSettings.setOnClickListener {
+                    callback?.openFragment(LocationSettingsFragment(), getString(R.string.location))
+                }
+                binding.locationSettings.visibility = View.VISIBLE
+            } else {
+                binding.locationSettings.visibility = View.GONE
+            }
         }
     }
 
     private fun askPin() {
-        if (prefs.hasPinCode) {
-            PinLoginActivity.verify(activity!!, PinLoginActivity.REQ_CODE)
-        } else {
-            openSecurity()
+        withActivity {
+            if (prefs.hasPinCode) {
+                PinLoginActivity.verify(it, PinLoginActivity.REQ_CODE)
+            } else {
+                openSecurity()
+            }
         }
     }
 

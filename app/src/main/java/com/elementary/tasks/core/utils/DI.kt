@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.navigation.settings.voice.TimesViewModel
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.places.create.CreatePlaceViewModel
@@ -32,6 +33,7 @@ fun viewModels() = module {
     viewModel { StateViewModel() }
     viewModel { CreatePlaceViewModel() }
     viewModel { CreateNoteViewModel() }
+    viewModel { TimesViewModel() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {

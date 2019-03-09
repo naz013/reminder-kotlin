@@ -115,21 +115,23 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
     }
 
     private fun loadUserInfo() {
-        if (!Permissions.ensurePermissions(activity!!, SD_CODE, Permissions.READ_EXTERNAL)) {
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, SD_CODE, Permissions.READ_EXTERNAL)) {
+                return@withActivity
+            }
+            val list = ArrayList<Info>()
+            list.add(Info.Local)
+            val dbx = Dropbox()
+            dbx.startSession()
+            if (dbx.isLinked) {
+                list.add(Info.Dropbox)
+            }
+            val gdx = GDrive.getInstance(it)
+            if (gdx != null) {
+                list.add(Info.Google)
+            }
+            loadInfo(list)
         }
-        val list = ArrayList<Info>()
-        list.add(Info.Local)
-        val dbx = Dropbox()
-        dbx.startSession()
-        if (dbx.isLinked) {
-            list.add(Info.Dropbox)
-        }
-        val gdx = GDrive.getInstance(context!!)
-        if (gdx != null) {
-            list.add(Info.Google)
-        }
-        loadInfo(list)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -276,12 +278,14 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
     }
 
     private fun addGoogleData(list: MutableList<UserItem>) {
-        val gdx = GDrive.getInstance(context!!)
-        if (gdx != null) {
-            val userItem = gdx.data
-            if (userItem != null) {
-                userItem.kind = Info.Google
-                list.add(userItem)
+        withContext {
+            val gdx = GDrive.getInstance(it)
+            if (gdx != null) {
+                val userItem = gdx.data
+                if (userItem != null) {
+                    userItem.kind = Info.Google
+                    list.add(userItem)
+                }
             }
         }
     }

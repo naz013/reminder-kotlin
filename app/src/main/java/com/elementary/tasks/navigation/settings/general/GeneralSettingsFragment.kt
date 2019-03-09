@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings.general
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -76,30 +75,29 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     }
 
     private fun showHomePage() {
-        binding.homePrefs.setDetailText(PageIdentifier.name(context!!, prefs.homePage))
+        withContext {
+            binding.homePrefs.setDetailText(PageIdentifier.name(it, prefs.homePage))
+        }
     }
 
     private fun showHomePageDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.start_screen))
+        withContext { ctx ->
+            val builder = dialogues.getMaterialDialog(ctx)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.start_screen))
 
-        val homePages = PageIdentifier.availablePages(context!!)
+            val homePages = PageIdentifier.availablePages(ctx)
 
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, homePages.map { it.name })
-        val init = prefs.homePage
-        mItemSelect = PageIdentifier.index(context!!, init)
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.homePage = homePages[mItemSelect].key
-            dialog.dismiss()
-            showHomePage()
+            val init = prefs.homePage
+            mItemSelect = PageIdentifier.index(ctx, init)
+            builder.setSingleChoiceItems(homePages.map { it.name }.toTypedArray(), mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.homePage = homePages[mItemSelect].key
+                dialog.dismiss()
+                showHomePage()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun initLanguagePrefs() {
@@ -108,27 +106,26 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     }
 
     private fun showLanguage() {
-        binding.languagePrefs.setDetailText(language.getScreenLocaleName(context!!))
+        withContext {
+            binding.languagePrefs.setDetailText(language.getScreenLocaleName(it))
+        }
     }
 
     private fun showLanguageDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.application_language))
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice, resources.getStringArray(R.array.app_languages))
-        val init = prefs.appLanguage
-        mItemSelect = init
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.appLanguage = mItemSelect
-            dialog.dismiss()
-            if (init != mItemSelect) restartApp()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.application_language))
+            val init = prefs.appLanguage
+            mItemSelect = init
+            builder.setSingleChoiceItems(resources.getStringArray(R.array.app_languages), mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.appLanguage = mItemSelect
+                dialog.dismiss()
+                if (init != mItemSelect) restartApp()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun init24TimePrefs() {
@@ -150,28 +147,24 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     }
 
     private fun showTimeFormatDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string._24_hour_time_format))
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string._24_hour_time_format))
 
-        val adapter = ArrayAdapter(context!!,
-                android.R.layout.simple_list_item_single_choice,
-                listOf(
-                        getString(R.string.default_string),
-                        getString(R.string.use_24_hour_format),
-                        getString(R.string.use_12_hour_format)
-                ))
-        mItemSelect = prefs.hourFormat
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.hourFormat = mItemSelect
-            dialog.dismiss()
-            showTimeFormat()
+            mItemSelect = prefs.hourFormat
+            builder.setSingleChoiceItems(arrayOf(
+                    getString(R.string.default_string),
+                    getString(R.string.use_24_hour_format),
+                    getString(R.string.use_12_hour_format)
+            ), mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.hourFormat = mItemSelect
+                dialog.dismiss()
+                showTimeFormat()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun initAppTheme() {

@@ -80,18 +80,21 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     }
 
     private fun showIntervalDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.interval))
-        val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
-        builder.setSingleChoiceItems(items, intervalPosition) { _, item -> mItemSelect = item }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            saveIntervalPrefs()
-            dialog.dismiss()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.interval))
+            val items = arrayOf(getString(R.string.one_hour),
+                    getString(R.string.six_hours),
+                    getString(R.string.twelve_hours),
+                    getString(R.string.one_day),
+                    getString(R.string.two_days))
+            builder.setSingleChoiceItems(items, intervalPosition) { _, item -> mItemSelect = item }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                saveIntervalPrefs()
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.setOnCancelListener { mItemSelect = 0 }
-        dialog.setOnDismissListener { mItemSelect = 0 }
-        dialog.show()
     }
 
     private fun saveIntervalPrefs() {
@@ -102,36 +105,36 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             3 -> prefs.autoCheckInterval = 24
             4 -> prefs.autoCheckInterval = 48
         }
-        if (Permissions.ensurePermissions(activity!!, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            startCheckService()
+        withActivity {
+            if (Permissions.ensurePermissions(it, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                startCheckService()
+            }
         }
     }
 
     private fun startCheckService() {
-        AlarmReceiver().enableEventCheck(context!!)
-    }
-
-    private fun checkWriteCalendarPerm(): Boolean {
-        return Permissions.ensurePermissions(activity!!, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
+        withContext { AlarmReceiver().enableEventCheck(it) }
     }
 
     private fun loadCalendars() {
-        if (!checkCalendarPerm()) {
-            return
-        }
-        list = calendarUtils.getCalendarsList()
-        if (list.isEmpty()) {
-            Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
-        }
-        val spinnerArray = ArrayList<String>()
-        spinnerArray.add(getString(R.string.choose_calendar))
-        if (list.isNotEmpty()) {
-            for (item in list) {
-                spinnerArray.add(item.name)
+        withActivity {
+            if (!Permissions.ensurePermissions(it, CALENDAR_PERM, Permissions.READ_CALENDAR)) {
+                return@withActivity
             }
+            list = calendarUtils.getCalendarsList()
+            if (list.isEmpty()) {
+                Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
+            }
+            val spinnerArray = ArrayList<String>()
+            spinnerArray.add(getString(R.string.choose_calendar))
+            if (list.isNotEmpty()) {
+                for (item in list) {
+                    spinnerArray.add(item.name)
+                }
+            }
+            val spinnerArrayAdapter = ArrayAdapter(it, android.R.layout.simple_list_item_1, spinnerArray)
+            binding.eventCalendar.adapter = spinnerArrayAdapter
         }
-        val spinnerArrayAdapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, spinnerArray)
-        binding.eventCalendar.adapter = spinnerArrayAdapter
     }
 
     override fun onBackStackResume() {
@@ -141,37 +144,39 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
     override fun getTitle(): String = getString(R.string.import_events)
 
-    private fun checkCalendarPerm(): Boolean {
-        return Permissions.ensurePermissions(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
-    }
-
     private fun importEvents() {
-        if (!checkWriteCalendarPerm()) return
-        if (list.isEmpty()) {
-            Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                return@withActivity
+            }
+            if (list.isEmpty()) {
+                Toast.makeText(it, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
+                return@withActivity
+            }
+            if (binding.eventCalendar.selectedItemPosition == 0) {
+                Toast.makeText(it, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show()
+                return@withActivity
+            }
+            val map = HashMap<String, Int>()
+            val selectedPosition = binding.eventCalendar.selectedItemPosition - 1
+            map[EVENT_KEY] = list[selectedPosition].id
+            val isEnabled = prefs.isCalendarEnabled
+            if (!isEnabled) {
+                prefs.isCalendarEnabled = true
+                prefs.calendarId = list[selectedPosition].id
+            }
+            prefs.eventsCalendar = list[selectedPosition].id
+            import(map)
         }
-        if (binding.eventCalendar.selectedItemPosition == 0) {
-            Toast.makeText(context, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show()
-            return
-        }
-        val map = HashMap<String, Int>()
-        val selectedPosition = binding.eventCalendar.selectedItemPosition - 1
-        map[EVENT_KEY] = list[selectedPosition].id
-        val isEnabled = prefs.isCalendarEnabled
-        if (!isEnabled) {
-            prefs.isCalendarEnabled = true
-            prefs.calendarId = list[selectedPosition].id
-        }
-        prefs.eventsCalendar = list[selectedPosition].id
-        import(map)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         when (buttonView.id) {
             R.id.autoCheck -> if (isChecked) {
-                if (Permissions.ensurePermissions(activity!!, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-                    autoCheck(true)
+                withActivity {
+                    if (Permissions.ensurePermissions(it, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                        autoCheck(true)
+                    }
                 }
             } else {
                 autoCheck(false)
@@ -195,10 +200,12 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         prefs.isAutoEventsCheckEnabled = isChecked
         binding.syncInterval.isEnabled = isChecked
         val alarm = AlarmReceiver()
-        if (isChecked) {
-            alarm.enableEventCheck(context!!)
-        } else {
-            alarm.cancelEventCheck(context!!)
+        withContext {
+            if (isChecked) {
+                alarm.enableEventCheck(it)
+            } else {
+                alarm.cancelEventCheck(it)
+            }
         }
     }
 
@@ -211,7 +218,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             var eventsCount = 0
             val appDb = AppDb.getAppDatabase(ctx)
             if (map.containsKey(EVENT_KEY)) {
-                val eventItems = calendarUtils.getEvents(map[EVENT_KEY]!!)
+                val eventItems = calendarUtils.getEvents(map[EVENT_KEY] ?: 0)
                 if (!eventItems.isEmpty()) {
                     val list = appDb.calendarEventsDao().eventIds()
                     for (item in eventItems) {

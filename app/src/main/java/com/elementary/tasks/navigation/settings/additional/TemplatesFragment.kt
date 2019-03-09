@@ -92,8 +92,9 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
             mSearchView = mSearchMenu?.actionView as SearchView?
         }
         if (mSearchView != null) {
-            if (searchManager != null) {
-                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+            val act = activity
+            if (searchManager != null && act != null) {
+                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(act.componentName))
             }
             mSearchView?.setOnQueryTextListener(queryTextListener)
             mSearchView?.setOnCloseListener(mCloseListener)
@@ -124,7 +125,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
     }
 
     private fun initTemplateList() {
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
+        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context)) {
             binding.templatesList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         } else {
             binding.templatesList.layoutManager = LinearLayoutManager(context)

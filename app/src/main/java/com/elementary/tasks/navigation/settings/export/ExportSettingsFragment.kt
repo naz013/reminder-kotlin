@@ -228,7 +228,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun showCleanDialog() {
         withContext {
-            val builder = dialogues.getDialog(it)
+            val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.clean))
             builder.setNeutralButton(R.string.local) { _, _ ->
@@ -280,7 +280,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun showIntervalDialog() {
         withContext {
-            val builder = dialogues.getDialog(it)
+            val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.interval))
             val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours),
@@ -290,10 +290,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
                 saveIntervalPrefs()
                 dialog.dismiss()
             }
-            val dialog = builder.create()
-            dialog.setOnCancelListener { mItemSelect = 0 }
-            dialog.setOnDismissListener { mItemSelect = 0 }
-            dialog.show()
+            builder.create().show()
         }
     }
 
@@ -370,7 +367,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun showEventDurationDialog() {
         withActivity {
-            val builder = dialogues.getDialog(it)
+            val builder = dialogues.getMaterialDialog(it)
             builder.setTitle(R.string.event_duration)
             val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
             b.seekBar.max = 120
@@ -428,7 +425,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             return false
         }
         val names = mDataList.map { it.name }.toTypedArray()
-        val builder = dialogues.getDialog(activity)
+        val builder = dialogues.getMaterialDialog(activity)
         builder.setTitle(R.string.choose_calendar)
         mItemSelect = currentPosition
         builder.setSingleChoiceItems(names, mItemSelect) { _, i ->

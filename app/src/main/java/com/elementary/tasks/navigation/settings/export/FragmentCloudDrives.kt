@@ -57,10 +57,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
 
     private fun showErrorDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setMessage(getString(R.string.failed_to_login))
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
-        builder.create().show()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setMessage(getString(R.string.failed_to_login))
+            builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
+            builder.create().show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,44 +96,52 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
                 updateProgress(it)
             }
         })
-        viewModel.isReady.observe(this, Observer {
-            if (it != null && it) {
-                UpdatesHelper.updateTasksWidget(context!!)
+        viewModel.isReady.observe(this, Observer { b ->
+            if (b != null && b) {
+                withContext { UpdatesHelper.updateTasksWidget(it) }
             }
         })
     }
 
     private fun initGoogleTasksButton() {
-        if (SuperUtil.isGooglePlayServicesAvailable(context!!)) {
-            binding.tasksView.visibility = View.VISIBLE
-            binding.linkGTasks.setOnClickListener { googleTasksButtonClick() }
-        } else {
-            binding.tasksView.visibility = View.GONE
+        withContext {
+            if (SuperUtil.isGooglePlayServicesAvailable(it)) {
+                binding.tasksView.visibility = View.VISIBLE
+                binding.linkGTasks.setOnClickListener { googleTasksButtonClick() }
+            } else {
+                binding.tasksView.visibility = View.GONE
+            }
         }
     }
 
     private fun initGoogleDriveButton() {
-        if (SuperUtil.isGooglePlayServicesAvailable(context!!)) {
-            binding.driveView.visibility = View.VISIBLE
-            binding.linkGDrive.setOnClickListener { googleDriveButtonClick() }
-        } else {
-            binding.driveView.visibility = View.GONE
+        withContext {
+            if (SuperUtil.isGooglePlayServicesAvailable(it)) {
+                binding.driveView.visibility = View.VISIBLE
+                binding.linkGDrive.setOnClickListener { googleDriveButtonClick() }
+            } else {
+                binding.driveView.visibility = View.GONE
+            }
         }
     }
 
     private fun googleTasksButtonClick() {
-        if (Permissions.ensurePermissions(activity!!, 104,
-                        Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-                        Permissions.WRITE_EXTERNAL)) {
-            switchGoogleTasksStatus()
+        withActivity {
+            if (Permissions.ensurePermissions(it, 104,
+                            Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                            Permissions.WRITE_EXTERNAL)) {
+                switchGoogleTasksStatus()
+            }
         }
     }
 
     private fun googleDriveButtonClick() {
-        if (Permissions.ensurePermissions(activity!!, 103,
-                        Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-                        Permissions.WRITE_EXTERNAL)) {
-            switchGoogleDriveStatus()
+        withActivity {
+            if (Permissions.ensurePermissions(it, 103,
+                            Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                            Permissions.WRITE_EXTERNAL)) {
+                switchGoogleDriveStatus()
+            }
         }
     }
 
@@ -140,32 +150,34 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
 
     private fun switchGoogleTasksStatus() {
-        if (!SuperUtil.checkGooglePlayServicesAvailability(activity!!)) {
-            Toast.makeText(context, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (mGoogleLogin.isGoogleTasksLogged) {
-            disconnectFromGoogleTasks()
-        } else {
-            mGoogleLogin.loginTasks(object : GoogleLogin.TasksCallback {
-                override fun onProgress(isLoading: Boolean) {
-                    updateProgress(isLoading)
-                }
-
-                override fun onResult(v: GTasks?, isLogged: Boolean) {
-                    Timber.d("onResult: $isLogged")
-                    if (isLogged) {
-                        viewModel.loadGoogleTasks()
+        withActivity {
+            if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
+                Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
+                return@withActivity
+            }
+            if (mGoogleLogin.isGoogleTasksLogged) {
+                disconnectFromGoogleTasks()
+            } else {
+                mGoogleLogin.loginTasks(object : GoogleLogin.TasksCallback {
+                    override fun onProgress(isLoading: Boolean) {
+                        updateProgress(isLoading)
                     }
-                    checkGoogleStatus()
-                    callback?.refreshMenu()
-                }
 
-                override fun onFail() {
-                    showErrorDialog()
-                    callback?.refreshMenu()
-                }
-            })
+                    override fun onResult(v: GTasks?, isLogged: Boolean) {
+                        Timber.d("onResult: $isLogged")
+                        if (isLogged) {
+                            viewModel.loadGoogleTasks()
+                        }
+                        checkGoogleStatus()
+                        callback?.refreshMenu()
+                    }
+
+                    override fun onFail() {
+                        showErrorDialog()
+                        callback?.refreshMenu()
+                    }
+                })
+            }
         }
     }
 
@@ -181,41 +193,45 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
 
     private fun switchGoogleDriveStatus() {
-        if (!SuperUtil.checkGooglePlayServicesAvailability(activity!!)) {
-            Toast.makeText(context, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (mGoogleLogin.isGoogleDriveLogged) {
-            disconnectFromGoogleDrive()
-        } else {
-            mGoogleLogin.loginDrive(object : GoogleLogin.DriveCallback {
-                override fun onProgress(isLoading: Boolean) {
-                    updateProgress(isLoading)
-                }
-
-                override fun onResult(v: GDrive?, isLogged: Boolean) {
-                    if (isLogged) {
-                        checkGoogleStatus()
+        withActivity {
+            if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
+                Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
+                return@withActivity
+            }
+            if (mGoogleLogin.isGoogleDriveLogged) {
+                disconnectFromGoogleDrive()
+            } else {
+                mGoogleLogin.loginDrive(object : GoogleLogin.DriveCallback {
+                    override fun onProgress(isLoading: Boolean) {
+                        updateProgress(isLoading)
                     }
-                    callback?.refreshMenu()
-                }
 
-                override fun onFail() {
-                    showErrorDialog()
-                    callback?.refreshMenu()
-                }
-            })
+                    override fun onResult(v: GDrive?, isLogged: Boolean) {
+                        if (isLogged) {
+                            checkGoogleStatus()
+                        }
+                        callback?.refreshMenu()
+                    }
+
+                    override fun onFail() {
+                        showErrorDialog()
+                        callback?.refreshMenu()
+                    }
+                })
+            }
         }
     }
 
     private fun disconnectFromGoogleTasks() {
+        val ctx = context ?: return
+
         mGoogleLogin.logOutTasks()
         updateProgress(true)
         launchDefault {
-            AppDb.getAppDatabase(context!!).googleTasksDao().deleteAll()
-            AppDb.getAppDatabase(context!!).googleTaskListsDao().deleteAll()
+            AppDb.getAppDatabase(ctx).googleTasksDao().deleteAll()
+            AppDb.getAppDatabase(ctx).googleTaskListsDao().deleteAll()
             withUIContext {
-                UpdatesHelper.updateTasksWidget(context!!)
+                UpdatesHelper.updateTasksWidget(ctx)
                 callback?.refreshMenu()
                 updateProgress(false)
                 checkGoogleStatus()

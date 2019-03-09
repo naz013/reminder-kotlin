@@ -76,30 +76,32 @@ class SendFeedbackActivity : ThemedActivity<ActivitySendFeedbackBinding>() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.action_refresh -> {
-                binding.webView.reload()
-                return true
-            }
-            R.id.action_forward -> {
-                if (binding.webView.canGoForward()) {
-                    binding.webView.goForward()
+        if (item != null) {
+            when (item.itemId) {
+                R.id.action_refresh -> {
+                    binding.webView.reload()
+                    return true
                 }
-                return true
-            }
-            R.id.action_back -> {
-                if (binding.webView.canGoBack()) {
-                    binding.webView.goBack()
+                R.id.action_forward -> {
+                    if (binding.webView.canGoForward()) {
+                        binding.webView.goForward()
+                    }
+                    return true
                 }
-                return true
-            }
-            R.id.action_email -> {
-                sendEmail()
-                return true
-            }
-            android.R.id.home -> {
-                finish()
-               return true
+                R.id.action_back -> {
+                    if (binding.webView.canGoBack()) {
+                        binding.webView.goBack()
+                    }
+                    return true
+                }
+                R.id.action_email -> {
+                    sendEmail()
+                    return true
+                }
+                android.R.id.home -> {
+                    finish()
+                    return true
+                }
             }
         }
         return super.onOptionsItemSelected(item)

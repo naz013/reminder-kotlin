@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings.additional
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
@@ -60,23 +59,23 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
     }
 
     private fun showPriorityDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(getString(R.string.default_priority))
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, priorityList())
-        mItemSelect = prefs.missedCallPriority
-        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which ->
-            mItemSelect = which
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(getString(R.string.default_priority))
+            mItemSelect = prefs.missedCallPriority
+            builder.setSingleChoiceItems(priorityList(), mItemSelect) { _, which ->
+                mItemSelect = which
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.missedCallPriority = mItemSelect
+                showPriority()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-            prefs.missedCallPriority = mItemSelect
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.setOnDismissListener { showPriority() }
-        dialog.show()
     }
 
     private fun showPriority() {
@@ -111,63 +110,71 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
     }
 
     private fun changeFollowPrefs() {
-        if (!Permissions.ensurePermissions(activity!!, FOLLOW, Permissions.READ_PHONE_STATE)) {
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, FOLLOW, Permissions.READ_PHONE_STATE)) {
+                return@withActivity
+            }
+            val isChecked = binding.followReminderPrefs.isChecked
+            binding.followReminderPrefs.isChecked = !isChecked
+            prefs.isFollowReminderEnabled = !isChecked
         }
-        val isChecked = binding.followReminderPrefs.isChecked
-        binding.followReminderPrefs.isChecked = !isChecked
-        prefs.isFollowReminderEnabled = !isChecked
     }
 
     private fun changeMissedPrefs() {
-        if (!Permissions.ensurePermissions(activity!!, MISSED, Permissions.READ_PHONE_STATE)) {
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, MISSED, Permissions.READ_PHONE_STATE)) {
+                return@withActivity
+            }
+            val isChecked = binding.missedPrefs.isChecked
+            binding.missedPrefs.isChecked = !isChecked
+            prefs.isMissedReminderEnabled = !isChecked
         }
-        val isChecked = binding.missedPrefs.isChecked
-        binding.missedPrefs.isChecked = !isChecked
-        prefs.isMissedReminderEnabled = !isChecked
     }
 
     private fun changeQuickSmsPrefs() {
-        if (!Permissions.ensurePermissions(activity!!, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
-            return
+        withActivity {
+            if (!Permissions.ensurePermissions(it, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
+                return@withActivity
+            }
+            val isChecked = binding.quickSMSPrefs.isChecked
+            binding.quickSMSPrefs.isChecked = !isChecked
+            prefs.isQuickSmsEnabled = !isChecked
         }
-        val isChecked = binding.quickSMSPrefs.isChecked
-        binding.quickSMSPrefs.isChecked = !isChecked
-        prefs.isQuickSmsEnabled = !isChecked
     }
 
     private fun showTimePickerDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setTitle(R.string.interval)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
-        b.seekBar.max = 60
-        b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                        progress.toString())
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.interval)
+            val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
+            b.seekBar.max = 60
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                            progress.toString())
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val time = prefs.missedReminderTime
+            b.seekBar.progress = time
+            b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), time.toString())
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ ->
+                prefs.missedReminderTime = b.seekBar.progress
+                showTime()
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-            }
-        })
-        val time = prefs.missedReminderTime
-        b.seekBar.progress = time
-        b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), time.toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { _, _ ->
-            prefs.missedReminderTime = b.seekBar.progress
-            showTime()
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity!!)
     }
 
     override fun getTitle(): String = getString(R.string.additional)
