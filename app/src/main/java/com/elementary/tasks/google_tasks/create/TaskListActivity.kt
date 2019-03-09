@@ -172,7 +172,7 @@ class TaskListActivity : ThemedActivity<ActivityCreateTaskListBinding>() {
 
     private fun deleteDialog() {
         if (mIsLoading) return
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(getString(R.string.delete_this_list))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()

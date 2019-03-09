@@ -125,7 +125,7 @@ class EventsWidgetConfigActivity : ThemedActivity<ActivityWidgetCurrentTasksConf
     }
 
     private fun showTextSizeDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(R.string.text_size)
         val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater, null, false)
         b.seekBar.max = 13

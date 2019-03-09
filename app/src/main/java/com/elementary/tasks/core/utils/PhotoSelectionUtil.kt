@@ -58,7 +58,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
                 arrayOf(activity.getString(R.string.gallery))
             }
         }
-        val builder = dialogues.getDialog(activity)
+        val builder = dialogues.getMaterialDialog(activity)
         builder.setTitle(R.string.image)
         builder.setItems(items) { dialog, item ->
             dialog.dismiss()
@@ -75,7 +75,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
                 }
             }
         }
-        builder.show()
+        builder.create().show()
     }
 
     private fun pickFromGallery() {
@@ -200,7 +200,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
     }
 
     private fun showUrlDialog() {
-        val builder = dialogues.getDialog(activity)
+        val builder = dialogues.getMaterialDialog(activity)
         val view = com.elementary.tasks.databinding.ViewUrlFieldBinding.inflate(LayoutInflater.from(activity))
         builder.setView(view.root)
         builder.setPositiveButton(R.string.download) { dialog, _ ->
@@ -214,7 +214,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
     }
 
     private fun showClipboardDialog(text: String) {
-        val builder = dialogues.getDialog(activity)
+        val builder = dialogues.getMaterialDialog(activity)
         builder.setMessage(text)
         builder.setPositiveButton(R.string.download) { dialog, _ ->
             dialog.dismiss()

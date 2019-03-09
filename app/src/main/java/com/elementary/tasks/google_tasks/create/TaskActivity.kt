@@ -267,7 +267,7 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
     }
 
     private fun selectDateAction(type: Int) {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         var types = arrayOf(getString(R.string.no_date), getString(R.string.select_date))
         if (type == 2) {
             types = arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
@@ -361,11 +361,10 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
                 position = i
             }
         }
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(R.string.choose_list)
         val finalList = list
-        builder.setSingleChoiceItems(ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, names),
-                position) { dialog, which ->
+        builder.setSingleChoiceItems(names.toTypedArray(), position) { dialog, which ->
             dialog.dismiss()
             if (move) {
                 moveTask(finalList[which].listId)
@@ -373,8 +372,7 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
                 showTaskList(finalList[which])
             }
         }
-        val alert = builder.create()
-        alert.show()
+        builder.create().show()
     }
 
     private fun saveTask() {
@@ -454,15 +452,14 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
 
     private fun deleteDialog() {
         if (mIsLoading) return
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(getString(R.string.delete_this_task))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
             deleteTask()
         }
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun deleteTask() {

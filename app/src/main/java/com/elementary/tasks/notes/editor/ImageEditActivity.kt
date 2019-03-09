@@ -98,7 +98,7 @@ class ImageEditActivity : ThemedActivity<ActivityImageEditBinding>(), EditInterf
     }
 
     private fun askDraw(position: Int) {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(R.string.which_image_you_want_to_use)
         builder.setPositiveButton(R.string.edited) { dialogInterface, _ ->
             dialogInterface.dismiss()
@@ -114,7 +114,7 @@ class ImageEditActivity : ThemedActivity<ActivityImageEditBinding>(), EditInterf
     }
 
     private fun askCrop(position: Int) {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(R.string.which_image_you_want_to_use)
         builder.setPositiveButton(R.string.cropped) { dialogInterface, _ ->
             dialogInterface.dismiss()

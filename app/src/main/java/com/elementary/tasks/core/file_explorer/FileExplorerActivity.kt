@@ -134,7 +134,7 @@ class FileExplorerActivity : ThemedActivity<ActivityFileExplorerBinding>() {
     }
 
     private fun showFullImage() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(mFileName)
         val imageView = ListItemImageBinding.inflate(LayoutInflater.from(this))
         Picasso.get()

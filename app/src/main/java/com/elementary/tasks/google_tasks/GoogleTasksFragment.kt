@@ -220,16 +220,17 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun deleteDialog() {
-        val builder = dialogues.getDialog(context!!)
-        builder.setCancelable(true)
-        builder.setMessage(R.string.delete_this_list)
-        builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-        builder.setPositiveButton(R.string.yes) { dialog, _ ->
-            deleteList()
-            dialog.dismiss()
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setMessage(R.string.delete_this_list)
+            builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
+            builder.setPositiveButton(R.string.yes) { dialog, _ ->
+                deleteList()
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        val dialog = builder.create()
-        dialog.show()
     }
 
     private fun deleteList() {

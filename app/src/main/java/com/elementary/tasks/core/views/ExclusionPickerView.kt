@@ -139,7 +139,7 @@ class ExclusionPickerView : LinearLayout {
 
     private fun openExclusionDialog() {
         val dialogues = dialogues ?: return
-        val builder = dialogues.getDialog(context)
+        val builder = dialogues.getMaterialDialog(context)
         builder.setTitle(R.string.exclusion)
         val b = customizationView
         builder.setView(b.view)
@@ -237,9 +237,9 @@ class ExclusionPickerView : LinearLayout {
         }
         val themeUtil = themeUtil
         if (themeUtil != null) {
-            TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs?.is24HourFormat ?: false, fromHour, fromMinute, listener)
+            TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs?.is24HourFormat ?: false, fromHour, fromMinute, listener)
         } else {
-            TimeUtil.showTimePicker(context!!, prefs?.is24HourFormat ?: false, listener, fromHour, fromMinute)
+            TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, listener, fromHour, fromMinute)
         }
     }
 
@@ -255,9 +255,9 @@ class ExclusionPickerView : LinearLayout {
         }
         val themeUtil = themeUtil
         if (themeUtil != null) {
-            TimeUtil.showTimePicker(context!!, themeUtil.dialogStyle, prefs?.is24HourFormat ?: false, toHour, toMinute, listener)
+            TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs?.is24HourFormat ?: false, toHour, toMinute, listener)
         } else {
-            TimeUtil.showTimePicker(context!!, prefs?.is24HourFormat ?: false, listener, toHour, toMinute)
+            TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, listener, toHour, toMinute)
         }
     }
 }

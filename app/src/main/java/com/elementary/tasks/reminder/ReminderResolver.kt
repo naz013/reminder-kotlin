@@ -85,7 +85,7 @@ class ReminderResolver(
         for (item in groups) {
             arrayAdapter.add(item.groupTitle)
         }
-        val builder = dialogAction.invoke().getDialog(context)
+        val builder = dialogAction.invoke().getMaterialDialog(context)
         builder.setTitle(context.getString(R.string.choose_group))
         builder.setAdapter(arrayAdapter) { dialog, which ->
             dialog.dismiss()
@@ -97,8 +97,7 @@ class ReminderResolver(
             reminder.groupUuId = catId
             saveAction.invoke(reminder)
         }
-        val alert = builder.create()
-        alert.show()
+        builder.create().show()
     }
 
     private fun previewReminder(view: View, reminder: Reminder) {

@@ -258,7 +258,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
 
     private fun showRateDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(R.string.rate)
         builder.setMessage(R.string.can_you_rate_this_application)
         builder.setPositiveButton(R.string.rate) { dialogInterface, _ ->
@@ -625,7 +625,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     private fun showDialog() {
         val items = arrayOf<CharSequence>(String.format(getString(R.string.x_minutes), 5.toString()), String.format(getString(R.string.x_minutes), 10.toString()), String.format(getString(R.string.x_minutes), 15.toString()), String.format(getString(R.string.x_minutes), 30.toString()), String.format(getString(R.string.x_minutes), 45.toString()), String.format(getString(R.string.x_minutes), 60.toString()), String.format(getString(R.string.x_minutes), 90.toString()), String.format(getString(R.string.x_hours), 2.toString()), String.format(getString(R.string.x_hours), 6.toString()), String.format(getString(R.string.x_hours), 24.toString()), String.format(getString(R.string.x_days), 2.toString()), String.format(getString(R.string.x_days), 7.toString()))
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(getString(R.string.choose_time))
         builder.setItems(items) { dialog, item1 ->
             var x = 0
@@ -649,8 +649,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             removeFlags()
             finish()
         }
-        val alert = builder.create()
-        alert.show()
+        builder.create().show()
     }
 
     private fun sendSMS() {
@@ -726,7 +725,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
 
     private fun showInstallSkypeDialog() {
-        val builder = dialogues.getDialog(this)
+        val builder = dialogues.getMaterialDialog(this)
         builder.setMessage(R.string.skype_is_not_installed)
         builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
             dialogInterface.dismiss()

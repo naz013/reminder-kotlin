@@ -202,8 +202,8 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
                 if (!sort) {
                     withUIContext { notifyObserver(eventsPagerItem, res) }
                 } else {
-                    res.sortWith(Comparator { eventsItem, t1 -> eventsItem.dt.compareTo(t1.dt) })
-                    withUIContext { notifyObserver(eventsPagerItem, res) }
+                    val sorted = res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+                    withUIContext { notifyObserver(eventsPagerItem, sorted) }
                 }
             }
         }
@@ -212,6 +212,7 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
     class Factory(private val calculateFuture: Boolean,
                   private val birthTime: Long = 0) : ViewModelProvider.NewInstanceFactory() {
 
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return DayViewViewModel(calculateFuture, birthTime) as T
         }

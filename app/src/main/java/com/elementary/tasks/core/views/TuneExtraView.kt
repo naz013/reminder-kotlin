@@ -148,7 +148,7 @@ class TuneExtraView : LinearLayout {
 
     private fun openCustomizationDialog() {
         val dialogues = dialogues ?: return
-        val builder = dialogues.getDialog(context)
+        val builder = dialogues.getMaterialDialog(context)
         builder.setTitle(R.string.personalization)
         val b = customizationView
         builder.setView(b.view)

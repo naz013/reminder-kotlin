@@ -184,7 +184,7 @@ object SuperUtil {
 
     fun askNotificationPermission(activity: Activity, dialogues: Dialogues) {
         if (Module.isMarshmallow) {
-            val builder = dialogues.getDialog(activity)
+            val builder = dialogues.getMaterialDialog(activity)
             builder.setMessage(R.string.for_correct_work_of_application)
             builder.setPositiveButton(R.string.grant) { dialog, _ ->
                 dialog.dismiss()

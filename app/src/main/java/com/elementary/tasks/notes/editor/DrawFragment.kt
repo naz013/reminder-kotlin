@@ -376,7 +376,7 @@ class DrawFragment : BitmapFragment<FragmentDrawImageBinding>(), PhotoSelectionU
     }
 
     private fun showStyleDialog() {
-        val builder = dialogues.getDialog(context!!)
+        val builder = dialogues.getMaterialDialog(context!!)
         builder.setTitle(getString(R.string.font_style))
         val contacts = AssetsUtil.getFontNames()
         val inflater = LayoutInflater.from(context)
@@ -401,8 +401,7 @@ class DrawFragment : BitmapFragment<FragmentDrawImageBinding>(), PhotoSelectionU
             binding.drawView.setFontFamily(which)
             dialog.dismiss()
         }
-        val dialog = builder.create()
-        dialog.show()
+        builder.create().show()
     }
 
     private fun setCurrentColor(@ColorInt color: Int) {
@@ -421,7 +420,7 @@ class DrawFragment : BitmapFragment<FragmentDrawImageBinding>(), PhotoSelectionU
     }
 
     private fun showTextPickerDialog() {
-        val builder = dialogues.getDialog(context!!)
+        val builder = dialogues.getMaterialDialog(context!!)
         val editText = AppCompatEditText(context!!)
         editText.setHint(R.string.text)
         builder.setView(editText)

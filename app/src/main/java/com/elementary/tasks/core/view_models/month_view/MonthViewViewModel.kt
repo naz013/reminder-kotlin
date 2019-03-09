@@ -148,8 +148,8 @@ class MonthViewViewModel private constructor(private val addReminders: Boolean,
                 if (!sort) {
                     withUIContext { notifyObserver(monthPagerItem, res) }
                 } else {
-                    res.sortWith(Comparator { eventsItem, t1 -> eventsItem.dt.compareTo(t1.dt) })
-                    withUIContext { notifyObserver(monthPagerItem, res) }
+                    val sorted = res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+                    withUIContext { notifyObserver(monthPagerItem, sorted) }
                 }
             }
         }
@@ -159,6 +159,7 @@ class MonthViewViewModel private constructor(private val addReminders: Boolean,
                   private val calculateFuture: Boolean,
                   private val birthTime: Long = 0) : ViewModelProvider.NewInstanceFactory() {
 
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return MonthViewViewModel(addReminders, calculateFuture, birthTime) as T
         }
