@@ -155,3 +155,9 @@
 -keep public class com.elementary.tasks.core.network.places.** {
   public protected *;
 }
+
+-keepattributes Signature
+
+-keepclassmembers class com.yourcompany.models.** {
+    *;
+}
