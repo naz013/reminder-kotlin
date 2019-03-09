@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
+import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.BuildConfig
 import timber.log.Timber
 import java.io.File
@@ -53,7 +54,7 @@ object UriUtil {
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Crashlytics.logException(e)
                 withUIContext { onReady.invoke(false, null) }
             }
         }
@@ -65,6 +66,7 @@ object UriUtil {
             try {
                 FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
             } catch (e: java.lang.Exception) {
+                Crashlytics.logException(e)
                 null
             }
         } else {
@@ -78,6 +80,7 @@ object UriUtil {
             try {
                 FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
             } catch (e: java.lang.Exception) {
+                Crashlytics.logException(e)
                 null
             }
         } else {
