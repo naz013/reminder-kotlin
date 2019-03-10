@@ -33,6 +33,14 @@ class TasksRecyclerAdapter : ListAdapter<GoogleTask, GoogleTaskHolder>(GoogleTas
             notifyDataSetChanged()
         }
 
+    override fun getItem(position: Int): GoogleTask? {
+        return try {
+            super.getItem(position)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoogleTaskHolder {
         return GoogleTaskHolder(parent) { view, i, listActions ->
             actionsListener?.onAction(view, i, getItem(i), listActions)
@@ -40,6 +48,7 @@ class TasksRecyclerAdapter : ListAdapter<GoogleTask, GoogleTaskHolder>(GoogleTas
     }
 
     override fun onBindViewHolder(holder: GoogleTaskHolder, position: Int) {
-        holder.bind(getItem(position), googleTaskListMap)
+        val item = getItem(position) ?: return
+        holder.bind(item, googleTaskListMap)
     }
 }
