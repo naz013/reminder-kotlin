@@ -167,7 +167,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'org.dmfs:lib-recur:0.10.1'
     implementation 'org.apache.commons:commons-lang3:3.7'
-    implementation 'com.github.florent37:expansionpanel:1.1.1'
+    implementation 'com.github.florent37:expansionpanel:1.2.2'
     implementation 'com.github.naz013:ColorSlider:1.0.5'
     implementation 'com.airbnb.android:lottie:2.8.0'
     implementation 'co.revely:gradient:1.0.1'
