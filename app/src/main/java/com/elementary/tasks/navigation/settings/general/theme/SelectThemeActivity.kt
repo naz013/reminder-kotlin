@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivitySelectThemeBinding
@@ -130,7 +129,7 @@ class SelectThemeActivity : ThemedActivity<ActivitySelectThemeBinding>() {
         val loaded = prefs.appTheme
         return listOf(
                 autoTheme(loaded),
-                Theme(ThemeUtil.THEME_PURE_WHITE, loaded == ThemeUtil.THEME_PURE_WHITE, !Module.isPro, NAMES[0],
+                Theme(ThemeUtil.THEME_PURE_WHITE, loaded == ThemeUtil.THEME_PURE_WHITE, false, NAMES[0],
                         toColor(R.color.pureWhite), toColor(R.color.pureWhite), toColor(R.color.pureWhite)),
                 Theme(ThemeUtil.THEME_LIGHT_1, loaded == ThemeUtil.THEME_LIGHT_1, false, NAMES[1],
                         toColor(R.color.lightPrimaryDark1), toColor(R.color.lightPrimary1), toColor(R.color.lightBg1)),
