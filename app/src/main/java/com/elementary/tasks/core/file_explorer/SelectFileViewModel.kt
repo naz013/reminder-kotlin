@@ -45,8 +45,14 @@ class SelectFileViewModel : ViewModel(), LifecycleObserver {
     }
 
     fun moveUp(s: String, firstLevel: Boolean) {
-        path = File(path.toString().substring(0, path.toString().lastIndexOf(s)))
-        loadFileList(path, firstLevel)
+        val oldPath = path
+        val newPath = try {
+            File(oldPath.toString().substring(0, oldPath.toString().lastIndexOf(s)))
+        } catch (e: Exception) {
+            File(oldPath.toString())
+        }
+        path = newPath
+        loadFileList(newPath, firstLevel)
     }
 
     private fun createFilteredFileList(path: File): List<FileItem> {
