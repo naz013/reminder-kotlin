@@ -109,8 +109,14 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun currentTaskList(): GoogleTaskList? {
-        return if (currentPos > 0) {
-            googleTaskLists[currentPos - 1]
+        val list = googleTaskLists
+        val position = currentPos
+        return if (position > 0 && list.isNotEmpty()) {
+            if (position - 1 < list.size) {
+                list[position - 1]
+            } else {
+                null
+            }
         } else {
             null
         }
@@ -214,9 +220,11 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
 
     private fun addNewTask() {
         val currentList = currentTaskList() ?: defaultGoogleTaskList ?: return
-        TaskActivity.openLogged(context!!, Intent(context, TaskActivity::class.java)
-                .putExtra(Constants.INTENT_ID, currentList.listId)
-                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+        withContext {
+            TaskActivity.openLogged(it, Intent(context, TaskActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, currentList.listId)
+                    .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+        }
     }
 
     private fun deleteDialog() {
@@ -234,11 +242,15 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun deleteList() {
-        viewModel.deleteGoogleTaskList(googleTaskLists[currentPos])
+        currentTaskList()?.let {
+            viewModel.deleteGoogleTaskList(it)
+        }
     }
 
     private fun clearList() {
-        viewModel.clearList(googleTaskLists[currentPos])
+        currentTaskList()?.let {
+            viewModel.clearList(it)
+        }
     }
 
     override fun provideGoogleTasksLists(listener: ((List<GoogleTaskList>) -> Unit)?) {
