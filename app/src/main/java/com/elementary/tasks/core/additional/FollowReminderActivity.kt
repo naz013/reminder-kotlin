@@ -120,7 +120,7 @@ class FollowReminderActivity : ThemedActivity<ActivityFollowBinding>(), Compound
         super.onCreate(savedInstanceState)
         canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
         val receivedDate = intent.getLongExtra(Constants.SELECTED_TIME, 0)
-        mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
+        mNumber = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
         val name = Contacts.getNameFromNumber(mNumber, this)
 
         val c = Calendar.getInstance()

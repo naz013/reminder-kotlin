@@ -292,8 +292,8 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
             if (resultCode == Activity.RESULT_OK) {
-                val name = data?.getStringExtra(Constants.SELECTED_CONTACT_NAME)
-                if (binding.birthName.text.toString().matches("".toRegex())) {
+                val name = data?.getStringExtra(Constants.SELECTED_CONTACT_NAME) ?: ""
+                if (binding.birthName.text.toString().trim() == "") {
                     binding.birthName.setText(name)
                 }
                 binding.numberView.setText(data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: "")
