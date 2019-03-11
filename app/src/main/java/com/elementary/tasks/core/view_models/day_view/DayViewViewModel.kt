@@ -18,6 +18,7 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.Job
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
@@ -202,7 +203,11 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
                 if (!sort) {
                     withUIContext { notifyObserver(eventsPagerItem, res) }
                 } else {
-                    val sorted = res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+                    val sorted = try {
+                        res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+                    } catch (e: IllegalArgumentException) {
+                        res
+                    }
                     withUIContext { notifyObserver(eventsPagerItem, sorted) }
                 }
             }

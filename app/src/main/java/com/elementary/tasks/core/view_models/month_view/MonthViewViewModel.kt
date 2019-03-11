@@ -12,6 +12,7 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.month_view.MonthPagerItem
 import kotlinx.coroutines.Job
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
@@ -148,7 +149,11 @@ class MonthViewViewModel private constructor(private val addReminders: Boolean,
                 if (!sort) {
                     withUIContext { notifyObserver(monthPagerItem, res) }
                 } else {
-                    val sorted = res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+                    val sorted = try {
+                        res.asSequence().sortedBy { it.getMillis(birthTime) }.toList()
+                    } catch (e: IllegalArgumentException) {
+                        res
+                    }
                     withUIContext { notifyObserver(monthPagerItem, sorted) }
                 }
             }
