@@ -124,7 +124,11 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
                 }
             }
             Timber.d("Search events: found -> %d", res.size)
-            val sorted = res.asSequence().sortedBy { it.getMillis(bTime) }.toList()
+            val sorted = try {
+                res.asSequence().sortedBy { it.getMillis(bTime) }.toList()
+            } catch (e: IllegalArgumentException) {
+                res
+            }
             withUIContext { showList(binding, sorted) }
         }
     }
