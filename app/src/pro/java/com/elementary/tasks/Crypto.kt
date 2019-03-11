@@ -1,7 +1,6 @@
 package com.elementary.tasks
 
 import android.util.Base64
-import com.tozny.crypto.android.AesCbcWithIntegrity
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -41,26 +40,6 @@ object Helper {
     fun base64Decode(text: String): ByteArray = Base64.decode(text, Base64.NO_WRAP)
 
     fun base64Encode(data: ByteArray): String = Base64.encodeToString(data, Base64.NO_WRAP)
-
-    fun encryptMessage(v: String, channel: String): String {
-        return try {
-            val keys = AesCbcWithIntegrity.generateKeyFromPassword(channel, base64Encode(channel.toByteArray()))
-            val cipherTextIvMac = AesCbcWithIntegrity.encrypt(v, keys)
-            cipherTextIvMac.toString()
-        } catch (e: IllegalArgumentException) {
-            ""
-        }
-    }
-
-    fun decryptMessage(v: String, channel: String): String {
-        return try {
-            val keys = AesCbcWithIntegrity.generateKeyFromPassword(channel, base64Encode(channel.toByteArray()))
-            val cipherTextIvMac = AesCbcWithIntegrity.CipherTextIvMac(v)
-            AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys)
-        } catch (e: IllegalArgumentException) {
-            ""
-        }
-    }
 }
 
 object Hashing {
