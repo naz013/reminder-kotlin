@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.text.TextUtils
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -634,12 +633,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun createObject(): NoteWithImages? {
-        val text = binding.taskMessage.text.toString().trim()
+        val text = binding.taskMessage.text.toString()
         val images = imagesGridAdapter.data
-        if (TextUtils.isEmpty(text) && images.isEmpty()) {
-            binding.taskMessage.error = getString(R.string.must_be_not_empty)
-            return null
-        }
 
         val pair = stateViewModel.colorOpacity.value
                 ?: Pair(newColor(), binding.opacityBar.progress)

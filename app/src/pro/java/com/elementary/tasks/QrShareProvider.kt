@@ -19,29 +19,44 @@ import java.util.*
 class QrShareProvider(val themeUtil: ThemeUtil) {
 
     val database = FirebaseDatabase.getInstance()
+    private var data: ShareData? = null
 
     fun openScanner(activity: Activity, code: Int) {
         val intent = Intent()
         activity.startActivityForResult(intent, code)
     }
 
-    fun readData(key: String, password: String, onReady: (type: String?, data: String?) -> Unit) {
+    fun verifyData(password: String, onReady: (type: String?, data: String?) -> Unit) {
+        val shareData = data
+        if (shareData == null) {
+            onReady.invoke(null, null)
+            return
+        }
         val encPassword = Hashing.sha256(password)
+        if (encPassword == shareData.password) {
+            onReady.invoke(shareData.type, shareData.data)
+        } else {
+            onReady.invoke(null, null)
+        }
+    }
+
+    fun readData(key: String, onReady: (Boolean) -> Unit) {
         database.reference.child(CHILD_SHARE)
                 .child(key)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {
                         Timber.d("onCancelled: ${error.message}")
-                        onReady.invoke(null, null)
+                        onReady.invoke(false)
                     }
 
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         Timber.d("onDataChange: $dataSnapshot")
                         val shareData = dataSnapshot.getValue(ShareData::class.java)
-                        if (shareData != null && encPassword == shareData.password) {
-                            onReady.invoke(shareData.type, shareData.data)
+                        if (shareData != null) {
+                            data = shareData
+                            onReady.invoke(true)
                         } else {
-                            onReady.invoke(null, null)
+                            onReady.invoke(false)
                         }
                     }
                 })
