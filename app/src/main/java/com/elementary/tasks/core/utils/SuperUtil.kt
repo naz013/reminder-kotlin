@@ -292,7 +292,7 @@ object SuperUtil {
         }
         try {
             activity.startActivityForResult(intent, requestCode)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(activity, activity.getString(R.string.no_recognizer_found), Toast.LENGTH_SHORT).show()
         }
     }
