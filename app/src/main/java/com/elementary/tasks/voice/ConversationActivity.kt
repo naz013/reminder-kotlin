@@ -644,16 +644,21 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
     }
 
     private fun initRecognizer() {
-        val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.packageName)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-        speech = SpeechRecognizer.createSpeechRecognizer(this)
-        speech?.setRecognitionListener(mRecognitionListener)
-        speech?.startListening(recognizerIntent)
-        isListening = true
+        try {
+            val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.packageName)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+            speech = SpeechRecognizer.createSpeechRecognizer(this)
+            speech?.setRecognitionListener(mRecognitionListener)
+            speech?.startListening(recognizerIntent)
+            isListening = true
+        } catch (e: SecurityException) {
+            speech = null
+            isListening = false
+        }
     }
 
     private fun micClick() {
