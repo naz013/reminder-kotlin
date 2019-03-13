@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Build
 import android.text.TextUtils
+import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.R
 import hirondelle.date4j.DateTime
 import timber.log.Timber
@@ -343,12 +344,9 @@ object TimeUtil {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
             val date = GMT_DATE_FORMAT.parse(dateTime)
             calendar.time = date
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
+            return 0
         }
 
         return calendar.timeInMillis
@@ -401,12 +399,9 @@ object TimeUtil {
             val date = GMT_DATE_FORMAT.parse(gmt)
             calendar.time = date
             calendar.timeInMillis = calendar.timeInMillis + delay * TimeCount.MINUTE
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
+            return ""
         }
 
         return if (is24) {
@@ -422,12 +417,8 @@ object TimeUtil {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
             val date = GMT_DATE_FORMAT.parse(dateTime)
             calendar.time = date
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
         }
 
         return if (is24) {
@@ -483,8 +474,6 @@ object TimeUtil {
             null
         } catch (e: java.lang.Exception) {
             null
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            null
         }
     }
 
@@ -493,12 +482,8 @@ object TimeUtil {
         var date: Date? = null
         try {
             date = format.parse(dateOfBirth)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
         }
 
         val calendar = Calendar.getInstance()
