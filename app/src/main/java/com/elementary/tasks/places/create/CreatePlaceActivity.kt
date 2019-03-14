@@ -176,7 +176,9 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
                 true
             }
             MENU_ITEM_DELETE -> {
-                deleteItem()
+                dialogues.askConfirmation(this, getString(R.string.delete)) {
+                    if (it) deleteItem()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

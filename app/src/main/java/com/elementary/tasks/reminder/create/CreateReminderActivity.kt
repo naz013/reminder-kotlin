@@ -374,9 +374,13 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
 
     private fun deleteReminder() {
         if (stateViewModel.reminder.isRemoved) {
-            viewModel.deleteReminder(stateViewModel.reminder, true)
+            dialogues.askConfirmation(this, getString(R.string.delete)) {
+                if (it) viewModel.deleteReminder(stateViewModel.reminder, true)
+            }
         } else {
-            viewModel.moveToTrash(stateViewModel.reminder)
+            dialogues.askConfirmation(this, getString(R.string.move_to_trash)) {
+                if (it) viewModel.moveToTrash(stateViewModel.reminder)
+            }
         }
     }
 

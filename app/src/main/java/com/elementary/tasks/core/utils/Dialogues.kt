@@ -171,6 +171,22 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         } else null
     }
 
+    fun askConfirmation(context: Context, title: String, onAction: (Boolean) -> Unit) {
+        getMaterialDialog(context)
+                .setTitle(title)
+                .setMessage(context.getString(R.string.are_you_sure))
+                .setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
+                    dialog.dismiss()
+                    onAction.invoke(true)
+                }
+                .setNegativeButton(context.getString(R.string.no)) { dialog, _ ->
+                    dialog.dismiss()
+                    onAction.invoke(false)
+                }
+                .create()
+                .show()
+    }
+
     interface OnValueSelectedListener<T> {
         fun onSelected(t: T)
         fun getTitle(t: T): String

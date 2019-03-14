@@ -114,9 +114,17 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
             when (item) {
                 0 -> changeColor(t)
                 1 -> editGroup(t)
-                2 -> viewModel.deleteGroup(t)
+                2 -> askConfirmation(t)
             }
         }, *items)
+    }
+
+    private fun askConfirmation(t: ReminderGroup) {
+        withContext {
+            dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
+                if (b) viewModel.deleteGroup(t)
+            }
+        }
     }
 
     private fun editGroup(t: ReminderGroup) {

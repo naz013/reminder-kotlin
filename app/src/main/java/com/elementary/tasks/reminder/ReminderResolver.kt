@@ -49,7 +49,9 @@ class ReminderResolver(
                 0 -> previewReminder(view, reminder)
                 1 -> editReminder(view, reminder)
                 2 -> changeGroup(view, reminder)
-                3 -> deleteAction.invoke(reminder)
+                3 -> askConfirmation(view, items[item]) {
+                    if (it) deleteAction.invoke(reminder)
+                }
             }
         }, *items)
     }
@@ -63,9 +65,15 @@ class ReminderResolver(
                 0 -> previewReminder(view, reminder)
                 1 -> editReminder(view, reminder)
                 2 -> changeGroup(view, reminder)
-                3 -> deleteAction.invoke(reminder)
+                3 -> askConfirmation(view, items[item]) {
+                    if (it) deleteAction.invoke(reminder)
+                }
             }
         }, *items)
+    }
+
+    private fun askConfirmation(view: View, title: String, onAction: (Boolean) -> Unit) {
+        dialogAction.invoke().askConfirmation(view.context, title, onAction)
     }
 
     private fun editReminder(view: View, reminder: Reminder) {
