@@ -78,34 +78,40 @@ class RepeatView : LinearLayout, TextWatcher {
                 fitInterval(mills, TimeCount.DAY * 7) -> {
                     val progress = mills / (TimeCount.DAY * 7)
                     setProgress(progress.toInt())
-                    binding.repeatType.setSelection(WEEKS)
+                    selectState(WEEKS)
                 }
                 fitInterval(mills, TimeCount.DAY) -> {
                     val progress = mills / TimeCount.DAY
                     setProgress(progress.toInt())
-                    binding.repeatType.setSelection(DAYS)
+                    selectState(DAYS)
                 }
                 fitInterval(mills, TimeCount.HOUR) -> {
                     val progress = mills / TimeCount.HOUR
                     setProgress(progress.toInt())
-                    binding.repeatType.setSelection(HOURS)
+                    selectState(HOURS)
                 }
                 fitInterval(mills, TimeCount.MINUTE) -> {
                     val progress = mills / TimeCount.MINUTE
                     setProgress(progress.toInt())
-                    binding.repeatType.setSelection(MINUTES)
+                    selectState(MINUTES)
                 }
                 fitInterval(mills, TimeCount.SECOND) -> {
                     val progress = mills / TimeCount.SECOND
                     setProgress(progress.toInt())
-                    binding.repeatType.setSelection(SECONDS)
+                    selectState(SECONDS)
                 }
                 else -> {
                     setProgress(mills.toInt())
-                    binding.repeatType.setSelection(0)
+                    selectState(0)
                 }
             }
         }
+
+    private fun selectState(state: Int) {
+        if (state < binding.repeatType.adapter.count) {
+            binding.repeatType.setSelection(state)
+        }
+    }
 
     private fun fitInterval(interval: Long, matcher: Long): Boolean {
         return interval > matcher && (interval % matcher == 0L)
@@ -173,11 +179,10 @@ class RepeatView : LinearLayout, TextWatcher {
         mRepeatValue = defaultValue
         setDefaultField()
         if (mState == MONTHS && mIsLocked) {
-            val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times_month))
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.repeatType.adapter = spinnerAdapter
+            binding.repeatType.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times_month))
             binding.repeatType.isEnabled = false
         } else {
+            binding.repeatType.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.repeat_times))
             binding.repeatType.isEnabled = true
         }
         setState(mState)
