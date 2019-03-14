@@ -48,7 +48,10 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
     private lateinit var viewModel: BirthdaysViewModel
-    private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> viewModel.deleteBirthday(birthday) })
+    private val birthdayResolver = BirthdayResolver(
+            dialogAction = { dialogues },
+            deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
+    )
 
     private val mAdapter = BirthdaysRecyclerAdapter()
     private var mSearchView: SearchView? = null

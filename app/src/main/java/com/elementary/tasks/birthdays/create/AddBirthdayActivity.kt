@@ -233,7 +233,9 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
                 true
             }
             MENU_ITEM_DELETE -> {
-                deleteItem()
+                dialogues.askConfirmation(this, getString(R.string.delete)) {
+                    if (it) deleteItem()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

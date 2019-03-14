@@ -162,12 +162,16 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
         refreshView(0)
     }
 
-    private fun showMore(view: View, place: Place?) {
-        Dialogues.showPopup(view, {
-            if (it == 0) {
-                openPlace(place!!)
-            } else if (it == 1) {
-                viewModel.deletePlace(place!!)
+    private fun showMore(view: View, place: Place) {
+        Dialogues.showPopup(view, { i ->
+            if (i == 0) {
+                openPlace(place)
+            } else if (i == 1) {
+                withContext {
+                    dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
+                        if (b) viewModel.deletePlace(place)
+                    }
+                }
             }
         }, getString(R.string.edit), getString(R.string.delete))
     }

@@ -48,12 +48,17 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
     protected var dateMills: Long = 0
     private var mDialog: AlertDialog? = null
     private var job: Job? = null
-    private val birthdayResolver = BirthdayResolver(deleteAction = { })
-    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
+    private val birthdayResolver = BirthdayResolver(
+            dialogAction = { dialogues },
+            deleteAction = { }
+    )
+    private val reminderResolver = ReminderResolver(
+            dialogAction = { dialogues },
             saveAction = { },
-            toggleAction = {},
+            toggleAction = { },
             deleteAction = { },
-            allGroups = { return@ReminderResolver listOf() })
+            allGroups = { listOf() }
+    )
 
     protected fun showActionDialog(showEvents: Boolean, list: List<EventModel> = listOf()) {
         withContext {

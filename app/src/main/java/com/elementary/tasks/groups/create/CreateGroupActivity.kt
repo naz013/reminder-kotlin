@@ -179,7 +179,9 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
                 true
             }
             MENU_ITEM_DELETE -> {
-                deleteItem()
+                dialogues.askConfirmation(this, getString(R.string.delete)) {
+                    if (it) deleteItem()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -187,7 +189,9 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
     }
 
     private fun deleteItem() {
-        mItem?.let { viewModel.deleteGroup(it) }
+        mItem?.let {
+            viewModel.deleteGroup(it)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

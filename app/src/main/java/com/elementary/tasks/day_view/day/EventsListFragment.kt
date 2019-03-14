@@ -42,12 +42,17 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
     private var callback: DayCallback? = null
     private val mAdapter = CalendarEventsAdapter()
-    private val birthdayResolver = BirthdayResolver(deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday) })
-    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
-            saveAction = {reminder -> callback?.getViewModel()?.saveReminder(reminder) },
-            toggleAction = {},
-            deleteAction = {reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
-            allGroups = { return@ReminderResolver callback?.getViewModel()?.groups ?: listOf() })
+    private val birthdayResolver = BirthdayResolver(
+            dialogAction = { dialogues },
+            deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday) }
+    )
+    private val reminderResolver = ReminderResolver(
+            dialogAction = { dialogues },
+            saveAction = { reminder -> callback?.getViewModel()?.saveReminder(reminder) },
+            toggleAction = { },
+            deleteAction = { reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
+            allGroups = { callback?.getViewModel()?.groups ?: listOf() }
+    )
     private var mItem: EventsPagerItem? = null
     private val dialogues: Dialogues by inject()
 

@@ -489,7 +489,17 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     }
 
     private fun removeReminder() {
-        reminder?.let { viewModel.moveToTrash(it) }
+        reminder?.let { reminder ->
+            if (reminder.isActive && !reminder.isRemoved) {
+                dialogues.askConfirmation(this, getString(R.string.move_to_trash)) {
+                    if (it) viewModel.moveToTrash(reminder)
+                }
+            } else {
+                dialogues.askConfirmation(this, getString(R.string.delete)) {
+                    if (it) viewModel.deleteReminder(reminder, true)
+                }
+            }
+        }
     }
 
     private fun makeCopy() {

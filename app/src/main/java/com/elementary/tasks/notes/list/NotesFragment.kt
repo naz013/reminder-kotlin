@@ -234,9 +234,17 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
                 3 -> selectColor(note)
                 4 -> CreateNoteActivity.openLogged(context!!, Intent(context, CreateNoteActivity::class.java)
                         .putExtra(Constants.INTENT_ID, note.getKey()))
-                5 -> viewModel.deleteNote(note)
+                5 -> askConfirmation(note)
             }
         }, *items)
+    }
+
+    private fun askConfirmation(note: NoteWithImages) {
+        withContext {
+            dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
+                if (b) viewModel.deleteNote(note)
+            }
+        }
     }
 
     private fun showDialog() {

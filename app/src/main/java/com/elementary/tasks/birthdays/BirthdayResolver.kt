@@ -9,7 +9,10 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 
-class BirthdayResolver(private val deleteAction: (birthday: Birthday) -> Unit ) {
+class BirthdayResolver(
+        private val dialogAction: () -> Dialogues,
+        private val deleteAction: (birthday: Birthday) -> Unit
+) {
 
     fun resolveAction(view: View, birthday: Birthday, listActions: ListActions) {
         when (listActions) {
@@ -27,9 +30,15 @@ class BirthdayResolver(private val deleteAction: (birthday: Birthday) -> Unit ) 
             if (item == 0) {
                 openBirthday(view, birthday)
             } else if (item == 1) {
-                deleteAction.invoke(birthday)
+                askConfirmation(view, items[item]) {
+                    if (it) deleteAction.invoke(birthday)
+                }
             }
         }, *items)
+    }
+
+    private fun askConfirmation(view: View, title: String, onAction: (Boolean) -> Unit) {
+        dialogAction.invoke().askConfirmation(view.context, title, onAction)
     }
 
     private fun openBirthday(view: View, birthday: Birthday) {
