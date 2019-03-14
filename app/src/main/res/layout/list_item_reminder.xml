@@ -43,12 +43,12 @@
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/itemCheck"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="49dp"
                     android:focusable="false"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/linearLayout4" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipContainer"
@@ -68,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:enabled="false"
-                        android:textAppearance="?textAppearanceBody2"
+                        android:textAppearance="?textAppearanceCaption"
                         android:textColor="@color/chip_text_colors"
                         android:textColorLink="@color/chip_text_colors"
                         app:chipBackgroundColor="@color/chip_bg_colors"
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:enabled="false"
-                        android:textAppearance="?textAppearanceBody2"
+                        android:textAppearance="?textAppearanceCaption"
                         android:textColor="@color/chip_text_colors"
                         android:textColorLink="@color/chip_text_colors"
                         app:chipBackgroundColor="@color/chip_bg_colors"
@@ -100,7 +100,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:enabled="false"
-                        android:textAppearance="?textAppearanceBody2"
+                        android:textAppearance="?textAppearanceCaption"
                         android:textColor="@color/chip_text_colors"
                         android:textColorLink="@color/chip_text_colors"
                         app:chipBackgroundColor="@color/chip_bg_colors"
@@ -113,6 +113,7 @@
                 </com.google.android.material.chip.ChipGroup>
 
                 <LinearLayout
+                    android:id="@+id/linearLayout4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -196,8 +197,9 @@
                     android:layout_height="32dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/chipContainer"
                     app:srcCompat="@drawable/ic_twotone_more_vert_24px"
                     app:tint="?android:textColorPrimary" />
 
