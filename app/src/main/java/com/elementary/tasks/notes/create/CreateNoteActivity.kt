@@ -165,18 +165,20 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         }
         initImagesList()
 
-        if (savedInstanceState == null) {
+        val pair = if (savedInstanceState == null) {
             initDefaults()
+        } else {
+            newPair()
         }
-        initFromState()
+        observeStates()
+        initFromState(pair)
         loadNote()
     }
 
-    private fun initFromState() {
-        val pair = newPair()
-
+    private fun initFromState(pair: Pair<Int, Int>) {
         binding.colorSlider.setSelection(pair.first)
         binding.opacityBar.progress = pair.second
+        stateViewModel.colorOpacity.postValue(pair)
     }
 
     override fun onStart() {
@@ -188,8 +190,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
                 parseDrop(it)
             }
         }, ClipDescription.MIMETYPE_TEXT_PLAIN, UriUtil.ANY_MIME)
-
-        observeStates()
 
         if (prefs.hasPinCode && !stateViewModel.isLogged) {
             PinLoginActivity.verify(this)
@@ -227,6 +227,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private fun observeStates() {
         stateViewModel.colorOpacity.observe(this, Observer {
             if (it != null) {
+                Timber.d("observeStates: $it")
                 updateDarkness(it)
                 updateBackground(it)
                 updateTextColors()
@@ -272,7 +273,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         })
     }
 
-    private fun initDefaults() {
+    private fun initDefaults(): Pair<Int, Int> {
         stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
 
         val color = if (prefs.isNoteColorRememberingEnabled) {
@@ -284,17 +285,19 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         stateViewModel.colorOpacity.postValue(newPair(color, opacity))
         stateViewModel.palette.postValue(prefs.notePalette)
 
-        binding.colorSlider.setSelection(color)
-        binding.opacityBar.progress = opacity
-
         stateViewModel.fontStyle.postValue(0)
         stateViewModel.time.postValue(System.currentTimeMillis())
         stateViewModel.date.postValue(System.currentTimeMillis())
+        return Pair(color, opacity)
     }
 
     private fun palette(): Int = stateViewModel.palette.value ?: 0
 
-    private fun newColor(): Int = Random().nextInt(ThemeUtil.NOTE_COLORS)
+    private fun newColor(): Int = if (prefs.isNoteColorRememberingEnabled) {
+        prefs.lastNoteColor
+    } else {
+        Random().nextInt(ThemeUtil.NOTE_COLORS)
+    }
 
     private fun setText(text: String?) {
         binding.taskMessage.setText(text)
@@ -350,7 +353,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             newColor = stateViewModel.colorOpacity.value?.first ?: newColor()
         }
         if (opacity == -1) {
-            newOpacity = stateViewModel.colorOpacity.value?.second ?: 100
+            newOpacity = stateViewModel.colorOpacity.value?.second ?: prefs.noteColorOpacity
         }
         Timber.d("newPair: $newColor, $newOpacity")
         return Pair(newColor, newOpacity)
@@ -669,6 +672,11 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         if (hasReminder && note != null) {
             reminder = createReminder(note) ?: return
         }
+
+        if (prefs.isNoteColorRememberingEnabled) {
+            prefs.lastNoteColor = noteWithImages.getColor()
+        }
+
         viewModel.note.removeObserver(mNoteObserver)
         viewModel.saveNote(noteWithImages, reminder)
     }

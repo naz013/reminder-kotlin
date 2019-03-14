@@ -43,11 +43,10 @@ class ReminderApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        Timber.plant(Timber.DebugTree())
         Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         startKoin(this, components())
-
-        Timber.plant(Timber.DebugTree())
         JobManager.create(this).addJobCreator { EventJobService() }
 
         val fontRequest = FontRequest(
