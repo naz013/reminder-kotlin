@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud
 
 import android.content.Context
 import android.text.TextUtils
+import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -332,24 +333,27 @@ class GDrive private constructor(context: Context) : KoinComponent {
      * @param metadata metadata.
      * @throws IOException
      */
-    @Throws(IOException::class)
     private fun saveToDrive(metadata: Metadata) {
         if (metadata.folder == null) return
         val service = driveService ?: return
         if (!isLogged) return
-        val files = metadata.folder.listFiles() ?: return
-        for (file in files) {
-            if (!file.name.endsWith(metadata.fileExt)) continue
-            removeAllCopies(file.name)
-            val fileMetadata = File()
-            fileMetadata.name = file.name
-            fileMetadata.description = metadata.meta
-            fileMetadata.parents = PARENTS
-            val mediaContent = FileContent("text/plain", file)
-            val driveFile = service.files().create(fileMetadata, mediaContent)
-                    .setFields("id")
-                    .execute()
-            Timber.d("saveToDrive: ${driveFile.id}")
+        try {
+            val files = metadata.folder.listFiles() ?: return
+            for (file in files) {
+                if (!file.name.endsWith(metadata.fileExt)) continue
+                removeAllCopies(file.name)
+                val fileMetadata = File()
+                fileMetadata.name = file.name
+                fileMetadata.description = metadata.meta
+                fileMetadata.parents = PARENTS
+                val mediaContent = FileContent("text/plain", file)
+                val driveFile = service.files().create(fileMetadata, mediaContent)
+                        .setFields("id")
+                        .execute()
+                Timber.d("saveToDrive: ${driveFile.id}")
+            }
+        } catch (e: java.lang.Exception) {
+            Crashlytics.logException(e)
         }
     }
 
@@ -359,7 +363,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
      * @param metadata metadata.
      * @throws IOException
      */
-    @Throws(IOException::class)
     private fun saveFileToDrive(pathToFile: String, metadata: Metadata) {
         if (metadata.folder == null) return
         val service = driveService ?: return
@@ -368,17 +371,20 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (!f.exists()) {
             return
         }
-        if (!f.name.endsWith(metadata.fileExt)) return
-        removeAllCopies(f.name)
-        val fileMetadata = File()
-        fileMetadata.name = f.name
-        fileMetadata.description = metadata.meta
-        fileMetadata.parents = PARENTS
-        val mediaContent = FileContent("text/plain", f)
-        val driveFile = service.files().create(fileMetadata, mediaContent)
-                .setFields("id")
-                .execute()
-        Timber.d("saveFileToDrive: ${driveFile.id}")
+        try {
+            if (!f.name.endsWith(metadata.fileExt)) return
+            removeAllCopies(f.name)
+            val fileMetadata = File()
+            fileMetadata.name = f.name
+            fileMetadata.description = metadata.meta
+            fileMetadata.parents = PARENTS
+            val mediaContent = FileContent("text/plain", f)
+            val driveFile = service.files().create(fileMetadata, mediaContent)
+                    .setFields("id")
+                    .execute()
+            Timber.d("saveFileToDrive: ${driveFile.id}")
+        } catch (e: java.lang.Exception) {
+        }
     }
 
     @Throws(IOException::class)
