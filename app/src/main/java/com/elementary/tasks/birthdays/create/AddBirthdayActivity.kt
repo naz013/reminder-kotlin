@@ -121,6 +121,8 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
                     e.printStackTrace()
                 }
 
+                viewModel.date.postValue(calendar.timeInMillis)
+
                 if (!TextUtils.isEmpty(birthday.number)) {
                     binding.numberView.setText(birthday.number)
                     binding.contactCheck.isChecked = true
