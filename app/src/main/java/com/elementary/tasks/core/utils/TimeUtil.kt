@@ -477,6 +477,22 @@ object TimeUtil {
         }
     }
 
+    fun getReadableBirthDate(dateOfBirth: String?, lang: Int = 0): String {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        var date: Date? = null
+        try {
+            date = format.parse(dateOfBirth)
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
+        }
+
+        if (date != null) {
+            return TimeUtil.date(lang).format(date)
+        } else {
+            return dateOfBirth ?: ""
+        }
+    }
+
     fun getAge(dateOfBirth: String?): Int {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         var date: Date? = null
