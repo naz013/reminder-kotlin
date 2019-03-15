@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -482,7 +483,11 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "*/*"
-        startActivityForResult(intent, FILE_REQUEST)
+        try {
+            startActivityForResult(intent, FILE_REQUEST)
+        } catch (e: Exception) {
+            Toast.makeText(this, getString(R.string.app_not_found), Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun selectGroup() {
