@@ -77,6 +77,14 @@ class Prefs(context: Context) : SharedPrefs(context) {
         return false
     }
 
+    var playbackDuration: Int
+        get() = getInt(PrefsConstants.PLAYBACK_DURATION)
+        set(value) = putInt(PrefsConstants.PLAYBACK_DURATION, value)
+
+    var birthdayPlaybackDuration: Int
+        get() = getInt(PrefsConstants.BIRTHDAY_PLAYBACK_DURATION)
+        set(value) = putInt(PrefsConstants.BIRTHDAY_PLAYBACK_DURATION, value)
+
     var notePalette: Int
         get() = getInt(PrefsConstants.NOTE_PALETTE)
         set(value) = putInt(PrefsConstants.NOTE_PALETTE, value)

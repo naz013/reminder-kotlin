@@ -53,6 +53,70 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         initMelodyPrefs()
         initLedPrefs()
         initLedColorPrefs()
+        initMelodyDurationPrefs()
+    }
+
+    private fun initMelodyDurationPrefs() {
+        binding.melodyDurationPrefs.setOnClickListener { showMelodyDurationDialog() }
+        binding.melodyDurationPrefs.setReverseDependentView(binding.infiniteSoundOptionPrefs)
+        showMelodyDuration()
+    }
+
+    private fun showMelodyDuration() {
+        val label = when (prefs.birthdayPlaybackDuration) {
+            5 -> durationLabels()[1]
+            10 -> durationLabels()[2]
+            15 -> durationLabels()[3]
+            20 -> durationLabels()[4]
+            30 -> durationLabels()[5]
+            60 -> durationLabels()[6]
+            else -> durationLabels()[0]
+        }
+        binding.melodyDurationPrefs.setDetailText(label)
+    }
+
+    private fun durationLabels(): Array<String> {
+        return arrayOf(
+                getString(R.string.till_the_end),
+                "5 " + getString(R.string.seconds),
+                "10 " + getString(R.string.seconds),
+                "15 " + getString(R.string.seconds),
+                "20 " + getString(R.string.seconds),
+                "30 " + getString(R.string.seconds),
+                "60 " + getString(R.string.seconds)
+        )
+    }
+
+    private fun showMelodyDurationDialog() {
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.melody_playback_duration))
+            mItemSelect = when(prefs.birthdayPlaybackDuration) {
+                5 -> 1
+                10 -> 2
+                15 -> 3
+                20 -> 4
+                30 -> 5
+                60 -> 6
+                else -> 0
+            }
+            builder.setSingleChoiceItems(durationLabels(), mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+                prefs.birthdayPlaybackDuration = when (mItemSelect) {
+                    1 -> 5
+                    2 -> 10
+                    3 -> 15
+                    4 -> 20
+                    5 -> 30
+                    6 -> 60
+                    else -> 0
+                }
+                showMelodyDuration()
+            }
+            builder.create().show()
+        }
     }
 
     private fun initLedColorPrefs() {

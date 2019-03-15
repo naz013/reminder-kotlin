@@ -30,6 +30,10 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     private var mMediaPlayer: MediaPlayer? = null
     var isPaused: Boolean = false
         private set
+    private var trimPlayback: Boolean = false
+    private var playbackDuration: Int = 0
+    private var playbackStartMillis: Long = 0
+
     private var lastFile: String? = null
     private var mRingtone: Ringtone? = null
     private var isDone: Boolean = false
@@ -38,10 +42,47 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     private val mRingtoneRunnable = object : Runnable {
         override fun run() {
             mRingtoneHandler.removeCallbacks(this)
-            if (mRingtone != null && mRingtone?.isPlaying == true) {
-                mRingtoneHandler.postDelayed(this, 100)
+            val ringtone = mRingtone
+            if (ringtone != null && ringtone.isPlaying) {
+                if (trimPlayback) {
+                    if (System.currentTimeMillis() - playbackStartMillis >= playbackDuration * 1000L) {
+                        ringtone.stop()
+                        mRingtone = null
+                        playbackStartMillis = 0L
+                        notifyFinish()
+                    } else {
+                        mRingtoneHandler.postDelayed(this, 100)
+                    }
+                } else {
+                    mRingtoneHandler.postDelayed(this, 100)
+                }
             } else {
                 mRingtone = null
+                notifyFinish()
+            }
+        }
+    }
+
+    private val mMelodyHandler = Handler()
+    private val mMelodyRunnable = object : Runnable {
+        override fun run() {
+            mMelodyHandler.removeCallbacks(this)
+            val mp = mMediaPlayer
+            if (mp != null && mp.isPlaying) {
+                if (trimPlayback) {
+                    if (System.currentTimeMillis() - playbackStartMillis >= playbackDuration * 1000L) {
+                        mp.stop()
+                        mMediaPlayer = null
+                        playbackStartMillis = 0L
+                        notifyFinish()
+                    } else {
+                        mMelodyHandler.postDelayed(this, 1000)
+                    }
+                } else {
+                    mMelodyHandler.postDelayed(this, 1000)
+                }
+            } else {
+                mMediaPlayer = null
                 notifyFinish()
             }
         }
@@ -62,6 +103,8 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     }
 
     fun stop(notify: Boolean) {
+        mRingtoneHandler.removeCallbacks(mRingtoneRunnable)
+        mMelodyHandler.removeCallbacks(mMelodyRunnable)
         if (mMediaPlayer != null) {
             try {
                 mMediaPlayer?.stop()
@@ -72,7 +115,6 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             isPaused = false
         }
         if (mRingtone != null) {
-            mRingtoneHandler.removeCallbacks(mRingtoneRunnable)
             try {
                 mRingtone?.stop()
             } catch (ignored: Exception) {
@@ -139,7 +181,6 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
-
     }
 
     private fun notifyFinish() {
@@ -147,11 +188,13 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         mCallback?.onFinish()
     }
 
-    fun playAlarm(path: Uri, looping: Boolean) {
+    fun playAlarm(path: Uri, looping: Boolean, duration: Int = 0) {
         if (isPlaying && !Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) {
             return
         }
         stop(false)
+        trimPlayback = duration > 0 && !looping
+        playbackDuration = duration
         mMediaPlayer = MediaPlayer()
         try {
             mMediaPlayer?.setDataSource(mContext, path)
@@ -167,6 +210,8 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             mMediaPlayer?.setOnPreparedListener { mp ->
                 notifyStart()
                 mp.start()
+                playbackStartMillis = System.currentTimeMillis()
+                mMelodyHandler.postDelayed(mMelodyRunnable, 1000)
             }
             mMediaPlayer?.setOnCompletionListener { notifyFinish() }
             mMediaPlayer?.setOnErrorListener { _, _, _ ->
@@ -178,17 +223,16 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
-
         } catch (e: IOException) {
             playRingtone(path)
         }
-
     }
 
     private fun playRingtone(path: Uri) {
         notifyStart()
         mRingtone = RingtoneManager.getRingtone(mContext, path)
         mRingtone?.play()
+        playbackStartMillis = System.currentTimeMillis()
         mRingtoneHandler.postDelayed(mRingtoneRunnable, 100)
     }
 
@@ -198,6 +242,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         if (isDone) {
             return
         }
+        trimPlayback = false
         mMediaPlayer = MediaPlayer()
         try {
             mMediaPlayer?.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
@@ -228,7 +273,6 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
-
     }
 
     private fun notifyStart() {

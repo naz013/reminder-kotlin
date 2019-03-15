@@ -128,6 +128,7 @@ object PrefsConstants {
     const val DO_NOT_DISTURB_ACTION = "do_not_disturb_action"
     const val NOTE_PALETTE = "note_palette"
     const val SCREEN_BACKGROUND_IMAGE = "screen_bg_image"
+    const val PLAYBACK_DURATION = "playback_duration"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"
@@ -150,6 +151,7 @@ object PrefsConstants {
     const val BIRTHDAY_REMINDER_TIME = "reminder_hour"
     const val BIRTHDAY_TTS = "birthday_tts"
     const val BIRTHDAY_TTS_LOCALE = "birthday_tts_locale"
+    const val BIRTHDAY_PLAYBACK_DURATION = "birthday_playback_duration"
 
     const val IS_CREATE_SHOWN = "create_showcase"
     const val IS_CALENDAR_SHOWN = "calendar_showcase"
