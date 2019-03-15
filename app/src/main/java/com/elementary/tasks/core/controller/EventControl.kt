@@ -21,8 +21,6 @@ package com.elementary.tasks.core.controller
 
 interface EventControl {
 
-    val isRepeatable: Boolean
-
     val isActive: Boolean
 
     fun start(): Boolean

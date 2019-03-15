@@ -51,6 +51,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
             saveAction = { reminder -> callback?.getViewModel()?.saveReminder(reminder) },
             toggleAction = { },
             deleteAction = { reminder -> callback?.getViewModel()?.moveToTrash(reminder) },
+            skipAction = { reminder -> callback?.getViewModel()?.skip(reminder) },
             allGroups = { callback?.getViewModel()?.groups ?: listOf() }
     )
     private var mItem: EventsPagerItem? = null

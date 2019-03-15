@@ -48,11 +48,14 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
 
     private lateinit var viewModel: ArchiveRemindersViewModel
 
-    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues },
+    private val reminderResolver = ReminderResolver(
+            dialogAction = { return@ReminderResolver dialogues },
             saveAction = { reminder -> viewModel.saveReminder(reminder) },
-            toggleAction = {},
+            toggleAction = { },
             deleteAction = { reminder -> viewModel.deleteReminder(reminder, true) },
-            allGroups = { return@ReminderResolver viewModel.groups })
+            skipAction = { },
+            allGroups = { return@ReminderResolver viewModel.groups }
+    )
 
     private var mAdapter = RemindersRecyclerAdapter()
     private val searchModifier = SearchModifier(null, this)

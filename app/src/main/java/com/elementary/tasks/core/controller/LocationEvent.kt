@@ -32,9 +32,6 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     override val isActive: Boolean
         get() = reminder.isActive
 
-    override val isRepeatable: Boolean
-        get() = false
-
     override fun start(): Boolean {
         return if (Module.hasLocation(context)) {
             reminder.isActive = true

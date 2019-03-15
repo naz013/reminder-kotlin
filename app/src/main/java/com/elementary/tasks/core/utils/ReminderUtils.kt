@@ -220,7 +220,7 @@ object ReminderUtils {
         return if (isAllChecked(repCode)) {
             context.getString(R.string.everyday)
         } else {
-            sb.toString()
+            sb.toString().trim()
         }
     }
 

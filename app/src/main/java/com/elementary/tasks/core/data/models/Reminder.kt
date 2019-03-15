@@ -226,6 +226,11 @@ data class Reminder(
         return reminder
     }
 
+    fun isRepeating(): Boolean {
+        return !Reminder.isGpsType(type) && (repeatInterval > 0L || Reminder.isBase(type, Reminder.BY_WEEK)
+                || Reminder.isBase(type, Reminder.BY_MONTH) || Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR))
+    }
+
     object Kind {
         const val SMS = 2
         const val CALL = 1

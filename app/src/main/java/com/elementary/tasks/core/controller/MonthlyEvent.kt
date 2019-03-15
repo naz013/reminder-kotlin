@@ -28,9 +28,6 @@ class MonthlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     override val isActive: Boolean
         get() = reminder.isActive
 
-    override val isRepeatable: Boolean
-        get() = true
-
     override fun start(): Boolean {
         if (TimeCount.isCurrent(reminder.eventTime)) {
             reminder.isActive = true
@@ -44,6 +41,13 @@ class MonthlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun skip(): Boolean {
+        reminder.delay = 0
+        if (canSkip()) {
+            val time = TimeCount.getNextMonthDayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L)
+            reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+            start()
+            return true
+        }
         return false
     }
 
@@ -63,7 +67,7 @@ class MonthlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
         return if (isActive) {
             stop()
         } else {
-            val time = calculateTime(true)
+            val time = TimeCount.getNextMonthDayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L)
             reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
             reminder.eventCount = 0
             start()

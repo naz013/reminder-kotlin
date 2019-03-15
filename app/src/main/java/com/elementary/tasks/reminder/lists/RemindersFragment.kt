@@ -50,11 +50,14 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
 
     private lateinit var viewModel: ActiveRemindersViewModel
 
-    private val reminderResolver = ReminderResolver(dialogAction = { return@ReminderResolver dialogues},
-            saveAction = {reminder -> viewModel.saveReminder(reminder) },
-            toggleAction = {reminder -> viewModel.toggleReminder(reminder) },
-            deleteAction = {reminder -> viewModel.moveToTrash(reminder) },
-            allGroups = { return@ReminderResolver viewModel.groups })
+    private val reminderResolver = ReminderResolver(
+            dialogAction = { return@ReminderResolver dialogues},
+            saveAction = { reminder -> viewModel.saveReminder(reminder) },
+            toggleAction = { reminder -> viewModel.toggleReminder(reminder) },
+            deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
+            skipAction = { reminder -> viewModel.skip(reminder) },
+            allGroups = { return@ReminderResolver viewModel.groups }
+    )
 
     private val mAdapter = RemindersRecyclerAdapter()
 

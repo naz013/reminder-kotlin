@@ -56,7 +56,8 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
             dialogAction = { dialogues },
             saveAction = { },
             toggleAction = { },
-            deleteAction = { },
+            deleteAction = {  },
+            skipAction = { },
             allGroups = { listOf() }
     )
 

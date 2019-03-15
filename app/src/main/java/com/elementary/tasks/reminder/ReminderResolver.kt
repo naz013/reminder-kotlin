@@ -18,6 +18,7 @@ class ReminderResolver(
         private val saveAction: (reminder: Reminder) -> Unit,
         private val deleteAction: (reminder: Reminder) -> Unit,
         private val toggleAction: (reminder: Reminder) -> Unit,
+        private val skipAction: (reminder: Reminder) -> Unit,
         private val allGroups: () -> List<ReminderGroup>
 ) {
 
@@ -33,7 +34,7 @@ class ReminderResolver(
             when (listActions) {
                 ListActions.MORE -> showActionDialog(view, reminder)
                 ListActions.OPEN -> previewReminder(view, reminder)
-                ListActions.SWITCH -> switchReminder(reminder)
+                ListActions.SWITCH -> toggleAction.invoke(reminder)
                 else -> {
                 }
             }
@@ -58,8 +59,14 @@ class ReminderResolver(
 
     private fun showActionDialog(view: View, reminder: Reminder) {
         val context = view.context
-        val items = arrayOf(context.getString(R.string.open), context.getString(R.string.edit),
-                context.getString(R.string.change_group), context.getString(R.string.move_to_trash))
+        val items = if (reminder.isActive && !reminder.isRemoved && reminder.isRepeating()) {
+            arrayOf(context.getString(R.string.open), context.getString(R.string.edit),
+                    context.getString(R.string.change_group), context.getString(R.string.move_to_trash),
+                    context.getString(R.string.skip_event))
+        } else {
+            arrayOf(context.getString(R.string.open), context.getString(R.string.edit),
+                    context.getString(R.string.change_group), context.getString(R.string.move_to_trash))
+        }
         Dialogues.showPopup(view, { item ->
             when (item) {
                 0 -> previewReminder(view, reminder)
@@ -68,6 +75,7 @@ class ReminderResolver(
                 3 -> askConfirmation(view, items[item]) {
                     if (it) deleteAction.invoke(reminder)
                 }
+                4 -> skipAction.invoke(reminder)
             }
         }, *items)
     }
@@ -80,10 +88,6 @@ class ReminderResolver(
         CreateReminderActivity.openLogged(view.context,
                 Intent(view.context, CreateReminderActivity::class.java)
                         .putExtra(Constants.INTENT_ID, reminder.uuId))
-    }
-
-    private fun switchReminder(reminder: Reminder) {
-        toggleAction.invoke(reminder)
     }
 
     private fun changeGroup(view: View, reminder: Reminder) {
