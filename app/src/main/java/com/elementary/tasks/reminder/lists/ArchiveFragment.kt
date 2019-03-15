@@ -168,9 +168,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
         binding.recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(binding.recyclerView) {
-            setScroll(it)
-        }
+        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }, null)
         reloadView(0)
     }
 

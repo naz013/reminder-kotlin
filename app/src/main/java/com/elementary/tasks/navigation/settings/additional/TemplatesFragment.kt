@@ -145,8 +145,9 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
             }
         }
         binding.templatesList.adapter = adapter
-        ViewUtils.listenScrollableView(binding.templatesList) {
-            setScroll(it)
+        ViewUtils.listenScrollableView(binding.templatesList, { setScroll(it) }) {
+            if (it) binding.fab.show()
+            else binding.fab.hide()
         }
         refreshView()
     }

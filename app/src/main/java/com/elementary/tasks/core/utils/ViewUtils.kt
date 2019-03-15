@@ -197,15 +197,36 @@ object ViewUtils {
         })
     }
 
-    fun listenScrollableView(recyclerView: RecyclerView, listener: ((y: Int) -> Unit)?) {
+    fun listenScrollableView(recyclerView: RecyclerView, listener: (y: Int) -> Unit, fabListener: ((show: Boolean) -> Unit)?) {
         if (Module.isMarshmallow) {
             recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
-                listener?.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+                listener.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
             }
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    Timber.d("onScrolled: $dx, $dy")
+                    if (fabListener != null) {
+                        if (dy > 0) {
+                            fabListener.invoke(false)
+                        } else if (dy <= 0) {
+                            fabListener.invoke(true)
+                        }
+                    }
+                }
+            })
         } else {
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    listener?.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+                    listener.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
+                    Timber.d("onScrolled: $dx, $dy")
+                    if (fabListener != null) {
+                        if (dy > 0) {
+                            fabListener.invoke(false)
+                        } else if (dy <= 0) {
+                            fabListener.invoke(true)
+                        }
+                    }
                 }
             })
         }
