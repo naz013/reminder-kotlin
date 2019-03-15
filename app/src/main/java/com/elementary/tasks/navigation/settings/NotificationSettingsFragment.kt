@@ -546,17 +546,33 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     private fun showMelody() {
         val filePath = prefs.melodyFile
-        if (filePath == "" || filePath.matches(Constants.DEFAULT.toRegex())) {
-            binding.chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
-        } else if (!filePath.matches("".toRegex())) {
-            val sound = File(filePath)
-            val fileName = sound.name
-            val pos = fileName.lastIndexOf(".")
-            val fileNameS = fileName.substring(0, pos)
-            binding.chooseSoundPrefs.setDetailText(fileNameS)
-        } else {
-            binding.chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
+        val labels = melodyLabels()
+        val label = when(filePath) {
+            Constants.SOUND_RINGTONE -> labels[0]
+            Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> labels[1]
+            Constants.SOUND_ALARM -> labels[2]
+            else -> {
+                if (!filePath.matches("".toRegex())) {
+                    val sound = File(filePath)
+                    val fileName = sound.name
+                    val pos = fileName.lastIndexOf(".")
+                    val fileNameS = fileName.substring(0, pos)
+                    fileNameS
+                } else {
+                    labels[1]
+                }
+            }
         }
+        binding.chooseSoundPrefs.setDetailText(label)
+    }
+
+    private fun melodyLabels(): Array<String> {
+        return arrayOf(
+                getString(R.string.default_string) + ": " + getString(R.string.ringtone),
+                getString(R.string.default_string) + ": " + getString(R.string.notification),
+                getString(R.string.default_string) + ": " + getString(R.string.alarm),
+                getString(R.string.choose_file)
+        )
     }
 
     private fun showSoundDialog() {
@@ -564,23 +580,24 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.melody))
-            val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
-            val adapter = ArrayAdapter(it, android.R.layout.simple_list_item_single_choice, types)
-            mItemSelect = if (prefs.melodyFile == "" || prefs.melodyFile.matches(Constants.DEFAULT.toRegex())) {
-                0
-            } else {
-                1
+            mItemSelect = when(prefs.melodyFile) {
+                Constants.SOUND_RINGTONE -> 0
+                Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
+                Constants.SOUND_ALARM -> 2
+                else -> 3
             }
-            builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+            builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                if (mItemSelect == 0) {
-                    prefs.melodyFile = Constants.DEFAULT
-                    showMelody()
-                } else {
-                    dialog.dismiss()
-                    startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
-                }
                 dialog.dismiss()
+                when (mItemSelect) {
+                    0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
+                    1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
+                    2 -> prefs.melodyFile = Constants.SOUND_ALARM
+                    else -> {
+                        startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
+                    }
+                }
+                showMelody()
             }
             builder.create().show()
         }

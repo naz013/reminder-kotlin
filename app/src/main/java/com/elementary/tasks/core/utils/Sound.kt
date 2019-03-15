@@ -38,7 +38,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     private val mRingtoneRunnable = object : Runnable {
         override fun run() {
             mRingtoneHandler.removeCallbacks(this)
-            if (mRingtone != null && mRingtone!!.isPlaying) {
+            if (mRingtone != null && mRingtone?.isPlaying == true) {
                 mRingtoneHandler.postDelayed(this, 100)
             } else {
                 mRingtone = null
@@ -50,11 +50,11 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     val isPlaying: Boolean
         get() {
             return try {
-                mMediaPlayer != null && mMediaPlayer!!.isPlaying
+                val mp = mMediaPlayer ?: return false
+                mp.isPlaying
             } catch (e: IllegalStateException) {
                 false
             }
-
         }
 
     fun setCallback(callback: PlaybackCallback?) {
@@ -243,7 +243,8 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     companion object {
 
         fun isDefaultMelody(defMelody: String): Boolean {
-            return defMelody == Constants.DEFAULT
+            return defMelody == Constants.SOUND_ALARM || defMelody == Constants.SOUND_NOTIFICATION
+                    || defMelody == Constants.SOUND_RINGTONE || defMelody == Constants.DEFAULT
         }
     }
 }

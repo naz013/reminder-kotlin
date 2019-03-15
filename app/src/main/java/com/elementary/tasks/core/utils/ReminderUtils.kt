@@ -37,16 +37,24 @@ object ReminderUtils {
 
     const val DAY_CHECKED = 1
 
-    private fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri? {
+    fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
-            UriUtil.getUri(context, melody)
+            UriUtil.getUri(context, melody) ?: defUri(prefs)
         } else {
             val defMelody = prefs.melodyFile
             if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
-                UriUtil.getUri(context, defMelody)
+                UriUtil.getUri(context, defMelody) ?: defUri(prefs)
             } else {
-                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                defUri(prefs)
             }
+        }
+    }
+
+    private fun defUri(prefs: Prefs): Uri {
+        return when (prefs.melodyFile) {
+            Constants.SOUND_RINGTONE -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+            Constants.SOUND_ALARM -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            else -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
     }
 
@@ -68,7 +76,7 @@ object ReminderUtils {
             } else {
                 prefs.melodyFile
             }
-            getSoundUri(context, prefs, melodyPath)?.let {
+            getSoundUri(context, prefs, melodyPath).let {
                 context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 builder.setSound(it)
             }
@@ -143,7 +151,7 @@ object ReminderUtils {
             context.getString(R.string.app_name)
         }
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
-            getSoundUri(context, prefs, reminder.melodyPath)?.let {
+            getSoundUri(context, prefs, reminder.melodyPath).let {
                 context.grantUriPermission("com.android.systemui", it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 builder.setSound(it)
             }
