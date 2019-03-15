@@ -266,7 +266,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
                         || SuperUtil.checkNotificationPermission(this)
                         && prefs.isSoundInSilentModeEnabled)) {
             val soundUri = soundUri
-            sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
+            sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled, prefs.playbackDuration)
         }
         if (isVibrate) {
             val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {

@@ -823,7 +823,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
                             (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
                 val soundUri = soundUri
                 Timber.d("showReminderNotification: $soundUri")
-                sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
+                sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled, prefs.playbackDuration)
             }
             if (prefs.isVibrateEnabled) {
                 val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
@@ -949,7 +949,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             sound?.playAlarm(afd)
         } catch (e: IOException) {
             e.printStackTrace()
-            sound?.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false)
+            sound?.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false, prefs.playbackDuration)
         }
 
     }

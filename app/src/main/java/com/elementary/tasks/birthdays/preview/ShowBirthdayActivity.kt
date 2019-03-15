@@ -270,7 +270,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
             val sound = sound
-            sound?.playAlarm(soundUri, isBirthdayInfiniteSound)
+            sound?.playAlarm(soundUri, isBirthdayInfiniteSound, prefs.birthdayPlaybackDuration)
         }
         if (isVibrate) {
             var pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
