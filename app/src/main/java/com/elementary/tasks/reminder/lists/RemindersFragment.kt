@@ -51,7 +51,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     private lateinit var viewModel: ActiveRemindersViewModel
 
     private val reminderResolver = ReminderResolver(
-            dialogAction = { return@ReminderResolver dialogues},
+            dialogAction = { return@ReminderResolver dialogues },
             saveAction = { reminder -> viewModel.saveReminder(reminder) },
             toggleAction = { reminder -> viewModel.toggleReminder(reminder) },
             deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
@@ -157,7 +157,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
-        viewModel.events.observe(this, Observer{ reminders ->
+        viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
             }
@@ -200,8 +200,9 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
         binding.recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(binding.recyclerView) {
-            setScroll(it)
+        ViewUtils.listenScrollableView(binding.recyclerView, listener = { setScroll(it) }) {
+            if (it) binding.fab.show()
+            else binding.fab.hide()
         }
         reloadView(0)
     }

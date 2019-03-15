@@ -216,8 +216,9 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         }
         binding.recyclerView.adapter = mAdapter
         binding.recyclerView.itemAnimator = DefaultItemAnimator()
-        ViewUtils.listenScrollableView(binding.recyclerView) {
-            setScroll(it)
+        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }) {
+            if (it) binding.fab.show()
+            else binding.fab.hide()
         }
         refreshView(0)
     }
