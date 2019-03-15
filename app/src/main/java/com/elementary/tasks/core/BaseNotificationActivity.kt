@@ -2,7 +2,6 @@ package com.elementary.tasks.core
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
@@ -16,7 +15,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -102,22 +100,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
         }
 
     protected open val soundUri: Uri
-        get() {
-            if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody)) {
-                val uri = UriUtil.getUri(this, melody)
-                if (uri != null) return uri
-            } else {
-                val defMelody = prefs.melodyFile
-                if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
-                    val sound = File(defMelody)
-                    if (sound.exists()) {
-                        val uri = UriUtil.getUri(this, sound)
-                        if (uri != null) return uri
-                    }
-                }
-            }
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        }
+        get() = ReminderUtils.getSoundUri(this, prefs, melody)
 
     protected open fun showSendingError() {
 

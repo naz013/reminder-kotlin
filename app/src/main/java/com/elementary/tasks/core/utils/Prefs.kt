@@ -613,7 +613,7 @@ class Prefs(context: Context) : SharedPrefs(context) {
             editor.putString(PrefsConstants.DO_NOT_DISTURB_FROM, "20:00")
             editor.putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
             editor.putString(PrefsConstants.TTS_LOCALE, Language.ENGLISH)
-            editor.putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
+            editor.putString(PrefsConstants.CUSTOM_SOUND, Constants.SOUND_NOTIFICATION)
             editor.putString(PrefsConstants.SCREEN_BACKGROUND_IMAGE, Constants.NONE)
             editor.putInt(PrefsConstants.DEFAULT_PRIORITY, 2)
             editor.putInt(PrefsConstants.BIRTHDAY_PRIORITY, 2)
@@ -892,7 +892,7 @@ class Prefs(context: Context) : SharedPrefs(context) {
             putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
         }
         if (!hasKey(PrefsConstants.CUSTOM_SOUND)) {
-            putString(PrefsConstants.CUSTOM_SOUND, Constants.DEFAULT)
+            putString(PrefsConstants.CUSTOM_SOUND, Constants.SOUND_NOTIFICATION)
         }
         if (!hasKey(PrefsConstants.APP_LANGUAGE)) {
             putInt(PrefsConstants.APP_LANGUAGE, 0)
