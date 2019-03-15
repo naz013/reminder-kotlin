@@ -97,12 +97,12 @@ object TimeCount {
         }
     }
 
-    fun generateDateTime(eventTime: String, repeat: Long): Long {
+    fun generateDateTime(eventTime: String, repeat: Long, fromTime: Long = System.currentTimeMillis()): Long {
         return if (TextUtils.isEmpty(eventTime)) {
             0
         } else {
             var time = TimeUtil.getDateTimeFromGmt(eventTime)
-            while (time < System.currentTimeMillis()) {
+            while (time <= fromTime) {
                 time += repeat
             }
             time
@@ -230,7 +230,7 @@ object TimeCount {
         }
     }
 
-    fun getNextWeekdayTime(reminder: Reminder): Long {
+    fun getNextWeekdayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
         val weekdays = reminder.weekdays
         val beforeValue = reminder.remindBefore
         val cc = Calendar.getInstance()
@@ -241,7 +241,7 @@ object TimeCount {
         cc.set(Calendar.MILLISECOND, 0)
         while (true) {
             val mDay = cc.get(Calendar.DAY_OF_WEEK)
-            if (weekdays[mDay - 1] == 1 && cc.timeInMillis - beforeValue > System.currentTimeMillis()) {
+            if (weekdays[mDay - 1] == 1 && cc.timeInMillis - beforeValue > fromTime) {
                 break
             }
             cc.timeInMillis = cc.timeInMillis + AlarmManager.INTERVAL_DAY

@@ -225,4 +225,21 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
             }
         }
     }
+
+    fun skip(reminder: Reminder) {
+        postInProgress(true)
+        launchDefault {
+            runBlocking {
+                val fromDb = appDb.reminderDao().getById(reminder.uuId)
+                if (fromDb != null) {
+                    EventControlFactory.getController(fromDb).skip()
+                }
+            }
+            backupReminder(reminder.uuId)
+            withUIContext {
+                postInProgress(false)
+                postCommand(Commands.SAVED)
+            }
+        }
+    }
 }

@@ -702,5 +702,6 @@
     <string name="ringtone">Ringtone</string>
     <string name="melody_playback_duration">Melody playback duration</string>
     <string name="till_the_end">Until the end</string>
+    <string name="skip_event">Skip event</string>
 
 </resources>

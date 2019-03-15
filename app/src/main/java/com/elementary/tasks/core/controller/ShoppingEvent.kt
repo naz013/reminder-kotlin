@@ -4,6 +4,7 @@ import android.text.TextUtils
 
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,9 +29,6 @@ class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     override val isActive: Boolean
         get() = reminder.isActive
 
-    override val isRepeatable: Boolean
-        get() = false
-
     override fun start(): Boolean {
         return if (reminder.hasReminder) {
             if (!TextUtils.isEmpty(reminder.eventTime) && TimeCount.isCurrent(reminder.eventTime)) {
@@ -51,6 +49,12 @@ class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun skip(): Boolean {
+        if (canSkip()) {
+            val time = TimeCount.generateDateTime(reminder.eventTime, reminder.repeatInterval, TimeUtil.getDateTimeFromGmt(reminder.eventTime))
+            reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+            start()
+            return true
+        }
         return false
     }
 
@@ -67,7 +71,7 @@ class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun canSkip(): Boolean {
-        return false
+        return reminder.isRepeating() && (!reminder.isLimited() || !reminder.isLimitExceed())
     }
 
     override fun setDelay(delay: Int) {

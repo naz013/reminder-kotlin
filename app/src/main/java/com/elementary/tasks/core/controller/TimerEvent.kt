@@ -29,9 +29,6 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     override val isActive: Boolean
         get() = reminder.isActive
 
-    override val isRepeatable: Boolean
-        get() = reminder.repeatInterval > 0
-
     override fun start(): Boolean {
         if (TimeCount.isCurrent(reminder.eventTime)) {
             reminder.isActive = true
@@ -44,6 +41,13 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun skip(): Boolean {
+        reminder.delay = 0
+        if (canSkip()) {
+            val time = calculateTime(false)
+            reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+            start()
+            return true
+        }
         return false
     }
 
@@ -80,7 +84,7 @@ class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun canSkip(): Boolean {
-        return isRepeatable && (!reminder.isLimited() || !reminder.isLimitExceed())
+        return reminder.isRepeating() && (!reminder.isLimited() || !reminder.isLimitExceed())
     }
 
     override fun setDelay(delay: Int) {

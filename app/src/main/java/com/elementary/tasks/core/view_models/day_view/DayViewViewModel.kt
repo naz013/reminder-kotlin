@@ -17,8 +17,8 @@ import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
@@ -97,9 +97,31 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
     fun moveToTrash(reminder: Reminder) {
         postInProgress(true)
         launchDefault {
-            reminder.isRemoved = true
-            EventControlFactory.getController(reminder).stop()
-            appDb.reminderDao().insert(reminder)
+            runBlocking {
+                val fromDb = appDb.reminderDao().getById(reminder.uuId)
+                if (fromDb != null) {
+                    fromDb.isRemoved = true
+                    EventControlFactory.getController(fromDb).stop()
+                    appDb.reminderDao().insert(fromDb)
+                }
+            }
+            withUIContext {
+                postInProgress(false)
+                postCommand(Commands.DELETED)
+            }
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        }
+    }
+
+    fun skip(reminder: Reminder) {
+        postInProgress(true)
+        launchDefault {
+            runBlocking {
+                val fromDb = appDb.reminderDao().getById(reminder.uuId)
+                if (fromDb != null) {
+                    EventControlFactory.getController(fromDb).skip()
+                }
+            }
             withUIContext {
                 postInProgress(false)
                 postCommand(Commands.DELETED)
