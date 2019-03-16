@@ -44,6 +44,7 @@ class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsS
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID)
     private val themeUtil: ThemeUtil by inject()
+    private val appDb: AppDb by inject()
     private val mData = ArrayList<GoogleTask>()
     private val map = HashMap<String, Int>()
 
@@ -54,12 +55,12 @@ class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsS
 
     override fun onDataSetChanged() {
         map.clear()
-        val list = AppDb.getAppDatabase(mContext).googleTaskListsDao().all()
+        val list = appDb.googleTaskListsDao().all()
         for (item in list) {
             map[item.listId] = item.color
         }
         mData.clear()
-        mData.addAll(AppDb.getAppDatabase(mContext).googleTasksDao().all())
+        mData.addAll(appDb.googleTasksDao().all())
     }
 
     override fun onDestroy() {
