@@ -12,18 +12,11 @@ import com.elementary.tasks.Actions
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.HashMap
-import java.util.Locale
-import kotlin.Comparator
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -48,8 +41,8 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
     private val data = ArrayList<CalendarItem>()
     private val map = HashMap<String, Reminder>()
     private val prefs: Prefs by inject()
+    private val appDb: AppDb by inject()
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-    private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreate() {
         data.clear()
@@ -60,7 +53,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
         data.clear()
         map.clear()
         val is24 = prefs.is24HourFormat
-        val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(active = true, removed = false)
+        val reminderItems = appDb.reminderDao().getAll(active = true, removed = false)
         for (item in reminderItems) {
             val type = item.type
             val summary = item.summary
@@ -110,66 +103,25 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             var mDay: Int
             var mMonth: Int
             var n = 0
+            val birthTime = TimeUtil.getBirthdayTime(prefs.birthdayTime)
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = TimeUtil.getBirthdayTime(prefs.birthdayTime)
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
             calendar.timeInMillis = System.currentTimeMillis()
             do {
                 mDay = calendar.get(Calendar.DAY_OF_MONTH)
                 mMonth = calendar.get(Calendar.MONTH)
-                val list = AppDb.getAppDatabase(mContext).birthdaysDao().getAll("$mDay|$mMonth")
+                val list = appDb.birthdaysDao().getAll("$mDay|$mMonth")
                 for (item in list) {
                     val birthday = item.date
                     val name = item.name
-                    var eventTime: Long = 0
-                    try {
-                        val date = format.parse(birthday)
-                        val calendar1 = Calendar.getInstance()
-                        calendar1.timeInMillis = System.currentTimeMillis()
-                        val year = calendar1.get(Calendar.YEAR)
-                        if (date != null) {
-                            calendar1.time = date
-                            calendar1.set(Calendar.YEAR, year)
-                            calendar1.set(Calendar.HOUR_OF_DAY, hour)
-                            calendar1.set(Calendar.MINUTE, minute)
-                            eventTime = calendar1.timeInMillis
-                        }
-                    } catch (e: ParseException) {
-                        e.printStackTrace()
-                    }
+                    val millis = TimeUtil.getFutureBirthdayDate(birthTime, item.date)?.millis ?: 0L
 
-                    data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.key, birthday, "", eventTime, 1, item))
+                    data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.key, birthday, "", millis, 1, item))
                 }
                 calendar.timeInMillis = calendar.timeInMillis + 1000 * 60 * 60 * 24
                 n++
             } while (n <= 7)
         }
-        data.sortWith(Comparator { eventsItem, o2 ->
-            var time1: Long = 0
-            var time2: Long = 0
-            if (eventsItem.item is Birthday) {
-                val item = eventsItem.item as Birthday
-                val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), item.date)
-                if (dateItem != null) {
-                    time1 = dateItem.millis
-                }
-            } else if (eventsItem.item is Reminder) {
-                val reminder = eventsItem.item as Reminder
-                time1 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            }
-            if (o2.item is Birthday) {
-                val item = o2.item as Birthday
-                val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), item.date)
-                if (dateItem != null) {
-                    time2 = dateItem.millis
-                }
-            } else if (o2.item is Reminder) {
-                val reminder = o2.item as Reminder
-                time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            }
-            (time1 - time2).toInt()
-        })
+        data.sortedBy { it.date }
     }
 
     override fun onDestroy() {

@@ -38,6 +38,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
 
     private val notes = ArrayList<NoteWithImages>()
     private val themeUtil: ThemeUtil by inject()
+    private val appDb: AppDb by inject()
 
     override fun onCreate() {
         notes.clear()
@@ -45,7 +46,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
 
     override fun onDataSetChanged() {
         notes.clear()
-        notes.addAll(AppDb.getAppDatabase(mContext).notesDao().all())
+        notes.addAll(appDb.notesDao().all())
     }
 
     override fun onDestroy() {
