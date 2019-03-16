@@ -62,7 +62,7 @@
         <item name="textAppearanceCaption">@style/Text.Caption</item>
         <item name="textAppearanceButton">@style/Text.Button</item>
         <item name="textAppearanceOverline">@style/Text.Overline</item>
-        <item name="textAppearanceLargePopupMenu">@style/Text.Caption</item>
+        <item name="textAppearanceLargePopupMenu">@style/Text.Body1</item>
         <item name="android:spinnerItemStyle">@style/Text.Body1</item>
         <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
         <item name="colorSecondary">@color/secondary</item>
