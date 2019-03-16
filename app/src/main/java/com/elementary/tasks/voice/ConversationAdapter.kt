@@ -53,6 +53,8 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
         if (!list.isNullOrEmpty()) {
             if (oldSize == list.size) {
                 notifyItemChanged(0)
+            } else {
+                notifyDataSetChanged()
             }
         }
     }
