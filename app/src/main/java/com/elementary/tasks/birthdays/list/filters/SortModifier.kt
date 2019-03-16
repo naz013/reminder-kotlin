@@ -18,6 +18,7 @@ class SortModifier(modifier: Modifier<Birthday>? = null,
 
     private fun sort(data: List<Birthday>): List<Birthday> {
         val birthTime = TimeUtil.getBirthdayTime(prefs.birthdayTime)
-        return data.asSequence().sortedBy { it.getFutureTime(birthTime) }.toList()
+        data.forEach { it.calculateTime(birthTime) }
+        return data.sortedBy { it.calculatedTime }.toList()
     }
 }
