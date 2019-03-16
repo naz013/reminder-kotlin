@@ -696,5 +696,13 @@
     <string name="none">Aucun</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Activer la sauvegarde des données pour garder vos rappels en sécurité</string>
     <string name="x_weeks">%s semaines</string>
+    <string name="are_you_sure">Êtes-vous sûr?</string>
+    <string name="ringtone">Sonnerie</string>
+    <string name="melody_playback_duration">Durée de la mélodie</string>
+    <string name="till_the_end">Jusqu\'à la fin</string>
+    <string name="skip_event">Passer l\'événement</string>
+    <string name="backup_flags">Indicateurs de paramètres de sauvegarde</string>
+    <string name="automatically_sync">Synchroniser automatiquement</string>
+    <string name="sync_flags">Drapeaux de synchronisation</string>
 
 </resources>

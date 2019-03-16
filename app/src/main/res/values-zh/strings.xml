@@ -696,5 +696,13 @@
     <string name="none">没有</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">启用数据备份以确保您的提醒安全</string>
     <string name="x_weeks">%s 周</string>
+    <string name="are_you_sure">你确定吗？</string>
+    <string name="ringtone">铃声</string>
+    <string name="melody_playback_duration">旋律播放持续时间</string>
+    <string name="till_the_end">直到最后</string>
+    <string name="skip_event">跳过事件</string>
+    <string name="backup_flags">备份设置标志</string>
+    <string name="automatically_sync">自动同步</string>
+    <string name="sync_flags">同步标志</string>
 
 </resources>

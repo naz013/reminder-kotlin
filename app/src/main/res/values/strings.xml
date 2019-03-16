@@ -703,7 +703,7 @@
     <string name="melody_playback_duration">Melody playback duration</string>
     <string name="till_the_end">Until the end</string>
     <string name="skip_event">Skip event</string>
-    <string name="backup_flags">Backup flags</string>
+    <string name="backup_flags">Backup settings flags</string>
     <string name="automatically_sync">Automatically sync</string>
     <string name="sync_flags">Sync flags</string>
 

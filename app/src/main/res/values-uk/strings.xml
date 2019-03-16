@@ -696,5 +696,13 @@
     <string name="none">Немає</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Увімкніть резервне копіювання даних, щоб зберегти ваші нагадування в безпеці</string>
     <string name="x_weeks">%s тижнів</string>
+    <string name="are_you_sure">Ви впевнені?</string>
+    <string name="ringtone">Мелодія дзвінка</string>
+    <string name="melody_playback_duration">Тривалість відтворення мелодії</string>
+    <string name="till_the_end">До кінця</string>
+    <string name="skip_event">Пропустити подію</string>
+    <string name="backup_flags">Налаштування параметрів резервного копіювання</string>
+    <string name="automatically_sync">Автоматично синхронізувати</string>
+    <string name="sync_flags">Прапори синхронізації</string>
 
 </resources>
