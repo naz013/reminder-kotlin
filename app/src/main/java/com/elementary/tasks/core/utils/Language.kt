@@ -249,6 +249,7 @@ class Language(private val prefs: Prefs){
                 13 -> return Locale.JAPANESE
                 14 -> return Locale.CHINESE
                 15 -> return Locale("hi", "")
+                16 -> return Locale.KOREAN
                 else -> return Locale.getDefault()
             }
         }

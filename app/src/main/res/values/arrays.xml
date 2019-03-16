@@ -35,6 +35,7 @@
         <item>日本語</item>
         <item>中文</item>
         <item>हिन्दी भाषा</item>
+        <item>한국어</item>
     </string-array>
 
     <string-array name="map_types">
