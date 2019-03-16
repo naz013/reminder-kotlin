@@ -52,7 +52,9 @@ data class Birthday(
         var dayMonth: String = "",
         @SerializedName("uuId")
         @PrimaryKey
-        var uuId: String = UUID.randomUUID().toString()
+        var uuId: String = UUID.randomUUID().toString(),
+        @Ignore
+        var calculatedTime: Long = 0L
 ) : RecyclerInterface, Serializable {
 
     override val viewType: Int
@@ -72,8 +74,8 @@ data class Birthday(
         this.dayMonth = "$day|$month"
     }
 
-    fun getFutureTime(time: Long): Long {
-        return TimeUtil.getFutureBirthdayDate(time, date)?.millis ?: 0L
+    fun calculateTime(time: Long) {
+        calculatedTime = TimeUtil.getFutureBirthdayDate(time, date)?.millis ?: 0L
     }
 
     fun getDateTime(time: Long): Long {
