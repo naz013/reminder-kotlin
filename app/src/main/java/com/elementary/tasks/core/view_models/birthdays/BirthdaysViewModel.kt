@@ -46,6 +46,7 @@ class BirthdaysViewModel : BaseBirthdaysViewModel() {
                 appDb.birthdaysDao().delete(birthday)
                 ids.add(birthday.uuId)
             }
+            updateBirthdayPermanent()
             startWork(DeleteBackupWorker::class.java,
                     Data.Builder().putStringArray(Constants.INTENT_IDS, ids.toTypedArray()).build(),
                     "BD_WORK")

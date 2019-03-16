@@ -143,21 +143,23 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
     }
 
     fun showBirthdayPermanent() {
-        val dismissIntent = Intent(context, PermanentBirthdayReceiver::class.java)
-        dismissIntent.action = PermanentBirthdayReceiver.ACTION_HIDE
-        val piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH)
         val list = AppDb.getAppDatabase(context).birthdaysDao().getAll("$day|$month")
-        val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
-        builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        builder.setAutoCancel(false)
-        builder.setOngoing(true)
-        builder.priority = NotificationCompat.PRIORITY_HIGH
-        builder.setContentTitle(context.getString(R.string.events))
+
         if (list.isNotEmpty()) {
+            val dismissIntent = Intent(context, PermanentBirthdayReceiver::class.java)
+            dismissIntent.action = PermanentBirthdayReceiver.ACTION_HIDE
+            val piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+            val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
+            builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+            builder.setAutoCancel(false)
+            builder.setOngoing(true)
+            builder.priority = NotificationCompat.PRIORITY_HIGH
+            builder.setContentTitle(context.getString(R.string.events))
             val item = list[0]
             builder.setContentText(item.date + " | " + item.name + " | " + TimeUtil.getAgeFormatted(context, item.date, prefs.appLanguage))
             if (list.size > 1) {
