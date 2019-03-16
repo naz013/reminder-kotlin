@@ -161,3 +161,6 @@
 -keepclassmembers class com.yourcompany.models.** {
     *;
 }
+
+-keep,allowobfuscation @interface kotlin.coroutines.jvm.internal.** { *; }
+-keep @interface kotlin.coroutines.jvm.internal.DebugMetadata { *; }
