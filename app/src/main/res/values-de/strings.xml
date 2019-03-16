@@ -704,5 +704,7 @@
     <string name="backup_flags">Sicherungseinstellungen kennzeichnen</string>
     <string name="automatically_sync">Automatisch synchronisieren</string>
     <string name="sync_flags">Flags synchronisieren</string>
+    <string name="exclusive_themes">Exklusive themen;</string>
+    <string name="no_ads">Keine Werbung;</string>
 
 </resources>

@@ -706,5 +706,7 @@
     <string name="backup_flags">"백업 설정 플래그"</string>
     <string name="automatically_sync">"자동 동기화"</string>
     <string name="sync_flags">"동기화 플래그"</string>
+    <string name="exclusive_themes">독점적 인 주제;</string>
+    <string name="no_ads">광고 없음;</string>
 
 </resources>

@@ -704,5 +704,7 @@
     <string name="backup_flags">Záložky nastavení zálohování</string>
     <string name="automatically_sync">Automatická synchronizace</string>
     <string name="sync_flags">Synchronizovat příznaky</string>
+    <string name="exclusive_themes">Exkluzivní témata;</string>
+    <string name="no_ads">Žádná reklama;</string>
 
 </resources>

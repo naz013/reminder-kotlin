@@ -704,5 +704,7 @@
     <string name="backup_flags">बैकअप सेटिंग्स झंडे</string>
     <string name="automatically_sync">स्वचालित रूप से सिंक</string>
     <string name="sync_flags">सिंक ध्वज</string>
+    <string name="exclusive_themes">अनन्य विषय;</string>
+    <string name="no_ads">कोई विज्ञापन नहीं;</string>
 
 </resources>

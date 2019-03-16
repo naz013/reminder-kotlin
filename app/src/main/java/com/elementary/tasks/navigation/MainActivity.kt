@@ -418,10 +418,12 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
                 .setTitle(getString(R.string.buy_pro))
                 .setMessage(getString(R.string.pro_advantages) + "\n" +
                         getString(R.string.different_settings_for_birthdays) + "\n" +
-                        getString(R.string.additional_reminder) + "\n" +
+                        "- " + getString(R.string.additional_reminder) + "\n" +
                         getString(R.string._led_notification_) + "\n" +
                         getString(R.string.led_color_for_each_reminder) + "\n" +
-                        getString(R.string.styles_for_marker))
+                        "- " + getString(R.string.exclusive_themes) + "\n" +
+                        getString(R.string.styles_for_marker) + "\n" +
+                        "- " + getString(R.string.no_ads))
                 .setPositiveButton(R.string.buy) { dialog, _ ->
                     dialog.dismiss()
                     openMarket()

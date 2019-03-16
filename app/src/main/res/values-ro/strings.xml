@@ -704,5 +704,7 @@
     <string name="backup_flags">Backup setările steaguri</string>
     <string name="automatically_sync">Sincronizați automat</string>
     <string name="sync_flags">Sincronizați steagurile</string>
+    <string name="exclusive_themes">Teme exclusiviste;</string>
+    <string name="no_ads">Nicio publicitate;</string>
 
 </resources>

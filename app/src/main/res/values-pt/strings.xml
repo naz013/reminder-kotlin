@@ -704,5 +704,7 @@
     <string name="backup_flags">Sinalizadores de configurações de backup</string>
     <string name="automatically_sync">Sincronizar automaticamente</string>
     <string name="sync_flags">Sinalizadores de sincronização</string>
+    <string name="exclusive_themes">Temas exclusivos;</string>
+    <string name="no_ads">Sem propaganda;</string>
 
 </resources>

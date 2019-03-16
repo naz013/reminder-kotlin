@@ -704,5 +704,7 @@
     <string name="backup_flags">备份设置标志</string>
     <string name="automatically_sync">自动同步</string>
     <string name="sync_flags">同步标志</string>
+    <string name="exclusive_themes">独家主题;</string>
+    <string name="no_ads">没有广告;</string>
 
 </resources>
