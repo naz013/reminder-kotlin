@@ -65,8 +65,10 @@ class WeeklyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
         return if (isActive) {
             stop()
         } else {
-            val time = TimeCount.getNextWeekdayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L)
-            reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+            if (!TimeCount.isCurrent(reminder.eventTime)) {
+                val time = TimeCount.getNextWeekdayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) - 1000L)
+                reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+            }
             reminder.eventCount = 0
             start()
         }
