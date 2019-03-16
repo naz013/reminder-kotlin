@@ -179,10 +179,10 @@ class RepeatView : LinearLayout, TextWatcher {
         mRepeatValue = defaultValue
         setDefaultField()
         if (mState == MONTHS && mIsLocked) {
-            binding.repeatType.adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, resources.getStringArray(R.array.repeat_times_month))
+            binding.repeatType.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, resources.getStringArray(R.array.repeat_times_month))
             binding.repeatType.isEnabled = false
         } else {
-            binding.repeatType.adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, resources.getStringArray(R.array.repeat_times))
+            binding.repeatType.adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, resources.getStringArray(R.array.repeat_times))
             binding.repeatType.isEnabled = true
         }
         setState(mState)

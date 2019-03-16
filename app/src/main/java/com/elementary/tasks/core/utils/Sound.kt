@@ -46,10 +46,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             if (ringtone != null && ringtone.isPlaying) {
                 if (trimPlayback) {
                     if (System.currentTimeMillis() - playbackStartMillis >= playbackDuration * 1000L) {
-                        ringtone.stop()
-                        mRingtone = null
-                        playbackStartMillis = 0L
-                        notifyFinish()
+                        stop(true)
                     } else {
                         mRingtoneHandler.postDelayed(this, 100)
                     }
@@ -57,8 +54,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
                     mRingtoneHandler.postDelayed(this, 100)
                 }
             } else {
-                mRingtone = null
-                notifyFinish()
+                stop(true)
             }
         }
     }
@@ -71,10 +67,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             if (mp != null && mp.isPlaying) {
                 if (trimPlayback) {
                     if (System.currentTimeMillis() - playbackStartMillis >= playbackDuration * 1000L) {
-                        mp.stop()
-                        mMediaPlayer = null
-                        playbackStartMillis = 0L
-                        notifyFinish()
+                        stop(true)
                     } else {
                         mMelodyHandler.postDelayed(this, 1000)
                     }
@@ -82,8 +75,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
                     mMelodyHandler.postDelayed(this, 1000)
                 }
             } else {
-                mMediaPlayer = null
-                notifyFinish()
+                stop(true)
             }
         }
     }
@@ -93,7 +85,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             return try {
                 val mp = mMediaPlayer ?: return false
                 mp.isPlaying
-            } catch (e: IllegalStateException) {
+            } catch (e: java.lang.Exception) {
                 false
             }
         }
@@ -105,45 +97,48 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     fun stop(notify: Boolean) {
         mRingtoneHandler.removeCallbacks(mRingtoneRunnable)
         mMelodyHandler.removeCallbacks(mMelodyRunnable)
-        if (mMediaPlayer != null) {
+        val mp = mMediaPlayer
+        if (mp != null) {
             try {
-                mMediaPlayer?.stop()
-                mMediaPlayer?.release()
-            } catch (ignored: IllegalStateException) {
+                if (mp.isPlaying) {
+                    mp.stop()
+                    mp.release()
+                }
+            } catch (ignored: java.lang.Exception) {
             }
 
             isPaused = false
         }
-        if (mRingtone != null) {
+        val ringtone = mRingtone
+        if (ringtone != null && ringtone.isPlaying) {
             try {
-                mRingtone?.stop()
+                ringtone.stop()
             } catch (ignored: Exception) {
             }
-
         }
-        if (notify) notifyFinish()
+        playbackStartMillis = 0L
+        if (notify) {
+            notifyFinish()
+        }
     }
 
     fun pause() {
-        if (mMediaPlayer != null) {
-            try {
-                mMediaPlayer?.pause()
-            } catch (ignored: IllegalStateException) {
-            }
-
-            isPaused = true
+        val mp = mMediaPlayer ?: return
+        try {
+            mp.pause()
+        } catch (ignored: IllegalStateException) {
         }
+        isPaused = true
     }
 
     fun resume() {
-        if (mMediaPlayer != null) {
-            try {
-                mMediaPlayer?.start()
-            } catch (ignored: IllegalStateException) {
-            }
-
-            isPaused = false
+        val mp = mMediaPlayer ?: return
+        if (!isPaused) return
+        try {
+            mp.start()
+        } catch (ignored: java.lang.Exception) {
         }
+        isPaused = false
     }
 
     fun isSameFile(path: String): Boolean {
