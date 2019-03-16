@@ -42,7 +42,8 @@ class BootReceiver : BaseBroadcast() {
             if (prefs.isAutoEventsCheckEnabled) {
                 alarmReceiver.enableEventCheck(context)
             }
-            if (prefs.isBackupEnabled && prefs.isAutoBackupEnabled) {
+            if (prefs.isBackupEnabled) {
+                alarmReceiver.enableAutoBackup(context)
                 alarmReceiver.enableAutoSync(context)
             }
             if (prefs.isBirthdayPermanentEnabled) {

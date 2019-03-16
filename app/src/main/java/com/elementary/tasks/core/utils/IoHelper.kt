@@ -55,6 +55,16 @@ class IoHelper(context: Context, private val prefs: Prefs, private val backupToo
         }
     }
 
+    fun restoreSettings() {
+        prefs.loadPrefsFromFile()
+        mDropbox.downloadSettings()
+        try {
+            mDrive?.downloadSettings(false)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     /**
      * Create backup files for groups.
      */

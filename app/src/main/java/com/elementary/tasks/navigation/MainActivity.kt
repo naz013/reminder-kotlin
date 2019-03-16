@@ -25,7 +25,6 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
-import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityMainBinding
 import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
@@ -224,14 +223,6 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         builder.setMessage("This version of application may work unstable!")
         builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (prefs.isBackupEnabled && prefs.isAutoBackupEnabled && prefs.isSettingsBackupEnabled
-                && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-            BackupSettingsWorker.schedule()
-        }
     }
 
     override fun onTitleChange(title: String) {
