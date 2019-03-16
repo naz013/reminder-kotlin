@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
@@ -45,6 +44,7 @@ import java.util.concurrent.TimeUnit
 class AlarmReceiver : BaseBroadcast(), KoinComponent {
 
     private val calendarUtils: CalendarUtils by inject()
+    private val appDb: AppDb by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
@@ -95,7 +95,7 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
 
     private fun checkEvents(context: Context) {
         if (Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            CheckEventsAsync(context, prefs, calendarUtils).execute()
+            launchCheckEvents(context)
         }
     }
 
@@ -198,14 +198,13 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
         alarmMgr?.cancel(alarmIntent)
     }
 
-    private class CheckEventsAsync constructor(private val mContext: Context, val prefs: Prefs, val calendarUtils: CalendarUtils) : AsyncTask<Void, Void, Void>() {
-
-        override fun doInBackground(vararg params: Void): Void? {
+    private fun launchCheckEvents(context: Context) {
+        launchDefault {
             val currTime = System.currentTimeMillis()
             val calID = prefs.eventsCalendar
             val eventItems = calendarUtils.getEvents(calID)
             if (eventItems.isNotEmpty()) {
-                val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds()
+                val list = AppDb.getAppDatabase(context).calendarEventsDao().eventIds()
                 for (item in eventItems) {
                     val itemId = item.id
                     if (!list.contains(itemId)) {
@@ -231,7 +230,7 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
 
                         }
                         val summary = item.title
-                        val def = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
+                        val def = AppDb.getAppDatabase(context).reminderGroupDao().defaultGroup()
                         var categoryId = ""
                         if (def != null) {
                             categoryId = def.groupUuId
@@ -253,22 +252,20 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
                     }
                 }
             }
-            return null
         }
+    }
 
-        private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String) {
-            val reminder = Reminder()
-            reminder.type = Reminder.BY_DATE
-            reminder.repeatInterval = repeat
-            reminder.groupUuId = categoryId
-            reminder.summary = summary
-            reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
-            reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
-            val appDb = AppDb.getAppDatabase(mContext)
-            appDb.reminderDao().insert(reminder)
-            EventControlFactory.getController(reminder).start()
-            appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
-        }
+    private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String) {
+        val reminder = Reminder()
+        reminder.type = Reminder.BY_DATE
+        reminder.repeatInterval = repeat
+        reminder.groupUuId = categoryId
+        reminder.summary = summary
+        reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
+        reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
+        appDb.reminderDao().insert(reminder)
+        EventControlFactory.getController(reminder).start()
+        appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
     }
 
     companion object {
