@@ -120,7 +120,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
             Color.BLACK
         }
         this.mTodayColor = themeUtil.getNoteLightColor(prefs.todayColor)
-        this.paint.typeface = ResourcesCompat.getFont(context, R.font.merriweathersans_regular)
+        this.paint.typeface = ResourcesCompat.getFont(context, R.font.roboto_regular)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         this.currentDay = calendar.get(Calendar.DAY_OF_MONTH)
