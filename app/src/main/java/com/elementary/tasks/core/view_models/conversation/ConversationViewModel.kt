@@ -131,8 +131,12 @@ class ConversationViewModel : BaseRemindersViewModel() {
     }
 
     fun removeFirst() {
-        mReplies.removeAt(0)
-        _replies.postValue(mReplies)
+        if (mReplies[0].viewType == Reply.ASK) {
+            mReplies.removeAt(0)
+            _replies.postValue(mReplies)
+        } else {
+            removeAsk()
+        }
     }
 
     fun removeAsk() {
