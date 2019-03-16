@@ -14,6 +14,7 @@ import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupDataWorker
+import com.elementary.tasks.core.work.SyncDataWorker
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
@@ -52,12 +53,44 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
         val service = Intent(context, AlarmReceiver::class.java)
         context.startService(service)
         when (action) {
-            ACTION_SYNC_AUTO -> BackupDataWorker.schedule()
+            ACTION_BACKUP_AUTO -> BackupDataWorker.schedule()
+            ACTION_SYNC_AUTO -> SyncDataWorker.schedule()
             ACTION_EVENTS_CHECK -> checkEvents(context)
             ACTION_BIRTHDAY_PERMANENT -> if (prefs.isBirthdayPermanentEnabled) {
                 notifier.showBirthdayPermanent()
             }
         }
+    }
+
+    fun enableAutoSync(context: Context) {
+        val interval = prefs.autoSyncState
+        if (interval <= 0) {
+            cancelAutoSync(context)
+            return
+        }
+        Timber.d("enableAutoSync: ")
+        val intent = Intent(context, AlarmReceiver::class.java)
+        intent.action = ACTION_SYNC_AUTO
+        val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis() + AlarmManager.INTERVAL_HOUR * interval
+        if (Module.isMarshmallow) {
+            alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+                    AlarmManager.INTERVAL_HOUR * interval, alarmIntent)
+        } else {
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+                    AlarmManager.INTERVAL_HOUR * interval, alarmIntent)
+        }
+    }
+
+    private fun cancelAutoSync(context: Context) {
+        Timber.d("cancelAutoSync: ")
+        val intent = Intent(context, AlarmReceiver::class.java)
+        intent.action = ACTION_SYNC_AUTO
+        val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+        alarmMgr?.cancel(alarmIntent)
     }
 
     private fun checkEvents(context: Context) {
@@ -134,13 +167,18 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
         alarmMgr?.cancel(alarmIntent)
     }
 
-    fun enableAutoSync(context: Context) {
+    fun enableAutoBackup(context: Context) {
+        val interval = prefs.autoBackupState
+        if (interval <= 0) {
+            cancelAutoBackup(context)
+            return
+        }
+        Timber.d("enableAutoBackup: ")
         val intent = Intent(context, AlarmReceiver::class.java)
-        intent.action = ACTION_SYNC_AUTO
-        val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        intent.action = ACTION_BACKUP_AUTO
+        val alarmIntent = PendingIntent.getBroadcast(context, AUTO_BACKUP_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
         val calendar = Calendar.getInstance()
-        val interval = prefs.autoBackupInterval
         calendar.timeInMillis = System.currentTimeMillis() + AlarmManager.INTERVAL_HOUR * interval
         if (Module.isMarshmallow) {
             alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
@@ -151,10 +189,11 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
         }
     }
 
-    fun cancelAutoSync(context: Context) {
+    private fun cancelAutoBackup(context: Context) {
+        Timber.d("cancelAutoBackup: ")
         val intent = Intent(context, AlarmReceiver::class.java)
-        intent.action = ACTION_SYNC_AUTO
-        val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        intent.action = ACTION_BACKUP_AUTO
+        val alarmIntent = PendingIntent.getBroadcast(context, AUTO_BACKUP_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         alarmMgr?.cancel(alarmIntent)
     }
@@ -233,11 +272,13 @@ class AlarmReceiver : BaseBroadcast(), KoinComponent {
     }
 
     companion object {
-        private const val AUTO_SYNC_ID = Integer.MAX_VALUE - 1
+        private const val AUTO_BACKUP_ID = Integer.MAX_VALUE - 1
         private const val BIRTHDAY_PERMANENT_ID = Integer.MAX_VALUE - 2
+        private const val AUTO_SYNC_ID = Integer.MAX_VALUE - 3
         private const val EVENTS_CHECK_ID = Integer.MAX_VALUE - 5
 
         private const val ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT"
+        private const val ACTION_BACKUP_AUTO = "com.elementary.alarm.BACKUP_AUTO"
         private const val ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO"
         private const val ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK"
     }

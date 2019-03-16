@@ -115,14 +115,30 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/automatically_backup"
-                app:prefs_type="check_switch" />
+                app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/syncIntervalPrefs"
+                android:id="@+id/autoBackupFlagsPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/interval"
+                app:prefs_primary_text="@string/backup_flags"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/autoSyncPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/automatically_sync"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/autoSyncFlagsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/sync_flags"
                 app:prefs_type="none" />
 
             <LinearLayout

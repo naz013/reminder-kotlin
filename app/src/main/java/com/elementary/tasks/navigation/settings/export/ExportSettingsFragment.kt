@@ -11,6 +11,7 @@ import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
+import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
@@ -43,21 +44,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
     private var mItemSelect: Int = 0
-    private val intervalPosition: Int
-        get() {
-            val position: Int
-            val interval = prefs.autoBackupInterval
-            position = when (interval) {
-                1 -> 0
-                6 -> 1
-                12 -> 2
-                24 -> 3
-                48 -> 4
-                else -> 0
-            }
-            mItemSelect = position
-            return position
-        }
 
     private val currentPosition: Int
         get() {
@@ -99,9 +85,10 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         initSelectCalendarPrefs()
         initExportToStockPrefs()
         initSettingsBackupPrefs()
-        initAutoBackupPrefs()
-        initAutoBackupIntervalPrefs()
         initClearDataPrefs()
+
+        initAutoBackupPrefs()
+        initAutoSyncPrefs()
 
         binding.backupsPrefs.setOnClickListener {
             callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
@@ -121,6 +108,33 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         SyncWorker.unsubscribe()
         BackupWorker.unsubscribe()
         ExportAllDataWorker.unsubscribe()
+    }
+
+    private fun initAutoSyncPrefs() {
+        binding.autoSyncPrefs.setOnClickListener {
+            showIntervalDialog(getString(R.string.automatically_sync), prefs.autoSyncState) { state ->
+                prefs.autoSyncState = stateFromPosition(state)
+                showSyncState()
+                withContext { AlarmReceiver().enableAutoSync(it) }
+            }
+        }
+        binding.autoSyncPrefs.setDependentView(binding.backupDataPrefs)
+        showSyncState()
+    }
+
+    private fun showSyncState() {
+        binding.autoSyncPrefs.setDetailText(syncStates()[positionFromState(prefs.autoSyncState)])
+        initAutoSyncFlagsPrefs()
+    }
+
+    private fun initAutoSyncFlagsPrefs() {
+        binding.autoSyncFlagsPrefs.setOnClickListener {
+            showFlagsDialog(getString(R.string.sync_flags), prefs.autoSyncFlags) {
+                prefs.autoSyncFlags = it
+            }
+        }
+        binding.autoSyncFlagsPrefs.setDependentView(binding.backupDataPrefs)
+        binding.autoSyncFlagsPrefs.setDependentValue(prefs.autoSyncState > 0)
     }
 
     private fun findPosition(list: List<CalendarUtils.CalendarItem>): Int {
@@ -266,62 +280,93 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         fileOrDirectory.delete()
     }
 
-    private fun initAutoBackupIntervalPrefs() {
-        binding.syncIntervalPrefs.setOnClickListener { showIntervalDialog() }
-        binding.syncIntervalPrefs.setDependentView(binding.autoBackupPrefs)
-        binding.syncIntervalPrefs.setDependentView(binding.backupDataPrefs)
-        showBackupInterval()
+    private fun initAutoBackupPrefs() {
+        binding.autoBackupPrefs.setOnClickListener {
+            showIntervalDialog(getString(R.string.automatically_backup), prefs.autoBackupState) { state ->
+                prefs.autoBackupState = stateFromPosition(state)
+                showBackupState()
+                withContext { AlarmReceiver().enableAutoBackup(it) }
+            }
+        }
+        binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)
+        showBackupState()
     }
 
-    private fun showBackupInterval() {
-        val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
-        binding.syncIntervalPrefs.setDetailText(items[intervalPosition].toString())
+    private fun showBackupState() {
+        binding.autoBackupPrefs.setDetailText(syncStates()[positionFromState(prefs.autoBackupState)])
+        initAutoBackupFlagsPrefs()
     }
 
-    private fun showIntervalDialog() {
-        withContext {
-            val builder = dialogues.getMaterialDialog(it)
-            builder.setCancelable(true)
-            builder.setTitle(getString(R.string.interval))
-            val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours),
-                    getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
-            builder.setSingleChoiceItems(items, intervalPosition) { _, item -> mItemSelect = item }
+    private fun initAutoBackupFlagsPrefs() {
+        binding.autoBackupFlagsPrefs.setOnClickListener {
+            showFlagsDialog(getString(R.string.backup_flags), prefs.autoBackupFlags) {
+                prefs.autoBackupFlags = it
+            }
+        }
+        binding.autoBackupFlagsPrefs.setDependentView(binding.backupDataPrefs)
+        binding.autoBackupFlagsPrefs.setDependentValue(prefs.autoBackupState > 0)
+    }
+
+    private fun showFlagsDialog(title: String, current: Array<String>, onSelect: (Array<String>) -> Unit) {
+        withContext { context ->
+            val builder = dialogues.getMaterialDialog(context)
+            builder.setTitle(title)
+            val syncFlags = syncFlags(current)
+            builder.setMultiChoiceItems(syncFlags.map { it.title }.toTypedArray(), checkStates(syncFlags)) { _, which, isChecked ->
+                syncFlags[which].isChecked = isChecked
+            }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                saveIntervalPrefs()
+                dialog.dismiss()
+                onSelect.invoke(syncFlags.filter { it.isChecked }.map { it.key }.toTypedArray())
+            }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
         }
     }
 
-    private fun saveIntervalPrefs() {
-        when (mItemSelect) {
-            0 -> prefs.autoBackupInterval = 1
-            1 -> prefs.autoBackupInterval = 6
-            2 -> prefs.autoBackupInterval = 12
-            3 -> prefs.autoBackupInterval = 24
-            4 -> prefs.autoBackupInterval = 48
+    private fun checkStates(syncFlags: Array<SyncFlag>): BooleanArray {
+        return syncFlags.map { it.isChecked }.toBooleanArray()
+    }
+
+    private fun positionFromState(state: Int): Int {
+        val position = when (state) {
+            1 -> 1
+            6 -> 2
+            12 -> 3
+            24 -> 4
+            48 -> 5
+            else -> 0
         }
-        withContext { AlarmReceiver().enableAutoSync(it) }
-        showBackupInterval()
+        mItemSelect = position
+        return position
     }
 
-    private fun initAutoBackupPrefs() {
-        binding.autoBackupPrefs.isChecked = prefs.isAutoBackupEnabled
-        binding.autoBackupPrefs.setOnClickListener { changeAutoBackupPrefs() }
-        binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)
-    }
-
-    private fun changeAutoBackupPrefs() {
-        val isChecked = binding.autoBackupPrefs.isChecked
-        binding.autoBackupPrefs.isChecked = !isChecked
-        prefs.isAutoBackupEnabled = !isChecked
+    private fun showIntervalDialog(title: String, current: Int, onSelect: (Int) -> Unit) {
         withContext {
-            if (binding.autoBackupPrefs.isChecked) {
-                AlarmReceiver().enableAutoSync(it)
-            } else {
-                AlarmReceiver().cancelAutoSync(it)
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(title)
+            builder.setSingleChoiceItems(syncStates(), positionFromState(current)) { _, item -> mItemSelect = item }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+                onSelect.invoke(mItemSelect)
             }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
+        }
+    }
+
+    private fun stateFromPosition(position: Int): Int {
+        return when (position) {
+            1 -> 1
+            2 -> 6
+            3 -> 12
+            4 -> 24
+            5 -> 48
+            else -> 0
         }
     }
 
@@ -473,6 +518,24 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     }
 
     override fun getTitle(): String = getString(R.string.export_and_sync)
+
+    private fun syncStates(): Array<String> {
+        return arrayOf(getString(R.string.disabled), getString(R.string.one_hour), getString(R.string.six_hours),
+                getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
+    }
+
+    private fun syncFlags(current: Array<String>): Array<SyncFlag> {
+        return arrayOf(
+                SyncFlag(getString(R.string.reminders_), SyncDataWorker.FLAG_REMINDER, current.contains(SyncDataWorker.FLAG_REMINDER)),
+                SyncFlag(getString(R.string.birthdays), SyncDataWorker.FLAG_BIRTHDAY, current.contains(SyncDataWorker.FLAG_BIRTHDAY)),
+                SyncFlag(getString(R.string.notes), SyncDataWorker.FLAG_NOTE, current.contains(SyncDataWorker.FLAG_NOTE)),
+                SyncFlag(getString(R.string.places), SyncDataWorker.FLAG_PLACE, current.contains(SyncDataWorker.FLAG_PLACE)),
+                SyncFlag(getString(R.string.messages), SyncDataWorker.FLAG_TEMPLATE, current.contains(SyncDataWorker.FLAG_TEMPLATE)),
+                SyncFlag(getString(R.string.action_settings), SyncDataWorker.FLAG_SETTINGS, current.contains(SyncDataWorker.FLAG_SETTINGS))
+        )
+    }
+
+    data class SyncFlag(val title: String, val key: String, var isChecked: Boolean)
 
     companion object {
         private const val CALENDAR_CODE = 124

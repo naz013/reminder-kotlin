@@ -55,6 +55,7 @@ class PrefsView : RelativeLayout {
         }
     private var isForPro: Boolean = false
     private var isTest: Boolean = false
+    private var mDependentValue: Boolean? = null
     private var viewType = CHECK
     private var mOnText: String? = null
     private var mOffText: String? = null
@@ -151,6 +152,13 @@ class PrefsView : RelativeLayout {
         checkDependency()
     }
 
+    fun setDependentValue(b: Boolean) {
+        mDependentValue = b
+        checkDependency()
+        checkReverseDependency()
+        checkDependentValue()
+    }
+
     private fun checkDependency() {
         var enable = true
         for (prefsView in mDependencyViews) {
@@ -160,6 +168,14 @@ class PrefsView : RelativeLayout {
             }
         }
         isEnabled = enable
+        checkDependentValue()
+    }
+
+    private fun checkDependentValue() {
+        val dep = mDependentValue ?: return
+        if (isEnabled) {
+            isEnabled = dep
+        }
     }
 
     fun setReverseDependentView(view: PrefsView) {
@@ -181,6 +197,7 @@ class PrefsView : RelativeLayout {
             }
         }
         isEnabled = enable
+        checkDependentValue()
     }
 
     private fun setVisible() {

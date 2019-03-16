@@ -28,6 +28,18 @@ import java.io.*
 abstract class SharedPrefs(protected val context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
+    fun putStringArray(stringToSave: String, array: Array<String>) {
+        prefs.edit().putStringSet(stringToSave, array.toSet()).apply()
+    }
+
+    fun getStringArray(stringToLoad: String): Array<String> {
+        return try {
+            prefs.getStringSet(stringToLoad, setOf<String>())?.toTypedArray() ?: arrayOf()
+        } catch (e: Exception) {
+            arrayOf()
+        }
+    }
+
     fun putString(stringToSave: String, value: String) {
         prefs.edit().putString(stringToSave, value).apply()
     }
@@ -36,14 +48,14 @@ abstract class SharedPrefs(protected val context: Context) {
         prefs.edit().putInt(stringToSave, value).apply()
     }
 
-    fun getInt(stringToLoad: String): Int {
+    fun getInt(stringToLoad: String, def: Int = 0): Int {
         return try {
-            prefs.getInt(stringToLoad, 0)
+            prefs.getInt(stringToLoad, def)
         } catch (e: ClassCastException) {
             try {
-                Integer.parseInt(prefs.getString(stringToLoad, "0") ?: "0")
+                Integer.parseInt(prefs.getString(stringToLoad, "$def") ?: "$def")
             } catch (e1: ClassCastException) {
-                0
+                def
             }
         }
     }

@@ -77,6 +77,22 @@ class Prefs(context: Context) : SharedPrefs(context) {
         return false
     }
 
+    var autoSyncState: Int
+        get() = getInt(PrefsConstants.AUTO_SYNC_STATE)
+        set(value) = putInt(PrefsConstants.AUTO_SYNC_STATE, value)
+
+    var autoSyncFlags: Array<String>
+        get() = getStringArray(PrefsConstants.AUTO_SYNC_FLAGS)
+        set(value) = putStringArray(PrefsConstants.AUTO_SYNC_FLAGS, value)
+
+    var autoBackupState: Int
+        get() = getInt(PrefsConstants.AUTO_BACKUP_STATE)
+        set(value) = putInt(PrefsConstants.AUTO_BACKUP_STATE, value)
+
+    var autoBackupFlags: Array<String>
+        get() = getStringArray(PrefsConstants.AUTO_BACKUP_FLAGS)
+        set(value) = putStringArray(PrefsConstants.AUTO_BACKUP_FLAGS, value)
+
     var playbackDuration: Int
         get() = getInt(PrefsConstants.PLAYBACK_DURATION)
         set(value) = putInt(PrefsConstants.PLAYBACK_DURATION, value)
@@ -418,14 +434,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
             notifyKey(PrefsConstants.DATA_BACKUP)
         }
 
-    var isAutoBackupEnabled: Boolean
-        get() = getBoolean(PrefsConstants.AUTO_BACKUP)
-        set(value) = putBoolean(PrefsConstants.AUTO_BACKUP, value)
-
-    var autoBackupInterval: Int
-        get() = getInt(PrefsConstants.AUTO_BACKUP_INTERVAL)
-        set(value) = putInt(PrefsConstants.AUTO_BACKUP_INTERVAL, value)
-
     var calendarEventDuration: Int
         get() = getInt(PrefsConstants.EVENT_DURATION)
         set(value) = putInt(PrefsConstants.EVENT_DURATION, value)
@@ -635,7 +643,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
             editor.putInt(PrefsConstants.DELAY_TIME, 5)
             editor.putInt(PrefsConstants.EVENT_DURATION, 30)
             editor.putInt(PrefsConstants.MISSED_CALL_TIME, 10)
-            editor.putInt(PrefsConstants.AUTO_BACKUP_INTERVAL, 6)
             editor.putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
             editor.putInt(PrefsConstants.SOUND_STREAM, 5)
             editor.putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)
@@ -764,9 +771,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         if (!hasKey(PrefsConstants.DO_NOT_DISTURB_TO)) {
             putString(PrefsConstants.DO_NOT_DISTURB_TO, "7:00")
         }
-        if (!hasKey(PrefsConstants.AUTO_BACKUP_INTERVAL)) {
-            putInt(PrefsConstants.AUTO_BACKUP_INTERVAL, 6)
-        }
         if (!hasKey(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL)) {
             putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6)
         }
@@ -841,9 +845,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.INFINITE_VIBRATION)) {
             putBoolean(PrefsConstants.INFINITE_VIBRATION, false)
-        }
-        if (!hasKey(PrefsConstants.AUTO_BACKUP)) {
-            putBoolean(PrefsConstants.AUTO_BACKUP, false)
         }
         if (!hasKey(PrefsConstants.SMART_FOLD)) {
             putBoolean(PrefsConstants.SMART_FOLD, false)
