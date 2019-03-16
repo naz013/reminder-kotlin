@@ -166,7 +166,7 @@ object ViewUtils {
                 if (observer == null) {
                     observer = scrollView.viewTreeObserver
                     observer?.addOnScrollChangedListener(onScrollChangedListener)
-                } else if (!observer!!.isAlive) {
+                } else if (observer?.isAlive == false) {
                     observer?.removeOnScrollChangedListener(onScrollChangedListener)
                     observer = scrollView.viewTreeObserver
                     observer?.addOnScrollChangedListener(onScrollChangedListener)
@@ -187,7 +187,7 @@ object ViewUtils {
                 if (observer == null) {
                     observer = scrollView.viewTreeObserver
                     observer?.addOnScrollChangedListener(onScrollChangedListener)
-                } else if (!observer!!.isAlive) {
+                } else if (observer?.isAlive == false) {
                     observer?.removeOnScrollChangedListener(onScrollChangedListener)
                     observer = scrollView.viewTreeObserver
                     observer?.addOnScrollChangedListener(onScrollChangedListener)
@@ -205,7 +205,6 @@ object ViewUtils {
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    Timber.d("onScrolled: $dx, $dy")
                     if (fabListener != null) {
                         if (dy > 0) {
                             fabListener.invoke(false)
@@ -219,7 +218,6 @@ object ViewUtils {
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     listener.invoke(if (recyclerView.canScrollVertically(-1)) 1 else 0)
-                    Timber.d("onScrolled: $dx, $dy")
                     if (fabListener != null) {
                         if (dy > 0) {
                             fabListener.invoke(false)
