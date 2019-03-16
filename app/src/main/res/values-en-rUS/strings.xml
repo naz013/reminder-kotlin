@@ -696,5 +696,13 @@
     <string name="none">None</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Enable data backup to keep your reminders in safe</string>
     <string name="x_weeks">%s weeks</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="melody_playback_duration">Melody playback duration</string>
+    <string name="till_the_end">Until the end</string>
+    <string name="skip_event">Skip event</string>
+    <string name="backup_flags">Backup settings flags</string>
+    <string name="automatically_sync">Automatically sync</string>
+    <string name="sync_flags">Sync flags</string>
 
 </resources>

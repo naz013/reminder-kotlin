@@ -696,5 +696,13 @@
     <string name="none">Нет</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Включите резервное копирование данных, чтобы сохранить ваши напоминания в безопасности</string>
     <string name="x_weeks">%s недель</string>
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="ringtone">Рингтон</string>
+    <string name="melody_playback_duration">Продолжительность воспроизведения мелодии</string>
+    <string name="till_the_end">До конца</string>
+    <string name="skip_event">Пропустить событие</string>
+    <string name="backup_flags">Флаги настроек резервного копирования</string>
+    <string name="automatically_sync">Автоматически синхронизировать</string>
+    <string name="sync_flags">Флаги настроек синхронизации</string>
 
 </resources>

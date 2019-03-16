@@ -696,5 +696,13 @@
     <string name="none">Nessuna</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Abilita il backup dei dati per mantenere i tuoi ricordi in sicurezza</string>
     <string name="x_weeks">%s settimane</string>
+    <string name="are_you_sure">Sei sicuro?</string>
+    <string name="ringtone">Suoneria</string>
+    <string name="melody_playback_duration">Durata della riproduzione della melodia</string>
+    <string name="till_the_end">Fino alla fine</string>
+    <string name="skip_event">Salta evento</string>
+    <string name="backup_flags">Flag delle impostazioni di backup</string>
+    <string name="automatically_sync">Sincronizza automaticamente</string>
+    <string name="sync_flags">Sincronizza le bandiere</string>
 
 </resources>

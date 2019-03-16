@@ -696,5 +696,13 @@
     <string name="none">Žádný</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Aktivujte zálohování dat, chcete-li, aby vaše připomenutí byla v bezpečí</string>
     <string name="x_weeks">%s týdnů</string>
+    <string name="are_you_sure">Jsi si jistá?</string>
+    <string name="ringtone">Vyzváněcí tón</string>
+    <string name="melody_playback_duration">Doba přehrávání melodie</string>
+    <string name="till_the_end">Do konce</string>
+    <string name="skip_event">Přeskočit událost</string>
+    <string name="backup_flags">Záložky nastavení zálohování</string>
+    <string name="automatically_sync">Automatická synchronizace</string>
+    <string name="sync_flags">Synchronizovat příznaky</string>
 
 </resources>
