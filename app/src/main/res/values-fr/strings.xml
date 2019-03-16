@@ -704,5 +704,7 @@
     <string name="backup_flags">Indicateurs de paramètres de sauvegarde</string>
     <string name="automatically_sync">Synchroniser automatiquement</string>
     <string name="sync_flags">Drapeaux de synchronisation</string>
+    <string name="exclusive_themes">Thèmes exclusifs;</string>
+    <string name="no_ads">Pas de publicité;</string>
 
 </resources>

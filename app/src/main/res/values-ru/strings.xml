@@ -704,5 +704,7 @@
     <string name="backup_flags">Флаги настроек резервного копирования</string>
     <string name="automatically_sync">Автоматически синхронизировать</string>
     <string name="sync_flags">Флаги настроек синхронизации</string>
+    <string name="exclusive_themes">Эксклюзивные темы;</string>
+    <string name="no_ads">Без рекламы;</string>
 
 </resources>

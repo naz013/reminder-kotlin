@@ -704,5 +704,7 @@
     <string name="backup_flags">Yedekleme ayarları bayrakları</string>
     <string name="automatically_sync">Otomatik olarak senkronize et</string>
     <string name="sync_flags">Bayrakları senkronize et</string>
+    <string name="exclusive_themes">Özel temalar;</string>
+    <string name="no_ads">Reklam Yok;</string>
 
 </resources>

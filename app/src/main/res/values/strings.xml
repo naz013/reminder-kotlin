@@ -706,5 +706,7 @@
     <string name="backup_flags">Backup settings flags</string>
     <string name="automatically_sync">Automatically sync</string>
     <string name="sync_flags">Sync flags</string>
+    <string name="exclusive_themes">Exclusive themes;</string>
+    <string name="no_ads">No Advertisement;</string>
 
 </resources>

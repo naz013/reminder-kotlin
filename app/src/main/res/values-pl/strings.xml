@@ -704,5 +704,7 @@
     <string name="backup_flags">Flagi ustawień kopii zapasowej</string>
     <string name="automatically_sync">Automatyczna synchronizacja</string>
     <string name="sync_flags">Flagi synchronizacji</string>
+    <string name="exclusive_themes">Ekskluzywne tematy;</string>
+    <string name="no_ads">Brak reklamy;</string>
 
 </resources>
