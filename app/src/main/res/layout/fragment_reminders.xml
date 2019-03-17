@@ -42,14 +42,6 @@
 
             </LinearLayout>
 
-            <com.elementary.tasks.core.views.FilterView
-                android:id="@+id/filterView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"

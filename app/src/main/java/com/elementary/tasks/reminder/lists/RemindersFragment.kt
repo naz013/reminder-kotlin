@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
-import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
@@ -26,7 +28,6 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import timber.log.Timber
-import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -60,12 +61,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     )
 
     private val mAdapter = RemindersRecyclerAdapter()
-
-    private var mGroupsIds = ArrayList<String>()
     private val searchModifier = SearchModifier(null, this)
-
-    private val filterAllElement: FilterView.FilterElement
-        get() = FilterView.FilterElement(getString(R.string.all), 0, true)
 
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
@@ -115,7 +111,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         }
         val isNotEmpty = searchModifier.hasOriginal()
         menu.getItem(0)?.isVisible = isNotEmpty
-        menu.getItem(2)?.isVisible = false
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -125,21 +120,10 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             R.id.action_voice -> if (callback != null) {
                 buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
             }
-            R.id.action_filter -> {
-                toggleFilter()
-            }
             else -> {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun toggleFilter() {
-        if (binding.filterView.visibility == View.GONE) {
-            binding.filterView.visibility = View.VISIBLE
-        } else {
-            binding.filterView.visibility = View.GONE
-        }
     }
 
     override fun layoutRes(): Int = R.layout.fragment_reminders
@@ -173,16 +157,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
 
     private fun showData(result: List<Reminder>) {
         searchModifier.original = result.toMutableList()
-        refreshFilters()
         activity?.invalidateOptionsMenu()
-    }
-
-    private fun refreshFilters() {
-        binding.filterView.clear()
-        addDateFilter()
-        addGroupFilter()
-        addTypeFilter()
-        addStatusFilter()
     }
 
     private fun initList() {
@@ -214,95 +189,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             binding.emptyItem.visibility = View.GONE
         } else {
             binding.emptyItem.visibility = View.VISIBLE
-        }
-    }
-
-    private fun addStatusFilter() {
-        val reminders = searchModifier.original
-        if (reminders.isEmpty()) {
-            return
-        }
-        val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View?, id: Int) {
-            }
-        })
-        filter.add(filterAllElement)
-        filter.add(FilterView.FilterElement(getString(R.string.enabled4), 1))
-        filter.add(FilterView.FilterElement(getString(R.string.disabled), 2))
-        binding.filterView.addFilter(filter)
-    }
-
-    private fun addDateFilter() {
-        val reminders = searchModifier.original
-        if (reminders.isEmpty()) {
-            return
-        }
-        val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View?, id: Int) {
-            }
-        })
-        filter.add(filterAllElement)
-        filter.add(FilterView.FilterElement(getString(R.string.permanent), 1))
-        filter.add(FilterView.FilterElement(getString(R.string.today), 2))
-        filter.add(FilterView.FilterElement(getString(R.string.tomorrow), 3))
-        binding.filterView.addFilter(filter)
-    }
-
-    private fun addTypeFilter() {
-        val reminders = searchModifier.original
-        if (reminders.isEmpty()) {
-            return
-        }
-        val types = LinkedHashSet<Int>()
-        for (reminder in reminders) {
-            types.add(reminder.type)
-        }
-        val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View?, id: Int) {
-            }
-        })
-        filter.add(filterAllElement)
-        for (integer in types) {
-            filter.add(FilterView.FilterElement(ReminderUtils.getType(context!!, integer), integer))
-        }
-        if (filter.isNotEmpty()) {
-            binding.filterView.addFilter(filter)
-        }
-    }
-
-    private fun addGroupFilter() {
-        mGroupsIds.clear()
-        val reminders = searchModifier.original
-        if (reminders.isEmpty()) {
-            return
-        }
-        val filter = FilterView.Filter(object : FilterView.FilterElementClick {
-            override fun onClick(view: View?, id: Int) {
-
-            }
-        })
-        val groupIds = mutableMapOf<String, String>()
-        reminders.forEach {
-            if (it.groupUuId.isNotBlank()) {
-                groupIds[it.groupUuId] = it.groupTitle ?: ""
-            }
-        }
-        filter.add(filterAllElement)
-        var count = 1
-        for ((key, value) in groupIds.entries) {
-            filter.add(FilterView.FilterElement(value, count))
-            mGroupsIds.add(key)
-            count++
-        }
-        binding.filterView.addFilter(filter)
-    }
-
-    override fun canGoBack(): Boolean {
-        return if (binding.filterView.visibility == View.GONE) {
-            true
-        } else {
-            toggleFilter()
-            false
         }
     }
 

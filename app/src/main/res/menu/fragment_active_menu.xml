@@ -14,10 +14,4 @@
         android:icon="@drawable/ic_twotone_mic_24px"
         android:title="@string/voice_control"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/action_filter"
-        android:icon="@drawable/ic_twotone_filter_list_24px"
-        android:title="@string/filter"
-        app:showAsAction="ifRoom" />
 </menu>
