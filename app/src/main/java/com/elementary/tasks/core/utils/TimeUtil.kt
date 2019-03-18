@@ -534,9 +534,9 @@ object TimeUtil {
         return getTime(Date(millis), is24, lang)
     }
 
-    private fun getAge(year: Int): Int {
+    private fun getAge(year: Int, at: Long = System.currentTimeMillis()): Int {
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.timeInMillis = at
         val mYear = calendar.get(Calendar.YEAR)
         return mYear - year
     }
@@ -635,8 +635,8 @@ object TimeUtil {
         return result.toString()
     }
 
-    fun getAgeFormatted(mContext: Context, date: Int, lang: Int = 0): String {
-        val years = getAge(date)
+    fun getAgeFormatted(mContext: Context, yearOfBirth: Int, at: Long = System.currentTimeMillis(), lang: Int = 0): String {
+        val years = getAge(yearOfBirth, at)
         val result = StringBuilder()
         val language = Language.getScreenLanguage(lang).toString().toLowerCase()
         if (language.startsWith("uk") || language.startsWith("ru")) {

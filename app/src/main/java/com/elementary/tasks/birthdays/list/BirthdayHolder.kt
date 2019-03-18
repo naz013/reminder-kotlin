@@ -61,7 +61,7 @@ class BirthdayHolder(parent: ViewGroup, showMore: Boolean = true, private val li
         val dateItem = TimeUtil.getFutureBirthdayDate(TimeUtil.getBirthdayTime(prefs.birthdayTime), fullDate)
         if (dateItem != null) {
             var message = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.millis, is24, prefs.appLanguage),
-                    "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year, prefs.appLanguage),
+                    "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year, dateItem.millis, prefs.appLanguage),
                     " (${TimeUtil.getReadableBirthDate(fullDate, prefs.appLanguage)})")
 
             if (dateItem.millis > System.currentTimeMillis()) {

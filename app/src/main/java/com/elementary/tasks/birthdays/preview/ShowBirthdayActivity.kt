@@ -269,7 +269,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         }
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
         builder.setContentTitle(name)
-        builder.setContentText(TimeUtil.getAgeFormatted(this, years, prefs.appLanguage))
+        builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
@@ -306,7 +306,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         Timber.d("showTTSNotification: ")
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
         builder.setContentTitle(name)
-        builder.setContentText(TimeUtil.getAgeFormatted(this, years, prefs.appLanguage))
+        builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
         builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         if (isScreenResumed) {
