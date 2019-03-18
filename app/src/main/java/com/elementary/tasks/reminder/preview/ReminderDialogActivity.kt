@@ -24,6 +24,7 @@ import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
@@ -803,15 +804,13 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
 
     private fun showReminderNotification() {
-        if (isScreenResumed) {
-            return
-        }
         Timber.d("showReminderNotification: $id")
-        val notificationIntent = Intent(this, ReminderDialogActivity::class.java)
+
+        val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
+        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
         notificationIntent.putExtra(Constants.INTENT_ID, uuId)
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-        val intent = PendingIntent.getActivity(this, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
         val builder: NotificationCompat.Builder
         if (isScreenResumed) {
             builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
@@ -879,9 +878,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
 
     private fun showTTSNotification() {
-        if (isScreenResumed) {
-            return
-        }
         Timber.d("showTTSNotification: ")
         val builder: NotificationCompat.Builder
         if (isScreenResumed) {
@@ -905,11 +901,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentTitle(summary)
 
-        val notificationIntent = Intent(this, ReminderDialogActivity::class.java)
+        val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
+        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
         notificationIntent.putExtra(Constants.INTENT_ID, uuId)
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-        val intent = PendingIntent.getActivity(this, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
         builder.setContentIntent(intent)
         builder.setAutoCancel(false)
         if (prefs.isManualRemoveEnabled) {
