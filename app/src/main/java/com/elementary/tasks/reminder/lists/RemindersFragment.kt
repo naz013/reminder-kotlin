@@ -96,7 +96,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         } else {
             menu.getItem(1)?.isVisible = false
         }
-        ViewUtils.tintMenuIcon(context!!, menu, 2, R.drawable.ic_twotone_filter_list_24px, isDark)
 
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?

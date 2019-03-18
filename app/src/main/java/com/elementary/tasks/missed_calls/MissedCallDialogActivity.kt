@@ -77,6 +77,9 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     override val priority: Int
         get() = prefs.missedCallPriority
 
+    override val groupName: String
+        get() = "missed_call"
+
     private val mMissedCallObserver: Observer<in MissedCall> = Observer { missedCall ->
         if (missedCall != null) {
             showInfo(missedCall)
@@ -279,7 +282,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
-            builder.setGroup("GROUP")
+            builder.setGroup(groupName)
             builder.setGroupSummary(true)
         }
         Notifier.getManager(this)?.notify(id, builder.build())

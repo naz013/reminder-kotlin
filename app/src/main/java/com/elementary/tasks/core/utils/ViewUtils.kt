@@ -21,6 +21,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import timber.log.Timber
+import java.lang.Exception
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -152,7 +153,10 @@ object ViewUtils {
     }
 
     fun tintMenuIcon(context: Context, menu: Menu?, index: Int, @DrawableRes resource: Int, isDark: Boolean) {
-        menu?.getItem(index)?.icon = tintIcon(context, resource, isDark)
+        try {
+            menu?.getItem(index)?.icon = tintIcon(context, resource, isDark)
+        } catch (e: Exception) {
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
