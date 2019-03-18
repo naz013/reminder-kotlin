@@ -43,6 +43,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
         c.set(Calendar.MINUTE, minute)
         val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormat, prefs.appLanguage)
         binding.timeField.text = formattedTime
+        calculateNextDate()
     }
 
     private val time: Long
