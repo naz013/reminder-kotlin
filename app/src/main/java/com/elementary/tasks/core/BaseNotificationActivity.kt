@@ -170,14 +170,13 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
     }
 
     protected fun removeFlags() {
-        if (canUnlockScreen()) {
-            SuperUtil.unlockOff(this, window)
-            SuperUtil.turnScreenOff(this, window, mWakeLock)
-        }
-
         if (tts != null) {
             tts?.stop()
             tts?.shutdown()
+        }
+        if (canUnlockScreen()) {
+            SuperUtil.unlockOff(this, window)
+            SuperUtil.turnScreenOff(this, window, mWakeLock)
         }
     }
 

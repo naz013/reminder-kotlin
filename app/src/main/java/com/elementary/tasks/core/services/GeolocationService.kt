@@ -39,6 +39,7 @@ class GeolocationService : Service() {
     private var isNotificationEnabled: Boolean = false
     private var stockRadius: Int = 0
     private val prefs: Prefs by inject()
+    private val appDb: AppDb by inject()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -67,7 +68,7 @@ class GeolocationService : Service() {
 
     private fun checkReminders(locationA: Location) {
         launchDefault {
-            for (reminder in AppDb.getAppDatabase(applicationContext).reminderDao().getAll(active = true, removed = false)) {
+            for (reminder in appDb.reminderDao().getAll(active = true, removed = false)) {
                 if (Reminder.isGpsType(reminder.type)) {
                     checkDistance(locationA, reminder)
                 }
@@ -146,7 +147,7 @@ class GeolocationService : Service() {
         } else {
             if (roundedDistance < getRadius(place.radius)) {
                 reminder.isLocked = true
-                AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
+                appDb.reminderDao().insert(reminder)
             }
         }
     }
@@ -154,7 +155,7 @@ class GeolocationService : Service() {
     private suspend fun showReminder(reminder: Reminder) {
         if (reminder.isNotificationShown) return
         reminder.isNotificationShown = true
-        AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
+        appDb.reminderDao().insert(reminder)
         var windowType = prefs.reminderType
         val ignore = prefs.isIgnoreWindowType
         if (!ignore) {
@@ -165,7 +166,7 @@ class GeolocationService : Service() {
                 val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis())
                 if (delayTime > 0) {
                     reminder.eventTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis() + delayTime)
-                    AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
+                    appDb.reminderDao().insert(reminder)
                     EventJobService.enablePositionDelay(applicationContext, reminder.uuId)
                 }
             }
