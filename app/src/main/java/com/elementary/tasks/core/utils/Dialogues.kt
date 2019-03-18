@@ -156,11 +156,6 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         Dialogues.setFullWidthDialog(dialog, activity)
     }
 
-    @Deprecated("Use #getMaterialDialog")
-    fun getDialog(context: Context): AlertDialog.Builder {
-        return AlertDialog.Builder(context, themeUtil.dialogStyle)
-    }
-
     fun getMaterialDialog(context: Context): MaterialAlertDialogBuilder {
         return MaterialAlertDialogBuilder(context, themeUtil.dialogStyle)
     }

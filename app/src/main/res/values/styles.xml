@@ -392,6 +392,9 @@
         <item name="android:colorBackground">@color/pureBlack</item>
         <item name="android:popupBackground">@color/pureBlack</item>
         <item name="android:windowBackground">@color/pureBlack</item>
+        <item name="colorBackgroundFloating">@color/pureBlack</item>
+        <item name="scrimBackground">@color/pureBlack</item>
+        <item name="android:background">@color/pureBlack</item>
     </style>
 
     <style name="Retro.Yellow.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
@@ -416,6 +419,7 @@
         <item name="android:colorBackground">@color/retroYellow</item>
         <item name="android:popupBackground">@color/retroYellow</item>
         <item name="android:windowBackground">@color/retroYellow</item>
+        <item name="android:background">@color/retroYellow</item>
     </style>
 
     <style name="Retro.Orange.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
@@ -440,6 +444,7 @@
         <item name="android:colorBackground">@color/retroOrange</item>
         <item name="android:popupBackground">@color/retroOrange</item>
         <item name="android:windowBackground">@color/retroOrange</item>
+        <item name="android:background">@color/retroOrange</item>
     </style>
 
     <style name="Retro.Green.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
@@ -464,6 +469,7 @@
         <item name="android:colorBackground">@color/retroGreen</item>
         <item name="android:popupBackground">@color/retroGreen</item>
         <item name="android:windowBackground">@color/retroGreen</item>
+        <item name="android:background">@color/retroGreen</item>
     </style>
 
     <style name="Retro.Red.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
@@ -488,6 +494,7 @@
         <item name="android:colorBackground">@color/retroRed</item>
         <item name="android:popupBackground">@color/retroRed</item>
         <item name="android:windowBackground">@color/retroRed</item>
+        <item name="android:background">@color/retroRed</item>
     </style>
 
     <style name="Retro.Brown.PopupMenu" parent="Base.Widget.AppCompat.PopupMenu.Overflow">
@@ -512,5 +519,6 @@
         <item name="android:colorBackground">@color/retroBrown</item>
         <item name="android:popupBackground">@color/retroBrown</item>
         <item name="android:windowBackground">@color/retroBrown</item>
+        <item name="android:background">@color/retroBrown</item>
     </style>
 </resources>
