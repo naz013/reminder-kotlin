@@ -1,13 +1,11 @@
 package com.elementary.tasks.reminder.preview
 
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -36,7 +34,6 @@ import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
-import java.io.IOException
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -70,6 +67,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     private var isReminderShowed = false
     override var isScreenResumed: Boolean = false
         private set
+
+    override val groupName: String
+        get() = "reminder"
 
     private val isAppType: Boolean
         get() {
@@ -131,13 +131,13 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
 
     override val summary: String
-        get() = if (mReminder == null) "" else mReminder?.summary ?: ""
+        get() = mReminder?.summary ?: ""
 
     override val uuId: String
-        get() = if (mReminder == null) "" else mReminder?.uuId ?: ""
+        get() = mReminder?.uuId ?: ""
 
     override val id: Int
-        get() = if (mReminder == null) 0 else mReminder?.uniqueId ?: 2121
+        get() = mReminder?.uniqueId ?: 2121
 
     override val ledColor: Int
         get() {
@@ -661,9 +661,9 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     private fun showNotification() {
         if (isMockedTest || isReminderShowed) return
         if (!isTtsEnabled) {
-            showReminderNotification(this)
+            showReminderNotification()
         } else {
-            showTTSNotification(this)
+            showTTSNotification()
         }
     }
 
@@ -802,16 +802,16 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
     }
 
-    private fun showReminderNotification(activity: Activity) {
+    private fun showReminderNotification() {
         if (isScreenResumed) {
             return
         }
         Timber.d("showReminderNotification: $id")
-        val notificationIntent = Intent(this, activity.javaClass)
+        val notificationIntent = Intent(this, ReminderDialogActivity::class.java)
         notificationIntent.putExtra(Constants.INTENT_ID, uuId)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-        val intent = PendingIntent.getActivity(this, id, notificationIntent, 0)
+        val intent = PendingIntent.getActivity(this, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val builder: NotificationCompat.Builder
         if (isScreenResumed) {
             builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
@@ -858,7 +858,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
-            builder.setGroup("GROUP")
+            builder.setGroup(groupName)
             builder.setGroupSummary(true)
         }
         Notifier.getManager(this)?.notify(id, builder.build())
@@ -878,7 +878,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
     }
 
-    private fun showTTSNotification(activityClass: Activity) {
+    private fun showTTSNotification() {
         if (isScreenResumed) {
             return
         }
@@ -905,11 +905,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentTitle(summary)
 
-        val notificationIntent = Intent(this, activityClass.javaClass)
+        val notificationIntent = Intent(this, ReminderDialogActivity::class.java)
         notificationIntent.putExtra(Constants.INTENT_ID, uuId)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-        val intent = PendingIntent.getActivity(this, id, notificationIntent, 0)
+        val intent = PendingIntent.getActivity(this, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         builder.setContentIntent(intent)
         builder.setAutoCancel(false)
         if (prefs.isManualRemoveEnabled) {
@@ -932,26 +932,13 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
-            builder.setGroup("GROUP")
+            builder.setGroup(groupName)
             builder.setGroupSummary(true)
         }
         Notifier.getManager(this)?.notify(id, builder.build())
         if (isWear) {
             showWearNotification(appName)
         }
-    }
-
-    private fun playDefaultMelody() {
-        if (sound == null) return
-        Timber.d("playDefaultMelody: ")
-        try {
-            val afd = assets.openFd("sounds/beep.mp3")
-            sound?.playAlarm(afd)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            sound?.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false, prefs.playbackDuration)
-        }
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

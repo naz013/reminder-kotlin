@@ -2,6 +2,7 @@ package com.elementary.tasks.core
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
@@ -15,6 +16,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -84,6 +86,8 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
     protected abstract val maxVolume: Int
 
     protected abstract val priority: Int
+
+    protected abstract val groupName: String
 
     protected open val sound: Sound?
         get() = soundStackHolder.sound
@@ -222,9 +226,21 @@ abstract class BaseNotificationActivity<B : ViewDataBinding> : ThemedActivity<B>
         wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
         wearableNotificationBuilder.setOngoing(false)
         wearableNotificationBuilder.setOnlyAlertOnce(true)
-        wearableNotificationBuilder.setGroup("GROUP")
+        wearableNotificationBuilder.setGroup(groupName)
         wearableNotificationBuilder.setGroupSummary(false)
         Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
+    }
+
+    protected fun playDefaultMelody() {
+        if (sound == null) return
+        Timber.d("playDefaultMelody: ")
+        try {
+            val afd = assets.openFd("sounds/beep.mp3")
+            sound?.playAlarm(afd)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            sound?.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false, prefs.playbackDuration)
+        }
     }
 
     companion object {

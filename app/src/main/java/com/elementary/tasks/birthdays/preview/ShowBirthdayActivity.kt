@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -47,6 +48,8 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         private set
     override var summary: String = ""
         private set
+    override val groupName: String
+        get() = "birthdays"
 
     private val isBirthdaySilentEnabled: Boolean
         get() {
@@ -248,9 +251,11 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         }
         init()
 
-        showNotification(TimeUtil.getAge(birthday.date), birthday.name)
         if (isTtsEnabled) {
+            showTTSNotification(TimeUtil.getAge(birthday.date), birthday.name)
             startTts()
+        } else {
+            showNotification(TimeUtil.getAge(birthday.date), birthday.name)
         }
     }
 
@@ -285,7 +290,48 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
-            builder.setGroup("GROUP")
+            builder.setGroup(groupName)
+            builder.setGroupSummary(true)
+        }
+        Notifier.getManager(this)?.notify(id, builder.build())
+        if (isWear) {
+            showWearNotification(name)
+        }
+    }
+
+    private fun showTTSNotification(years: Int, name: String) {
+        if (isScreenResumed) {
+            return
+        }
+        Timber.d("showTTSNotification: ")
+        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
+        builder.setContentTitle(name)
+        builder.setContentText(TimeUtil.getAgeFormatted(this, years, prefs.appLanguage))
+        builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        if (isScreenResumed) {
+            builder.priority = NotificationCompat.PRIORITY_LOW
+        } else {
+            builder.priority = priority
+            if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
+                            (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
+                playDefaultMelody()
+            }
+            if (isVibrate) {
+                var pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+                if (isBirthdayInfiniteVibration) {
+                    pattern = longArrayOf(150, 86400000)
+                }
+                builder.setVibrate(pattern)
+            }
+        }
+        if (Module.isPro) {
+            builder.setLights(ledColor, 500, 1000)
+        }
+        val isWear = prefs.isWearEnabled
+        if (isWear) {
+            builder.setOnlyAlertOnce(true)
+            builder.setGroup(groupName)
             builder.setGroupSummary(true)
         }
         Notifier.getManager(this)?.notify(id, builder.build())
