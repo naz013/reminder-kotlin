@@ -19,6 +19,7 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
 import org.apache.commons.lang3.StringUtils
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -146,6 +147,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun find(monthPagerItem: MonthPagerItem, listener: ((MonthPagerItem, List<EventModel>) -> Unit)?) {
+        Timber.d("find: $monthPagerItem")
         this.monthPagerItem = monthPagerItem
         this.listener = listener
         viewModel.findEvents(monthPagerItem)
@@ -225,9 +227,18 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
         }
 
         override fun onPageSelected(position: Int) {
+            val current = dayPagerAdapter.fragments[getCurrent(position)]
+
             refreshAdapters(position)
-            dayPagerAdapter.fragments[getCurrent(position)].requestData()
-            val item = dayPagerAdapter.fragments[getCurrent(position)].getModel() ?: return
+            current.requestData()
+            val item = current.getModel()
+
+            Timber.d("onPageSelected: $item, $current")
+
+            if (item == null) {
+                return
+            }
+
             val calendar = Calendar.getInstance()
             calendar.set(item.year, item.month, 15)
             updateMenuTitles(calendar.timeInMillis)
