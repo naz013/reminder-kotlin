@@ -588,7 +588,10 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.mapView.onDestroy()
+        try {
+            binding.mapView.onDestroy()
+        } catch (e: UninitializedPropertyAccessException) {
+        }
     }
 
     override fun onPause() {

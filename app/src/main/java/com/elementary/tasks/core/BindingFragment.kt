@@ -15,16 +15,15 @@ abstract class BindingFragment<B : ViewDataBinding> : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val res = layoutRes()
-        return if (res != 0) {
+        val view =  if (res != 0) {
             inflater.inflate(layoutRes(), container, false)
         } else {
             super.onCreateView(inflater, container, savedInstanceState)
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = DataBindingUtil.bind(view)!!
+        if (view != null) {
+            binding = DataBindingUtil.bind(view)!!
+        }
+        return view
     }
 
     @LayoutRes
