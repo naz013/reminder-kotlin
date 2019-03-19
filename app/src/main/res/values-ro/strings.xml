@@ -706,5 +706,6 @@
     <string name="sync_flags">Sincronizați steagurile</string>
     <string name="exclusive_themes">Teme exclusiviste;</string>
     <string name="no_ads">Nicio publicitate;</string>
+    <string name="new_reminder">Mesaj nou</string>
 
 </resources>
