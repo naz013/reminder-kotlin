@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -438,15 +439,30 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private fun loadNote() {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
-        mUri = intent.data
-        if (mUri != null) {
-            loadNoteFromFile()
-        } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
-            try {
-                val note = intent.getSerializableExtra(Constants.INTENT_ITEM) as NoteWithImages?
-                showNote(note)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        when {
+            intent?.action == Intent.ACTION_SEND -> {
+                if ("text/plain" == intent.type) {
+                    handleSendText(intent)
+                } else if (intent.type?.startsWith("image/") == true) {
+                    handleSendImage(intent)
+                }
+            }
+            intent?.action == Intent.ACTION_SEND_MULTIPLE
+                    && intent.type?.startsWith("image/") == true -> {
+                handleSendMultipleImages(intent)
+            }
+            else -> {
+                mUri = intent.data
+                if (mUri != null) {
+                    loadNoteFromFile()
+                } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
+                    try {
+                        val note = intent.getSerializableExtra(Constants.INTENT_ITEM) as NoteWithImages?
+                        showNote(note)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
         }
     }
@@ -920,6 +936,32 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
                 }
             }
         }
+    }
+
+    private fun handleSendText(intent: Intent) {
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            Timber.d("handleSendText: $it")
+            binding.taskMessage.setText(it)
+        }
+    }
+
+    private fun handleSendImage(intent: Intent) {
+        (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+            stateViewModel.addMultiple(it, null, this)
+        }
+    }
+
+    private fun handleSendMultipleImages(intent: Intent) {
+        intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM)?.let { list ->
+            list.forEach {
+                stateViewModel.addMultiple(it as? Uri, null, this)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("onResume: ")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
