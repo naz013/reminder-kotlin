@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
@@ -188,6 +190,18 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             prefs.rateCount = count
             return count == 10
         }
+    private var mWasStopped = false
+
+    private val mLocalReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action ?: ""
+            val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
+            Timber.d("onReceive: $action, $mId")
+            if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
+                finish()
+            }
+        }
+    }
 
     override fun layoutRes(): Int = R.layout.activity_reminder_dialog
 
@@ -229,6 +243,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
 
         initViewModel(id)
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ACTION_STOP_BG_ACTIVITY))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -591,6 +606,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     override fun onDestroy() {
         super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
         viewModel.reminder.removeObserver(mReminderObserver)
         lifecycle.removeObserver(viewModel)
         if (sentReceiver != null) {
@@ -946,6 +962,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        mWasStopped = true
+    }
+
     private fun doActions(onControl: (EventControl) -> Unit, onEnd: (Reminder) -> Unit) {
         isReminderShowed = true
         viewModel.reminder.removeObserver(mReminderObserver)
@@ -974,6 +995,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val ARG_IS_ROTATED = "arg_rotated"
+        const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"
 
         fun mockTest(context: Context, reminder: Reminder) {
             val intent = Intent(context, ReminderDialogActivity::class.java)
