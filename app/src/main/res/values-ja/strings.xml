@@ -707,5 +707,6 @@
     <string name="sync_flags">同期フラグ</string>
     <string name="exclusive_themes">独占テーマ。</string>
     <string name="no_ads">広告がありません。</string>
+    <string name="new_reminder">新しいお知らせ</string>
 
 </resources>

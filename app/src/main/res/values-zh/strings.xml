@@ -706,5 +706,6 @@
     <string name="sync_flags">同步标志</string>
     <string name="exclusive_themes">独家主题;</string>
     <string name="no_ads">没有广告;</string>
+    <string name="new_reminder">新提醒</string>
 
 </resources>

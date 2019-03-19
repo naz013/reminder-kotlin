@@ -706,5 +706,6 @@
     <string name="sync_flags">Synchronizovat příznaky</string>
     <string name="exclusive_themes">Exkluzivní témata;</string>
     <string name="no_ads">Žádná reklama;</string>
+    <string name="new_reminder">Nová upomínka</string>
 
 </resources>

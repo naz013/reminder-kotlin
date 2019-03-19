@@ -706,5 +706,6 @@
     <string name="sync_flags">सिंक ध्वज</string>
     <string name="exclusive_themes">अनन्य विषय;</string>
     <string name="no_ads">कोई विज्ञापन नहीं;</string>
+    <string name="new_reminder">नई याद दिलाते हैं</string>
 
 </resources>

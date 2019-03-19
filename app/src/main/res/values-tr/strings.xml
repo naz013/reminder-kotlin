@@ -706,5 +706,6 @@
     <string name="sync_flags">Bayrakları senkronize et</string>
     <string name="exclusive_themes">Özel temalar;</string>
     <string name="no_ads">Reklam Yok;</string>
+    <string name="new_reminder">Yeni hatırlatma</string>
 
 </resources>

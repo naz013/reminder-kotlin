@@ -706,5 +706,6 @@
     <string name="sync_flags">Прапори синхронізації</string>
     <string name="exclusive_themes">Ексклюзивні теми;</string>
     <string name="no_ads">Без реклами;</string>
+    <string name="new_reminder">Нове нагадування</string>
 
 </resources>

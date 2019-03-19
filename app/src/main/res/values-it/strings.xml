@@ -706,5 +706,6 @@
     <string name="sync_flags">Sincronizza le bandiere</string>
     <string name="exclusive_themes">Temi esclusivi;</string>
     <string name="no_ads">Nessuna pubblicità;</string>
+    <string name="new_reminder">Nuovo promemoria</string>
 
 </resources>

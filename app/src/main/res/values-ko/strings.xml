@@ -708,5 +708,6 @@
     <string name="sync_flags">"동기화 플래그"</string>
     <string name="exclusive_themes">독점적 인 주제;</string>
     <string name="no_ads">광고 없음;</string>
+    <string name="new_reminder">새로운 알리미</string>
 
 </resources>

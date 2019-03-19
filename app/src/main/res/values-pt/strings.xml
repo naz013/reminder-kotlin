@@ -706,5 +706,6 @@
     <string name="sync_flags">Sinalizadores de sincronização</string>
     <string name="exclusive_themes">Temas exclusivos;</string>
     <string name="no_ads">Sem propaganda;</string>
+    <string name="new_reminder">Novo lembrete</string>
 
 </resources>
