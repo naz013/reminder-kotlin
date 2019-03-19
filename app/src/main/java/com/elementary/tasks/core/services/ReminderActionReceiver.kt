@@ -2,6 +2,7 @@ package com.elementary.tasks.core.services
 
 import android.content.Context
 import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -31,6 +32,9 @@ class ReminderActionReceiver : BaseBroadcast() {
 
     private fun showReminder(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
+
+        sendCloseBroadcast(context, id)
+
         val notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         context.startActivity(notificationIntent)
@@ -64,6 +68,12 @@ class ReminderActionReceiver : BaseBroadcast() {
         }
     }
 
+    private fun sendCloseBroadcast(context: Context, id: String) {
+        val intent = Intent(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY)
+        intent.putExtra(Constants.INTENT_ID, id)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+    }
+
     private fun resolveAction(context: Context, id: String) {
         launchDefault {
             var windowType = prefs.reminderType
@@ -83,6 +93,7 @@ class ReminderActionReceiver : BaseBroadcast() {
             } else {
                 withUIContext {
                     if (windowType == 0) {
+                        sendCloseBroadcast(context, id)
                         context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
                     } else {
                         ReminderUtils.showSimpleReminder(context, prefs, id)
@@ -96,5 +107,12 @@ class ReminderActionReceiver : BaseBroadcast() {
         const val ACTION_SHOW = Actions.Reminder.ACTION_SHOW_FULL
         const val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
         const val ACTION_RUN = Actions.Reminder.ACTION_RUN
+
+        fun showIntent(context: Context, id: String): Intent {
+            val notificationIntent = Intent(context, ReminderActionReceiver::class.java)
+            notificationIntent.action = ACTION_SHOW
+            notificationIntent.putExtra(Constants.INTENT_ID, id)
+            return notificationIntent
+        }
     }
 }

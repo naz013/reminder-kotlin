@@ -13,7 +13,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import java.util.*
@@ -93,8 +92,10 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver(), KoinComponent {
         builder.setAutoCancel(false)
         builder.priority = NotificationCompat.PRIORITY_MAX
         if (prefs.isFoldingEnabled && !Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
-            val intent = PendingIntent.getActivity(context, reminder.uniqueId,
-                    ReminderDialogActivity.getLaunchIntent(context, reminder.uuId), PendingIntent.FLAG_CANCEL_CURRENT)
+            val notificationIntent = Intent(context, ReminderActionReceiver::class.java)
+            notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
+            notificationIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
+            val intent = PendingIntent.getBroadcast(context, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setContentIntent(intent)
         }
         if (Module.isPro) {

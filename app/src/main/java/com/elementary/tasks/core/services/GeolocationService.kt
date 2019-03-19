@@ -11,7 +11,6 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -173,7 +172,7 @@ class GeolocationService : Service() {
         } else {
             withUIContext {
                 if (windowType == 0) {
-                    applicationContext.startActivity(ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uuId))
+                    sendBroadcast(ReminderActionReceiver.showIntent(applicationContext, reminder.uuId))
                 } else {
                     ReminderUtils.showSimpleReminder(applicationContext, prefs, reminder.uuId)
                 }
