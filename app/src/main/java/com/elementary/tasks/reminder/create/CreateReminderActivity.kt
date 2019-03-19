@@ -169,6 +169,11 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
         initViewModel(id)
         when {
+            intent?.action == Intent.ACTION_SEND -> {
+                if ("text/plain" == intent.type) {
+                    handleSendText(intent)
+                }
+            }
             id != "" -> {
                 isEditing = true
             }
@@ -439,6 +444,13 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
             }
         }
         fragment?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleSendText(intent: Intent) {
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            stateViewModel.reminder.summary = it
+            editReminder(stateViewModel.reminder, false)
+        }
     }
 
     private fun showCurrentMelody() {

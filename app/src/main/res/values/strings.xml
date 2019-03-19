@@ -708,5 +708,6 @@
     <string name="sync_flags">Sync flags</string>
     <string name="exclusive_themes">Exclusive themes;</string>
     <string name="no_ads">No Advertisement;</string>
+    <string name="new_reminder">New reminder</string>
 
 </resources>
