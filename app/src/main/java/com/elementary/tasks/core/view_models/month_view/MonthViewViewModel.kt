@@ -37,20 +37,14 @@ class MonthViewViewModel private constructor(private val addReminders: Boolean,
                                              private val calculateFuture: Boolean,
                                              private val birthTime: Long = 0) : BaseDbViewModel() {
 
-    private var liveData: MonthViewLiveData
+    private var liveData: MonthViewLiveData = MonthViewLiveData()
     private var _events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()
     var events: LiveData<Pair<MonthPagerItem, List<EventModel>>> = _events
 
-    init {
-        liveData = MonthViewLiveData()
-    }
-
     fun findEvents(item: MonthPagerItem) {
-        try {
-            liveData.findEvents(item, false) { eventsPagerItem, list ->
-                _events.postValue(Pair(eventsPagerItem, list))
-            }
-        } catch (e: UninitializedPropertyAccessException) {
+        Timber.d("findEvents: $item")
+        liveData.findEvents(item, false) { eventsPagerItem, list ->
+            _events.postValue(Pair(eventsPagerItem, list))
         }
     }
 

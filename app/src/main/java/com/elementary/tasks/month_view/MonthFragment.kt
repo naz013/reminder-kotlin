@@ -46,7 +46,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
 
     fun setModel(monthPagerItem: MonthPagerItem) {
         this.mItem = monthPagerItem
-        Timber.d("setModel: $monthPagerItem")
+        Timber.d("setModel: $monthPagerItem, $isAdded, $isResumed")
         if (isResumed) {
             binding.monthView.setDate(monthPagerItem.year, monthPagerItem.month + 1)
         }
@@ -67,19 +67,18 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val item = mItem
-        if (item != null) {
-            binding.monthView.setDate(item.year, item.month + 1)
-            binding.monthView.setDateClick(object : MonthView.OnDateClick {
-                override fun onClick(dateTime: DateTime) {
-                    callback?.onDateClick(TimeUtil.convertDateTimeToDate(dateTime))
-                }
-            })
-            binding.monthView.setDateLongClick(object : MonthView.OnDateLongClick {
-                override fun onLongClick(dateTime: DateTime) {
-                    callback?.onDateLongClick(TimeUtil.convertDateTimeToDate(dateTime))
-                }
-            })
+        binding.monthView.setDateClick(object : MonthView.OnDateClick {
+            override fun onClick(dateTime: DateTime) {
+                callback?.onDateClick(TimeUtil.convertDateTimeToDate(dateTime))
+            }
+        })
+        binding.monthView.setDateLongClick(object : MonthView.OnDateLongClick {
+            override fun onLongClick(dateTime: DateTime) {
+                callback?.onDateLongClick(TimeUtil.convertDateTimeToDate(dateTime))
+            }
+        })
+        mItem?.let {
+            binding.monthView.setDate(it.year, it.month + 1)
         }
     }
 
@@ -90,7 +89,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
                 delay(250)
                 withUIContext {
                     callback?.find(item) { eventsPagerItem, list ->
-                        Timber.d("setModel: $eventsPagerItem, ${list.size}")
+                        Timber.d("requestData: result -> $eventsPagerItem, ${list.size}")
                         launchDefault {
                             val data = mapData(list)
                             withUIContext {
