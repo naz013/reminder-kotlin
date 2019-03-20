@@ -17,9 +17,6 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
         val uuId = inputData.getString(Constants.INTENT_ID) ?: ""
         if (uuId.isNotEmpty()) {
             deleteSingleFile(uuId + FileConfig.FILE_NAME_TEMPLATE)
-        } else {
-            val ids = inputData.getStringArray(Constants.INTENT_IDS) ?: return Result.success()
-            ids.forEach { deleteSingleFile(it + FileConfig.FILE_NAME_TEMPLATE) }
         }
         return Result.success()
     }

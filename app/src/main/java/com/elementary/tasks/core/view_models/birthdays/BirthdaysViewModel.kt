@@ -1,14 +1,13 @@
 package com.elementary.tasks.core.view_models.birthdays
 
 import androidx.lifecycle.LiveData
-import androidx.work.Data
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
-import java.util.*
+import kotlinx.coroutines.runBlocking
 
 @Suppress("JoinDeclarationAndAssignment")
 /**
@@ -40,16 +39,14 @@ class BirthdaysViewModel : BaseBirthdaysViewModel() {
     fun deleteAllBirthdays() {
         postInProgress(true)
         launchDefault {
-            val list = appDb.birthdaysDao().all()
-            val ids = ArrayList<String>()
-            for (birthday in list) {
-                appDb.birthdaysDao().delete(birthday)
-                ids.add(birthday.uuId)
+            runBlocking {
+                val list = appDb.birthdaysDao().all()
+                for (birthday in list) {
+                    appDb.birthdaysDao().delete(birthday)
+                    startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+                }
             }
             updateBirthdayPermanent()
-            startWork(DeleteBackupWorker::class.java,
-                    Data.Builder().putStringArray(Constants.INTENT_IDS, ids.toTypedArray()).build(),
-                    "BD_WORK")
             withUIContext {
                 postInProgress(false)
                 postCommand(Commands.DELETED)
