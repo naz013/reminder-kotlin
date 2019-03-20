@@ -9,6 +9,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
+import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.isVisible
@@ -86,6 +87,9 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     }
 
     override fun prepare(): Reminder? {
+        if (!Permissions.ensureForeground(activity!!, 1212)) {
+            return null
+        }
         val reminder = super.prepare() ?: return null
         val map = mAdvancedMapFragment ?: return null
         var type = if (binding.enterCheck.isChecked) Reminder.BY_LOCATION else Reminder.BY_OUT

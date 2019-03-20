@@ -51,8 +51,14 @@ class GeolocationService : Service() {
         return null
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        showDefaultNotification()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("onStartCommand: ")
+        showDefaultNotification()
         isNotificationEnabled = prefs.isDistanceNotificationEnabled
         stockRadius = prefs.radius
         mTracker = LocationTracker(applicationContext) { lat, lng ->
@@ -61,7 +67,6 @@ class GeolocationService : Service() {
             locationA.longitude = lng
             checkReminders(locationA)
         }
-        showDefaultNotification()
         return Service.START_STICKY
     }
 
@@ -188,7 +193,8 @@ class GeolocationService : Service() {
         builder.setContentText(roundedDistance.toString())
         builder.priority = NotificationCompat.PRIORITY_LOW
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
-        startForeground(reminder.uniqueId, builder.build())
+
+        Notifier.getManager(applicationContext)?.notify(reminder.uniqueId, builder.build())
     }
 
     private fun showDefaultNotification() {
