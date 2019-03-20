@@ -578,7 +578,15 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     }
 
     private fun switchClick() {
-        reminder?.let { viewModel.toggleReminder(it) }
+        reminder?.let {
+            if (Reminder.isGpsType(it.type)) {
+                if (Permissions.ensureForeground(this@ReminderPreviewActivity, 1142)) {
+                    viewModel.toggleReminder(it)
+                }
+            } else {
+                viewModel.toggleReminder(it)
+            }
+        }
     }
 
     private fun initMap() {

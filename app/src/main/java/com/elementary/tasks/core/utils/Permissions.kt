@@ -54,6 +54,19 @@ object Permissions {
         return true
     }
 
+    fun ensureForeground(activity: Activity, requestCode: Int): Boolean {
+        return if (checkForeground(activity)) {
+            true
+        } else {
+            if (Module.isPie) {
+                Permissions.requestPermission(activity, requestCode, FOREGROUND)
+                false
+            } else {
+                return true
+            }
+        }
+    }
+
     fun isAllGranted(grantResults: IntArray): Boolean {
         if (grantResults.isEmpty()) {
             return false

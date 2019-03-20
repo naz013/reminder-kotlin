@@ -16,10 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -54,7 +51,15 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     private val reminderResolver = ReminderResolver(
             dialogAction = { return@ReminderResolver dialogues },
             saveAction = { reminder -> viewModel.saveReminder(reminder) },
-            toggleAction = { reminder -> viewModel.toggleReminder(reminder) },
+            toggleAction = { reminder ->
+                if (Reminder.isGpsType(reminder.type)) {
+                    if (Permissions.ensureForeground(activity!!, 1122)) {
+                        viewModel.toggleReminder(reminder)
+                    }
+                } else {
+                    viewModel.toggleReminder(reminder)
+                }
+            },
             deleteAction = { reminder -> viewModel.moveToTrash(reminder) },
             skipAction = { reminder -> viewModel.skip(reminder) },
             allGroups = { return@ReminderResolver viewModel.groups }
