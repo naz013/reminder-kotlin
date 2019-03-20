@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.view_models.reminders
 
 import androidx.lifecycle.LiveData
-import androidx.work.Data
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
@@ -46,9 +45,9 @@ class ArchiveRemindersViewModel : BaseRemindersViewModel() {
                 }
                 appDb.reminderDao().deleteAll(data)
             }
-            startWork(DeleteBackupWorker::class.java,
-                    Data.Builder().putStringArray(Constants.INTENT_IDS, data.map { it.uuId }.toTypedArray()).build(),
-                    "RM_WORK")
+            data.forEach {
+                startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+            }
             withUIContext {
                 postInProgress(false)
                 postCommand(Commands.DELETED)
