@@ -709,5 +709,11 @@
     <string name="exclusive_themes">Exclusive themes;</string>
     <string name="no_ads">No Advertisement;</string>
     <string name="new_reminder">New reminder</string>
+    <string name="in_app_sharing">In-App sharing</string>
+    <string name="password">Password</string>
+    <string name="key">Key</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Shared data available only while this screen is open</string>
+    <string name="failed_to_share_data">Failed to share data</string>
+    <string name="failed_to_read_data">Failed to read data</string>
 
 </resources>

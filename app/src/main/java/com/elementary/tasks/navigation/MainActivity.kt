@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
+import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
 import com.elementary.tasks.core.ThemedActivity
@@ -306,6 +307,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         menu.getItem(5)?.isVisible = GTasks.getInstance(this)?.isLogged ?: false
         menu.getItem(7)?.isVisible = Module.hasLocation(this)
         menu.getItem(11)?.isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
+        menu.getItem(12)?.isVisible = Module.isPro && QrShareProvider.hasQrSupport()
     }
 
     override fun onBackPressed() {
@@ -371,11 +373,11 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         Handler().postDelayed({
-            if (prevItem == item.itemId && (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro)) {
+            if (prevItem == item.itemId && (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro && item.itemId != R.id.nav_qr)) {
                 return@postDelayed
             }
             openScreen(item.itemId)
-            if (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro) {
+            if (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_pro && item.itemId != R.id.nav_qr) {
                 prevItem = item.itemId
             }
         }, 250)
@@ -400,6 +402,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
             }
             R.id.nav_feedback -> replaceFragment(FeedbackFragment(), getString(R.string.feedback))
             R.id.nav_pro -> showProDialog()
+            R.id.nav_qr -> QrShareProvider.openImportScreen(this)
         }
     }
 

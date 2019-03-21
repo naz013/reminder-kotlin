@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import com.backdoor.engine.Recognizer
+import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.navigation.settings.voice.TimesViewModel
 import com.elementary.tasks.notes.create.CreateNoteViewModel
@@ -25,6 +26,7 @@ fun utilModule() = module {
     single { Notifier(androidApplication(), get(), get()) }
     single { CalendarUtils(androidApplication(), get(), get()) }
     single { providesRecognizer(get(), get()) }
+    single { QrShareProvider(get()) }
     single { GlobalButtonObservable() }
     single { ImagesSingleton() }
 }
