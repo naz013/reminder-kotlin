@@ -123,12 +123,27 @@ class CreateNoteViewModel : ViewModel(), LifecycleObserver {
                 }
 
                 list = images.value ?: listOf()
-                mutable = list.toMutableList()
-                mutable[position] = imageFile
-                withUIContext {
-                    images.postValue(mutable)
+                if (list.isNotEmpty()) {
+                    val pos = findPos(list, imageFile)
+                    if (pos != -1) {
+                        mutable = list.toMutableList()
+                        mutable[pos] = imageFile
+                        withUIContext {
+                            images.postValue(mutable)
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private fun findPos(list: List<ImageFile>, imageFile: ImageFile): Int {
+        if (list.isEmpty()) return -1
+        for (i in 0 until list.size) {
+            if (list[i].uuid == imageFile.uuid) {
+                return i
+            }
+        }
+        return -1
     }
 }

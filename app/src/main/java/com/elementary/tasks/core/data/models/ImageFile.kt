@@ -36,7 +36,11 @@ data class ImageFile(
         var noteId: String = "",
         @Transient
         @Ignore
-        var state: DecodeImages.State = DecodeImages.State.Ready) : Serializable {
+        var state: DecodeImages.State = DecodeImages.State.Ready,
+        @Transient
+        @Ignore
+        var uuid: String = UUID.randomUUID().toString()
+) : Serializable {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
