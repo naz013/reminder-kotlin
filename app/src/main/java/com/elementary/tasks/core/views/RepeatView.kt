@@ -221,6 +221,11 @@ class RepeatView : LinearLayout, TextWatcher {
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         try {
             mRepeatValue = Integer.parseInt(s.toString())
+            if (mRepeatValue > 0 && s.toString().startsWith("0")) {
+                binding.repeatTitle.setText(mRepeatValue.toString())
+                binding.repeatTitle.setSelection(binding.repeatTitle.text.toString().length)
+                return
+            }
             if (mState == MONTHS && mRepeatValue < defaultValue) {
                 setDefaultField()
                 return
