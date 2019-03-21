@@ -3,8 +3,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_current"
-            android:icon="@drawable/ic_twotone_alarm_24px"
             android:checked="true"
+            android:icon="@drawable/ic_twotone_alarm_24px"
             android:title="@string/tasks" />
 
         <item
@@ -66,5 +66,11 @@
             android:id="@+id/nav_pro"
             android:icon="@drawable/ic_twotone_local_grocery_store_24px"
             android:title="@string/buy_pro" />
+
+        <item
+            android:id="@+id/nav_qr"
+            android:checkable="false"
+            android:icon="@drawable/ic_qr_code"
+            android:title="@string/in_app_sharing" />
     </group>
 </menu>
