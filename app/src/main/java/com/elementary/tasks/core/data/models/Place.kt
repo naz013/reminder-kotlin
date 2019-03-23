@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.models
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -31,6 +32,7 @@ import java.util.*
  */
 @Entity
 @TypeConverters(ListStringTypeConverter::class)
+@Keep
 data class Place(
         @SerializedName("radius")
         var radius: Int = 0,

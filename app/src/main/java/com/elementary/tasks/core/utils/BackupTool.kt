@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.ContentResolver
 import android.net.Uri
 import android.text.TextUtils
+import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -559,6 +560,7 @@ class BackupTool(private val appDb: AppDb) {
         }
     }
 
+    @Keep
     data class AllData(val reminders: List<Reminder>,
                        val groups: List<ReminderGroup>,
                        val notes: List<OldNote>,

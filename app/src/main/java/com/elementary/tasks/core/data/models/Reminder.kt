@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.models
 
+import androidx.annotation.Keep
 import androidx.room.*
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
 import com.elementary.tasks.core.data.converters.ListStringTypeConverter
@@ -36,6 +37,7 @@ import java.util.*
         ListStringTypeConverter::class,
         ListIntTypeConverter::class
 )
+@Keep
 data class Reminder(
         @SerializedName("summary")
         var summary: String = "",
