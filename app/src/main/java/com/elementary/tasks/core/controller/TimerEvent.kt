@@ -23,7 +23,6 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
     override val isActive: Boolean

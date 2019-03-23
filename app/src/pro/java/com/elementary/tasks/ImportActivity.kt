@@ -4,27 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ActivityImportSharingBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.gson.Gson
-import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
 
-    private val qrShareProvider: QrShareProvider by inject()
-
-    private lateinit var auth: FirebaseAuth
+    private lateinit var viewModel: ShareViewModel
 
     override fun layoutRes(): Int = R.layout.activity_import_sharing
 
@@ -34,40 +29,51 @@ class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
 
         binding.shareButton.isEnabled = false
         binding.shareButton.setOnClickListener { importClick() }
+        binding.autoCheck.isChecked = prefs.isAutoImportSharedData
+        binding.autoCheck.setOnCheckedChangeListener { _, isChecked -> prefs.isAutoImportSharedData = isChecked }
+        binding.codeField.filters = arrayOf(InputFilter.AllCaps())
 
         val data = intent.dataString
         if (data != null) {
             readUri(data)
         }
 
-        auth = FirebaseAuth.getInstance()
+        initViewModel()
     }
 
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
-        if (currentUser == null) {
-            login()
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
+        viewModel.isLogged.observe(this, Observer {
+            if (it != null) {
+                binding.shareButton.isEnabled = it
+            }
+        })
+        viewModel.isError.observe(this, Observer {
+            if (it != null && it) showError()
+        })
+        viewModel.isLoading.observe(this, Observer {
+            if (it != null) {
+                updateProgress(it)
+            }
+        })
+        viewModel.isSuccess.observe(this, Observer {
+            if (it != null && it) {
+                Toast.makeText(this, getString(R.string.reminder_imported_success), Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.reminder.observe(this, Observer {
+            if (it != null) {
+                editReminder(it)
+            }
+        })
+    }
+
+    private fun updateProgress(b: Boolean) {
+        if (b) {
+            binding.progressView.visibility = View.VISIBLE
+        } else {
+            binding.progressView.visibility = View.GONE
         }
-    }
-
-    private fun updateUI(currentUser: FirebaseUser?) {
-        binding.shareButton.isEnabled = currentUser != null
-    }
-
-    private fun login() {
-        auth.signInAnonymously()
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Timber.d("signInAnonymously:success")
-                        val user = auth.currentUser
-                        updateUI(user)
-                    } else {
-                        Timber.d("signInAnonymously:failure -> ${task.exception}")
-                        updateUI(null)
-                    }
-                }
     }
 
     private fun readUri(data: String) {
@@ -105,43 +111,7 @@ class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
         binding.passwordField.setText("")
         binding.codeField.setText("")
 
-        qrShareProvider.readData(key.toUpperCase()) {
-            if (it) {
-                qrShareProvider.verifyData(password) { type, data ->
-                    if (type != null && data != null) {
-                        importData(type, data)
-                    } else {
-                        showError()
-                    }
-                }
-            } else {
-                showError()
-            }
-        }
-    }
-
-    private fun importData(type: String, data: String) {
-        Timber.d("importData: $type, $data")
-        when (type) {
-            QrShareProvider.TYPE_REMINDER -> {
-                importReminder(data)
-            }
-        }
-    }
-
-    private fun importReminder(data: String) {
-        launchDefault {
-            val json = QrShareProvider.readData(data)
-            if (json != null) {
-                val reminder = Gson().fromJson(json, Reminder::class.java)
-                Timber.d("importReminder: $reminder")
-                if (reminder != null && reminder.type != 0) {
-                    withUIContext { editReminder(reminder) }
-                }
-            } else {
-                showError()
-            }
-        }
+        viewModel.read(key, password)
     }
 
     private fun editReminder(reminder: Reminder) {

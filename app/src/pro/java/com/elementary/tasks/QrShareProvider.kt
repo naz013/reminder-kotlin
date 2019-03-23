@@ -20,6 +20,7 @@ import com.google.zxing.EncodeHintType
 import net.glxn.qrgen.android.QRCode
 import timber.log.Timber
 import java.io.*
+import java.lang.Exception
 
 class QrShareProvider(val themeUtil: ThemeUtil) {
 
@@ -91,11 +92,13 @@ class QrShareProvider(val themeUtil: ThemeUtil) {
 
     fun removeData() {
         mKey?.let {
-            database.reference.child(CHILD_SHARE)
-                    .child(it)
-                    .removeValue()
+            try {
+                database.reference.child(CHILD_SHARE)
+                        .child(it)
+                        .removeValue()
+            } catch (e: Exception) {
+            }
         }
-
     }
 
     private fun generateKey(): String {

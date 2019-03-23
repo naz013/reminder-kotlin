@@ -85,6 +85,7 @@ class ShareActivity : ThemedActivity<ActivityShareBinding>() {
             return
         }
 
+        clear()
         hideKeyboard()
 
         binding.passwordField.setText("")
@@ -109,8 +110,20 @@ class ShareActivity : ThemedActivity<ActivityShareBinding>() {
         Toast.makeText(this, getString(R.string.failed_to_share_data), Toast.LENGTH_SHORT).show()
     }
 
+    private fun clear() {
+        binding.shareCodeView.text = ""
+        binding.shareCodeImage.setImageDrawable(null)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clear()
+        qrShareProvider.removeData()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        clear()
         qrShareProvider.removeData()
     }
 

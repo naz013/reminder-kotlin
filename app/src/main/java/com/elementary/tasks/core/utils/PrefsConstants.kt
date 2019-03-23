@@ -131,6 +131,7 @@ object PrefsConstants {
     const val AUTO_SYNC_FLAGS = "auto_sync_flags"
     const val AUTO_BACKUP_STATE = "auto_backup_state"
     const val AUTO_BACKUP_FLAGS = "auto_backup_flags"
+    const val AUTO_IMPORT_SHARED_DATA = "auto_import_shared_data"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"
