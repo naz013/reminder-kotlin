@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Temi esclusivi;</string>
     <string name="no_ads">Nessuna pubblicità;</string>
     <string name="new_reminder">Nuovo promemoria</string>
+    <string name="failed_to_read_data">Impossibile leggere i dati</string>
+    <string name="failed_to_share_data">Impossibile condividere i dati</string>
+    <string name="in_app_sharing">Condivisione dell\'app all\'interno</string>
+    <string name="key">Chiave</string>
+    <string name="password">Parola d\'ordine</string>
+    <string name="reminder_imported_success">Promemoria importato correttamente</string>
+    <string name="save_and_start_automatically">Salva e avvia automaticamente</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Dati condivisi disponibili solo mentre questa schermata è aperta</string>
 
 </resources>

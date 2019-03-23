@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Ексклюзивні теми;</string>
     <string name="no_ads">Без реклами;</string>
     <string name="new_reminder">Нове нагадування</string>
+    <string name="failed_to_read_data">Не вдалося прочитати дані</string>
+    <string name="failed_to_share_data">Не вдалося обмінятися даними</string>
+    <string name="in_app_sharing">Обмін у програмі</string>
+    <string name="key">Ключ</string>
+    <string name="password">Пароль</string>
+    <string name="reminder_imported_success">Нагадування успішно імпортовано</string>
+    <string name="save_and_start_automatically">Зберегти та запустити автоматично</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Спільні дані доступні лише під час відкриття цього екрана</string>
 
 </resources>

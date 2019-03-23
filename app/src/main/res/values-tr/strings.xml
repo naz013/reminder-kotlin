@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Özel temalar;</string>
     <string name="no_ads">Reklam Yok;</string>
     <string name="new_reminder">Yeni hatırlatma</string>
+    <string name="failed_to_read_data">Veriler okunamadı</string>
+    <string name="failed_to_share_data">Veri paylaşılamadı</string>
+    <string name="in_app_sharing">Uygulama içi paylaşım</string>
+    <string name="key">Anahtar</string>
+    <string name="password">Parola</string>
+    <string name="reminder_imported_success">Hatırlatıcı başarıyla içe aktarıldı</string>
+    <string name="save_and_start_automatically">Kaydet ve otomatik olarak başla</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Paylaşılan veriler yalnızca bu ekran açıkken kullanılabilir</string>
 
 </resources>

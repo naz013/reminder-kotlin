@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Teme exclusiviste;</string>
     <string name="no_ads">Nicio publicitate;</string>
     <string name="new_reminder">Mesaj nou</string>
+    <string name="failed_to_read_data">Nu au putut fi citite datele</string>
+    <string name="failed_to_share_data">Nu a reușit să partajați date</string>
+    <string name="in_app_sharing">În interiorul partajării de aplicații</string>
+    <string name="key">Cheie</string>
+    <string name="password">Parola</string>
+    <string name="reminder_imported_success">Memento importată cu succes</string>
+    <string name="save_and_start_automatically">Salvați și porniți automat</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Datele comune sunt disponibile numai în timp ce acest ecran este deschis</string>
 
 </resources>

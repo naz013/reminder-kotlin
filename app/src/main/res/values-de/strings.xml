@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Exklusive themen;</string>
     <string name="no_ads">Keine Werbung;</string>
     <string name="new_reminder">Neue Erinnerung</string>
+    <string name="failed_to_read_data">Daten konnten nicht gelesen werden</string>
+    <string name="failed_to_share_data">Daten konnten nicht gemeinsam genutzt werden</string>
+    <string name="in_app_sharing">App teilen</string>
+    <string name="key">Schlüssel</string>
+    <string name="password">Passwort</string>
+    <string name="reminder_imported_success">Erinnerung erfolgreich importiert</string>
+    <string name="save_and_start_automatically">Speichern Sie und starten Sie automatisch</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Freigegebene Daten nur verfügbar, wenn dieser Bildschirm geöffnet ist</string>
 
 </resources>

@@ -707,5 +707,13 @@
     <string name="exclusive_themes">अनन्य विषय;</string>
     <string name="no_ads">कोई विज्ञापन नहीं;</string>
     <string name="new_reminder">नई याद दिलाते हैं</string>
+    <string name="failed_to_read_data">डेटा पढ़ने में विफल</string>
+    <string name="failed_to_share_data">डेटा साझा करने में विफल</string>
+    <string name="in_app_sharing">ऐप शेयरिंग के अंदर</string>
+    <string name="key">कुंजी</string>
+    <string name="password">पारण शब्द</string>
+    <string name="reminder_imported_success">अनुस्मारक सफलतापूर्वक आयात किया गया</string>
+    <string name="save_and_start_automatically">सहेजें और स्वचालित रूप से प्रारंभ करें</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">यह स्क्रीन खुली होने पर ही साझा किया गया डेटा उपलब्ध है</string>
 
 </resources>

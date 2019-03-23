@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Exkluzivní témata;</string>
     <string name="no_ads">Žádná reklama;</string>
     <string name="new_reminder">Nová upomínka</string>
+    <string name="failed_to_read_data">Nepodařilo se načíst data</string>
+    <string name="failed_to_share_data">Nepodařilo se sdílet data</string>
+    <string name="in_app_sharing">Sdílení aplikací uvnitř</string>
+    <string name="key">Klíč</string>
+    <string name="password">Heslo</string>
+    <string name="reminder_imported_success">Připomenutí bylo úspěšně importováno</string>
+    <string name="save_and_start_automatically">Uložit a spustit automaticky</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Sdílená data jsou k dispozici pouze v době, kdy je tato obrazovka otevřena</string>
 
 </resources>

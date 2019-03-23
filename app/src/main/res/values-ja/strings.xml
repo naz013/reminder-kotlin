@@ -708,5 +708,13 @@
     <string name="exclusive_themes">独占テーマ。</string>
     <string name="no_ads">広告がありません。</string>
     <string name="new_reminder">新しいお知らせ</string>
+    <string name="failed_to_read_data">データを読み込めませんでした</string>
+    <string name="failed_to_share_data">データを共有できませんでした</string>
+    <string name="in_app_sharing">アプリ内共有</string>
+    <string name="key">キー</string>
+    <string name="password">パスワード</string>
+    <string name="reminder_imported_success">リマインダーをインポートしました</string>
+    <string name="save_and_start_automatically">保存して自動的に起動</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">この画面が開いている間だけ共有データが利用可能</string>
 
 </resources>
