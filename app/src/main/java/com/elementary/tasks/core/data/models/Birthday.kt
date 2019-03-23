@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.data.models
 
 import android.text.TextUtils
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -29,6 +30,7 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
+@Keep
 data class Birthday(
         @SerializedName("name")
         var name: String = "",

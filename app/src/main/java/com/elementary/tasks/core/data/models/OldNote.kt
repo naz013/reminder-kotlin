@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.models
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -20,6 +21,7 @@ import com.google.gson.annotations.SerializedName
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Keep
 data class OldNote(
         @SerializedName("summary")
         var summary: String = "",

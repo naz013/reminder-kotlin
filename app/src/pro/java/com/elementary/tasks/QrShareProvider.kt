@@ -6,6 +6,7 @@ import android.util.Base64DataException
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import android.widget.ImageView
+import androidx.annotation.Keep
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
@@ -15,12 +16,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import com.google.zxing.EncodeHintType
 import net.glxn.qrgen.android.QRCode
 import timber.log.Timber
 import java.io.*
-import java.lang.Exception
 
 class QrShareProvider(val themeUtil: ThemeUtil) {
 
@@ -112,21 +111,18 @@ class QrShareProvider(val themeUtil: ThemeUtil) {
         return key
     }
 
+    @Keep
     data class ShareData(
-            @SerializedName("type")
             val type: String? = "",
-            @SerializedName("data")
             val data: String? = "",
-            @SerializedName("password")
             val password: String? = "",
-            @SerializedName("createdAt")
             val createdAt: String? = ""
     )
 
     companion object {
+
         const val TYPE_REMINDER = "reminder"
         const val CHILD_SHARE = "shared"
-        const val INTENT_DATA = "intent_data"
 
         fun hasQrSupport(): Boolean = true
 
