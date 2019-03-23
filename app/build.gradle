@@ -10,8 +10,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 237
-        versionName '7.1.5'
+        versionCode 238
+        versionName '7.1.6'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 208
+            versionCode 209
         }
     }
     packagingOptions {
@@ -168,7 +168,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'com.github.florent37:expansionpanel:1.2.2'
     implementation 'com.github.naz013:ColorSlider:1.0.5'
-    implementation 'com.airbnb.android:lottie:2.8.0'
+    implementation 'com.airbnb.android:lottie:3.0.0'
     implementation 'co.revely:gradient:1.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

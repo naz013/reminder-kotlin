@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Ekskluzywne tematy;</string>
     <string name="no_ads">Brak reklamy;</string>
     <string name="new_reminder">Nowe przypomnienie</string>
+    <string name="failed_to_read_data">Nie można odczytać danych</string>
+    <string name="failed_to_share_data">Udostępnianie danych nie powiodło się</string>
+    <string name="in_app_sharing">Udostępnianie aplikacji wewnątrz</string>
+    <string name="key">Klawisz</string>
+    <string name="password">Hasło</string>
+    <string name="reminder_imported_success">Przypomnienie zostało zaimportowane pomyślnie</string>
+    <string name="save_and_start_automatically">Zapisz i uruchom automatycznie</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Udostępnione dane są dostępne tylko wtedy, gdy ten ekran jest otwarty</string>
 
 </resources>

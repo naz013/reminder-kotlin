@@ -707,5 +707,13 @@
     <string name="exclusive_themes">独家主题;</string>
     <string name="no_ads">没有广告;</string>
     <string name="new_reminder">新提醒</string>
+    <string name="failed_to_read_data">无法读取数据</string>
+    <string name="failed_to_share_data">无法共享数据</string>
+    <string name="in_app_sharing">内部应用分享</string>
+    <string name="key">键</string>
+    <string name="password">密码</string>
+    <string name="reminder_imported_success">提醒导入成功</string>
+    <string name="save_and_start_automatically">保存并自动启动</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">仅在此屏幕打开时可用的共享数据</string>
 
 </resources>

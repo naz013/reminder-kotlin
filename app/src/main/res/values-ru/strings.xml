@@ -707,5 +707,13 @@
     <string name="exclusive_themes">Эксклюзивные темы;</string>
     <string name="no_ads">Без рекламы;</string>
     <string name="new_reminder">Новое напоминание</string>
+    <string name="failed_to_read_data">Не удалось прочитать данные</string>
+    <string name="failed_to_share_data">Не удалось поделиться данными</string>
+    <string name="in_app_sharing">Обмен приложениями внутри</string>
+    <string name="key">Ключ</string>
+    <string name="password">Пароль</string>
+    <string name="reminder_imported_success">Напоминание успешно импортировано</string>
+    <string name="save_and_start_automatically">Сохранить и запустить автоматически</string>
+    <string name="shared_data_available_only_while_this_screen_is_open">Совместно используемые данные доступны только при открытом экране</string>
 
 </resources>
