@@ -477,7 +477,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             mItemSelect = i
         }
         builder.setPositiveButton(R.string.save) { dialog, _ ->
-            prefs.calendarId = mDataList[mItemSelect].id
+            if (mItemSelect != -1 && mItemSelect < mDataList.size) {
+                prefs.calendarId = mDataList[mItemSelect].id
+            }
             dialog.dismiss()
             showCurrentCalendar()
         }
@@ -491,7 +493,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     private fun showCurrentCalendar() {
         val calendars = calendarUtils.getCalendarsList()
         val pos = findPosition(calendars)
-        if (calendars.isNotEmpty() && pos != -1) {
+        if (calendars.isNotEmpty() && pos != -1 && pos < calendars.size) {
             val name = calendars[pos].name
             binding.selectCalendarPrefs.setDetailText(name)
         } else {
