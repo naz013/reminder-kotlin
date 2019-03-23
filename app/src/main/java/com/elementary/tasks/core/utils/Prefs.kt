@@ -175,6 +175,10 @@ class Prefs(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, true)
         set(value) = putBoolean(PrefsConstants.ALLOW_SMS_AND_CALL, value)
 
+    var isAutoImportSharedData: Boolean
+        get() = getBoolean(PrefsConstants.AUTO_IMPORT_SHARED_DATA, true)
+        set(value) = putBoolean(PrefsConstants.AUTO_IMPORT_SHARED_DATA, value)
+
     var moveCompleted: Boolean
         get() = getBoolean(PrefsConstants.MOVE_TO_TRASH, false)
         set(value) = putBoolean(PrefsConstants.MOVE_TO_TRASH, value)
