@@ -314,13 +314,17 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun initRecognizer() {
-        val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-        speech = SpeechRecognizer.createSpeechRecognizer(this)
-        speech?.setRecognitionListener(mRecognitionListener)
-        speech?.startListening(recognizerIntent)
+        try {
+            val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            speech = SpeechRecognizer.createSpeechRecognizer(this)
+            speech?.setRecognitionListener(mRecognitionListener)
+            speech?.startListening(recognizerIntent)
+        } catch (e: java.lang.Exception) {
+            speech = null
+        }
     }
 
     private fun releaseSpeech() {
