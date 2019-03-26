@@ -371,11 +371,13 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (!f.exists()) {
             return
         }
+        val name = f.name
+        if (TextUtils.isEmpty(name)) return
+        if (!name.endsWith(metadata.fileExt)) return
         try {
-            if (!f.name.endsWith(metadata.fileExt)) return
-            removeAllCopies(f.name)
+            removeAllCopies(name)
             val fileMetadata = File()
-            fileMetadata.name = f.name
+            fileMetadata.name = name
             fileMetadata.description = metadata.meta
             fileMetadata.parents = PARENTS
             val mediaContent = FileContent("text/plain", f)
