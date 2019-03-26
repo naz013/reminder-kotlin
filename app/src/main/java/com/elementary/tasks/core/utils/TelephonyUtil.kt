@@ -77,6 +77,7 @@ object TelephonyUtil {
                  message: String, filePath: String?) {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
         intent.putExtra(Intent.EXTRA_TEXT, message)
@@ -98,6 +99,7 @@ object TelephonyUtil {
         }
         val smsIntent = Intent(Intent.ACTION_VIEW)
         smsIntent.data = Uri.parse("sms:$number")
+        smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
             context.startActivity(smsIntent)
         } catch (e: ActivityNotFoundException) {
@@ -112,6 +114,7 @@ object TelephonyUtil {
         val smsIntent = Intent(Intent.ACTION_VIEW)
         smsIntent.data = Uri.parse("sms:$number")
         smsIntent.putExtra("sms_body", message)
+        smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
             context.startActivity(smsIntent)
         } catch (e: ActivityNotFoundException) {
@@ -126,6 +129,7 @@ object TelephonyUtil {
         }
         val callIntent = Intent(Intent.ACTION_CALL)
         callIntent.data = Uri.parse("tel:$number")
+        callIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
             context.startActivity(callIntent)
         } catch (e: ActivityNotFoundException) {
