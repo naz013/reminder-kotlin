@@ -46,12 +46,10 @@ class QrShareProvider(val themeUtil: ThemeUtil) {
                 .child(key)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) {
-                        Timber.d("onCancelled: ${error.message}")
                         onReady.invoke(false)
                     }
 
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        Timber.d("onDataChange: $dataSnapshot")
                         val shareData = dataSnapshot.getValue(ShareData::class.java)
                         if (shareData != null) {
                             data = shareData
@@ -74,8 +72,26 @@ class QrShareProvider(val themeUtil: ThemeUtil) {
                 .addOnSuccessListener {
                     onReady.invoke(key)
                     mKey = key
+                    incrementCounter()
                 }
                 .addOnFailureListener { onReady.invoke(null) }
+    }
+
+    private fun incrementCounter() {
+        database.reference.child(CHILD_COUNTER)
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+
+                    override fun onDataChange(snap: DataSnapshot) {
+                        var count = snap.getValue(Int::class.java) ?: 0
+                        count++
+                        database.reference.child(CHILD_COUNTER)
+                                .setValue(count)
+                                .addOnSuccessListener {  }
+                                .addOnFailureListener {  }
+                    }
+                })
     }
 
     fun showQrImage(imageView: ImageView, qrData: String) {
@@ -123,6 +139,7 @@ class QrShareProvider(val themeUtil: ThemeUtil) {
 
         const val TYPE_REMINDER = "reminder"
         const val CHILD_SHARE = "shared"
+        const val CHILD_COUNTER = "shared_times"
 
         fun hasQrSupport(): Boolean = true
 
