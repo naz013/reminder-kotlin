@@ -1,14 +1,12 @@
 package com.elementary.tasks.core.utils
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.widget.Toast
 import com.elementary.tasks.R
-
 import java.io.File
 
 /**
@@ -54,7 +52,7 @@ object TelephonyUtil {
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         try {
             context.startActivity(Intent.createChooser(intent, "Send email..."))
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -68,7 +66,7 @@ object TelephonyUtil {
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         try {
             context.startActivity(Intent.createChooser(intent, "Send email..."))
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -88,7 +86,7 @@ object TelephonyUtil {
         }
         try {
             context.startActivity(Intent.createChooser(intent, "Send email..."))
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -102,7 +100,7 @@ object TelephonyUtil {
         smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
             context.startActivity(smsIntent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -117,7 +115,7 @@ object TelephonyUtil {
         smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
             context.startActivity(smsIntent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -132,7 +130,7 @@ object TelephonyUtil {
         callIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
             context.startActivity(callIntent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -141,7 +139,7 @@ object TelephonyUtil {
         val launchIntent = context.packageManager.getLaunchIntentForPackage(appPackage)
         try {
             context.startActivity(launchIntent)
-        } catch (ignored: ActivityNotFoundException) {
+        } catch (ignored: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -150,7 +148,7 @@ object TelephonyUtil {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         try {
             context.startActivity(browserIntent)
-        } catch (ignored: ActivityNotFoundException) {
+        } catch (ignored: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -161,7 +159,7 @@ object TelephonyUtil {
         sky.data = Uri.parse(uri)
         try {
             context.startActivity(sky)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -172,7 +170,7 @@ object TelephonyUtil {
         sky.data = Uri.parse(uri)
         try {
             context.startActivity(sky)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
@@ -183,7 +181,7 @@ object TelephonyUtil {
         sky.data = Uri.parse(uri)
         try {
             context.startActivity(sky)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
