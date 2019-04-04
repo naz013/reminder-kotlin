@@ -23,24 +23,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GDrive private constructor(context: Context) : KoinComponent {
 
     private var driveService: Drive? = null
@@ -77,11 +59,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         instance = null
     }
 
-    /**
-     * Holder information about user.
-     *
-     * @return user info object
-     */
     val data: UserItem?
         get() {
             val service = driveService ?: return null
@@ -97,12 +74,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
             return null
         }
 
-    /**
-     * Count all backup files stored on GTasks Drive.
-     *
-     * @return number of files in local folder.
-     */
-    @Throws(IOException::class)
     private fun countFiles(): Int {
         val service = driveService ?: return 0
         if (!isLogged) return 0
@@ -111,45 +82,50 @@ class GDrive private constructor(context: Context) : KoinComponent {
                 .setSpaces("appDataFolder")
                 .setFields("nextPageToken, files(id, name)")
                 .setQ("mimeType = 'text/plain'") ?: return 0
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val title = f.name
-                Timber.d("countFiles: $title")
-                when {
-                    title.contains(FileConfig.FILE_NAME_SETTINGS) -> count++
-                    title.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> count++
-                    title.endsWith(FileConfig.FILE_NAME_PLACE) -> count++
-                    title.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> count++
-                    title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++
-                    title.endsWith(FileConfig.FILE_NAME_NOTE) -> count++
-                    title.endsWith(FileConfig.FILE_NAME_REMINDER) -> count++
+        try {
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val title = f.name
+                    Timber.d("countFiles: $title")
+                    when {
+                        title.contains(FileConfig.FILE_NAME_SETTINGS) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_PLACE) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_NOTE) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_REMINDER) -> count++
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null)
+        } catch (e: Exception) {
+        }
         return count
     }
 
-    @Throws(IOException::class)
     fun saveSettingsToDrive() {
         val service = driveService ?: return
         if (!isLogged) return
         val folder = MemoryUtil.prefsDir ?: return
         val files = folder.listFiles() ?: return
-        for (file in files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue
-            removeAllCopies(file.name)
-            val fileMetadata = File()
-            fileMetadata.name = file.name
-            fileMetadata.description = "Settings Backup"
-            fileMetadata.parents = PARENTS
-            val mediaContent = FileContent("text/plain", file)
-            val req = service.files().create(fileMetadata, mediaContent)
-            req.fields = "id"
-            req.execute()
-            break
+        try {
+            for (file in files) {
+                if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue
+                removeAllCopies(file.name)
+                val fileMetadata = File()
+                fileMetadata.name = file.name
+                fileMetadata.description = "Settings Backup"
+                fileMetadata.parents = PARENTS
+                val mediaContent = FileContent("text/plain", file)
+                val req = service.files().create(fileMetadata, mediaContent)
+                req.fields = "id"
+                req.execute()
+                break
+            }
+        } catch (e: Exception) {
         }
     }
 
@@ -157,11 +133,11 @@ class GDrive private constructor(context: Context) : KoinComponent {
         val service = driveService ?: return
         if (!isLogged) return
         if (TextUtils.isEmpty(fileName)) return
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$fileName'")
         try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$fileName'")
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -175,7 +151,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    @Throws(IOException::class)
     fun downloadSettings(deleteFile: Boolean) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -183,36 +158,36 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (folder == null || !folder.exists() && !folder.mkdirs()) {
             return
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_SETTINGS + "'")
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val title = f.name
-                if (title.contains(FileConfig.FILE_NAME_SETTINGS)) {
-                    val file = java.io.File(folder, title)
-                    if (!file.exists()) {
-                        file.createNewFile()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_SETTINGS + "'")
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val title = f.name
+                    if (title.contains(FileConfig.FILE_NAME_SETTINGS)) {
+                        val file = java.io.File(folder, title)
+                        if (!file.exists()) {
+                            file.createNewFile()
+                        }
+                        val out = FileOutputStream(file)
+                        service.files().get(f.id).executeMediaAndDownloadTo(out)
+                        if (deleteFile) {
+                            service.files().delete(f.id).execute()
+                        }
+                        prefs.loadPrefsFromFile()
+                        break
                     }
-                    val out = FileOutputStream(file)
-                    service.files().get(f.id).executeMediaAndDownloadTo(out)
-                    if (deleteFile) {
-                        service.files().delete(f.id).execute()
-                    }
-                    prefs.loadPrefsFromFile()
-                    break
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null)
+        } catch (e: Exception) {
+        }
     }
 
-    /**
-     * Upload all template backup files stored on SD Card.
-     */
     fun saveTemplatesToDrive() {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.templatesDir, "Template Backup", null))
@@ -221,9 +196,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    /**
-     * Upload all reminder backup files stored on SD Card.
-     */
     fun saveRemindersToDrive() {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.remindersDir, "Reminder Backup", null))
@@ -294,9 +266,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    /**
-     * Upload all reminderGroup backup files stored on SD Card.
-     */
     fun saveGroupsToDrive() {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "ReminderGroup Backup", null))
@@ -305,9 +274,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    /**
-     * Upload all birthday backup files stored on SD Card.
-     */
     fun saveBirthdaysToDrive() {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.birthdaysDir, "Birthday Backup", null))
@@ -316,9 +282,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    /**
-     * Upload all place backup files stored on SD Card.
-     */
     fun savePlacesToDrive() {
         try {
             saveToDrive(Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.placesDir, "Place Backup", null))
@@ -327,12 +290,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    /**
-     * Upload files from folder to GTasks Drive.
-     *
-     * @param metadata metadata.
-     * @throws IOException
-     */
     private fun saveToDrive(metadata: Metadata) {
         if (metadata.folder == null) return
         val service = driveService ?: return
@@ -357,12 +314,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    /**
-     * Upload file from folder to GTasks Drive.
-     *
-     * @param metadata metadata.
-     * @throws IOException
-     */
     private fun saveFileToDrive(pathToFile: String, metadata: Metadata) {
         if (metadata.folder == null) return
         val service = driveService ?: return
@@ -389,7 +340,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }
     }
 
-    @Throws(IOException::class)
     fun download(deleteBackup: Boolean, metadata: Metadata) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -397,44 +347,41 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (folder == null || !folder.exists() && !folder.mkdirs()) {
             return
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '" + metadata.fileExt + "'")
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                Timber.d("download: ${f.name}, ${f.id}")
-                val title = f.name
-                if (title.endsWith(metadata.fileExt)) {
-                    val file = java.io.File(folder, title)
-                    if (!file.exists()) {
-                        file.createNewFile()
-                    }
-                    val out = FileOutputStream(file)
-                    service.files().get(f.id).executeMediaAndDownloadTo(out)
-                    if (metadata.action != null) {
-                        metadata.action.onSave(file, f.id, f.name)
-                    }
-                    if (deleteBackup) {
-                        if (file.exists()) {
-                            file.delete()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '" + metadata.fileExt + "'")
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    Timber.d("download: ${f.name}, ${f.id}")
+                    val title = f.name
+                    if (title.endsWith(metadata.fileExt)) {
+                        val file = java.io.File(folder, title)
+                        if (!file.exists()) {
+                            file.createNewFile()
                         }
-                        service.files().delete(f.id).execute()
+                        val out = FileOutputStream(file)
+                        service.files().get(f.id).executeMediaAndDownloadTo(out)
+                        if (metadata.action != null) {
+                            metadata.action.onSave(file, f.id, f.name)
+                        }
+                        if (deleteBackup) {
+                            if (file.exists()) {
+                                file.delete()
+                            }
+                            service.files().delete(f.id).execute()
+                        }
                     }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null)
+        } catch (e: Exception) {
+        }
     }
 
-    /**
-     * Download on SD Card all reminder backup files stored on GTasks Drive.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun downloadTemplates(deleteBackup: Boolean) {
         download(deleteBackup, Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.googleRemindersDir, null, object : Action {
             override fun onSave(file: java.io.File, id: String, name: String) {
@@ -456,12 +403,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }))
     }
 
-    /**
-     * Download on SD Card all reminder backup files stored on GTasks Drive.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun downloadReminders(deleteBackup: Boolean) {
         val dao = appDb.reminderDao()
         val groups = GroupsUtil.mapAll(appDb)
@@ -510,12 +451,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         Timber.d("downloadReminders: ${dao.all().size}")
     }
 
-    /**
-     * Download on SD Card all place backup files stored on GTasks Drive.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun downloadPlaces(deleteBackup: Boolean) {
         download(deleteBackup, Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.googlePlacesDir, null, object : Action {
             override fun onSave(file: java.io.File, id: String, name: String) {
@@ -537,12 +472,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }))
     }
 
-    /**
-     * Download on SD Card all note backup files stored on GTasks Drive.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun downloadNotes(deleteBackup: Boolean) {
         download(deleteBackup, Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.googleNotesDir, null, object : Action {
             override fun onSave(file: java.io.File, id: String, name: String) {
@@ -566,12 +495,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }))
     }
 
-    /**
-     * Download on SD Card all reminderGroup backup files stored on GTasks Drive.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun downloadGroups(deleteBackup: Boolean) {
         val dao = appDb.reminderGroupDao()
         download(deleteBackup, Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.googleGroupsDir, null, object : Action {
@@ -595,12 +518,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         Timber.d("downloadGroups: ${dao.all().size}")
     }
 
-    /**
-     * Download on SD Card all birthday backup files stored on GTasks Drive.
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
     fun downloadBirthdays(deleteBackup: Boolean) {
         download(deleteBackup, Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.googleBirthdaysDir, null, object : Action {
             override fun onSave(file: java.io.File, id: String, name: String) {
@@ -622,12 +539,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
         }))
     }
 
-    /**
-     * Delete reminder backup file from GTasks Drive by file name.
-     *
-     * @param title file name.
-     */
-    @Throws(IOException::class)
     fun deleteReminderFileByName(title: String?) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -640,29 +551,26 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val fileTitle = f.name
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-                    service.files().delete(f.id).execute()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val fileTitle = f.name
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_REMINDER)) {
+                        service.files().delete(f.id).execute()
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: Exception) {
+        }
     }
 
-    /**
-     * Delete note backup file from GTasks Drive by file name.
-     *
-     * @param title file name.
-     */
-    @Throws(IOException::class)
     fun deleteNoteFileByName(title: String?) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -671,29 +579,26 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val fileTitle = f.name
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_NOTE)) {
-                    service.files().delete(f.id).execute()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val fileTitle = f.name
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_NOTE)) {
+                        service.files().delete(f.id).execute()
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: Exception) {
+        }
     }
 
-    /**
-     * Delete reminderGroup backup file from GTasks Drive by file name.
-     *
-     * @param title file name.
-     */
-    @Throws(IOException::class)
     fun deleteGroupFileByName(title: String?) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -702,29 +607,26 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val fileTitle = f.name
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_GROUP)) {
-                    service.files().delete(f.id).execute()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val fileTitle = f.name
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_GROUP)) {
+                        service.files().delete(f.id).execute()
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: Exception) {
+        }
     }
 
-    /**
-     * Delete birthday backup file from GTasks Drive by file name.
-     *
-     * @param title file name.
-     */
-    @Throws(IOException::class)
     fun deleteBirthdayFileByName(title: String?) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -733,29 +635,26 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val fileTitle = f.name
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                    service.files().delete(f.id).execute()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val fileTitle = f.name
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
+                        service.files().delete(f.id).execute()
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: Exception) {
+        }
     }
 
-    /**
-     * Delete place backup file from GTasks Drive by file name.
-     *
-     * @param title file name.
-     */
-    @Throws(IOException::class)
     fun deletePlaceFileByName(title: String?) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -764,24 +663,26 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val fileTitle = f.name
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_PLACE)) {
-                    service.files().delete(f.id).execute()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val fileTitle = f.name
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_PLACE)) {
+                        service.files().delete(f.id).execute()
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: Exception) {
+        }
     }
 
-    @Throws(IOException::class)
     fun deleteTemplateFileByName(title: String?) {
         val service = driveService ?: return
         if (!isLogged) return
@@ -790,21 +691,24 @@ class GDrive private constructor(context: Context) : KoinComponent {
         if (strs.isNotEmpty()) {
             titleStr = strs[0]
         }
-        val request = service.files().list()
-                .setSpaces("appDataFolder")
-                .setFields("nextPageToken, files(id, name)")
-                .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
-        do {
-            val files = request.execute()
-            val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
-            for (f in fileList) {
-                val fileTitle = f.name
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-                    service.files().delete(f.id).execute()
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                for (f in fileList) {
+                    val fileTitle = f.name
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
+                        service.files().delete(f.id).execute()
+                    }
                 }
-            }
-            request.pageToken = files.nextPageToken
-        } while (request.pageToken != null && request.pageToken.length >= 0)
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null && request.pageToken.length >= 0)
+        } catch (e: Exception) {
+        }
     }
 
     fun clean() {
