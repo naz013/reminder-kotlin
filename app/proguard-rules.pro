@@ -4,14 +4,14 @@
     int SDK_INT return 21..2147483647;
 }
 
-# ServiceLoader support
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
 
-# Most of volatile fields are updated with AFU and should not be mangled
-#-keepclassmembernames class kotlinx.** {
-#    volatile <fields>;
-#}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
 
 -dontwarn com.google.errorprone.annotations.*
 -dontwarn java.lang.ClassValue

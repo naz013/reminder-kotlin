@@ -10,8 +10,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 243
-        versionName '7.2.1'
+        versionCode 244
+        versionName '7.2.2'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 214
+            versionCode 215
         }
     }
     packagingOptions {
@@ -131,15 +131,15 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-gcm:16.1.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
-    implementation ('com.google.firebase:firebase-config:16.0.0') {
+    implementation ('com.google.firebase:firebase-config:16.5.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
     proImplementation 'com.google.firebase:firebase-database:16.1.0'
-    proImplementation 'com.google.firebase:firebase-auth:16.2.0'
+    proImplementation 'com.google.firebase:firebase-auth:16.2.1'
     proImplementation 'com.github.kenglxn.QRGen:android:2.4.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
