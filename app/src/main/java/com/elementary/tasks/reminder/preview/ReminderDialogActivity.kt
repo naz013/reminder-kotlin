@@ -360,7 +360,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
                 val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
-                    contactPhoto.setImageURI(photo)
+                    Picasso.get().load(photo).into(contactPhoto)
                 } else {
                     BitmapUtils.imageFromName(name ?: reminder.target) {
                         contactPhoto.setImageDrawable(it)
@@ -419,7 +419,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
                 val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
-                    contactPhoto.setImageURI(photo)
+                    Picasso.get().load(photo).into(contactPhoto)
                 } else {
                     BitmapUtils.imageFromName(name ?: reminder.target) {
                         contactPhoto.setImageDrawable(it)
@@ -454,10 +454,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             val conID = Contacts.getIdFromMail(reminder.target, this)
             if (conID != 0) {
                 val photo = Contacts.getPhoto(conID.toLong())
-                if (photo != null)
-                    contactPhoto.setImageURI(photo)
-                else
+                if (photo != null) {
+                    Picasso.get().load(photo).into(contactPhoto)
+                } else {
                     contactPhoto.visibility = View.GONE
+                }
                 val name = Contacts.getNameFromMail(reminder.target, this)
                 val userInfo = (name ?: "") + "\n" + reminder.target
                 binding.contactInfo.text = userInfo
