@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.util.*
 
@@ -222,7 +223,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         }
         val photo = Contacts.getPhoto(birthday.contactId)
         if (photo != null) {
-            binding.contactPhoto.setImageURI(photo)
+            Picasso.get().load(photo).into(binding.contactPhoto)
             binding.contactPhoto.visibility = View.VISIBLE
         } else {
             binding.contactPhoto.visibility = View.GONE

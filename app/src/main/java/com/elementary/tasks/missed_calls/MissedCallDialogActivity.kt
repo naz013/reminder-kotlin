@@ -17,6 +17,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.sql.Date
 
@@ -165,7 +166,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
             val conID = Contacts.getIdFromNumber(missedCall.number, this)
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
-                binding.contactPhoto.setImageURI(photo)
+                Picasso.get().load(photo).into(binding.contactPhoto)
             } else {
                 BitmapUtils.imageFromName(name ?: missedCall.number) {
                     binding.contactPhoto.setImageDrawable(it)
