@@ -149,8 +149,7 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
         mJob = launchDefault {
             val list = ArrayList<UserItem>()
             for (i in infos.indices) {
-                val info = infos[i]
-                when (info) {
+                when (infos[i]) {
                     Info.Dropbox -> addDropboxData(list)
                     Info.Google -> addGoogleData(list)
                     Info.Local -> addLocalData(list)

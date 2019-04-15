@@ -152,8 +152,11 @@ class FileExplorerActivity : ThemedActivity<ActivityFileExplorerBinding>() {
     }
 
     private fun moveUp() {
-        val s = viewModel.str.removeAt(viewModel.str.size - 1)
-        viewModel.moveUp(s, viewModel.str.isEmpty())
+        val index = viewModel.str.size - 1
+        if (index != -1) {
+            val s = viewModel.str.removeAt(index)
+            viewModel.moveUp(s, viewModel.str.isEmpty())
+        }
     }
 
     private fun sendFile() {
