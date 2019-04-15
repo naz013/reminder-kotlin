@@ -81,8 +81,11 @@ class Language(private val prefs: Prefs){
         val resources = context.resources
         val configuration = resources.configuration
         configuration.locale = locale
-        configuration.setLayoutDirection(locale)
-        resources.updateConfiguration(configuration, resources.displayMetrics)
+        try {
+            configuration.setLayoutDirection(locale)
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+        } catch (e: NoSuchMethodError) {
+        }
         return context
     }
 
