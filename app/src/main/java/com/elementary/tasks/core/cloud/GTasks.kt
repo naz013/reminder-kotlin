@@ -214,7 +214,7 @@ class GTasks private constructor(context: Context) : KoinComponent {
         }
         try {
             tasksService?.tasklists()?.delete(listId)?.execute()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -225,7 +225,7 @@ class GTasks private constructor(context: Context) : KoinComponent {
         }
         try {
             tasksService?.tasks()?.clear(listId)?.execute()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -243,7 +243,7 @@ class GTasks private constructor(context: Context) : KoinComponent {
                 appDb.googleTasksDao().delete(item)
                 return insertTask(item)
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         return false
