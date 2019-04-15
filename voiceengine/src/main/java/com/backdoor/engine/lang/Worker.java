@@ -1,8 +1,8 @@
 package com.backdoor.engine.lang;
 
+import com.backdoor.engine.Recognizer;
 import com.backdoor.engine.misc.Ampm;
 import com.backdoor.engine.misc.Long;
-import com.backdoor.engine.Recognizer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -211,15 +211,16 @@ public abstract class Worker implements WorkerInterface {
         float reserveHour = 0;
         for (int i = parts.length - 1; i >= 0; i--) {
             String part = parts[i];
-            if (hasHours(part) != -1) {
-                int index = hasHours(part);
+            int hoursIndex = hasHours(part);
+            int minutesIndex = hasMinutes(part);
+            if (hoursIndex != -1) {
                 float integer;
                 boolean hourSuccess = false;
                 try {
-                    integer = Float.parseFloat(parts[i - index]);
+                    integer = Float.parseFloat(parts[i - hoursIndex]);
                     hourSuccess = true;
-                    parts[i - index] = "";
-                } catch (NumberFormatException e) {
+                    parts[i - hoursIndex] = "";
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     integer = 1;
                 }
                 if (ampm == Ampm.EVENING) {
@@ -234,12 +235,11 @@ public abstract class Worker implements WorkerInterface {
                     }
                 }
             }
-            if (hasMinutes(part) != -1) {
-                int index = hasMinutes(part);
+            if (minutesIndex != -1) {
                 float integer;
                 try {
-                    integer = Float.parseFloat(parts[i - index]);
-                } catch (NumberFormatException e) {
+                    integer = Float.parseFloat(parts[i - minutesIndex]);
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     integer = 0;
                 }
                 m = integer;
