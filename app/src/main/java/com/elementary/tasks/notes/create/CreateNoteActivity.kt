@@ -44,24 +44,6 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSelectionUtil.UriCallback {
 
     private var isBgDark = false
@@ -81,7 +63,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private val imagesSingleton: ImagesSingleton by inject()
 
     private val mRecognitionListener = object : RecognitionListener {
-        override fun onReadyForSpeech(bundle: Bundle) {
+        override fun onReadyForSpeech(bundle: Bundle?) {
         }
 
         override fun onBeginningOfSpeech() {
@@ -92,7 +74,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         override fun onRmsChanged(v: Float) {
         }
 
-        override fun onBufferReceived(bytes: ByteArray) {
+        override fun onBufferReceived(bytes: ByteArray?) {
         }
 
         override fun onEndOfSpeech() {
@@ -106,8 +88,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             hideRecording()
         }
 
-        override fun onResults(bundle: Bundle) {
-            val res = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        override fun onResults(bundle: Bundle?) {
+            val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (res != null && res.size > 0) {
                 setText(StringUtils.capitalize(res[0].toString().toLowerCase()))
             }
@@ -115,15 +97,15 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
             releaseSpeech()
         }
 
-        override fun onPartialResults(bundle: Bundle) {
-            val res = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        override fun onPartialResults(bundle: Bundle?) {
+            val res = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (res != null && res.size > 0) {
                 setText(res[0].toString().toLowerCase())
             }
             Timber.d("onPartialResults: $res")
         }
 
-        override fun onEvent(i: Int, bundle: Bundle) {
+        override fun onEvent(i: Int, bundle: Bundle?) {
         }
     }
 
