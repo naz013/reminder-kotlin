@@ -1,7 +1,9 @@
 package com.elementary.tasks.voice
 
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdayHolder
@@ -23,40 +25,44 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import timber.log.Timber
 
-/**
- * Copyright 2017 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDiffCallback()), KoinComponent {
 
+class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), KoinComponent {
+
+    private val data = mutableListOf<Reply>()
     var showMore: ((Int) -> Unit)? = null
     private val language: Language by inject()
+    private val handler = Handler(Looper.getMainLooper())
 
-    override fun submitList(list: List<Reply>?) {
+    fun submitList(list: List<Reply>?) {
         Timber.d("submitList: $list")
-        val oldSize = itemCount
-        super.submitList(list)
-        if (!list.isNullOrEmpty()) {
-            if (oldSize == list.size) {
-                notifyItemChanged(0)
-            } else {
-                notifyDataSetChanged()
-            }
+        if (list == null) {
+            this.data.clear()
+            notifyDataSetChanged()
+            return
         }
+        val oldSize = this.data.size
+        val diffResult = DiffUtil.calculateDiff(ReplyDiffCallback(this.data, list))
+        this.data.clear()
+        this.data.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
+        handler.postDelayed({
+            if (!list.isNullOrEmpty()) {
+                try {
+                    if (oldSize == list.size) {
+                        notifyItemChanged(0)
+                    } else {
+                        notifyDataSetChanged()
+                    }
+                } catch (e: Exception) {
+                }
+            }
+        }, 250)
+    }
+
+    fun getItem(position: Int): Reply? = if (position != -1 && position < data.size) data[position] else null
+
+    override fun getItemCount(): Int {
+        return data.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -74,7 +80,7 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val content = getItem(position).content
+        val content = getItem(position)?.content
         when  {
             holder is VoiceHolder -> holder.bind(content as String)
             holder is VoiceResponseHolder -> holder.bind(content as String)
@@ -90,7 +96,7 @@ class ConversationAdapter : ListAdapter<Reply, RecyclerView.ViewHolder>(ReplyDif
     }
 
     override fun getItemViewType(position: Int): Int {
-        return getItem(position).viewType
+        return getItem(position)?.viewType ?: 0
     }
 
     private inner class AskHolder(parent: ViewGroup) : HolderBinding<ListItemAskBinding>(parent, R.layout.list_item_ask) {
