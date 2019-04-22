@@ -67,7 +67,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
             return try {
                 val mp = mMediaPlayer ?: return false
                 mp.isPlaying
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 false
             }
         }
@@ -86,7 +86,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
                     mp.stop()
                     mp.release()
                 }
-            } catch (ignored: java.lang.Exception) {
+            } catch (ignored: Exception) {
             }
 
             isPaused = false
@@ -108,7 +108,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         val mp = mMediaPlayer ?: return
         try {
             mp.pause()
-        } catch (ignored: IllegalStateException) {
+        } catch (ignored: Exception) {
         }
         isPaused = true
     }
@@ -118,7 +118,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         if (!isPaused) return
         try {
             mp.start()
-        } catch (ignored: java.lang.Exception) {
+        } catch (ignored: Exception) {
         }
         isPaused = false
     }
@@ -135,7 +135,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         try {
             val file = File(path)
             mMediaPlayer?.setDataSource(mContext, Uri.fromFile(file))
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -155,7 +155,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         }
         try {
             mMediaPlayer?.prepareAsync()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -195,12 +195,8 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
                 notifyFinish()
                 false
             }
-            try {
-                mMediaPlayer?.prepareAsync()
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            }
-        } catch (e: IOException) {
+            mMediaPlayer?.prepareAsync()
+        } catch (e: Exception) {
             playRingtone(path)
         }
     }
@@ -223,7 +219,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         mMediaPlayer = MediaPlayer()
         try {
             mMediaPlayer?.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -247,7 +243,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         }
         try {
             mMediaPlayer?.prepareAsync()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
