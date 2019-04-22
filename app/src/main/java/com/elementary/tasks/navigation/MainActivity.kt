@@ -240,9 +240,12 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     }
 
     private fun clearBackStack() {
-        val fm = supportFragmentManager
-        for (i in 0 until fm.backStackEntryCount) {
-            fm.popBackStack()
+        try {
+            val fm = supportFragmentManager
+            for (i in 0 until fm.backStackEntryCount) {
+                fm.popBackStack()
+            }
+        } catch (e: Exception) {
         }
     }
 
