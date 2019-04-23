@@ -9,6 +9,8 @@ import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.components
 import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
+import leakcanary.AndroidExcludedRefs
+import leakcanary.LeakCanary
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
@@ -21,6 +23,17 @@ class ReminderApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        val prefs = AndroidExcludedRefs.createAppDefaults()
+                .instanceField("android.widget.TextView$3", "this$0")
+                .build()
+        val config = LeakCanary.Config(
+                LeakCanary.config.dumpHeap,
+                prefs,
+                LeakCanary.config.reachabilityInspectorClasses,
+                LeakCanary.config.labelers,
+                LeakCanary.config.computeRetainedHeapSize
+        )
+        LeakCanary.config = config
         Timber.plant(Timber.DebugTree())
         Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)

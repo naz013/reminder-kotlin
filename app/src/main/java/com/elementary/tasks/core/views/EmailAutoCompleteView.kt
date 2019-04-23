@@ -17,29 +17,24 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
+    private var mDataCallback: ((List<EmailItem>) -> Unit)? = null
     private var mContext: Context? = null
     private var mData: List<EmailItem> = ArrayList()
     private var adapter: EmailAdapter? = null
+    private var isLoaded = false
+    private var textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+
+        override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            performTypeValue(charSequence.toString())
+        }
+
+        override fun afterTextChanged(editable: Editable) {
+
+        }
+    }
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -55,23 +50,24 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private fun init(context: Context) {
         this.mContext = context
-        addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                performTypeValue(charSequence.toString())
-            }
-
-            override fun afterTextChanged(editable: Editable) {
-
-            }
-        })
         adapter = EmailAdapter(listOf())
         setAdapter(adapter)
-        loadContacts {
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        addTextChangedListener(textWatcher)
+        mDataCallback = {
             mData = it
             adapter?.notifyDataSetChanged()
         }
+        loadContacts(mDataCallback)
+    }
+
+    override fun onDetachedFromWindow() {
+        mDataCallback = null
+        removeTextChangedListener(textWatcher)
+        super.onDetachedFromWindow()
     }
 
     private fun performTypeValue(s: String) {
@@ -134,9 +130,9 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         }
 
         internal inner class ValueFilter : Filter() {
-            override fun performFiltering(constraint: CharSequence?): Filter.FilterResults {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val matcher = constraint?.toString()?.trim()?.toLowerCase() ?: ""
-                val results = Filter.FilterResults()
+                val results = FilterResults()
                 if (matcher.isNotEmpty()) {
                     val filterList = mData.filter { it.name.toLowerCase().contains(matcher) || it.email.contains(matcher) }
                     results.count = filterList.size
@@ -148,7 +144,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
                 return results
             }
 
-            override fun publishResults(constraint: CharSequence?, results: Filter.FilterResults?) {
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 if (adapter != null && results != null) {
                     adapter?.setItems(results.values as List<EmailItem>)
                     adapter?.notifyDataSetChanged()
@@ -158,6 +154,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun loadContacts(callback: ((List<EmailItem>) -> Unit)?) {
+        if (isLoaded) return
         launchDefault {
             val list = ArrayList<EmailItem>()
             val uri = ContactsContract.CommonDataKinds.Email.CONTENT_URI
@@ -177,6 +174,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
                 } while (cursor.moveToNext())
                 cursor.close()
             }
+            isLoaded = true
             withUIContext {
                 callback?.invoke(list)
             }
