@@ -900,6 +900,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
 
     override fun onDestroy() {
         super.onDestroy()
+        imagesGridAdapter.actionsListener = null
         lifecycle.removeObserver(stateViewModel)
         lifecycle.removeObserver(viewModel)
         hideKeyboard(binding.taskMessage.windowToken)
