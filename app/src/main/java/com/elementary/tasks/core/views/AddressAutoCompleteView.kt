@@ -18,26 +18,20 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.GeocoderTask
 import timber.log.Timber
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
+    private var listener: AdapterView.OnItemClickListener? = null
+    private val textWatcher: TextWatcher? = object : TextWatcher {
+        override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+
+        override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            if (isEnabledInner) performTypeValue(charSequence.toString())
+        }
+
+        override fun afterTextChanged(editable: Editable) {
+
+        }
+    }
     private var mImm: InputMethodManager? = null
     private var foundPlaces: MutableList<Address> = mutableListOf()
     private var mAdapter: AddressAdapter? = null
@@ -58,17 +52,6 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     private fun init() {
         mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 
-        addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (isEnabledInner) performTypeValue(charSequence.toString())
-            }
-
-            override fun afterTextChanged(editable: Editable) {
-
-            }
-        })
         setSingleLine(true)
         imeOptions = EditorInfo.IME_ACTION_SEARCH
         setOnEditorActionListener { _, actionId, event ->
@@ -79,6 +62,16 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
             }
             false
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        addTextChangedListener(textWatcher)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        removeTextChangedListener(textWatcher)
     }
 
     private fun hideKb() {
@@ -105,13 +98,14 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     override fun setOnItemClickListener(l: AdapterView.OnItemClickListener?) {
+        this.listener = l
         super.setOnItemClickListener { adapterView, view, i, l1 ->
             if (mAdapter != null) {
                 isEnabledInner = false
                 setText(mAdapter?.getName(i) ?: "")
                 isEnabledInner = true
             }
-            l?.onItemClick(adapterView, view, i, l1)
+            listener?.onItemClick(adapterView, view, i, l1)
             hideKb()
         }
     }

@@ -157,7 +157,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.1'
     implementation 'com.dropbox.core:dropbox-core-sdk:3.0.11'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'org.dmfs:lib-recur:0.11.2'
@@ -173,6 +173,8 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 }
 
 apply plugin: 'com.google.gms.google-services'

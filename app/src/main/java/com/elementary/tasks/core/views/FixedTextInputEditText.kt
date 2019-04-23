@@ -3,6 +3,8 @@ package com.elementary.tasks.core.views
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
@@ -35,5 +37,9 @@ class FixedTextInputEditText : TextInputEditText {
         val f = TextView::class.java.getDeclaredField("mHint")
         f.isAccessible = true
         return f.get(this) as? CharSequence
+    }
+
+    override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
+        return null
     }
 }
