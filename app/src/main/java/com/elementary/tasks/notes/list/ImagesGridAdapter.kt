@@ -60,7 +60,7 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
                 binding.removeButton.setOnClickListener {
                     actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.REMOVE)
                 }
-                if (actionsListener != null && Module.isPro) {
+                if (Module.isPro) {
                     binding.editButton.visibility = View.GONE
 //                    binding.editButton.visibility = View.VISIBLE
 //                    binding.editButton.setOnClickListener { view ->
@@ -76,9 +76,7 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
         }
 
         private fun performClick(view: View, position: Int) {
-            if (actionsListener != null) {
-                actionsListener?.onAction(view, position, null, ListActions.OPEN)
-            }
+            actionsListener?.onAction(view, position, null, ListActions.OPEN)
         }
 
         private fun loadImage(imageView: ImageView, image: ImageFile) {

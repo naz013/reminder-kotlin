@@ -96,6 +96,11 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mAdapter.actionsListener = null
+    }
+
     private fun initImagesList() {
         mAdapter.actionsListener = object : ActionsListener<ImageFile> {
             override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
