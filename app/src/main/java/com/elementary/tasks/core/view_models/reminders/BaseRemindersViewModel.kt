@@ -152,16 +152,12 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
     }
 
     fun moveToTrash(reminder: Reminder) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
-                reminder.isRemoved = true
-                EventControlFactory.getController(reminder).stop()
-                appDb.reminderDao().insert(reminder)
-            }
+        withResult {
+            reminder.isRemoved = true
+            EventControlFactory.getController(reminder).stop()
+            appDb.reminderDao().insert(reminder)
             backupReminder(reminder.uuId)
-            postInProgress(false)
-            postCommand(Commands.DELETED)
+            Commands.DELETED
         }
     }
 
@@ -171,18 +167,21 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
     }
 
     fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
+        if (showMessage) {
+            withResult {
                 EventControlFactory.getController(reminder).stop()
                 appDb.reminderDao().delete(reminder)
                 calendarUtils.deleteEvents(reminder.uuId)
+                startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+                Commands.DELETED
             }
-
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
-
-            postInProgress(false)
-            if (showMessage) postCommand(Commands.DELETED)
+        } else {
+            withProgress {
+                EventControlFactory.getController(reminder).stop()
+                appDb.reminderDao().delete(reminder)
+                calendarUtils.deleteEvents(reminder.uuId)
+                startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+            }
         }
     }
 
@@ -200,17 +199,13 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
     }
 
     fun skip(reminder: Reminder) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
-                val fromDb = appDb.reminderDao().getById(reminder.uuId)
-                if (fromDb != null) {
-                    EventControlFactory.getController(fromDb).skip()
-                }
+        withResult {
+            val fromDb = appDb.reminderDao().getById(reminder.uuId)
+            if (fromDb != null) {
+                EventControlFactory.getController(fromDb).skip()
             }
             backupReminder(reminder.uuId)
-            postInProgress(false)
-            postCommand(Commands.SAVED)
+            Commands.SAVED
         }
     }
 }
