@@ -8,24 +8,6 @@ import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import org.koin.standalone.inject
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
 
     private val notifier: Notifier by inject()
@@ -36,10 +18,8 @@ abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
             appDb.birthdaysDao().delete(birthday)
             updateBirthdayPermanent()
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.DELETED)
-            }
+            postInProgress(false)
+            postCommand(Commands.DELETED)
         }
     }
 
@@ -55,10 +35,8 @@ abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
             appDb.birthdaysDao().insert(birthday)
             updateBirthdayPermanent()
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 }

@@ -15,33 +15,14 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
 
     var googleTaskList: LiveData<GoogleTaskList>
-    var defaultTaskList: LiveData<GoogleTaskList>
+    val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
     var googleTasks: LiveData<List<GoogleTask>>
     private var isSyncing = false
 
     init {
-        defaultTaskList = appDb.googleTaskListsDao().loadDefault()
         Timber.d("GoogleTaskListViewModel: $listId")
         if (listId == null || listId == "") {
             googleTasks = appDb.googleTasksDao().loadAll()
@@ -122,10 +103,8 @@ class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
         postInProgress(true)
         launchDefault {
             google.insertTasksList(googleTaskList.title, googleTaskList.color)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 
@@ -140,15 +119,11 @@ class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
             appDb.googleTaskListsDao().insert(googleTaskList)
             try {
                 google.updateTasksList(googleTaskList.title, googleTaskList.listId)
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.SAVED)
-                }
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             } catch (e: IOException) {
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.FAILED)
-                }
+                postInProgress(false)
+                postCommand(Commands.FAILED)
             }
         }
     }
@@ -157,10 +132,8 @@ class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
         postInProgress(true)
         launchDefault {
             appDb.googleTaskListsDao().insert(googleTaskList)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 

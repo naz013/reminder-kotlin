@@ -7,57 +7,27 @@ import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import java.io.IOException
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
 
-    var googleTask: LiveData<GoogleTask>
-    var defaultTaskList: LiveData<GoogleTaskList>
-    var defaultReminderGroup: LiveData<ReminderGroup>
-    var googleTaskLists: LiveData<List<GoogleTaskList>>
+    val googleTask = appDb.googleTasksDao().loadById(id)
+    val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
+    val defaultReminderGroup = appDb.reminderGroupDao().loadDefault()
+    val googleTaskLists = appDb.googleTaskListsDao().loadAll()
 
     private var _reminder = MutableLiveData<Reminder>()
     var reminder: LiveData<Reminder> = _reminder
-
-    init {
-        googleTask = appDb.googleTasksDao().loadById(id)
-        defaultTaskList = appDb.googleTaskListsDao().loadDefault()
-        googleTaskLists = appDb.googleTaskListsDao().loadAll()
-        defaultReminderGroup = appDb.reminderGroupDao().loadDefault()
-    }
 
     fun loadReminder(uuId: String) {
         postInProgress(true)
         launchDefault {
             val reminderItem = appDb.reminderDao().getById(uuId)
-            withUIContext {
-                _reminder.postValue(reminderItem)
-                postInProgress(false)
-            }
+            _reminder.postValue(reminderItem)
+            postInProgress(false)
         }
     }
 
@@ -79,15 +49,11 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
             try {
                 google.deleteTask(googleTask)
                 appDb.googleTasksDao().delete(googleTask)
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.DELETED)
-                }
+                postInProgress(false)
+                postCommand(Commands.DELETED)
             } catch (e: IOException) {
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.FAILED)
-                }
+                postInProgress(false)
+                postCommand(Commands.FAILED)
             }
         }
     }
@@ -103,15 +69,11 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
             try {
                 google.insertTask(googleTask)
                 saveReminder(reminder)
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.SAVED)
-                }
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             } catch (e: IOException) {
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.FAILED)
-                }
+                postInProgress(false)
+                postCommand(Commands.FAILED)
             }
         }
     }
@@ -128,15 +90,11 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
             try {
                 google.updateTask(googleTask)
                 saveReminder(reminder)
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.SAVED)
-                }
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             } catch (e: IOException) {
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.FAILED)
-                }
+                postInProgress(false)
+                postCommand(Commands.FAILED)
             }
         }
     }
@@ -154,15 +112,11 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
                 google.updateTask(googleTask)
                 google.moveTask(googleTask, oldListId)
                 saveReminder(reminder)
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.SAVED)
-                }
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             } catch (e: IOException) {
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.FAILED)
-                }
+                postInProgress(false)
+                postCommand(Commands.FAILED)
             }
         }
     }
@@ -177,10 +131,8 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
         launchDefault {
             appDb.googleTasksDao().insert(googleTask)
             google.moveTask(googleTask, oldListId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 

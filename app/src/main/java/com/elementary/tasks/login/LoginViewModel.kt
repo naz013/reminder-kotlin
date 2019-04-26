@@ -8,7 +8,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.BackupTool
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import kotlinx.coroutines.Job
@@ -19,11 +22,10 @@ import java.io.IOException
 
 class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
-    private val ctxHolder: CtxHolder by inject()
     private val appDb: AppDb by inject()
     private val backupTool: BackupTool by inject()
     private val prefs: Prefs by inject()
-    private val context: Context = ctxHolder.context
+    private val context: Context by inject()
 
     var message: MutableLiveData<Int> = MutableLiveData()
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()

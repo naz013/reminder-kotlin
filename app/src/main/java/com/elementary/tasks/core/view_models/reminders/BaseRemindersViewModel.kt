@@ -7,7 +7,10 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
@@ -17,24 +20,6 @@ import org.koin.standalone.inject
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 abstract class BaseRemindersViewModel : BaseDbViewModel() {
 
     private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
@@ -52,7 +37,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         launchDefault {
             val defGroup = appDb.reminderGroupDao().defaultGroup(true)
             defaultGroup = defGroup
-            withUIContext {  _defaultReminderGroup.postValue(defGroup) }
+            _defaultReminderGroup.postValue(defGroup)
         }
         appDb.reminderGroupDao().loadAll().observeForever {
             _allGroups.postValue(it)
@@ -89,10 +74,8 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
                 Timber.d("saveAndStartReminder: save DONE")
             }
             backupReminder(reminder.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 
@@ -126,7 +109,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
                 appDb.reminderDao().insert(newItem)
                 EventControlFactory.getController(newItem).start()
             }
-            withUIContext { postCommand(Commands.SAVED) }
+            postCommand(Commands.SAVED)
         }
     }
 
@@ -134,7 +117,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).stop()
-            withUIContext { postInProgress(false) }
+            postInProgress(false)
         }
     }
 
@@ -142,7 +125,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).pause()
-            withUIContext { postInProgress(false) }
+            postInProgress(false)
         }
     }
 
@@ -150,7 +133,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         postInProgress(true)
         launchDefault {
             EventControlFactory.getController(reminder).resume()
-            withUIContext { postInProgress(false) }
+            postInProgress(false)
         }
     }
 
@@ -158,16 +141,12 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         postInProgress(true)
         launchDefault {
             if (!EventControlFactory.getController(reminder).onOff()) {
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.FAILED)
-                }
+                postInProgress(false)
+                postCommand(Commands.FAILED)
             } else {
                 backupReminder(reminder.uuId)
-                withUIContext {
-                    postInProgress(false)
-                    postCommand(Commands.SAVED)
-                }
+                postInProgress(false)
+                postCommand(Commands.SAVED)
             }
         }
     }
@@ -181,10 +160,8 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
                 appDb.reminderDao().insert(reminder)
             }
             backupReminder(reminder.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.DELETED)
-            }
+            postInProgress(false)
+            postCommand(Commands.DELETED)
         }
     }
 
@@ -204,10 +181,8 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
 
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
 
-            withUIContext {
-                postInProgress(false)
-                if (showMessage) postCommand(Commands.DELETED)
-            }
+            postInProgress(false)
+            if (showMessage) postCommand(Commands.DELETED)
         }
     }
 
@@ -219,10 +194,8 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
             }
             if (context != null) UpdatesHelper.updateTasksWidget(context)
             backupReminder(reminder.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 
@@ -236,10 +209,8 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
                 }
             }
             backupReminder(reminder.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 }

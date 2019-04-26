@@ -8,7 +8,6 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.CtxHolder
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.google.api.services.tasks.model.TaskLists
@@ -21,9 +20,8 @@ import java.util.*
 
 class CloudViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
-    private val ctxHolder: CtxHolder by inject()
     private val appDb: AppDb by inject()
-    private val context: Context = ctxHolder.context
+    private val context: Context by inject()
 
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()
     var isReady: MutableLiveData<Boolean> = MutableLiveData()

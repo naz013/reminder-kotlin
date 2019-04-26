@@ -7,7 +7,6 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
@@ -17,24 +16,6 @@ import kotlinx.coroutines.runBlocking
 import org.koin.standalone.inject
 import timber.log.Timber
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 abstract class BaseNotesViewModel : BaseDbViewModel() {
 
     protected val calendarUtils: CalendarUtils by inject()
@@ -50,10 +31,8 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                 }
             }
             startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.DELETED)
-            }
+            postInProgress(false)
+            postCommand(Commands.DELETED)
         }
     }
 
@@ -66,10 +45,8 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                 appDb.notesDao().insert(v)
             }
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 
@@ -82,10 +59,8 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                 appDb.notesDao().insert(v)
             }
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-            }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
         }
     }
 
@@ -117,12 +92,10 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                 appDb.notesDao().insert(v)
             }
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.SAVED)
-                if (reminder != null) {
-                    saveReminder(reminder)
-                }
+            postInProgress(false)
+            postCommand(Commands.SAVED)
+            if (reminder != null) {
+                saveReminder(reminder)
             }
         }
     }
@@ -154,10 +127,8 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                 calendarUtils.deleteEvents(reminder.uuId)
             }
             startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
-            withUIContext {
-                postInProgress(false)
-                postCommand(Commands.UPDATED)
-            }
+            postInProgress(false)
+            postCommand(Commands.UPDATED)
         }
     }
 }
