@@ -10,6 +10,8 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.launchDefault
+import kotlinx.coroutines.runBlocking
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 
@@ -48,6 +50,27 @@ open class BaseDbViewModel : ViewModel(), LifecycleObserver, KoinComponent {
                     .addTag(tag)
                     .build()
             WorkManager.getInstance().enqueue(work)
+        }
+    }
+
+    protected fun withProgress(doWork: ((error: String) -> Unit) -> Unit) {
+        launchDefault {
+            postInProgress(true)
+            runBlocking {
+                doWork.invoke { postError(it) }
+            }
+            postInProgress(false)
+        }
+    }
+
+    protected fun withResult(doWork: ((error: String) -> Unit) -> Commands) {
+        launchDefault {
+            postInProgress(true)
+            val commands = runBlocking {
+                doWork.invoke { postError(it) }
+            }
+            postInProgress(false)
+            postCommand(commands)
         }
     }
 }
