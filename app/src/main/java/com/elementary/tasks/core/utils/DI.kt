@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.utils
 
-import android.content.Context
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.core.data.AppDb
@@ -15,7 +14,6 @@ import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 
 fun utilModule() = module {
-    single { CtxHolder(androidApplication()) }
     single { AppDb.getAppDatabase(androidApplication()) }
     single { Prefs(androidApplication()) }
     single { SoundStackHolder(androidApplication(), get()) }
@@ -54,5 +52,3 @@ fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {
 fun components(): List<Module> {
     return listOf(utilModule(), viewModels())
 }
-
-data class CtxHolder(val context: Context)

@@ -33,24 +33,6 @@ import org.koin.standalone.inject
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class ConversationViewModel : BaseRemindersViewModel() {
 
     private var _shoppingLists = MutableLiveData<List<Reminder>>()
@@ -73,10 +55,9 @@ class ConversationViewModel : BaseRemindersViewModel() {
     private val mReplies = mutableListOf<Reply>()
     private var hasPartial = false
 
-    private val ctxHolder: CtxHolder by inject()
     private val recognizer: Recognizer by inject()
     private val language: Language by inject()
-    private val context: Context = ctxHolder.context
+    private val context: Context by inject()
 
     init {
         clearConversation()
@@ -179,12 +160,10 @@ class ConversationViewModel : BaseRemindersViewModel() {
 
     fun getNotes() {
         postInProgress(true)
-        launchDefault{
+        launchDefault {
             val list = LinkedList(appDb.notesDao().all())
-            withUIContext {
-                postInProgress(false)
-                _notes.postValue(list)
-            }
+            postInProgress(false)
+            _notes.postValue(list)
         }
     }
 
@@ -192,10 +171,8 @@ class ConversationViewModel : BaseRemindersViewModel() {
         postInProgress(true)
         launchDefault {
             val list = LinkedList(appDb.reminderDao().getAllTypes(true, false, intArrayOf(Reminder.BY_DATE_SHOP)))
-            withUIContext {
-                postInProgress(false)
-                _shoppingLists.postValue(list)
-            }
+            postInProgress(false)
+            _shoppingLists.postValue(list)
         }
     }
 
@@ -207,10 +184,8 @@ class ConversationViewModel : BaseRemindersViewModel() {
                     false,
                     TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                     TimeUtil.getGmtFromDateTime(dateTime)))
-            withUIContext {
-                postInProgress(false)
-                _enabledReminders.postValue(list)
-            }
+            postInProgress(false)
+            _enabledReminders.postValue(list)
         }
     }
 
@@ -221,10 +196,8 @@ class ConversationViewModel : BaseRemindersViewModel() {
                     false,
                     TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                     TimeUtil.getGmtFromDateTime(dateTime)))
-            withUIContext {
-                postInProgress(false)
-                _activeReminders.postValue(list)
-            }
+            postInProgress(false)
+            _activeReminders.postValue(list)
         }
     }
 
@@ -238,10 +211,8 @@ class ConversationViewModel : BaseRemindersViewModel() {
                     list.removeAt(i)
                 }
             }
-            withUIContext {
-                postInProgress(false)
-                _birthdays.postValue(list)
-            }
+            postInProgress(false)
+            _birthdays.postValue(list)
         }
     }
 
@@ -273,8 +244,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
                 Timber.d("parseResults: $model")
                 val types = model.type
                 if (types == ActionType.ACTION && isWidget) {
-                    val action = model.action
-                    when (action) {
+                    when (model.action) {
                         Action.APP -> context.startActivity(Intent(context, SplashScreen::class.java))
                         Action.HELP -> context.startActivity(Intent(context, VoiceHelpActivity::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
@@ -292,6 +262,8 @@ class ConversationViewModel : BaseRemindersViewModel() {
                         Action.REPORT -> {
                             context.startActivity(Intent(context, SendFeedbackActivity::class.java)
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
+                        }
+                        else -> {
                         }
                     }
                 } else if (types == ActionType.NOTE) {
@@ -324,9 +296,9 @@ class ConversationViewModel : BaseRemindersViewModel() {
             for (reminder in appDb.reminderDao().getAll(active = true, removed = false)) {
                 stopReminder(reminder)
             }
+            postInProgress(false)
+            postCommand(Commands.DELETED)
             withUIContext {
-                postInProgress(false)
-                postCommand(Commands.DELETED)
                 if (showToast) {
                     Toast.makeText(context, R.string.all_reminders_were_disabled, Toast.LENGTH_SHORT).show()
                 }
@@ -342,9 +314,9 @@ class ConversationViewModel : BaseRemindersViewModel() {
                 deleteReminder(reminder, false)
                 calendarUtils.deleteEvents(reminder.uuId)
             }
+            postInProgress(false)
+            postCommand(Commands.TRASH_CLEARED)
             withUIContext {
-                postInProgress(false)
-                postCommand(Commands.TRASH_CLEARED)
                 if (showToast) {
                     Toast.makeText(context, R.string.trash_cleared, Toast.LENGTH_SHORT).show()
                 }
@@ -453,9 +425,9 @@ class ConversationViewModel : BaseRemindersViewModel() {
         launchDefault {
             appDb.reminderGroupDao().insert(model)
         }
-            if (showToast) {
-                Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
-            }
+        if (showToast) {
+            Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun clearConversation() {

@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.view_models.used_time
 
-import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.data.models.UsedTime
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
@@ -8,11 +7,7 @@ import com.elementary.tasks.core.view_models.BaseDbViewModel
 
 class UsedTimeViewModel : BaseDbViewModel() {
 
-    var usedTimeList: LiveData<List<UsedTime>>
-
-    init {
-        usedTimeList = appDb.usedTimeDao().loadFirst5()
-    }
+    val usedTimeList = appDb.usedTimeDao().loadFirst5()
 
     fun saveTime(after: Long) {
         launchDefault {
