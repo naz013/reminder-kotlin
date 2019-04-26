@@ -174,7 +174,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 }
 
 apply plugin: 'com.google.gms.google-services'
