@@ -456,7 +456,7 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
     override fun onUpdate(version: String) {
         mHeaderView?.updateBadge?.visibility = View.VISIBLE
         mHeaderView?.updateBadge?.text = getString(R.string.update_available) + ": " + version
-        mHeaderView?.updateBadge?.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
+        mHeaderView?.updateBadge?.setOnClickListener { SuperUtil.launchMarket(this) }
     }
 
     override fun noUpdate() {

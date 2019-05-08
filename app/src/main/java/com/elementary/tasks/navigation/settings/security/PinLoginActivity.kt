@@ -12,7 +12,7 @@ import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
-import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.experimental.NavUtil
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -83,7 +83,7 @@ class PinLoginActivity : ThemedActivity<ActivityPinLoginBinding>(), FingerInitia
     }
 
     private fun openApplication() {
-        startActivity(Intent(this@PinLoginActivity, MainActivity::class.java))
+        startActivity(Intent(this@PinLoginActivity, NavUtil.homeScreen(prefs)))
         finish()
     }
 

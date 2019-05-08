@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav"
+    app:startDestination="@id/actionHome">
+
+    <fragment
+        android:id="@+id/actionHome"
+        tools:layout="@layout/fragment_reminders"
+        android:name="com.elementary.tasks.reminder.lists.RemindersFragment"
+        android:label="@string/events" />
+
+    <fragment
+        android:id="@+id/actionNotes"
+        android:name="com.elementary.tasks.notes.list.NotesFragment"
+        tools:layout="@layout/fragment_notes"
+        android:label="@string/notes" />
+
+    <fragment
+        android:id="@+id/actionCalendar"
+        tools:layout="@layout/fragment_flext_cal"
+        android:name="com.elementary.tasks.month_view.CalendarFragment"
+        android:label="@string/calendar" />
+
+    <fragment
+        android:id="@+id/actionGoogle"
+        tools:layout="@layout/fragment_google_tasks"
+        android:name="com.elementary.tasks.google_tasks.GoogleTasksFragment"
+        android:label="@string/tasks" />
+</navigation>

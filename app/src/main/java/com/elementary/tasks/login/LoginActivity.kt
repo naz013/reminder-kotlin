@@ -29,10 +29,10 @@ import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ActivityLoginBinding
+import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.intro.PageFragment
 import com.elementary.tasks.intro.PrivacyPolicyActivity
-import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import kotlinx.coroutines.Job
@@ -223,7 +223,7 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
             initGroups()
             prefs.isUserLogged = true
             withUIContext {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                startActivity(Intent(this@LoginActivity, NavUtil.homeScreen(prefs)))
                 finish()
             }
         }
@@ -237,7 +237,7 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
                     .setShortLabel(getString(R.string.add_reminder_menu))
                     .setLongLabel(getString(R.string.add_reminder_menu))
                     .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
-                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java),
+                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, NavUtil.homeScreen(prefs)),
                             Intent(Intent.ACTION_VIEW).setClass(this, CreateReminderActivity::class.java)))
                     .build()
 
@@ -245,7 +245,7 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
                     .setShortLabel(getString(R.string.add_note))
                     .setLongLabel(getString(R.string.add_note))
                     .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
-                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java),
+                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, NavUtil.homeScreen(prefs)),
                             Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java)))
                     .build()
             if (shortcutManager != null) {
