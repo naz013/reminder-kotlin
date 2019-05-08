@@ -91,6 +91,9 @@
             android:required="false" />
 
         <activity android:name=".navigation.MainActivity" />
+        <activity android:name=".experimental.BottomNavActivity" >
+            <nav-graph android:value="@navigation/home_nav" />
+        </activity>
         <activity
             android:name=".core.IntentActivity"
             android:configChanges="keyboardHidden"
@@ -109,7 +112,6 @@
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -193,14 +195,15 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.ta2" />
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.ta2" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name="com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity" />
+        <activity android:name=".navigation.settings.general.theme.SelectThemeActivity" />
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden"
@@ -303,22 +306,28 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.chromium.arc.intent.action.CREATE_NOTE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
@@ -406,8 +415,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".login.LoginActivity" />
+        <activity android:name=".login.LoginActivity" />
 
         <receiver
             android:name=".core.services.CallReceiver"
@@ -577,7 +585,6 @@
         <service
             android:name=".core.app_widgets.calendar.CalendarUpdateService"
             android:enabled="true" />
-
         <service
             android:name="com.evernote.android.job.gcm.PlatformGcmService"
             android:enabled="true"
@@ -595,7 +602,6 @@
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask">
             <intent-filter>
-
                 <data android:scheme="db-4zi1d414h0v8sxe" />
 
                 <action android:name="android.intent.action.VIEW" />
@@ -618,9 +624,9 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e319ad50eeab199ac7860c9873cac1803c44386c" />
     </application>
+
 </manifest>

@@ -121,7 +121,7 @@ class CalendarWidgetConfigActivity : ThemedActivity<ActivityWidgetCalendarConfig
                 .apply()
 
         val appWidgetManager = AppWidgetManager.getInstance(this)
-        CalendarWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+        CalendarWidget.updateWidget(this, appWidgetManager, sp, widgetID, prefs)
         setResult(RESULT_OK, resultValue)
         finish()
     }

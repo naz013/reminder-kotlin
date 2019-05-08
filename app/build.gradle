@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'io.fabric'
 
 android {
@@ -123,9 +124,13 @@ dependencies {
     }
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.room:room-runtime:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
+    implementation 'androidx.room:room-runtime:2.0.0'
     kapt 'androidx.room:room-compiler:2.0.0'
+
+    implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
+    implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
 
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
@@ -135,11 +140,11 @@ dependencies {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-    implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
 
-    proImplementation 'com.google.firebase:firebase-database:16.1.0'
-    proImplementation 'com.google.firebase:firebase-auth:16.2.1'
+    proImplementation 'com.google.firebase:firebase-database:17.0.0'
+    proImplementation 'com.google.firebase:firebase-auth:17.0.0'
     proImplementation 'com.github.kenglxn.QRGen:android:2.4.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -178,3 +183,4 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'

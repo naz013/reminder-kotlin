@@ -24,7 +24,7 @@ import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
-import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
@@ -255,7 +255,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
                         Action.TRASH -> emptyTrash(true)
                         Action.DISABLE -> disableAllReminders(true)
                         Action.SETTINGS -> {
-                            val startActivityIntent = Intent(context, MainActivity::class.java)
+                            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
                             startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
                             context.startActivity(startActivityIntent)
                         }
