@@ -1,64 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="PureWhite" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/pureWhite</item>
-        <item name="android:windowBackground">@color/pureWhite</item>
-        <item name="android:colorBackground">@color/pureWhite</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="materialCardViewStyle">@style/PureWhite.Card</item>
-        <item name="popupMenuStyle">@style/PureWhite.PopupMenu</item>
-        <item name="navBg">@color/pureWhiteCardBg</item>
-        <item name="android:navigationBarColor">@color/lightPrimaryDark1</item>
-    </style>
-
-    <style name="Light1" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary1</item>
-        <item name="android:windowBackground">@color/lightPrimary1</item>
-        <item name="android:colorBackground">@color/lightPrimary1</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="materialCardViewStyle">@style/Light1.Card</item>
-        <item name="popupMenuStyle">@style/Light1.PopupMenu</item>
-        <item name="navBg">@color/lightBg1</item>
-        <item name="android:navigationBarColor">@color/lightPrimaryDark1</item>
-    </style>
-
-    <style name="Light2" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary2</item>
-        <item name="android:windowBackground">@color/lightPrimary2</item>
-        <item name="android:colorBackground">@color/lightPrimary2</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="materialCardViewStyle">@style/Light2.Card</item>
-        <item name="popupMenuStyle">@style/Light2.PopupMenu</item>
-        <item name="navBg">@color/lightBg2</item>
-        <item name="android:navigationBarColor">@color/lightPrimaryDark2</item>
-    </style>
-
-    <style name="Light3" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary3</item>
-        <item name="android:windowBackground">@color/lightPrimary3</item>
-        <item name="android:colorBackground">@color/lightPrimary3</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="materialCardViewStyle">@style/Light3.Card</item>
-        <item name="popupMenuStyle">@style/Light3.PopupMenu</item>
-        <item name="navBg">@color/lightBg3</item>
-        <item name="android:navigationBarColor">@color/lightPrimaryDark3</item>
-    </style>
-
-    <style name="Light4" parent="Base.Light">
-        <item name="colorPrimaryDark">@color/lightPrimary4</item>
-        <item name="android:windowBackground">@color/lightPrimary4</item>
-        <item name="android:colorBackground">@color/lightPrimary4</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="materialCardViewStyle">@style/Light4.Card</item>
-        <item name="popupMenuStyle">@style/Light4.PopupMenu</item>
-        <item name="navBg">@color/lightBg4</item>
-        <item name="android:navigationBarColor">@color/lightPrimaryDark4</item>
-    </style>
-
-    <style name="Base.Dark" parent="@style/Theme.MaterialComponents.NoActionBar">
-        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
-        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
+    <style name="Base.Light" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleLight</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleLight</item>
         <item name="textAppearanceHeadline1">@style/Text.H1</item>
         <item name="textAppearanceHeadline2">@style/Text.H2</item>
         <item name="textAppearanceHeadline3">@style/Text.H3</item>
@@ -79,7 +24,62 @@
         <item name="colorPrimary">@color/secondary</item>
         <item name="colorSecondary12">@color/secondary_12</item>
         <item name="colorSecondary50">@color/secondary_50</item>
-        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="PureWhite" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/pureWhite</item>
+        <item name="android:windowBackground">@color/pureWhite</item>
+        <item name="android:colorBackground">@color/pureWhite</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="materialCardViewStyle">@style/PureWhite.Card</item>
+        <item name="popupMenuStyle">@style/PureWhite.PopupMenu</item>
+        <item name="navBg">@color/pureWhiteCardBg</item>
+        <item name="android:navigationBarColor">@color/pureWhiteCardBg</item>
+    </style>
+
+    <style name="Light1" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimary1</item>
+        <item name="android:windowBackground">@color/lightPrimary1</item>
+        <item name="android:colorBackground">@color/lightPrimary1</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="materialCardViewStyle">@style/Light1.Card</item>
+        <item name="popupMenuStyle">@style/Light1.PopupMenu</item>
+        <item name="navBg">@color/lightBg1</item>
+        <item name="android:navigationBarColor">@color/lightBg1</item>
+    </style>
+
+    <style name="Light2" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimary2</item>
+        <item name="android:windowBackground">@color/lightPrimary2</item>
+        <item name="android:colorBackground">@color/lightPrimary2</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="materialCardViewStyle">@style/Light2.Card</item>
+        <item name="popupMenuStyle">@style/Light2.PopupMenu</item>
+        <item name="navBg">@color/lightBg2</item>
+        <item name="android:navigationBarColor">@color/lightBg2</item>
+    </style>
+
+    <style name="Light3" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimary3</item>
+        <item name="android:windowBackground">@color/lightPrimary3</item>
+        <item name="android:colorBackground">@color/lightPrimary3</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="materialCardViewStyle">@style/Light3.Card</item>
+        <item name="popupMenuStyle">@style/Light3.PopupMenu</item>
+        <item name="navBg">@color/lightBg3</item>
+        <item name="android:navigationBarColor">@color/lightBg3</item>
+    </style>
+
+    <style name="Light4" parent="Base.Light">
+        <item name="colorPrimaryDark">@color/lightPrimary4</item>
+        <item name="android:windowBackground">@color/lightPrimary4</item>
+        <item name="android:colorBackground">@color/lightPrimary4</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="materialCardViewStyle">@style/Light4.Card</item>
+        <item name="popupMenuStyle">@style/Light4.PopupMenu</item>
+        <item name="navBg">@color/lightBg4</item>
+        <item name="android:navigationBarColor">@color/lightBg4</item>
     </style>
 </resources>

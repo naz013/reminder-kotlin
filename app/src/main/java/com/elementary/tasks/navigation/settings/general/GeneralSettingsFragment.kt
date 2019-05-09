@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings.general
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -12,24 +13,6 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.general.home.PageIdentifier
 import com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
 
     private var mItemSelect: Int = 0
@@ -180,6 +163,6 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     }
 
     private fun selectTheme() {
-        startActivity(Intent(context, SelectThemeActivity::class.java))
+        findNavController().navigate(GeneralSettingsFragmentDirections.actionGeneralSettingsFragmentToSelectThemeActivity())
     }
 }

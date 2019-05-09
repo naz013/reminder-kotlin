@@ -2,6 +2,7 @@ package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.DrawableHelper
@@ -10,28 +11,9 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.elementary.tasks.places.list.PlacesFragment
 import com.google.android.gms.maps.GoogleMap
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
 
     private var mItemSelect: Int = 0
@@ -60,7 +42,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     }
 
     private fun openPlacesScreen() {
-        callback?.openFragment(PlacesFragment.newInstance(), getString(R.string.places))
+        findNavController().navigate(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToPlacesFragment())
     }
 
     private fun initMapStylePrefs() {
@@ -71,7 +53,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     }
 
     private fun openMapStylesFragment() {
-        callback?.openFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
+        findNavController().navigate(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToMapStyleFragment())
     }
 
     private fun initMarkerStylePrefs() {

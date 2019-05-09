@@ -133,7 +133,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                 binding.navSpinner.setSelection(DATE)
             }
             GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
-                replaceFragment(PlacesFragment())
+                replaceFragment(PlacesTypeFragment())
             } else {
                 binding.navSpinner.setSelection(DATE)
             }

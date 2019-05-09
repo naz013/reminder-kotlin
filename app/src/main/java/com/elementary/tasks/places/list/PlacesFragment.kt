@@ -2,7 +2,6 @@ package com.elementary.tasks.places.list
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -11,13 +10,13 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
@@ -25,7 +24,6 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.elementary.tasks.places.create.CreatePlaceActivity
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
@@ -97,7 +95,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun addPlace() {
-        startActivity(Intent(context, CreatePlaceActivity::class.java))
+        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(""))
     }
 
     private fun initViewModel() {
@@ -160,8 +158,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun openPlace(place: Place) {
-        startActivity(Intent(context, CreatePlaceActivity::class.java)
-                .putExtra(Constants.INTENT_ID, place.id))
+        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id))
     }
 
     private fun refreshView(count: Int) {
