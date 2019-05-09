@@ -32,7 +32,6 @@ import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
@@ -550,7 +549,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         imagesGridAdapter.actionsListener = object : ActionsListener<ImageFile> {
             override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
-                    ListActions.EDIT -> editImage(position)
                     ListActions.OPEN -> openImagePreview(position)
                     ListActions.REMOVE -> stateViewModel.removeImage(position)
                     else -> {
@@ -566,12 +564,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         imagesSingleton.setCurrent(imagesGridAdapter.data)
         startActivity(Intent(this, ImagePreviewActivity::class.java)
                 .putExtra(Constants.INTENT_POSITION, position))
-    }
-
-    private fun editImage(position: Int) {
-        imagesSingleton.setEditable(imagesGridAdapter.get(position))
-        stateViewModel.editPosition = position
-        startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }
 
     private fun showReminder(reminder: Reminder?) {

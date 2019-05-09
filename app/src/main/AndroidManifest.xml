@@ -401,9 +401,6 @@
             android:name=".core.dialogs.VolumeDialog"
             android:excludeFromRecents="true"
             android:theme="@style/Light1.Dialog" />
-        <activity
-            android:name=".notes.editor.ImageEditActivity"
-            android:excludeFromRecents="true" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
             android:name=".core.SplashScreen"
