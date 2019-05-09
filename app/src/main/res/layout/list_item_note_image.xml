@@ -40,19 +40,6 @@
                 app:srcCompat="@drawable/ic_twotone_cancel_24px"
                 app:tint="?colorOnSecondary" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/editButton"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@+id/removeButton"
-                android:alpha="100"
-                android:background="@drawable/drawable_secondary"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_twotone_edit_24px"
-                app:tint="?colorOnSecondary" />
-
         </RelativeLayout>
 
         <RelativeLayout
