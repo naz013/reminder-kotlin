@@ -118,11 +118,6 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
         return monthTitle
     }
 
-    override fun onResume() {
-        super.onResume()
-        callback?.onMenuSelect(R.id.nav_day_view)
-    }
-
     override fun getTitle(): String = updateMenuTitles()
 
     private fun loadData() {

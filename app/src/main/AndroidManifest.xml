@@ -90,7 +90,6 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".navigation.MainActivity" />
         <activity android:name=".experimental.BottomNavActivity" >
             <nav-graph android:value="@navigation/home_nav" />
         </activity>

@@ -7,25 +7,129 @@
 
     <fragment
         android:id="@+id/actionHome"
-        tools:layout="@layout/fragment_reminders"
-        android:name="com.elementary.tasks.reminder.lists.RemindersFragment"
-        android:label="@string/events" />
+        android:name="com.elementary.tasks.experimental.home.HomeFragment"
+        android:label="@string/events"
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_actionHome_to_remindersFragment"
+            app:destination="@id/remindersFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_birthdaysFragment"
+            app:destination="@id/birthdaysFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_groupsFragment"
+            app:destination="@id/groupsFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_createReminderActivity"
+            app:destination="@id/createReminderActivity" />
+        <action
+            android:id="@+id/action_actionHome_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/actionNotes"
         android:name="com.elementary.tasks.notes.list.NotesFragment"
-        tools:layout="@layout/fragment_notes"
-        android:label="@string/notes" />
+        android:label="@string/notes"
+        tools:layout="@layout/fragment_notes">
+        <action
+            android:id="@+id/action_actionNotes_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/actionCalendar"
-        tools:layout="@layout/fragment_flext_cal"
         android:name="com.elementary.tasks.month_view.CalendarFragment"
-        android:label="@string/calendar" />
+        android:label="@string/calendar"
+        tools:layout="@layout/fragment_flext_cal">
+        <action
+            android:id="@+id/action_actionCalendar_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/actionGoogle"
-        tools:layout="@layout/fragment_google_tasks"
         android:name="com.elementary.tasks.google_tasks.GoogleTasksFragment"
-        android:label="@string/tasks" />
+        android:label="@string/tasks"
+        tools:layout="@layout/fragment_google_tasks">
+        <action
+            android:id="@+id/action_actionGoogle_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/remindersFragment"
+        android:name="com.elementary.tasks.reminder.lists.RemindersFragment"
+        android:label="@string/reminders_"
+        tools:layout="@layout/fragment_reminders">
+        <action
+            android:id="@+id/action_remindersFragment_to_archiveFragment"
+            app:destination="@id/archiveFragment" />
+        <action
+            android:id="@+id/action_remindersFragment_to_createReminderActivity"
+            app:destination="@id/createReminderActivity" />
+        <action
+            android:id="@+id/action_remindersFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/birthdaysFragment"
+        android:name="com.elementary.tasks.birthdays.list.BirthdaysFragment"
+        android:label="@string/birthdays"
+        tools:layout="@layout/fragment_birthdays">
+        <action
+            android:id="@+id/action_birthdaysFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.elementary.tasks.groups.list.GroupsFragment"
+        android:label="@string/groups"
+        tools:layout="@layout/fragment_groups">
+        <action
+            android:id="@+id/action_groupsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.elementary.tasks.navigation.fragments.MapFragment"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_events_map">
+        <action
+            android:id="@+id/action_mapFragment_to_createReminderActivity"
+            app:destination="@id/createReminderActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/archiveFragment"
+        android:name="com.elementary.tasks.reminder.lists.ArchiveFragment"
+        android:label="@string/trash"
+        tools:layout="@layout/fragment_trash">
+        <action
+            android:id="@+id/action_archiveFragment_to_createReminderActivity"
+            app:destination="@id/createReminderActivity" />
+        <action
+            android:id="@+id/action_archiveFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/createReminderActivity"
+        android:name="com.elementary.tasks.reminder.create.CreateReminderActivity"
+        android:label="@string/new_reminder"
+        tools:layout="@layout/activity_create_reminder" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.elementary.tasks.navigation.settings.SettingsFragment"
+        android:label="@string/action_settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_generalSettingsFragment"
+            app:destination="@id/generalSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/generalSettingsFragment"
+        android:name="com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment"
+        android:label="@string/general"
+        tools:layout="@layout/fragment_settings_general" />
 </navigation>

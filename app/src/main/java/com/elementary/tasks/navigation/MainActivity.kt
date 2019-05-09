@@ -230,15 +230,6 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         binding.toolbar.title = title
     }
 
-    override fun onFragmentSelect(fragment: BaseFragment<*>) {
-        this.fragment = fragment
-        if (this.fragment is BaseSettingsFragment) {
-            binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
-        } else {
-            binding.toolbar.navigationIcon = ViewUtils.navIcon(this, isDark)
-        }
-    }
-
     private fun clearBackStack() {
         try {
             val fm = supportFragmentManager
@@ -265,17 +256,8 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         ft.commit()
     }
 
-    override fun refreshMenu() {
-        setMenuVisible()
-    }
-
     override fun onScrollUpdate(y: Int) {
         binding.appBar.isSelected = y > 0
-    }
-
-    override fun onMenuSelect(menu: Int) {
-        prevItem = menu
-        binding.navView.setCheckedItem(prevItem)
     }
 
     override fun hideKeyboard() {
