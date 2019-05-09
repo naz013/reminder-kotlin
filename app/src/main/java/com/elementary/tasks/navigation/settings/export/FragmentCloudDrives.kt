@@ -52,7 +52,6 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
             } else {
                 binding.linkDropbox.text = getString(R.string.connect)
             }
-            callback?.refreshMenu()
         }
     }
 
@@ -169,12 +168,10 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
                             viewModel.loadGoogleTasks()
                         }
                         checkGoogleStatus()
-                        callback?.refreshMenu()
                     }
 
                     override fun onFail() {
                         showErrorDialog()
-                        callback?.refreshMenu()
                     }
                 })
             }
@@ -210,12 +207,10 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
                         if (isLogged) {
                             checkGoogleStatus()
                         }
-                        callback?.refreshMenu()
                     }
 
                     override fun onFail() {
                         showErrorDialog()
-                        callback?.refreshMenu()
                     }
                 })
             }
@@ -232,7 +227,6 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
             AppDb.getAppDatabase(ctx).googleTaskListsDao().deleteAll()
             withUIContext {
                 UpdatesHelper.updateTasksWidget(ctx)
-                callback?.refreshMenu()
                 updateProgress(false)
                 checkGoogleStatus()
             }

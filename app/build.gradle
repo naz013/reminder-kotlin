@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'io.fabric'
 
 android {
@@ -116,10 +116,10 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
 
-    implementation ('androidx.work:work-runtime:2.0.0') {
+    implementation('androidx.work:work-runtime:2.0.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-    implementation ('androidx.work:work-runtime-ktx:2.0.0') {
+    implementation('androidx.work:work-runtime-ktx:2.0.0') {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 
@@ -127,6 +127,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
     implementation 'androidx.room:room-runtime:2.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt 'androidx.room:room-compiler:2.0.0'
 
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
@@ -136,7 +137,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-gcm:16.1.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
-    implementation ('com.google.firebase:firebase-config:16.5.0') {
+    implementation('com.google.firebase:firebase-config:16.5.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
@@ -149,7 +150,7 @@ dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-    implementation ('com.github.bumptech.glide:glide:4.9.0') {
+    implementation('com.github.bumptech.glide:glide:4.9.0') {
         exclude group: "com.android.support"
     }
     kapt 'com.github.bumptech.glide:compiler:4.9.0'

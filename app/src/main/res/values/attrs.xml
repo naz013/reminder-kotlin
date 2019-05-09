@@ -3,6 +3,7 @@
 
     <attr name="colorSecondary12" format="color" />
     <attr name="colorSecondary50" format="color" />
+    <attr name="navBg" format="color" />
 
     <declare-styleable name="PrefsView">
         <attr name="prefs_primary_text" format="string" />

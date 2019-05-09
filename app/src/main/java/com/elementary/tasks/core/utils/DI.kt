@@ -3,6 +3,8 @@ package com.elementary.tasks.core.utils
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.experimental.home.HomeViewModel
 import com.elementary.tasks.navigation.settings.voice.TimesViewModel
 import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -34,6 +36,8 @@ fun viewModels() = module {
     viewModel { CreatePlaceViewModel() }
     viewModel { CreateNoteViewModel() }
     viewModel { TimesViewModel() }
+    viewModel { HomeViewModel() }
+    viewModel { ConversationViewModel() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {

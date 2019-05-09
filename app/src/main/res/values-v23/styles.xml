@@ -8,6 +8,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="materialCardViewStyle">@style/PureWhite.Card</item>
         <item name="popupMenuStyle">@style/PureWhite.PopupMenu</item>
+        <item name="navBg">@color/pureWhiteCardBg</item>
+        <item name="android:navigationBarColor">@color/pureWhiteCardBg</item>
     </style>
 
     <style name="Light1" parent="Base.Light">
@@ -17,6 +19,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="materialCardViewStyle">@style/Light1.Card</item>
         <item name="popupMenuStyle">@style/Light1.PopupMenu</item>
+        <item name="navBg">@color/lightBg1</item>
+        <item name="android:navigationBarColor">@color/lightBg1</item>
     </style>
 
     <style name="Light2" parent="Base.Light">
@@ -26,6 +30,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="materialCardViewStyle">@style/Light2.Card</item>
         <item name="popupMenuStyle">@style/Light2.PopupMenu</item>
+        <item name="navBg">@color/lightBg2</item>
+        <item name="android:navigationBarColor">@color/lightBg2</item>
     </style>
 
     <style name="Light3" parent="Base.Light">
@@ -35,6 +41,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="materialCardViewStyle">@style/Light3.Card</item>
         <item name="popupMenuStyle">@style/Light3.PopupMenu</item>
+        <item name="navBg">@color/lightBg3</item>
+        <item name="android:navigationBarColor">@color/lightBg3</item>
     </style>
 
     <style name="Light4" parent="Base.Light">
@@ -44,6 +52,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="materialCardViewStyle">@style/Light4.Card</item>
         <item name="popupMenuStyle">@style/Light4.PopupMenu</item>
+        <item name="navBg">@color/lightBg4</item>
+        <item name="android:navigationBarColor">@color/lightBg4</item>
     </style>
 
     <style name="Base.Dark" parent="@style/Theme.MaterialComponents.NoActionBar">

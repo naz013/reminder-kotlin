@@ -7,6 +7,7 @@
     <color name="pureWhite60">#99FFFFFF</color>
     <color name="pureWhite12">#1EFFFFFF</color>
     <color name="pureWhite50">#80FFFFFF</color>
+    <color name="pureWhiteCardBg">#FFFFFF</color>
 
     <color name="retroYellow">#fffeb3</color>
     <color name="retroYellowDark">#cbcb83</color>
@@ -64,6 +65,7 @@
     <color name="pureBlack12">#1E000000</color>
     <color name="pureBlack50">#80000000</color>
     <color name="pureBlackDark">#000000</color>
+    <color name="pureBlackCard">#000000</color>
 
     <color name="secondary">#ff1744</color>
     <color name="secondary_12">#1Eff1744</color>
