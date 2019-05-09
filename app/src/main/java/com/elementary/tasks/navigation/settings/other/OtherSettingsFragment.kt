@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -17,24 +18,6 @@ import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>() {
 
     private val mDataList = ArrayList<Item>()
@@ -55,7 +38,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
         }
 
         binding.helpPrefs.setOnClickListener {
-            callback?.openFragment(HelpFragment(), getString(R.string.help))
+            findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToHelpFragment())
         }
         binding.aboutPrefs.setOnClickListener { showAboutDialog() }
         binding.ossPrefs.setOnClickListener { openOssScreen() }
@@ -134,15 +117,15 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     }
 
     private fun openChangesScreen() {
-        callback?.openFragment(ChangesFragment(), getString(R.string.changes))
+        findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToChangesFragment())
     }
 
     private fun openPermissionsScreen() {
-        callback?.openFragment(PermissionsFragment(), getString(R.string.permissions))
+        findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToPermissionsFragment())
     }
 
     private fun openOssScreen() {
-        callback?.openFragment(OssFragment(), getString(R.string.open_source_licenses))
+        findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToOssFragment())
     }
 
     private fun showPermissionDialog() {

@@ -23,7 +23,6 @@ import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
-import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -158,14 +157,6 @@ class BottomNavActivity : ThemedActivity<ActivityBottomNavBinding>(), FragmentCa
 
     override fun onTitleChange(title: String) {
         binding.toolbar.title = title
-    }
-
-    override fun openFragment(fragment: BaseFragment<*>, tag: String) {
-
-    }
-
-    override fun openFragment(fragment: BaseFragment<*>, tag: String, replace: Boolean) {
-
     }
 
     override fun hideKeyboard() {

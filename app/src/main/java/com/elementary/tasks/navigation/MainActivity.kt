@@ -240,22 +240,6 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         }
     }
 
-    override fun openFragment(fragment: BaseFragment<*>, tag: String, replace: Boolean) {
-        if (replace) {
-            replaceFragment(fragment, tag)
-        } else {
-            openFragment(fragment, tag)
-        }
-    }
-
-    override fun openFragment(fragment: BaseFragment<*>, tag: String) {
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.main_container, fragment, tag)
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        ft.addToBackStack(tag)
-        ft.commit()
-    }
-
     override fun onScrollUpdate(y: Int) {
         binding.appBar.isSelected = y > 0
     }

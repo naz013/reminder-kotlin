@@ -9,15 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsBinding
-import com.elementary.tasks.navigation.settings.additional.AdditionalSettingsFragment
-import com.elementary.tasks.navigation.settings.calendar.CalendarSettingsFragment
-import com.elementary.tasks.navigation.settings.export.ExportSettingsFragment
-import com.elementary.tasks.navigation.settings.location.LocationSettingsFragment
-import com.elementary.tasks.navigation.settings.other.OtherSettingsFragment
-import com.elementary.tasks.navigation.settings.reminders.RemindersSettingsFragment
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import com.elementary.tasks.navigation.settings.security.SecuritySettingsFragment
-import com.elementary.tasks.navigation.settings.voice.VoiceSettingsFragment
 
 class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>() {
 
@@ -32,22 +24,41 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>() {
         binding.generalSettings.setOnClickListener {
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToGeneralSettingsFragment())
         }
-        binding.otherSettings.setOnClickListener { callback?.openFragment(OtherSettingsFragment(), getString(R.string.other)) }
-        binding.voiceSettings.setOnClickListener { callback?.openFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
-        binding.notesSettings.setOnClickListener { callback?.openFragment(NoteSettingsFragment(), getString(R.string.notes)) }
-        binding.additionalSettings.setOnClickListener { callback?.openFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
-        binding.notificationSettings.setOnClickListener { callback?.openFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
-        binding.exportSettings.setOnClickListener { callback?.openFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
-        binding.calendarSettings.setOnClickListener { callback?.openFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
-        binding.birthdaysSettings.setOnClickListener { callback?.openFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
-        binding.remindersSettings.setOnClickListener { callback?.openFragment(RemindersSettingsFragment(), getString(R.string.reminders_)) }
+        binding.otherSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
+        }
+        binding.voiceSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToVoiceSettingsFragment())
+        }
+        binding.notesSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
+        }
+        binding.additionalSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAdditionalSettingsFragment())
+        }
+        binding.notificationSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment())
+        }
+        binding.exportSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
+        }
+        binding.calendarSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment())
+        }
+        binding.birthdaysSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToBirthdaySettingsFragment())
+        }
+        binding.remindersSettings.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment())
+        }
         binding.securitySettings.setOnClickListener { askPin() }
-        binding.testsScreen.setOnClickListener { callback?.openFragment(TestsFragment(), "Tests") }
+        binding.testsScreen.setOnClickListener {
+        }
 
         withContext {
             if (Module.hasLocation(it)) {
                 binding.locationSettings.setOnClickListener {
-                    callback?.openFragment(LocationSettingsFragment(), getString(R.string.location))
+                    findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment())
                 }
                 binding.locationSettings.visibility = View.VISIBLE
             } else {
@@ -76,6 +87,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>() {
     }
 
     private fun openSecurity() {
-        callback?.openFragment(SecuritySettingsFragment(), getString(R.string.security))
+        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSecuritySettingsFragment())
     }
 }

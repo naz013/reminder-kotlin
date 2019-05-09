@@ -17,7 +17,7 @@ import com.elementary.tasks.databinding.FragmentReminderPlaceBinding
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
-class PlacesFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
+class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
     private var mPlacesMap: PlacesMapFragment? = null
     private val mListener = object : MapListener {
