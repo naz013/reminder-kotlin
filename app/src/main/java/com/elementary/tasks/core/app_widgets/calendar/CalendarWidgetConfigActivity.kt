@@ -21,12 +21,12 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
         super.onCreate(savedInstanceState)
         readIntent()
         binding.fabSave.setOnClickListener { savePrefs() }
-        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.bgColorSlider.setListener { position, _ ->
             updateContent(position)
         }
 
-        binding.headerBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.headerBgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.headerBgColorSlider.setListener { position, _ ->
             binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateHeader(position)

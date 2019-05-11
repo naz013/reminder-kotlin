@@ -242,7 +242,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.setTitle(R.string.new_task)
     }
 
@@ -481,15 +481,15 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
     private fun dateDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
-                c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
+        TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     private fun timeDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat,
-                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), mTimeCallBack)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE), mTimeCallBack)
     }
 
     override fun onDestroy() {

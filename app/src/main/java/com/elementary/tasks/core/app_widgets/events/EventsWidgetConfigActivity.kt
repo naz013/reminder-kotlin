@@ -25,13 +25,13 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
         readIntent()
 
         binding.fabSave.setOnClickListener { showTextSizeDialog() }
-        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.bgColorSlider.setListener { position, _ ->
             binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)
         }
 
-        binding.listItemBgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.listItemBgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.listItemBgColorSlider.setListener { position, _ ->
             binding.listItemCard.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateText(position)

@@ -2,10 +2,6 @@ package com.elementary.tasks.navigation.fragments
 
 import android.app.Activity
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.*
@@ -27,17 +23,13 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        isDark = ThemeUtil.isDarkMode(context)
         if (callback == null) {
             try {
                 callback = context as FragmentCallback?
             } catch (e: ClassCastException) {
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        isDark = themeUtil.isDark
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     protected fun setScroll(scroll: Int) {

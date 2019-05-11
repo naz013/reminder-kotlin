@@ -58,6 +58,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     private var speech: SpeechRecognizer? = null
     private var mUri: Uri? = null
 
+    private val themeUtil: ThemeUtil by inject()
     private val backupTool: BackupTool by inject()
     private val imagesSingleton: ImagesSingleton by inject()
 
@@ -130,7 +131,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(stateViewModel)
 
-        isBgDark = isDark
+        isBgDark = isDarkMode
 
         initActionBar()
         initMenu()
@@ -165,7 +166,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         super.onStart()
         photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
 
-        ViewUtils.registerDragAndDrop(this, binding.clickView, true, themeUtil.getSecondaryColor(), {
+        ViewUtils.registerDragAndDrop(this, binding.clickView, true, ThemeUtil.getSecondaryColor(this), {
             if (it.itemCount > 0) {
                 parseDrop(it)
             }
@@ -356,7 +357,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         binding.fontButton.setOnClickListener { showStyleDialog() }
         binding.paletteButton.setOnClickListener { showPaletteDialog() }
 
-        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.colorSlider.setListener { position, _ ->
             stateViewModel.colorOpacity.postValue(newPair(color = position))
             if (prefs.isNoteColorRememberingEnabled) {
@@ -379,8 +380,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
 
     private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
         isBgDark = when {
-            themeUtil.isAlmostTransparent(pair.second) -> isDark
-            else -> themeUtil.isColorDark(themeUtil.getNoteLightColor(pair.first, pair.second, palette))
+            ThemeUtil.isAlmostTransparent(pair.second) -> isDarkMode
+            else -> ThemeUtil.isColorDark(themeUtil.getNoteLightColor(pair.first, pair.second, palette))
         }
     }
 
@@ -877,15 +878,15 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     private fun dateDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+        TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR),
                 c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     private fun timeDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat,
-                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), mCallBack)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE), mCallBack)
     }
 
     override fun onDestroy() {

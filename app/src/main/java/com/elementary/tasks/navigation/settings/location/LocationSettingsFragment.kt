@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.DrawableHelper
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -64,7 +61,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     private fun showStyleDialog() {
         withActivity { act ->
             dialogues.showColorDialog(act, prefs.markerStyle,
-                    getString(R.string.style_of_marker), themeUtil.colorsForSlider()) {
+                    getString(R.string.style_of_marker), ThemeUtil.colorsForSlider(act)) {
                 prefs.markerStyle = it
                 showMarkerStyle()
             }

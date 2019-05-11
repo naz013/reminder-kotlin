@@ -19,12 +19,16 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
 
 class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>(R.layout.activity_show_birthday) {
 
     private lateinit var viewModel: BirthdayViewModel
+
+    private val themeUtil: ThemeUtil by inject()
+
     private var mBirthday: Birthday? = null
     private var isEventShowed = false
     override var isScreenResumed: Boolean = false

@@ -22,26 +22,10 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import org.koin.standalone.inject
 import java.lang.ref.WeakReference
 
-/**
- * Copyright 2017 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note) {
+
+    private val themeUtil: ThemeUtil by inject()
 
     private val imagesSingleton: ImagesSingleton by inject()
     var hasMore = true
@@ -93,14 +77,14 @@ class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> U
         val color = themeUtil.getNoteLightColor(item.getColor(), item.getOpacity(), item.getPalette())
         binding.bgView.setBackgroundColor(color)
 
-        val isDarkIcon = if (themeUtil.isAlmostTransparent(item.getOpacity())) {
-            themeUtil.isDark
+        val isDarkIcon = if (ThemeUtil.isAlmostTransparent(item.getOpacity())) {
+            ThemeUtil.isDarkMode(itemView.context)
         } else {
-            themeUtil.isColorDark(color)
+            ThemeUtil.isColorDark(color)
         }
         binding.buttonMore.setImageDrawable(ViewUtils.tintIcon(itemView.context, R.drawable.ic_twotone_more_vert_24px, isDarkIcon))
 
-        if ((themeUtil.isAlmostTransparent(item.getOpacity()) && themeUtil.isDark) || themeUtil.isColorDark(color)) {
+        if ((ThemeUtil.isAlmostTransparent(item.getOpacity()) && ThemeUtil.isDarkMode(itemView.context)) || ThemeUtil.isColorDark(color)) {
             binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureWhite))
         } else {
             binding.noteTv.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))

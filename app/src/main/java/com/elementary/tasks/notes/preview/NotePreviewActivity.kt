@@ -41,12 +41,13 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
 
     private val mUiHandler = Handler(Looper.getMainLooper())
 
+    private val themeUtil: ThemeUtil by inject()
     private val backupTool: BackupTool by inject()
     private val imagesSingleton: ImagesSingleton by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isBgDark = isDark
+        isBgDark = isDarkMode
         mId = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initActionBar()
         updateTextColors()
@@ -162,10 +163,10 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
             binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
             window.statusBarColor = noteColor
             binding.windowBackground.setBackgroundColor(noteColor)
-            isBgDark = if (themeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
-                isDark
+            isBgDark = if (ThemeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
+                isDarkMode
             } else {
-                themeUtil.isColorDark(noteColor)
+                ThemeUtil.isColorDark(noteColor)
             }
             updateTextColors()
             updateIcons()

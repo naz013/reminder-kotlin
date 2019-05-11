@@ -18,12 +18,15 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.sql.Date
 
 class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
 
     private lateinit var viewModel: MissedCallViewModel
+
+    private val themeUtil: ThemeUtil by inject()
 
     private var mMissedCall: MissedCall? = null
     private var isEventShowed = false

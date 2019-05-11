@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.text.TextUtils
 import android.text.format.DateFormat
-import com.elementary.tasks.R
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.gms.maps.GoogleMap
 import timber.log.Timber
 import java.io.File
@@ -59,9 +59,9 @@ class Prefs(context: Context) : SharedPrefs(context) {
         return false
     }
 
-    var useNewNav: Boolean
-        get() = getBoolean(PrefsConstants.EXPERIMENTAL_NAV, def = true)
-        set(value) = putBoolean(PrefsConstants.EXPERIMENTAL_NAV, value)
+    var nightMode: Int
+        get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
+        set(value) = putInt(PrefsConstants.NIGHT_MODE, value)
 
     var autoSyncState: Int
         get() = getInt(PrefsConstants.AUTO_SYNC_STATE)
@@ -90,10 +90,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
     var notePalette: Int
         get() = getInt(PrefsConstants.NOTE_PALETTE)
         set(value) = putInt(PrefsConstants.NOTE_PALETTE, value)
-
-    var homePage: String
-        get() = getString(PrefsConstants.HOME_PAGE)
-        set(value) = putString(PrefsConstants.HOME_PAGE, value)
 
     var pinCode: String
         get() = SuperUtil.decrypt(getString(PrefsConstants.PIN_CODE))
@@ -197,14 +193,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.BIRTH_COLOR)
         set(value) = putInt(PrefsConstants.BIRTH_COLOR, value)
 
-    var appTheme: Int
-        get() = getInt(PrefsConstants.APP_THEME)
-        set(value) = putInt(PrefsConstants.APP_THEME, value)
-
-    var appThemeColor: Int
-        get() = getInt(PrefsConstants.APP_THEME_COLOR)
-        set(value) = putInt(PrefsConstants.APP_THEME_COLOR, value)
-
     var nightTime: String
         get() = getString(PrefsConstants.TIME_NIGHT)
         set(value) = putString(PrefsConstants.TIME_NIGHT, value)
@@ -236,10 +224,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
     var isSystemLoudnessEnabled: Boolean
         get() = getBoolean(PrefsConstants.SYSTEM_VOLUME)
         set(value) = putBoolean(PrefsConstants.SYSTEM_VOLUME, value)
-
-    var isTwoColsEnabled: Boolean
-        get() = getBoolean(PrefsConstants.TWO_COLS)
-        set(value) = putBoolean(PrefsConstants.TWO_COLS, value)
 
     var soundStream: Int
         get() = getInt(PrefsConstants.SOUND_STREAM)
@@ -336,10 +320,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
     var tasksUser: String
         get() = SuperUtil.decrypt(getString(PrefsConstants.TASKS_USER))
         set(value) = putString(PrefsConstants.TASKS_USER, SuperUtil.encrypt(value))
-
-    var reminderImage: String
-        get() = getString(PrefsConstants.REMINDER_IMAGE)
-        set(value) = putString(PrefsConstants.REMINDER_IMAGE, value)
 
     var isManualRemoveEnabled: Boolean
         get() = getBoolean(PrefsConstants.NOTIFICATION_REMOVE)
@@ -589,8 +569,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         if (!settingsUI.exists()) {
             val preferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
             val editor = preferences.edit()
-            editor.putInt(PrefsConstants.APP_THEME, ThemeUtil.THEME_AUTO)
-            editor.putInt(PrefsConstants.APP_THEME_COLOR, 8)
             editor.putInt(PrefsConstants.TODAY_COLOR, 0)
             editor.putInt(PrefsConstants.BIRTH_COLOR, 2)
             editor.putInt(PrefsConstants.REMINDER_COLOR, 4)
@@ -669,7 +647,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
             editor.putBoolean(PrefsConstants.GCM_ENABLED, true)
             editor.putBoolean(PrefsConstants.LIVE_CONVERSATION, true)
             editor.putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, true)
-            editor.putBoolean(PrefsConstants.TWO_COLS, Module.isChromeOs(context) || context.resources.getBoolean(R.bool.is_tablet))
             if (Module.isPro) {
                 editor.putBoolean(PrefsConstants.BIRTHDAY_LED_STATUS, false)
                 editor.putBoolean(PrefsConstants.LED_STATUS, true)
@@ -693,12 +670,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.REMINDER_COLOR)) {
             putInt(PrefsConstants.REMINDER_COLOR, 6)
-        }
-        if (!hasKey(PrefsConstants.APP_THEME)) {
-            putInt(PrefsConstants.APP_THEME, ThemeUtil.THEME_AUTO)
-        }
-        if (!hasKey(PrefsConstants.APP_THEME_COLOR)) {
-            putInt(PrefsConstants.APP_THEME_COLOR, 8)
         }
         if (!hasKey(PrefsConstants.DRIVE_USER)) {
             putString(PrefsConstants.DRIVE_USER, DRIVE_USER_NONE)
@@ -883,9 +854,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         }
         if (!hasKey(PrefsConstants.IGNORE_WINDOW_TYPE)) {
             putBoolean(PrefsConstants.IGNORE_WINDOW_TYPE, true)
-        }
-        if (!hasKey(PrefsConstants.TWO_COLS)) {
-            putBoolean(PrefsConstants.TWO_COLS, Module.isChromeOs(context) || context.resources.getBoolean(R.bool.is_tablet))
         }
         if (!hasKey(PrefsConstants.NOTE_COLOR_OPACITY)) {
             putInt(PrefsConstants.NOTE_COLOR_OPACITY, 100)

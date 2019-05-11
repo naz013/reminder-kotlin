@@ -155,11 +155,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
                 }
             }
         }
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!) && resources.getBoolean(R.bool.is_tablet)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(binding.recyclerView, listener = { setScroll(it) }) {
             if (it) binding.fab.show()

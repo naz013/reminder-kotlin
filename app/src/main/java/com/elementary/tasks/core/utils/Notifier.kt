@@ -24,24 +24,6 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class Notifier(private val context: Context, private val prefs: Prefs, private val themeUtil: ThemeUtil) {
 
     init {
@@ -50,7 +32,7 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
 
     fun showNoteNotification(noteWithImages: NoteWithImages) {
         val note = noteWithImages.note ?: return
-        val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
+        val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
         builder.setContentText(context.getString(R.string.note))
         builder.color = ContextCompat.getColor(context, R.color.bluePrimary)
         val content = note.summary
@@ -62,7 +44,7 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
             builder.setGroup("GROUP")
             builder.setGroupSummary(true)
         }
-        if (!noteWithImages.images.isEmpty() && Module.isMarshmallow) {
+        if (noteWithImages.images.isNotEmpty() && Module.isMarshmallow) {
             val image = noteWithImages.images[0]
             val bitmap = BitmapFactory.decodeByteArray(image.image, 0, image.image!!.size)
             builder.setLargeIcon(bitmap)
@@ -73,7 +55,7 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
         }
         getManager(context)?.notify(note.uniqueId, builder.build())
         if (isWear) {
-            val wearableNotificationBuilder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
+            val wearableNotificationBuilder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
             wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_note_white)
             wearableNotificationBuilder.setContentTitle(content)
             wearableNotificationBuilder.setContentText(context.getString(R.string.note))
@@ -154,7 +136,7 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
             dismissIntent.action = PermanentBirthdayReceiver.ACTION_HIDE
             val piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
-            val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
+            val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
             builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
             builder.setAutoCancel(false)
             builder.setOngoing(true)
@@ -179,7 +161,7 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
     fun showReminderPermanent() {
         Timber.d("showReminderPermanent: ")
         val remoteViews = RemoteViews(context.packageName, R.layout.view_notification)
-        val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_SILENT)
+        val builder = NotificationCompat.Builder(context, CHANNEL_SILENT)
         builder.setAutoCancel(false)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         builder.setContent(remoteViews)
@@ -243,18 +225,12 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
             remoteViews.setTextViewText(R.id.text, context.getString(R.string.no_events))
             remoteViews.setViewVisibility(R.id.featured, View.GONE)
         }
-        if (prefs.appThemeColor == ThemeUtil.Color.BLACK) {
-            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_alarm_white, R.id.notificationAdd)
-            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_white, R.id.noteAdd)
-            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_white, R.id.bellIcon)
-        } else {
-            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_alarm_24px, R.id.notificationAdd)
-            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
-            WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
-        }
+        WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_alarm_24px, R.id.notificationAdd)
+        WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_note_24px, R.id.noteAdd)
+        WidgetUtils.setIcon(remoteViews, R.drawable.ic_twotone_notifications_24px, R.id.bellIcon)
 
-        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", themeUtil.getSecondaryColor())
-        val colorOnSecondary = themeUtil.getOnSecondaryColor()
+        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", ThemeUtil.getSecondaryColor(context))
+        val colorOnSecondary = ThemeUtil.getOnSecondaryColor(context)
         remoteViews.setTextColor(R.id.featured, colorOnSecondary)
         remoteViews.setTextColor(R.id.text, colorOnSecondary)
         getManager(context)?.notify(PermanentReminderReceiver.PERM_ID, builder.build())

@@ -19,7 +19,7 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
         readIntent()
 
         binding.fabSave.setOnClickListener { savePrefs() }
-        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.bgColorSlider.setListener { position, _ ->
             binding.headerBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)

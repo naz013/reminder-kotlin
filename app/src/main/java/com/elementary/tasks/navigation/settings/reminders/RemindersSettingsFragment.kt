@@ -116,8 +116,8 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val min = calendar.get(Calendar.MINUTE)
         withContext {
-            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat,
-                    hour, min, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            TimeUtil.showTimePicker(it, prefs.is24HourFormat, hour, min,
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 callback.invoke(hourOfDay, minute)
             })
         }

@@ -44,14 +44,14 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>(R.layo
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = getString(R.string.feedback)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_feedback, menu)
-        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_refresh_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_local_post_office_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_refresh_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_local_post_office_24px, isDarkMode)
         return super.onCreateOptionsMenu(menu)
     }
 

@@ -35,7 +35,7 @@ class VoiceHelpActivity : BindingActivity<ActivityVoiceHelpBinding>(R.layout.act
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = getString(R.string.help)
     }
 

@@ -196,7 +196,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         withContext {
-            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat, hour, minute, this)
+            TimeUtil.showTimePicker(it, prefs.is24HourFormat, hour, minute, this)
         }
     }
 

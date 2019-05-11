@@ -1,6 +1,10 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
+    <dimen name="alpha_emphasis_high">@dimen/mtrl_emphasis_high_type</dimen>
+    <dimen name="alpha_emphasis_medium">@dimen/mtrl_emphasis_medium</dimen>
+    <dimen name="alpha_emphasis_disabled">@dimen/mtrl_emphasis_disabled</dimen>
+
     <dimen name="drawable_circle_width">1dp</dimen>
 
     <dimen name="create_margin">16dp</dimen>

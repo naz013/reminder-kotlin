@@ -87,7 +87,7 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>(R.la
 
     private fun initMap() {
         val googleMap = AdvancedMapFragment.newInstance(false, false, true,
-                false, prefs.markerStyle, themeUtil.isDark, false)
+                false, prefs.markerStyle, isDarkMode, false)
         googleMap.setCallback(object : MapCallback {
             override fun onMapReady() {
                 googleMap.setSearchEnabled(false)

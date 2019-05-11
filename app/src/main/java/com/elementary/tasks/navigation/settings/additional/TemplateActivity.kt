@@ -99,7 +99,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

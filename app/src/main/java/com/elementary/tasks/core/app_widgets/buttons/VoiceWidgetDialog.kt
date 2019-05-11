@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -34,7 +35,6 @@ import org.koin.android.ext.android.inject
 class VoiceWidgetDialog : FragmentActivity() {
 
     private lateinit var viewModel: ConversationViewModel
-    private val themeUtil: ThemeUtil by inject()
     private val notifier: Notifier by inject()
     private val prefs: Prefs by inject()
     private val language: Language by inject()
@@ -43,7 +43,7 @@ class VoiceWidgetDialog : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
-        setTheme(themeUtil.dialogStyle)
+        AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
         if (Module.hasMicrophone(this)) {
             viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
             if (prefs.hasPinCode && !mIsLogged) {

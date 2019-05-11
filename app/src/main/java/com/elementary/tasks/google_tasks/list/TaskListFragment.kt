@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -15,41 +14,18 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
-import org.koin.android.ext.android.inject
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
 
     private val adapter = TasksRecyclerAdapter()
     private lateinit var viewModel: GoogleTaskListViewModel
     private var mId: String = ""
     private var mGoogleTaskListsMap: MutableMap<String, GoogleTaskList> = mutableMapOf()
-
-    private val prefs: Prefs by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,11 +112,7 @@ class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
             viewModel.sync()
         }
 
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         adapter.actionsListener = object : ActionsListener<GoogleTask> {
             override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
                 when (actions) {

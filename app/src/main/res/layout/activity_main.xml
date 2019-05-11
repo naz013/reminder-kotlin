@@ -32,7 +32,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
                         android:background="?android:colorBackground"
-                        app:titleTextAppearance="@style/ToolbarTextStyle"
                         tools:title="Test" />
 
                 </com.google.android.material.appbar.AppBarLayout>
@@ -83,7 +82,7 @@
             app:itemBackground="@drawable/nav_selector"
             app:itemHorizontalPadding="8dp"
             app:itemIconTint="@color/menu_selector"
-            app:itemTextAppearance="@style/Text.Body2"
+            app:itemTextAppearance="?textAppearanceBody2"
             app:itemTextColor="@color/menu_selector"
             app:menu="@menu/activity_main_drawer" />
 

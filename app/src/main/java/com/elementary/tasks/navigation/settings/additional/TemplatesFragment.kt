@@ -107,11 +107,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
     }
 
     private fun initTemplateList() {
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context)) {
-            binding.templatesList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.templatesList.layoutManager = LinearLayoutManager(context)
-        }
+        binding.templatesList.layoutManager = LinearLayoutManager(context)
         adapter.actionsListener = object : ActionsListener<SmsTemplate> {
             override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
                 when (actions) {

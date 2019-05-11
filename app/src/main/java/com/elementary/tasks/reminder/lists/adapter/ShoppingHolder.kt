@@ -10,17 +10,16 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.databinding.ListItemShopItemBinding
+import org.koin.standalone.inject
 
 class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean = true,
                      private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder) {
 
+    private val themeUtil: ThemeUtil by inject()
     val listHeader: TextView = binding.listHeader
 
     init {

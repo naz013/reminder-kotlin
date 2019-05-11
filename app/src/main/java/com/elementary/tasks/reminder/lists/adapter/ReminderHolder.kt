@@ -11,12 +11,14 @@ import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemReminderBinding
+import org.koin.standalone.inject
 import java.util.*
 
 class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, showMore: Boolean = true,
                      private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder) {
 
+    private val themeUtil: ThemeUtil by inject()
     val listHeader: TextView = binding.listHeader
 
     init {

@@ -403,7 +403,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         menuInflater.inflate(R.menu.menu_create_reminder, menu)
         if (Module.hasMicrophone(this)) {
             menu[0].isVisible = true
-            ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDark)
+            ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDarkMode)
         } else {
             menu[0].isVisible = false
         }

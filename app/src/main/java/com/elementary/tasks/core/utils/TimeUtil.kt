@@ -15,25 +15,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 object TimeUtil {
 
     private const val GMT = "GMT"
@@ -133,13 +114,12 @@ object TimeUtil {
         } catch (e: ArrayIndexOutOfBoundsException) {
             e.printStackTrace()
         }
-
         return null
     }
 
-    fun showTimePicker(context: Context, theme: Int, is24: Boolean,
-                       hour: Int, minute: Int, listener: TimePickerDialog.OnTimeSetListener): TimePickerDialog {
-        val dialog = TimePickerDialog(context, theme, listener, hour, minute, is24)
+    fun showTimePicker(context: Context, is24: Boolean, hour: Int, minute: Int,
+                       listener: TimePickerDialog.OnTimeSetListener): TimePickerDialog {
+        val dialog = TimePickerDialog(context, listener, hour, minute, is24)
         dialog.show()
         return dialog
     }
@@ -151,13 +131,9 @@ object TimeUtil {
         return dialog
     }
 
-    fun showDatePicker(context: Context, theme: Int, prefs: Prefs,
-                       year: Int, month: Int, dayOfMonth: Int, listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
-        val dialog = if (isBrokenSamsungDevice()) {
-            DatePickerDialog(context, android.R.style.Theme_Holo_Dialog, listener, year, month, dayOfMonth)
-        } else {
-            DatePickerDialog(context, theme, listener, year, month, dayOfMonth)
-        }
+    fun showDatePicker(context: Context, prefs: Prefs, year: Int, month: Int, dayOfMonth: Int,
+                       listener: DatePickerDialog.OnDateSetListener): DatePickerDialog {
+        val dialog = DatePickerDialog(context, listener, year, month, dayOfMonth)
         dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
         dialog.show()
         return dialog

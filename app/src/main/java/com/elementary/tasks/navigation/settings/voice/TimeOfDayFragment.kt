@@ -150,8 +150,7 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
 
     private fun timeDialog(h: Int, m: Int, callback: (hourOfDay: Int, minuteOfHour: Int) -> Unit) {
         withContext {
-            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat, h, m,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            TimeUtil.showTimePicker(it, prefs.is24HourFormat, h, m, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                         callback.invoke(hourOfDay, minute)
                     })
         }
