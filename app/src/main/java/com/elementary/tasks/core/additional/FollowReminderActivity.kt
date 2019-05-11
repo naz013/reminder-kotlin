@@ -249,11 +249,11 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.a
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
+        TimeUtil.showDatePicker(this, prefs, mYear, mMonth, mDay, mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mCustomHour, mCustomMinute, mTimeCallBack)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormat, mCustomHour, mCustomMinute, mTimeCallBack)
     }
 
     private fun saveDateTask() {

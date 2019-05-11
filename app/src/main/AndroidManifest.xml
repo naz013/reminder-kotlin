@@ -81,7 +81,7 @@
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Light1.Blue"
+        android:theme="@style/MyTheme.DayNight"
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="n">
@@ -202,7 +202,6 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".navigation.settings.general.theme.SelectThemeActivity" />
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden"
@@ -390,21 +389,18 @@
         <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog" />
+            android:excludeFromRecents="true" />
         <activity
             android:name=".core.dialogs.VoiceResultDialog"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog" />
+            android:excludeFromRecents="true" />
         <activity
             android:name=".core.dialogs.VolumeDialog"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog" />
+            android:excludeFromRecents="true" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
             android:name=".core.SplashScreenActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/SplashScreenTheme.Light2">
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -568,8 +564,7 @@
         <activity
             android:name=".core.app_widgets.buttons.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog">
+            android:excludeFromRecents="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

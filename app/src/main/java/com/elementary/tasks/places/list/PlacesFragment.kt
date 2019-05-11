@@ -120,11 +120,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     override fun getTitle(): String = getString(R.string.places)
 
     private fun initList() {
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         mAdapter.actionsListener = object : ActionsListener<Place> {
             override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
                 when (actions) {

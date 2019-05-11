@@ -220,7 +220,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         binding.windowTypeView.text = getWindowType(reminder.windowType)
         binding.taskText.text = reminder.summary
         binding.type.text = ReminderUtils.getTypeString(this, reminder.type)
-        binding.itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
+        binding.itemPhoto.setImageResource(ThemeUtil.getReminderIllustration(reminder.type))
         binding.idView.text = reminder.uuId
 
         showDueAndRepeat(reminder)
@@ -425,10 +425,10 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_reminder_preview, menu)
 
-        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDarkMode)
 
         if (Module.isPro && QrShareProvider.hasQrSupport()) {
             menu.add(Menu.NONE, MENU_ITEM_IN_APP_SHARE, 100, getString(R.string.in_app_sharing))
@@ -593,7 +593,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
     private fun initMap() {
         val googleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                false, false, themeUtil.isDark)
+                false, false, isDarkMode)
         googleMap.setCallback(object : MapCallback {
             override fun onMapReady() {
                 googleMap.setSearchEnabled(false)
@@ -625,7 +625,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         ViewUtils.listenScrollableView(binding.scrollView) {
             binding.appBar.isSelected = it > 0
         }
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     }
 
     override fun onBackPressed() {

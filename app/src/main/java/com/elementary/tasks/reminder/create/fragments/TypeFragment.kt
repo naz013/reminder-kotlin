@@ -147,7 +147,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
             it.onFileSelectListener = {
                 iFace.attachFile()
             }
-            ViewUtils.registerDragAndDrop(activity!!, it, true, themeUtil.getSecondaryColor(),
+            ViewUtils.registerDragAndDrop(activity!!, it, true, ThemeUtil.getSecondaryColor(it.context),
                     { clipData ->
                         if (clipData.itemCount > 0) {
                             it.setUri(clipData.getItemAt(0).uri)

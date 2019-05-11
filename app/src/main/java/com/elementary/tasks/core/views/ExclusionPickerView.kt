@@ -95,7 +95,6 @@ class ExclusionPickerView : LinearLayout {
 
     var dialogues: Dialogues?  = null
     var prefs: Prefs? = null
-    var themeUtil: ThemeUtil? = null
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -235,12 +234,7 @@ class ExclusionPickerView : LinearLayout {
             calendar.set(Calendar.MINUTE, minute)
             textView.text = context.getString(R.string.from) + " " + TimeUtil.getTime(calendar.time, true, lang())
         }
-        val themeUtil = themeUtil
-        if (themeUtil != null) {
-            TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs?.is24HourFormat ?: false, fromHour, fromMinute, listener)
-        } else {
-            TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, listener, fromHour, fromMinute)
-        }
+        TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, fromHour, fromMinute, listener)
     }
 
     private fun toTime(textView: TextView) {
@@ -253,11 +247,6 @@ class ExclusionPickerView : LinearLayout {
             calendar.set(Calendar.MINUTE, minute)
             textView.text = context.getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true, lang())
         }
-        val themeUtil = themeUtil
-        if (themeUtil != null) {
-            TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs?.is24HourFormat ?: false, toHour, toMinute, listener)
-        } else {
-            TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, listener, toHour, toMinute)
-        }
+        TimeUtil.showTimePicker(context, prefs?.is24HourFormat ?: false, toHour, toMinute, listener)
     }
 }

@@ -19,7 +19,7 @@ class CombinedWidgetConfigActivity : BindingActivity<ActivityWidgetCombinedConfi
         readIntent()
 
         binding.fabSave.setOnClickListener { savePrefs() }
-        binding.bgColorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.bgColorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.bgColorSlider.setListener { position, _ ->
             binding.widgetBg.setBackgroundResource(WidgetUtils.newWidgetBg(position))
             updateIcons(position)

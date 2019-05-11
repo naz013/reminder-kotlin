@@ -3,7 +3,10 @@
 
     <attr name="colorSecondary12" format="color" />
     <attr name="colorSecondary50" format="color" />
-    <attr name="navBg" format="color" />
+
+    <attr name="alphaEmphasisHigh" format="float"/>
+    <attr name="alphaEmphasisMedium" format="float"/>
+    <attr name="alphaEmphasisDisabled" format="float"/>
 
     <declare-styleable name="PrefsView">
         <attr name="prefs_primary_text" format="string" />

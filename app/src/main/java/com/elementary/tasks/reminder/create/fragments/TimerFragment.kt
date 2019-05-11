@@ -117,7 +117,6 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
         binding.exclusionView.dialogues = dialogues
         binding.exclusionView.prefs = prefs
-        binding.exclusionView.themeUtil = themeUtil
 
         binding.exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
                 iFace.state.reminder.to) { hours, from, to ->

@@ -99,7 +99,7 @@ class QrShareProvider(val themeUtil: ThemeUtil) {
         launchDefault {
             val bitmap = QRCode.from(uri)
                     .withHint(EncodeHintType.MARGIN, 0)
-                    .withColor(themeUtil.getSecondaryColor(), 0x00ffffff)
+                    .withColor(ThemeUtil.getSecondaryColor(imageView.context), 0x00ffffff)
                     .bitmap()
             withUIContext { imageView.setImageBitmap(bitmap) }
         }

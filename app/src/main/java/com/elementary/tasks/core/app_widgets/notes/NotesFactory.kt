@@ -74,7 +74,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
         }
         rv.setInt(R.id.noteBackground, "setBackgroundColor",
                 themeUtil.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette()))
-        if (themeUtil.isAlmostTransparent(note.getOpacity())) {
+        if (ThemeUtil.isAlmostTransparent(note.getOpacity())) {
             rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureWhite))
         } else {
             rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureBlack))

@@ -76,11 +76,7 @@ class SelectContactActivity : BindingActivity<ActivityContactsListBinding>(R.lay
                 onContactSelected(number, name)
             }
         }
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
-            binding.contactsList.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.contactsList.layoutManager = LinearLayoutManager(this)
-        }
+        binding.contactsList.layoutManager = LinearLayoutManager(this)
         binding.contactsList.adapter = adapter
         binding.contactsList.isNestedScrollingEnabled = false
         ViewUtils.listenScrollableView(binding.scroller) {

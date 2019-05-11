@@ -64,7 +64,7 @@ class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>(R.layo
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = ""
     }
 

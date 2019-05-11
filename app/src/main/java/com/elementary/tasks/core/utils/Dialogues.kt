@@ -17,32 +17,14 @@ import com.elementary.tasks.databinding.ViewColorSliderBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class Dialogues(private val themeUtil: ThemeUtil) {
+class Dialogues {
 
-    fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = themeUtil.colorsForSlider(),
+    fun showColorBottomDialog(activity: Activity, current: Int, colors: IntArray = ThemeUtil.colorsForSlider(activity),
                         onChange: (Int) -> Unit) {
         val dialog = BottomSheetDialog(activity)
         val b = DialogBottomColorSliderBinding.inflate(LayoutInflater.from(activity))
         b.colorSlider.setColors(colors)
-        b.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        b.colorSlider.setSelectorColorResource(if (ThemeUtil.isDarkMode(activity)) R.color.pureWhite else R.color.pureBlack)
         b.colorSlider.setSelection(current)
         b.colorSlider.setListener { i, _ ->
             onChange.invoke(i)
@@ -91,13 +73,13 @@ class Dialogues(private val themeUtil: ThemeUtil) {
     }
 
     fun showColorDialog(activity: Activity, current: Int, title: String,
-                        colors: IntArray = themeUtil.colorsForSlider(),
+                        colors: IntArray = ThemeUtil.colorsForSlider(activity),
                         onDone: (Int) -> Unit) {
         val builder = getMaterialDialog(activity)
         builder.setTitle(title)
         val bind = ViewColorSliderBinding.inflate(LayoutInflater.from(activity))
         bind.colorSlider.setColors(colors)
-        bind.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        bind.colorSlider.setSelectorColorResource(if (ThemeUtil.isDarkMode(activity)) R.color.pureWhite else R.color.pureBlack)
         bind.colorSlider.setSelection(current)
         builder.setView(bind.root)
         builder.setPositiveButton(R.string.save) { dialog, _ ->
@@ -110,7 +92,7 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         }
         val dialog = builder.create()
         dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity)
+        setFullWidthDialog(dialog, activity)
     }
 
     fun showRadiusDialog(activity: Activity, current: Int, listener: OnValueSelectedListener<Int>) {
@@ -153,11 +135,11 @@ class Dialogues(private val themeUtil: ThemeUtil) {
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
-        Dialogues.setFullWidthDialog(dialog, activity)
+        setFullWidthDialog(dialog, activity)
     }
 
     fun getMaterialDialog(context: Context): MaterialAlertDialogBuilder {
-        return MaterialAlertDialogBuilder(context, themeUtil.dialogStyle)
+        return MaterialAlertDialogBuilder(context)
     }
 
     fun getNullableDialog(context: Context?): MaterialAlertDialogBuilder? {

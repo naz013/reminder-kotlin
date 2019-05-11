@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -55,7 +56,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
     private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
         withActivity { act ->
-            dialogues.showColorDialog(act, current, title, themeUtil.colorsForSlider()) {
+            dialogues.showColorDialog(act, current, title, ThemeUtil.colorsForSlider(act)) {
                 onSave.invoke(it)
             }
         }

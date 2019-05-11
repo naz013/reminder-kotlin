@@ -70,7 +70,7 @@ class ShareActivity : BindingActivity<ActivityShareBinding>(R.layout.activity_sh
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = getString(R.string.in_app_sharing)
     }
 

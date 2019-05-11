@@ -370,7 +370,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     }
 
     private fun showStyleDialog() {
-        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, themeUtil.colorsForSlider()) {
+        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, ThemeUtil.colorsForSlider(context!!)) {
             prefs.markerStyle = it
             recreateStyle(it)
         }

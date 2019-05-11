@@ -21,7 +21,7 @@ fun utilModule() = module {
     single { SoundStackHolder(androidApplication(), get()) }
     single { ThemeUtil(androidApplication(), get()) }
     single { BackupTool(get()) }
-    single { Dialogues(get()) }
+    single { Dialogues() }
     single { Language(get()) }
     single { Notifier(androidApplication(), get(), get()) }
     single { CalendarUtils(androidApplication(), get(), get()) }

@@ -12,6 +12,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
@@ -61,7 +62,7 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
     private fun initMap() {
         val map = AdvancedMapFragment.newInstance(false, false, false,
-                false, false, false, themeUtil.isDark)
+                false, false, false, ThemeUtil.isDarkMode(context!!))
         map.setCallback(mReadyCallback)
         map.setOnMarkerClick(mOnMarkerClick)
         fragmentManager?.beginTransaction()

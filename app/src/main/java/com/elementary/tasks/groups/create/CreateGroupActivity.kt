@@ -28,8 +28,8 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
         super.onCreate(savedInstanceState)
         initActionBar()
 
-        binding.colorSlider.setColors(themeUtil.colorsForSlider())
-        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setColors(ThemeUtil.colorsForSlider(this))
+        binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {
             binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
@@ -48,7 +48,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.setTitle(R.string.create_group)
     }
 

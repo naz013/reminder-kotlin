@@ -167,11 +167,7 @@
             android:id="@+id/generalSettingsFragment"
             android:name="com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment"
             android:label="@string/general"
-            tools:layout="@layout/fragment_settings_general">
-            <action
-                android:id="@+id/action_generalSettingsFragment_to_selectThemeActivity"
-                app:destination="@id/selectThemeActivity" />
-        </fragment>
+            tools:layout="@layout/fragment_settings_general"/>
         <fragment
             android:id="@+id/remindersSettingsFragment"
             android:name="com.elementary.tasks.navigation.settings.reminders.RemindersSettingsFragment"
@@ -189,11 +185,6 @@
                 android:id="@+id/action_exportSettingsFragment_to_backupsFragment"
                 app:destination="@id/backupsFragment" />
         </fragment>
-        <activity
-            android:id="@+id/selectThemeActivity"
-            android:name="com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity"
-            android:label="@string/theme"
-            tools:layout="@layout/activity_select_theme" />
         <fragment
             android:id="@+id/fragmentCloudDrives"
             android:name="com.elementary.tasks.navigation.settings.export.FragmentCloudDrives"

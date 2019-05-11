@@ -159,11 +159,11 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     private fun selectDate() {
-        TimeUtil.showDatePicker(context, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, this)
+        TimeUtil.showDatePicker(context, prefs, mYear, mMonth, mDay, this)
     }
 
     private fun selectTime() {
-        TimeUtil.showTimePicker(context, themeUtil.dialogStyle, prefs.is24HourFormat, mHour, mMinute, this)
+        TimeUtil.showTimePicker(context, prefs.is24HourFormat, mHour, mMinute, this)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {

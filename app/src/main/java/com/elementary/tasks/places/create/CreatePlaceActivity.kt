@@ -17,6 +17,7 @@ import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
@@ -43,7 +44,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         initActionBar()
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, true, false, false,
-                prefs.markerStyle, themeUtil.isDark, false)
+                prefs.markerStyle, ThemeUtil.isDarkMode(this), false)
         mGoogleMap?.setListener(this)
         mGoogleMap?.setCallback(this)
 

@@ -43,7 +43,7 @@ class AttachmentPreviewActivity : BindingActivity<ActivityAttachmentPreviewBindi
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = ""
     }
 

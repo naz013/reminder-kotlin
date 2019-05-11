@@ -36,7 +36,6 @@ import com.elementary.tasks.navigation.fragments.FeedbackFragment
 import com.elementary.tasks.navigation.fragments.MapFragment
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment
-import com.elementary.tasks.navigation.settings.general.home.PageIdentifier
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import com.elementary.tasks.notes.list.NotesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
@@ -82,21 +81,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
     }
 
     private fun initScreen(savedInstanceState: Bundle?) {
-        when {
-            savedInstanceState != null -> {
-                openScreen(savedInstanceState.getInt(CURRENT_SCREEN, PageIdentifier.menuId(this, prefs.homePage)))
-            }
-            intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
-                var pos = intent.getIntExtra(Constants.INTENT_POSITION, 0)
-                if (pos == 0) {
-                    pos = PageIdentifier.menuId(this, 0)
-                }
-                prevItem = PageIdentifier.menuId(this, 0)
-                binding.navView.setCheckedItem(pos)
-                openScreen(pos)
-            }
-            else -> initStartFragment()
-        }
+
     }
 
     private fun initQuickNote() {
@@ -116,16 +101,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     private fun initStartFragment() {
         Timber.d("initStartFragment: ")
-        prevItem = PageIdentifier.menuId(this, prefs.homePage)
-        binding.navView.setCheckedItem(prevItem)
-        openScreen(prevItem)
+
     }
 
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.navIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.navIcon(this, isDarkMode)
         binding.toolbar.setNavigationOnClickListener { onDrawerClick() }
     }
 

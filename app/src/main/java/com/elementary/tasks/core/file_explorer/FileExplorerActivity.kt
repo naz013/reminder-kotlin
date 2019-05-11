@@ -161,11 +161,7 @@ class FileExplorerActivity : BindingActivity<ActivityFileExplorerBinding>(R.layo
                 }
             }
         }
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(this)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = mAdapter
         binding.recyclerView.isNestedScrollingEnabled = false
         ViewUtils.listenScrollableView(binding.scroller) {

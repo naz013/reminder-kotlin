@@ -25,7 +25,6 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/contactInfo"
-            style="@style/Text.H6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -33,6 +32,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
             android:gravity="center"
+            android:textAppearance="?textAppearanceHeadline6"
             tools:text="6541646846886" />
 
         <androidx.recyclerview.widget.RecyclerView

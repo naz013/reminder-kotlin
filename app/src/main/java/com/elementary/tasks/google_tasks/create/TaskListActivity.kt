@@ -11,6 +11,7 @@ import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
@@ -31,8 +32,8 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout
         updateProgress(false)
 
         initActionBar()
-        binding.colorSlider.setColors(themeUtil.colorsForSlider())
-        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setColors(ThemeUtil.colorsForSlider(this))
+        binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {
             binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
@@ -62,7 +63,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.setTitle(R.string.new_tasks_list)
     }
 

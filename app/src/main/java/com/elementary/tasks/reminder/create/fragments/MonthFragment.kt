@@ -121,12 +121,12 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.monthDayField.setOnClickListener {
-            TimeUtil.showDatePicker(activity!!, themeUtil.dialogStyle, prefs, iFace.state.year,
-                    iFace.state.month, iFace.state.day, mDateSelect)
+            TimeUtil.showDatePicker(activity!!, prefs, iFace.state.year, iFace.state.month,
+                    iFace.state.day, mDateSelect)
         }
         binding.timeField.setOnClickListener {
-            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle, prefs.is24HourFormat,
-                    iFace.state.hour, iFace.state.minute, mTimeSelect)
+            TimeUtil.showTimePicker(activity!!, prefs.is24HourFormat, iFace.state.hour,
+                    iFace.state.minute, mTimeSelect)
         }
         binding.timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
         binding.repeatView.defaultValue = 1

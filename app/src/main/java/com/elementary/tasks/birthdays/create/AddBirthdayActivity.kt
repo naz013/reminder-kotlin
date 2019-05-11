@@ -82,7 +82,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     }
 
     private fun showBirthday(birthday: Birthday?) {
@@ -270,7 +270,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     private fun dateDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = viewModel.date.value ?: System.currentTimeMillis()
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+        TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR),
                 c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
