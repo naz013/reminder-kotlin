@@ -10,18 +10,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityImportSharingBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 
-class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
+class ImportActivity : BindingActivity<ActivityImportSharingBinding>(R.layout.activity_import_sharing) {
 
     private lateinit var viewModel: ShareViewModel
-
-    override fun layoutRes(): Int = R.layout.activity_import_sharing
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

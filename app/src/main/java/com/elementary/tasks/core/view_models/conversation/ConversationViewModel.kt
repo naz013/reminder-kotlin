@@ -15,7 +15,7 @@ import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.SplashScreen
+import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
@@ -245,7 +245,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
                 val types = model.type
                 if (types == ActionType.ACTION && isWidget) {
                     when (model.action) {
-                        Action.APP -> context.startActivity(Intent(context, SplashScreen::class.java))
+                        Action.APP -> context.startActivity(Intent(context, SplashScreenActivity::class.java))
                         Action.HELP -> context.startActivity(Intent(context, VoiceHelpActivity::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         Action.BIRTHDAY -> AddBirthdayActivity.openLogged(context)

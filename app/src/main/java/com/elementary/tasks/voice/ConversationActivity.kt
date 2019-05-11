@@ -20,7 +20,7 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
@@ -36,7 +36,7 @@ import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.util.*
 
-class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
+class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layout.activity_conversation) {
 
     private var speech: SpeechRecognizer? = null
 
@@ -118,8 +118,6 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
             Timber.d("onEvent: ")
         }
     }
-
-    override fun layoutRes(): Int = R.layout.activity_conversation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

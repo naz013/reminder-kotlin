@@ -38,7 +38,7 @@ import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 
-class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>() {
+class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
     private lateinit var viewModel: ReminderViewModel
 
@@ -184,8 +184,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             }
         }
     }
-
-    override fun layoutRes(): Int = R.layout.activity_reminder_dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

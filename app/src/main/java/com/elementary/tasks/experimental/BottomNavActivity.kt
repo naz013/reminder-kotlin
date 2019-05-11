@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
@@ -28,7 +28,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class BottomNavActivity : ThemedActivity<ActivityBottomNavBinding>(), FragmentCallback,
+class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav), FragmentCallback,
         RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
 
     private lateinit var remotePrefs: RemotePrefs
@@ -147,10 +147,6 @@ class BottomNavActivity : ThemedActivity<ActivityBottomNavBinding>(), FragmentCa
         return findNavController(R.id.mainNavigationFragment).navigateUp()
     }
 
-    override fun layoutRes(): Int {
-        return R.layout.activity_bottom_nav
-    }
-
     override fun onScrollUpdate(y: Int) {
         binding.toolbar.isSelected = y > 0
     }
@@ -171,6 +167,18 @@ class BottomNavActivity : ThemedActivity<ActivityBottomNavBinding>(), FragmentCa
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return
             viewModel.parseResults(matches, false, this)
+        }
+        val navHost = supportFragmentManager.findFragmentById(R.id.home_nav)
+        navHost?.let { navFragment ->
+            navFragment.childFragmentManager.primaryNavigationFragment?.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val navHost = supportFragmentManager.findFragmentById(R.id.home_nav)
+        navHost?.let { navFragment ->
+            navFragment.childFragmentManager.primaryNavigationFragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 

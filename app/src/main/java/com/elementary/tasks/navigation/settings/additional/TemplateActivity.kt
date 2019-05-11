@@ -8,7 +8,7 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
@@ -16,15 +16,13 @@ import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 import org.koin.android.ext.android.inject
 
-class TemplateActivity : ThemedActivity<ActivityTemplateBinding>() {
+class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activity_template) {
 
     private lateinit var viewModel: SmsTemplateViewModel
     private var mItem: SmsTemplate? = null
     private var mUri: Uri? = null
 
     private val backupTool: BackupTool by inject()
-
-    override fun layoutRes(): Int = R.layout.activity_template
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

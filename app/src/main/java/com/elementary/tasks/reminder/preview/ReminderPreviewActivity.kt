@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -46,7 +46,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>() {
+class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(R.layout.activity_reminder_preview) {
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
@@ -61,8 +61,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         openFullMap()
         false
     }
-
-    override fun layoutRes(): Int = R.layout.activity_reminder_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

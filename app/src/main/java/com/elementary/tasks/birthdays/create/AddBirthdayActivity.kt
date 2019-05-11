@@ -14,37 +14,20 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
+import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.ParseException
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.ActivityAddBirthdayBinding>() {
+class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout.activity_add_birthday) {
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
@@ -59,8 +42,6 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         viewModel.date.postValue(calendar.timeInMillis)
     }
-
-    override fun layoutRes(): Int = R.layout.activity_add_birthday
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
