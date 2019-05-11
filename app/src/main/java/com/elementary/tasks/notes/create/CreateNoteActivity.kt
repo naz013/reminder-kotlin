@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
@@ -43,7 +43,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSelectionUtil.UriCallback {
+class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.activity_create_note), PhotoSelectionUtil.UriCallback {
 
     private var isBgDark = false
 
@@ -125,8 +125,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         stateViewModel.time.postValue(c.timeInMillis)
     }
     private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
-
-    override fun layoutRes(): Int = R.layout.activity_create_note
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

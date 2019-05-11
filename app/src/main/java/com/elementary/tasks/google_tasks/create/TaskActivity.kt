@@ -14,7 +14,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -30,25 +30,7 @@ import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
+class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.activity_create_google_task) {
 
     private lateinit var stateViewModel: StateViewModel
     private lateinit var viewModel: GoogleTaskViewModel
@@ -72,8 +54,6 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
         c.set(Calendar.MINUTE, minute)
         stateViewModel.time.postValue(c.timeInMillis)
     }
-
-    override fun layoutRes(): Int = R.layout.activity_create_google_task
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

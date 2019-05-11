@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
+class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
     private lateinit var viewModel: PlaceViewModel
     private val stateViewModel: CreatePlaceViewModel by viewModel()
@@ -35,8 +35,6 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
     private var mUri: Uri? = null
 
     private val backupTool: BackupTool by inject()
-
-    override fun layoutRes(): Int = R.layout.activity_create_place
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

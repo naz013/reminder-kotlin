@@ -10,16 +10,14 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivitySendFeedbackBinding
 
-class SendFeedbackActivity : ThemedActivity<ActivitySendFeedbackBinding>() {
+class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>(R.layout.activity_send_feedback) {
 
     private val url = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
-
-    override fun layoutRes(): Int = R.layout.activity_send_feedback
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {

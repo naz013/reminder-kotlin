@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.binding.views.NavHeaderBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*
@@ -45,7 +45,7 @@ import com.google.android.material.navigation.NavigationView
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
+class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
         RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
 
     private lateinit var remotePrefs: RemotePrefs
@@ -70,8 +70,6 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
             }
         }
     }
-
-    override fun layoutRes(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -402,7 +402,7 @@
             android:theme="@style/Light1.Dialog" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
-            android:name=".core.SplashScreen"
+            android:name=".core.SplashScreenActivity"
             android:excludeFromRecents="true"
             android:theme="@style/SplashScreenTheme.Light2">
             <intent-filter>

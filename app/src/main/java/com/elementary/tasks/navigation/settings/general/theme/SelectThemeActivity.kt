@@ -6,18 +6,16 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivitySelectThemeBinding
 import java.util.*
 
-class SelectThemeActivity : ThemedActivity<ActivitySelectThemeBinding>() {
+class SelectThemeActivity : BindingActivity<ActivitySelectThemeBinding>(R.layout.activity_select_theme) {
 
     private lateinit var themes: List<Theme>
-
-    override fun layoutRes(): Int = R.layout.activity_select_theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

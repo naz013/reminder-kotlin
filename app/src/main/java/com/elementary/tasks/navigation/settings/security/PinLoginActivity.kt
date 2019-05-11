@@ -7,19 +7,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.experimental.NavUtil
 
-class PinLoginActivity : ThemedActivity<ActivityPinLoginBinding>(), FingerInitializer.ReadyListener, FingerprintHelper.Callback {
+class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activity_pin_login),
+        FingerInitializer.ReadyListener, FingerprintHelper.Callback {
 
     private var fingerprintHelper: FingerprintHelper? = null
     private var isBack = false
-
-    override fun layoutRes(): Int = R.layout.activity_pin_login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

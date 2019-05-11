@@ -7,7 +7,7 @@ import android.view.Window
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -17,15 +17,13 @@ import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.google.android.gms.maps.model.LatLng
 
-class FullscreenMapActivity : ThemedActivity<ActivityFullscreenMapBinding>() {
+class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>(R.layout.activity_fullscreen_map) {
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
 
     private var reminder: Reminder? = null
     private var placeIndex = 0
-
-    override fun layoutRes(): Int = R.layout.activity_fullscreen_map
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
@@ -78,8 +76,7 @@ class FullscreenMapActivity : ThemedActivity<ActivityFullscreenMapBinding>() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val ids = item.itemId
-        when (ids) {
+        when (item.itemId) {
             android.R.id.home -> {
                 finishAfterTransition()
                 return true

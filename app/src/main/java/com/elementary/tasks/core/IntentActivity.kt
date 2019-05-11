@@ -7,7 +7,6 @@ import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.settings.additional.TemplateActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -16,11 +15,9 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class IntentActivity: ThemedActivity<ActivityLoginBinding>() {
+class IntentActivity: ThemedActivity() {
 
     private val backupTool: BackupTool by inject()
-
-    override fun layoutRes(): Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

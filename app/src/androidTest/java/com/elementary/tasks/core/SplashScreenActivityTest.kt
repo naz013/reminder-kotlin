@@ -10,11 +10,11 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class SplashScreenTest {
+class SplashScreenActivityTest {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityTestRule(SplashScreen::class.java)
+    var mActivityTestRule = ActivityTestRule(SplashScreenActivity::class.java)
 
     @Test
     fun splashScreenTest() {

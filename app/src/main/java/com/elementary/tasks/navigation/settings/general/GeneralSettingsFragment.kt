@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
-import com.elementary.tasks.core.SplashScreen
+import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
@@ -158,7 +158,7 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
     override fun getTitle(): String = getString(R.string.general)
 
     private fun restartApp() {
-        startActivity(Intent(context, SplashScreen::class.java))
+        startActivity(Intent(context, SplashScreenActivity::class.java))
         activity?.finishAffinity()
     }
 

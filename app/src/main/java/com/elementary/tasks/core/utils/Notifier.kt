@@ -12,7 +12,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.SplashScreen
+import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -201,9 +201,9 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
         noteBuilder.addNextIntent(noteIntent)
         val notePendingIntent = noteBuilder.getPendingIntent(0, 0)
         remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent)
-        val resInt = Intent(context, SplashScreen::class.java)
+        val resInt = Intent(context, SplashScreenActivity::class.java)
         val stackInt = TaskStackBuilder.create(context)
-        stackInt.addParentStack(SplashScreen::class.java)
+        stackInt.addParentStack(SplashScreenActivity::class.java)
         stackInt.addNextIntent(resInt)
         val resultPendingInt = stackInt.getPendingIntent(0, 0)
         remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)

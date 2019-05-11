@@ -21,7 +21,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GDrive
@@ -39,7 +39,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import java.util.*
 
-class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
+class LoginActivity : BindingActivity<ActivityLoginBinding>(R.layout.activity_login) {
 
     private lateinit var viewModel: LoginViewModel
 
@@ -47,8 +47,6 @@ class LoginActivity : ThemedActivity<ActivityLoginBinding>() {
     private var dropboxLogin: DropboxLogin? = null
 
     private var scrollJob: Job? = null
-
-    override fun layoutRes(): Int = R.layout.activity_login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

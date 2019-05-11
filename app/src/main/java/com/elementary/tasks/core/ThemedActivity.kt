@@ -4,14 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.os.IBinder
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.core.utils.*
 import org.koin.android.ext.android.inject
 
-abstract class ThemedActivity<B : ViewDataBinding> : AppCompatActivity() {
+abstract class ThemedActivity : AppCompatActivity() {
 
     val themeUtil: ThemeUtil by inject()
     val prefs: Prefs by inject()
@@ -19,14 +16,10 @@ abstract class ThemedActivity<B : ViewDataBinding> : AppCompatActivity() {
     val dialogues: Dialogues by inject()
     val notifier: Notifier by inject()
 
-    protected lateinit var binding: B
     var isDark = false
         private set
 
     protected open fun applyTheme(): Boolean = true
-
-    @LayoutRes
-    abstract fun layoutRes(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +27,6 @@ abstract class ThemedActivity<B : ViewDataBinding> : AppCompatActivity() {
             setTheme(themeUtil.styleWithAccent)
         }
         isDark = themeUtil.isDark
-
-        if (layoutRes() != 0) {
-            binding = DataBindingUtil.setContentView(this, layoutRes())
-        }
     }
 
     override fun onStart() {
