@@ -9,24 +9,6 @@ import androidx.room.Query
 
 import androidx.room.OnConflictStrategy.REPLACE
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 @Dao
 interface BirthdaysDao {
 
@@ -44,6 +26,9 @@ interface BirthdaysDao {
 
     @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
     fun getAll(dayMonth: String): List<Birthday>
+
+    @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
+    fun loadAll(dayMonth: String): LiveData<List<Birthday>>
 
     @Insert(onConflict = REPLACE)
     fun insert(birthday: Birthday)
