@@ -74,6 +74,7 @@
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
                         android:background="@drawable/round_image_button_selector"
                         android:contentDescription="@string/trash"
                         android:scaleType="centerInside"
@@ -122,6 +123,8 @@
                 android:id="@+id/remindersList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="none"
                 tools:itemCount="3"
                 tools:listitem="@layout/list_item_reminder" />
 
@@ -164,6 +167,8 @@
                 android:id="@+id/birthdaysList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="none"
                 tools:itemCount="3"
                 tools:listitem="@layout/list_item_birthday" />
 
