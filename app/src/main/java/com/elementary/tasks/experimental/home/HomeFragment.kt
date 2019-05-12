@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GlobalButtonObservable
@@ -28,12 +29,22 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.addReminderButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToCreateReminderActivity())
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToCreateReminderActivity(""))
         }
-        binding.allRemindersButton.setOnClickListener {
+        binding.addBirthdayButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity(""))
+        }
+
+        binding.remindersButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
-        binding.allBirthdaysButton.setOnClickListener {
+        binding.remindersHeader.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
+        }
+        binding.birthdaysButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
+        }
+        binding.birthdaysHeader.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }
         binding.groupsButton.setOnClickListener {
@@ -42,6 +53,21 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         binding.mapButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToMapFragment())
         }
+
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        viewModel.reminders.observe(this, Observer {
+            if (it != null) {
+
+            }
+        })
+        viewModel.birthdays.observe(this, Observer {
+            if (it != null) {
+
+            }
+        })
     }
 
     override fun getTitle(): String = getString(R.string.events)

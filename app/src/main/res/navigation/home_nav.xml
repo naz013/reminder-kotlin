@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_actionHome_to_settingsFragment"
             app:destination="@id/navigation" />
+        <action
+            android:id="@+id/action_actionHome_to_addBirthdayActivity"
+            app:destination="@id/addBirthdayActivity" />
     </fragment>
 
     <fragment
@@ -82,6 +85,9 @@
         <action
             android:id="@+id/action_birthdaysFragment_to_settingsFragment"
             app:destination="@id/navigation" />
+        <action
+            android:id="@+id/action_birthdaysFragment_to_addBirthdayActivity"
+            app:destination="@id/addBirthdayActivity" />
     </fragment>
     <fragment
         android:id="@+id/groupsFragment"
@@ -117,7 +123,11 @@
         android:id="@+id/createReminderActivity"
         android:name="com.elementary.tasks.reminder.create.CreateReminderActivity"
         android:label="@string/new_reminder"
-        tools:layout="@layout/activity_create_reminder" />
+        tools:layout="@layout/activity_create_reminder">
+        <argument
+            android:name="item_id"
+            app:argType="string" />
+    </activity>
     <navigation
         android:id="@+id/navigation"
         app:startDestination="@id/settingsFragment">
@@ -170,7 +180,7 @@
             android:id="@+id/generalSettingsFragment"
             android:name="com.elementary.tasks.navigation.settings.general.GeneralSettingsFragment"
             android:label="@string/general"
-            tools:layout="@layout/fragment_settings_general"/>
+            tools:layout="@layout/fragment_settings_general" />
         <fragment
             android:id="@+id/remindersSettingsFragment"
             android:name="com.elementary.tasks.navigation.settings.reminders.RemindersSettingsFragment"
@@ -402,8 +412,17 @@
         </activity>
         <fragment
             android:id="@+id/testsFragment"
-            tools:layout="@layout/fragment_settings_tests"
             android:name="com.elementary.tasks.navigation.settings.TestsFragment"
-            android:label="Tests" />
+            android:label="Tests"
+            tools:layout="@layout/fragment_settings_tests" />
     </navigation>
+    <activity
+        android:id="@+id/addBirthdayActivity"
+        android:name="com.elementary.tasks.birthdays.create.AddBirthdayActivity"
+        android:label="@string/add_birthday"
+        tools:layout="@layout/activity_add_birthday">
+        <argument
+            android:name="item_id"
+            app:argType="string" />
+    </activity>
 </navigation>

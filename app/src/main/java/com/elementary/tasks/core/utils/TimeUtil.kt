@@ -55,6 +55,34 @@ object TimeUtil {
 
     fun year(lang: Int = 0): SimpleDateFormat = localizedDateFormat("yyyy", lang)
 
+    fun getBirthdayDayMonth(millis: Long = System.currentTimeMillis()): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        return "$day|$month"
+    }
+
+    fun getDayStart(millis: Long = System.currentTimeMillis()): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return getGmtFromDateTime(calendar.timeInMillis)
+    }
+
+    fun getDayEnd(millis: Long = System.currentTimeMillis()): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = millis + AlarmManager.INTERVAL_DAY
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return getGmtFromDateTime(calendar.timeInMillis)
+    }
+
     fun getPlaceDateTimeFromGmt(dateTime: String?, lang: Int = 0): DMY {
         var date: Date
 

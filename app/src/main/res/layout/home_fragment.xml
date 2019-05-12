@@ -13,11 +13,69 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="5dp">
+                android:layout_marginTop="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/remindersButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/reminders_"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
+                        app:tint="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/birthdaysButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/birthdays"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_cake_24px"
+                        app:tint="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/groupsButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/groups"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_local_offer_24px"
+                        app:tint="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/mapButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/map"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_map_24px"
+                        app:tint="?colorSecondary" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/remindersHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stateListAnimator="@animator/card_animator"
+                android:layout_margin="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -34,37 +92,11 @@
                         android:textAppearance="?textAppearanceHeadline6" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/mapButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_map_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/groupsButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/allRemindersButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/addReminderButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_add_reminder"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_add_circle_24px"
                         app:tint="?android:textColorPrimary" />
@@ -81,10 +113,11 @@
                 tools:listitem="@layout/list_item_reminder" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/birthdaysHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="5dp">
+                android:stateListAnimator="@animator/card_animator"
+                android:layout_margin="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -101,19 +134,11 @@
                         android:textAppearance="?textAppearanceHeadline6" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/allBirthdaysButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/addBirthdayButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/add_birthday"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_add_circle_24px"
                         app:tint="?android:textColorPrimary" />
