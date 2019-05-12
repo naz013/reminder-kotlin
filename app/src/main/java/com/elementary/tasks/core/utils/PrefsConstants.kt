@@ -65,8 +65,6 @@ object PrefsConstants {
     const val TTS = "tts_enabled"
     const val TTS_LOCALE = "tts_locale"
     const val ITEM_PREVIEW = "item_preview"
-    @Deprecated("Should not use")
-    const val UI_CHANGED = "ui_changed"
     const val CALENDAR_IMAGE = "calendar_image"
     const val EXPORT_SETTINGS = "export_settings"
     const val CUSTOM_SOUND = "custom_sound"

@@ -75,10 +75,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
         prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
         prefs.addObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
-        if (prefs.isUiChanged) {
-            prefs.isUiChanged = false
-            recreate()
-        }
         if (!prefs.isBetaWarmingShowed) {
             showBetaDialog()
         }
