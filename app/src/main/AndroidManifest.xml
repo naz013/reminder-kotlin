@@ -90,7 +90,9 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".experimental.BottomNavActivity" >
+        <activity
+            android:name=".experimental.BottomNavActivity"
+            android:launchMode="singleInstance">
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity
@@ -400,6 +402,7 @@
         <activity
             android:name=".core.SplashScreenActivity"
             android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -407,7 +410,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:launchMode="singleInstance" />
 
         <receiver
             android:name=".core.services.CallReceiver"

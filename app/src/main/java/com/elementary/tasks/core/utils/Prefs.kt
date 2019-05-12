@@ -257,10 +257,6 @@ class Prefs(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.WEAR_NOTIFICATION)
         set(value) = putBoolean(PrefsConstants.WEAR_NOTIFICATION, value)
 
-    var isUiChanged: Boolean
-        get() = getBoolean(PrefsConstants.UI_CHANGED)
-        set(value) = putBoolean(PrefsConstants.UI_CHANGED, value)
-
     var isSbNotificationEnabled: Boolean
         get() = getBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION)
         set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)
