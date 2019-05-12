@@ -162,6 +162,9 @@
             <action
                 android:id="@+id/action_settingsFragment_to_voiceSettingsFragment"
                 app:destination="@id/voiceSettingsFragment" />
+            <action
+                android:id="@+id/action_settingsFragment_to_testsFragment"
+                app:destination="@id/testsFragment" />
         </fragment>
         <fragment
             android:id="@+id/generalSettingsFragment"
@@ -397,5 +400,10 @@
                 android:name="item_id"
                 app:argType="string" />
         </activity>
+        <fragment
+            android:id="@+id/testsFragment"
+            tools:layout="@layout/fragment_settings_tests"
+            android:name="com.elementary.tasks.navigation.settings.TestsFragment"
+            android:label="Tests" />
     </navigation>
 </navigation>

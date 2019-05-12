@@ -137,6 +137,9 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
                 initMapStylePrefs()
                 dialogInterface.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }

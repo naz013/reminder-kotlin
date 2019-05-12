@@ -75,6 +75,9 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
                 saveIntervalPrefs()
                 dialog.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }

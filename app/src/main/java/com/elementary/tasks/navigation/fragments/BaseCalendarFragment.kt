@@ -78,6 +78,12 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
             builder.setOnDismissListener {
                 job?.cancel()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+            }
             mDialog = builder.create()
             mDialog?.show()
         }

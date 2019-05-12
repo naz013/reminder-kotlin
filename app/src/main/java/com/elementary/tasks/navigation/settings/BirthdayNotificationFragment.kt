@@ -97,6 +97,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                 }
                 showMelodyDuration()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -124,6 +127,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 prefs.birthdayLedColor = mItemSelect
                 showLedColor()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
@@ -202,6 +208,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                     }
                 }
                 showMelody()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
             builder.create().show()
         }
