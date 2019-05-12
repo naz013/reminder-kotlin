@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -49,15 +48,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.fragment_home, menu)
-
-        if (Module.hasMicrophone(context!!)) {
-            menu.getItem(0)?.isVisible = true
-            ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_mic_24px, isDark)
-        } else {
-            menu.getItem(0)?.isVisible = false
-        }
-        ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_settings_24px, isDark)
-
+        menu.getItem(0)?.isVisible = Module.hasMicrophone(context!!)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

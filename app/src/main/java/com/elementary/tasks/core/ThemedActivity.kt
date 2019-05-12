@@ -19,13 +19,12 @@ abstract class ThemedActivity : AppCompatActivity() {
     var isDarkMode = false
         private set
 
+    @Deprecated("Not used anymore", ReplaceWith("true"))
     protected open fun applyTheme(): Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (applyTheme()) {
-            AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
-        }
+        AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
         isDarkMode = ThemeUtil.isDarkMode(this)
     }
 

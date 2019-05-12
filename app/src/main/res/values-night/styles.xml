@@ -2,5 +2,15 @@
 <resources>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface"/>
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface">
+
+    </style>
+
+    <style name="ActionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">?colorControlNormal</item>
+    </style>
+
+    <style name="BackButtonStyle" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">?colorControlNormal</item>
+    </style>
 </resources>
