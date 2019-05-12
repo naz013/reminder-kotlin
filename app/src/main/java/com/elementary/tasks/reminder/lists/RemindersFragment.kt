@@ -12,11 +12,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -47,7 +49,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             allGroups = { return@ReminderResolver viewModel.groups }
     )
 
-    private val mAdapter = RemindersRecyclerAdapter()
+    private val mAdapter = RemindersRecyclerAdapter(showHeader = true, isEditable = true)
     private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
@@ -75,15 +77,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.fragment_active_menu, menu)
-
-        ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
-        if (Module.hasMicrophone(context!!)) {
-            menu.getItem(1)?.isVisible = true
-            ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_mic_24px, isDark)
-        } else {
-            menu.getItem(1)?.isVisible = false
-        }
-
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
@@ -97,19 +90,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         }
         val isNotEmpty = searchModifier.hasOriginal()
         menu.getItem(0)?.isVisible = isNotEmpty
-
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_voice -> if (callback != null) {
-                buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
-            }
-            else -> {
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun layoutRes(): Int = R.layout.fragment_reminders

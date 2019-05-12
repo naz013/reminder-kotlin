@@ -252,6 +252,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
             this.number = number
             this.day = calendar.get(Calendar.DAY_OF_MONTH)
             this.month = calendar.get(Calendar.MONTH)
+            this.dayMonth = "${this.day}|${this.month}"
         }
         viewModel.saveBirthday(birthday)
     }

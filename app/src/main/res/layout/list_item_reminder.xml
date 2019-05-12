@@ -12,8 +12,8 @@
             android:id="@+id/listHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:textAppearance="?textAppearanceSubtitle2"
             android:visibility="visible"
@@ -23,13 +23,12 @@
             android:id="@+id/itemCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:clipChildren="false"
             android:stateListAnimator="@animator/card_animator"
-            app:cardCornerRadius="5dp"
             app:contentPadding="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,68 +48,6 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/linearLayout4" />
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="false"
-                    app:chipSpacingHorizontal="4dp"
-                    app:chipSpacingVertical="0dp"
-                    app:layout_constraintEnd_toStartOf="@+id/button_more"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textAppearance="?textAppearanceCaption"
-                        android:textColor="@color/chip_text_colors"
-                        android:textColorLink="@color/chip_text_colors"
-                        app:chipBackgroundColor="@color/chip_bg_colors"
-                        app:chipEndPadding="0dp"
-                        app:chipStartPadding="0dp"
-                        app:chipStrokeColor="?colorSecondary"
-                        app:chipStrokeWidth="1dp"
-                        tools:text="@string/timer" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textAppearance="?textAppearanceCaption"
-                        android:textColor="@color/chip_text_colors"
-                        android:textColorLink="@color/chip_text_colors"
-                        app:chipBackgroundColor="@color/chip_bg_colors"
-                        app:chipEndPadding="0dp"
-                        app:chipStartPadding="0dp"
-                        app:chipStrokeColor="?colorSecondary"
-                        app:chipStrokeWidth="1dp"
-                        tools:text="Test" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipPriority"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textAppearance="?textAppearanceCaption"
-                        android:textColor="@color/chip_text_colors"
-                        android:textColorLink="@color/chip_text_colors"
-                        app:chipBackgroundColor="@color/chip_bg_colors"
-                        app:chipEndPadding="0dp"
-                        app:chipStartPadding="0dp"
-                        app:chipStrokeColor="?colorSecondary"
-                        app:chipStrokeWidth="1dp"
-                        tools:text="Test" />
-
-                </com.google.android.material.chip.ChipGroup>
-
                 <LinearLayout
                     android:id="@+id/linearLayout4"
                     android:layout_width="0dp"
@@ -119,14 +56,14 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toBottomOf="@+id/chipContainer">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/taskText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:textAppearance="?textAppearanceHeadline5"
+                        android:textAppearance="?textAppearanceHeadline6"
                         tools:text="Hello" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -135,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:maxLines="1"
-                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textAppearance="?textAppearanceSubtitle1"
                         tools:text="25/05/2018" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -144,9 +81,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
+                        android:textAppearance="?textAppearanceSubtitle2"
                         android:visibility="visible"
                         tools:text="1256356549k" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/reminderTypeGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceBody1"
+                        android:visibility="visible"
+                        tools:text="Timer" />
 
                     <LinearLayout
                         android:id="@+id/todoList"
@@ -164,27 +111,33 @@
                         android:id="@+id/endContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal"
                         android:visibility="visible">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/repeatInterval"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_twotone_repeat_24px"
+                            android:drawablePadding="4dp"
+                            android:gravity="center"
                             android:textAppearance="?textAppearanceBody2"
+                            app:drawableTint="?android:textColorPrimary"
                             tools:text="every day" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/remainingTime"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:drawableStart="@drawable/ic_twotone_done_24px"
+                            android:drawablePadding="4dp"
+                            android:gravity="center"
                             android:maxLines="1"
                             android:textAppearance="?textAppearanceBody2"
                             android:visibility="visible"
+                            app:drawableTint="?android:textColorPrimary"
                             tools:text="10 minutes" />
 
                     </LinearLayout>
@@ -198,7 +151,7 @@
                     android:scaleType="centerInside"
                     app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/chipContainer"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_twotone_more_vert_24px"
                     app:tint="?android:textColorPrimary" />
 

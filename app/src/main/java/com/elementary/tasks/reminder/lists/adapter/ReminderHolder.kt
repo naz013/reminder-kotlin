@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.lists.adapter
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,14 +10,12 @@ import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemReminderBinding
-import org.koin.standalone.inject
 import java.util.*
 
 class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, showMore: Boolean = true,
                      private val listener: ((View, Int, ListActions) -> Unit)? = null) :
         BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder) {
 
-    private val themeUtil: ThemeUtil by inject()
     val listHeader: TextView = binding.listHeader
 
     init {
@@ -50,25 +47,13 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
         loadLeft(reminder)
         loadRepeat(reminder)
         loadContainer(reminder.type)
-        loadType(reminder.type)
-        loadPriority(reminder.priority)
         loadGroup(reminder)
     }
 
     private fun loadGroup(reminder: Reminder) {
-        val colorStateList = ColorStateList.valueOf(themeUtil.getCategoryColor(reminder.groupColor))
-        binding.chipPriority.chipStrokeColor = colorStateList
-        binding.chipType.chipStrokeColor = colorStateList
-        binding.chipGroup.chipStrokeColor = colorStateList
-        binding.chipGroup.text = reminder.groupTitle
-    }
-
-    private fun loadPriority(type: Int) {
-        binding.chipPriority.text = ReminderUtils.getPriorityTitle(itemView.context, type)
-    }
-
-    private fun loadType(type: Int) {
-        binding.chipType.text = ReminderUtils.getTypeString(itemView.context, type)
+        val priority = ReminderUtils.getPriorityTitle(itemView.context, reminder.priority)
+        val typeLabel = ReminderUtils.getTypeString(itemView.context, reminder.type)
+        binding.reminderTypeGroup.text = "$typeLabel (${reminder.groupTitle}, $priority)"
     }
 
     private fun loadLeft(item: Reminder) {

@@ -144,7 +144,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     }
 
     override fun onScrollUpdate(y: Int) {
-        binding.toolbar.isSelected = y > 0
+        binding.appBar.isSelected = y > 0
     }
 
     override fun onTitleChange(title: String) {
