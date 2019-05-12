@@ -12,12 +12,14 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
-class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
+class RemindersRecyclerAdapter(
+        private var showHeader: Boolean = true,
+        private var isEditable: Boolean = true
+) : ListAdapter<Reminder, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
 
     var actionsListener: ActionsListener<Reminder>? = null
     var prefsProvider: (() -> Prefs)? = null
-    private var isEditable = true
-    var showHeader = true
+
     var data = listOf<Reminder>()
         private set
 
@@ -65,10 +67,6 @@ class RemindersRecyclerAdapter : ListAdapter<Reminder, RecyclerView.ViewHolder>(
         super.submitList(list)
         data = list ?: listOf()
         notifyDataSetChanged()
-    }
-
-    fun setEditable(editable: Boolean) {
-        isEditable = editable
     }
 
     private fun initLabel(listHeader: TextView, position: Int) {

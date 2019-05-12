@@ -8,10 +8,4 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
-
-    <item
-        android:id="@+id/action_voice"
-        android:icon="@drawable/ic_twotone_mic_24px"
-        android:title="@string/voice_control"
-        app:showAsAction="ifRoom" />
 </menu>

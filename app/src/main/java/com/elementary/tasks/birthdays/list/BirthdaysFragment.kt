@@ -8,12 +8,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -64,22 +61,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.fragment_trash, menu)
-        menu.findItem(R.id.action_delete_all)?.isVisible = false
-
-        withContext {
-            val searchIcon = ContextCompat.getDrawable(it, R.drawable.ic_twotone_search_24px)
-            if (searchIcon != null) {
-                if (isDark) {
-                    val white = ContextCompat.getColor(it, R.color.whitePrimary)
-                    DrawableCompat.setTint(searchIcon, white)
-                } else {
-                    val black = ContextCompat.getColor(it, R.color.pureBlack)
-                    DrawableCompat.setTint(searchIcon, black)
-                }
-            }
-            menu.getItem(0)?.icon = searchIcon
-        }
+        inflater.inflate(R.menu.fragment_active_menu, menu)
 
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
