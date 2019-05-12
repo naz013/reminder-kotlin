@@ -7,10 +7,10 @@
 
     <color name="color_primary">#bb86fc</color>
     <color name="color_primary_variant">#4b01d0</color>
-    <color name="color_secondary">#03dac6</color>
-    <color name="color_secondary_12">#1F03dac6</color>
-    <color name="color_secondary_50">#8003dac6</color>
-    <color name="color_secondary_variant">#018786</color>
+    <color name="color_secondary">#bb86fc</color>
+    <color name="color_secondary_12">#1Fbb86fc</color>
+    <color name="color_secondary_50">#80bb86fc</color>
+    <color name="color_secondary_variant">#4b01d0</color>
 
     <color name="color_background">#000000</color>
     <color name="color_surface">#121212</color>

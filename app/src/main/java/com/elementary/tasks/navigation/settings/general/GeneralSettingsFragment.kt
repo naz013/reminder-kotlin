@@ -3,8 +3,10 @@ package com.elementary.tasks.navigation.settings.general
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreenActivity
+import com.elementary.tasks.core.utils.Module.isQ
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
@@ -12,11 +14,6 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
 
     private var mItemSelect: Int = 0
-    private val currentTheme: String
-        get() {
-            return ""
-            TODO("Add new theme labels")
-        }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_general
 
@@ -54,6 +51,9 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
                 prefs.appLanguage = mItemSelect
                 dialog.dismiss()
                 if (init != mItemSelect) restartApp()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
             builder.create().show()
         }
@@ -94,14 +94,68 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
                 dialog.dismiss()
                 showTimeFormat()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
 
     private fun initAppTheme() {
-        binding.appThemePrefs.setDetailText(currentTheme)
+        binding.appThemePrefs.setDetailText(themeNames()[getThemeIndex(prefs.nightMode)])
         binding.appThemePrefs.setOnClickListener {
-            TODO("Add showing theme mode dialog")
+            showThemeDialog()
+        }
+    }
+
+    private fun showThemeDialog() {
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.theme))
+            mItemSelect = getThemeIndex(prefs.nightMode)
+            builder.setSingleChoiceItems(themeNames(), mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.nightMode = getTheme(mItemSelect)
+                dialog.dismiss()
+                activity?.recreate()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
+        }
+    }
+
+    private fun themeNames(): Array<String> {
+        return if(isQ) {
+            arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
+        } else {
+            arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.set_by_battery_saver))
+        }
+    }
+
+    private fun getTheme(index: Int): Int {
+        return if (isQ) {
+            when (index) {
+                0 -> AppCompatDelegate.MODE_NIGHT_NO
+                1 -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        } else {
+            when (index) {
+                0 -> AppCompatDelegate.MODE_NIGHT_NO
+                1 -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+            }
+        }
+    }
+
+    private fun getThemeIndex(theme: Int): Int {
+        return when (theme) {
+            AppCompatDelegate.MODE_NIGHT_NO -> 0
+            AppCompatDelegate.MODE_NIGHT_YES -> 1
+            else -> 2
         }
     }
 

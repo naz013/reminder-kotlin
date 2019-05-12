@@ -23,7 +23,10 @@
     </style>
 
     <!--Toolbar-->
-    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary"/>
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">?android:colorBackground</item>
+        <item name="titleTextColor">?android:textColorPrimary</item>
+    </style>
 
 
     <!--OLD STYLES-->
@@ -32,20 +35,11 @@
         <item name="android:windowBackground">@drawable/splash_bg_light2</item>
     </style>
 
-    <style name="ActionOverflowButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">@color/pureBlack</item>
+    <style name="ActionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">?colorControlNormal</item>
     </style>
 
-    <style name="BackButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:tint">@color/pureBlack</item>
+    <style name="BackButtonStyle" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">?colorControlNormal</item>
     </style>
-
-    <style name="ActionOverflowButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">@color/whitePrimary</item>
-    </style>
-
-    <style name="BackButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:tint">@color/whitePrimary</item>
-    </style>
-
 </resources>

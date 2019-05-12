@@ -50,6 +50,9 @@
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MyTheme.BottomSheetDialog</item>
         <item name="navigationViewStyle">@style/Widget.MyTheme.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MyTheme.Toolbar</item>
+
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
     </style>
 
     <style name="Base.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -57,7 +60,7 @@
         <item name="alphaEmphasisMedium">@dimen/alpha_emphasis_medium</item>
         <item name="alphaEmphasisDisabled">@dimen/alpha_emphasis_disabled</item>
 
-        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:statusBarColor">?android:colorBackground</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor">?android:colorBackground</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
