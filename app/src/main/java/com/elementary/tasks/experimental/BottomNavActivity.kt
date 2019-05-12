@@ -6,10 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.speech.RecognizerIntent
-import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -18,7 +15,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BindingActivity
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
@@ -26,27 +24,14 @@ import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
-class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav), FragmentCallback,
-        RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
+class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav),
+        FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
 
-    private lateinit var remotePrefs: RemotePrefs
     private val buttonObservable: GlobalButtonObservable by inject()
-
     private val viewModel: ConversationViewModel by viewModel()
 
     private var mNoteView: QuickNoteCoordinator? = null
-
-    private val prefsObserver: (String) -> Unit = {
-        Handler(Looper.getMainLooper()).post {
-            if (it == PrefsConstants.DATA_BACKUP) {
-                checkBackupPrefs()
-            } else {
-                checkDoNotDisturb()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +41,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         binding.bottomNav.setupWithNavController(findNavController(R.id.mainNavigationFragment))
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
 
-        remotePrefs = RemotePrefs(this)
         initQuickNote()
     }
 
@@ -70,53 +54,16 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         super.onResume()
         buttonObservable.addObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
         buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
-        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
-        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
-        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
-        prefs.addObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
-        prefs.addObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
+
         if (!prefs.isBetaWarmingShowed) {
             showBetaDialog()
-        }
-        remotePrefs.addUpdateObserver(this)
-        if (!Module.isPro) {
-            remotePrefs.addSaleObserver(this)
-        }
-        checkDoNotDisturb()
-        checkBackupPrefs()
-    }
-
-    private fun checkBackupPrefs() {
-        if (prefs.isBackupEnabled) {
-//            mHeaderView?.backupBadge?.hide()
-        } else {
-//            mHeaderView?.backupBadge?.show()
-        }
-    }
-
-    private fun checkDoNotDisturb() {
-        if (prefs.applyDoNotDisturb(0)) {
-            Timber.d("checkDoNotDisturb: active")
-//            mHeaderView?.doNoDisturbIcon?.show()
-        } else {
-            Timber.d("checkDoNotDisturb: not active")
-//            mHeaderView?.doNoDisturbIcon?.hide()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        prefs.removeObserver(PrefsConstants.DATA_BACKUP, prefsObserver)
-        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_ENABLED, prefsObserver)
-        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_FROM, prefsObserver)
-        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_TO, prefsObserver)
-        prefs.removeObserver(PrefsConstants.DO_NOT_DISTURB_IGNORE, prefsObserver)
         buttonObservable.removeObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
         buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
-        if (!Module.isPro) {
-            remotePrefs.removeSaleObserver(this)
-        }
-        remotePrefs.removeUpdateObserver(this)
     }
 
     private fun showBetaDialog() {
@@ -208,30 +155,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
                 .create().show()
     }
 
-    override fun onSale(discount: String, expiryDate: String) {
-        val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
-        if (TextUtils.isEmpty(expiry)) {
-//            mHeaderView?.saleBadge?.visibility = View.GONE
-        } else {
-//            mHeaderView?.saleBadge?.visibility = View.VISIBLE
-//            mHeaderView?.saleBadge?.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
-        }
-    }
-
-    override fun noSale() {
-//        mHeaderView?.saleBadge?.visibility = View.GONE
-    }
-
-    override fun onUpdate(version: String) {
-//        mHeaderView?.updateBadge?.visibility = View.VISIBLE
-//        mHeaderView?.updateBadge?.text = getString(R.string.update_available) + ": " + version
-//        mHeaderView?.updateBadge?.setOnClickListener { SuperUtil.launchMarket(this) }
-    }
-
-    override fun noUpdate() {
-//        mHeaderView?.updateBadge?.visibility = View.GONE
-    }
-
     override fun invoke(view: View, action: GlobalButtonObservable.Action) {
         if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
             mNoteView?.switchQuickNote()
@@ -241,9 +164,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     }
 
     companion object {
-
         const val VOICE_RECOGNITION_REQUEST_CODE = 109
-        private const val PRESS_AGAIN_TIME = 2000
-        private const val CURRENT_SCREEN = "current_screen"
     }
 }
