@@ -53,6 +53,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>() {
         }
         binding.securitySettings.setOnClickListener { askPin() }
         binding.testsScreen.setOnClickListener {
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
         }
 
         withContext {

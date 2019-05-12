@@ -467,6 +467,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 showStream()
                 dialog.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -491,6 +494,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 prefs.reminderType = mItemSelect
                 showReminderType()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
@@ -588,6 +594,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 }
                 showMelody()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -644,6 +653,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                     else -> 0
                 }
                 showMelodyDuration()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
             builder.create().show()
         }
@@ -770,6 +782,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                     2 -> openImagePicker()
                 }
                 showImage()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
