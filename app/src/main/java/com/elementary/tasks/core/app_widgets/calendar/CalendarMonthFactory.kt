@@ -65,11 +65,16 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
         val sp = mContext.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
         val prefsMonth = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
 
-        mYear = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + mWidgetId, calendar.get(Calendar.YEAR))
+        var year = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + mWidgetId, calendar.get(Calendar.YEAR))
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
         mMonth = prefsMonth + 1
 
-        val firstDateOfMonth = DateTime(mYear, prefsMonth + 1, 1, 0, 0, 0, 0)
+        if (year < 1) {
+            year = DateTime.now(TimeZone.getDefault()).year
+        }
+        mYear = year
+
+        val firstDateOfMonth = DateTime(year, prefsMonth + 1, 1, 0, 0, 0, 0)
         val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
 
         var weekdayOfFirstDate = firstDateOfMonth.weekDay!!
