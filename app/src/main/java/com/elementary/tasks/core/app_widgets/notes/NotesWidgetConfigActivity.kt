@@ -89,7 +89,9 @@ class NotesWidgetConfigActivity : ThemedActivity<ActivityWidgetNoteConfigBinding
                 .putInt(WIDGET_HEADER_BG_COLOR + widgetID, binding.bgColorSlider.selectedItem)
                 .apply()
         val appWidgetManager = AppWidgetManager.getInstance(this)
-        NotesWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+        if (!isFinishing) {
+            NotesWidget.updateWidget(this, appWidgetManager, sp, widgetID)
+        }
         setResult(RESULT_OK, resultValue)
         finish()
     }
