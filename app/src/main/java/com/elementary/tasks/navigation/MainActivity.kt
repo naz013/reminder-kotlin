@@ -146,7 +146,14 @@ class MainActivity : ThemedActivity<ActivityMainBinding>(), NavigationView.OnNav
         ft.replace(R.id.main_container, fragment, title)
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         ft.addToBackStack(title)
-        ft.commit()
+        try {
+            ft.commit()
+        } catch (e: Exception) {
+            try {
+                ft.commitAllowingStateLoss()
+            } catch (e1: Exception) {
+            }
+        }
     }
 
     override fun onResume() {
