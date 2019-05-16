@@ -8,10 +8,10 @@
     <!--selection controls.-->
     <color name="color_primary">#2196f3</color>
     <color name="color_primary_variant">#0d47a1</color>
-    <color name="color_secondary">#2196f3</color>
+    <color name="color_secondary">#ffc107</color>
     <color name="color_secondary_12">#1F2196f3</color>
     <color name="color_secondary_50">#802196f3</color>
-    <color name="color_secondary_variant">#0d47a1</color>
+    <color name="color_secondary_variant">#c79100</color>
 
     <!--colorBackground appears behind scrollable content and is used for the default window-->
     <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
