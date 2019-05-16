@@ -288,7 +288,8 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
         }
     }
 
-    override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
+    override fun onTouch(view: View, motionEvent: MotionEvent?): Boolean {
+        if (motionEvent == null) return true
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> performTouch(motionEvent)
             MotionEvent.ACTION_UP -> performAction(motionEvent)
