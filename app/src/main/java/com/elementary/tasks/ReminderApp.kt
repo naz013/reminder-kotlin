@@ -21,17 +21,6 @@ class ReminderApp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
-//        val prefs = AndroidExcludedRefs.createAppDefaults()
-//                .instanceField("android.widget.TextView$3", "this$0")
-//                .build()
-//        val config = LeakCanary.Config(
-//                LeakCanary.config.dumpHeap,
-//                prefs,
-//                LeakCanary.config.reachabilityInspectorClasses,
-//                LeakCanary.config.labelers,
-//                LeakCanary.config.computeRetainedHeapSize
-//        )
-//        LeakCanary.config = config
         Timber.plant(Timber.DebugTree())
         Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
