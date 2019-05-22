@@ -2,8 +2,6 @@
 <resources>
 
     <!--DARK COLOR THEME-->
-    <!--The same color values are defined for dark theme, but with values more appropriate for -->
-    <!--low-luminance UIs. These colors will be used by night/themes.xml.-->
 
     <color name="color_primary">#64b5f6</color>
     <color name="color_primary_variant">#0d47a1</color>
