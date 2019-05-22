@@ -217,6 +217,14 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         }
     }
 
+    override fun setCurrentFragment(fragment: BaseFragment<*>) {
+
+    }
+
+    override fun provideInsets(): ScreenInsets {
+        return ScreenInsets(0, 0, 0, 0)
+    }
+
     override fun onScrollUpdate(y: Int) {
         binding.appBar.isSelected = y > 0
     }

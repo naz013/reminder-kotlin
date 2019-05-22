@@ -37,6 +37,15 @@
         <action
             android:id="@+id/action_actionHome_to_archiveFragment"
             app:destination="@id/archiveFragment" />
+        <action
+            android:id="@+id/action_actionHome_to_actionNotes"
+            app:destination="@id/actionNotes" />
+        <action
+            android:id="@+id/action_actionHome_to_actionCalendar"
+            app:destination="@id/actionCalendar" />
+        <action
+            android:id="@+id/action_actionHome_to_actionGoogle"
+            app:destination="@id/actionGoogle" />
     </fragment>
 
     <fragment

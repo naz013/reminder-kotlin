@@ -8,8 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -21,9 +24,12 @@ import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
+import com.elementary.tasks.navigation.ScreenInsets
+import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav),
         FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
@@ -31,17 +37,42 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     private val buttonObservable: GlobalButtonObservable by inject()
     private val viewModel: ConversationViewModel by viewModel()
 
+    private var mFragment: BaseFragment<*>? = null
+
     private var mNoteView: QuickNoteCoordinator? = null
+    private var mInsets: ScreenInsets = ScreenInsets(0, 0, 0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setSupportActionBar(binding.toolbar)
 
-        binding.bottomNav.setupWithNavController(findNavController(R.id.mainNavigationFragment))
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
+        binding.toolbar.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+        binding.appBar.setOnApplyWindowInsetsListener { _, insets ->
+            handleInsets(insets)
+            return@setOnApplyWindowInsetsListener insets.consumeSystemWindowInsets()
+        }
 
         initQuickNote()
+    }
+
+    private fun handleInsets(insets: WindowInsets) {
+        mInsets = ScreenInsets(insets.systemWindowInsetLeft, insets.systemWindowInsetTop,
+                insets.systemWindowInsetRight, insets.systemWindowInsetBottom)
+        Timber.d("handleInsets: $mInsets")
+
+        val lpToolbar = binding.appBar.layoutParams as ViewGroup.MarginLayoutParams
+        lpToolbar.topMargin = insets.systemWindowInsetTop
+        lpToolbar.leftMargin = insets.systemWindowInsetLeft
+        lpToolbar.rightMargin = insets.systemWindowInsetRight
+        binding.appBar.layoutParams = lpToolbar
+
+        mFragment?.let {
+            Timber.d("handleInsets: $it")
+            it.handleInsets(mInsets)
+        }
     }
 
     private fun initQuickNote() {
@@ -90,6 +121,14 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         return findNavController(R.id.mainNavigationFragment).navigateUp()
     }
 
+    override fun setCurrentFragment(fragment: BaseFragment<*>) {
+        mFragment = fragment
+    }
+
+    override fun provideInsets(): ScreenInsets {
+        return mInsets
+    }
+
     override fun onScrollUpdate(y: Int) {
         binding.appBar.isSelected = y > 0
     }
@@ -103,6 +142,13 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         val token = focus.windowToken ?: return
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         imm?.hideSoftInputFromWindow(token, 0)
+    }
+
+    private fun currentFragment(): Fragment? {
+        val navHost = supportFragmentManager.findFragmentById(R.id.home_nav)
+        return navHost.run {
+            return@run this?.childFragmentManager?.primaryNavigationFragment
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
