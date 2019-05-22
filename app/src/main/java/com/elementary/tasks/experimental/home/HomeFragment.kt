@@ -1,10 +1,8 @@
 package com.elementary.tasks.experimental.home
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,10 +14,12 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.HomeFragmentBinding
+import com.elementary.tasks.navigation.ScreenInsets
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>() {
 
@@ -91,7 +91,22 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         initBirthdaysList()
         initViewModel()
 
+        handleInsets(screenInsets())
         ViewUtils.listenScrollableView(binding.scrollView) { setScroll(it) }
+    }
+
+    override fun handleInsets(insets: ScreenInsets) {
+        Timber.d("handleInsets: $insets")
+
+        val headerParams = binding.headerView.layoutParams as LinearLayout.LayoutParams
+        headerParams.height = insets.top + ViewUtils.getActionBarSize(binding.headerView.context)
+        binding.headerView.layoutParams = headerParams
+
+        val footerParams = binding.footerView.layoutParams as LinearLayout.LayoutParams
+        footerParams.height = insets.bottom
+        binding.footerView.layoutParams = footerParams
+
+        binding.scrollView.setPadding(insets.left, 0, insets.right, 0)
     }
 
     private fun initRemindersList() {

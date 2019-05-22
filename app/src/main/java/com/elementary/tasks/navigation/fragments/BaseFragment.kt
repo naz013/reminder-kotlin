@@ -6,6 +6,7 @@ import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
+import com.elementary.tasks.navigation.ScreenInsets
 import org.koin.android.ext.android.inject
 
 abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
@@ -54,11 +55,22 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
         }
     }
 
+    protected fun screenInsets(): ScreenInsets {
+        return callback.run {
+            this?.provideInsets() ?: ScreenInsets(0, 0, 0, 0)
+        }
+    }
+
     open fun canGoBack(): Boolean = true
 
     open fun onBackStackResume() {
+        callback?.setCurrentFragment(this)
         callback?.onTitleChange(getTitle())
         setScroll(mLastScroll)
+    }
+
+    open fun handleInsets(insets: ScreenInsets) {
+
     }
 
     override fun onResume() {

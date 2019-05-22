@@ -13,8 +13,6 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="?actionBarSize"
-            android:layout_marginBottom="?actionBarSize"
             app:defaultNavHost="true"
             app:navGraph="@navigation/home_nav" />
 
@@ -31,14 +29,5 @@
                 android:layout_height="?actionBarSize"
                 tools:title="Text" />
         </com.google.android.material.appbar.AppBarLayout>
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNav"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_gravity="bottom"
-            app:labelVisibilityMode="auto"
-            app:menu="@menu/bottom_nav" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -10,8 +10,10 @@ import com.elementary.tasks.core.utils.components
 import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
 import org.koin.android.ext.android.startKoin
+import org.koin.log.Logger
 import timber.log.Timber
 
+@Suppress("unused")
 class ReminderApp : MultiDexApplication() {
 
     override fun attachBaseContext(base: Context) {
@@ -35,7 +37,17 @@ class ReminderApp : MultiDexApplication() {
         Timber.plant(Timber.DebugTree())
         Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        startKoin(this, components())
+        val logger = object : Logger {
+            override fun debug(msg: String) {
+            }
+
+            override fun err(msg: String) {
+            }
+
+            override fun info(msg: String) {
+            }
+        }
+        startKoin(this, components(), logger = logger)
         JobManager.create(this).addJobCreator { EventJobService() }
     }
 }
