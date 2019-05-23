@@ -43,6 +43,39 @@
                         app:tint="?colorSecondary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/notesButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/notes"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_note_24px"
+                        app:tint="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/calendarButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/calendar"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_today_24px"
+                        app:tint="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/googleButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/round_image_button_selector"
+                        android:contentDescription="@string/google_tasks"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_google"
+                        app:tint="?colorSecondary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/birthdaysButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
@@ -125,12 +158,48 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/emptyRemindersState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="?colorSecondary50">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="32dp"
+                        app:srcCompat="@drawable/ic_empty_state_calendar"
+                        app:tint="?colorOnSecondary50" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="32dp"
+                        android:text="@string/you_re_all_done"
+                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textColor="?colorOnSecondary50" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/remindersList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 android:scrollbars="none"
+                android:visibility="gone"
                 tools:itemCount="3"
                 tools:listitem="@layout/list_item_reminder" />
 
@@ -169,12 +238,47 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/emptyBirthdaysState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="?colorSecondary50">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="32dp"
+                        app:srcCompat="@drawable/ic_empty_state_cake"
+                        app:tint="?colorOnSecondary50" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="32dp"
+                        android:text="@string/no_upcoming_birthdays"
+                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textColor="?colorOnSecondary50" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/birthdaysList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 android:scrollbars="none"
+                android:visibility="gone"
                 tools:itemCount="3"
                 tools:listitem="@layout/list_item_birthday" />
 

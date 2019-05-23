@@ -3,6 +3,7 @@
 
     <attr name="colorSecondary12" format="color" />
     <attr name="colorSecondary50" format="color" />
+    <attr name="colorOnSecondary50" format="color" />
 
     <attr name="alphaEmphasisHigh" format="float"/>
     <attr name="alphaEmphasisMedium" format="float"/>

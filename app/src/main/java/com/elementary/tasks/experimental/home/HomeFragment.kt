@@ -86,6 +86,15 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         binding.trashButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToArchiveFragment())
         }
+        binding.notesButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionNotes())
+        }
+        binding.calendarButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionCalendar())
+        }
+        binding.googleButton.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionGoogle())
+        }
 
         initRemindersList()
         initBirthdaysList()
@@ -138,18 +147,35 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         viewModel.reminders.observe(this, Observer {
             if (it != null) {
                 remindersAdapter.submitList(it)
+                updateRemindersEmpty(it.size)
             }
         })
         viewModel.birthdays.observe(this, Observer {
             if (it != null) {
                 birthdaysAdapter.submitList(it)
-                if (it.isEmpty()) {
-                    binding.birthdaysHeader.visibility = View.GONE
-                } else {
-                    binding.birthdaysHeader.visibility = View.VISIBLE
-                }
+                updateBirthdaysEmpty(it.size)
             }
         })
+    }
+
+    private fun updateBirthdaysEmpty(size: Int) {
+        if (size == 0) {
+            binding.emptyBirthdaysState.visibility = View.VISIBLE
+            binding.birthdaysList.visibility = View.GONE
+        } else {
+            binding.birthdaysList.visibility = View.VISIBLE
+            binding.emptyBirthdaysState.visibility = View.GONE
+        }
+    }
+
+    private fun updateRemindersEmpty(size: Int) {
+        if (size == 0) {
+            binding.emptyRemindersState.visibility = View.VISIBLE
+            binding.remindersList.visibility = View.GONE
+        } else {
+            binding.remindersList.visibility = View.VISIBLE
+            binding.emptyRemindersState.visibility = View.GONE
+        }
     }
 
     override fun getTitle(): String = getString(R.string.events)
