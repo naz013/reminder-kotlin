@@ -6,8 +6,8 @@
     <color name="color_primary">#64b5f6</color>
     <color name="color_primary_variant">#0d47a1</color>
     <color name="color_secondary">#ffe082</color>
-    <color name="color_secondary_12">#1F64b5f6</color>
-    <color name="color_secondary_50">#8064b5f6</color>
+    <color name="color_secondary_12">#1Fffe082</color>
+    <color name="color_secondary_50">#80ffe082</color>
     <color name="color_secondary_variant">#caae53</color>
 
     <color name="color_background">#000000</color>
@@ -16,6 +16,7 @@
 
     <color name="color_on_primary">#000000</color>
     <color name="color_on_secondary">#000000</color>
+    <color name="color_on_secondary_50">#ffffff</color>
     <color name="color_on_background">#ffffff</color>
     <color name="color_on_surface">#ffffff</color>
     <color name="color_on_error">#000000</color>

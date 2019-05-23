@@ -38,13 +38,10 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/birthNameLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    style="@style/FilledBoxStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
+                    android:layout_marginTop="16dp">
 
                     <com.elementary.tasks.core.views.FixedTextInputEditText
                         android:id="@+id/birthName"

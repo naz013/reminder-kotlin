@@ -12,14 +12,12 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BindingActivity
-import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
@@ -47,10 +45,10 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         setSupportActionBar(binding.toolbar)
 
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
-        binding.toolbar.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        binding.container.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-        binding.appBar.setOnApplyWindowInsetsListener { _, insets ->
+        binding.container.setOnApplyWindowInsetsListener { _, insets ->
             handleInsets(insets)
             return@setOnApplyWindowInsetsListener insets.consumeSystemWindowInsets()
         }
@@ -117,11 +115,8 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         builder.create().show()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return findNavController(R.id.mainNavigationFragment).navigateUp()
-    }
-
     override fun setCurrentFragment(fragment: BaseFragment<*>) {
+        Timber.d("setCurrentFragment: $fragment")
         mFragment = fragment
     }
 
@@ -130,7 +125,15 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     }
 
     override fun onScrollUpdate(y: Int) {
-        binding.appBar.isSelected = y > 0
+        if (y > 0) {
+            if (binding.appBar.isVisible()) {
+                binding.appBar.transparent()
+            }
+        } else {
+            if (!binding.appBar.isVisible()) {
+                binding.appBar.show()
+            }
+        }
     }
 
     override fun onTitleChange(title: String) {
@@ -144,31 +147,18 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         imm?.hideSoftInputFromWindow(token, 0)
     }
 
-    private fun currentFragment(): Fragment? {
-        val navHost = supportFragmentManager.findFragmentById(R.id.home_nav)
-        return navHost.run {
-            return@run this?.childFragmentManager?.primaryNavigationFragment
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return
             viewModel.parseResults(matches, false, this)
         }
-        val navHost = supportFragmentManager.findFragmentById(R.id.home_nav)
-        navHost?.let { navFragment ->
-            navFragment.childFragmentManager.primaryNavigationFragment?.onActivityResult(requestCode, resultCode, data)
-        }
+        mFragment?.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val navHost = supportFragmentManager.findFragmentById(R.id.home_nav)
-        navHost?.let { navFragment ->
-            navFragment.childFragmentManager.primaryNavigationFragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
+        mFragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun openMarket() {

@@ -77,6 +77,10 @@ fun View.isNotVisible(): Boolean = visibility == View.INVISIBLE
 
 fun View.isGone(): Boolean = visibility == View.GONE
 
+fun View.transparent() {
+    visibility = View.INVISIBLE
+}
+
 fun View.hide() {
     visibility = View.GONE
 }
