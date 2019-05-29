@@ -36,89 +36,78 @@
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:background="@drawable/gradient_button_reminders_selector"
                         android:contentDescription="@string/reminders_"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/notesButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:background="@drawable/gradient_button_notes_selector"
                         android:contentDescription="@string/notes"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_note_24px"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/calendarButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:background="@drawable/gradient_button_calendar_selector"
                         android:contentDescription="@string/calendar"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_today_24px"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/googleButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:background="@drawable/gradient_button_google_selector"
                         android:contentDescription="@string/google_tasks"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_google"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/birthdaysButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:background="@drawable/gradient_button_birthdays_selector"
                         android:contentDescription="@string/birthdays"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_cake_24px"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/groupsButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:background="@drawable/gradient_button_groups_selector"
                         android:contentDescription="@string/groups"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/mapButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/round_image_button_selector"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/gradient_button_map_selector"
                         android:contentDescription="@string/map"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_map_24px"
-                        app:tint="?colorSecondary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/trashButton"
-                        android:layout_width="@dimen/home_action_button_size"
-                        android:layout_height="@dimen/home_action_button_size"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@drawable/round_image_button_selector"
-                        android:contentDescription="@string/trash"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_delete_24px"
-                        app:tint="?colorSecondary" />
+                        app:tint="@color/pureBlack" />
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -163,12 +152,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardBackgroundColor="?colorSecondary50">
+                android:layout_marginEnd="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_reminders_banner"
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -243,12 +232,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardBackgroundColor="?colorSecondary50">
+                android:layout_marginEnd="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_birthdays_banner"
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatImageView

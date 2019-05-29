@@ -124,12 +124,23 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         return mInsets
     }
 
-    override fun onScrollUpdate(y: Int) {
-        if (y > 0) {
-            if (binding.appBar.isVisible()) {
-                binding.appBar.transparent()
+    override fun onAlphaUpdate(alpha: Float) {
+//        Timber.d("onAlphaUpdate: $alpha")
+        if (alpha > 0f) {
+            var alphaNew = 1f - alpha
+            if (alphaNew <= 0f) {
+                alphaNew = 0f
+                if (binding.appBar.isVisible()) {
+                    binding.appBar.transparent()
+                }
+            } else if (alphaNew > 0f) {
+                if (!binding.appBar.isVisible()) {
+                    binding.appBar.show()
+                }
             }
+            binding.appBar.alpha = alphaNew
         } else {
+            binding.appBar.alpha = 1f
             if (!binding.appBar.isVisible()) {
                 binding.appBar.show()
             }

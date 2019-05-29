@@ -35,9 +35,6 @@
             android:id="@+id/action_actionHome_to_reminderPreviewActivity"
             app:destination="@id/reminderPreviewActivity" />
         <action
-            android:id="@+id/action_actionHome_to_archiveFragment"
-            app:destination="@id/archiveFragment" />
-        <action
             android:id="@+id/action_actionHome_to_actionNotes"
             app:destination="@id/actionNotes" />
         <action

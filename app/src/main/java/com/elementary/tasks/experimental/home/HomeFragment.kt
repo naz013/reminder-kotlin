@@ -83,9 +83,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         binding.mapButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToMapFragment())
         }
-        binding.trashButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToArchiveFragment())
-        }
         binding.notesButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionNotes())
         }
@@ -101,7 +98,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         initViewModel()
 
         handleInsets(screenInsets())
-        ViewUtils.listenScrollableView(binding.scrollView) { setScroll(it) }
+        ViewUtils.listenScrollableView(binding.scrollView) {
+            Timber.d("onViewCreated: $it")
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
+        }
     }
 
     override fun handleInsets(insets: ScreenInsets) {

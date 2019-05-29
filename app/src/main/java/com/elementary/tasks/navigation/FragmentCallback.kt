@@ -6,7 +6,7 @@ interface FragmentCallback {
 
     fun onTitleChange(title: String)
 
-    fun onScrollUpdate(y: Int)
+    fun onAlphaUpdate(alpha: Float)
 
     fun hideKeyboard()
 
