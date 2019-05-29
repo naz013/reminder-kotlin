@@ -8,8 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
@@ -17,12 +15,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BindingActivity
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.GlobalButtonObservable
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
-import com.elementary.tasks.navigation.ScreenInsets
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import org.koin.android.ext.android.inject
@@ -38,39 +36,13 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     private var mFragment: BaseFragment<*>? = null
 
     private var mNoteView: QuickNoteCoordinator? = null
-    private var mInsets: ScreenInsets = ScreenInsets(0, 0, 0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
 
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
-        binding.container.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-        binding.container.setOnApplyWindowInsetsListener { _, insets ->
-            handleInsets(insets)
-            return@setOnApplyWindowInsetsListener insets.consumeSystemWindowInsets()
-        }
-
         initQuickNote()
-    }
-
-    private fun handleInsets(insets: WindowInsets) {
-        mInsets = ScreenInsets(insets.systemWindowInsetLeft, insets.systemWindowInsetTop,
-                insets.systemWindowInsetRight, insets.systemWindowInsetBottom)
-        Timber.d("handleInsets: $mInsets")
-
-        val lpToolbar = binding.appBar.layoutParams as ViewGroup.MarginLayoutParams
-        lpToolbar.topMargin = insets.systemWindowInsetTop
-        lpToolbar.leftMargin = insets.systemWindowInsetLeft
-        lpToolbar.rightMargin = insets.systemWindowInsetRight
-        binding.appBar.layoutParams = lpToolbar
-
-        mFragment?.let {
-            Timber.d("handleInsets: $it")
-            it.handleInsets(mInsets)
-        }
     }
 
     private fun initQuickNote() {
@@ -120,31 +92,27 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         mFragment = fragment
     }
 
-    override fun provideInsets(): ScreenInsets {
-        return mInsets
-    }
-
     override fun onAlphaUpdate(alpha: Float) {
 //        Timber.d("onAlphaUpdate: $alpha")
-        if (alpha > 0f) {
-            var alphaNew = 1f - alpha
-            if (alphaNew <= 0f) {
-                alphaNew = 0f
-                if (binding.appBar.isVisible()) {
-                    binding.appBar.transparent()
-                }
-            } else if (alphaNew > 0f) {
-                if (!binding.appBar.isVisible()) {
-                    binding.appBar.show()
-                }
-            }
-            binding.appBar.alpha = alphaNew
-        } else {
-            binding.appBar.alpha = 1f
-            if (!binding.appBar.isVisible()) {
-                binding.appBar.show()
-            }
-        }
+//        if (alpha > 0f) {
+//            var alphaNew = 1f - alpha
+//            if (alphaNew <= 0f) {
+//                alphaNew = 0f
+//                if (binding.appBar.isVisible()) {
+//                    binding.appBar.transparent()
+//                }
+//            } else if (alphaNew > 0f) {
+//                if (!binding.appBar.isVisible()) {
+//                    binding.appBar.show()
+//                }
+//            }
+//            binding.appBar.alpha = alphaNew
+//        } else {
+//            binding.appBar.alpha = 1f
+//            if (!binding.appBar.isVisible()) {
+//                binding.appBar.show()
+//            }
+//        }
     }
 
     override fun onTitleChange(title: String) {
