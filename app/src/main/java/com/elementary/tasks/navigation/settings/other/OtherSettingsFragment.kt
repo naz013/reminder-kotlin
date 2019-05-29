@@ -34,7 +34,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         binding.helpPrefs.setOnClickListener {

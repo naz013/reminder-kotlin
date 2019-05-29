@@ -69,7 +69,7 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
         super.onViewCreated(view, savedInstanceState)
         initProgress()
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         mAdapter = InfoAdapter(binding.itemsContainer) {

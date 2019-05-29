@@ -12,7 +12,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.filter.SearchModifier
@@ -123,7 +122,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
             }
         }
         binding.templatesList.adapter = adapter
-        ViewUtils.listenScrollableView(binding.templatesList, { setScroll(it) }) {
+        ViewUtils.listenScrollableView(binding.templatesList, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()
             else binding.fab.hide()
         }

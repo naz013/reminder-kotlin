@@ -20,7 +20,7 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     protected val notifier: Notifier by inject()
     var isDark = false
         private set
-    private var mLastScroll: Int = 0
+    private var mLastAlpha: Float = 0f
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -33,10 +33,12 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
         }
     }
 
-    protected fun setScroll(scroll: Int) {
+    protected fun toAlpha(scroll: Float, max: Float = 255f): Float = scroll / max
+
+    protected fun setToolbarAlpha(alpha: Float) {
         if (isRemoving) return
-        this.mLastScroll = scroll
-        callback?.onScrollUpdate(scroll)
+        this.mLastAlpha = alpha
+        callback?.onAlphaUpdate(alpha)
     }
 
     protected fun moveBack() {
@@ -66,7 +68,7 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     open fun onBackStackResume() {
         callback?.setCurrentFragment(this)
         callback?.onTitleChange(getTitle())
-        setScroll(mLastScroll)
+        setToolbarAlpha(mLastAlpha)
     }
 
     open fun handleInsets(insets: ScreenInsets) {
@@ -79,4 +81,8 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     }
 
     abstract fun getTitle(): String
+
+    companion object {
+        const val NESTED_SCROLL_MAX = 255f
+    }
 }

@@ -225,8 +225,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
         return ScreenInsets(0, 0, 0, 0)
     }
 
-    override fun onScrollUpdate(y: Int) {
-        binding.appBar.isSelected = y > 0
+    override fun onAlphaUpdate(alpha: Float) {
+
     }
 
     override fun hideKeyboard() {

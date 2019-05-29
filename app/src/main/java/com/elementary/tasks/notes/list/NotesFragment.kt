@@ -198,7 +198,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         }
         binding.recyclerView.adapter = mAdapter
         binding.recyclerView.itemAnimator = DefaultItemAnimator()
-        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }) {
+        ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()
             else binding.fab.hide()
         }
