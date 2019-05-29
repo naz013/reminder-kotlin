@@ -221,10 +221,6 @@ class MainActivity : BindingActivity<ActivityMainBinding>(R.layout.activity_main
 
     }
 
-    override fun provideInsets(): ScreenInsets {
-        return ScreenInsets(0, 0, 0, 0)
-    }
-
     override fun onAlphaUpdate(alpha: Float) {
 
     }

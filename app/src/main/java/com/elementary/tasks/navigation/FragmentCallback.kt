@@ -10,7 +10,5 @@ interface FragmentCallback {
 
     fun hideKeyboard()
 
-    fun provideInsets(): ScreenInsets
-
     fun setCurrentFragment(fragment: BaseFragment<*>)
 }
