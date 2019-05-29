@@ -152,7 +152,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                android:stateListAnimator="@animator/card_animator">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -166,7 +167,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="32dp"
                         app:srcCompat="@drawable/ic_empty_state_calendar"
-                        app:tint="?colorOnSecondary50" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -176,7 +177,7 @@
                         android:layout_marginBottom="32dp"
                         android:text="@string/you_re_all_done"
                         android:textAppearance="?textAppearanceHeadline6"
-                        android:textColor="?colorOnSecondary50" />
+                        android:textColor="@color/pureBlack" />
 
                 </LinearLayout>
 
@@ -232,7 +233,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                android:stateListAnimator="@animator/card_animator">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -246,7 +248,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="32dp"
                         app:srcCompat="@drawable/ic_empty_state_cake"
-                        app:tint="?colorOnSecondary50" />
+                        app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -256,7 +258,7 @@
                         android:layout_marginBottom="32dp"
                         android:text="@string/no_upcoming_birthdays"
                         android:textAppearance="?textAppearanceHeadline6"
-                        android:textColor="?colorOnSecondary50" />
+                        android:textColor="@color/pureBlack" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

@@ -74,12 +74,20 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
         binding.remindersHeader.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
+        binding.emptyRemindersState.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
+        }
+
         binding.birthdaysButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }
         binding.birthdaysHeader.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }
+        binding.emptyBirthdaysState.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
+        }
+
         binding.groupsButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToGroupsFragment())
         }

@@ -9,7 +9,9 @@
         android:id="@+id/actionHome"
         android:name="com.elementary.tasks.experimental.home.HomeFragment"
         android:label="@string/events"
-        tools:layout="@layout/home_fragment">
+        tools:layout="@layout/home_fragment"
+        app:popUpTo="@id/actionHome"
+        app:popUpToInclusive="true">
         <action
             android:id="@+id/action_actionHome_to_remindersFragment"
             app:destination="@id/remindersFragment" />
