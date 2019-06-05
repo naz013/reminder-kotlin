@@ -38,7 +38,6 @@ import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
@@ -46,7 +45,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
 
     private lateinit var viewModel: ReminderViewModel
     private lateinit var conversationViewModel: ConversationViewModel
-    private val stateViewModel: StateViewModel by viewModel()
+    private lateinit var stateViewModel: StateViewModel
 
     private var fragment: TypeFragment<*>? = null
     private var mUri: Uri? = null
@@ -81,6 +80,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
         canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled

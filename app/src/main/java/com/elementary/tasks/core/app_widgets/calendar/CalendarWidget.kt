@@ -16,8 +16,8 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
 class CalendarWidget : AppWidgetProvider(), KoinComponent {

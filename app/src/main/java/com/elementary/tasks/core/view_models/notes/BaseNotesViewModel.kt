@@ -13,7 +13,7 @@ import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.SingleBackupWorker
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.inject
+import org.koin.core.inject
 import timber.log.Timber
 
 abstract class BaseNotesViewModel : BaseDbViewModel() {

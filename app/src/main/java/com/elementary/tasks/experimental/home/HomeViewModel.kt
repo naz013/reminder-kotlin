@@ -8,7 +8,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
-import org.koin.standalone.inject
+import org.koin.core.inject
 
 class HomeViewModel : BaseRemindersViewModel() {
 

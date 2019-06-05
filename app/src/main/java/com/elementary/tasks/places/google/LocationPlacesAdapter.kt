@@ -11,8 +11,8 @@ import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemLocationBinding
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
 class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>(), KoinComponent {

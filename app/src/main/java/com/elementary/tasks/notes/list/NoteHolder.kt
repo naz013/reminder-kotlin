@@ -19,15 +19,15 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import org.koin.standalone.inject
+import org.koin.core.inject
 import java.lang.ref.WeakReference
 
 class NoteHolder(parent: ViewGroup, val listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note) {
 
     private val themeUtil: ThemeUtil by inject()
-
     private val imagesSingleton: ImagesSingleton by inject()
+
     var hasMore = true
         set(value) {
             field = value

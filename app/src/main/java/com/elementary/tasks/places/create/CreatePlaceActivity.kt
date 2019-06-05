@@ -23,12 +23,11 @@ import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
     private lateinit var viewModel: PlaceViewModel
-    private val stateViewModel: CreatePlaceViewModel by viewModel()
+    private lateinit var stateViewModel: CreatePlaceViewModel
 
     private var mGoogleMap: AdvancedMapFragment? = null
 
@@ -75,6 +74,8 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
                 }
             }
         })
+
+        stateViewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
     }
 
     private fun loadPlace() {

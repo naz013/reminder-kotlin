@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ListItemGoogleTaskBinding
-import org.koin.standalone.inject
+import org.koin.core.inject
 import java.text.SimpleDateFormat
 import java.util.*
 

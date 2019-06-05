@@ -29,7 +29,7 @@ import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
-import org.koin.standalone.inject
+import org.koin.core.inject
 import timber.log.Timber
 import java.util.*
 

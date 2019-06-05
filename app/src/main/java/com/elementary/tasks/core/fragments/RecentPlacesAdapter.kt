@@ -11,8 +11,8 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.databinding.ListItemMapPlaceBinding
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>(), KoinComponent {
 

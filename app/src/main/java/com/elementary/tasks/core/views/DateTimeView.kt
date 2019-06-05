@@ -12,29 +12,11 @@ import android.widget.TimePicker
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.DateTimeViewBinding
 import com.elementary.tasks.core.utils.*
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.text.DateFormat
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, KoinComponent {
 
     private lateinit var binding: DateTimeViewBinding
@@ -48,10 +30,9 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     var onDateChangeListener: OnDateChangeListener? = null
     private var mDateFormat: DateFormat = TimeUtil.fullDate()
 
-    private val mDateClick = View.OnClickListener{ selectDate() }
+    private val mDateClick = OnClickListener{ selectDate() }
 
     private val prefs: Prefs by inject()
-    private val themeUtil: ThemeUtil by inject()
 
     var dateTime: Long
         get() {
@@ -99,7 +80,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         this.invalidate()
     }
 
-    override fun setOnClickListener(l: View.OnClickListener?) {
+    override fun setOnClickListener(l: OnClickListener?) {
         if (isSingleMode) binding.dateField.setOnClickListener(l)
     }
 

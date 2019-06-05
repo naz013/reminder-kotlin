@@ -14,8 +14,8 @@ import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import hirondelle.date4j.DateTime
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*

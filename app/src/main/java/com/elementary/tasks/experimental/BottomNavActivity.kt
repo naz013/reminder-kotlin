@@ -24,17 +24,15 @@ import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav),
         FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
 
     private val buttonObservable: GlobalButtonObservable by inject()
-    private val viewModel: ConversationViewModel by viewModel()
+    private lateinit var viewModel: ConversationViewModel
 
     private var mFragment: BaseFragment<*>? = null
-
     private var mNoteView: QuickNoteCoordinator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +41,11 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
 
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
         initQuickNote()
+        initViewModels()
+    }
+
+    private fun initViewModels() {
+        viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
     }
 
     private fun initQuickNote() {

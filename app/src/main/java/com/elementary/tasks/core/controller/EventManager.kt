@@ -8,8 +8,8 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 abstract class EventManager(val reminder: Reminder) : EventControl, KoinComponent {
 

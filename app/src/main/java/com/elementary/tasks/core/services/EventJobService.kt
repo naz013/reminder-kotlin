@@ -14,34 +14,16 @@ import com.evernote.android.job.Job
 import com.evernote.android.job.JobManager
 import com.evernote.android.job.JobRequest
 import com.evernote.android.job.util.support.PersistableBundleCompat
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class EventJobService : Job(), KoinComponent {
 
     private val prefs: Prefs by inject()
 
-    override fun onRunJob(params: Job.Params): Job.Result {
+    override fun onRunJob(params: Params): Result {
         Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
         when (params.tag) {
             EVENT_BIRTHDAY -> birthdayAction(context)
@@ -61,7 +43,7 @@ class EventJobService : Job(), KoinComponent {
                 }
             }
         }
-        return Job.Result.SUCCESS
+        return Result.SUCCESS
     }
 
     private fun birthdayAction(context: Context) {
@@ -240,7 +222,7 @@ class EventJobService : Job(), KoinComponent {
         }
 
         fun isEnabledReminder(id: String): Boolean {
-            return !JobManager.instance().getAllJobsForTag(id).isEmpty()
+            return JobManager.instance().getAllJobsForTag(id).isNotEmpty()
         }
 
         fun cancelReminder(tag: String) {

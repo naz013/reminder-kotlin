@@ -38,7 +38,6 @@ import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -48,7 +47,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     private var isBgDark = false
 
     private lateinit var viewModel: NoteViewModel
-    private val stateViewModel: CreateNoteViewModel by viewModel()
+    private lateinit var stateViewModel: CreateNoteViewModel
     private lateinit var photoSelectionUtil: PhotoSelectionUtil
 
     private val imagesGridAdapter = ImagesGridAdapter()
@@ -129,6 +128,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
         lifecycle.addObserver(stateViewModel)
 
         isBgDark = isDarkMode
