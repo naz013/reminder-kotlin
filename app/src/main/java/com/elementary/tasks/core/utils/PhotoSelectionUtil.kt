@@ -99,11 +99,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
     }
 
     private fun checkSdPermission(code: Int): Boolean {
-        return Permissions.ensurePermissions(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+        return Permissions.checkPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
     }
 
     private fun checkCameraPermission(code: Int): Boolean {
-        return Permissions.ensurePermissions(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)
+        return Permissions.checkPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)
     }
 
     private fun showPhoto(imageUri: Uri) {
@@ -159,7 +159,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
 
     @Suppress("UNUSED_PARAMETER")
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 REQUEST_SD_CARD -> pickFromGallery()
                 REQUEST_CAMERA -> takePhoto()

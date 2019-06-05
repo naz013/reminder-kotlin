@@ -195,13 +195,13 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(R.layout.activity_lo
     }
 
     private fun loginToDropbox() {
-        if (Permissions.ensurePermissions(this, PERM_DROPBOX, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (Permissions.checkPermission(this, PERM_DROPBOX, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             dropboxLogin?.login()
         }
     }
 
     private fun restoreLocalData() {
-        if (!Permissions.ensurePermissions(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         viewModel.loadDataFromLocal()
@@ -253,7 +253,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(R.layout.activity_lo
     }
 
     private fun googleLoginClick() {
-        if (Permissions.ensurePermissions(this, PERM, Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+        if (Permissions.checkPermission(this, PERM, Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
             googleLogin?.loginDrive(object : GoogleLogin.DriveCallback {
                 override fun onProgress(isLoading: Boolean) {
@@ -287,7 +287,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(R.layout.activity_lo
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 PERM -> googleLoginClick()
                 PERM_DROPBOX -> loginToDropbox()

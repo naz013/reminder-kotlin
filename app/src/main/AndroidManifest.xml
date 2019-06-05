@@ -361,10 +361,6 @@
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".core.contacts.SelectContactActivity"
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
             android:name=".reminder.preview.ReminderDialogActivity"
             android:excludeFromRecents="true" />
         <activity

@@ -141,7 +141,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
     private fun scanForBirthdays() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(it, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
                 return@withActivity
             }
             onProgress.invoke(true)
@@ -175,7 +175,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
     private fun changeContactsPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(it, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
                 return@withActivity
             }
             val isChecked = binding.useContactsPrefs.isChecked
@@ -313,10 +313,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CONTACTS_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            CONTACTS_CODE -> if (Permissions.checkPermission(grantResults)) {
                 changeContactsPrefs()
             }
-            BIRTHDAYS_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            BIRTHDAYS_CODE -> if (Permissions.checkPermission(grantResults)) {
                 scanForBirthdays()
             }
         }

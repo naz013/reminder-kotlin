@@ -59,7 +59,7 @@ object Permissions {
             true
         } else {
             if (Module.isPie) {
-                Permissions.requestPermission(activity, requestCode, FOREGROUND)
+                requestPermission(activity, requestCode, FOREGROUND)
                 false
             } else {
                 return true
@@ -67,7 +67,7 @@ object Permissions {
         }
     }
 
-    fun isAllGranted(grantResults: IntArray): Boolean {
+    fun checkPermission(grantResults: IntArray): Boolean {
         if (grantResults.isEmpty()) {
             return false
         } else {
@@ -80,24 +80,11 @@ object Permissions {
         }
     }
 
-    fun isAnyGranted(grantResults: IntArray): Boolean {
-        if (grantResults.isEmpty()) {
-            return false
-        } else {
-            for (p in grantResults) {
-                if (p == PackageManager.PERMISSION_GRANTED) {
-                    return true
-                }
-            }
-            return false
-        }
-    }
-
-    fun ensurePermissions(activity: Activity, requestCode: Int, vararg permissions: String): Boolean {
+    fun checkPermission(activity: Activity, requestCode: Int, vararg permissions: String): Boolean {
         return if (checkPermission(activity, *permissions)) {
             true
         } else {
-            Permissions.requestPermission(activity, requestCode, *permissions)
+            requestPermission(activity, requestCode, *permissions)
             false
         }
     }

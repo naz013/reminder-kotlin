@@ -91,7 +91,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             4 -> prefs.autoCheckInterval = 48
         }
         withActivity {
-            if (Permissions.ensurePermissions(it, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            if (Permissions.checkPermission(it, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                 startCheckService()
             }
         }
@@ -103,7 +103,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
     private fun loadCalendars() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, CALENDAR_PERM, Permissions.READ_CALENDAR)) {
+            if (!Permissions.checkPermission(it, CALENDAR_PERM, Permissions.READ_CALENDAR)) {
                 return@withActivity
             }
             list = calendarUtils.getCalendarsList()
@@ -131,7 +131,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
     private fun importEvents() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            if (!Permissions.checkPermission(it, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                 return@withActivity
             }
             if (list.isEmpty()) {
@@ -159,7 +159,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         when (buttonView.id) {
             R.id.autoCheck -> if (isChecked) {
                 withActivity {
-                    if (Permissions.ensurePermissions(it, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                    if (Permissions.checkPermission(it, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                         autoCheck(true)
                     }
                 }
@@ -171,7 +171,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 101 -> autoCheck(true)
                 102 -> importEvents()

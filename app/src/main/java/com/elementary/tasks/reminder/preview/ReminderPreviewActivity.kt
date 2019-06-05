@@ -77,7 +77,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
 
     private fun makeCall(reminder: Reminder) {
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(reminder.target, this)
         }
     }
@@ -467,7 +467,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
 
     private fun shareReminder() {
-        if (!Permissions.ensurePermissions(this, SD_PERM, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_PERM, Permissions.WRITE_EXTERNAL)) {
             return
         }
         reminder?.let {
@@ -634,7 +634,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 CALL_PERM -> fabClick()
                 SD_PERM -> shareReminder()

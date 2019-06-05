@@ -140,7 +140,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     }
 
     private fun readUri() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         mUri?.let {
@@ -182,7 +182,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     }
 
     private fun checkContactPermission(code: Int): Boolean {
-        if (!Permissions.ensurePermissions(this, code, Permissions.READ_CONTACTS)) {
+        if (!Permissions.checkPermission(this, code, Permissions.READ_CONTACTS)) {
             return false
         }
         return true
@@ -276,13 +276,16 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
-            if (resultCode == Activity.RESULT_OK) {
-                val name = data?.getStringExtra(Constants.SELECTED_CONTACT_NAME) ?: ""
-                if (binding.birthName.text.toString().trim() == "") {
-                    binding.birthName.setText(name)
+            if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+                val contact = Contacts.readPickerResults(this, requestCode, resultCode, data)
+                if (contact != null) {
+                    if (binding.birthName.text.toString().trim() == "") {
+                        binding.birthName.setText(contact.name)
+                    }
+                    binding.numberView.setText(contact.phone)
                 }
-                binding.numberView.setText(data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: "")
             }
         } else if (requestCode == PinLoginActivity.REQ_CODE) {
             if (resultCode != Activity.RESULT_OK) {
@@ -296,13 +299,13 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            101 -> if (Permissions.isAllGranted(grantResults)) {
-                SuperUtil.selectContact(this@AddBirthdayActivity, Constants.REQUEST_CODE_CONTACTS)
+            101 -> if (Permissions.checkPermission(grantResults)) {
+                SuperUtil.selectContact(this, Constants.REQUEST_CODE_CONTACTS)
             }
-            CONTACT_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            CONTACT_PERM -> if (Permissions.checkPermission(grantResults)) {
                 saveBirthday()
             }
-            SD_REQ -> if (Permissions.isAllGranted(grantResults)) {
+            SD_REQ -> if (Permissions.checkPermission(grantResults)) {
 
             }
         }

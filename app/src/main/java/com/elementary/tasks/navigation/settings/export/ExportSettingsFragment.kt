@@ -157,7 +157,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun syncClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 onProgress.invoke(true)
                 SyncWorker.sync(it, IoHelper(it, prefs, backupTool))
             }
@@ -182,7 +182,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun exportClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
                 onProgress.invoke(true)
                 ExportAllDataWorker.export(IoHelper(it, prefs, backupTool))
             }
@@ -204,7 +204,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun backupClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 onProgress.invoke(true)
                 BackupWorker.backup(it, IoHelper(it, prefs, backupTool))
             }
@@ -431,7 +431,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun changeExportToCalendarPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, CALENDAR_CODE, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            if (!Permissions.checkPermission(it, CALENDAR_CODE, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                 return@withActivity
             }
             val isChecked = binding.exportToCalendarPrefs.isChecked
@@ -446,7 +446,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun showSelectCalendarDialog(): Boolean {
         val activity = activity ?: return false
-        if (!Permissions.ensurePermissions(activity, CALENDAR_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+        if (!Permissions.checkPermission(activity, CALENDAR_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
             return false
         }
         mDataList.clear()
@@ -493,7 +493,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 CALENDAR_CODE -> changeExportToCalendarPrefs()
                 CALENDAR_PERM -> showSelectCalendarDialog()
