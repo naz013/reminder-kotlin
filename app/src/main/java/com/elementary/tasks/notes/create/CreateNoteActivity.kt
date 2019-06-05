@@ -802,7 +802,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         val inflater = LayoutInflater.from(this)
         val adapter = object : ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_single_choice, names) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 var cView = convertView
                 if (cView == null) {
                     cView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null)
@@ -812,7 +812,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
                     textView.typeface = getTypeface(position)
                     textView.text = names[position]
                 }
-                return cView
+                return cView!!
             }
 
             private fun getTypeface(position: Int): Typeface? {
