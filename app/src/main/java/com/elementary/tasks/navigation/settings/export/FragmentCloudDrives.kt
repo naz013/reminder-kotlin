@@ -108,7 +108,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     private fun googleTasksButtonClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, 104,
+            if (Permissions.checkPermission(it, 104,
                             Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                             Permissions.WRITE_EXTERNAL)) {
                 switchGoogleTasksStatus()
@@ -118,7 +118,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     private fun googleDriveButtonClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, 103,
+            if (Permissions.checkPermission(it, 103,
                             Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                             Permissions.WRITE_EXTERNAL)) {
                 switchGoogleDriveStatus()
@@ -222,7 +222,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 103 -> switchGoogleDriveStatus()
                 104 -> switchGoogleTasksStatus()

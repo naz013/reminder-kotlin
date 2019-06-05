@@ -98,7 +98,7 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
     private fun loadUserInfo() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, SD_CODE, Permissions.READ_EXTERNAL)) {
+            if (!Permissions.checkPermission(it, SD_CODE, Permissions.READ_EXTERNAL)) {
                 return@withActivity
             }
             val list = ArrayList<Info>()
@@ -119,7 +119,7 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            SD_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            SD_CODE -> if (Permissions.checkPermission(grantResults)) {
                 loadUserInfo()
             }
         }

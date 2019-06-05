@@ -68,9 +68,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity(""))
         }
 
-        binding.remindersButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
-        }
         binding.remindersHeader.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
@@ -78,9 +75,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
 
-        binding.birthdaysButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
-        }
         binding.birthdaysHeader.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }

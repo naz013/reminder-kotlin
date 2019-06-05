@@ -32,17 +32,6 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/remindersButton"
-                        android:layout_width="@dimen/home_action_button_size"
-                        android:layout_height="@dimen/home_action_button_size"
-                        android:layout_marginStart="16dp"
-                        android:background="@drawable/gradient_button_reminders_selector"
-                        android:contentDescription="@string/reminders_"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                        app:tint="@color/pureBlack" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/notesButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
@@ -73,17 +62,6 @@
                         android:contentDescription="@string/google_tasks"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_google"
-                        app:tint="@color/pureBlack" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/birthdaysButton"
-                        android:layout_width="@dimen/home_action_button_size"
-                        android:layout_height="@dimen/home_action_button_size"
-                        android:layout_marginStart="16dp"
-                        android:background="@drawable/gradient_button_birthdays_selector"
-                        android:contentDescription="@string/birthdays"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_cake_24px"
                         app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView

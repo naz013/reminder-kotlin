@@ -285,7 +285,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         val isChecked = binding.autoCallPrefs.isChecked
         if (!isChecked) {
             withActivity {
-                if (Permissions.ensurePermissions(it, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
+                if (Permissions.checkPermission(it, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
                     binding.autoCallPrefs.isChecked = !isChecked
                     prefs.isAutoCallEnabled = !isChecked
                 } else {
@@ -680,7 +680,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             if (!SuperUtil.checkNotificationPermission(it)) {
                 SuperUtil.askNotificationPermission(it, dialogues)
             } else {
-                Permissions.ensurePermissions(it, PERM_BT, Permissions.BLUETOOTH)
+                Permissions.checkPermission(it, PERM_BT, Permissions.BLUETOOTH)
             }
         }
     }
@@ -838,7 +838,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 PERM_AUTO_CALL -> changeAutoCallPrefs()
                 PERM_IMAGE -> openImagePicker()
@@ -848,7 +848,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     private fun openImagePicker() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
                 startActivityForResult(Intent(it, FileExplorerActivity::class.java).putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO),
                         Constants.ACTION_REQUEST_GALLERY)
             }

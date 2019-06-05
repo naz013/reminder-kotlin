@@ -320,7 +320,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     }
 
     private fun micClick() {
-        if (!Permissions.ensurePermissions(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
+        if (!Permissions.checkPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
             return
         }
         if (speech != null) {
@@ -500,7 +500,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     }
 
     private fun loadNoteFromFile() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
@@ -583,7 +583,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     }
 
     private fun shareNote() {
-        if (!Permissions.ensurePermissions(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         val note = createObject() ?: return
@@ -945,7 +945,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         photoSelectionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 AUDIO_CODE -> micClick()
                 SEND_CODE -> shareNote()

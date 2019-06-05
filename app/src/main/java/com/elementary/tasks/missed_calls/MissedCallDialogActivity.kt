@@ -192,7 +192,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     }
 
     private fun makeCall() {
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(mMissedCall?.number ?: "", this)
             removeMissed()
         }
@@ -218,7 +218,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CALL_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            CALL_PERM -> if (Permissions.checkPermission(grantResults)) {
                 makeCall()
             }
         }

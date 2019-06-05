@@ -104,7 +104,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     }
 
     private fun hasGpsPermission(code: Int): Boolean {
-        if (!Permissions.ensurePermissions(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (!Permissions.checkPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             return false
         }
         return true
@@ -115,7 +115,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
             DATE -> replaceFragment(DateFragment())
             TIMER -> replaceFragment(TimerFragment())
             WEEK -> replaceFragment(WeekFragment())
-            EMAIL -> if (Permissions.ensurePermissions(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
+            EMAIL -> if (Permissions.checkPermission(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
                 replaceFragment(EmailFragment())
             } else {
                 binding.navSpinner.setSelection(DATE)
@@ -200,7 +200,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     }
 
     private fun readFromIntent() {
-        if (Permissions.ensurePermissions(this, SD_PERM, Permissions.READ_EXTERNAL)) {
+        if (Permissions.checkPermission(this, SD_PERM, Permissions.READ_EXTERNAL)) {
             mUri?.let {
                 try {
                     val scheme = it.scheme
@@ -351,14 +351,14 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     }
 
     override fun selectMelody() {
-        if (Permissions.ensurePermissions(this,330, Permissions.READ_EXTERNAL)) {
+        if (Permissions.checkPermission(this,330, Permissions.READ_EXTERNAL)) {
             startActivityForResult(Intent(this, FileExplorerActivity::class.java),
                     Constants.REQUEST_CODE_SELECTED_MELODY)
         }
     }
 
     override fun attachFile() {
-        if (Permissions.ensurePermissions(this, 331, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (Permissions.checkPermission(this, 331, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             selectAnyFile()
         }
     }
@@ -465,25 +465,25 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CONTACTS_REQUEST_E -> if (Permissions.isAllGranted(grantResults)) {
+            CONTACTS_REQUEST_E -> if (Permissions.checkPermission(grantResults)) {
                 binding.navSpinner.setSelection(EMAIL)
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
-            GPS_PLACE -> if (Permissions.isAllGranted(grantResults)) {
+            GPS_PLACE -> if (Permissions.checkPermission(grantResults)) {
                 binding.navSpinner.setSelection(GPS_PLACE)
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
-            GPS -> if (Permissions.isAllGranted(grantResults)) {
+            GPS -> if (Permissions.checkPermission(grantResults)) {
                 binding.navSpinner.setSelection(GPS)
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
-            331 -> if (Permissions.isAllGranted(grantResults)) {
+            331 -> if (Permissions.checkPermission(grantResults)) {
                 selectAnyFile()
             }
-            SD_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            SD_PERM -> if (Permissions.checkPermission(grantResults)) {
                 readFromIntent()
             }
         }

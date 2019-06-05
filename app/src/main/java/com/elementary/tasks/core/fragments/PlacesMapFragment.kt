@@ -335,7 +335,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
     @SuppressLint("MissingPermission")
     private fun setMyLocation() {
-        if (Permissions.ensurePermissions(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (Permissions.checkPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             mMap?.isMyLocationEnabled = true
         }
     }
@@ -497,12 +497,12 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            205 -> if (Permissions.isAllGranted(grantResults)) {
+            205 -> if (Permissions.checkPermission(grantResults)) {
                 setMyLocation()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
             }
-            200 -> if (Permissions.isAllGranted(grantResults)) {
+            200 -> if (Permissions.checkPermission(grantResults)) {
                 startTracking()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()

@@ -96,7 +96,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun changeFollowPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, FOLLOW, Permissions.READ_PHONE_STATE)) {
+            if (!Permissions.checkPermission(it, FOLLOW, Permissions.READ_PHONE_STATE)) {
                 return@withActivity
             }
             val isChecked = binding.followReminderPrefs.isChecked
@@ -107,7 +107,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun changeMissedPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, MISSED, Permissions.READ_PHONE_STATE)) {
+            if (!Permissions.checkPermission(it, MISSED, Permissions.READ_PHONE_STATE)) {
                 return@withActivity
             }
             val isChecked = binding.missedPrefs.isChecked
@@ -118,7 +118,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun changeQuickSmsPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
+            if (!Permissions.checkPermission(it, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
                 return@withActivity
             }
             val isChecked = binding.quickSMSPrefs.isChecked
@@ -166,7 +166,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 MISSED -> changeMissedPrefs()
                 QUICK_SMS -> changeQuickSmsPrefs()

@@ -83,7 +83,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
     }
 
     private fun readUri() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         mUri?.let {
@@ -176,7 +176,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == SD_REQ && Permissions.isAllGranted(grantResults)) {
+        if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
             readUri()
         }
     }

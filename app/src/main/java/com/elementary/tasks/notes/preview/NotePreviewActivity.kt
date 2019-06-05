@@ -207,7 +207,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     }
 
     private fun shareNote() {
-        if (!Permissions.ensurePermissions(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         showProgress()
@@ -308,7 +308,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            SEND_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            SEND_CODE -> if (Permissions.checkPermission(grantResults)) {
                 shareNote()
             }
         }

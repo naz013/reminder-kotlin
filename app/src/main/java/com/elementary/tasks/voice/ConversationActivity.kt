@@ -642,7 +642,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
     }
 
     private fun micClick() {
-        if (!Permissions.ensurePermissions(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
+        if (!Permissions.checkPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
             return
         }
         if (isListening) {
@@ -716,7 +716,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            AUDIO_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            AUDIO_CODE -> if (Permissions.checkPermission(grantResults)) {
                 micClick()
             }
         }

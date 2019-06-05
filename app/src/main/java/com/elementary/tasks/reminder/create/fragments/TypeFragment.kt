@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -283,15 +282,20 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
     }
 
     private fun selectContact() {
-        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
+        if (Permissions.checkPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
             SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
-            actionView?.number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
+        if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
+            if (Permissions.checkPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
+                val contact = Contacts.readPickerResults(context!!, requestCode, resultCode, data)
+                if (contact != null) {
+                    actionView?.number = contact.phone
+                }
+            }
         }
     }
 
@@ -299,7 +303,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         actionView?.onRequestPermissionsResult(requestCode, grantResults)
         when (requestCode) {
-            CONTACTS -> if (Permissions.isAllGranted(grantResults)) selectContact()
+            CONTACTS -> if (Permissions.checkPermission(grantResults)) selectContact()
         }
     }
 

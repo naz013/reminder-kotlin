@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.filter.SearchModifier
@@ -68,7 +67,7 @@ class FileExplorerActivity : BindingActivity<ActivityFileExplorerBinding>(R.layo
 
     override fun onStart() {
         super.onStart()
-        if (Permissions.ensurePermissions(this, SD_CARD, Permissions.READ_EXTERNAL)) {
+        if (Permissions.checkPermission(this, SD_CARD, Permissions.READ_EXTERNAL)) {
             viewModel.loadFileList()
         }
     }
@@ -292,7 +291,7 @@ class FileExplorerActivity : BindingActivity<ActivityFileExplorerBinding>(R.layo
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            SD_CARD -> if (Permissions.isAllGranted(grantResults)) {
+            SD_CARD -> if (Permissions.checkPermission(grantResults)) {
                 viewModel.loadFileList()
             } else {
                 setResult(Activity.RESULT_CANCELED)

@@ -97,7 +97,7 @@ class ActionView : LinearLayout, TextWatcher {
         binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
         binding.callAction.isChecked = true
         binding.actionCheck.setOnCheckedChangeListener { _, b ->
-            if (!Permissions.ensurePermissions(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
                 binding.actionCheck.isChecked = false
                 return@setOnCheckedChangeListener
             }
@@ -151,7 +151,7 @@ class ActionView : LinearLayout, TextWatcher {
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
-            REQ_CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
+            REQ_CONTACTS -> if (Permissions.checkPermission(grantResults)) {
                 binding.actionCheck.isChecked = true
                 binding.numberView.reloadContacts()
             }

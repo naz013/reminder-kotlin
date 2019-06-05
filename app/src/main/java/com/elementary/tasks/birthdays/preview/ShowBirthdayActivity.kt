@@ -343,7 +343,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
 
     private fun makeCall() {
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE) && mBirthday != null) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE) && mBirthday != null) {
             TelephonyUtil.makeCall(mBirthday?.number ?: "", this)
             updateBirthday(mBirthday)
         }
@@ -380,7 +380,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 CALL_PERM -> makeCall()
             }

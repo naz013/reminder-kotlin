@@ -19,10 +19,10 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.core.contacts.SelectContactActivity
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.reminder.create.fragments.ReminderInterface
 import com.elementary.tasks.voice.ConversationActivity
@@ -215,8 +215,9 @@ object SuperUtil {
         })
     }
 
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
     fun selectContact(activity: Activity, requestCode: Int) {
-        activity.startActivityForResult(Intent(activity, SelectContactActivity::class.java), requestCode)
+        Contacts.pickContact(activity, requestCode)
     }
 
     fun isGooglePlayServicesAvailable(a: Context): Boolean {
