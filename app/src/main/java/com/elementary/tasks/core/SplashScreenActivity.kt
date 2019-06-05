@@ -6,12 +6,17 @@ import android.os.Bundle
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import org.koin.android.ext.android.inject
 
 class SplashScreenActivity : ThemedActivity() {
+
+    private val db: AppDb by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +25,6 @@ class SplashScreenActivity : ThemedActivity() {
             notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
     }
-
-    override fun applyTheme(): Boolean = false
 
     private fun checkIfAppUpdated() {
         try {
@@ -45,11 +48,17 @@ class SplashScreenActivity : ThemedActivity() {
         if (!prefs.isUserLogged) {
             openIntroScreen()
         } else {
-            initGroups()
-            if (prefs.hasPinCode) {
-                openPinLogin()
-            } else {
-                runApplication()
+            launchDefault {
+                if (db.reminderGroupDao().all().isEmpty()) {
+                    GroupsUtil.initDefault(this@SplashScreenActivity)
+                }
+                withUIContext {
+                    if (prefs.hasPinCode) {
+                        openPinLogin()
+                    } else {
+                        runApplication()
+                    }
+                }
             }
         }
     }
@@ -62,12 +71,6 @@ class SplashScreenActivity : ThemedActivity() {
     private fun openIntroScreen() {
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
-    }
-
-    private fun initGroups() {
-        if (AppDb.getAppDatabase(this).reminderGroupDao().all().isEmpty()) {
-            GroupsUtil.initDefault(this)
-        }
     }
 
     private fun initPrefs() {

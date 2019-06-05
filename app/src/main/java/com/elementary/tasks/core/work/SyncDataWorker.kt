@@ -9,8 +9,8 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.groups.GroupsUtil
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 

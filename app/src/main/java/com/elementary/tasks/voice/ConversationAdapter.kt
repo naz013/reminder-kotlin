@@ -21,10 +21,9 @@ import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
-
 
 class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), KoinComponent {
 

@@ -3,10 +3,12 @@ package com.elementary.tasks.core.view_models.birthdays
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
-import org.koin.standalone.inject
+import org.koin.core.inject
 
 abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
 

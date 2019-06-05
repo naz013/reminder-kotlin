@@ -10,8 +10,8 @@ import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemPlaceBinding
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class PlacesRecyclerAdapter : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolder>(PlaceDiffCallback()), KoinComponent {
 

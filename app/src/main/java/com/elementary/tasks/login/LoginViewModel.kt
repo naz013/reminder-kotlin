@@ -16,8 +16,8 @@ import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.io.IOException
 
 class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {

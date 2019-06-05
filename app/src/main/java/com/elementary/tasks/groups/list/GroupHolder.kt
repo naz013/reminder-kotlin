@@ -11,7 +11,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemGroupBinding
-import org.koin.standalone.inject
+import org.koin.core.inject
 
 class GroupHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder<ListItemGroupBinding>(parent, R.layout.list_item_group) {

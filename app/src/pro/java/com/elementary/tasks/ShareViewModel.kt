@@ -17,8 +17,8 @@ import com.elementary.tasks.reminder.work.SingleBackupWorker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 class ShareViewModel : ViewModel(), KoinComponent {

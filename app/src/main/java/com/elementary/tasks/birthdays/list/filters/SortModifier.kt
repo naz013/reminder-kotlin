@@ -4,8 +4,8 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.filter.Modifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class SortModifier(modifier: Modifier<Birthday>? = null,
                    callback: ((List<Birthday>) -> Unit)? = null) : Modifier<Birthday>(modifier, callback), KoinComponent {

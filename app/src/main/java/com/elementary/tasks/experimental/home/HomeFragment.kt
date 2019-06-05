@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
@@ -22,11 +23,10 @@ import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>() {
 
-    private val viewModel: HomeViewModel by viewModel()
+    private lateinit var viewModel: HomeViewModel
     private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true)
     private val birthdaysAdapter = BirthdaysRecyclerAdapter()
 
@@ -135,6 +135,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
     }
 
     private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         viewModel.reminders.observe(this, Observer {
             if (it != null) {
                 remindersAdapter.submitList(it)

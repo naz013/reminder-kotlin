@@ -8,8 +8,8 @@ import androidx.work.WorkerParameters
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.IoHelper
 import com.elementary.tasks.core.utils.Prefs
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
@@ -26,7 +26,7 @@ class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : W
 
         fun schedule() {
             val work = OneTimeWorkRequest.Builder(BackupSettingsWorker::class.java)
-                    .addTag(BackupSettingsWorker.TAG)
+                    .addTag(TAG)
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

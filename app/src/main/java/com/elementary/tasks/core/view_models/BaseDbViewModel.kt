@@ -12,8 +12,8 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 open class BaseDbViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
