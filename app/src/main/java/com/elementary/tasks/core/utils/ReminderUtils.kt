@@ -15,27 +15,32 @@ import com.elementary.tasks.core.services.ReminderActionReceiver
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 object ReminderUtils {
 
     const val DAY_CHECKED = 1
+
+    fun getSound(context: Context, prefs: Prefs, melody: String?): Melody {
+        return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
+            val uri = UriUtil.getUri(context, melody)
+            if (uri != null) {
+                Melody(ReminderUtils.MelodyType.FILE, uri)
+            } else {
+                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(prefs))
+            }
+        } else {
+            val defMelody = prefs.melodyFile
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
+                val uri = UriUtil.getUri(context, defMelody)
+                if (uri != null) {
+                    Melody(ReminderUtils.MelodyType.FILE, uri)
+                } else {
+                    Melody(ReminderUtils.MelodyType.DEFAULT, defUri(prefs))
+                }
+            } else {
+                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(prefs))
+            }
+        }
+    }
 
     fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
@@ -294,4 +299,10 @@ object ReminderUtils {
             else -> context.getString(R.string.by_date)
         }
     }
+
+    enum class MelodyType {
+        DEFAULT,
+        FILE
+    }
+    data class Melody(val melodyType: MelodyType, val uri: Uri)
 }

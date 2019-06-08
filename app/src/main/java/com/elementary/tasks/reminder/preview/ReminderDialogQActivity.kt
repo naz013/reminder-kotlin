@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.preview
 
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
 import android.text.TextUtils
+import android.view.MotionEvent
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -22,11 +23,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BaseNotificationActivity
+import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.ReminderActionReceiver
+import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
@@ -39,7 +40,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 
-class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
+class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
     private lateinit var viewModel: ReminderViewModel
 
@@ -50,21 +51,15 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     private var mReminder: Reminder? = null
     private var mControl: EventControl? = null
+    private var mWakeLock: PowerManager.WakeLock? = null
     private var isMockedTest = false
     private var isReminderShowed = false
-    override var isScreenResumed: Boolean = false
-        private set
-
-    override val groupName: String
-        get() = "reminder"
-
     private val isAppType: Boolean
         get() {
             val reminder = mReminder ?: return false
             return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)
                     || Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
         }
-
     private val isAutoCallEnabled: Boolean
         get() {
             val reminder = mReminder ?: return false
@@ -74,7 +69,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             }
             return has
         }
-
     private val isAutoLaunchEnabled: Boolean
         get() {
             val reminder = mReminder ?: return false
@@ -84,7 +78,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             }
             return has
         }
-
     private val isRepeatEnabled: Boolean
         get() {
             val reminder = mReminder ?: return false
@@ -95,78 +88,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             return isRepeat
         }
 
-    private val isTtsEnabled: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var isTTS = prefs.isTtsEnabled
-            if (!isGlobal) {
-                isTTS = reminder.notifyByVoice
-            }
-            Timber.d("isTtsEnabled: $isTTS")
-            return isTTS
-        }
-
-    override val melody: String
-        get() = if (mReminder == null) "" else mReminder?.melodyPath ?: ""
-
-    override val isVibrate: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var isVibrate = prefs.isVibrateEnabled
-            if (!isGlobal) isVibrate = reminder.vibrate
-            return isVibrate
-        }
-
-    override val summary: String
-        get() = mReminder?.summary ?: ""
-
-    override val uuId: String
-        get() = mReminder?.uuId ?: ""
-
-    override val id: Int
-        get() = mReminder?.uniqueId ?: 2121
-
-    override val ledColor: Int
-        get() {
-            val reminder = mReminder ?: return 0
-            return if (Module.isPro) {
-                if (reminder.color != -1) {
-                    LED.getLED(reminder.color)
-                } else {
-                    LED.getLED(prefs.ledColor)
-                }
-            } else {
-                LED.getLED(0)
-            }
-        }
-
-    override val isGlobal: Boolean
-        get() = mReminder != null && mReminder?.useGlobal ?: false
-
-    override val isUnlockDevice: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var has = prefs.isDeviceUnlockEnabled
-            if (!isGlobal) has = reminder.unlock
-            return has
-        }
-
-    override val maxVolume: Int
-        get() {
-            val reminder = mReminder ?: return 25
-            return if (!isGlobal && reminder.volume != -1) {
-                reminder.volume
-            } else {
-                prefs.loudness
-            }
-        }
-
-    override val priority: Int
-        get() {
-            val reminder = mReminder ?: return 0
-            return reminder.priority
-        }
-
     private val isRateDialogShowed: Boolean
         get() {
             var count = prefs.rateCount
@@ -174,6 +95,27 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             prefs.rateCount = count
             return count == 10
         }
+    private val isGlobal: Boolean
+        get() = mReminder != null && mReminder?.useGlobal ?: false
+    private val isUnlockDevice: Boolean
+        get() {
+            val reminder = mReminder ?: return false
+            var has = prefs.isDeviceUnlockEnabled
+            if (!isGlobal) has = reminder.unlock
+            return has
+        }
+    private val id: Int
+        get() = mReminder?.uniqueId ?: 2121
+    private val summary: String
+        get() = mReminder?.summary ?: ""
+    private val groupName: String
+        get() = "reminder"
+    private val priority: Int
+        get() {
+            val reminder = mReminder ?: return 0
+            return reminder.priority
+        }
+
     private var mWasStopped = false
 
     private val mLocalReceiver = object : BroadcastReceiver() {
@@ -181,7 +123,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             val action = intent?.action ?: ""
             val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
             Timber.d("onReceive: $action, $mId")
-            if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
+            if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && mReminder?.uuId == mId) {
                 finish()
             }
         }
@@ -189,7 +131,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
         binding.container.visibility = View.GONE
@@ -219,13 +160,48 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
 
         initButtons()
-
-        if (savedInstanceState != null) {
-            isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
-        }
-
         initViewModel(id)
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ACTION_STOP_BG_ACTIVITY))
+    }
+
+    private fun init() {
+        setUpScreenOptions()
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (MotionEvent.ACTION_DOWN == event.action) {
+            discardMedia()
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private fun canUnlockScreen(): Boolean {
+        return if (isGlobal) {
+            if (prefs.isDeviceUnlockEnabled) {
+                priority >= prefs.unlockPriority
+            } else {
+                false
+            }
+        } else {
+            isUnlockDevice
+        }
+    }
+
+    private fun setUpScreenOptions() {
+        Timber.d("setUpScreenOptions: ${canUnlockScreen()}")
+        if (canUnlockScreen()) {
+            SuperUtil.turnScreenOn(this, window)
+            SuperUtil.unlockOn(this, window)
+        }
+        mWakeLock = SuperUtil.wakeDevice(this)
+    }
+
+    private fun removeFlags() {
+
+        if (canUnlockScreen()) {
+            SuperUtil.unlockOff(this, window)
+            SuperUtil.turnScreenOff(this, window, mWakeLock)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -281,7 +257,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         Timber.d("initViewModel: $id")
         viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observeForever(mReminderObserver)
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> {
@@ -334,11 +310,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
             if (!Reminder.isBase(reminder.type, Reminder.BY_SKYPE)) {
                 contactPhoto.visibility = View.VISIBLE
-                val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-                    Contacts.getIdFromNumber(reminder.target, this)
-                } else {
-                    0L
-                }
+                val conID = Contacts.getIdFromNumber(reminder.target, this)
 
                 val name = Contacts.getNameFromNumber(reminder.target, this)
                 binding.remText.setText(R.string.make_call)
@@ -437,7 +409,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             binding.container.visibility = View.VISIBLE
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
             binding.remText.setText(R.string.e_mail)
-            val conID = Contacts.getIdFromMail(reminder.target, this)
+            val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+                Contacts.getIdFromMail(reminder.target, this)
+            } else {
+                0
+            }
             if (conID != 0L) {
                 val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
@@ -525,12 +501,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         } else if (isAppType && isAutoLaunchEnabled) {
             openApplication(reminder)
         } else {
-            showNotification()
             if (isRepeatEnabled) {
                 repeater.setAlarm(this, id)
-            }
-            if (isTtsEnabled) {
-                startTts()
             }
         }
     }
@@ -659,15 +631,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         TelephonyUtil.sendSms(this, reminder.target, summary)
     }
 
-    private fun showNotification() {
-        if (isMockedTest || isReminderShowed) return
-        if (!isTtsEnabled) {
-            showReminderNotification()
-        } else {
-            showTTSNotification()
-        }
-    }
-
     private fun editReminder() {
         doActions({ it.stop() }, {
             CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
@@ -785,138 +748,31 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
     }
 
-    private fun showReminderNotification() {
-        Timber.d("showReminderNotification: $id")
-
-        val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
-        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
-        val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-
-        val builder: NotificationCompat.Builder
-        if (isScreenResumed) {
-            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-            builder.priority = NotificationCompat.PRIORITY_LOW
-        } else {
-            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-            builder.priority = priority()
-            if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-                            (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
-                val soundUri = soundUri
-                Timber.d("showReminderNotification: $soundUri")
-                sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled, prefs.playbackDuration)
-            }
-            if (prefs.isVibrateEnabled) {
-                val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
-                    longArrayOf(150, 86400000)
-                } else {
-                    longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-                }
-                builder.setVibrate(pattern)
-            }
-        }
-        builder.setContentTitle(summary)
-        builder.setContentIntent(intent)
-        builder.setAutoCancel(false)
-        builder.priority = NotificationCompat.PRIORITY_MAX
-        if (prefs.isManualRemoveEnabled) {
-            builder.setOngoing(false)
-        } else {
-            builder.setOngoing(true)
-        }
-        val appName: String
-        if (Module.isPro) {
-            appName = getString(R.string.app_name_pro)
-            if (prefs.isLedEnabled) {
-                builder.setLights(ledColor, 500, 1000)
-            }
-        } else {
-            appName = getString(R.string.app_name)
-        }
-        builder.setContentText(appName)
-        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        val isWear = prefs.isWearEnabled
-        if (isWear) {
-            builder.setOnlyAlertOnce(true)
-            builder.setGroup(groupName)
-            builder.setGroupSummary(true)
-        }
-        Notifier.getManager(this)?.notify(id, builder.build())
-        if (isWear) {
-            showWearNotification(appName)
-        }
+    private fun discardNotification(id: Int) {
+        Timber.d("discardNotification: $id")
+        discardMedia()
+        Notifier.getManager(this)?.cancel(id)
     }
 
-    private fun priority(): Int {
-        val priority = mReminder?.priority ?: 2
-        return when (priority) {
-            0 -> NotificationCompat.PRIORITY_MIN
-            1 -> NotificationCompat.PRIORITY_LOW
-            2 -> NotificationCompat.PRIORITY_DEFAULT
-            3 -> NotificationCompat.PRIORITY_HIGH
-            else -> NotificationCompat.PRIORITY_MAX
-        }
+    private fun discardMedia() {
+        ContextCompat.startForegroundService(this,
+                EventOperationalService.getIntent(this, mReminder?.uuId ?: "",
+                        EventOperationalService.TYPE_REMINDER,
+                        EventOperationalService.ACTION_STOP))
     }
 
-    private fun showTTSNotification() {
-        Timber.d("showTTSNotification: ")
-        val builder: NotificationCompat.Builder
-        if (isScreenResumed) {
-            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-            builder.priority = NotificationCompat.PRIORITY_LOW
-        } else {
-            builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-            builder.priority = priority()
-            if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
-                            (SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled))) {
-                playDefaultMelody()
-            }
-            if (prefs.isVibrateEnabled) {
-                val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
-                    longArrayOf(150, 86400000)
-                } else {
-                    longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-                }
-                builder.setVibrate(pattern)
-            }
-        }
-        builder.setContentTitle(summary)
-
-        val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
-        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
-        val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-
-        builder.setContentIntent(intent)
-        builder.setAutoCancel(false)
-        if (prefs.isManualRemoveEnabled) {
-            builder.setOngoing(false)
-        } else {
-            builder.setOngoing(true)
-        }
-        val appName: String
-        if (Module.isPro) {
-            appName = getString(R.string.app_name_pro)
-            if (prefs.isLedEnabled) {
-                builder.setLights(ledColor, 500, 1000)
-            }
-        } else {
-            appName = getString(R.string.app_name)
-        }
-        builder.setContentText(appName)
-        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        val isWear = prefs.isWearEnabled
-        if (isWear) {
-            builder.setOnlyAlertOnce(true)
-            builder.setGroup(groupName)
-            builder.setGroupSummary(true)
-        }
-        Notifier.getManager(this)?.notify(id, builder.build())
-        if (isWear) {
-            showWearNotification(appName)
-        }
+    private fun showWearNotification(secondaryText: String) {
+        Timber.d("showWearNotification: $secondaryText")
+        val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+        wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+        wearableNotificationBuilder.setContentTitle(summary)
+        wearableNotificationBuilder.setContentText(secondaryText)
+        wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        wearableNotificationBuilder.setOngoing(false)
+        wearableNotificationBuilder.setOnlyAlertOnce(true)
+        wearableNotificationBuilder.setGroup(groupName)
+        wearableNotificationBuilder.setGroupSummary(false)
+        Notifier.getManager(this)?.notify(id, wearableNotificationBuilder.build())
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -964,14 +820,14 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"
 
         fun mockTest(context: Context, reminder: Reminder) {
-            val intent = Intent(context, ReminderDialogActivity::class.java)
+            val intent = Intent(context, ReminderDialogQActivity::class.java)
             intent.putExtra(ARG_TEST, true)
             intent.putExtra(ARG_TEST_ITEM, reminder)
             context.startActivity(intent)
         }
 
         fun getLaunchIntent(context: Context, id: String): Intent {
-            val resultIntent = Intent(context, ReminderDialogActivity::class.java)
+            val resultIntent = Intent(context, ReminderDialogQActivity::class.java)
             resultIntent.putExtra(Constants.INTENT_ID, id)
             resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
             return resultIntent

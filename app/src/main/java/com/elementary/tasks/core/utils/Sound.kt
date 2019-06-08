@@ -5,8 +5,8 @@ import android.content.res.AssetFileDescriptor
 import android.media.*
 import android.net.Uri
 import android.os.Handler
+import timber.log.Timber
 import java.io.File
-import java.io.IOException
 
 class Sound(private val mContext: Context, private val prefs: Prefs) {
     private var mMediaPlayer: MediaPlayer? = null
@@ -166,7 +166,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     }
 
     fun playAlarm(path: Uri, looping: Boolean, duration: Int = 0) {
-        if (isPlaying && !Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) {
+        if (isPlaying || !Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) {
             return
         }
         stop(false)
@@ -202,6 +202,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     }
 
     private fun playRingtone(path: Uri) {
+        Timber.d("playRingtone: $path")
         notifyStart()
         mRingtone = RingtoneManager.getRingtone(mContext, path)
         mRingtone?.play()

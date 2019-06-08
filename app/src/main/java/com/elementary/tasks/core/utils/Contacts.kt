@@ -68,16 +68,16 @@ object Contacts {
     }
 
     @RequiresPermission(value = Permissions.READ_CONTACTS)
-    fun getIdFromMail(eMail: String?, context: Context): Int {
+    fun getIdFromMail(eMail: String?, context: Context): Long {
         if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
         val uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail))
-        var contactId = 0
+        var contactId = 0L
         val contentResolver = context.contentResolver
         val contactLookup = contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID), null, null, null)
         contactLookup.use { look ->
             if (look != null && look.count > 0) {
                 look.moveToNext()
-                contactId = look.getInt(look.getColumnIndex(ContactsContract.PhoneLookup._ID))
+                contactId = look.getLong(look.getColumnIndex(ContactsContract.PhoneLookup._ID))
             }
         }
         return contactId

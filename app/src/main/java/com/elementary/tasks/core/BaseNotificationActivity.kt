@@ -89,18 +89,6 @@ abstract class BaseNotificationActivity<B : ViewDataBinding>(@LayoutRes layoutRe
     protected open val soundUri: Uri
         get() = ReminderUtils.getSoundUri(this, prefs, melody)
 
-    protected open fun showSendingError() {
-
-    }
-
-    protected open fun onProgressHidden() {
-
-    }
-
-    protected open fun onProgressShow(message: String) {
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val current = instanceCount.incrementAndGet()
@@ -164,6 +152,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding>(@LayoutRes layoutRe
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MY_DATA_CHECK_CODE) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 tts = TextToSpeech(this, mTextToSpeechListener)

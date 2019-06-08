@@ -11,9 +11,11 @@ import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import com.elementary.tasks.reminder.preview.ReminderDialogQActivity
 import java.util.*
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
@@ -47,7 +49,11 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
             this.type = Reminder.BY_DATE_CALL
             this.useGlobal = true
         }
-        ReminderDialogActivity.mockTest(context!!, reminder)
+        if (Module.isQ) {
+            ReminderDialogQActivity.mockTest(context!!, reminder)
+        } else {
+            ReminderDialogActivity.mockTest(context!!, reminder)
+        }
     }
 
     private fun openBirthdayScreen() {
