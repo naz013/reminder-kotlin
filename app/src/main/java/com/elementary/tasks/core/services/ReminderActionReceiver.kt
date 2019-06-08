@@ -2,32 +2,16 @@ package com.elementary.tasks.core.services
 
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
 
-/**
- * Copyright 2017 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class ReminderActionReceiver : BaseBroadcast() {
 
     private fun showReminder(context: Context, id: String) {
@@ -35,15 +19,23 @@ class ReminderActionReceiver : BaseBroadcast() {
 
         sendCloseBroadcast(context, id)
 
-        val notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id)
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
-        context.startActivity(notificationIntent)
-        endService(context, reminder.uniqueId)
+        if (Module.isQ) {
+            qAction(reminder, context, id)
+        } else {
+            val notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id)
+            notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
+            context.startActivity(notificationIntent)
+            endService(context, reminder.uniqueId)
+        }
     }
 
     private fun hidePermanent(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         EventControlFactory.getController(reminder).next()
+        ContextCompat.startForegroundService(context,
+                EventOperationalService.getIntent(context, reminder.uuId,
+                        EventOperationalService.TYPE_REMINDER,
+                        EventOperationalService.ACTION_STOP))
         endService(context, reminder.uniqueId)
     }
 
@@ -92,15 +84,31 @@ class ReminderActionReceiver : BaseBroadcast() {
                 }
             } else {
                 withUIContext {
-                    if (windowType == 0) {
-                        sendCloseBroadcast(context, id)
-                        context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
+                    if (Module.isQ) {
+                        qAction(reminder, context, id)
                     } else {
-                        ReminderUtils.showSimpleReminder(context, prefs, id)
+                        if (windowType == 0) {
+                            sendCloseBroadcast(context, id)
+                            context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
+                        } else {
+                            ReminderUtils.showSimpleReminder(context, prefs, id)
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun qAction(reminder: Reminder, context: Context, id: String) {
+//        if (reminder.priority > 2) {
+            sendCloseBroadcast(context, id)
+            ContextCompat.startForegroundService(context,
+                    EventOperationalService.getIntent(context, reminder.uuId,
+                            EventOperationalService.TYPE_REMINDER,
+                            EventOperationalService.ACTION_PLAY))
+//        } else {
+//            ReminderUtils.showSimpleReminder(context, prefs, id)
+//        }
     }
 
     companion object {

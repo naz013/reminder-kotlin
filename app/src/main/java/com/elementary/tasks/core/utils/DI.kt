@@ -3,14 +3,8 @@ package com.elementary.tasks.core.utils
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
-import com.elementary.tasks.navigation.settings.voice.TimesViewModel
-import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.places.create.CreatePlaceViewModel
-import com.elementary.tasks.reminder.create.StateViewModel
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 fun utilModule() = module {
@@ -21,7 +15,7 @@ fun utilModule() = module {
     single { BackupTool(get()) }
     single { Dialogues() }
     single { Language(get()) }
-    single { Notifier(androidApplication(), get(), get()) }
+    single { Notifier(androidApplication(), get()) }
     single { CalendarUtils(androidApplication(), get(), get()) }
     single { providesRecognizer(get(), get()) }
     single { QrShareProvider(get()) }

@@ -24,7 +24,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import timber.log.Timber
 import java.util.*
 
-class Notifier(private val context: Context, private val prefs: Prefs, private val themeUtil: ThemeUtil) {
+class Notifier(private val context: Context, private val prefs: Prefs) {
 
     init {
         createChannels(context)
@@ -66,53 +66,6 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
             wearableNotificationBuilder.setGroupSummary(false)
             getManager(context)?.notify(note.uniqueId, wearableNotificationBuilder.build())
         }
-    }
-
-    private fun createChannels(context: Context) {
-        if (Module.isOreo) {
-            val manager = getManager(context)
-            if (manager != null) {
-                manager.createNotificationChannel(createReminderChannel(context))
-                manager.createNotificationChannel(createSystemChannel(context))
-                manager.createNotificationChannel(createSilentChannel(context))
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private fun createSystemChannel(context: Context): NotificationChannel {
-        val name = context.getString(R.string.info_channel)
-        val descr = context.getString(R.string.channel_for_other_info_notifications)
-        val importance = NotificationManager.IMPORTANCE_LOW
-        val channel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
-        channel.description = descr
-        channel.setShowBadge(false)
-        return channel
-    }
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private fun createReminderChannel(context: Context): NotificationChannel {
-        val name = context.getString(R.string.reminder_channel)
-        val descr = context.getString(R.string.default_reminder_notifications)
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
-        channel.description = descr
-        channel.enableLights(true)
-        channel.enableVibration(true)
-        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-        return channel
-    }
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private fun createSilentChannel(context: Context): NotificationChannel {
-        val name = context.getString(R.string.silent_channel)
-        val description = context.getString(R.string.channel_for_silent_notifiations)
-        val importance = NotificationManager.IMPORTANCE_LOW
-        val channel = NotificationChannel(CHANNEL_SILENT, name, importance)
-        channel.description = description
-        channel.enableLights(true)
-        channel.enableVibration(false)
-        return channel
     }
 
     fun hideNotification(id: Int) {
@@ -241,7 +194,66 @@ class Notifier(private val context: Context, private val prefs: Prefs, private v
         const val CHANNEL_SILENT = "reminder.channel3"
         const val CHANNEL_SYSTEM = "reminder.channel2"
 
+        private fun createChannels(context: Context) {
+            if (Module.isOreo) {
+                val manager = context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+                if (manager != null) {
+                    manager.createNotificationChannel(createReminderChannel(context))
+                    manager.createNotificationChannel(createSystemChannel(context))
+                    manager.createNotificationChannel(createSilentChannel(context))
+                }
+            }
+        }
+
+        @TargetApi(Build.VERSION_CODES.O)
+        private fun createSystemChannel(context: Context): NotificationChannel {
+            val name = context.getString(R.string.info_channel)
+            val descr = context.getString(R.string.channel_for_other_info_notifications)
+            val importance = NotificationManager.IMPORTANCE_MIN
+            val channel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
+            channel.description = descr
+            if (Module.isQ) {
+                channel.setAllowBubbles(false)
+            }
+            channel.setShowBadge(false)
+            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            return channel
+        }
+
+        @TargetApi(Build.VERSION_CODES.O)
+        private fun createReminderChannel(context: Context): NotificationChannel {
+            val name = context.getString(R.string.reminder_channel)
+            val descr = context.getString(R.string.default_reminder_notifications)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
+            channel.description = descr
+            channel.enableLights(true)
+            channel.enableVibration(true)
+            if (Module.isQ) {
+                channel.setAllowBubbles(false)
+            }
+            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            return channel
+        }
+
+        @TargetApi(Build.VERSION_CODES.O)
+        private fun createSilentChannel(context: Context): NotificationChannel {
+            val name = context.getString(R.string.silent_channel)
+            val description = context.getString(R.string.channel_for_silent_notifiations)
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(CHANNEL_SILENT, name, importance)
+            channel.description = description
+            channel.enableLights(true)
+            channel.enableVibration(false)
+            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            if (Module.isQ) {
+                channel.setAllowBubbles(false)
+            }
+            return channel
+        }
+
         fun getManager(context: Context): NotificationManager? {
+            createChannels(context)
             return context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         }
     }

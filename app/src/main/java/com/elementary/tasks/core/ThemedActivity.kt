@@ -11,12 +11,12 @@ import org.koin.android.ext.android.inject
 
 abstract class ThemedActivity : AppCompatActivity() {
 
-    val prefs: Prefs by inject()
-    val language: Language by inject()
-    val dialogues: Dialogues by inject()
-    val notifier: Notifier by inject()
+    protected val prefs: Prefs by inject()
+    protected val language: Language by inject()
+    protected val dialogues: Dialogues by inject()
+    protected val notifier: Notifier by inject()
 
-    var isDarkMode = false
+    protected var isDarkMode = false
         private set
 
     @Deprecated("Not used anymore", ReplaceWith("true"))
