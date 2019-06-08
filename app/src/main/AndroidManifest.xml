@@ -566,12 +566,20 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".core.app_widgets.calendar.CalendarUpdateMinusService"
-            android:enabled="true" />
-        <service
-            android:name=".core.app_widgets.calendar.CalendarUpdateService"
-            android:enabled="true" />
+        <receiver
+            android:name=".core.app_widgets.calendar.CalendarPreviousReceiver">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".core.app_widgets.calendar.CalendarNextReceiver">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name="com.evernote.android.job.gcm.PlatformGcmService"
             android:enabled="true"

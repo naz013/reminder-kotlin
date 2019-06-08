@@ -113,17 +113,19 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
             monthAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(R.id.monthGrid, monthAdapter)
 
-            var serviceIntent = Intent(context, CalendarUpdateService::class.java)
-            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            serviceIntent.putExtra("actionPlus", 2)
-            var servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setOnClickPendingIntent(R.id.btn_next, servicePendingIntent)
+            val nextIntent = Intent(context, CalendarNextReceiver::class.java)
+            nextIntent.action = CalendarNextReceiver.ACTION_NEXT
+            nextIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+            nextIntent.putExtra(CalendarNextReceiver.ARG_VALUE, 2)
+            val nextPendingIntent = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            rv.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent)
 
-            serviceIntent = Intent(context, CalendarUpdateMinusService::class.java)
-            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            serviceIntent.putExtra("actionMinus", 1)
-            servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setOnClickPendingIntent(R.id.btn_prev, servicePendingIntent)
+            val previousIntent = Intent(context, CalendarPreviousReceiver::class.java)
+            previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS
+            previousIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+            previousIntent.putExtra(CalendarPreviousReceiver.ARG_VALUE, 1)
+            val previousPendingIntent = PendingIntent.getBroadcast(context, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            rv.setOnClickPendingIntent(R.id.btn_prev, previousPendingIntent)
 
             appWidgetManager.updateAppWidget(widgetID, rv)
             appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, R.id.weekdayGrid)
