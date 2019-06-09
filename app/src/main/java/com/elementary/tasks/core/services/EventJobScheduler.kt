@@ -28,6 +28,7 @@ object EventJobScheduler {
 
     const val ARG_LOCATION = "arg_location"
     const val ARG_MISSED = "arg_missed"
+    const val ARG_REPEAT = "arg_repeated"
 
     fun scheduleEventCheck(prefs: Prefs) {
         val interval = prefs.autoCheckInterval
@@ -166,6 +167,29 @@ object EventJobScheduler {
         cancelReminder(number)
     }
 
+    fun scheduleReminderRepeat(context: Context, uuId: String, prefs: Prefs): Boolean {
+        val item = AppDb.getAppDatabase(context).reminderDao().getById(uuId) ?: return false
+        val minutes = prefs.notificationRepeatTime
+        val millis = minutes * TimeCount.MINUTE
+        if (millis <= 0) {
+            return false
+        }
+        Timber.d("scheduleReminderRepeat: $millis, $uuId")
+        val bundle = PersistableBundleCompat()
+        bundle.putBoolean(ARG_REPEAT, true)
+        JobRequest.Builder(item.uuId)
+                .setExact(millis)
+                .setRequiresCharging(false)
+                .setRequiresDeviceIdle(false)
+                .setRequiresBatteryNotLow(false)
+                .setRequiresStorageNotLow(false)
+                .setUpdateCurrent(true)
+                .setExtras(bundle)
+                .build()
+                .schedule()
+        return true
+    }
+
     fun scheduleReminderDelay(minutes: Int, uuId: String) {
         scheduleReminderDelay(TimeCount.MINUTE * minutes, uuId)
     }
@@ -174,6 +198,7 @@ object EventJobScheduler {
         if (millis <= 0) {
             return
         }
+        Timber.d("scheduleReminderDelay: $millis, $uuId")
         JobRequest.Builder(uuId)
                 .setExact(millis)
                 .setRequiresCharging(false)
@@ -192,6 +217,7 @@ object EventJobScheduler {
         if (due == 0L || millis <= 0) {
             return false
         }
+        Timber.d("scheduleGpsDelay: $millis, $uuId")
         val bundle = PersistableBundleCompat()
         bundle.putBoolean(ARG_LOCATION, true)
         JobRequest.Builder(item.uuId)

@@ -22,6 +22,7 @@ class EventJobService : Job(), KoinComponent {
 
     private val prefs: Prefs by inject()
     private val notifier: Notifier by inject()
+    private val appDb: AppDb by inject()
 
     override fun onRunJob(params: Params): Result {
         Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
@@ -36,11 +37,22 @@ class EventJobService : Job(), KoinComponent {
                 when {
                     bundle.getBoolean(EventJobScheduler.ARG_MISSED, false) -> missedCallAction(params)
                     bundle.getBoolean(EventJobScheduler.ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
+                    bundle.getBoolean(EventJobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(context, params.tag)
                     else -> reminderAction(context, params.tag)
                 }
             }
         }
         return Result.SUCCESS
+    }
+
+    private fun repeatedReminderAction(context: Context, tag: String?) {
+        val id = tag ?: ""
+        val item = appDb.reminderDao().getById(id)
+        if (item != null) {
+            Timber.d("repeatedReminderAction: ${item.uuId}")
+            notifier.showRepeatedNotification(context, item)
+            EventJobScheduler.scheduleReminderRepeat(context, item.uuId, prefs)
+        }
     }
 
     private fun eventsCheckAction() {

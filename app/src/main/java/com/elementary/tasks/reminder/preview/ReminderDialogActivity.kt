@@ -26,8 +26,8 @@ import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.ReminderActionReceiver
-import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -46,7 +46,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     private val themeUtil: ThemeUtil by inject()
 
     private var shoppingAdapter: ShopListRecyclerAdapter = ShopListRecyclerAdapter()
-    private val repeater = RepeatNotificationReceiver()
 
     private var mReminder: Reminder? = null
     private var mControl: EventControl? = null
@@ -241,7 +240,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         binding.buttonDelay.setOnClickListener { delay() }
         binding.buttonDelayFor.setOnClickListener {
             showDialog()
-            repeater.cancelAlarm(this, id)
+            EventJobScheduler.cancelReminder(uuId)
             discardNotification(id)
         }
         binding.buttonAction.setOnClickListener { call() }
@@ -527,7 +526,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         } else {
             showNotification()
             if (isRepeatEnabled) {
-                repeater.setAlarm(this, id)
+                EventJobScheduler.scheduleReminderRepeat(this, uuId, prefs)
             }
             if (isTtsEnabled) {
                 startTts()
@@ -602,7 +601,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     override fun onBackPressed() {
         discardMedia()
         if (prefs.isFoldingEnabled) {
-            repeater.cancelAlarm(this, id)
+            EventJobScheduler.cancelReminder(uuId)
             removeFlags()
             finish()
         } else {
@@ -621,7 +620,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     private fun cancelTasks() {
         discardNotification(id)
-        repeater.cancelAlarm(this, id)
     }
 
     private fun showDialog() {

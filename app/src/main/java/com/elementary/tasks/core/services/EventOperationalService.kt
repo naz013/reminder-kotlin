@@ -88,6 +88,9 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                         when (ACTION_PLAY) {
                             intent.action -> {
                                 showReminderNotification(reminder)
+                                if (isRepeatEnabled(reminder)) {
+                                    EventJobScheduler.scheduleReminderRepeat(this, id, prefs)
+                                }
                             }
                         }
                     }
@@ -129,6 +132,14 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         }
     }
 
+    private fun isRepeatEnabled(reminder: Reminder): Boolean {
+        var isRepeat = prefs.isNotificationRepeatEnabled
+        if (!reminder.useGlobal) {
+            isRepeat = reminder.repeatNotification
+        }
+        return isRepeat
+    }
+
     private fun showReminderNotification(reminder: Reminder) {
         Timber.d("showReminderNotification: $reminder")
 
@@ -167,7 +178,6 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         builder.priority = priority(reminder.priority)
         builder.setContentTitle(reminder.summary)
         builder.setAutoCancel(false)
-        builder.priority = NotificationCompat.PRIORITY_MAX
         if (prefs.isManualRemoveEnabled) {
             builder.setOngoing(false)
         } else {

@@ -16,11 +16,14 @@ import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
+import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.preview.ReminderDialogQActivity
 import timber.log.Timber
 import java.util.*
 
@@ -187,6 +190,88 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
         remoteViews.setTextColor(R.id.featured, colorOnSecondary)
         remoteViews.setTextColor(R.id.text, colorOnSecondary)
         getManager(context)?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
+    }
+
+    fun showRepeatedNotification(context: Context, reminder: Reminder) {
+        val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
+
+        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
+            val melody = ReminderUtils.getSound(context, prefs, reminder.melodyPath)
+            context.grantUriPermission("com.android.systemui", melody.uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            builder.setSound(melody.uri)
+        }
+        if (prefs.isVibrateEnabled) {
+            val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
+                longArrayOf(150, 86400000)
+            } else {
+                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+            }
+            builder.setVibrate(pattern)
+        }
+        builder.priority = priority(reminder.priority)
+        builder.setContentTitle(reminder.summary)
+        builder.setAutoCancel(false)
+        if (prefs.isManualRemoveEnabled) {
+            builder.setOngoing(false)
+        } else {
+            builder.setOngoing(true)
+        }
+        if (Module.isPro && prefs.isLedEnabled) {
+            builder.setLights(ledColor(reminder.color), 500, 1000)
+        }
+        builder.setContentText(appName(context))
+        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+        builder.color = ThemeUtil.getSecondaryColor(context)
+        builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
+
+        if (reminder.priority > 2) {
+            val fullScreenIntent = ReminderDialogQActivity.getLaunchIntent(context, reminder.uuId)
+            val fullScreenPendingIntent = PendingIntent.getActivity(context, reminder.uniqueId, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            builder.setFullScreenIntent(fullScreenPendingIntent, true)
+        } else {
+            val notificationIntent = Intent(context, ReminderActionReceiver::class.java)
+            notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
+            notificationIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
+            val intent = PendingIntent.getBroadcast(context, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            builder.setContentIntent(intent)
+        }
+        val dismissIntent = Intent(context, ReminderActionReceiver::class.java)
+        dismissIntent.action = ReminderActionReceiver.ACTION_HIDE
+        dismissIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
+        val piDismiss = PendingIntent.getBroadcast(context, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
+
+        getManager(context)?.notify(reminder.uniqueId, builder.build())
+    }
+
+    private fun appName(context: Context): String {
+        return if (Module.isPro) {
+            context.getString(R.string.app_name_pro)
+        } else {
+            context.getString(R.string.app_name)
+        }
+    }
+
+    private fun ledColor(color: Int): Int {
+        return if (Module.isPro) {
+            if (color != -1) {
+                LED.getLED(color)
+            } else {
+                LED.getLED(prefs.ledColor)
+            }
+        } else {
+            LED.getLED(0)
+        }
+    }
+
+    private fun priority(priority: Int): Int {
+        return when (priority) {
+            0 -> NotificationCompat.PRIORITY_MIN
+            1 -> NotificationCompat.PRIORITY_LOW
+            2 -> NotificationCompat.PRIORITY_DEFAULT
+            3 -> NotificationCompat.PRIORITY_HIGH
+            else -> NotificationCompat.PRIORITY_MAX
+        }
     }
 
     companion object {

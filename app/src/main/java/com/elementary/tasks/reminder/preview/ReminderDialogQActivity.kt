@@ -27,8 +27,8 @@ import com.elementary.tasks.core.BindingActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.EventOperationalService
-import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -47,7 +47,6 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     private val themeUtil: ThemeUtil by inject()
 
     private var shoppingAdapter: ShopListRecyclerAdapter = ShopListRecyclerAdapter()
-    private val repeater = RepeatNotificationReceiver()
 
     private var mReminder: Reminder? = null
     private var mControl: EventControl? = null
@@ -59,33 +58,6 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
             val reminder = mReminder ?: return false
             return Reminder.isSame(reminder.type, Reminder.BY_DATE_LINK)
                     || Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)
-        }
-    private val isAutoCallEnabled: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var has = prefs.isAutoCallEnabled
-            if (!isGlobal) {
-                has = reminder.auto
-            }
-            return has
-        }
-    private val isAutoLaunchEnabled: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var has = prefs.isAutoLaunchEnabled
-            if (!isGlobal) {
-                has = reminder.auto
-            }
-            return has
-        }
-    private val isRepeatEnabled: Boolean
-        get() {
-            val reminder = mReminder ?: return false
-            var isRepeat = prefs.isNotificationRepeatEnabled
-            if (!isGlobal) {
-                isRepeat = reminder.repeatNotification
-            }
-            return isRepeat
         }
 
     private val isRateDialogShowed: Boolean
@@ -217,7 +189,7 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
         binding.buttonDelay.setOnClickListener { delay() }
         binding.buttonDelayFor.setOnClickListener {
             showDialog()
-            repeater.cancelAlarm(this, id)
+            EventJobScheduler.cancelReminder(mReminder?.uuId ?: "")
             discardNotification(id)
         }
         binding.buttonAction.setOnClickListener { call() }
@@ -495,16 +467,6 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
         }
 
         init()
-
-        if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) && isAutoCallEnabled) {
-            call()
-        } else if (isAppType && isAutoLaunchEnabled) {
-            openApplication(reminder)
-        } else {
-            if (isRepeatEnabled) {
-                repeater.setAlarm(this, id)
-            }
-        }
     }
 
     private fun canSkip(): Boolean {
@@ -574,7 +536,7 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     override fun onBackPressed() {
         discardMedia()
         if (prefs.isFoldingEnabled) {
-            repeater.cancelAlarm(this, id)
+            EventJobScheduler.cancelReminder(mReminder?.uuId ?: "")
             removeFlags()
             finish()
         } else {
@@ -593,7 +555,6 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
 
     private fun cancelTasks() {
         discardNotification(id)
-        repeater.cancelAlarm(this, id)
     }
 
     private fun showDialog() {
