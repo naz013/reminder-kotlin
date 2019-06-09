@@ -13,6 +13,7 @@ import java.io.File
 class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthdayNotificationsBinding>() {
 
     private val cacheUtil: CacheUtil by inject()
+    private val soundStackHolder: SoundStackHolder by inject()
 
     private var mItemSelect: Int = 0
 
@@ -152,6 +153,27 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         binding.chooseSoundPrefs.setOnClickListener { showSoundDialog() }
         binding.chooseSoundPrefs.setReverseDependentView(binding.globalOptionPrefs)
         showMelody()
+        soundStackHolder.initParams()
+        soundStackHolder.onlyPlay = true
+        soundStackHolder.playbackCallback = object : Sound.PlaybackCallback {
+            override fun onFinish() {
+                binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+                binding.chooseSoundPrefs.setLoading(false)
+            }
+
+            override fun onStart() {
+                binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_stop_24px)
+                binding.chooseSoundPrefs.setLoading(true)
+            }
+        }
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+        binding.chooseSoundPrefs.setCustomViewClickListener(View.OnClickListener {
+            if (soundStackHolder.sound?.isPlaying == true) {
+                soundStackHolder.sound?.stop(true)
+            } else {
+                soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.birthdayMelody).uri, false)
+            }
+        })
     }
 
     private fun showMelody() {
@@ -366,6 +388,13 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                     showMelody()
                 }
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (soundStackHolder.sound?.isPlaying == true) {
+            soundStackHolder.sound?.stop(true)
         }
     }
 

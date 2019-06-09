@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.PrefsViewBinding
@@ -66,6 +64,8 @@ class PrefsView : RelativeLayout {
         binding = PrefsViewBinding(this)
         descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
 
+        binding.progressView.hide()
+
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(
                     attrs, R.styleable.PrefsView, 0, 0)
@@ -113,6 +113,18 @@ class PrefsView : RelativeLayout {
         setDetailText(mSecondaryText)
         isChecked = isChecked
         setVisible()
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressView.show()
+        } else {
+            binding.progressView.hide()
+        }
+    }
+
+    fun setCustomViewClickListener(onClickListener: OnClickListener) {
+        binding.prefsView.setOnClickListener(onClickListener)
     }
 
     fun setOnCheckedListener(listener: OnCheckedListener) {
@@ -255,19 +267,12 @@ class PrefsView : RelativeLayout {
 
     fun setViewResource(@DrawableRes resource: Int) {
         if (resource != 0) {
-            val drawableTop: Drawable? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                context.getDrawable(resource)
-            } else {
-                AppCompatResources.getDrawable(context, resource)
-            }
-            binding.prefsView.background = drawableTop
+            binding.prefsView.setImageResource(resource)
         }
     }
 
     fun setViewDrawable(drawable: Drawable?) {
-        if (drawable != null) {
-            binding.prefsView.background = drawable
-        }
+        binding.prefsView.setImageDrawable(drawable)
     }
 
     private fun refreshDetailText() {
