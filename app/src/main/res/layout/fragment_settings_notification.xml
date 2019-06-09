@@ -164,7 +164,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_icon="@drawable/ic_twotone_music_note_24px"
                 app:prefs_primary_text="@string/melody"
-                app:prefs_type="none" />
+                app:prefs_type="view" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/melodyDurationPrefs"

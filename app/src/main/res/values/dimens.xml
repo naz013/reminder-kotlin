@@ -10,7 +10,7 @@
     <dimen name="create_margin">16dp</dimen>
     <dimen name="create_imagebutton_size">50dp</dimen>
 
-    <dimen name="settings_view_size">25dp</dimen>
+    <dimen name="settings_view_size">40dp</dimen>
 
     <dimen name="create_note_text_size">20sp</dimen>
     <dimen name="create_note_image_button_size">40dp</dimen>

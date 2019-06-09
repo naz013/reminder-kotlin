@@ -29,6 +29,7 @@ class SoundStackHolder(private val context: Context, private val prefs: Prefs) :
     private var mStream: Int = 0
     private var mMaxVolume: Int = 0
     private var mSystemStream: Int = 0
+    var onlyPlay: Boolean = false
 
     private val mVolumeIncrease = object : Runnable {
         override fun run() {
@@ -107,14 +108,18 @@ class SoundStackHolder(private val context: Context, private val prefs: Prefs) :
     }
 
     override fun onFinish() {
-        cancelIncreaseSound()
-        restoreDefaultVolume()
+        if (!onlyPlay) {
+            cancelIncreaseSound()
+            restoreDefaultVolume()
+        }
         playbackCallback?.onFinish()
     }
 
     override fun onStart() {
-        saveDefaultVolume()
-        setPlayerVolume()
+        if (!onlyPlay) {
+            saveDefaultVolume()
+            setPlayerVolume()
+        }
         playbackCallback?.onStart()
     }
 
