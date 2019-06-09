@@ -21,12 +21,11 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -61,6 +60,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     override var canExportToCalendar: Boolean = false
 
     private val backupTool: BackupTool by inject()
+    private val cacheUtil: CacheUtil by inject()
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -352,8 +352,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
 
     override fun selectMelody() {
         if (Permissions.checkPermission(this,330, Permissions.READ_EXTERNAL)) {
-            startActivityForResult(Intent(this, FileExplorerActivity::class.java),
-                    Constants.REQUEST_CODE_SELECTED_MELODY)
+            cacheUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
         }
     }
 
@@ -433,9 +432,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
                 }
             }
         } else if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
-            val melodyPath = data?.getStringExtra(Constants.FILE_PICKED) ?: ""
-            fragment?.onMelodySelect(melodyPath)
-            showCurrentMelody()
+            if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+                val melodyPath = cacheUtil.cacheFile(data)
+                if (melodyPath != null) {
+                    fragment?.onMelodySelect(melodyPath)
+                    showCurrentMelody()
+                }
+            }
         } else if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 fragment?.onAttachmentSelect(it)

@@ -2,12 +2,12 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import android.net.Uri
+import androidx.annotation.RequiresPermission
 import androidx.core.content.FileProvider
 import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.BuildConfig
 import timber.log.Timber
 import java.io.File
-import java.util.*
 
 object UriUtil {
 
@@ -15,24 +15,15 @@ object UriUtil {
     const val ANY_MIME = "any"
     const val IMAGE_MIME = "image/*"
 
-    fun obtainPath(context: Context, uri: Uri, onReady: (Boolean, String?) -> Unit) {
-        launchIo {
+    @RequiresPermission(Permissions.READ_EXTERNAL)
+    fun obtainPath(cacheUtil: CacheUtil, uri: Uri, onReady: (Boolean, String?) -> Unit) {
+        launchDefault {
             try {
-                val id = UUID.randomUUID().toString()
-                val inputStream = context.contentResolver.openInputStream(uri)
-                val dir = MemoryUtil.imagesDir
-                if (dir == null || inputStream == null) {
+                val path = cacheUtil.cacheFile(uri)
+                if (path == null) {
                     withUIContext { onReady.invoke(false, null) }
                 } else {
-                    val file = File("$dir/$id")
-                    Timber.d("obtainPath: $file")
-                    if (file.createNewFile()) {
-                        file.copyInputStreamToFile(inputStream)
-                        val filePath = file.absolutePath
-                        withUIContext { onReady.invoke(true, filePath) }
-                    } else {
-                        withUIContext { onReady.invoke(false, null) }
-                    }
+                    withUIContext { onReady.invoke(true, path) }
                 }
             } catch (e: Exception) {
                 Crashlytics.logException(e)
