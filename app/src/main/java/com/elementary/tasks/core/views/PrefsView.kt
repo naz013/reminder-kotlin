@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -273,6 +274,10 @@ class PrefsView : RelativeLayout {
 
     fun setViewDrawable(drawable: Drawable?) {
         binding.prefsView.setImageDrawable(drawable)
+    }
+
+    fun setViewBitmap(bitmap: Bitmap?) {
+        binding.prefsView.setImageBitmap(bitmap)
     }
 
     private fun refreshDetailText() {
