@@ -17,28 +17,9 @@ import com.elementary.tasks.core.binding.dialogs.DialogExclusionPickerBinding
 import com.elementary.tasks.core.binding.views.ExclusionPickerViewBinding
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class ExclusionPickerView : LinearLayout {
 
     private lateinit var binding: ExclusionPickerViewBinding
@@ -123,7 +104,7 @@ class ExclusionPickerView : LinearLayout {
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_exclusion_picker, this)
-        orientation = LinearLayout.VERTICAL
+        orientation = VERTICAL
         binding = ExclusionPickerViewBinding(this)
 
         binding.text.setOnClickListener {
@@ -193,7 +174,7 @@ class ExclusionPickerView : LinearLayout {
     }
 
     private fun showHours() {
-        if (!mHours.isEmpty()) {
+        if (mHours.isNotEmpty()) {
             val message = mHours.joinToString(separator = ", ")
             binding.text.text = message
         } else {

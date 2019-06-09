@@ -3,7 +3,7 @@ package com.elementary.tasks.navigation.fragments
 import android.app.Activity
 import android.content.Context
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.core.BindingFragment
+import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject

@@ -95,7 +95,7 @@
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity
-            android:name=".core.IntentActivity"
+            android:name=".core.arch.IntentActivity"
             android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
             android:label="@string/import_file"

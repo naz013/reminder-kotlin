@@ -52,7 +52,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     private fun init() {
         mImm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 
-        setSingleLine(true)
+        isSingleLine = true
         imeOptions = EditorInfo.IME_ACTION_SEARCH
         setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_SEARCH) {

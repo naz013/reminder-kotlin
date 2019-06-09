@@ -1,4 +1,4 @@
-package com.elementary.tasks.core
+package com.elementary.tasks.core.arch
 
 import android.content.Context
 import android.os.Bundle

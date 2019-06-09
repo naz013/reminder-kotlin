@@ -2,7 +2,7 @@ package com.elementary.tasks.core.fragments
 
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.core.BindingFragment
+import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil

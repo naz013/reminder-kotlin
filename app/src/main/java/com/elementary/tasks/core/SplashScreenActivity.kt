@@ -3,6 +3,7 @@ package com.elementary.tasks.core
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
