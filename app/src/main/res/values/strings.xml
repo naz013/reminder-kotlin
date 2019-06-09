@@ -723,5 +723,7 @@
     <string name="no_upcoming_birthdays">No upcoming birthdays</string>
     <string name="you_re_all_done">You\'re all done</string>
     <string name="reminder_ongoing_service">Reminder ongoing service</string>
+    <string name="select_melody">Select melody</string>
+    <string name="select_image">Select image</string>
 
 </resources>

@@ -7,15 +7,17 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
+import org.koin.android.ext.android.inject
 import java.io.File
 import java.util.*
 
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
+
+    private val cacheUtil: CacheUtil by inject()
 
     private var mItemSelect: Int = 0
 
@@ -578,11 +580,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             Constants.SOUND_ALARM -> labels[2]
             else -> {
                 if (!filePath.matches("".toRegex())) {
-                    val sound = File(filePath)
-                    val fileName = sound.name
-                    val pos = fileName.lastIndexOf(".")
-                    val fileNameS = fileName.substring(0, pos)
-                    fileNameS
+                    val musicFile = File(filePath)
+                    musicFile.name
                 } else {
                     labels[1]
                 }
@@ -601,7 +600,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showSoundDialog() {
-        withContext {
+        withActivity {
             val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.melody))
@@ -614,13 +613,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
+                if (mItemSelect <= 2 && !isDefaultMelody()) {
+                    cacheUtil.removeFromCache(prefs.melodyFile)
+                }
                 when (mItemSelect) {
                     0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
                     1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
                     2 -> prefs.melodyFile = Constants.SOUND_ALARM
-                    else -> {
-                        startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
-                    }
+                    else -> pickMelody()
                 }
                 showMelody()
             }
@@ -629,6 +629,18 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             }
             builder.create().show()
         }
+    }
+
+    private fun pickMelody() {
+        withActivity {
+            if (Permissions.checkPermission(it, PERM_MELODY, Permissions.READ_EXTERNAL)) {
+                cacheUtil.pickMelody(it, MELODY_CODE)
+            }
+        }
+    }
+
+    private fun isDefaultMelody(): Boolean {
+        return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM).contains(prefs.melodyFile)
     }
 
     private fun showMelodyDuration() {
@@ -842,23 +854,27 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
-                if (filePath != null) {
-                    val file = File(filePath)
-                    if (file.exists()) {
-                        prefs.melodyFile = file.toString()
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+                    val filePath = cacheUtil.cacheFile(data)
+                    if (filePath != null) {
+                        val file = File(filePath)
+                        if (file.exists()) {
+                            prefs.melodyFile = file.toString()
+                        }
                     }
+                    showMelody()
                 }
-                showMelody()
             }
             Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
-                if (filePath != null) {
-                    val file = File(filePath)
-                    if (file.exists()) {
-                        prefs.screenImage = filePath
-                    } else {
-                        prefs.screenImage = Constants.DEFAULT
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+                    val filePath = cacheUtil.cacheFile(data)
+                    if (filePath != null) {
+                        val file = File(filePath)
+                        if (file.exists()) {
+                            prefs.screenImage = filePath
+                        } else {
+                            prefs.screenImage = Constants.DEFAULT
+                        }
                     }
                     showImage()
                 }
@@ -872,6 +888,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             when (requestCode) {
                 PERM_AUTO_CALL -> changeAutoCallPrefs()
                 PERM_IMAGE -> openImagePicker()
+                PERM_MELODY -> pickMelody()
             }
         }
     }
@@ -879,8 +896,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     private fun openImagePicker() {
         withActivity {
             if (Permissions.checkPermission(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
-                startActivityForResult(Intent(it, FileExplorerActivity::class.java).putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO),
-                        Constants.ACTION_REQUEST_GALLERY)
+                cacheUtil.pickImage(it, Constants.ACTION_REQUEST_GALLERY)
             }
         }
     }
@@ -901,5 +917,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         private const val PERM_BT = 1425
         private const val PERM_AUTO_CALL = 1427
         private const val PERM_IMAGE = 1428
+        private const val PERM_MELODY = 1429
     }
 }

@@ -9,12 +9,14 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.AttachmentViewBinding
-import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.hide
-import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.*
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
-class AttachmentView : LinearLayout {
+class AttachmentView : LinearLayout, KoinComponent {
+
+    private val cacheUtil: CacheUtil by inject()
 
     private lateinit var binding: AttachmentViewBinding
     var onFileUpdateListener: ((path: String) -> Unit)? = null
@@ -46,12 +48,14 @@ class AttachmentView : LinearLayout {
     fun setUri(uri: Uri) {
         Timber.d("setUri: ${uri.path}")
         content = uri.toString()
-        UriUtil.obtainPath(context, uri) { success, path ->
-            Timber.d("setUri: $success, $path")
-            content = if (success && path != null) {
-                path
-            } else {
-                ""
+        if (Permissions.checkPermission(context, Permissions.READ_EXTERNAL)) {
+            UriUtil.obtainPath(cacheUtil, uri) { success, path ->
+                Timber.d("setUri: $success, $path")
+                content = if (success && path != null) {
+                    path
+                } else {
+                    ""
+                }
             }
         }
     }

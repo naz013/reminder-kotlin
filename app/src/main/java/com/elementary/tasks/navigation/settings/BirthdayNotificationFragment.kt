@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
+import org.koin.android.ext.android.inject
 import java.io.File
 
 class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthdayNotificationsBinding>() {
+
+    private val cacheUtil: CacheUtil by inject()
 
     private var mItemSelect: Int = 0
 
@@ -161,17 +163,18 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             Constants.SOUND_ALARM -> labels[2]
             else -> {
                 if (!filePath.matches("".toRegex())) {
-                    val sound = File(filePath)
-                    val fileName = sound.name
-                    val pos = fileName.lastIndexOf(".")
-                    val fileNameS = fileName.substring(0, pos)
-                    fileNameS
+                    val musicFile = File(filePath)
+                    musicFile.name
                 } else {
                     labels[1]
                 }
             }
         }
         binding.chooseSoundPrefs.setDetailText(label)
+    }
+
+    private fun isDefaultMelody(): Boolean {
+        return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM).contains(prefs.birthdayMelody)
     }
 
     private fun melodyLabels(): Array<String> {
@@ -197,12 +200,17 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
+                if (mItemSelect <= 2 && !isDefaultMelody()) {
+                    cacheUtil.removeFromCache(prefs.birthdayMelody)
+                }
                 when (mItemSelect) {
                     0 -> prefs.birthdayMelody = Constants.SOUND_RINGTONE
                     1 -> prefs.birthdayMelody = Constants.SOUND_NOTIFICATION
                     2 -> prefs.birthdayMelody = Constants.SOUND_ALARM
                     else -> {
-                        startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
+                        if (Permissions.checkPermission(it, Permissions.READ_EXTERNAL)) {
+                            cacheUtil.pickMelody(activity!!, MELODY_CODE)
+                        }
                     }
                 }
                 showMelody()
@@ -347,14 +355,16 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
-                if (filePath != null) {
-                    val file = File(filePath)
-                    if (file.exists()) {
-                        prefs.birthdayMelody = file.toString()
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+                    val filePath = cacheUtil.cacheFile(data)
+                    if (filePath != null) {
+                        val file = File(filePath)
+                        if (file.exists()) {
+                            prefs.birthdayMelody = file.toString()
+                        }
                     }
+                    showMelody()
                 }
-                showMelody()
             }
         }
     }

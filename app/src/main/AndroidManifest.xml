@@ -233,11 +233,6 @@
             android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".core.file_explorer.FileExplorerActivity"
-            android:configChanges="keyboardHidden"
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
             android:name=".groups.create.CreateGroupActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged">

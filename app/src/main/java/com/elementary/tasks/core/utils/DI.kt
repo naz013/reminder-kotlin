@@ -19,6 +19,7 @@ fun utilModule() = module {
     single { CalendarUtils(androidApplication(), get(), get()) }
     single { providesRecognizer(get(), get()) }
     single { QrShareProvider(get()) }
+    single { CacheUtil(get()) }
     single { GlobalButtonObservable() }
     single { ImagesSingleton() }
 }
