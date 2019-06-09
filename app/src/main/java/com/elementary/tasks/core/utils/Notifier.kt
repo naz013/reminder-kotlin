@@ -190,9 +190,9 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
     }
 
     companion object {
-        const val CHANNEL_REMINDER = "reminder.channel1"
-        const val CHANNEL_SILENT = "reminder.channel3"
-        const val CHANNEL_SYSTEM = "reminder.channel2"
+        const val CHANNEL_REMINDER = "reminder.channel.events"
+        const val CHANNEL_SILENT = "reminder.channel.silent"
+        const val CHANNEL_SYSTEM = "reminder.channel.system"
 
         private fun createChannels(context: Context) {
             if (Module.isOreo) {

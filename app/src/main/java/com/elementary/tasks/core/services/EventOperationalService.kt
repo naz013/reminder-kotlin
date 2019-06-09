@@ -59,9 +59,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
     private fun showForegroundNotification() {
         val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
-        builder.priority = NotificationCompat.PRIORITY_MIN
         builder.color = ThemeUtil.getSecondaryColor(applicationContext)
-        builder.setAutoCancel(false)
         builder.setSmallIcon(R.drawable.ic_twotone_music_note_24px)
         builder.setContentTitle(getString(R.string.reminder_ongoing_service))
         builder.setContentText(getString(R.string.app_title))
@@ -181,9 +179,9 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         builder.setContentText(appName())
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         builder.color = ThemeUtil.getSecondaryColor(applicationContext)
+        builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
         if (reminder.priority > 2) {
-            builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
             val fullScreenIntent = ReminderDialogQActivity.getLaunchIntent(applicationContext, reminder.uuId)
             val fullScreenPendingIntent = PendingIntent.getActivity(this, reminder.uniqueId, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setFullScreenIntent(fullScreenPendingIntent, true)
@@ -268,7 +266,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
     private fun showWearNotification(id: Int, summary: String, secondaryText: String, groupName: String) {
         Timber.d("showWearNotification: $secondaryText")
-        val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_SYSTEM)
+        val wearableNotificationBuilder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         wearableNotificationBuilder.setContentTitle(summary)
         wearableNotificationBuilder.setContentText(secondaryText)

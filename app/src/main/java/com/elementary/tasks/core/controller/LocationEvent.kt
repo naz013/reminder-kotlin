@@ -2,30 +2,11 @@ package com.elementary.tasks.core.controller
 
 import android.text.TextUtils
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
-
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
@@ -37,7 +18,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
             reminder.isActive = true
             reminder.isRemoved = false
             super.save()
-            if (EventJobService.enablePositionDelay(context, reminder.uuId)) {
+            if (EventJobScheduler.scheduleGpsDelay(context, reminder.uuId)) {
                 true
             } else {
                 SuperUtil.startGpsTracking(context)
@@ -51,7 +32,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     override fun stop(): Boolean {
-        EventJobService.cancelReminder(reminder.uuId)
+        EventJobScheduler.cancelReminder(reminder.uuId)
         reminder.isActive = false
         if (prefs.moveCompleted) {
             reminder.isRemoved = true
@@ -97,7 +78,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     override fun pause(): Boolean {
-        EventJobService.cancelReminder(reminder.uuId)
+        EventJobScheduler.cancelReminder(reminder.uuId)
         notifier.hideNotification(reminder.uniqueId)
         stopTracking(true)
         return true
@@ -109,7 +90,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
     override fun resume(): Boolean {
         if (reminder.isActive) {
-            val b = EventJobService.enablePositionDelay(context, reminder.uuId)
+            val b = EventJobScheduler.scheduleGpsDelay(context, reminder.uuId)
             if (!b) SuperUtil.startGpsTracking(context)
         }
         return true

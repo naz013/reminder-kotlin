@@ -171,7 +171,7 @@ class GeolocationService : Service() {
                 if (delayTime > 0) {
                     reminder.eventTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis() + delayTime)
                     appDb.reminderDao().insert(reminder)
-                    EventJobService.enablePositionDelay(applicationContext, reminder.uuId)
+                    EventJobScheduler.scheduleGpsDelay(applicationContext, reminder.uuId)
                 }
             }
         } else {
@@ -191,7 +191,7 @@ class GeolocationService : Service() {
         builder.setContentText(roundedDistance.toString())
         builder.setContentTitle(reminder.summary)
         builder.setContentText(roundedDistance.toString())
-        builder.priority = NotificationCompat.PRIORITY_LOW
+        builder.priority = NotificationCompat.PRIORITY_MIN
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
 
         Notifier.getManager(applicationContext)?.notify(reminder.uniqueId, builder.build())
@@ -204,7 +204,6 @@ class GeolocationService : Service() {
         } else {
             builder.setContentText(getString(R.string.app_name))
         }
-
         builder.setContentTitle(getString(R.string.location_tracking_service_running))
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
         startForeground(NOTIFICATION_ID, builder.build())

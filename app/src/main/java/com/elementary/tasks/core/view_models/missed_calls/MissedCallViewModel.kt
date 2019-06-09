@@ -3,6 +3,7 @@ package com.elementary.tasks.core.view_models.missed_calls
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -18,7 +19,7 @@ class MissedCallViewModel private constructor(number: String) : BaseDbViewModel(
         launchDefault {
             runBlocking {
                 appDb.missedCallsDao().delete(missedCall)
-                EventJobService.cancelMissedCall(missedCall.number)
+                EventJobScheduler.cancelMissedCall(missedCall.number)
             }
             postInProgress(false)
             postCommand(Commands.DELETED)
