@@ -12,7 +12,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.AlarmReceiver
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
@@ -98,7 +98,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     }
 
     private fun startCheckService() {
-        withContext { AlarmReceiver().enableEventCheck(it) }
+        EventJobScheduler.scheduleEventCheck(prefs)
     }
 
     private fun loadCalendars() {
@@ -184,13 +184,10 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     private fun autoCheck(isChecked: Boolean) {
         prefs.isAutoEventsCheckEnabled = isChecked
         binding.syncInterval.isEnabled = isChecked
-        val alarm = AlarmReceiver()
-        withContext {
-            if (isChecked) {
-                alarm.enableEventCheck(it)
-            } else {
-                alarm.cancelEventCheck(it)
-            }
+        if (isChecked) {
+            EventJobScheduler.scheduleEventCheck(prefs)
+        } else {
+            EventJobScheduler.cancelEventCheck()
         }
     }
 

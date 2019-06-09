@@ -79,7 +79,7 @@ class ReminderActionReceiver : BaseBroadcast() {
                 if (prefs.doNotDisturbAction == 0) {
                     val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis() - TimeCount.MINUTE)
                     if (delayTime > 0) {
-                        EventJobService.enableDelay(delayTime, id)
+                        EventJobScheduler.scheduleReminderDelay(delayTime, id)
                     }
                 }
             } else {

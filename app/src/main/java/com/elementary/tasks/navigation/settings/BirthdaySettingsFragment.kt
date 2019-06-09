@@ -13,8 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.services.AlarmReceiver
-import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
@@ -161,9 +160,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         binding.autoScanPrefs.isChecked = !isChecked
         prefs.isContactAutoCheckEnabled = !isChecked
         if (!isChecked) {
-            AlarmReceiver().enableBirthdayCheckAlarm()
+            EventJobScheduler.scheduleBirthdaysCheck()
         } else {
-            AlarmReceiver().cancelBirthdayCheckAlarm()
+            EventJobScheduler.cancelBirthdaysCheck()
         }
     }
 
@@ -255,10 +254,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
             prefs.isBirthdayPermanentEnabled = !isChecked
             if (!isChecked) {
                 it.sendBroadcast(Intent(it, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
-                AlarmReceiver().enableBirthdayPermanentAlarm(it)
+                EventJobScheduler.scheduleBirthdayPermanent()
             } else {
                 it.sendBroadcast(Intent(it, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_HIDE))
-                AlarmReceiver().cancelBirthdayPermanentAlarm(it)
+                EventJobScheduler.cancelBirthdayPermanent()
             }
         }
     }
@@ -289,10 +288,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         binding.birthReminderPrefs.isChecked = !isChecked
         prefs.isBirthdayReminderEnabled = !isChecked
         if (!isChecked) {
-            EventJobService.enableBirthdayAlarm(prefs)
+            EventJobScheduler.scheduleDailyBirthday(prefs)
         } else {
             cleanBirthdays()
-            EventJobService.cancelBirthdayAlarm()
+            EventJobScheduler.cancelDailyBirthday()
         }
     }
 
@@ -306,7 +305,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
         initBirthdayTimePrefs()
         if (prefs.isBirthdayReminderEnabled) {
-            EventJobService.enableBirthdayAlarm(prefs)
+            EventJobScheduler.scheduleDailyBirthday(prefs)
         }
     }
 

@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.GDrive
-import com.elementary.tasks.core.services.AlarmReceiver
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
@@ -100,7 +100,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             showIntervalDialog(getString(R.string.automatically_sync), prefs.autoSyncState) { state ->
                 prefs.autoSyncState = stateFromPosition(state)
                 showSyncState()
-                withContext { AlarmReceiver().enableAutoSync(it) }
+                EventJobScheduler.scheduleAutoSync(prefs)
             }
         }
         binding.autoSyncPrefs.setDependentView(binding.backupDataPrefs)
@@ -270,7 +270,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             showIntervalDialog(getString(R.string.automatically_backup), prefs.autoBackupState) { state ->
                 prefs.autoBackupState = stateFromPosition(state)
                 showBackupState()
-                withContext { AlarmReceiver().enableAutoBackup(it) }
+                EventJobScheduler.scheduleAutoBackup(prefs)
             }
         }
         binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)
