@@ -2,10 +2,14 @@ package com.elementary.tasks.navigation.settings
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
@@ -436,7 +440,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             openNotificationsSettings()
             return
         }
-        dialogues.getNullableDialog(context)?.let {  builder ->
+        dialogues.getNullableDialog(context)?.let { builder ->
             builder.setTitle(R.string.loudness)
             val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
             b.seekBar.max = 25
@@ -596,7 +600,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     private fun showMelody() {
         val filePath = prefs.melodyFile
         val labels = melodyLabels()
-        val label = when(filePath) {
+        val label = when (filePath) {
             Constants.SOUND_RINGTONE -> labels[0]
             Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> labels[1]
             Constants.SOUND_ALARM -> labels[2]
@@ -626,7 +630,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.melody))
-            mItemSelect = when(prefs.melodyFile) {
+            mItemSelect = when (prefs.melodyFile) {
                 Constants.SOUND_RINGTONE -> 0
                 Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
                 Constants.SOUND_ALARM -> 2
@@ -695,7 +699,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.melody_playback_duration))
-            mItemSelect = when(prefs.playbackDuration) {
+            mItemSelect = when (prefs.playbackDuration) {
                 5 -> 1
                 10 -> 2
                 15 -> 3
@@ -869,11 +873,37 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             }
         }
         binding.bgImagePrefs.setDetailText(title)
+        binding.bgImagePrefs.setViewDrawable(null)
+        if (prefs.screenImage != Constants.NONE) {
+            if (prefs.screenImage == Constants.DEFAULT) {
+                binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
+            } else {
+                val imageFile = File(prefs.screenImage)
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL) && imageFile.exists()) {
+                    Glide.with(context!!)
+                            .load(imageFile)
+                            .override(200, 200)
+                            .centerCrop()
+                            .into(object : CustomTarget<Drawable>() {
+                                override fun onLoadCleared(placeholder: Drawable?) {
+
+                                }
+
+                                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                                    binding.bgImagePrefs.setViewDrawable(resource)
+                                }
+                            })
+                } else {
+                    binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
+                }
+            }
+        }
     }
 
     override fun getTitle(): String = getString(R.string.notification)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
                 if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {

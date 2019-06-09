@@ -68,17 +68,27 @@ class CacheUtil(val context: Context) {
         val fileId = DocumentsContract.getDocumentId(uri)
         val file = File(cacheDir, fileId)
 
-        Timber.d("cacheFile: $fileId, ${file.absolutePath}")
+        Timber.d("cacheFile: $fileId, ${file.absolutePath}, $inputStream")
 
         if (hasCache(fileId) && file.exists()) {
+            Timber.d("cacheFile: FROM CACHE")
             return file.absolutePath
         }
 
-        if (inputStream != null && file.createNewFile()) {
+        if (inputStream != null) {
+            if (!file.createNewFile()) {
+                try {
+                    file.delete()
+                    file.createNewFile()
+                } catch (e: Exception) {
+                }
+            }
             file.copyInputStreamToFile(inputStream)
             saveCache(file.absolutePath)
             return file.absolutePath
         }
+
+
         return null
     }
 
