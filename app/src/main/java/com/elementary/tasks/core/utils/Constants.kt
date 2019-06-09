@@ -23,7 +23,6 @@ object Constants {
     const val REQUEST_CODE_CONTACTS = 101
     const val REQUEST_CODE_APPLICATION = 117
     const val ACTION_REQUEST_GALLERY = 111
-    const val SELECTED_CONTACT_NAME = "selected_name"
     const val SELECTED_APPLICATION = "selected_application"
     const val WEB_URL = "https://www.hummingbirdrr.com/"
 }

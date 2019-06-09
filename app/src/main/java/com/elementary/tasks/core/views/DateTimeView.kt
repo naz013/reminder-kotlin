@@ -60,13 +60,12 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     private fun init(context: Context) {
-        orientation = LinearLayout.VERTICAL
+        orientation = VERTICAL
         View.inflate(context, R.layout.view_date_time, this)
         binding = DateTimeViewBinding(this)
 
         descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT)
+        val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         layoutParams = params
         setDateFormat(TimeUtil.fullDate(prefs.appLanguage))
 
@@ -84,7 +83,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         if (isSingleMode) binding.dateField.setOnClickListener(l)
     }
 
-    override fun setOnLongClickListener(l: View.OnLongClickListener?) {
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
         binding.dateField.setOnLongClickListener(l)
         binding.timeField.setOnLongClickListener(l)
     }

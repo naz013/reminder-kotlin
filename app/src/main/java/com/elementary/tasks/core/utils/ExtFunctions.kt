@@ -6,11 +6,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
@@ -23,8 +20,6 @@ import java.io.InputStream
 import java.util.*
 
 fun <T> ViewModel.mutableLiveDataOf() = MutableLiveData<T>()
-
-fun <T : ViewDataBinding> FragmentActivity.activityBinding(@LayoutRes resId: Int) = ActivityBindingProperty<T>(resId)
 
 fun File.copyInputStreamToFile(inputStream: InputStream) {
     inputStream.use { input ->

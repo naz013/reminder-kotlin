@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.list.BirthdaysFragment
-import com.elementary.tasks.core.BindingActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.binding.views.NavHeaderBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.*

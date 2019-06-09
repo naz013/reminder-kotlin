@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BindingActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils

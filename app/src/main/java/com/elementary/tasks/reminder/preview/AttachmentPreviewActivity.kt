@@ -6,7 +6,7 @@ import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BindingActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityAttachmentPreviewBinding
