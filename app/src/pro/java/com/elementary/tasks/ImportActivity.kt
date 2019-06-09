@@ -123,12 +123,10 @@ class ImportActivity : BindingActivity<ActivityImportSharingBinding>(R.layout.ac
         Toast.makeText(this, getString(R.string.failed_to_read_data), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
-            when (item.itemId) {
-                android.R.id.home -> {
-                    finish()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

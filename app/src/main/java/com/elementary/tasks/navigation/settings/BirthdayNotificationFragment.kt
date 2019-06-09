@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
 import java.io.File
 
@@ -268,9 +266,14 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
 
     private fun initWakePrefs() {
-        binding.wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
-        binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
-        binding.wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
+        if (Module.isQ) {
+            binding.wakeScreenOptionPrefs.hide()
+        } else {
+            binding.wakeScreenOptionPrefs.show()
+            binding.wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
+            binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
+            binding.wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
+        }
     }
 
     private fun changeWakePrefs() {

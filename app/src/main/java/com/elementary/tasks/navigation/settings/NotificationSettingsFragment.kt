@@ -65,9 +65,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initUnlockPriorityPrefs() {
-        binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
-        binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
-        showPriority()
+        if (Module.isQ) {
+            binding.unlockPriorityPrefs.hide()
+        } else {
+            binding.unlockPriorityPrefs.show()
+            binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
+            binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
+            showPriority()
+        }
     }
 
     private fun showPriority() {
@@ -123,8 +128,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initIgnoreWindowTypePrefs() {
-        binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
-        binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
+        if (Module.isQ) {
+            binding.ignoreWindowType.hide()
+        } else {
+            binding.ignoreWindowType.show()
+            binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
+            binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
+        }
     }
 
     private fun showRepeatTimeDialog() {
@@ -300,9 +310,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initAutoCallPrefs() {
-        binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
-        binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
-        binding.autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
+        if (Module.isQ) {
+            binding.autoCallPrefs.hide()
+        } else {
+            binding.autoCallPrefs.show()
+            binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
+            binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
+            binding.autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
+        }
     }
 
     private fun changeAutoLaunchPrefs() {
@@ -312,8 +327,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initAutoLaunchPrefs() {
-        binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
-        binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
+        if (Module.isQ) {
+            binding.autoLaunchPrefs.hide()
+        } else {
+            binding.autoLaunchPrefs.show()
+            binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
+            binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
+        }
     }
 
     private fun changeUnlockPrefs() {
@@ -323,8 +343,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initUnlockPrefs() {
-        binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
-        binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
+        if (Module.isQ) {
+            binding.unlockScreenPrefs.hide()
+        } else {
+            binding.unlockScreenPrefs.show()
+            binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
+            binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
+        }
     }
 
     private fun showTtsLocaleDialog() {
@@ -475,8 +500,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initReminderTypePrefs() {
-        binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
-        showReminderType()
+        if (Module.isQ) {
+            binding.typePrefs.hide()
+        } else {
+            binding.typePrefs.show()
+            binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
+            showReminderType()
+        }
     }
 
     private fun showReminderTypeDialog() {

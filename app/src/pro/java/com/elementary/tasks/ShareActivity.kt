@@ -125,12 +125,10 @@ class ShareActivity : BindingActivity<ActivityShareBinding>(R.layout.activity_sh
         qrShareProvider.removeData()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
-            when (item.itemId) {
-                android.R.id.home -> {
-                    finish()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
