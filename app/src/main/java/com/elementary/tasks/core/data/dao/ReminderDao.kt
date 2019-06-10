@@ -85,4 +85,14 @@ interface ReminderDao {
 
     @Delete
     fun deleteAll(reminders: Iterable<Reminder>)
+
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Transaction
+    @Query("SELECT * FROM Reminder, ReminderGroup WHERE eventState=:status")
+    fun getAllByStatus(status: Int = 10): List<Reminder>
+
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Transaction
+    @Query("SELECT * FROM Reminder, ReminderGroup WHERE eventState=:status")
+    fun loadAllByStatus(status: Int = 10): LiveData<List<Reminder>>
 }

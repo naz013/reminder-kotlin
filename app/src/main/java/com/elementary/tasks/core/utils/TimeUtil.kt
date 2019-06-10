@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.os.Build
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.R
@@ -86,14 +85,18 @@ object TimeUtil {
     fun getPlaceDateTimeFromGmt(dateTime: String?, lang: Int = 0): DMY {
         var date: Date
 
-        try {
-            GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            date = GMT_DATE_FORMAT.parse(dateTime)
-        } catch (e: ParseException) {
-            date = Date()
-        } catch (e: NumberFormatException) {
-            date = Date()
-        } catch (e: ArrayIndexOutOfBoundsException) {
+        if (dateTime != null) {
+            try {
+                GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
+                date = GMT_DATE_FORMAT.parse(dateTime) ?: Date()
+            } catch (e: ParseException) {
+                date = Date()
+            } catch (e: NumberFormatException) {
+                date = Date()
+            } catch (e: ArrayIndexOutOfBoundsException) {
+                date = Date()
+            }
+        } else {
             date = Date()
         }
 
@@ -126,10 +129,10 @@ object TimeUtil {
         }
 
     fun getFireFormatted(prefs: Prefs, gmt: String?): String? {
-        if (TextUtils.isEmpty(gmt)) return null
+        if (gmt.isNullOrEmpty()) return null
         try {
             FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            val date = FIRE_DATE_FORMAT.parse(gmt)
+            val date = FIRE_DATE_FORMAT.parse(gmt) ?: return null
             return if (prefs.is24HourFormat) {
                 dateTime24(prefs.appLanguage).format(date)
             } else {
@@ -165,15 +168,6 @@ object TimeUtil {
         dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
         dialog.show()
         return dialog
-    }
-
-    private fun isBrokenSamsungDevice(): Boolean {
-        return Build.MANUFACTURER.equals("samsung", ignoreCase = true) && isBetweenAndroidVersions(
-                Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.LOLLIPOP_MR1)
-    }
-
-    private fun isBetweenAndroidVersions(min: Int, max: Int): Boolean {
-        return Build.VERSION.SDK_INT in min..max
     }
 
     fun getFutureBirthdayDate(birthdayTime: Long, fullDate: String): DateItem? {
@@ -221,7 +215,7 @@ object TimeUtil {
     fun getBirthdayVisualTime(time: String?, is24: Boolean, lang: Int = 0): String {
         if (time != null) {
             try {
-                val date = TIME_24.parse(time)
+                val date = TIME_24.parse(time) ?: return ""
                 return if (is24) {
                     time24(lang).format(date)
                 } else {
@@ -290,7 +284,7 @@ object TimeUtil {
     private fun toMillis(time24: String): Long {
         return try {
             val calendar = Calendar.getInstance()
-            val date = TIME_24.parse(time24)
+            val date = TIME_24.parse(time24) ?: return 0
             calendar.time = date
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
@@ -340,13 +334,13 @@ object TimeUtil {
     }
 
     fun getDateTimeFromGmt(dateTime: String?): Long {
-        if (TextUtils.isEmpty(dateTime)) {
+        if (dateTime.isNullOrEmpty()) {
             return 0
         }
         val calendar = Calendar.getInstance()
         try {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            val date = GMT_DATE_FORMAT.parse(dateTime)
+            val date = GMT_DATE_FORMAT.parse(dateTime) ?: return 0
             calendar.time = date
         } catch (e: Exception) {
             Crashlytics.logException(e)
@@ -394,13 +388,13 @@ object TimeUtil {
     }
 
     fun getRealDateTime(gmt: String?, delay: Int, is24: Boolean, lang: Int = 0): String {
-        if (TextUtils.isEmpty(gmt)) {
+        if (gmt.isNullOrEmpty()) {
             return ""
         }
         val calendar = Calendar.getInstance()
         try {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            val date = GMT_DATE_FORMAT.parse(gmt)
+            val date = GMT_DATE_FORMAT.parse(gmt) ?: return ""
             calendar.time = date
             calendar.timeInMillis = calendar.timeInMillis + delay * TimeCount.MINUTE
         } catch (e: Exception) {
@@ -416,10 +410,11 @@ object TimeUtil {
     }
 
     fun getDateTimeFromGmt(dateTime: String?, is24: Boolean, lang: Int = 0): String {
+        if (dateTime.isNullOrEmpty()) return ""
         val calendar = Calendar.getInstance()
         try {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            val date = GMT_DATE_FORMAT.parse(dateTime)
+            val date = GMT_DATE_FORMAT.parse(dateTime) ?: return ""
             calendar.time = date
         } catch (e: Exception) {
             Crashlytics.logException(e)
@@ -482,6 +477,7 @@ object TimeUtil {
     }
 
     fun getReadableBirthDate(dateOfBirth: String?, lang: Int = 0): String {
+        if (dateOfBirth.isNullOrEmpty()) return ""
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         var date: Date? = null
         try {
@@ -490,14 +486,15 @@ object TimeUtil {
             Crashlytics.logException(e)
         }
 
-        if (date != null) {
-            return TimeUtil.date(lang).format(date)
+        return if (date != null) {
+            TimeUtil.date(lang).format(date)
         } else {
-            return dateOfBirth ?: ""
+            dateOfBirth
         }
     }
 
     fun getAge(dateOfBirth: String?): Int {
+        if (dateOfBirth.isNullOrEmpty()) return 0
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         var date: Date? = null
         try {

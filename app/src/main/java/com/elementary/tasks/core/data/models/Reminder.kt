@@ -27,6 +27,8 @@ data class Reminder(
         var noteId: String = "",
         @SerializedName("reminderType")
         var reminderType: Int = 0,
+        @SerializedName("eventState")
+        var eventState: Int = 1,
         @SerializedName("groupUuId")
         var groupUuId: String = "",
         @SerializedName("uuId")

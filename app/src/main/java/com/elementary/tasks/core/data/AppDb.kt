@@ -9,7 +9,6 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.elementary.tasks.core.data.dao.*
 import com.elementary.tasks.core.data.models.*
-import java.lang.Exception
 
 @Database(entities = [
     Reminder::class,
@@ -23,8 +22,9 @@ import java.lang.Exception
     UsedTime::class,
     Birthday::class,
     ImageFile::class,
+    ReminderChain::class,
     SmsTemplate::class
-], version = 3, exportSchema = false)
+], version = 4, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
@@ -38,6 +38,7 @@ abstract class AppDb : RoomDatabase() {
     abstract fun googleTaskListsDao(): GoogleTaskListsDao
     abstract fun googleTasksDao(): GoogleTasksDao
     abstract fun usedTimeDao(): UsedTimeDao
+    abstract fun reminderChainDao(): ReminderChainDao
 
     companion object {
 
@@ -63,15 +64,93 @@ abstract class AppDb : RoomDatabase() {
                 }
             }
         }
+        private val MIGRATION_1_3: Migration = object : Migration(1, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_id")
+                } catch (e: Exception) {
+                }
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_timeMills")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_timeString")
+                } catch (e: SQLiteException) {
+                }
+            }
+        }
+        private val MIGRATION_1_4: Migration = object : Migration(1, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_id")
+                } catch (e: Exception) {
+                }
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_timeMills")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_timeString")
+                } catch (e: SQLiteException) {
+                }
+                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
+                        previousId TEXT NOT NULL,
+                        nextId TEXT NOT NULL,
+                        gmtTime TEXT NOT NULL,
+                        activationType INTEGER DEFAULT 0 NOT NULL,
+                        PRIMARY KEY(uuId))""")
+
+                database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+            }
+        }
+        private val MIGRATION_2_4: Migration = object : Migration(2, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_timeMills")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("DROP INDEX index_UsedTime_timeString")
+                } catch (e: SQLiteException) {
+                }
+                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
+                        previousId TEXT NOT NULL,
+                        nextId TEXT NOT NULL,
+                        gmtTime TEXT NOT NULL,
+                        activationType INTEGER DEFAULT 0 NOT NULL,
+                        PRIMARY KEY(uuId))""")
+
+                database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+            }
+        }
+        private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
+                        previousId TEXT NOT NULL,
+                        nextId TEXT NOT NULL,
+                        gmtTime TEXT NOT NULL,
+                        activationType INTEGER DEFAULT 0 NOT NULL,
+                        PRIMARY KEY(uuId))""")
+
+                database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+            }
+        }
 
         fun getAppDatabase(context: Context): AppDb {
-            if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "app_db")
-                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            var instance = INSTANCE
+            if (instance == null) {
+                instance = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "app_db")
+                        .addMigrations(
+                                MIGRATION_1_2,
+                                MIGRATION_1_3, MIGRATION_2_3,
+                                MIGRATION_1_4, MIGRATION_2_4, MIGRATION_3_4
+                        )
                         .allowMainThreadQueries()
                         .build()
             }
-            return INSTANCE!!
+            INSTANCE = instance
+            return instance
         }
 
         fun destroyInstance() {
