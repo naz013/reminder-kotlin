@@ -1,16 +1,17 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Entity
 @Keep
+@Parcelize
 data class ReminderGroup(
         @SerializedName("title")
         var groupTitle: String = "",
@@ -20,23 +21,7 @@ data class ReminderGroup(
         @SerializedName("color")
         var groupColor: Int = 0,
         @SerializedName("dateTime")
-        var groupDateTime: String = "",
+        var groupDateTime: String = TimeUtil.gmtDateTime,
         @SerializedName("isDefaultGroup")
-        var isDefaultGroup: Boolean = false) : Serializable {
-
-    @Ignore
-    constructor(title: String, color: Int) : this() {
-        this.groupTitle = title
-        this.groupUuId = UUID.randomUUID().toString()
-        this.groupColor = color
-        this.groupDateTime = TimeUtil.gmtDateTime
-    }
-
-    @Ignore
-    constructor(title: String, uuId: String, color: Int, dateTime: String) : this() {
-        this.groupTitle = title
-        this.groupUuId = uuId
-        this.groupColor = color
-        this.groupDateTime = dateTime
-    }
-}
+        var isDefaultGroup: Boolean = false
+) : Parcelable

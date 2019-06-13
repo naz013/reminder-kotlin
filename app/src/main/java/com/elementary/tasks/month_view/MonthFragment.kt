@@ -41,7 +41,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
             callback = fragment as MonthCallback?
         }
         if (arguments != null) {
-            mItem = arguments?.getSerializable(ARGUMENT_PAGE_NUMBER) as MonthPagerItem?
+            mItem = arguments?.getParcelable(ARGUMENT_PAGE_NUMBER) as MonthPagerItem?
         }
     }
 
@@ -136,7 +136,7 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
         fun newInstance(item: MonthPagerItem): MonthFragment {
             val pageFragment = MonthFragment()
             val bundle = Bundle()
-            bundle.putSerializable(ARGUMENT_PAGE_NUMBER, item)
+            bundle.putParcelable(ARGUMENT_PAGE_NUMBER, item)
             pageFragment.arguments = bundle
             return pageFragment
         }

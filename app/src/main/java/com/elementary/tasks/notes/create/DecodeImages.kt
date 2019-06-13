@@ -4,15 +4,18 @@ import android.content.ClipData
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Parcelable
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.BitmapUtils
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import kotlinx.android.parcel.Parcelize
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 
-object DecodeImages {
+@Parcelize
+object DecodeImages : Parcelable {
 
     fun startDecoding(context: Context, clipData: ClipData,
                       startCount: Int = 0,
@@ -70,10 +73,13 @@ object DecodeImages {
         return image
     }
 
-    sealed class State(var id: Int = 0) {
+    sealed class State(var id: Int = 0) : Parcelable {
 
+        @Parcelize
         object Loading : State(0)
+        @Parcelize
         object Ready : State(1)
+        @Parcelize
         object Error : State(2)
     }
 }

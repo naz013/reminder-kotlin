@@ -1,12 +1,14 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Entity
+@Parcelize
 data class Note (
         var summary: String = "",
         @PrimaryKey
@@ -16,7 +18,7 @@ data class Note (
         var style: Int = 0,
         var palette: Int = 0,
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
-        var opacity: Int = 100) : Serializable {
+        var opacity: Int = 100) : Parcelable {
 
     @Ignore
     constructor(oldNote: OldNote) : this() {

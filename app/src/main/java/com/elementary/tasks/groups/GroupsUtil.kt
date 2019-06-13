@@ -11,13 +11,13 @@ object GroupsUtil {
 
     fun initDefault(context: Context): String {
         val random = Random()
-        val def = ReminderGroup(context.getString(R.string.general), random.nextInt(16))
+        val def = ReminderGroup(groupTitle = context.getString(R.string.general), groupColor = random.nextInt(16))
         def.isDefaultGroup = true
         try {
             val appDb = AppDb.getAppDatabase(context)
             appDb.reminderGroupDao().insert(def)
-            appDb.reminderGroupDao().insert(ReminderGroup(context.getString(R.string.work), random.nextInt(16)))
-            appDb.reminderGroupDao().insert(ReminderGroup(context.getString(R.string.personal), random.nextInt(16)))
+            appDb.reminderGroupDao().insert(ReminderGroup(groupTitle = context.getString(R.string.work), groupColor = random.nextInt(16)))
+            appDb.reminderGroupDao().insert(ReminderGroup(groupTitle = context.getString(R.string.personal), groupColor = random.nextInt(16)))
         } catch (e: Exception) {
         }
         return def.groupUuId

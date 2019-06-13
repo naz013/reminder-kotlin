@@ -156,7 +156,7 @@ class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
             val bundle = Bundle()
             bundle.putString(ARG_ID, id)
             if (googleTaskList != null) {
-                bundle.putSerializable(ARG_LIST, googleTaskList)
+                bundle.putParcelable(ARG_LIST, googleTaskList)
             }
             fragment.arguments = bundle
             return fragment

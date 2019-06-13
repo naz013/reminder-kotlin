@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
@@ -9,7 +10,7 @@ import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Entity
@@ -20,6 +21,7 @@ import java.util.*
         ListIntTypeConverter::class
 )
 @Keep
+@Parcelize
 data class Reminder(
         @SerializedName("summary")
         var summary: String = "",
@@ -128,7 +130,7 @@ data class Reminder(
         @ColumnInfo(name = "groupColor")
         @Transient
         var groupColor: Int = 0
-) : RecyclerInterface, Serializable {
+) : RecyclerInterface, Parcelable {
 
     val dateTime: Long
         get() = TimeUtil.getDateTimeFromGmt(eventTime)
@@ -213,8 +215,8 @@ data class Reminder(
     }
 
     fun isRepeating(): Boolean {
-        return !Reminder.isGpsType(type) && (repeatInterval > 0L || Reminder.isBase(type, Reminder.BY_WEEK)
-                || Reminder.isBase(type, Reminder.BY_MONTH) || Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR))
+        return !isGpsType(type) && (repeatInterval > 0L || isBase(type, BY_WEEK)
+                || isBase(type, BY_MONTH) || isBase(type, BY_DAY_OF_YEAR))
     }
 
     object Kind {
