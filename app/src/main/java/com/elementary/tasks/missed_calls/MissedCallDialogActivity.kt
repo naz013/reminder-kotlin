@@ -73,8 +73,9 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         super.onCreate(savedInstanceState)
+
+        isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
 
         binding.contactPhoto.borderColor = themeUtil.getNoteLightColor()
         binding.contactPhoto.visibility = View.GONE
@@ -143,19 +144,20 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         } catch (e: NullPointerException) {
             Timber.d("showInfo: ${e.message}")
         }
-
-        val name = Contacts.getNameFromNumber(missedCall.number, this)
-        if (missedCall.number != "") {
+        val name: String
+        if (missedCall.number.isNotEmpty() && Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+            name = Contacts.getNameFromNumber(missedCall.number, this) ?: missedCall.number
             val conID = Contacts.getIdFromNumber(missedCall.number, this)
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
                 Picasso.get().load(photo).into(binding.contactPhoto)
             } else {
-                BitmapUtils.imageFromName(name ?: missedCall.number) {
+                BitmapUtils.imageFromName(name) {
                     binding.contactPhoto.setImageDrawable(it)
                 }
             }
         } else {
+            name = missedCall.number
             binding.contactPhoto.visibility = View.INVISIBLE
         }
 
@@ -165,7 +167,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         binding.contactName.text = name
         binding.contactNumber.text = missedCall.number
 
-        showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
+        showMissedReminder(name)
         init()
     }
 
@@ -286,6 +288,13 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
             intent.putExtra(ARG_TEST, true)
             intent.putExtra(ARG_TEST_ITEM, missedCall)
             context.startActivity(intent)
+        }
+
+        fun getLaunchIntent(context: Context, id: String): Intent {
+            val resultIntent = Intent(context, MissedCallDialogActivity::class.java)
+            resultIntent.putExtra(Constants.INTENT_ID, id)
+            resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+            return resultIntent
         }
     }
 }

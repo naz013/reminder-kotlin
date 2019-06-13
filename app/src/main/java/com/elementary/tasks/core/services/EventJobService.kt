@@ -3,6 +3,7 @@ package com.elementary.tasks.core.services
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
@@ -78,8 +79,15 @@ class EventJobService : Job(), KoinComponent {
 
     private fun missedCallAction(params: Params) {
         if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
-            openMissedScreen(params.tag)
             EventJobScheduler.scheduleMissedCall(prefs, params.tag)
+            if (Module.isQ) {
+                ContextCompat.startForegroundService(context,
+                        EventOperationalService.getIntent(context, params.tag,
+                                EventOperationalService.TYPE_MISSED,
+                                EventOperationalService.ACTION_PLAY))
+            } else {
+                openMissedScreen(params.tag)
+            }
         } else if (prefs.doNotDisturbAction == 0) {
             EventJobScheduler.scheduleMissedCall(prefs, params.tag)
         }
@@ -100,7 +108,14 @@ class EventJobService : Job(), KoinComponent {
                 val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
                 if (!applyDnd && birthValue == mDate && year != mYear) {
                     withUIContext {
-                        showBirthday(context, item)
+                        if (Module.isQ) {
+                            ContextCompat.startForegroundService(context,
+                                    EventOperationalService.getIntent(context, item.uuId,
+                                            EventOperationalService.TYPE_BIRTHDAY,
+                                            EventOperationalService.ACTION_PLAY))
+                        } else {
+                            showBirthday(context, item)
+                        }
                     }
                 }
             }
@@ -125,9 +140,7 @@ class EventJobService : Job(), KoinComponent {
     }
 
     private fun openMissedScreen(tag: String) {
-        val resultIntent = Intent(context, MissedCallDialogActivity::class.java)
-        resultIntent.putExtra(Constants.INTENT_ID, tag)
-        resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+        val resultIntent = MissedCallDialogActivity.getLaunchIntent(context, tag)
         context.startActivity(resultIntent)
     }
 
