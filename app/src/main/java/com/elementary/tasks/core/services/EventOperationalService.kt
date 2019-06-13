@@ -104,7 +104,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                             }
                         }
                     }
-                    TYPE_MESSED -> {
+                    TYPE_MISSED -> {
                         when {
                             ACTION_PLAY == intent.action -> {
 
@@ -323,7 +323,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
 
         const val TYPE_REMINDER = "type_reminder"
         const val TYPE_BIRTHDAY = "type_birthday"
-        const val TYPE_MESSED = "type_missed_call"
+        const val TYPE_MISSED = "type_missed_call"
 
         private val instanceCount = AtomicInteger(0)
 
