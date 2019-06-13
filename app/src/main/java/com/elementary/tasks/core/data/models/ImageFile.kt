@@ -1,15 +1,17 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.elementary.tasks.notes.create.DecodeImages
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Entity
+@Parcelize
 data class ImageFile(
         @SerializedName("image")
         @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
@@ -21,11 +23,10 @@ data class ImageFile(
         var state: DecodeImages.State = DecodeImages.State.Ready,
         @Transient
         @Ignore
-        var uuid: String = UUID.randomUUID().toString()
-) : Serializable {
-
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
+        var uuid: String = UUID.randomUUID().toString(),
+        @PrimaryKey(autoGenerate = true)
+        var id: Int = 0
+) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

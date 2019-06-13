@@ -1,12 +1,14 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.api.services.tasks.model.TaskList
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 
 @Entity
+@Parcelize
 data class GoogleTaskList(
         var title: String = "",
         @PrimaryKey
@@ -18,7 +20,7 @@ data class GoogleTaskList(
         var updated: Long = 0,
         var color: Int = 0,
         var systemDefault: Int = 0
-) : Serializable {
+) : Parcelable {
 
     @Ignore
     constructor(taskList: TaskList, color: Int) : this() {

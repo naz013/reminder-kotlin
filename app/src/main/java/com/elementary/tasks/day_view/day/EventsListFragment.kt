@@ -71,7 +71,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
             callback = fragment as DayCallback?
         }
         if (arguments != null) {
-            mItem = arguments?.getSerializable(ARGUMENT_PAGE_NUMBER) as EventsPagerItem?
+            mItem = arguments?.getParcelable(ARGUMENT_PAGE_NUMBER) as EventsPagerItem?
         }
     }
 
@@ -129,7 +129,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
         fun newInstance(item: EventsPagerItem): EventsListFragment {
             val pageFragment = EventsListFragment()
             val bundle = Bundle()
-            bundle.putSerializable(ARGUMENT_PAGE_NUMBER, item)
+            bundle.putParcelable(ARGUMENT_PAGE_NUMBER, item)
             pageFragment.arguments = bundle
             return pageFragment
         }

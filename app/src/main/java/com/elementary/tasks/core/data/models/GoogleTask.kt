@@ -1,12 +1,14 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.api.services.tasks.model.Task
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 
 @Entity
+@Parcelize
 data class GoogleTask(
         var title: String = "",
         @PrimaryKey
@@ -25,7 +27,7 @@ data class GoogleTask(
         var status: String = "",
         var uuId: String = "",
         var hidden: Int = 0
-): Serializable {
+): Parcelable {
 
     @Ignore
     constructor(item: GoogleTask) : this() {

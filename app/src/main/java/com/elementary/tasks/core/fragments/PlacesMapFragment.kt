@@ -100,8 +100,14 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
                 for (model in spinnerArray) {
                     if (model.isSelected) {
                         if (model.position != null) {
-                            places.add(Place(markerRadius, markerStyle, model.latitude,
-                                    model.longitude, model.name, model.address, model.types))
+                            places.add(Place(
+                                    radius = markerRadius,
+                                    marker = markerStyle,
+                                    latitude = model.latitude,
+                                    longitude = model.longitude,
+                                    name = model.name,
+                                    address = model.address,
+                                    tags = model.types))
                         }
                     }
                 }

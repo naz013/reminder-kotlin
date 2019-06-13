@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import android.text.TextUtils
 import androidx.annotation.Keep
 import androidx.room.Entity
@@ -8,11 +9,12 @@ import androidx.room.PrimaryKey
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Entity
 @Keep
+@Parcelize
 data class Birthday(
         @SerializedName("name")
         var name: String = "",
@@ -39,7 +41,7 @@ data class Birthday(
         var uuId: String = UUID.randomUUID().toString(),
         @Ignore
         var calculatedTime: Long = 0L
-) : RecyclerInterface, Serializable {
+) : RecyclerInterface, Parcelable {
 
     override val viewType: Int
         get() = 2

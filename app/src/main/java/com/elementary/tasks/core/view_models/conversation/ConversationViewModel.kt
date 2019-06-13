@@ -418,7 +418,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
     }
 
     fun createGroup(model: Model): ReminderGroup {
-        return ReminderGroup(model.summary, Random().nextInt(16))
+        return ReminderGroup(groupTitle = model.summary, groupColor = Random().nextInt(16))
     }
 
     fun saveGroup(model: ReminderGroup, showToast: Boolean) {

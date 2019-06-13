@@ -1,17 +1,21 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.elementary.tasks.core.interfaces.NoteInterface
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Keep
+@Parcelize
 data class NoteWithImages(
         @Embedded
         var note: Note? = null,
         @Relation(parentColumn = "key", entityColumn = "noteId")
         var images: List<ImageFile> = ArrayList()
-) : NoteInterface, Serializable {
+) : NoteInterface, Parcelable {
 
     override fun getGmtTime(): String {
         return note?.date ?: ""
