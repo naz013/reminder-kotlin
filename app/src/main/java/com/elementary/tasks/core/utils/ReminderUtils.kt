@@ -20,24 +20,27 @@ object ReminderUtils {
     const val DAY_CHECKED = 1
 
     fun getSound(context: Context, prefs: Prefs, melody: String?): Melody {
+        return getSound(context, prefs.melodyFile, melody)
+    }
+
+    fun getSound(context: Context, defMelody: String, melody: String?): Melody {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
             val uri = UriUtil.getUri(context, melody)
             if (uri != null) {
                 Melody(ReminderUtils.MelodyType.FILE, uri)
             } else {
-                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(prefs))
+                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
             }
         } else {
-            val defMelody = prefs.melodyFile
             if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 val uri = UriUtil.getUri(context, defMelody)
                 if (uri != null) {
                     Melody(ReminderUtils.MelodyType.FILE, uri)
                 } else {
-                    Melody(ReminderUtils.MelodyType.DEFAULT, defUri(prefs))
+                    Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
                 }
             } else {
-                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(prefs))
+                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
             }
         }
     }
@@ -56,7 +59,11 @@ object ReminderUtils {
     }
 
     private fun defUri(prefs: Prefs): Uri {
-        return when (prefs.melodyFile) {
+        return defUri(prefs.melodyFile)
+    }
+
+    private fun defUri(prefsMelody: String): Uri {
+        return when (prefsMelody) {
             Constants.SOUND_RINGTONE -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
             Constants.SOUND_ALARM -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             else -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

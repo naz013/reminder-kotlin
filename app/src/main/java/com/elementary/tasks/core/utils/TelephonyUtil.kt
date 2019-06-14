@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import java.io.File
 
@@ -101,7 +101,7 @@ object TelephonyUtil {
         }
     }
 
-    @SuppressLint("MissingPermission")
+    @RequiresPermission(value = Permissions.CALL_PHONE)
     fun makeCall(number: String, context: Context) {
         if (TextUtils.isEmpty(number)) {
             return

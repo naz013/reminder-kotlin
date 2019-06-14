@@ -5,14 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseNotificationActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.services.EventOperationalService
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
@@ -22,7 +22,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.sql.Date
 
-class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
+class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
 
     private lateinit var viewModel: MissedCallViewModel
 
@@ -30,41 +30,9 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
 
     private var mMissedCall: MissedCall? = null
     private var isEventShowed = false
-    override var isScreenResumed: Boolean = false
-        private set
 
-    override val melody: String
-        get() = ""
-
-    override val isVibrate: Boolean
-        get() = prefs.isVibrateEnabled
-
-    override val summary: String
-        get() = mMissedCall?.number ?: ""
-
-    override val uuId: String
-        get() = ""
-
-    override val id: Int
+    private val id: Int
         get() = mMissedCall?.uniqueId ?: 2122
-
-    override val ledColor: Int
-        get() = LED.getLED(prefs.ledColor)
-
-    override val isGlobal: Boolean
-        get() = false
-
-    override val isUnlockDevice: Boolean
-        get() = prefs.isDeviceUnlockEnabled
-
-    override val maxVolume: Int
-        get() = prefs.loudness
-
-    override val priority: Int
-        get() = prefs.missedCallPriority
-
-    override val groupName: String
-        get() = "missed_call"
 
     private val mMissedCallObserver: Observer<in MissedCall> = Observer { missedCall ->
         if (missedCall != null) {
@@ -75,23 +43,11 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
-
         binding.contactPhoto.borderColor = themeUtil.getNoteLightColor()
         binding.contactPhoto.visibility = View.GONE
 
         initButtons()
-
-        if (savedInstanceState != null) {
-            isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
-        }
-
         initViewModel()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(ARG_IS_ROTATED, true)
-        super.onSaveInstanceState(outState)
     }
 
     private fun initButtons() {
@@ -123,7 +79,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
-                    Commands.DELETED -> closeWindow()
+                    Commands.DELETED -> finish()
                     else -> {
                     }
                 }
@@ -166,30 +122,34 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
 
         binding.contactName.text = name
         binding.contactNumber.text = missedCall.number
-
-        showMissedReminder(name)
-        init()
     }
 
-    private fun closeWindow() {
-        discardNotification(id)
-        removeFlags()
-        finish()
+    private fun discardMedia() {
+        ContextCompat.startForegroundService(this,
+                EventOperationalService.getIntent(this, mMissedCall?.number ?: "",
+                        EventOperationalService.TYPE_MISSED,
+                        EventOperationalService.ACTION_STOP,
+                        id))
+    }
+
+    private fun discardNotification(id: Int) {
+        Timber.d("discardNotification: $id")
+        discardMedia()
+        Notifier.getManager(this)?.cancel(id)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.missedCall.removeObserver(mMissedCallObserver)
         lifecycle.removeObserver(viewModel)
-        removeFlags()
     }
 
     override fun onBackPressed() {
         discardMedia()
         if (prefs.isFoldingEnabled) {
-            closeWindow()
+            finish()
         } else {
-            Toast.makeText(this@MissedCallDialogActivity, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MissedCallDialog29Activity, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -209,11 +169,11 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     }
 
     private fun removeMissed() {
+        discardNotification(id)
         isEventShowed = true
         viewModel.missedCall.removeObserver(mMissedCallObserver)
-        val missedCall = mMissedCall
-        if (missedCall != null) {
-            viewModel.deleteMissedCall(missedCall)
+        mMissedCall?.let {
+            viewModel.deleteMissedCall(it)
         }
     }
 
@@ -226,72 +186,20 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         }
     }
 
-    private fun showMissedReminder(name: String?) {
-        if (isScreenResumed) {
-            return
-        }
-        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_SILENT)
-        builder.setContentTitle(name)
-        builder.setAutoCancel(false)
-        builder.priority = NotificationCompat.PRIORITY_MAX
-        if (prefs.isManualRemoveEnabled) {
-            builder.setOngoing(false)
-        } else {
-            builder.setOngoing(true)
-        }
-        val appName: String
-        if (Module.isPro) {
-            appName = getString(R.string.app_name_pro)
-            if (prefs.isLedEnabled) {
-                builder.setLights(ledColor, 500, 1000)
-            }
-        } else {
-            appName = getString(R.string.app_name)
-        }
-        builder.setContentText(appName)
-        builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
-        if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
-                        || SuperUtil.checkNotificationPermission(this)
-                        && prefs.isSoundInSilentModeEnabled)) {
-            val soundUri = soundUri
-            sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled, prefs.playbackDuration)
-        }
-        if (isVibrate) {
-            val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
-                longArrayOf(150, 86400000)
-            } else {
-                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
-            }
-            builder.setVibrate(pattern)
-        }
-        val isWear = prefs.isWearEnabled
-        if (isWear) {
-            builder.setOnlyAlertOnce(true)
-            builder.setGroup(groupName)
-            builder.setGroupSummary(true)
-        }
-        Notifier.getManager(this)?.notify(id, builder.build())
-        if (isWear) {
-            showWearNotification(appName)
-        }
-    }
-
     companion object {
         private const val ARG_TEST = "arg_test"
-        private const val ARG_IS_ROTATED = "arg_rotated"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val CALL_PERM = 612
 
         fun mockTest(context: Context, missedCall: MissedCall) {
-            val intent = Intent(context, MissedCallDialogActivity::class.java)
+            val intent = Intent(context, MissedCallDialog29Activity::class.java)
             intent.putExtra(ARG_TEST, true)
             intent.putExtra(ARG_TEST_ITEM, missedCall)
             context.startActivity(intent)
         }
 
         fun getLaunchIntent(context: Context, id: String): Intent {
-            val resultIntent = Intent(context, MissedCallDialogActivity::class.java)
+            val resultIntent = Intent(context, MissedCallDialog29Activity::class.java)
             resultIntent.putExtra(Constants.INTENT_ID, id)
             resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
             return resultIntent

@@ -96,8 +96,13 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
             }
         }
         windowTypeView?.let {
-            it.bindProperty(iFace.state.reminder.windowType) { type ->
-                iFace.state.reminder.windowType = type
+            if (Module.isQ) {
+                it.hide()
+            } else {
+                it.show()
+                it.bindProperty(iFace.state.reminder.windowType) { type ->
+                    iFace.state.reminder.windowType = type
+                }
             }
         }
         priorityPickerView?.let {
