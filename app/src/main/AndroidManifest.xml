@@ -380,6 +380,9 @@
             android:name=".birthdays.preview.ShowBirthdayActivity"
             android:excludeFromRecents="true" />
         <activity
+            android:name=".birthdays.preview.ShowBirthday29Activity"
+            android:excludeFromRecents="true" />
+        <activity
             android:name=".navigation.settings.security.PinLoginActivity"
             android:excludeFromRecents="true" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />

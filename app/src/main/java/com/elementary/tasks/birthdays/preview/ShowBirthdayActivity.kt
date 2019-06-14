@@ -1,7 +1,9 @@
 package com.elementary.tasks.birthdays.preview
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
@@ -18,6 +21,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import com.squareup.picasso.Picasso
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -144,10 +148,22 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         }
     }
 
+    private var mWasStopped = false
+    private val mLocalReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action ?: ""
+            val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
+            Timber.d("onReceive: $action, $mId")
+            if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
+                finish()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
-        val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
         binding.buttonOk.setOnClickListener { ok() }
         binding.buttonCall.setOnClickListener { makeCall() }
@@ -160,7 +176,8 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
             isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
         }
 
-        initViewModel(key)
+        initViewModel(id)
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -327,6 +344,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
 
     override fun onDestroy() {
         super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
         viewModel.birthday.removeObserver(mBirthdayObserver)
         lifecycle.removeObserver(viewModel)
         removeFlags()
@@ -378,6 +396,11 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         finish()
     }
 
+    override fun onStop() {
+        super.onStop()
+        mWasStopped = true
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (Permissions.checkPermission(grantResults)) {
@@ -393,6 +416,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val ARG_IS_ROTATED = "arg_rotated"
+        const val ACTION_STOP_BG_ACTIVITY = "action.birthday.STOP.BG"
 
         fun mockTest(context: Context, birthday: Birthday) {
             val intent = Intent(context, ShowBirthdayActivity::class.java)
