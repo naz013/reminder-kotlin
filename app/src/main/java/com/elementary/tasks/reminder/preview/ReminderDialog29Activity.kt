@@ -169,16 +169,10 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     }
 
     private fun removeFlags() {
-
         if (canUnlockScreen()) {
             SuperUtil.unlockOff(this, window)
             SuperUtil.turnScreenOff(this, window, mWakeLock)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(ARG_IS_ROTATED, true)
-        super.onSaveInstanceState(outState)
     }
 
     private fun initButtons() {
@@ -785,7 +779,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
         private const val CALL_PERM = 612
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
-        private const val ARG_IS_ROTATED = "arg_rotated"
         const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"
 
         fun mockTest(context: Context, reminder: Reminder) {

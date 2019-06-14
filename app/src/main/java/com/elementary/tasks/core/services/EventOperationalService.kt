@@ -12,7 +12,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
@@ -109,15 +111,17 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                     TYPE_BIRTHDAY -> {
                         when {
                             ACTION_PLAY == action -> {
+                                val birthday = appDb.birthdaysDao().getById(id) ?: return
                                 increment()
+                                showBirthdayNotification(birthday)
                             }
                             ACTION_STOP == action -> {
+                                notifier.hideNotification(notificationId)
                                 decrement(true)
                             }
                         }
                     }
                     TYPE_MISSED -> {
-
                         when {
                             ACTION_PLAY == action -> {
                                 val missedCall = appDb.missedCallsDao().getByNumber(id) ?: return
@@ -132,6 +136,112 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                     }
                 }
             }
+        }
+    }
+
+    private fun isBirthdaySilenEnabled(): Boolean {
+        return if (prefs.isBirthdayGlobalEnabled) {
+            prefs.isSoundInSilentModeEnabled
+        } else {
+            prefs.isBirthdaySilentEnabled
+        }
+    }
+
+    private fun isBirthdayVibration(): Boolean {
+        return if (prefs.isBirthdayGlobalEnabled) {
+            prefs.isVibrateEnabled
+        } else {
+            prefs.isBirthdayVibrationEnabled
+        }
+    }
+
+    private fun isBirthdayVibrationInfinite(): Boolean {
+        return if (prefs.isBirthdayGlobalEnabled) {
+            prefs.isInfiniteVibrateEnabled
+        } else {
+            prefs.isBirthdayInfiniteVibrationEnabled
+        }
+    }
+
+    private fun isBirthdayLed(): Boolean {
+        return if (prefs.isBirthdayGlobalEnabled) {
+            prefs.isLedEnabled
+        } else {
+            prefs.isBirthdayLedEnabled
+        }
+    }
+
+    private fun birthdayMelody(): String {
+        return if (prefs.isBirthdayGlobalEnabled) {
+            prefs.melodyFile
+        } else {
+            prefs.birthdayMelody
+        }
+    }
+
+    private fun birthdayLed(): Int {
+        var ledColor = LED.getLED(prefs.ledColor)
+        if (Module.isPro && !prefs.isBirthdayGlobalEnabled) {
+            ledColor = LED.getLED(prefs.birthdayLedColor)
+        }
+        return ledColor
+    }
+
+    private fun showBirthdayNotification(birthday: Birthday) {
+        Timber.d("showBirthdayNotification: $birthday")
+        val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
+        if ((!SuperUtil.isDoNotDisturbEnabled(this) ||
+                        (SuperUtil.checkNotificationPermission(this) && isBirthdaySilenEnabled()))) {
+            val melody = ReminderUtils.getSound(applicationContext, birthdayMelody(), "")
+            if (melody.melodyType == ReminderUtils.MelodyType.FILE) {
+                playMelody(melody.uri)
+            } else {
+                applicationContext.grantUriPermission("com.android.systemui", melody.uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                builder.setSound(melody.uri, prefs.soundStream)
+            }
+        }
+
+        if (isBirthdayVibration()) {
+            val pattern: LongArray = if (isBirthdayVibrationInfinite()) {
+                longArrayOf(150, 86400000)
+            } else {
+                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+            }
+            builder.setVibrate(pattern)
+        }
+        builder.priority = priority(prefs.birthdayPriority)
+        builder.setContentTitle(birthday.name)
+        builder.setContentText(TimeUtil.getAgeFormatted(this, TimeUtil.getAge(birthday.date), System.currentTimeMillis(), prefs.appLanguage))
+        builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
+        builder.setAutoCancel(false)
+        if (prefs.isManualRemoveEnabled) {
+            builder.setOngoing(false)
+        } else {
+            builder.setOngoing(true)
+        }
+        if (Module.isPro && isBirthdayLed()) {
+            builder.setLights(birthdayLed(), 500, 1000)
+        }
+        builder.color = ThemeUtil.getSecondaryColor(applicationContext)
+        builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
+
+        val fullScreenIntent = ShowBirthday29Activity.getLaunchIntent(applicationContext, birthday.uuId)
+        val fullScreenPendingIntent = PendingIntent.getActivity(this, birthday.uniqueId, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        builder.setFullScreenIntent(fullScreenPendingIntent, true)
+
+        val dismissIntent = getIntent(applicationContext, birthday.uuId, TYPE_BIRTHDAY, ACTION_STOP, birthday.uniqueId)
+        val piDismiss = PendingIntent.getService(applicationContext, birthday.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        builder.addAction(R.drawable.ic_twotone_done_white, applicationContext.getString(R.string.ok), piDismiss)
+
+        val isWear = prefs.isWearEnabled
+        if (isWear) {
+            builder.setOnlyAlertOnce(true)
+            builder.setGroup("birthday")
+            builder.setGroupSummary(true)
+        }
+        Notifier.getManager(this)?.notify(birthday.uniqueId, builder.build())
+        if (isWear) {
+            showWearNotification(birthday.uniqueId, birthday.name, appName(), "birthday")
         }
     }
 
@@ -188,7 +298,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
             builder.setLights(ledColor(prefs.ledColor), 500, 1000)
         }
         builder.setContentText(appName())
-        builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
+        builder.setSmallIcon(R.drawable.ic_twotone_call_white)
         builder.color = ThemeUtil.getSecondaryColor(applicationContext)
         builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 

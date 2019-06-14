@@ -174,7 +174,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             return count == 10
         }
     private var mWasStopped = false
-
     private val mLocalReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val action = intent?.action ?: ""

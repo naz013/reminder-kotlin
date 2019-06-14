@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
@@ -80,7 +81,13 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
             this.dayMonth = "$day|$month"
         }
-        ShowBirthdayActivity.mockTest(context!!, birthday)
+        withContext {
+            if (Module.isQ) {
+                ShowBirthday29Activity.mockTest(it, birthday)
+            } else {
+                ShowBirthdayActivity.mockTest(it, birthday)
+            }
+        }
     }
 
     override fun getTitle(): String = "Tests"
