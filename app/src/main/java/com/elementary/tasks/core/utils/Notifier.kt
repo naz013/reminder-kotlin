@@ -23,7 +23,7 @@ import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import com.elementary.tasks.reminder.preview.ReminderDialogQActivity
+import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import timber.log.Timber
 import java.util.*
 
@@ -225,7 +225,7 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
         builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
         if (reminder.priority > 2) {
-            val fullScreenIntent = ReminderDialogQActivity.getLaunchIntent(context, reminder.uuId)
+            val fullScreenIntent = ReminderDialog29Activity.getLaunchIntent(context, reminder.uuId)
             val fullScreenPendingIntent = PendingIntent.getActivity(context, reminder.uniqueId, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setFullScreenIntent(fullScreenPendingIntent, true)
         } else {
@@ -312,8 +312,8 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
             channel.description = descr
-            channel.enableLights(true)
-            channel.enableVibration(true)
+//            channel.enableLights(true)
+//            channel.enableVibration(true)
             if (Module.isQ) {
                 channel.setAllowBubbles(false)
             }

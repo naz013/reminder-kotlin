@@ -84,7 +84,8 @@ class EventJobService : Job(), KoinComponent {
                 ContextCompat.startForegroundService(context,
                         EventOperationalService.getIntent(context, params.tag,
                                 EventOperationalService.TYPE_MISSED,
-                                EventOperationalService.ACTION_PLAY))
+                                EventOperationalService.ACTION_PLAY,
+                                0))
             } else {
                 openMissedScreen(params.tag)
             }
@@ -112,7 +113,8 @@ class EventJobService : Job(), KoinComponent {
                             ContextCompat.startForegroundService(context,
                                     EventOperationalService.getIntent(context, item.uuId,
                                             EventOperationalService.TYPE_BIRTHDAY,
-                                            EventOperationalService.ACTION_PLAY))
+                                            EventOperationalService.ACTION_PLAY,
+                                            item.uniqueId))
                         } else {
                             showBirthday(context, item)
                         }

@@ -360,7 +360,7 @@
             android:name=".reminder.preview.ReminderDialogActivity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".reminder.preview.ReminderDialogQActivity"
+            android:name=".reminder.preview.ReminderDialog29Activity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".core.apps.SelectApplicationActivity"
@@ -372,6 +372,9 @@
             android:excludeFromRecents="true" />
         <activity
             android:name=".missed_calls.MissedCallDialogActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".missed_calls.MissedCallDialog29Activity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".birthdays.preview.ShowBirthdayActivity"

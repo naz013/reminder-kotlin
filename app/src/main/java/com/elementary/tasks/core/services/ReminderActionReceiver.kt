@@ -20,7 +20,7 @@ class ReminderActionReceiver : BaseBroadcast() {
         sendCloseBroadcast(context, id)
 
         if (Module.isQ) {
-            qAction(reminder, context, id)
+            qAction(reminder, context)
         } else {
             val notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id)
             notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
@@ -35,7 +35,8 @@ class ReminderActionReceiver : BaseBroadcast() {
         ContextCompat.startForegroundService(context,
                 EventOperationalService.getIntent(context, reminder.uuId,
                         EventOperationalService.TYPE_REMINDER,
-                        EventOperationalService.ACTION_STOP))
+                        EventOperationalService.ACTION_STOP,
+                        reminder.uniqueId))
         endService(context, reminder.uniqueId)
     }
 
@@ -85,7 +86,7 @@ class ReminderActionReceiver : BaseBroadcast() {
             } else {
                 withUIContext {
                     if (Module.isQ) {
-                        qAction(reminder, context, id)
+                        qAction(reminder, context)
                     } else {
                         if (windowType == 0) {
                             sendCloseBroadcast(context, id)
@@ -99,16 +100,13 @@ class ReminderActionReceiver : BaseBroadcast() {
         }
     }
 
-    private fun qAction(reminder: Reminder, context: Context, id: String) {
-//        if (reminder.priority > 2) {
-            sendCloseBroadcast(context, id)
-            ContextCompat.startForegroundService(context,
-                    EventOperationalService.getIntent(context, reminder.uuId,
-                            EventOperationalService.TYPE_REMINDER,
-                            EventOperationalService.ACTION_PLAY))
-//        } else {
-//            ReminderUtils.showSimpleReminder(context, prefs, id)
-//        }
+    private fun qAction(reminder: Reminder, context: Context) {
+        sendCloseBroadcast(context, reminder.uuId)
+        ContextCompat.startForegroundService(context,
+                EventOperationalService.getIntent(context, reminder.uuId,
+                        EventOperationalService.TYPE_REMINDER,
+                        EventOperationalService.ACTION_PLAY,
+                        reminder.uniqueId))
     }
 
     companion object {

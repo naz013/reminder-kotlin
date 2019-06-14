@@ -180,13 +180,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp" />
 
-                <com.elementary.tasks.core.views.DividerView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="60dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp" />
-
                 <com.elementary.tasks.core.views.WindowTypeView
                     android:id="@+id/windowTypeView"
                     android:layout_width="match_parent"

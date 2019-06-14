@@ -40,7 +40,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 
-class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
+class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
     private lateinit var viewModel: ReminderViewModel
 
@@ -474,6 +474,7 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     }
 
     private fun startAgain() {
+        discardNotification(id)
         doActions({
             it.next()
             it.onOff()
@@ -593,6 +594,7 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     }
 
     private fun editReminder() {
+        discardNotification(id)
         doActions({ it.stop() }, {
             CreateReminderActivity.openLogged(this, Intent(this, CreateReminderActivity::class.java)
                     .putExtra(Constants.INTENT_ID, it.uuId))
@@ -624,6 +626,7 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     }
 
     private fun call() {
+        discardNotification(id)
         doActions({ it.next() }, {
             when {
                 Reminder.isKind(it.type, Reminder.Kind.SMS) -> sendSMS()
@@ -668,14 +671,17 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     }
 
     private fun delay() {
+        discardNotification(id)
         doActions({ it.setDelay(prefs.snoozeTime) }, { finish() })
     }
 
     private fun cancel() {
+        discardNotification(id)
         doActions({ it.stop() }, { finish() })
     }
 
     private fun favourite() {
+        discardNotification(id)
         doActions({ it.next() }, {
             showFavouriteNotification()
             finish()
@@ -683,6 +689,7 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
     }
 
     private fun ok() {
+        discardNotification(id)
         doActions({ it.next() }, { finish() })
     }
 
@@ -719,7 +726,8 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
         ContextCompat.startForegroundService(this,
                 EventOperationalService.getIntent(this, mReminder?.uuId ?: "",
                         EventOperationalService.TYPE_REMINDER,
-                        EventOperationalService.ACTION_STOP))
+                        EventOperationalService.ACTION_STOP,
+                        id))
     }
 
     private fun showWearNotification(secondaryText: String) {
@@ -781,14 +789,14 @@ class ReminderDialogQActivity : BindingActivity<ActivityReminderDialogBinding>(R
         const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"
 
         fun mockTest(context: Context, reminder: Reminder) {
-            val intent = Intent(context, ReminderDialogQActivity::class.java)
+            val intent = Intent(context, ReminderDialog29Activity::class.java)
             intent.putExtra(ARG_TEST, true)
             intent.putExtra(ARG_TEST_ITEM, reminder)
             context.startActivity(intent)
         }
 
         fun getLaunchIntent(context: Context, id: String): Intent {
-            val resultIntent = Intent(context, ReminderDialogQActivity::class.java)
+            val resultIntent = Intent(context, ReminderDialog29Activity::class.java)
             resultIntent.putExtra(Constants.INTENT_ID, id)
             resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
             return resultIntent
