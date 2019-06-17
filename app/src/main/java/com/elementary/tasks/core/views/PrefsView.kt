@@ -16,6 +16,7 @@ import com.elementary.tasks.core.binding.views.PrefsViewBinding
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.transparent
 import timber.log.Timber
 import java.util.*
 
@@ -102,7 +103,7 @@ class PrefsView : RelativeLayout {
                 binding.iconView.show()
                 binding.iconView.setImageResource(iconId)
             } else {
-                binding.iconView.hide()
+                binding.iconView.transparent()
             }
             setTitleText(titleText)
             setDividerTop(divTop)
@@ -327,6 +328,6 @@ class PrefsView : RelativeLayout {
         private const val SWITCH = 1
         private const val VIEW = 2
         private const val TEXT = 3
-        private const val SHOW_ICON: Boolean = false
+        private const val SHOW_ICON: Boolean = true
     }
 }

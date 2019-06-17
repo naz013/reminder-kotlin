@@ -21,5 +21,5 @@ class PrefsViewBinding(view: View) : Binding(view) {
     val prefsSwitch: SwitchCompat by bindView(R.id.prefsSwitch)
     val prefsValue: TextView by bindView(R.id.prefsValue)
     val prefsView: AppCompatImageView by bindView(R.id.prefsView)
-    val progressView: ProgressBar by bindView(R.id.progressView)
+    val progressView: ProgressBar by bindView(R.id.progressViewPrefs)
 }
