@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -102,6 +103,14 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }
+
+        binding.archiveButton.setOnClickListener {
+            findNavController().navigate(RemindersFragmentDirections.actionRemindersFragmentToArchiveFragment())
+        }
+        binding.groupsButton.setOnClickListener {
+            findNavController().navigate(RemindersFragmentDirections.actionRemindersFragmentToGroupsFragment())
+        }
+
         initList()
         initViewModel()
     }
