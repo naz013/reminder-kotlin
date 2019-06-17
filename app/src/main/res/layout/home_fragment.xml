@@ -32,11 +32,22 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/remindersButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_birthdays_selector"
+                        android:contentDescription="@string/notes"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_notifications_24px"
+                        app:tint="@color/pureBlack" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/notesButton"
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/gradient_button_notes_selector"
+                        android:background="@drawable/gradient_button_calendar_selector"
                         android:contentDescription="@string/notes"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_note_24px"
@@ -47,10 +58,21 @@
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:background="@drawable/gradient_button_calendar_selector"
+                        android:background="@drawable/gradient_button_reminders_selector"
                         android:contentDescription="@string/calendar"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_today_24px"
+                        app:tint="@color/pureBlack" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/birthdaysButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_notes_selector"
+                        android:contentDescription="@string/calendar"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_cake_24px"
                         app:tint="@color/pureBlack" />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -80,11 +102,22 @@
                         android:layout_width="@dimen/home_action_button_size"
                         android:layout_height="@dimen/home_action_button_size"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
                         android:background="@drawable/gradient_button_map_selector"
                         android:contentDescription="@string/map"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_map_24px"
+                        app:tint="@color/pureBlack" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/archiveButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_birthdays_selector"
+                        android:contentDescription="@string/trash"
+                        android:scaleType="centerInside"
+                        android:layout_marginEnd="16dp"
+                        app:srcCompat="@drawable/ic_twotone_delete_24px"
                         app:tint="@color/pureBlack" />
 
                 </LinearLayout>
