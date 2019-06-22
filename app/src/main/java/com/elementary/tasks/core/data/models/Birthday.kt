@@ -39,6 +39,8 @@ data class Birthday(
         @SerializedName("uuId")
         @PrimaryKey
         var uuId: String = UUID.randomUUID().toString(),
+        @SerializedName("updatedAt")
+        var updatedAt: String? = null,
         @Ignore
         var calculatedTime: Long = 0L
 ) : RecyclerInterface, Parcelable {

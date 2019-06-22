@@ -22,7 +22,7 @@ import com.elementary.tasks.core.data.models.*
     UsedTime::class,
     Birthday::class,
     ImageFile::class,
-    ReminderChain::class,
+//    ReminderChain::class,
     SmsTemplate::class
 ], version = 4, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
@@ -38,7 +38,7 @@ abstract class AppDb : RoomDatabase() {
     abstract fun googleTaskListsDao(): GoogleTaskListsDao
     abstract fun googleTasksDao(): GoogleTasksDao
     abstract fun usedTimeDao(): UsedTimeDao
-    abstract fun reminderChainDao(): ReminderChainDao
+//    abstract fun reminderChainDao(): ReminderChainDao
 
     companion object {
 
@@ -94,14 +94,18 @@ abstract class AppDb : RoomDatabase() {
                     database.execSQL("DROP INDEX index_UsedTime_timeString")
                 } catch (e: SQLiteException) {
                 }
-                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
-                        previousId TEXT NOT NULL,
-                        nextId TEXT NOT NULL,
-                        gmtTime TEXT NOT NULL,
-                        activationType INTEGER DEFAULT 0 NOT NULL,
-                        PRIMARY KEY(uuId))""")
 
+                database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+                database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
                 database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+                database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+
+//                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
+//                        previousId TEXT NOT NULL,
+//                        nextId TEXT NOT NULL,
+//                        gmtTime TEXT NOT NULL,
+//                        activationType INTEGER DEFAULT 0 NOT NULL,
+//                        PRIMARY KEY(uuId))""")
             }
         }
         private val MIGRATION_2_4: Migration = object : Migration(2, 4) {
@@ -114,26 +118,33 @@ abstract class AppDb : RoomDatabase() {
                     database.execSQL("DROP INDEX index_UsedTime_timeString")
                 } catch (e: SQLiteException) {
                 }
-                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
-                        previousId TEXT NOT NULL,
-                        nextId TEXT NOT NULL,
-                        gmtTime TEXT NOT NULL,
-                        activationType INTEGER DEFAULT 0 NOT NULL,
-                        PRIMARY KEY(uuId))""")
 
+                database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+                database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
                 database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+                database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+
+//                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
+//                        previousId TEXT NOT NULL,
+//                        nextId TEXT NOT NULL,
+//                        gmtTime TEXT NOT NULL,
+//                        activationType INTEGER DEFAULT 0 NOT NULL,
+//                        PRIMARY KEY(uuId))""")
             }
         }
         private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
-                        previousId TEXT NOT NULL,
-                        nextId TEXT NOT NULL,
-                        gmtTime TEXT NOT NULL,
-                        activationType INTEGER DEFAULT 0 NOT NULL,
-                        PRIMARY KEY(uuId))""")
-
+                database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+                database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
                 database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+                database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+
+//                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
+//                        previousId TEXT NOT NULL,
+//                        nextId TEXT NOT NULL,
+//                        gmtTime TEXT NOT NULL,
+//                        activationType INTEGER DEFAULT 0 NOT NULL,
+//                        PRIMARY KEY(uuId))""")
             }
         }
 

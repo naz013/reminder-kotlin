@@ -20,7 +20,10 @@ class BirthdayActionReceiver : BaseBroadcast() {
         calendar.timeInMillis = System.currentTimeMillis()
         val year = calendar.get(Calendar.YEAR)
         item.showedYear = year
-        AppDb.getAppDatabase(context).birthdaysDao().insert(item)
+        item.updatedAt = TimeUtil.gmtDateTime
+        launchDefault {
+            AppDb.getAppDatabase(context).birthdaysDao().insert(item)
+        }
     }
 
     private fun sendSms(context: Context, intent: Intent) {

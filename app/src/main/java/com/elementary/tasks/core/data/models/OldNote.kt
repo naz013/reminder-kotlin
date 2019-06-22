@@ -19,6 +19,8 @@ data class OldNote(
         var style: Int = 0,
         @SerializedName("images")
         var images: List<ImageFile> = ArrayList(),
+        @SerializedName("updatedAt")
+        var updatedAt: String? = null,
         @SerializedName("uniqueId")
         var uniqueId: Int = 0) {
 
@@ -32,5 +34,6 @@ data class OldNote(
         this.date = note.date
         this.key = note.key
         this.summary = note.summary
+        this.updatedAt = note.updatedAt
     }
 }
