@@ -77,6 +77,8 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/task"
                         android:maxLength="120"
+                        android:imeOptions="actionNext"
+                        android:inputType="textShortMessage"
                         android:maxLines="3"
                         android:textAppearance="?textAppearanceSubtitle1" />
 
@@ -98,7 +100,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/details"
                         android:maxLength="120"
+                        android:inputType="textLongMessage"
                         android:maxLines="3"
+                        android:imeOptions="actionDone"
                         android:textAppearance="?textAppearanceSubtitle1" />
 
                 </com.google.android.material.textfield.TextInputLayout>

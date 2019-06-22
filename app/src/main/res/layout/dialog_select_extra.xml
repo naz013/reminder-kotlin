@@ -43,15 +43,6 @@
                 android:textAppearance="?textAppearanceBody2" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/wakeCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/turn_on_screen"
-                android:visibility="gone"
-                android:textAppearance="?textAppearanceBody2" />
-
-            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/unlockCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

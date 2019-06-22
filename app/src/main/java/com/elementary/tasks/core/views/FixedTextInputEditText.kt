@@ -18,19 +18,16 @@ class FixedTextInputEditText : TextInputEditText {
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
     override fun getHint(): CharSequence? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return super.getHint()
+        return if (isMeizu()) getSuperHintHack()
+        else super.getHint()
+    }
+
+    private fun isMeizu(): Boolean {
+        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
+        if (manufacturer.contains("meizu")) {
+            return true
         }
-        return try {
-            val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
-            if (manufacturer.contains("meizu")) {
-                getSuperHintHack()
-            } else {
-                super.getHint()
-            }
-        } catch (e: Exception) {
-            super.getHint()
-        }
+        return false
     }
 
     private fun getSuperHintHack(): CharSequence? {
@@ -40,6 +37,10 @@ class FixedTextInputEditText : TextInputEditText {
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
-        return null
+        return if (isMeizu()) {
+            null
+        } else {
+            super.onCreateInputConnection(outAttrs)
+        }
     }
 }

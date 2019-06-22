@@ -43,6 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/message"
+                android:imeOptions="actionDone"
+                android:inputType="textShortMessage|textAutoCorrect"
                 android:maxLength="120"
                 android:maxLines="3"
                 android:textAppearance="?textAppearanceSubtitle1" />

@@ -3,6 +3,7 @@ package com.elementary.tasks.core.views
 import android.content.Context
 import android.location.Address
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -54,6 +55,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
         isSingleLine = true
         imeOptions = EditorInfo.IME_ACTION_SEARCH
+        inputType = InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS
         setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_SEARCH) {
                 performTypeValue(text.toString().trim())
