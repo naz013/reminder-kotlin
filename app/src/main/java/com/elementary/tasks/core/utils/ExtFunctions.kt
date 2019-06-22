@@ -126,7 +126,6 @@ fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
     this.vibrate = reminder.vibrate
     this.repeatNotification = reminder.repeatNotification
     this.notifyByVoice = reminder.notifyByVoice
-    this.awake = reminder.awake
     this.unlock = reminder.unlock
     this.auto = reminder.auto
     return this
@@ -137,7 +136,6 @@ fun TuneExtraView.Extra.toReminder(reminder: Reminder): Reminder {
     reminder.vibrate = this.vibrate
     reminder.repeatNotification = this.repeatNotification
     reminder.notifyByVoice = this.notifyByVoice
-    reminder.awake = this.awake
     reminder.unlock = this.unlock
     reminder.auto = this.auto
     return reminder

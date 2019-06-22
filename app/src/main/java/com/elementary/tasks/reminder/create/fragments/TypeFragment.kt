@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
+import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
@@ -129,6 +130,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
         }
         summaryView?.let {
             it.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
+            it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             it.bindProperty(iFace.state.reminder.summary) { summary ->
                 iFace.state.reminder.summary = summary.trim()
             }

@@ -38,7 +38,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/remind_me"
-                        android:inputType="textMultiLine"
                         android:maxLength="300"
                         android:maxLines="6"
                         android:textAppearance="?textAppearanceSubtitle1" />
@@ -98,6 +97,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:hint="@string/address"
+                            android:imeOptions="actionDone"
                             android:maxLines="1"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"

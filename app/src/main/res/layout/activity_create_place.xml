@@ -65,6 +65,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textShortMessage|textAutoCorrect"
                     android:maxLines="1"
                     android:textAppearance="?textAppearanceSubtitle1" />
 
