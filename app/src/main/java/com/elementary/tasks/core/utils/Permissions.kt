@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -18,6 +19,8 @@ object Permissions {
     const val READ_EXTERNAL = Manifest.permission.READ_EXTERNAL_STORAGE
     const val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
     const val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
+    @SuppressLint("InlinedApi")
+    const val BACKGROUND_LOCATION = Manifest.permission.ACCESS_BACKGROUND_LOCATION
     const val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
     const val CALL_PHONE = Manifest.permission.CALL_PHONE
     const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
@@ -25,6 +28,13 @@ object Permissions {
     const val CAMERA = Manifest.permission.CAMERA
     @RequiresApi(Build.VERSION_CODES.P)
     const val FOREGROUND = Manifest.permission.FOREGROUND_SERVICE
+
+    fun isBgLocationAllowed(context: Context): Boolean {
+        if (Module.isQ) {
+            return ContextCompat.checkSelfPermission(context, BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+        }
+        return true
+    }
 
     fun checkForeground(context: Context): Boolean {
         if (Module.isPie) {
@@ -34,6 +44,19 @@ object Permissions {
             return true
         }
         return true
+    }
+
+    fun ensureBackgroundLocation(activity: Activity, requestCode: Int): Boolean {
+        return if (isBgLocationAllowed(activity)) {
+            true
+        } else {
+            if (Module.isQ) {
+                requestPermission(activity, requestCode, BACKGROUND_LOCATION)
+                false
+            } else {
+                return true
+            }
+        }
     }
 
     fun ensureForeground(activity: Activity, requestCode: Int): Boolean {

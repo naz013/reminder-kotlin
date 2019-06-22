@@ -121,7 +121,8 @@ object SuperUtil {
     }
 
     fun startGpsTracking(context: Context) {
-        if (!Permissions.checkForeground(context) || isServiceRunning(context, GeolocationService::class.java)) {
+        if (!Permissions.checkForeground(context) || isServiceRunning(context, GeolocationService::class.java)
+                || !Permissions.isBgLocationAllowed(context)) {
             return
         }
         val intent = Intent(context, GeolocationService::class.java)

@@ -48,7 +48,10 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
     }
 
     override fun prepare(): Reminder? {
-        if (!Permissions.ensureForeground(activity!!, 1212)) {
+        if (!Permissions.ensureForeground(activity!!, REQ_FOREGROUND)) {
+            return null
+        }
+        if (!Permissions.ensureBackgroundLocation(activity!!, REQ_BG_LOCATION)) {
             return null
         }
         val reminder = super.prepare() ?: return null
@@ -198,5 +201,10 @@ class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
             binding.dateView.setDateTime(reminder.eventTime)
             binding.attackDelay.isChecked = true
         }
+    }
+
+    companion object {
+        const val REQ_FOREGROUND = 2121
+        const val REQ_BG_LOCATION = 2122
     }
 }
