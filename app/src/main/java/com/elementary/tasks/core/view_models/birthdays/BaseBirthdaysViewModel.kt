@@ -5,6 +5,7 @@ import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
@@ -34,6 +35,7 @@ abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
     fun saveBirthday(birthday: Birthday) {
         postInProgress(true)
         launchDefault {
+            birthday.updatedAt = TimeUtil.gmtDateTime
             appDb.birthdaysDao().insert(birthday)
             updateBirthdayPermanent()
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)

@@ -124,6 +124,8 @@ data class Reminder(
         var windowType: Int = 0,
         @SerializedName("priority")
         var priority: Int = 2,
+        @SerializedName("updatedAt")
+        var updatedAt: String? = null,
         @ColumnInfo(name = "groupTitle")
         @Transient
         var groupTitle: String? = "",
@@ -195,9 +197,11 @@ data class Reminder(
         if (fullCopy) {
             this.uuId = item.uuId
             this.uniqueId = item.uniqueId
+            this.updatedAt = item.updatedAt
         } else {
             this.uuId = UUID.randomUUID().toString()
             this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
+            this.updatedAt = TimeUtil.gmtDateTime
         }
     }
 

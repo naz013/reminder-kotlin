@@ -198,14 +198,16 @@ class BackupTool(private val appDb: AppDb) {
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                for (file in files) {
-                    if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                        val item = getBirthday(file.toString(), null)
-                        if (item == null || TextUtils.isEmpty(item.name)
-                                || TextUtils.isEmpty(item.uuId)) {
-                            continue
+                launchDefault {
+                    for (file in files) {
+                        if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
+                            val item = getBirthday(file.toString(), null)
+                            if (item == null || TextUtils.isEmpty(item.name)
+                                    || TextUtils.isEmpty(item.uuId)) {
+                                continue
+                            }
+                            appDb.birthdaysDao().insert(item)
                         }
-                        appDb.birthdaysDao().insert(item)
                     }
                 }
             }

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -18,6 +19,8 @@ data class Note (
         var style: Int = 0,
         var palette: Int = 0,
         var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE),
+        @SerializedName("updatedAt")
+        var updatedAt: String? = null,
         var opacity: Int = 100) : Parcelable {
 
     @Ignore
@@ -29,5 +32,6 @@ data class Note (
         this.style = oldNote.style
         this.uniqueId = oldNote.uniqueId
         this.summary = oldNote.summary
+        this.updatedAt = oldNote.updatedAt
     }
 }

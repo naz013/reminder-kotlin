@@ -524,7 +524,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                 try {
                     val item = backupTool.getBirthday(file.toString(), null)
                     if (item != null) {
-                        appDb.birthdaysDao().insert(item)
+                        launchDefault { appDb.birthdaysDao().insert(item) }
                     } else {
                         if (name.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
                             deleteBirthdayFileByName(name)

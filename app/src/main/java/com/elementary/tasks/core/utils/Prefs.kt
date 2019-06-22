@@ -59,6 +59,14 @@ class Prefs(context: Context) : SharedPrefs(context) {
         return false
     }
 
+    var backupAttachedFiles: Boolean
+        get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
+        set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)
+
+    var multiDeviceModeEnabled: Boolean
+        get() = getBoolean(PrefsConstants.MULTI_DEVICE_MODE)
+        set(value) = putBoolean(PrefsConstants.MULTI_DEVICE_MODE, value)
+
     var nightMode: Int
         get() = getInt(PrefsConstants.NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_NO)
         set(value) = putInt(PrefsConstants.NIGHT_MODE, value)

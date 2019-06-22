@@ -13,10 +13,7 @@ import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.groups.GroupsUtil
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
@@ -751,20 +748,22 @@ class Dropbox : KoinComponent {
         try {
             val result = api.files().listFolder(dbxBirthFolder) ?: return
             val dao = appDb.birthdaysDao()
-            for (e in result.entries) {
-                val fileName = e.name
-                val localFile = File("$dir/$fileName")
-                val cloudFile = dbxBirthFolder + fileName
-                downloadFile(localFile, cloudFile)
-                val birthday = backupTool.getBirthday(localFile.toString(), null)
-                if (birthday != null) {
-                    dao.insert(birthday)
-                }
-                if (deleteFile) {
-                    if (localFile.exists()) {
-                        localFile.delete()
+            launchDefault {
+                for (e in result.entries) {
+                    val fileName = e.name
+                    val localFile = File("$dir/$fileName")
+                    val cloudFile = dbxBirthFolder + fileName
+                    downloadFile(localFile, cloudFile)
+                    val birthday = backupTool.getBirthday(localFile.toString(), null)
+                    if (birthday != null) {
+                        dao.insert(birthday)
                     }
-                    api.files().deleteV2(e.pathLower)
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete()
+                        }
+                        api.files().deleteV2(e.pathLower)
+                    }
                 }
             }
         } catch (e: DbxException) {

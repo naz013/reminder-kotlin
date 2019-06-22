@@ -31,14 +31,14 @@ interface BirthdaysDao {
     fun loadAll(dayMonth: String): LiveData<List<Birthday>>
 
     @Insert(onConflict = REPLACE)
-    fun insert(birthday: Birthday)
+    suspend fun insert(birthday: Birthday)
 
     @Insert(onConflict = REPLACE)
-    fun insertAll(vararg birthdays: Birthday)
+    suspend fun insertAll(vararg birthdays: Birthday)
 
     @Delete
-    fun delete(birthday: Birthday)
+    suspend fun delete(birthday: Birthday)
 
     @Delete
-    fun deleteAll(vararg birthdays: Birthday)
+    suspend fun deleteAll(vararg birthdays: Birthday)
 }

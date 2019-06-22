@@ -1,7 +1,9 @@
 package com.elementary.tasks.birthdays.work
 
+import android.content.ContentResolver
 import android.content.Context
 import android.provider.ContactsContract
+import androidx.annotation.RequiresPermission
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.data.AppDb
@@ -9,6 +11,7 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,10 +31,16 @@ class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : W
             return Result.success()
         }
         val cr = applicationContext.contentResolver
+        checkDb(cr)
+        return Result.success()
+    }
+
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
+    private fun checkDb(cr: ContentResolver) = launchDefault {
         var i = 0
         val projection = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
         val cur = cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
-                ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC") ?: return Result.success()
+                ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC") ?: return@launchDefault
         while (cur.moveToNext()) {
             val contactId = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID))
             val columns = arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE, ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.MIMETYPE, ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.Contacts._ID)
@@ -65,6 +74,7 @@ class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : W
                             if (!contacts.contains(birthdayItem)) {
                                 i += 1
                             }
+                            birthdayItem.updatedAt = TimeUtil.gmtDateTime
                             dao.insert(birthdayItem)
                             break
                         }
@@ -74,6 +84,5 @@ class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : W
             birthdayCur?.close()
         }
         cur.close()
-        return Result.success()
     }
 }

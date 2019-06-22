@@ -725,5 +725,7 @@
     <string name="reminder_ongoing_service">Reminder ongoing service</string>
     <string name="select_melody">Select melody</string>
     <string name="select_image">Select image</string>
+    <string name="backup_attached_files_and_melodies">Backup attached files and melodies</string>
+    <string name="multiple_device_mode">Multiple device mode</string>
 
 </resources>

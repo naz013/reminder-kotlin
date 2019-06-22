@@ -74,6 +74,8 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
         initAutoBackupPrefs()
         initAutoSyncPrefs()
+        initBackupFilesPrefs()
+        initMultiDevicePrefs()
 
         binding.backupsPrefs.setOnClickListener {
             findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment())
@@ -93,6 +95,30 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         SyncWorker.unsubscribe()
         BackupWorker.unsubscribe()
         ExportAllDataWorker.unsubscribe()
+    }
+
+    private fun initBackupFilesPrefs() {
+        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
+        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
+        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
+    }
+
+    private fun changeBackupFilesPrefs() {
+        val isChecked = binding.backupFilesPrefs.isChecked
+        binding.backupFilesPrefs.isChecked = !isChecked
+        prefs.backupAttachedFiles = !isChecked
+    }
+
+    private fun initMultiDevicePrefs() {
+        binding.multiDevicePrefs.isChecked = prefs.multiDeviceModeEnabled
+        binding.multiDevicePrefs.setOnClickListener { changeMultiDevicePrefs() }
+        binding.multiDevicePrefs.setDependentView(binding.backupDataPrefs)
+    }
+
+    private fun changeMultiDevicePrefs() {
+        val isChecked = binding.multiDevicePrefs.isChecked
+        binding.multiDevicePrefs.isChecked = !isChecked
+        prefs.multiDeviceModeEnabled = !isChecked
     }
 
     private fun initAutoSyncPrefs() {

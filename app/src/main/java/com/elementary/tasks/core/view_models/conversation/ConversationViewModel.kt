@@ -387,6 +387,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
             saveQuickReminder(note.key, note.summary)
         }
         launchDefault {
+            note.updatedAt = TimeUtil.gmtDateTime
             appDb.notesDao().insert(note)
         }
         UpdatesHelper.updateNotesWidget(context)

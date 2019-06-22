@@ -111,6 +111,8 @@ object PrefsConstants {
     const val AUTO_BACKUP_FLAGS = "auto_backup_flags"
     const val AUTO_IMPORT_SHARED_DATA = "auto_import_shared_data"
     const val NIGHT_MODE = "night_mode"
+    const val EXPORT_ATTACHED_FILES = "export_attached_files"
+    const val MULTI_DEVICE_MODE = "multi_device_mode"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"
