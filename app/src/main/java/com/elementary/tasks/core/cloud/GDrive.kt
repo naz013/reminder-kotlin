@@ -30,6 +30,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
     private val appDb: AppDb by inject()
     private val prefs: Prefs by inject()
     private val backupTool: BackupTool by inject()
+    private val tokenDataFile = TokenDataFile()
 
     var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
@@ -85,7 +86,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
         try {
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val title = f.name
                     Timber.d("countFiles: $title")
@@ -140,7 +141,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$fileName'")
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     service.files().delete(f.id).execute()
                 }
@@ -165,7 +166,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_SETTINGS + "'")
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val title = f.name
                     if (title.contains(FileConfig.FILE_NAME_SETTINGS)) {
@@ -354,7 +355,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '" + metadata.fileExt + "'")
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     Timber.d("download: ${f.name}, ${f.id}")
                     val title = f.name
@@ -558,7 +559,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val fileTitle = f.name
                     if (fileTitle.endsWith(FileConfig.FILE_NAME_REMINDER)) {
@@ -586,7 +587,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val fileTitle = f.name
                     if (fileTitle.endsWith(FileConfig.FILE_NAME_NOTE)) {
@@ -614,7 +615,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val fileTitle = f.name
                     if (fileTitle.endsWith(FileConfig.FILE_NAME_GROUP)) {
@@ -642,7 +643,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val fileTitle = f.name
                     if (fileTitle.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
@@ -670,7 +671,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val fileTitle = f.name
                     if (fileTitle.endsWith(FileConfig.FILE_NAME_PLACE)) {
@@ -698,7 +699,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     val fileTitle = f.name
                     if (fileTitle.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
@@ -720,7 +721,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .setFields("nextPageToken, files(id, name)") ?: return
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     service.files().delete(f.id).execute()
                 }
@@ -739,7 +740,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
         try {
             do {
                 val files = request.execute()
-                val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
+                val fileList = files.files as ArrayList<File>
                 for (f in fileList) {
                     service.files().delete(f.id).execute()
                 }
@@ -747,6 +748,10 @@ class GDrive private constructor(context: Context) : KoinComponent {
             } while (request.pageToken != null && request.pageToken.length >= 0)
         } catch (e: java.lang.Exception) {
         }
+    }
+
+    fun updateToken(token: String?) {
+        if (token == null) return
     }
 
     data class Metadata (val fileExt: String,

@@ -146,6 +146,7 @@ dependencies {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
     implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     proImplementation 'com.google.firebase:firebase-database:18.0.0'

@@ -17,6 +17,8 @@ import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.util.*
@@ -119,6 +121,19 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         val isChecked = binding.multiDevicePrefs.isChecked
         binding.multiDevicePrefs.isChecked = !isChecked
         prefs.multiDeviceModeEnabled = !isChecked
+
+        if (prefs.multiDeviceModeEnabled) {
+            FirebaseInstanceId.getInstance().instanceId
+                    .addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            return@OnCompleteListener
+                        }
+                        val token = task.result?.token
+                        withContext {
+                            GDrive.getInstance(it)?.updateToken(token)
+                        }
+                    })
+        }
     }
 
     private fun initAutoSyncPrefs() {

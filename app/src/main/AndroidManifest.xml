@@ -433,6 +433,14 @@
             android:name=".core.services.EventOperationalService"
             android:enabled="true" />
 
+        <service
+            android:name=".core.services.SyncMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".core.app_widgets.buttons.CombinedButtonsWidget"
             android:icon="@mipmap/ic_launcher"
