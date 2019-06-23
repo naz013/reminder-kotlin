@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
+import android.app.AlarmManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -119,6 +120,11 @@ fun Long.toCalendar(): Calendar {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = this
     return calendar
+}
+
+fun Long.daysAfter(): Int {
+    val days = this / AlarmManager.INTERVAL_DAY
+    return days.toInt()
 }
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
