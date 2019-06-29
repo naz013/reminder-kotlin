@@ -6,8 +6,8 @@ import android.os.StatFs
 import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.Dropbox
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBackupsBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment

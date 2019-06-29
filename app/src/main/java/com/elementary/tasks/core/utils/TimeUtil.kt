@@ -350,6 +350,14 @@ object TimeUtil {
         return calendar.timeInMillis
     }
 
+    fun isAfterDate(gmt1: String?, gmt2: String?): Boolean {
+        if (gmt1.isNullOrEmpty()) return false
+        if (gmt2.isNullOrEmpty()) return true
+        val millis1 = getDateTimeFromGmt(gmt1)
+        val millis2 = getDateTimeFromGmt(gmt2)
+        return millis1 > millis2
+    }
+
     fun logTime(date: Long = System.currentTimeMillis()): String {
         return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date(date))
     }

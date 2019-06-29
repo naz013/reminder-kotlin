@@ -3,9 +3,9 @@ package com.elementary.tasks.places.work
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.cloud.Dropbox
+import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import java.io.File

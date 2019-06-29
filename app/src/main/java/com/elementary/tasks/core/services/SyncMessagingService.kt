@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.services
 
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.Dropbox
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -19,6 +20,10 @@ class SyncMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String?) {
         super.onNewToken(token)
+        val dropbox = Dropbox()
+        if (dropbox.isLinked) {
+            dropbox.updateToken(token)
+        }
         GDrive.getInstance(applicationContext)?.updateToken(token)
     }
 }

@@ -45,7 +45,7 @@ object BackupWorker {
             ioHelper.backupGroup()
 
             notifyMsg(context.getString(R.string.syncing_reminders))
-            ioHelper.backupReminder()
+
 
             notifyMsg(context.getString(R.string.syncing_notes))
             ioHelper.backupNote()

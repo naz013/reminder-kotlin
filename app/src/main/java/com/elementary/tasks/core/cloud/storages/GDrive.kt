@@ -1,8 +1,9 @@
-package com.elementary.tasks.core.cloud
+package com.elementary.tasks.core.cloud.storages
 
 import android.content.Context
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
+import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -12,6 +13,7 @@ import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
+import com.google.api.client.http.InputStreamContent
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
@@ -19,11 +21,13 @@ import com.google.api.services.drive.model.File
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-class GDrive private constructor(context: Context) : KoinComponent {
+class GDrive private constructor(context: Context) : Storage(), KoinComponent {
 
     private var driveService: Drive? = null
 
@@ -31,6 +35,7 @@ class GDrive private constructor(context: Context) : KoinComponent {
     private val prefs: Prefs by inject()
     private val backupTool: BackupTool by inject()
     private val tokenDataFile = TokenDataFile()
+    private val indexDataFile = IndexDataFile()
 
     var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
@@ -47,9 +52,107 @@ class GDrive private constructor(context: Context) : KoinComponent {
                     .build()
             isLogged = true
             statusObserver?.invoke(true)
+            if (!indexDataFile.isLoaded) {
+                loadIndexFile()
+            }
+            if (!tokenDataFile.isLoaded) {
+                loadTokenFile()
+            }
         } else {
             logOut()
         }
+    }
+
+    override suspend fun backup(json: String, metadata: com.elementary.tasks.core.cloud.converters.Metadata) {
+        val service = driveService ?: return
+        if (!isLogged) return
+        if (TextUtils.isEmpty(metadata.fileName)) return
+        try {
+            removeAllCopies(metadata.fileName)
+            val fileMetadata = File()
+            fileMetadata.name = metadata.fileName
+            fileMetadata.description = metadata.meta
+            fileMetadata.parents = PARENTS
+            val mediaContent = InputStreamContent("text/plain", ByteArrayInputStream(json.toByteArray()))
+            val driveFile = service.files().create(fileMetadata, mediaContent)
+                    .setFields("id")
+                    .execute()
+            Timber.d("saveFileToDrive: ${driveFile.id}")
+        } catch (e: java.lang.Exception) {
+        }
+    }
+
+    override suspend fun restore(fileName: String): String? {
+        val service = driveService ?: return null
+        if (!isLogged) return null
+        try {
+            val request = service.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setQ("mimeType = 'text/plain' and name contains '$fileName'")
+            do {
+                val files = request.execute()
+                val fileList = files.files as ArrayList<File>
+                for (f in fileList) {
+                    Timber.d("download: ${f.name}, ${f.id}")
+                    val title = f.name
+                    if (title == fileName) {
+                        val out = ByteArrayOutputStream()
+                        service.files().get(f.id).executeMediaAndDownloadTo(out)
+                        return out.toString()
+                    }
+                }
+                request.pageToken = files.nextPageToken
+            } while (request.pageToken != null)
+        } catch (e: Exception) {
+            return null
+        }
+        return null
+    }
+
+    override suspend fun delete(fileName: String) {
+        removeAllCopies(fileName)
+    }
+
+    override fun hasIndex(id: String): Boolean {
+        return indexDataFile.hasIndex(id)
+    }
+
+    override fun saveIndex(fileIndex: FileIndex) {
+        indexDataFile.addIndex(fileIndex)
+        saveIndexFile()
+        tokenDataFile.notifyDevices()
+    }
+
+    override fun removeIndex(id: String) {
+        indexDataFile.removeIndex(id)
+        saveIndexFile()
+    }
+
+    override fun needBackup(id: String, updatedAt: String): Boolean {
+        return indexDataFile.isFileChanged(id, updatedAt)
+    }
+
+    private fun loadTokenFile() {
+
+    }
+
+    private fun saveTokenFile() {
+
+    }
+
+    private fun loadIndexFile() {
+
+    }
+
+    private fun saveIndexFile() {
+
+    }
+
+    fun updateToken(token: String?) {
+        if (token == null) return
+        tokenDataFile.addDevice(token)
+        saveTokenFile()
     }
 
     fun logOut() {
@@ -202,15 +305,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
             saveToDrive(Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.remindersDir, "Reminder Backup", null))
         } catch (e: IOException) {
             Timber.d("saveRemindersToDrive: ${e.message}")
-        }
-    }
-
-    fun saveReminderToDrive(pathToFile: String) {
-        try {
-            val metadata = Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.remindersDir, "Reminder Backup", null)
-            saveFileToDrive(pathToFile, metadata)
-        } catch (e: IOException) {
-            Timber.d("saveReminderToDrive: ${e.message}")
         }
     }
 
@@ -748,19 +842,6 @@ class GDrive private constructor(context: Context) : KoinComponent {
             } while (request.pageToken != null && request.pageToken.length >= 0)
         } catch (e: java.lang.Exception) {
         }
-    }
-
-    fun updateToken(token: String?) {
-        if (token == null) return
-    }
-
-    data class Metadata (val fileExt: String,
-                         val folder: java.io.File?,
-                         val meta: String?,
-                         val action: Action?)
-
-    interface Action {
-        fun onSave(file: java.io.File, id: String, name: String)
     }
 
     companion object {

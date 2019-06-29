@@ -279,4 +279,62 @@ object MemoryUtil {
         }
         return file.toString()
     }
+
+    fun encryptJson(data: String?): String? {
+        if (data == null) return null
+        try {
+            val inputStream = ByteArrayInputStream(data.toByteArray())
+            val buffer = ByteArray(8192)
+            var bytesRead: Int
+            val output = ByteArrayOutputStream()
+            val output64 = Base64OutputStream(output, Base64.DEFAULT)
+            try {
+                do {
+                    bytesRead = inputStream.read(buffer)
+                    if (bytesRead != -1) {
+                        output64.write(buffer, 0, bytesRead)
+                    }
+                } while (bytesRead != -1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            output64.close()
+
+            val encrypted = output.toString()
+            output.close()
+            return encrypted
+        } catch (e: SecurityException) {
+            return null
+        }
+    }
+
+    fun decryptToJson(encrypted: String?): String? {
+        if (encrypted == null) return null
+        return try {
+            val inputStream = ByteArrayInputStream(encrypted.toByteArray())
+            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+            val r = BufferedReader(InputStreamReader(output64))
+            val total = StringBuilder()
+            var line: String?
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+            output64.close()
+            inputStream.close()
+            val res = total.toString()
+            if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
+                Timber.d("readFileToJson: $res")
+                res
+            } else {
+                Timber.d("readFileToJson: Bad JSON")
+                null
+            }
+        } catch (e: Exception) {
+            Timber.d("readFileToJson: Bad JSON")
+            null
+        }
+    }
 }

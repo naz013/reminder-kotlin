@@ -5,8 +5,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.Dropbox
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Prefs

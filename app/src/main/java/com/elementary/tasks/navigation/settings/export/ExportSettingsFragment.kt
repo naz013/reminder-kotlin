@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.Dropbox
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupWorker

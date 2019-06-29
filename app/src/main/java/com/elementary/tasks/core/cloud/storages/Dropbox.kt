@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.cloud
+package com.elementary.tasks.core.cloud.storages
 
 import android.content.Context
 import android.os.Environment
@@ -10,6 +10,8 @@ import com.dropbox.core.v2.DbxClientV2
 import com.dropbox.core.v2.files.WriteMode
 import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
+import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -21,7 +23,7 @@ import org.koin.core.inject
 import timber.log.Timber
 import java.io.*
 
-class Dropbox : KoinComponent {
+class Dropbox : Storage(), KoinComponent {
 
     private val dbxFolder = "/Reminders/"
     private val dbxNoteFolder = "/Notes/"
@@ -36,8 +38,66 @@ class Dropbox : KoinComponent {
     private val backupTool: BackupTool by inject()
     private val appDb: AppDb by inject()
 
+    private val tokenDataFile = TokenDataFile()
+    private val indexDataFile = IndexDataFile()
+
     val isLinked: Boolean
         get() = mDBApi != null && prefs.dropboxToken != ""
+
+    init {
+        startSession()
+    }
+
+    override suspend fun backup(json: String, metadata: Metadata) {
+
+    }
+
+    override suspend fun restore(fileName: String): String? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun delete(fileName: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hasIndex(id: String): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun needBackup(id: String, updatedAt: String): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun removeIndex(id: String) {
+
+    }
+
+    override fun saveIndex(fileIndex: FileIndex) {
+
+        saveIndexFile()
+    }
+
+    private fun loadTokenFile() {
+
+    }
+
+    private fun saveTokenFile() {
+
+    }
+
+    private fun loadIndexFile() {
+
+    }
+
+    private fun saveIndexFile() {
+
+    }
+
+    fun updateToken(token: String?) {
+        if (token == null) return
+        tokenDataFile.addDevice(token)
+        saveTokenFile()
+    }
 
     fun startSession() {
         var token: String? = prefs.dropboxToken
@@ -54,6 +114,13 @@ class Dropbox : KoinComponent {
                 .build()
 
         mDBApi = DbxClientV2(requestConfig, token)
+
+        if (!indexDataFile.isLoaded) {
+            loadIndexFile()
+        }
+        if (!tokenDataFile.isLoaded) {
+            loadTokenFile()
+        }
     }
 
     /**

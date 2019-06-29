@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.Dropbox
+import com.elementary.tasks.core.cloud.storages.GDrive
 import java.io.File
 
 class IoHelper(context: Context, private val prefs: Prefs, private val backupTool: BackupTool) {

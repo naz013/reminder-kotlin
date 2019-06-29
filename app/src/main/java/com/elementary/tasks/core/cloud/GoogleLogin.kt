@@ -3,8 +3,8 @@ package com.elementary.tasks.core.cloud
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.launchIo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -109,18 +109,11 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
                 .addOnSuccessListener { googleAccount ->
                     Timber.d("Signed in as ${googleAccount.email}")
                     finishLogin(googleAccount.account?.name ?: "")
-                    testSync()
                 }
                 .addOnFailureListener {
                     Timber.d("handleSignInResult: ${it.message}")
                     sendFail()
                 }
-    }
-
-    private fun testSync() {
-        launchIo {
-            GDrive.getInstance(activity)?.saveRemindersToDrive()
-        }
     }
 
     private fun finishLogin(account: String) {

@@ -9,6 +9,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.utils.Module
 import timber.log.Timber
 
