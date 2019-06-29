@@ -89,6 +89,14 @@ abstract class SharedPrefs(protected val context: Context) {
         }
     }
 
+    fun all(): Map<String, *> {
+        return prefs.all
+    }
+
+    fun sharedPrefs(): SharedPreferences {
+        return prefs
+    }
+
     fun savePrefsBackup() {
         val dir = MemoryUtil.prefsDir
         if (dir != null) {
@@ -102,6 +110,9 @@ abstract class SharedPrefs(protected val context: Context) {
                 val list = prefs.all
                 if (list.containsKey(PrefsConstants.DRIVE_USER)) {
                     list.remove(PrefsConstants.DRIVE_USER)
+                }
+                if (list.containsKey(PrefsConstants.TASKS_USER)) {
+                    list.remove(PrefsConstants.TASKS_USER)
                 }
                 output.writeObject(list)
             } catch (e: IOException) {
@@ -127,7 +138,6 @@ abstract class SharedPrefs(protected val context: Context) {
             try {
                 input = ObjectInputStream(FileInputStream(prefsFile))
                 val prefEdit = prefs.edit()
-                prefEdit.clear()
                 val entries = input.readObject() as Map<String, *>
                 for ((key, v) in entries) {
                     when (v) {

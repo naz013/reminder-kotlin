@@ -308,50 +308,6 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         }
     }
 
-    fun saveBirthdayToDrive(pathToFile: String) {
-        try {
-            val metadata = Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.birthdaysDir, "Birthday Backup", null)
-            saveFileToDrive(pathToFile, metadata)
-        } catch (e: IOException) {
-            Timber.d("saveBirthdayToDrive: ${e.message}")
-        }
-    }
-
-    fun saveGroupToDrive(pathToFile: String) {
-        try {
-            val metadata = Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "ReminderGroup Backup", null)
-            saveFileToDrive(pathToFile, metadata)
-        } catch (e: IOException) {
-            Timber.d("saveGroupToDrive: ${e.message}")
-        }
-    }
-
-    fun savePlaceToDrive(pathToFile: String) {
-        try {
-            val metadata = Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.placesDir, "Place Backup", null)
-            saveFileToDrive(pathToFile, metadata)
-        } catch (e: IOException) {
-            Timber.d("savePlaceToDrive: ${e.message}")
-        }
-    }
-
-    fun saveNoteToDrive(pathToFile: String) {
-        try {
-            val metadata = Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.notesDir, "Note Backup", null)
-            saveFileToDrive(pathToFile, metadata)
-        } catch (e: IOException) {
-            Timber.d("saveNoteToDrive: ${e.message}")
-        }
-    }
-
-    fun saveTemplateToDrive(pathToFile: String) {
-        try {
-            val metadata = Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.templatesDir, "Template Backup", null)
-            saveFileToDrive(pathToFile, metadata)
-        } catch (e: IOException) {
-            Timber.d("saveTemplateToDrive: ${e.message}")
-        }
-    }
 
     fun saveNotesToDrive() {
         try {
