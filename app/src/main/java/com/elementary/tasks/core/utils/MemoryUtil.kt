@@ -21,20 +21,6 @@ object MemoryUtil {
     const val DIR_PLACES_SD = "places"
     const val DIR_TEMPLATES_SD = "templates"
     private const val DIR_MAIL_SD = "mail_attachments"
-    private const val DIR_SD_DBX_TMP = "tmp_dropbox"
-    private const val DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes"
-    private const val DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups"
-    private const val DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays"
-    private const val DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places"
-    private const val DIR_TEMPLATES_SD_DBX_TMP = "tmp_dropbox_templates"
-    private const val DIR_PREFERENCES_SD_DBX_TMP = "tmp_dropbox_preferences"
-    private const val DIR_SD_GDRIVE_TMP = "tmp_gdrive"
-    private const val DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes"
-    private const val DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group"
-    private const val DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays"
-    private const val DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places"
-    private const val DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates"
-    private const val DIR_PREFERENCES_SD_GDRIVE_TMP = "tmp_gdrive_preferences"
 
     val isSdPresent: Boolean
         get() {
@@ -60,53 +46,11 @@ object MemoryUtil {
     val templatesDir: File?
         get() = getDir(DIR_TEMPLATES_SD)
 
-    val googlePlacesDir: File?
-        get() = getDir(DIR_PLACES_SD_GDRIVE_TMP)
-
-    val googleTemplatesDir: File?
-        get() = getDir(DIR_TEMPLATES_SD_GDRIVE_TMP)
-
-    val dropboxPlacesDir: File?
-        get() = getDir(DIR_PLACES_SD_DBX_TMP)
-
-    val dropboxTemplatesDir: File?
-        get() = getDir(DIR_TEMPLATES_SD_DBX_TMP)
-
-    val dropboxRemindersDir: File?
-        get() = getDir(DIR_SD_DBX_TMP)
-
-    val dropboxGroupsDir: File?
-        get() = getDir(DIR_GROUP_SD_DBX_TMP)
-
-    val dropboxBirthdaysDir: File?
-        get() = getDir(DIR_BIRTHDAY_SD_DBX_TMP)
-
-    val dropboxNotesDir: File?
-        get() = getDir(DIR_NOTES_SD_DBX_TMP)
-
-    val googleRemindersDir: File?
-        get() = getDir(DIR_SD_GDRIVE_TMP)
-
-    val googleGroupsDir: File?
-        get() = getDir(DIR_GROUP_SD_GDRIVE_TMP)
-
-    val googleBirthdaysDir: File?
-        get() = getDir(DIR_BIRTHDAY_SD_GDRIVE_TMP)
-
-    val googleNotesDir: File?
-        get() = getDir(DIR_NOTES_SD_GDRIVE_TMP)
-
     val mailDir: File?
         get() = getDir(DIR_MAIL_SD)
 
     val prefsDir: File?
         get() = getDir(DIR_PREFS)
-
-    val googlePrefsDir: File?
-        get() = getDir(DIR_PREFERENCES_SD_GDRIVE_TMP)
-
-    val dropboxPrefsDir: File?
-        get() = getDir(DIR_PREFERENCES_SD_DBX_TMP)
 
     val parent: File?
         get() = getDir("")

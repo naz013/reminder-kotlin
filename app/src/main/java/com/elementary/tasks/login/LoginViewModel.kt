@@ -5,25 +5,26 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.BulkDataFlow
+import com.elementary.tasks.core.cloud.completables.ReminderCompletable
+import com.elementary.tasks.core.cloud.converters.*
+import com.elementary.tasks.core.cloud.repositories.*
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
+import com.elementary.tasks.core.cloud.storages.LocalStorage
+import com.elementary.tasks.core.cloud.storages.Storage
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.groups.GroupsUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.io.IOException
 
 class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
 
     private val appDb: AppDb by inject()
-    private val backupTool: BackupTool by inject()
     private val prefs: Prefs by inject()
     private val context: Context by inject()
 
@@ -34,159 +35,74 @@ class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
     private var job: Job? = null
 
     fun loadDataFromGoogle() {
-        message.postValue(R.string.please_wait)
-        isLoading.postValue(true)
-        job = launchDefault {
-            prefs.isBackupEnabled = true
-            GDrive.getInstance(context)?.let { drive ->
-                message.postValue(R.string.syncing_groups)
-                try {
-                    drive.downloadGroups(false)
-                } catch (e: Exception) {
-                }
+        val storage = GDrive.getInstance(context)
 
-
-                runBlocking {
-                    verifyGroups()
-                }
-
-                message.postValue(R.string.syncing_reminders)
-                try {
-                    drive.downloadReminders(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import notes
-                message.postValue(R.string.syncing_notes)
-                try {
-                    drive.downloadNotes(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import birthdays
-                message.postValue(R.string.syncing_birthdays)
-                try {
-                    drive.downloadBirthdays(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import places
-                message.postValue(R.string.syncing_places)
-                try {
-                    drive.downloadPlaces(false)
-                } catch (e: Exception) {
-                }
-
-                //export & import templates
-                message.postValue(R.string.syncing_templates)
-                try {
-                    drive.downloadTemplates(false)
-                } catch (e: Exception) {
-                }
-                try {
-                    drive.downloadSettings(false)
-                } catch (e: Exception) {
-                }
-            }
-
-            withUIContext {
-                isLoading.postValue(false)
-                isReady.postValue(true)
-            }
+        if (storage == null) {
+            isLoading.postValue(false)
+            isReady.postValue(true)
+            return
         }
+
+        loadData(storage)
     }
 
     fun loadDataFromDropbox() {
-        message.postValue(R.string.please_wait)
-        isLoading.postValue(true)
-        job = launchDefault {
-            prefs.isBackupEnabled = true
-            val drive = Dropbox()
+        val storage = Dropbox()
 
-            message.postValue(R.string.syncing_groups)
-            drive.downloadGroups(false)
-
-            runBlocking {
-                verifyGroups()
-            }
-
-            message.postValue(R.string.syncing_reminders)
-            drive.downloadReminders(false)
-
-            //export & import notes
-            message.postValue(R.string.syncing_notes)
-            drive.downloadNotes(false)
-
-            //export & import birthdays
-            message.postValue(R.string.syncing_birthdays)
-            drive.downloadBirthdays(false)
-
-            //export & import places
-            message.postValue(R.string.syncing_places)
-            drive.downloadPlaces(false)
-
-            //export & import templates
-            message.postValue(R.string.syncing_templates)
-            drive.downloadTemplates(false)
-            drive.downloadSettings()
-
-            withUIContext {
-                isLoading.postValue(false)
-                isReady.postValue(true)
-            }
+        if (!storage.isLinked) {
+            isLoading.postValue(false)
+            isReady.postValue(true)
+            return
         }
+
+        loadData(storage)
     }
 
     fun loadDataFromLocal() {
+        if (!Permissions.checkPermission(context, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            isLoading.postValue(false)
+            isReady.postValue(true)
+            return
+        }
+        loadData(LocalStorage())
+    }
+
+    fun loadData(storage: Storage) {
         message.postValue(R.string.please_wait)
         isLoading.postValue(true)
         job = launchDefault {
             prefs.isBackupEnabled = true
 
             message.postValue(R.string.syncing_groups)
-            try {
-                backupTool.importGroups()
-            } catch (ignored: IOException) {
-            }
+            BulkDataFlow(GroupRepository(), GroupConverter(), storage, null)
+                    .restore(IndexTypes.TYPE_GROUP, false)
 
             runBlocking {
                 verifyGroups()
             }
 
             message.postValue(R.string.syncing_reminders)
-            try {
-                backupTool.importReminders()
-            } catch (ignored: IOException) {
-            }
+            BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable())
+                    .restore(IndexTypes.TYPE_REMINDER, false)
 
-            //export & import notes
             message.postValue(R.string.syncing_notes)
-            try {
-                backupTool.importNotes()
-            } catch (ignored: IOException) {
-            }
+            BulkDataFlow(NoteRepository(), NoteConverter(), storage, null)
+                    .restore(IndexTypes.TYPE_NOTE, false)
 
-            //export & import birthdays
             message.postValue(R.string.syncing_birthdays)
-            try {
-                backupTool.importBirthdays()
-            } catch (ignored: IOException) {
-            }
+            BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
+                    .restore(IndexTypes.TYPE_BIRTHDAY, false)
 
-            //export & import places
             message.postValue(R.string.syncing_places)
-            try {
-                backupTool.importPlaces()
-            } catch (ignored: IOException) {
-            }
+            BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null)
+                    .restore(IndexTypes.TYPE_PLACE, false)
 
-            //export & import templates
             message.postValue(R.string.syncing_templates)
-            try {
-                backupTool.importTemplates()
-            } catch (ignored: IOException) {
-            }
-            prefs.loadPrefsFromFile()
+            BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null)
+                    .restore(IndexTypes.TYPE_TEMPLATE, false)
+
+            BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null)
+                    .restore(IndexTypes.TYPE_SETTINGS, false)
 
             withUIContext {
                 isLoading.postValue(false)
@@ -205,7 +121,9 @@ class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
                 item.groupUuId = defUiID
                 dao.insert(item)
             }
-            BackupDataWorker.schedule()
+            if (prefs.isBackupEnabled) {
+                BackupDataWorker.schedule()
+            }
         }
     }
 

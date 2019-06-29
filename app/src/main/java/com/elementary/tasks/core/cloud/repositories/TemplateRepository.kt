@@ -10,4 +10,8 @@ class TemplateRepository : DatabaseRepository<SmsTemplate>() {
     override suspend fun insert(t: SmsTemplate) {
         appDb.smsTemplatesDao().insert(t)
     }
+
+    override suspend fun all(): List<SmsTemplate> {
+        return appDb.smsTemplatesDao().all()
+    }
 }

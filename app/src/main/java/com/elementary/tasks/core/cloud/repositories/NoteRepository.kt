@@ -14,4 +14,8 @@ class NoteRepository : DatabaseRepository<NoteWithImages>() {
             appDb.notesDao().insertAll(t.images)
         }
     }
+
+    override suspend fun all(): List<NoteWithImages> {
+        return appDb.notesDao().all()
+    }
 }

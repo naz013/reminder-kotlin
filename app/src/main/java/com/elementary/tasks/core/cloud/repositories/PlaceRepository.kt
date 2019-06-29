@@ -10,4 +10,8 @@ class PlaceRepository : DatabaseRepository<Place>() {
     override suspend fun insert(t: Place) {
         appDb.placesDao().insert(t)
     }
+
+    override suspend fun all(): List<Place> {
+        return appDb.placesDao().all()
+    }
 }

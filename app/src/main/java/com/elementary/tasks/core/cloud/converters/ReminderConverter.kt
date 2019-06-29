@@ -11,6 +11,7 @@ class ReminderConverter : Convertible<Reminder> {
 
     override fun metadata(t: Reminder): Metadata {
         return Metadata(
+                t.uuId,
                 t.uuId + FileConfig.FILE_NAME_REMINDER,
                 FileConfig.FILE_NAME_REMINDER,
                 t.updatedAt ?: "",

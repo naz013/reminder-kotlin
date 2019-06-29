@@ -13,6 +13,7 @@ class NoteConverter : Convertible<NoteWithImages> {
 
     override fun metadata(t: NoteWithImages): Metadata {
         return Metadata(
+                t.getKey(),
                 t.getKey() + FileConfig.FILE_NAME_NOTE,
                 FileConfig.FILE_NAME_NOTE,
                 t.getGmtTime(),

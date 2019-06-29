@@ -25,38 +25,15 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
     private val localFolders: List<File?>
         get() {
-            val r = MemoryUtil.remindersDir
-            val n = MemoryUtil.notesDir
-            val g = MemoryUtil.groupsDir
-            val b = MemoryUtil.birthdaysDir
-            val p = MemoryUtil.placesDir
-            val s = MemoryUtil.prefsDir
-            val t = MemoryUtil.templatesDir
-            return listOf(r, n, g, b, p, s, t)
-        }
-
-    private val googleFolders: List<File?>
-        get() {
-            val r = MemoryUtil.googleRemindersDir
-            val n = MemoryUtil.googleNotesDir
-            val g = MemoryUtil.googleGroupsDir
-            val b = MemoryUtil.googleBirthdaysDir
-            val p = MemoryUtil.googlePlacesDir
-            val s = MemoryUtil.googlePrefsDir
-            val t = MemoryUtil.googleTemplatesDir
-            return listOf(r, n, g, b, p, s, t)
-        }
-
-    private val dropboxFolders: List<File?>
-        get() {
-            val r = MemoryUtil.dropboxRemindersDir
-            val n = MemoryUtil.dropboxNotesDir
-            val g = MemoryUtil.dropboxGroupsDir
-            val b = MemoryUtil.dropboxBirthdaysDir
-            val p = MemoryUtil.dropboxPlacesDir
-            val s = MemoryUtil.dropboxPrefsDir
-            val t = MemoryUtil.dropboxTemplatesDir
-            return listOf(r, n, g, b, p, s, t)
+            return listOf(
+                    MemoryUtil.remindersDir,
+                    MemoryUtil.notesDir,
+                    MemoryUtil.groupsDir,
+                    MemoryUtil.birthdaysDir,
+                    MemoryUtil.placesDir,
+                    MemoryUtil.prefsDir,
+                    MemoryUtil.templatesDir
+            )
         }
 
     private fun cancelTask() {
@@ -74,7 +51,7 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
         mAdapter = InfoAdapter(binding.itemsContainer) {
             if (it != null) {
-                deleteFiles(getFolders(it), it)
+                deleteFiles(getFolders(), it)
             }
         }
 
@@ -88,12 +65,8 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
     override fun getTitle(): String = getString(R.string.backup_files)
 
-    private fun getFolders(info: Info): List<File?> {
-        return when (info) {
-            Info.Dropbox -> dropboxFolders
-            Info.Google -> googleFolders
-            else -> localFolders
-        }
+    private fun getFolders(): List<File?> {
+        return localFolders
     }
 
     private fun loadUserInfo() {
@@ -104,7 +77,6 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
             val list = ArrayList<Info>()
             list.add(Info.Local)
             val dbx = Dropbox()
-            dbx.startSession()
             if (dbx.isLinked) {
                 list.add(Info.Dropbox)
             }
@@ -161,62 +133,29 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
         launchDefault {
             if (type == Info.Dropbox) {
                 val dbx = Dropbox()
-                dbx.startSession()
-                val isLinked = dbx.isLinked
-                for (file in params) {
-                    if (file == null || !file.exists()) {
-                        continue
-                    }
-                    if (file.isDirectory) {
-                        val files = file.listFiles() ?: continue
-                        for (f in files) {
-                            f.delete()
-                        }
-                    } else {
-                        if (file.delete()) {
-                        }
-                    }
-                }
-                if (isLinked) {
+                if (dbx.isLinked) {
                     dbx.cleanFolder()
                 }
             } else if (type == Info.Google) {
-                val gdx = GDrive.getInstance(context)
-                val isLinked = gdx != null
-                for (file in params) {
-                    if (file == null || !file.exists()) {
-                        continue
-                    }
-                    if (file.isDirectory) {
-                        val files = file.listFiles() ?: continue
-                        for (f in files) {
-                            f.delete()
-                        }
-                    } else {
-                        if (file.delete()) {
-                        }
-                    }
-                }
-                if (isLinked && gdx != null) {
-                    try {
-                        gdx.cleanFolder()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-
+                try {
+                    GDrive.getInstance(context)?.cleanFolder()
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
             } else if (type == Info.Local) {
-                for (file in params) {
-                    if (file == null || !file.exists()) {
-                        continue
-                    }
-                    if (file.isDirectory) {
-                        val files = file.listFiles() ?: continue
-                        for (f in files) {
-                            f.delete()
+                if (Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+                    for (file in params) {
+                        if (file == null || !file.exists()) {
+                            continue
                         }
-                    } else {
-                        if (file.delete()) {
+                        if (file.isDirectory) {
+                            val files = file.listFiles() ?: continue
+                            for (f in files) {
+                                f.delete()
+                            }
+                        } else {
+                            if (file.delete()) {
+                            }
                         }
                     }
                 }
@@ -246,7 +185,6 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
     private fun addDropboxData(list: MutableList<UserItem>) {
         val dbx = Dropbox()
-        dbx.startSession()
         if (dbx.isLinked) {
             val quota = dbx.userQuota()
             val quotaUsed = dbx.userQuotaNormal()

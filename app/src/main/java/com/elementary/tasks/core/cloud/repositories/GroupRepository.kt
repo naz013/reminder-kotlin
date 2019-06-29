@@ -10,4 +10,8 @@ class GroupRepository : DatabaseRepository<ReminderGroup>() {
     override suspend fun insert(t: ReminderGroup) {
         appDb.reminderGroupDao().insert(t)
     }
+
+    override suspend fun all(): List<ReminderGroup> {
+        return appDb.reminderGroupDao().all()
+    }
 }

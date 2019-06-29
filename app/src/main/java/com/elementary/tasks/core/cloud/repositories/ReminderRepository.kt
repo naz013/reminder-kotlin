@@ -10,4 +10,8 @@ class ReminderRepository : DatabaseRepository<Reminder>() {
     override suspend fun insert(t: Reminder) {
         appDb.reminderDao().insert(t)
     }
+
+    override suspend fun all(): List<Reminder> {
+        return appDb.reminderDao().all()
+    }
 }

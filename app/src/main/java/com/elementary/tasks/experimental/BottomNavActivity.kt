@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
+import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
@@ -150,6 +151,13 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(this, R.string.could_not_launch_market, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (prefs.isBackupEnabled && prefs.isSettingsBackupEnabled) {
+            BackupSettingsWorker.schedule()
         }
     }
 

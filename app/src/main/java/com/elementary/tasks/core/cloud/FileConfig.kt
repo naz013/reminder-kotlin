@@ -40,4 +40,5 @@ object FileConfig {
     const val FILE_NAME_SETTINGS_EXT = ".settings"
 
     const val FILE_NAME_FULL_BACKUP = ".rbak"
+    const val FILE_NAME_JSON = ".json"
 }
