@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.cloud.storages
 
 import com.elementary.tasks.core.cloud.converters.Metadata
+import kotlinx.coroutines.channels.Channel
 
 class LocalStorage : Storage() {
     override suspend fun backup(json: String, metadata: Metadata) {
@@ -8,6 +9,10 @@ class LocalStorage : Storage() {
     }
 
     override suspend fun restore(fileName: String): String? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

@@ -13,13 +13,9 @@ import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.utils.Module
 import timber.log.Timber
 
-class DropboxLogin(private val mContext: Activity, private val mCallback: DropboxLogin.LoginCallback) {
+class DropboxLogin(private val mContext: Activity, private val mCallback: LoginCallback) {
 
     private val mDropbox: Dropbox = Dropbox()
-
-    init {
-        this.mDropbox.startSession()
-    }
 
     fun login() {
         var isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO)

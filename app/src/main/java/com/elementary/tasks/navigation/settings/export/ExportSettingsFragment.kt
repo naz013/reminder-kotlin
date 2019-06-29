@@ -200,7 +200,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         withActivity {
             if (Permissions.checkPermission(it, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 onProgress.invoke(true)
-                SyncWorker.sync(it, IoHelper(it, prefs, backupTool))
+                SyncWorker.sync(it)
             }
         }
     }
@@ -225,7 +225,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         withActivity {
             if (Permissions.checkPermission(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
                 onProgress.invoke(true)
-                ExportAllDataWorker.export(IoHelper(it, prefs, backupTool))
+                ExportAllDataWorker.export(backupTool)
             }
         }
     }
@@ -247,7 +247,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         withActivity {
             if (Permissions.checkPermission(it, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 onProgress.invoke(true)
-                BackupWorker.backup(it, IoHelper(it, prefs, backupTool))
+                BackupWorker.backup(it)
             }
         }
     }

@@ -11,6 +11,7 @@ class SettingsConverter : Convertible<SettingsModel> {
 
     override fun metadata(t: SettingsModel): Metadata {
         return Metadata(
+                "app",
                 FileConfig.FILE_NAME_SETTINGS,
                 FileConfig.FILE_NAME_SETTINGS_EXT,
                 TimeUtil.gmtDateTime,

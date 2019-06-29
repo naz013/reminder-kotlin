@@ -10,4 +10,8 @@ class BirthdayRepository : DatabaseRepository<Birthday>() {
     override suspend fun insert(t: Birthday) {
         appDb.birthdaysDao().insert(t)
     }
+
+    override suspend fun all(): List<Birthday> {
+        return appDb.birthdaysDao().all()
+    }
 }

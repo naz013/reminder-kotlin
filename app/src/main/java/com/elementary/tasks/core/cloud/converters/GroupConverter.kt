@@ -10,6 +10,7 @@ class GroupConverter : Convertible<ReminderGroup> {
 
     override fun metadata(t: ReminderGroup): Metadata {
         return Metadata(
+                t.groupUuId,
                 t.groupUuId + FileConfig.FILE_NAME_GROUP,
                 FileConfig.FILE_NAME_GROUP,
                 t.groupDateTime,

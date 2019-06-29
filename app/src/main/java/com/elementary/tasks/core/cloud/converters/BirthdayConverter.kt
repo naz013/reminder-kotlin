@@ -11,6 +11,7 @@ class BirthdayConverter : Convertible<Birthday> {
 
     override fun metadata(t: Birthday): Metadata {
         return Metadata(
+                t.uuId,
                 t.uuId + FileConfig.FILE_NAME_BIRTHDAY,
                 FileConfig.FILE_NAME_BIRTHDAY,
                 t.updatedAt ?: "",

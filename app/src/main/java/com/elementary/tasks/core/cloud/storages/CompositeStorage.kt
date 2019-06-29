@@ -1,17 +1,37 @@
 package com.elementary.tasks.core.cloud.storages
 
 import com.elementary.tasks.core.cloud.converters.Metadata
+import com.elementary.tasks.core.utils.launchIo
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 
 class CompositeStorage(private val storageList: List<Storage>) : Storage() {
-    override fun backup(json: String, metadata: Metadata) {
+    override suspend fun backup(json: String, metadata: Metadata) {
         storageList.forEach { it.backup(json, metadata) }
     }
 
-    override fun restore(fileName: String): String? {
+    override suspend fun restore(fileName: String): String? {
         return null
     }
 
-    override fun delete(fileName: String) {
+    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
+        val channel = Channel<String>()
+        if (storageList.isEmpty()) {
+            channel.cancel()
+            return channel
+        }
+        launchIo {
+            storageList.forEach {
+                it.restoreAll(ext, deleteFile).consumeEach { json ->
+                    channel.send(json)
+                }
+            }
+            channel.close()
+        }
+        return channel
+    }
+
+    override suspend fun delete(fileName: String) {
         storageList.forEach { it.delete(fileName) }
     }
 

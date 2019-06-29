@@ -31,4 +31,9 @@ class SettingsRepository : DatabaseRepository<SettingsModel>(), KoinComponent {
         } catch (e: Exception) {
         }
     }
+
+    override suspend fun all(): List<SettingsModel> {
+        val item = get("") ?: return listOf()
+        return listOf(item)
+    }
 }

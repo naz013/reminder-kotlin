@@ -10,6 +10,7 @@ class PlaceConverter : Convertible<Place> {
 
     override fun metadata(t: Place): Metadata {
         return Metadata(
+                t.id,
                 t.id + FileConfig.FILE_NAME_PLACE,
                 FileConfig.FILE_NAME_PLACE,
                 t.dateTime,

@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.cloud
 
 import android.content.Context
+import com.elementary.tasks.core.cloud.completables.Completable
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
@@ -24,21 +25,26 @@ class DataFlow<T>(private val repository: Repository<T>,
             storage.removeIndex(id)
             return
         }
+        backup(item)
+    }
+
+    suspend fun backup(item: T) {
         val fileIndex = convertible.convert(item)
+        val metadata = convertible.metadata(item)
         if (fileIndex == null) {
-            storage.removeIndex(id)
+            storage.removeIndex(metadata.id)
             return
         }
         val json = fileIndex.json
         if (json == null) {
-            storage.removeIndex(id)
+            storage.removeIndex(metadata.id)
             return
         }
-        val metadata = convertible.metadata(item)
+
         storage.backup(json, metadata)
         storage.saveIndex(fileIndex)
         completable?.action(item)
-        Timber.d("backup: $id")
+        Timber.d("backup: ${metadata.id}")
     }
 
     suspend fun restore(id: String, type: IndexTypes) {
@@ -77,7 +83,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         return id + ext
     }
 
-    private fun getFileExt(type: IndexTypes): String {
+    fun getFileExt(type: IndexTypes): String {
         return when (type) {
             IndexTypes.TYPE_REMINDER -> FileConfig.FILE_NAME_REMINDER
             IndexTypes.TYPE_NOTE -> FileConfig.FILE_NAME_NOTE
