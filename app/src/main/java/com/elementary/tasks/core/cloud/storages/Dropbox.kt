@@ -11,10 +11,9 @@ import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.launchDefault
-import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.*
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
@@ -154,10 +153,27 @@ class Dropbox : Storage(), KoinComponent {
         tokenDataFile.notifyDevices()
     }
 
+    override fun loadIndex() {
+        loadIndexFile()
+        loadTokenFile()
+    }
+
     private fun loadTokenFile() {
         launchDefault {
             val json = restore(TokenDataFile.FILE_NAME)
             tokenDataFile.parse(json)
+            withUIContext {
+                if (prefs.multiDeviceModeEnabled) {
+                    FirebaseInstanceId.getInstance().instanceId
+                            .addOnCompleteListener(OnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    return@OnCompleteListener
+                                }
+                                val token = task.result?.token
+                                updateToken(token)
+                            })
+                }
+            }
         }
     }
 

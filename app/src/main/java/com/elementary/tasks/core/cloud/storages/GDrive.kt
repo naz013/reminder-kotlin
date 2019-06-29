@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
@@ -12,6 +13,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.channels.Channel
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -68,14 +70,17 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             val driveFile = service.files().create(fileMetadata, mediaContent)
                     .setFields("id")
                     .execute()
-            Timber.d("saveFileToDrive: ${driveFile.id}")
+            Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
         } catch (e: java.lang.Exception) {
         }
     }
 
     override suspend fun restore(fileName: String): String? {
+        Timber.d("restore: A $fileName")
         val service = driveService ?: return null
+        Timber.d("restore: B $fileName")
         if (!isLogged) return null
+        Timber.d("restore: C $fileName")
         try {
             val request = service.files().list()
                     .setSpaces("appDataFolder")
@@ -95,9 +100,12 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 }
                 request.pageToken = filesResult.nextPageToken
             } while (request.pageToken != null)
+            Timber.d("restore: D $fileName")
         } catch (e: Exception) {
+            Timber.d("restore: E $fileName. ${e.message}")
             return null
         }
+        Timber.d("restore: F $fileName")
         return null
     }
 
@@ -165,10 +173,27 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         return indexDataFile.isFileChanged(id, updatedAt)
     }
 
+    override fun loadIndex() {
+        loadIndexFile()
+        loadTokenFile()
+    }
+
     private fun loadTokenFile() {
         launchDefault {
             val json = restore(TokenDataFile.FILE_NAME)
             tokenDataFile.parse(json)
+            withUIContext {
+                if (prefs.multiDeviceModeEnabled) {
+                    FirebaseInstanceId.getInstance().instanceId
+                            .addOnCompleteListener(OnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    return@OnCompleteListener
+                                }
+                                val token = task.result?.token
+                                updateToken(token)
+                            })
+                }
+            }
         }
     }
 

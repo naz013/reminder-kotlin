@@ -8,4 +8,6 @@ interface Indexable {
     fun hasIndex(id: String): Boolean
 
     fun needBackup(id: String, updatedAt: String): Boolean
+
+    fun loadIndex()
 }

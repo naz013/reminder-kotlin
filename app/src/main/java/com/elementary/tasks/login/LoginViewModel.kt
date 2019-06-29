@@ -64,7 +64,7 @@ class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
             isReady.postValue(true)
             return
         }
-        loadData(LocalStorage())
+        loadData(LocalStorage(context))
     }
 
     fun loadData(storage: Storage) {

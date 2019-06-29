@@ -727,5 +727,6 @@
     <string name="select_image">Select image</string>
     <string name="backup_attached_files_and_melodies">Backup attached files and melodies</string>
     <string name="multiple_device_mode">Multiple device mode</string>
+    <string name="save_backup_on_sd_card">Save backup on SD Card</string>
 
 </resources>

@@ -78,6 +78,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         initAutoSyncPrefs()
         initBackupFilesPrefs()
         initMultiDevicePrefs()
+        initLocalBackupPrefs()
 
         binding.backupsPrefs.setOnClickListener {
             findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment())
@@ -97,6 +98,28 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         SyncWorker.unsubscribe()
         BackupWorker.unsubscribe()
         ExportAllDataWorker.unsubscribe()
+    }
+
+    private fun initLocalBackupPrefs() {
+        if (Module.isQ) {
+            binding.localPrefs.hide()
+        } else {
+            binding.localPrefs.show()
+            binding.localPrefs.isChecked = prefs.localBackup
+            binding.localPrefs.setOnClickListener { changeLocalBackupPrefs() }
+            binding.localPrefs.setDependentView(binding.backupDataPrefs)
+        }
+    }
+
+    private fun changeLocalBackupPrefs() {
+        val isChecked = binding.localPrefs.isChecked
+        if (!isChecked) {
+            if (!Permissions.checkPermission(activity!!, PERM_LOCAL_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+                return
+            }
+        }
+        binding.localPrefs.isChecked = !isChecked
+        prefs.localBackup = !isChecked
     }
 
     private fun initBackupFilesPrefs() {
@@ -130,6 +153,10 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
                         }
                         val token = task.result?.token
                         withContext {
+                            val dropbox = Dropbox()
+                            if (dropbox.isLinked) {
+                                dropbox.updateToken(token)
+                            }
                             GDrive.getInstance(it)?.updateToken(token)
                         }
                     })
@@ -541,6 +568,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
                 PERM_BACKUP -> backupClick()
                 PERM_EXPORT -> exportClick()
                 PERM_SYNC -> syncClick()
+                PERM_LOCAL_BACKUP -> changeLocalBackupPrefs()
             }
         }
     }
@@ -571,5 +599,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         private const val PERM_SYNC = 501
         private const val PERM_BACKUP = 502
         private const val PERM_EXPORT = 503
+        private const val PERM_LOCAL_BACKUP = 504
     }
 }

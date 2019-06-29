@@ -107,7 +107,7 @@ class DataFlow<T>(private val repository: Repository<T>,
                 storageList.add(dropboxStorage)
             }
             if (!Module.isQ && Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-                storageList.add(LocalStorage())
+                storageList.add(LocalStorage(context))
             }
             return storageList
         }

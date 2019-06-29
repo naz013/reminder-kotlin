@@ -40,7 +40,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mGoogleDrive = null
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
+                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
                 .requestEmail()
                 .build()
         val client = GoogleSignIn.getClient(activity, signInOptions)
@@ -68,7 +68,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mDriveCallback = loginCallback
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
+                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
                 .requestEmail()
                 .build()
         val client = GoogleSignIn.getClient(activity, signInOptions)

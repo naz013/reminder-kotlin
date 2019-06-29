@@ -86,6 +86,14 @@
                 app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/localPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/save_backup_on_sd_card"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/backupFilesPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

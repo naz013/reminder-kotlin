@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
@@ -76,9 +77,9 @@ class BackupTool(private val appDb: AppDb) {
 
     fun getPlace(cr: ContentResolver, name: Uri): Place? {
         return try {
-            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Place::class.java))
-            return item.get()
-        } catch (e: java.lang.Exception) {
+            val data = MemoryUtil.readFileContent(cr, name) ?: return null
+            return PlaceConverter().convert(data)
+        } catch (e: Exception) {
             null
         }
     }

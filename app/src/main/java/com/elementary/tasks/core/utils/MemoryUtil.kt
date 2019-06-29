@@ -149,6 +149,55 @@ object MemoryUtil {
         }
     }
 
+    fun readFileContent(cr: ContentResolver, name: Uri): String? {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = cr.openInputStream(name)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (inputStream == null) {
+            return null
+        }
+        val r = BufferedReader(InputStreamReader(inputStream))
+        val total = StringBuilder()
+        var line: String?
+        try {
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+        } catch (e: Exception) {
+            Timber.d("readFileContent: ${e.message}")
+            return null
+        }
+        inputStream.close()
+        return total.toString()
+    }
+
+    fun readFileContent(file: File): String? {
+        try {
+            val inputStream = FileInputStream(file)
+            val r = BufferedReader(InputStreamReader(inputStream))
+            val total = StringBuilder()
+            var line: String?
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+            inputStream.close()
+            return total.toString()
+        } catch (e: Exception) {
+            Timber.d("readFileContent: ${e.message}")
+            return null
+        }
+    }
+
     /**
      * Write data to file.
      *
