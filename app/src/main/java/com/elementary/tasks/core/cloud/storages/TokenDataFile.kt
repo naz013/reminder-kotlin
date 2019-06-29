@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.cloud
+package com.elementary.tasks.core.cloud.storages
 
 import android.os.Build
 import androidx.annotation.Keep
@@ -16,11 +16,14 @@ import timber.log.Timber
 class TokenDataFile {
 
     private val devices: MutableList<DeviceToken> = mutableListOf()
+    var isLoaded = false
+        private set
 
     fun parse(json: String?) {
         val tokens = Gson().fromJson(json, Tokens::class.java)
         this.devices.clear()
         this.devices.addAll(tokens.tokens)
+        isLoaded = true
     }
 
     fun toJson(): String? {
@@ -37,6 +40,28 @@ class TokenDataFile {
         val notification = Notification(withoutMe.toList(), data)
         val bytes = Gson().toJson(notification).toByteArray()
         sendPost(bytes)
+    }
+
+    fun addDevice(token: String) {
+        removeOldTokens()
+        var currentDevice = findCurrent()
+        if (currentDevice == null) {
+            currentDevice = DeviceToken(myDevice(), TimeUtil.gmtDateTime, token)
+        }
+        currentDevice.token = token
+        val withoutMe = this.devices.filter { it.model != myDevice() }
+        this.devices.clear()
+        this.devices.addAll(withoutMe)
+        this.devices.add(currentDevice)
+    }
+
+    private fun findCurrent(): DeviceToken? {
+        for (d in devices) {
+            if (d.model == myDevice()) {
+                return d
+            }
+        }
+        return null
     }
 
     private fun removeOldTokens() {

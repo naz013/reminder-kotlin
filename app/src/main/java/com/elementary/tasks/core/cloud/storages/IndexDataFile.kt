@@ -1,13 +1,13 @@
-package com.elementary.tasks.core.cloud
+package com.elementary.tasks.core.cloud.storages
 
-import androidx.annotation.Keep
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import org.json.JSONObject
 
 class IndexDataFile {
 
     private var jsonObject: JSONObject = JSONObject()
+    var isLoaded = false
+        private set
 
     fun addIndex(fileIndex: FileIndex) {
         jsonObject.put(fileIndex.id, Gson().toJson(fileIndex))
@@ -40,27 +40,12 @@ class IndexDataFile {
         } catch (e: Exception) {
             JSONObject()
         }
+        isLoaded = true
     }
 
     fun toJson(): String? {
         return jsonObject.toString()
     }
-
-    @Keep
-    data class FileIndex(
-            @SerializedName("ext")
-            var ext: String = "",
-            @SerializedName("updatedAt")
-            var updatedAt: String = "",
-            @SerializedName("id")
-            var id: String = "",
-            @SerializedName("attachment")
-            var attachment: String = "",
-            @SerializedName("melody")
-            var melody: String = "",
-            @SerializedName("type")
-            var type: String = ""
-    )
 
     companion object {
         const val FILE_NAME = "index.json"
