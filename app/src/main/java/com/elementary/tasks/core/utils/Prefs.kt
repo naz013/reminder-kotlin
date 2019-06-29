@@ -63,6 +63,10 @@ class Prefs(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
         set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)
 
+    var localBackup: Boolean
+        get() = getBoolean(PrefsConstants.LOCAL_BACKUP)
+        set(value) = putBoolean(PrefsConstants.LOCAL_BACKUP, value)
+
     var multiDeviceModeEnabled: Boolean
         get() = getBoolean(PrefsConstants.MULTI_DEVICE_MODE)
         set(value) = putBoolean(PrefsConstants.MULTI_DEVICE_MODE, value)

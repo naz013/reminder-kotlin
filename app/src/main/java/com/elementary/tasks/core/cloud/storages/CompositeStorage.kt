@@ -26,6 +26,7 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
                     channel.send(json)
                 }
             }
+            loadIndex()
             channel.close()
         }
         return channel
@@ -49,5 +50,13 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
 
     override fun needBackup(id: String, updatedAt: String): Boolean {
         return true
+    }
+
+    override fun loadIndex() {
+        launchIo {
+            storageList.forEach {
+                it.loadIndex()
+            }
+        }
     }
 }

@@ -113,6 +113,7 @@ object PrefsConstants {
     const val NIGHT_MODE = "night_mode"
     const val EXPORT_ATTACHED_FILES = "export_attached_files"
     const val MULTI_DEVICE_MODE = "multi_device_mode"
+    const val LOCAL_BACKUP = "local_backup"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

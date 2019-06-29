@@ -20,9 +20,12 @@ class TokenDataFile {
         private set
 
     fun parse(json: String?) {
+        Timber.d("parse: $json")
         val tokens = Gson().fromJson(json, Tokens::class.java)
-        this.devices.clear()
-        this.devices.addAll(tokens.tokens)
+        if (tokens != null) {
+            this.devices.clear()
+            this.devices.addAll(tokens.tokens)
+        }
         isLoaded = true
     }
 
@@ -74,16 +77,17 @@ class TokenDataFile {
         return Build.MANUFACTURER + " " + Build.MODEL
     }
 
-    private fun sendPost(data: ByteArray) = launchDefault{
+    private fun sendPost(data: ByteArray) = launchDefault {
         val client = OkHttpClient.Builder().build()
-        val body = RequestBody.create(MediaType.get("JSON"), data)
-        val httpRequest = Request.Builder()
-                .post(body)
-                .url("https://fcm.googleapis.com/fcm/send")
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "key=AAAAPY5Nv3w:APA91bEFpU39hl6PYE5jIwQ4kgZJY_SnOqC9j30bYbD4lyfx02SK3DdjhzzrZVw58Y_CNtnC272JcHuH-45g4GieVfaexll6CZXxEy2PNi4G8WI7hENV7hFW_YdnWHSgwJijEL2MS4uB")
-                .build()
         try {
+            val body = RequestBody.create(MediaType.get("JSON"), data)
+            val httpRequest = Request.Builder()
+                    .post(body)
+                    .url("https://fcm.googleapis.com/fcm/send")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Authorization", "key=AAAAPY5Nv3w:APA91bEFpU39hl6PYE5jIwQ4kgZJY_SnOqC9j30bYbD4lyfx02SK3DdjhzzrZVw58Y_CNtnC272JcHuH-45g4GieVfaexll6CZXxEy2PNi4G8WI7hENV7hFW_YdnWHSgwJijEL2MS4uB")
+                    .build()
+
             val response = client.newCall(httpRequest).execute()
             if (response.code() == 200 || response.code() == 206) {
                 Timber.d("sendPost: %s", "OK")

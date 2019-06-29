@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud.storages
 
 import com.google.gson.Gson
 import org.json.JSONObject
+import timber.log.Timber
 
 class IndexDataFile {
 
@@ -23,7 +24,7 @@ class IndexDataFile {
         if (!hasIndex(id)) return true
         return try {
             val fileIndex = Gson().fromJson(jsonObject.getJSONObject(id).toString(), FileIndex::class.java)
-            fileIndex.updatedAt != updatedAt
+            fileIndex == null || fileIndex.updatedAt != updatedAt
         } catch (e: Exception) {
             true
         }
@@ -34,7 +35,11 @@ class IndexDataFile {
     }
 
     fun parse(json: String?) {
-        if (json == null) return
+        Timber.d("parse: $json")
+        if (json == null) {
+            isLoaded = true
+            return
+        }
         jsonObject = try {
             JSONObject(json)
         } catch (e: Exception) {
