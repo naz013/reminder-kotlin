@@ -85,7 +85,7 @@ class DataFlow<T>(private val repository: Repository<T>,
             IndexTypes.TYPE_GROUP -> FileConfig.FILE_NAME_GROUP
             IndexTypes.TYPE_TEMPLATE -> FileConfig.FILE_NAME_TEMPLATE
             IndexTypes.TYPE_PLACE -> FileConfig.FILE_NAME_PLACE
-            IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS
+            IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
         }
     }
 
