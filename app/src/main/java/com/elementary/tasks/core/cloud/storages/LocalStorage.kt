@@ -102,7 +102,7 @@ class LocalStorage(context: Context) : Storage() {
         return true
     }
 
-    override fun loadIndex() {
+    override suspend fun loadIndex() {
     }
 
     private fun folderFromFileName(fileName: String): File? {

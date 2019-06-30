@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mythical-geode-603",
+  "private_key_id": "7c875039084d648b7d58df5369199ea651d315ce",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCoTytm1vczjGI+\nB21yIoLhNVxC30jgYeTOL+CabiLaWGrYpjg+oOBgoZ3R008oRKAh+3nkMb+231sE\nZAIo+mIurpyK9IMirpbqHzSoKGksIff2w5aAFeAZxYaDYOy4b/9EfRLcoiffb2Co\nVfE/V0QUsxOXl2h/YhRmIpXUBP9ncylu4IuuN593ZF6n8EcIflIJ8DUXy+WvuAzH\n7mUw1IZWDF2S1GcWJNRLnLusuinNMOkCpfDPsurRqG3QOsAoNXGLtaRVawRaZhyu\nTenUSqPwlQF3bGCs7e5SspHVU1mZPCXRaOTd/JMYd/bMpumCm3tiI1foM/K33epQ\n9NvTImlxAgMBAAECggEAA5xfM/+cohB68xW5tV8kK6y3Y//iUl4HSJ0iVm3SdZi8\nAhXe0wkkhy4wcpXz9ssyHEiG3uxqToQQMdHrcfGdNZ8tYJXKUm4ocrFksc7cIsQ/\ny516lxjhC+x+7EaiDXrpoRCF3RHlhRegnTvqxw8aOM92tiPbbBAwm9hWGoxY5mE7\nMq1xYuZuwkVPqnF8aBX+n/ceNfQOERV9TNUWfXdH/drspuXOI1X5GzRzDCQNnDH5\na85k3nDCxmzSwLM4h49CQCvzUSiOLrhrKjRMoHAvHAG6cq9wQlaz9WCnseFAtd33\n7jXGp1p71OryueSiCa3Zkl/CHdLE7dUJLPM41GHiuQKBgQDXblhHpbZ+61UdlBoG\n8pvk5U6cktNNGOGX28VYWoThWgrb5fyfFzJ4HP8HQbOcA+o51BqJqA+2zQtmBQVj\nHO5irS+EL62jJwbI/i9/f/UF3VKLl1Q+0WQUczwq+Vky5FPW4Xq5ieQnfM78yLbN\nPGnhnH+GrJCfzveTfZr+94W71wKBgQDIASTXFr1GSn/KC0BtrsGF6a9mzKk098iM\niKz/QzwUNWAYGl6xkyMTgERw8TKpaqv9JpEbQknDpIzLESF5q4sweZ3jfvsKqfoc\n85W02L0eljPPvvoZhcmGGlf7VikFACnkkmV0UVbWxzds70xA/zRJQNiHwAdUQcJ3\n91Rwxrmb9wKBgQCPB/wk1aks6yI/2SzOoBVRC839tp4D+hkNsiR8XN0MobPD/BaV\nqdkgVmAceUq+svq4GlLkQmjsfYar3XmOLI85hLKfmOg4AplGqTzv8gzEMAW2GGse\nqfdAfKHeBl9qop3ndRz+QsbwULU8sCZubUX/POCOkdQTxl4p1qMp1T09UQKBgAO9\n0bycVkocVqum7jufC0vABWH87iVphTzryaC010jhfry0sZTM1dkliyI5wOLedf00\nXX6PDOY2C9Q4q9Gk3eO4QrXgyD141I76F5DchR0vXiTCw9b6Y7y4fXDcOcQ4LpBy\nFKfKZb961pSZHWoR3B6KsgJIG1r+J+8ql0/Mx+gdAoGARgZCW/UklTpfZ9fO67Pi\nCPl7w+BTUcrtJVeihaNImu4zcXT6z5HveQHyRnmIF+XwGQAEpgfHX47B2MHflrWh\nvzczml5HYtYAJQ+ixV2YFtwUCmfxxlNKr5FuywmWJvGzkZotKPk4URz4gC6qHypQ\n913w5qZQVrsxFIUO19A3LL8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-76g66@mythical-geode-603.iam.gserviceaccount.com",
+  "client_id": "109217344544572927051",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-76g66%40mythical-geode-603.iam.gserviceaccount.com"
+}

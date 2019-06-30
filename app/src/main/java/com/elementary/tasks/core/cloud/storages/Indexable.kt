@@ -9,5 +9,5 @@ interface Indexable {
 
     fun needBackup(id: String, updatedAt: String): Boolean
 
-    fun loadIndex()
+    suspend fun loadIndex()
 }

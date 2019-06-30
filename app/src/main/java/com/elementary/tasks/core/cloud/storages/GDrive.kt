@@ -46,10 +46,10 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             isLogged = true
             statusObserver?.invoke(true)
             if (!indexDataFile.isLoaded) {
-                loadIndexFile()
+                launchDefault { loadIndexFile() }
             }
             if (!tokenDataFile.isLoaded) {
-                loadTokenFile()
+                launchDefault { loadTokenFile() }
             }
         } else {
             logOut()
@@ -173,26 +173,24 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         return indexDataFile.isFileChanged(id, updatedAt)
     }
 
-    override fun loadIndex() {
+    override suspend fun loadIndex() {
         loadIndexFile()
         loadTokenFile()
     }
 
-    private fun loadTokenFile() {
-        launchDefault {
-            val json = restore(TokenDataFile.FILE_NAME)
-            tokenDataFile.parse(json)
-            withUIContext {
-                if (prefs.multiDeviceModeEnabled) {
-                    FirebaseInstanceId.getInstance().instanceId
-                            .addOnCompleteListener(OnCompleteListener { task ->
-                                if (!task.isSuccessful) {
-                                    return@OnCompleteListener
-                                }
-                                val token = task.result?.token
-                                updateToken(token)
-                            })
-                }
+    private suspend fun loadTokenFile() {
+        val json = restore(TokenDataFile.FILE_NAME)
+        tokenDataFile.parse(json)
+        withUIContext {
+            if (prefs.multiDeviceModeEnabled) {
+                FirebaseInstanceId.getInstance().instanceId
+                        .addOnCompleteListener(OnCompleteListener { task ->
+                            if (!task.isSuccessful) {
+                                return@OnCompleteListener
+                            }
+                            val token = task.result?.token
+                            updateToken(token)
+                        })
             }
         }
     }
@@ -210,11 +208,9 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         }
     }
 
-    private fun loadIndexFile() {
-        launchDefault {
-            val json = restore(IndexDataFile.FILE_NAME)
-            indexDataFile.parse(json)
-        }
+    private suspend fun loadIndexFile() {
+        val json = restore(IndexDataFile.FILE_NAME)
+        indexDataFile.parse(json)
     }
 
     private fun saveIndexFile() {

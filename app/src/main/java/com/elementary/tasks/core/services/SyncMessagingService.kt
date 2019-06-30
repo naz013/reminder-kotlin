@@ -7,12 +7,15 @@ import com.elementary.tasks.core.work.SyncDataWorker
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class SyncMessagingService : FirebaseMessagingService() {
 
     private val prefs: Prefs by inject()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+        super.onMessageReceived(remoteMessage)
+        Timber.d("onMessageReceived: ${remoteMessage?.data}")
         if (prefs.multiDeviceModeEnabled && prefs.isBackupEnabled) {
             SyncDataWorker.schedule()
         }
