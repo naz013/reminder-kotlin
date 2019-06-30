@@ -175,7 +175,7 @@ class GeolocationService : Service() {
         builder.setContentText(roundedDistance.toString())
         builder.priority = NotificationCompat.PRIORITY_MIN
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
-
+        builder.setCategory(NotificationCompat.CATEGORY_NAVIGATION)
         Notifier.getManager(applicationContext)?.notify(reminder.uniqueId, builder.build())
     }
 
@@ -188,6 +188,7 @@ class GeolocationService : Service() {
         }
         builder.setContentTitle(getString(R.string.location_tracking_service_running))
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
+        builder.setCategory(NotificationCompat.CATEGORY_NAVIGATION)
         startForeground(NOTIFICATION_ID, builder.build())
     }
 

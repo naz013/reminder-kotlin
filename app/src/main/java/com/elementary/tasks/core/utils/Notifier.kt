@@ -294,7 +294,7 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
         private fun createSystemChannel(context: Context): NotificationChannel {
             val name = context.getString(R.string.info_channel)
             val descr = context.getString(R.string.channel_for_other_info_notifications)
-            val importance = NotificationManager.IMPORTANCE_MIN
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
             channel.description = descr
             if (Module.isQ) {

@@ -68,6 +68,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         builder.setSmallIcon(R.drawable.ic_twotone_music_note_24px)
         builder.setContentTitle(getString(R.string.reminder_ongoing_service))
         builder.setContentText(getString(R.string.app_title))
+        builder.setCategory(NotificationCompat.CATEGORY_SERVICE)
         startForeground(3214, builder.build())
     }
 

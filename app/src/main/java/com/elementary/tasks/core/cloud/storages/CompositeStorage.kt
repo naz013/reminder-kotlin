@@ -21,12 +21,12 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
             return channel
         }
         launchIo {
+            loadIndex()
             storageList.forEach {
                 it.restoreAll(ext, deleteFile).consumeEach { json ->
                     channel.send(json)
                 }
             }
-            loadIndex()
             channel.close()
         }
         return channel
@@ -52,7 +52,7 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
         return true
     }
 
-    override fun loadIndex() {
+    override suspend fun loadIndex() {
         launchIo {
             storageList.forEach {
                 it.loadIndex()

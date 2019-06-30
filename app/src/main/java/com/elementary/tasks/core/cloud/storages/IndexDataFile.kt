@@ -49,7 +49,9 @@ class IndexDataFile {
     }
 
     fun toJson(): String? {
-        return jsonObject.toString()
+        val json = jsonObject.toString()
+        Timber.d("toJson: $json")
+        return json
     }
 
     companion object {

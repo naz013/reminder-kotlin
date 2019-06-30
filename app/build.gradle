@@ -38,11 +38,13 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
+            buildConfigField "String", "PROJECT_ID", "\"mythical-geode-603\""
         }
         pro {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
+            buildConfigField "String", "PROJECT_ID", "\"future-graph-651\""
             versionCode 230
         }
     }
