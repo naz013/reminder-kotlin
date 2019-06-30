@@ -76,11 +76,9 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     }
 
     override suspend fun restore(fileName: String): String? {
-        Timber.d("restore: A $fileName")
+        Timber.d("restore: $fileName")
         val service = driveService ?: return null
-        Timber.d("restore: B $fileName")
         if (!isLogged) return null
-        Timber.d("restore: C $fileName")
         try {
             val request = service.files().list()
                     .setSpaces("appDataFolder")
@@ -100,12 +98,9 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 }
                 request.pageToken = filesResult.nextPageToken
             } while (request.pageToken != null)
-            Timber.d("restore: D $fileName")
         } catch (e: Exception) {
-            Timber.d("restore: E $fileName. ${e.message}")
             return null
         }
-        Timber.d("restore: F $fileName")
         return null
     }
 
