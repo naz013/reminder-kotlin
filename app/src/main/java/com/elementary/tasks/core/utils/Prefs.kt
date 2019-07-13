@@ -63,6 +63,7 @@ class Prefs(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
         set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)
 
+    @Deprecated(message = "Not used in 29 and above")
     var localBackup: Boolean
         get() = getBoolean(PrefsConstants.LOCAL_BACKUP)
         set(value) = putBoolean(PrefsConstants.LOCAL_BACKUP, value)
