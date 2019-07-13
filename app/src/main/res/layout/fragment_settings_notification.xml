@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
                 app:prefs_primary_text="@string/notification_type"
                 app:prefs_type="none" />
 
@@ -207,6 +208,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_show_chart_24px"
                 app:prefs_primary_text="@string/increasing_loudness"
                 app:prefs_secondary_text_off="@string/use_selected_loudness_level"
                 app:prefs_secondary_text_on="@string/slowly_increase_loudness_level"
@@ -217,6 +219,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_record_voice_over_24px"
                 app:prefs_primary_text="@string/voice_notification"
                 app:prefs_secondary_text_off="@string/play_melody"
                 app:prefs_secondary_text_on="@string/spell_event_summary"

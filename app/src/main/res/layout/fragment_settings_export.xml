@@ -82,6 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_backup_24px"
                 app:prefs_primary_text="@string/backup_my_data"
                 app:prefs_type="check_switch" />
 
@@ -90,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_sd_storage_24px"
                 app:prefs_primary_text="@string/save_backup_on_sd_card"
                 app:prefs_type="check_switch" />
 
@@ -122,6 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_backup_24px"
                 app:prefs_primary_text="@string/automatically_backup"
                 app:prefs_type="none" />
 
@@ -138,6 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_sync_24px"
                 app:prefs_primary_text="@string/automatically_sync"
                 app:prefs_type="none" />
 

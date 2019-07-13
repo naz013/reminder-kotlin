@@ -46,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_cake_24px"
                 app:prefs_primary_text="@string/birthdays_color"
                 app:prefs_type="view" />
 
@@ -54,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
                 app:prefs_primary_text="@string/show_reminders"
                 app:prefs_type="check_switch" />
 
