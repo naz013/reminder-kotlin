@@ -470,7 +470,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         wearableNotificationBuilder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
         wearableNotificationBuilder.setContentTitle(summary)
         wearableNotificationBuilder.setContentText(secondaryText)
-        wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        wearableNotificationBuilder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         wearableNotificationBuilder.setOngoing(false)
         wearableNotificationBuilder.setOnlyAlertOnce(true)
         wearableNotificationBuilder.setGroup(groupName)

@@ -17,21 +17,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
                 android:layout_weight="1"
-                android:background="@color/bluePrimary" />
+                android:background="@color/secondaryBlue" />
 
             <TextView
                 android:id="@+id/reminderMark"
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
                 android:layout_weight="1"
-                android:background="@color/redPrimary" />
+                android:background="@color/secondaryRed" />
 
             <TextView
                 android:id="@+id/birthdayMark"
                 android:layout_width="match_parent"
                 android:layout_height="11dp"
                 android:layout_weight="1"
-                android:background="@color/greenPrimary" />
+                android:background="@color/secondaryGreen" />
 
         </LinearLayout>
 

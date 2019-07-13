@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:textAppearance="?textAppearanceSubtitle1"
-            android:textColor="@color/redPrimary"
+            android:textColor="@color/secondaryRed"
             android:visibility="visible"
             android:text="@string/google_play_services_not_found_some_functionality_is_disabled" />
 

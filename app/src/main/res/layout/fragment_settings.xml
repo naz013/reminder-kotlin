@@ -90,7 +90,7 @@
                 android:padding="8dp"
                 android:text="@string/google_play_services_not_found_some_functionality_is_disabled"
                 android:textAppearance="?textAppearanceSubtitle1"
-                android:textColor="@color/redPrimary"
+                android:textColor="@color/secondaryRed"
                 android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatImageView
