@@ -178,7 +178,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         return if (enableGrid) {
             LinearLayoutManager(context)
         } else {
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            if (resources.getBoolean(R.bool.is_tablet)) {
+                StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+            } else {
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            }
         }
     }
 

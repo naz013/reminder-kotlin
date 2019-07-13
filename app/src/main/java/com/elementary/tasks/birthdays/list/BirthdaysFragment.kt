@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -110,7 +111,12 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     override fun getTitle(): String = getString(R.string.birthdays)
 
     private fun initList() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
+                    StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        }
 
         mAdapter.actionsListener = object : ActionsListener<Birthday> {
             override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
