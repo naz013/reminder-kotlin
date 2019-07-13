@@ -250,7 +250,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this)
                         && prefs.isSoundInSilentModeEnabled)) {

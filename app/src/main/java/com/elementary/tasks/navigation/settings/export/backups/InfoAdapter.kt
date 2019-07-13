@@ -90,13 +90,13 @@ class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((Bac
             var slice = PieSlice()
             val usTitle = String.format(binding.root.context.getString(R.string.used_x), used.toString())
             slice.title = usTitle
-            slice.color = ContextCompat.getColor(binding.root.context, R.color.redPrimary)
+            slice.color = ContextCompat.getColor(binding.root.context, R.color.secondaryRed)
             slice.value = used
             binding.usedSizeGraph.addSlice(slice)
             slice = PieSlice()
             val avTitle = String.format(binding.root.context.getString(R.string.available_x), free.toString())
             slice.title = avTitle
-            slice.color = ContextCompat.getColor(binding.root.context, R.color.greenPrimary)
+            slice.color = ContextCompat.getColor(binding.root.context, R.color.secondaryGreen)
             slice.value = free
             binding.usedSizeGraph.addSlice(slice)
             binding.usedSpace.text = String.format(binding.root.context.getString(R.string.used_x),

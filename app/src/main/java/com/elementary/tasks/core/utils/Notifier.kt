@@ -37,7 +37,7 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
         val note = noteWithImages.note ?: return
         val builder = NotificationCompat.Builder(context, CHANNEL_REMINDER)
         builder.setContentText(context.getString(R.string.note))
-        builder.color = ContextCompat.getColor(context, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
         val content = note.summary
         builder.setSmallIcon(R.drawable.ic_twotone_note_white)
         builder.setContentTitle(content)
@@ -63,7 +63,7 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
             wearableNotificationBuilder.setContentTitle(content)
             wearableNotificationBuilder.setContentText(context.getString(R.string.note))
             wearableNotificationBuilder.setOngoing(false)
-            wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.bluePrimary)
+            wearableNotificationBuilder.color = ContextCompat.getColor(context, R.color.secondaryBlue)
             wearableNotificationBuilder.setOnlyAlertOnce(true)
             wearableNotificationBuilder.setGroup("GROUP")
             wearableNotificationBuilder.setGroupSummary(false)

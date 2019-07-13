@@ -27,227 +27,90 @@
     <color name="pureWhite20">#33FFFFFF</color>
     <color name="pureWhite40">#66FFFFFF</color>
     <color name="pureWhite60">#99FFFFFF</color>
-    <color name="pureWhite12">#1EFFFFFF</color>
-    <color name="pureWhite50">#80FFFFFF</color>
-    <color name="pureWhiteCardBg">#FFFFFF</color>
 
-    <color name="retroYellow">#fffeb3</color>
-    <color name="retroYellowDark">#cbcb83</color>
-    <color name="retroYellowBg">#cbcb83</color>
-
-    <color name="retroOrange">#ffe28a</color>
-    <color name="retroOrangeDark">#cab05b</color>
-    <color name="retroOrangeBg">#cab05b</color>
-
-    <color name="retroGreen">#a1ffd0</color>
-    <color name="retroGreenDark">#6fcb9f</color>
-    <color name="retroGreenBg">#6fcb9f</color>
-
-    <color name="retroRed">#ff79b6</color>
-    <color name="retroRedDark">#e64386</color>
-    <color name="retroRedBg">#e64386</color>
-
-    <color name="retroBrown">#9bdbe4</color>
-    <color name="retroBrownDark">#6aa9b2</color>
-    <color name="retroBrownBg">#6aa9b2</color>
-
-    <color name="lightPrimary1">#f5f5f5</color>
-    <color name="lightPrimaryDark1">#8d8d8d</color>
     <color name="lightBg1">#fafafa</color>
-
-    <color name="lightPrimary2">#eeeeee</color>
-    <color name="lightPrimaryDark2">#8d8d8d</color>
     <color name="lightBg2">#f5f5f5</color>
-
-    <color name="lightPrimary3">#e0e0e0</color>
-    <color name="lightPrimaryDark3">#8d8d8d</color>
     <color name="lightBg3">#eeeeee</color>
-
-    <color name="lightPrimary4">#9e9e9e</color>
-    <color name="lightPrimaryDark4">#8d8d8d</color>
     <color name="lightBg4">#bdbdbd</color>
-
-    <color name="darkPrimary1">#757575</color>
-    <color name="darkPrimaryDark1">#494949</color>
     <color name="darkBg1">#707070</color>
-
-    <color name="darkPrimary2">#616161</color>
-    <color name="darkPrimaryDark2">#373737</color>
     <color name="darkBg2">#757575</color>
-
-    <color name="darkPrimary3">#424242</color>
-    <color name="darkPrimaryDark3">#1b1b1b</color>
     <color name="darkBg3">#616161</color>
-
-    <color name="darkPrimary4">#212121</color>
-    <color name="darkPrimaryDark4">#000000</color>
     <color name="darkBg4">#424242</color>
-
     <color name="pureBlack">#000000</color>
-    <color name="pureBlack12">#1E000000</color>
-    <color name="pureBlack50">#80000000</color>
-    <color name="pureBlackDark">#000000</color>
-    <color name="pureBlackCard">#000000</color>
-
-    <color name="secondary">#ff1744</color>
-    <color name="secondary_12">#1Eff1744</color>
-    <color name="secondary_50">#50ff1744</color>
 
     <color name="whitePrimary">#FFFFFF</color>
     <color name="whitePrimary30">#4DFFFFFF</color>
 
     <color name="material_grey">#303030</color>
     <color name="material_grey_dialog">#424242</color>
-    <color name="material_white">#fafafa</color>
     <color name="material_divider">#b6b6b6</color>
 
-    <color name="redPrimary">#F44336</color>
-    <color name="redPrimaryDark">#D32F2F</color>
     <color name="redAccent">#FF5252</color>
-    <color name="red50">#80F44336</color>
-
-    <color name="pinkPrimary">#E91E63</color>
-    <color name="pink50">#80E91E63</color>
-    <color name="pinkPrimaryDark">#C2185B</color>
     <color name="pinkAccent">#FF4081</color>
-
-    <color name="purplePrimary">#9C27B0</color>
-    <color name="purple50">#809C27B0</color>
-    <color name="purplePrimaryDark">#7B1FA2</color>
     <color name="purpleAccent">#E040FB</color>
-
-    <color name="purpleDeepPrimary">#673AB7</color>
-    <color name="purpleDeep50">#80673AB7</color>
-    <color name="purpleDeepPrimaryDark">#512DA8</color>
     <color name="purpleDeepAccent">#7C4DFF</color>
-
-    <color name="indigoPrimary">#3F51B5</color>
-    <color name="indigo50">#803F51B5</color>
-    <color name="indigoPrimaryDark">#303F9F</color>
     <color name="indigoAccent">#536DFE</color>
-
-    <color name="bluePrimary">#2196F3</color>
-    <color name="blue50">#802196F3</color>
-    <color name="bluePrimaryDark">#1976D2</color>
     <color name="blueAccent">#448AFF</color>
-
-    <color name="blueLightPrimary">#03A9F4</color>
-    <color name="blueLight50">#8003A9F4</color>
-    <color name="blueLightPrimaryDark">#0288D1</color>
     <color name="blueLightAccent">#40C4FF</color>
-
-    <color name="cyanPrimary">#00BCD4</color>
-    <color name="cyan50">#8000BCD4</color>
-    <color name="cyanPrimaryDark">#0097A7</color>
     <color name="cyanAccent">#18FFFF</color>
-
-    <color name="tealPrimary">#009688</color>
-    <color name="teal50">#80009688</color>
-    <color name="tealPrimaryDark">#00796B</color>
     <color name="tealAccent">#64FFDA</color>
-
-    <color name="greenPrimary">#388E3C</color>
-    <color name="green50">#80388E3C</color>
-    <color name="greenPrimaryDark">#1B5E20</color>
     <color name="greenAccent">#69F0AE</color>
-
-    <color name="greenLightPrimary">#8BC34A</color>
-    <color name="greenLight50">#808BC34A</color>
-    <color name="greenLightPrimaryDark">#689F38</color>
     <color name="greenLightAccent">#B2FF59</color>
-
-    <color name="limePrimary">#CDDC39</color>
-    <color name="lime50">#80CDDC39</color>
-    <color name="limePrimaryDark">#AFB42B</color>
     <color name="limeAccent">#EEFF41</color>
-
-    <color name="yellowPrimary">#FFEB3B</color>
-    <color name="yellow50">#80FFEB3B</color>
-    <color name="yellowPrimaryDark">#FBC02D</color>
     <color name="yellowAccent">#FFFF00</color>
-
-    <color name="amberPrimary">#FFC107</color>
-    <color name="amber50">#80FFC107</color>
-    <color name="amberPrimaryDark">#FFA000</color>
     <color name="amberAccent">#FFD740</color>
-
-    <color name="orangePrimary">#FF9800</color>
-    <color name="orange50">#80FF9800</color>
-    <color name="orangePrimaryDark">#F57C00</color>
     <color name="orangeAccent">#FFAB40</color>
-
-    <color name="orangeDeepPrimary">#FF5722</color>
-    <color name="orangeDeep50">#80FF5722</color>
-    <color name="orangeDeepPrimaryDark">#E64A19</color>
     <color name="orangeDeepAccent">#FF6E40</color>
 
     <color name="secondaryRed">#ff1744</color>
     <color name="secondaryRed12">#1Eff1744</color>
-    <color name="secondaryRed50">#80ff1744</color>
 
     <color name="secondaryPink">#f50057</color>
     <color name="secondaryPink12">#1Ef50057</color>
-    <color name="secondaryPink50">#80f50057</color>
 
     <color name="secondaryPurple">#d500f9</color>
     <color name="secondaryPurple12">#1Ed500f9</color>
-    <color name="secondaryPurple50">#80d500f9</color>
 
     <color name="secondaryPurpleDeep">#651fff</color>
     <color name="secondaryPurpleDeep12">#1E651fff</color>
-    <color name="secondaryPurpleDeep50">#80651fff</color>
 
     <color name="secondaryIndigo">#3d5afe</color>
     <color name="secondaryIndigo12">#1E3d5afe</color>
-    <color name="secondaryIndigo50">#803d5afe</color>
 
     <color name="secondaryBlue">#2979ff</color>
     <color name="secondaryBlue12">#1E2979ff</color>
-    <color name="secondaryBlue50">#802979ff</color>
 
     <color name="secondaryBlueLight">#00b0ff</color>
     <color name="secondaryBlueLight12">#1E00b0ff</color>
-    <color name="secondaryBlueLight50">#8000b0ff</color>
 
     <color name="secondaryCyan">#00e5ff</color>
     <color name="secondaryCyan12">#1E00e5ff</color>
-    <color name="secondaryCyan50">#8000e5ff</color>
 
     <color name="secondaryTeal">#1de9b6</color>
     <color name="secondaryTeal12">#1E1de9b6</color>
-    <color name="secondaryTeal50">#801de9b6</color>
 
     <color name="secondaryGreen">#00e676</color>
     <color name="secondaryGreen12">#1E00e676</color>
-    <color name="secondaryGreen50">#8000e676</color>
 
     <color name="secondaryGreenLight">#76ff03</color>
     <color name="secondaryGreenLight12">#1E76ff03</color>
-    <color name="secondaryGreenLight50">#8076ff03</color>
 
     <color name="secondaryLime">#c6ff00</color>
     <color name="secondaryLime12">#1Ec6ff00</color>
-    <color name="secondaryLime50">#80c6ff00</color>
 
     <color name="secondaryYellow">#ffea00</color>
     <color name="secondaryYellow12">#1Effea00</color>
-    <color name="secondaryYellow50">#80ffea00</color>
 
     <color name="secondaryAmber">#ffc400</color>
     <color name="secondaryAmber12">#1Effc400</color>
-    <color name="secondaryAmber50">#80ffc400</color>
 
     <color name="secondaryOrange">#ff9100</color>
     <color name="secondaryOrange12">#1Eff9100</color>
-    <color name="secondaryOrange50">#80ff9100</color>
 
     <color name="secondaryOrangeDeep">#ff3d00</color>
     <color name="secondaryOrangeDeep12">#1Eff3d00</color>
-    <color name="secondaryOrangeDeep50">#80ff3d00</color>
 
     <color name="secondaryLivingCoral">#FA7268</color>
-    <color name="secondaryLivingCoral12">#1EFA7268</color>
-    <color name="secondaryLivingCoral50">#80FA7268</color>
 
     <string-array name="note_palette_one" >
         <item>#86E3CE</item>

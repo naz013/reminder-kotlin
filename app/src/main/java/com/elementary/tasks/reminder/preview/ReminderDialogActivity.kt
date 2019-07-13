@@ -769,7 +769,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -832,7 +832,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -903,7 +903,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)

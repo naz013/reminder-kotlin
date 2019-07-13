@@ -273,7 +273,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
             val sound = sound
@@ -310,7 +310,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         if (isScreenResumed) {
             builder.priority = NotificationCompat.PRIORITY_LOW
         } else {
