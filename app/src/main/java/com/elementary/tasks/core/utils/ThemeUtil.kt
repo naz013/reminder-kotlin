@@ -172,11 +172,6 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
     }
 
     @ColorInt
-    fun getCategoryColor(code: Int): Int {
-        return getNoteLightColor(code)
-    }
-
-    @ColorInt
     fun getNoteLightColor(code: Int = Color.RED): Int {
         val color: Int
         when (code) {
