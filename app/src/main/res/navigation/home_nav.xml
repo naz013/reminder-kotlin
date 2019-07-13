@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_actionCalendar_to_settingsFragment"
             app:destination="@id/navigation" />
+        <action
+            android:id="@+id/action_actionCalendar_to_dayViewFragment"
+            app:destination="@id/dayViewFragment" />
     </fragment>
 
     <fragment
@@ -456,4 +459,13 @@
         android:name="com.elementary.tasks.notes.preview.NotePreviewActivity"
         android:label="@string/note"
         tools:layout="@layout/activity_note_preview" />
+    <fragment
+        android:id="@+id/dayViewFragment"
+        android:name="com.elementary.tasks.day_view.DayViewFragment"
+        android:label="DayViewFragment" >
+        <argument
+            android:name="date"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
 </navigation>
