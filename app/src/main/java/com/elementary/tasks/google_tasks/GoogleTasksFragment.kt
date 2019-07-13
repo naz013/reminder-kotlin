@@ -2,250 +2,236 @@ package com.elementary.tasks.google_tasks
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.ViewPager
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.cloud.GoogleLogin
+import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
-import com.elementary.tasks.google_tasks.list.PageCallback
-import com.elementary.tasks.google_tasks.list.pager.TaskPagerAdapter
+import com.elementary.tasks.google_tasks.list.ListsRecyclerAdapter
+import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import timber.log.Timber
 
-class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>(), PageCallback {
+class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>() {
 
-    private lateinit var viewModel: GoogleTaskListsViewModel
-    private var googleTaskLists = listOf<GoogleTaskList>()
-    private var taskPagerAdapter: TaskPagerAdapter? = null
-    private var defaultGoogleTaskList: GoogleTaskList? = null
-    private val mListenersList: MutableList<(List<GoogleTaskList>) -> Unit> = mutableListOf()
-    private val currentPos: Int
-        get() {
-            return binding.pager.currentItem
-        }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
+    private val viewModel: GoogleTaskListsViewModel by lazy {
+        ViewModelProviders.of(this).get(GoogleTaskListsViewModel::class.java)
     }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.tasks_menu, menu)
-        val googleTaskList = currentTaskList()
-        if (googleTaskList != null) {
-            menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
-            if (googleTaskList.def != 1) {
-                menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
-            }
-            menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
-        }
-        super.onCreateOptionsMenu(menu, inflater)
+    private val googleLogin: GoogleLogin by lazy {
+        GoogleLogin(activity!!, prefs)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_add_list -> {
-                startActivity(Intent(context, TaskListActivity::class.java))
-                return true
-            }
-            MENU_ITEM_EDIT -> {
-                editListClick()
-                return true
-            }
-            MENU_ITEM_DELETE -> {
-                deleteDialog()
-                return true
-            }
-            MENU_ITEM_CLEAR -> {
-                clearList()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun editListClick() {
-        val googleTaskList = currentTaskList()
-        if (googleTaskList != null) {
-            startActivity(Intent(context, TaskListActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, googleTaskList.listId))
-        }
-    }
+    private val adapter = TasksRecyclerAdapter()
+    private val listsRecyclerAdapter = ListsRecyclerAdapter()
 
     override fun layoutRes(): Int = R.layout.fragment_google_tasks
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.progressMessageView.text = getString(R.string.please_wait)
         binding.fab.setOnClickListener { addNewTask() }
+        binding.connectButton.setOnClickListener { googleTasksButtonClick() }
+        binding.googleButton.setOnClickListener { startActivity(Intent(context, TaskListActivity::class.java)) }
+
+        updateProgress(false)
+        initEmpty()
+        initList()
+
         initViewModel()
     }
 
-    private fun currentTaskList(): GoogleTaskList? {
-        val list = googleTaskLists
-        val position = currentPos
-        return if (position > 0 && list.isNotEmpty()) {
-            if (position - 1 < list.size) {
-                list[position - 1]
-            } else {
-                null
-            }
-        } else {
-            null
-        }
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(GoogleTaskListsViewModel::class.java)
-        viewModel.googleTaskLists.observe(this, Observer { googleTaskLists ->
-            if (googleTaskLists != null) {
-                showPages(googleTaskLists.toMutableList())
-            }
-        })
-        viewModel.defaultTaskList.observe(this, Observer {
-            this.defaultGoogleTaskList = it
-            refreshFab()
-        })
-    }
-
-    private val mPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener {
-        override fun onPageScrolled(i: Int, v: Float, i2: Int) {
-
-        }
-
-        override fun onPageSelected(i: Int) {
-            refreshCurrent(i)
-        }
-
-        override fun onPageScrollStateChanged(i: Int) {
-
-        }
-    }
-
-    private fun showPages(googleTaskLists: MutableList<GoogleTaskList>) {
-        this.googleTaskLists = googleTaskLists
-
-        val pages = mutableListOf("")
-        for (list in googleTaskLists) {
-            pages.add(list.listId)
-        }
-
-        val pos = prefs.lastGoogleList
-
-        taskPagerAdapter = TaskPagerAdapter(childFragmentManager, pages)
-        binding.pager.offscreenPageLimit = 5
-        binding.pager.adapter = taskPagerAdapter
-        binding.pager.addOnPageChangeListener(mPageChangeListener)
-        binding.pager.currentItem = if (pos < googleTaskLists.size) pos else 0
-
-        notifyFragments(googleTaskLists)
-
-        refreshCurrent(binding.pager.currentItem)
-    }
-
-    override fun onBackStackResume() {
-        super.onBackStackResume()
-        binding.pager.addOnPageChangeListener(mPageChangeListener)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.pager.removeOnPageChangeListener(mPageChangeListener)
-    }
-
-    private fun notifyFragments(googleTaskLists: MutableList<GoogleTaskList>) {
-        for (listener in mListenersList) {
-            listener.invoke(googleTaskLists)
-        }
-    }
-
-    private fun refreshCurrent(position: Int) {
-        Timber.d("refreshCurrent: $position")
-        updateScreenTitle()
-        prefs.lastGoogleList = position
-        activity?.invalidateOptionsMenu()
-        refreshFab()
-    }
-
-    private fun refreshFab() {
-        if (binding.pager.currentItem > 0) {
-            binding.fab.show()
-        } else {
-            if (defaultGoogleTaskList == null) {
-                binding.fab.hide()
-            } else {
-                binding.fab.show()
+    private fun googleTasksButtonClick() {
+        withActivity {
+            if (Permissions.checkPermission(it, 104,
+                            Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                            Permissions.WRITE_EXTERNAL)) {
+                switchGoogleTasksStatus()
             }
         }
     }
 
-    override fun getTitle(): String = updateScreenTitle()
+    private fun switchGoogleTasksStatus() {
+        withActivity {
+            if (!SuperUtil.checkGooglePlayServicesAvailability(it)) {
+                Toast.makeText(it, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show()
+                return@withActivity
+            }
+            googleLogin.loginTasks(object : GoogleLogin.TasksCallback {
+                override fun onProgress(isLoading: Boolean) {
+                    updateProgress(isLoading)
+                }
 
-    private fun updateScreenTitle(): String {
-        var title = getString(R.string.all)
-        val currentList = currentTaskList()
-        if (currentList != null) {
-            title = currentList.title
+                override fun onResult(v: GTasks?, isLogged: Boolean) {
+                    Timber.d("onResult: $isLogged")
+                    if (isLogged) {
+                        viewModel.loadGoogleTasks()
+                    }
+                    checkGoogleStatus()
+                }
+
+                override fun onFail() {
+                    showErrorDialog()
+                }
+            })
         }
-        callback?.onTitleChange(title)
-        return title
     }
 
-    private fun addNewTask() {
-        val currentList = currentTaskList() ?: defaultGoogleTaskList ?: return
-        withContext {
-            TaskActivity.openLogged(it, Intent(context, TaskActivity::class.java)
-                    .putExtra(Constants.INTENT_ID, currentList.listId)
-                    .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
-        }
-    }
-
-    private fun deleteDialog() {
+    private fun showErrorDialog() {
         withContext {
             val builder = dialogues.getMaterialDialog(it)
-            builder.setCancelable(true)
-            builder.setMessage(R.string.delete_this_list)
-            builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-            builder.setPositiveButton(R.string.yes) { dialog, _ ->
-                deleteList()
-                dialog.dismiss()
-            }
+            builder.setMessage(getString(R.string.failed_to_login))
+            builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
             builder.create().show()
         }
     }
 
-    private fun deleteList() {
-        currentTaskList()?.let {
-            viewModel.deleteGoogleTaskList(it)
+    private fun checkGoogleStatus() {
+        if (GTasks.getInstance(context!!)?.isLogged == true) {
+            binding.listsScrollView.show()
+            binding.notLoggedView.hide()
+            binding.fab.show()
+        } else {
+            binding.notLoggedView.show()
+            binding.fab.hide()
         }
     }
 
-    private fun clearList() {
-        currentTaskList()?.let {
-            viewModel.clearList(it)
+    private fun updateProgress(b: Boolean) {
+        if (b) {
+            binding.progressView.visibility = View.VISIBLE
+        } else {
+            binding.progressView.visibility = View.GONE
         }
     }
 
-    override fun provideGoogleTasksLists(listener: ((List<GoogleTaskList>) -> Unit)?) {
-        if (listener != null) {
-            mListenersList.add(listener)
-            listener.invoke(googleTaskLists)
+    private fun addNewTask() {
+        val defId = viewModel.defTaskList.value?.listId ?: return
+        withContext {
+            TaskActivity.openLogged(it, Intent(context, TaskActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, defId)
+                    .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
         }
     }
 
-    companion object {
+    private fun initViewModel() {
+        viewModel.googleTaskLists.observe(this, Observer {
+            if (it != null) {
+                showLists(it)
+            }
+        })
+        viewModel.allGoogleTasks.observe(this, Observer {
+            if (it != null) {
+                showTasks(it)
+            }
+        })
+        viewModel.isInProgress.observe(this, Observer {
+            if (it != null) {
+                updateProgress(it)
+            }
+        })
+    }
 
-        const val MENU_ITEM_EDIT = 12
-        const val MENU_ITEM_DELETE = 13
-        const val MENU_ITEM_CLEAR = 14
+    private fun showTasks(list: List<GoogleTask>) {
+        adapter.submitList(list)
+        reloadView(list.size)
+    }
+
+    private fun showLists(list: List<GoogleTaskList>) {
+        val map = mutableMapOf<String, GoogleTaskList>()
+        list.forEach {
+            map[it.listId] = it
+        }
+        adapter.googleTaskListMap = map
+        listsRecyclerAdapter.submitList(list)
+    }
+
+    private fun initList() {
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = false
+            viewModel.sync()
+        }
+
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
+                    StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        }
+        adapter.actionsListener = object : ActionsListener<GoogleTask> {
+            override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
+                when (actions) {
+                    ListActions.EDIT -> if (t != null) editTask(t)
+                    ListActions.SWITCH -> if (t != null) viewModel.toggleTask(t)
+                    else -> {
+                    }
+                }
+            }
+        }
+        binding.recyclerView.adapter = adapter
+
+        binding.listsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        listsRecyclerAdapter.actionsListener = object : ActionsListener<GoogleTaskList> {
+            override fun onAction(view: View, position: Int, t: GoogleTaskList?, actions: ListActions) {
+                when (actions) {
+                    ListActions.OPEN -> if (t != null) openGoogleTaskList(t)
+                    else -> {
+                    }
+                }
+            }
+        }
+        binding.listsView.adapter = listsRecyclerAdapter
+    }
+
+    private fun openGoogleTaskList(googleTaskList: GoogleTaskList) {
+        findNavController().navigate(GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(googleTaskList.listId, googleTaskList))
+    }
+
+    private fun editTask(googleTask: GoogleTask) {
+        TaskActivity.openLogged(context!!, Intent(activity, TaskActivity::class.java)
+                .putExtra(Constants.INTENT_ID, googleTask.taskId)
+                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))
+    }
+
+    private fun initEmpty() {
+        binding.emptyItem.visibility = View.VISIBLE
+        binding.emptyText.setText(R.string.no_google_tasks)
+        reloadView(0)
+    }
+
+    private fun reloadView(count: Int) {
+        if (count > 0) {
+            binding.emptyItem.visibility = View.GONE
+        } else {
+            binding.emptyItem.visibility = View.VISIBLE
+        }
+    }
+
+    override fun getTitle(): String = getString(R.string.google_tasks)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        googleLogin.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Permissions.checkPermission(grantResults)) {
+            when (requestCode) {
+                104 -> switchGoogleTasksStatus()
+            }
+        }
     }
 }
