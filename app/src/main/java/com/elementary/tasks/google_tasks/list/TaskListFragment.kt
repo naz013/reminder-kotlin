@@ -1,6 +1,7 @@
 package com.elementary.tasks.google_tasks.list
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -81,6 +82,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding.progressMessageView.text = getString(R.string.please_wait)
         binding.fab.setOnClickListener { addNewTask() }
+        binding.fab.backgroundTintList = ColorStateList.valueOf(themeUtil.getNoteLightColor(googleTaskList?.color ?: 0))
         updateProgress(false)
         initEmpty()
         initList()
