@@ -61,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_priority_high_24px"
                 app:prefs_primary_text="@string/priority"
                 app:prefs_type="none" />
 

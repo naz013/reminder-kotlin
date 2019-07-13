@@ -21,6 +21,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/help"
+                app:prefs_icon="@drawable/ic_twotone_help_24px"
                 app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
@@ -78,6 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_info_24px"
                 app:prefs_primary_text="@string/about"
                 app:prefs_type="none" />
 

@@ -164,7 +164,7 @@
     <string name="show_icon">"Показувати значок"</string>
     <string name="sound_and_vibration">"Звук і вібрація"</string>
     <string name="loudness">"Гучність"</string>
-    <string name="notification">"Повідомлення"</string>
+    <string name="notification">"Сповіщення"</string>
     <string name="unlock_screen">"Розблокування екрана"</string>
     <string name="send_sms">"Відправити SMS"</string>
     <string name="enable_sending_sms_automatically">"Включити відправку SMS автоматично"</string>
