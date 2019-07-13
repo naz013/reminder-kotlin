@@ -21,6 +21,7 @@ import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
+import com.elementary.tasks.experimental.home.HomeFragment
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
@@ -39,7 +40,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
-        Timber.d("onCreate: ${this.javaClass.canonicalName}")
+        Timber.d("onCreate: ${this.javaClass}")
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
         initQuickNote()
         initViewModels()
@@ -186,6 +187,14 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
             mNoteView?.switchQuickNote()
         } else if (action == GlobalButtonObservable.Action.VOICE) {
             SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (mFragment is HomeFragment) {
+            finishAffinity()
+        } else {
+            super.onBackPressed()
         }
     }
 
