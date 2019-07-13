@@ -138,7 +138,11 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
                 }
             }
         }
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         binding.recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }, null)
         reloadView(0)

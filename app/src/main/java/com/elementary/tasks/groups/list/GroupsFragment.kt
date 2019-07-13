@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -70,7 +71,11 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
             }
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         binding.recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()

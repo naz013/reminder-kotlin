@@ -145,7 +145,11 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
                 }
             }
         }
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         binding.recyclerView.adapter = mAdapter
         ViewUtils.listenScrollableView(binding.recyclerView, listener = { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()

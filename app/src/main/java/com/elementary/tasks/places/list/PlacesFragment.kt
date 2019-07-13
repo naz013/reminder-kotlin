@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.filter.SearchModifier
@@ -119,7 +120,11 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     override fun getTitle(): String = getString(R.string.places)
 
     private fun initList() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        }
         mAdapter.actionsListener = object : ActionsListener<Place> {
             override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
                 when (actions) {

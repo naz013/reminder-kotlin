@@ -29,5 +29,6 @@
     <dimen name="home_action_button_size">64dp</dimen>
 
     <bool name="is_tablet">false</bool>
+    <integer name="num_of_cols">1</integer>
 
 </resources>
