@@ -31,6 +31,10 @@ class GTasks private constructor(context: Context) : KoinComponent {
 
     var statusObserver: ((Boolean) -> Unit)? = null
     var isLogged: Boolean = false
+        get() {
+            Timber.d("isLogged: $field")
+            return field
+        }
         private set
 
     init {

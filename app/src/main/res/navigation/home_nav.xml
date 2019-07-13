@@ -82,6 +82,9 @@
         <action
             android:id="@+id/action_actionGoogle_to_settingsFragment"
             app:destination="@id/navigation" />
+        <action
+            android:id="@+id/action_actionGoogle_to_taskListFragment"
+            app:destination="@id/taskListFragment" />
     </fragment>
     <fragment
         android:id="@+id/remindersFragment"
@@ -462,10 +465,25 @@
     <fragment
         android:id="@+id/dayViewFragment"
         android:name="com.elementary.tasks.day_view.DayViewFragment"
-        android:label="DayViewFragment" >
+        android:label="@string/day_of_month"
+        tools:layout="@layout/fragment_day_view">
         <argument
             android:name="date"
-            app:argType="long"
-            android:defaultValue="0L" />
+            android:defaultValue="0L"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskListFragment"
+        android:name="com.elementary.tasks.google_tasks.list.TaskListFragment"
+        android:label="@string/google_tasks"
+        tools:layout="@layout/fragment_google_list" >
+        <argument
+            android:name="arg_id"
+            app:argType="string" />
+        <argument
+            android:name="arg_list"
+            app:argType="com.elementary.tasks.core.data.models.GoogleTaskList"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>
