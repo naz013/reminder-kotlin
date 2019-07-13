@@ -123,9 +123,10 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     }
 
     private fun initBackupFilesPrefs() {
-        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
-        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
-        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
+        binding.backupFilesPrefs.hide()
+//        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
+//        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
+//        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
     }
 
     private fun changeBackupFilesPrefs() {
