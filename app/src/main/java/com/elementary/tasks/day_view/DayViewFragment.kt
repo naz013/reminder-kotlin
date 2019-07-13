@@ -39,9 +39,9 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intent = arguments
-        if (intent != null) {
-            dateMills = intent.getLong(DATE_KEY, 0)
+        val bundle = arguments
+        if (bundle != null) {
+            dateMills = DayViewFragmentArgs.fromBundle(bundle).date
         }
     }
 
@@ -203,19 +203,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     }
 
     companion object {
-
-        private const val DATE_KEY = "date"
-        private const val POS_KEY = "position"
         private const val NUMBER_OF_PAGES = 4
         const val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR)
-
-        fun newInstance(date: Long, position: Int): DayViewFragment {
-            val pageFragment = DayViewFragment()
-            val arguments = Bundle()
-            arguments.putLong(DATE_KEY, date)
-            arguments.putInt(POS_KEY, position)
-            pageFragment.arguments = arguments
-            return pageFragment
-        }
     }
 }

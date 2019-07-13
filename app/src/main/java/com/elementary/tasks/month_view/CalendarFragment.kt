@@ -6,6 +6,7 @@ import android.text.format.DateUtils
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -147,8 +148,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun onDateClick(date: Date) {
-        TODO()
-//        callback?.openFragment(DayViewFragment.newInstance(date.time, 0), "", true)
+        findNavController().navigate(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date.time))
     }
 
     override fun onDateLongClick(date: Date) {

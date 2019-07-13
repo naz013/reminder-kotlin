@@ -39,7 +39,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
-
+        Timber.d("onCreate: ${this.javaClass.canonicalName}")
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
         initQuickNote()
         initViewModels()
