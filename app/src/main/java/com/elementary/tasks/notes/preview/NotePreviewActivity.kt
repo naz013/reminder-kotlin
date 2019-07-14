@@ -162,6 +162,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
             binding.noteText.text = noteWithImages.getSummary()
             binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
             window.statusBarColor = noteColor
+            window.navigationBarColor = noteColor
             binding.windowBackground.setBackgroundColor(noteColor)
             isBgDark = if (ThemeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
                 isDarkMode
