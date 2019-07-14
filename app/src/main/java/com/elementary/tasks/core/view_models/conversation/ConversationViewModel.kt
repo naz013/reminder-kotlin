@@ -255,9 +255,10 @@ class ConversationViewModel : BaseRemindersViewModel() {
                         Action.TRASH -> emptyTrash(true)
                         Action.DISABLE -> disableAllReminders(true)
                         Action.SETTINGS -> {
-                            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
-                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
-                            context.startActivity(startActivityIntent)
+                            TODO("Add new deep link")
+//                            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
+//                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
+//                            context.startActivity(startActivityIntent)
                         }
                         Action.REPORT -> {
                             context.startActivity(Intent(context, SendFeedbackActivity::class.java)
