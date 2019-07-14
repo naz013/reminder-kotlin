@@ -387,7 +387,7 @@
             android:name=".navigation.settings.security.PinLoginActivity"
             android:excludeFromRecents="true" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
-        <activity android:name=".intro.PrivacyPolicyActivity" />
+        <activity android:name=".other.PrivacyPolicyActivity" />
         <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"
@@ -409,7 +409,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.LoginActivity" />
 
         <receiver
             android:name=".core.services.CallReceiver"

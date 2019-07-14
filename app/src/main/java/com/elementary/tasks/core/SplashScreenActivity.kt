@@ -11,7 +11,6 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.login.LoginActivity
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import org.koin.android.ext.android.inject
 
@@ -46,19 +45,15 @@ class SplashScreenActivity : ThemedActivity() {
 
     private fun gotoApp() {
         checkIfAppUpdated()
-        if (!prefs.isUserLogged) {
-            openIntroScreen()
-        } else {
-            launchDefault {
-                if (db.reminderGroupDao().all().isEmpty()) {
-                    GroupsUtil.initDefault(this@SplashScreenActivity)
-                }
-                withUIContext {
-                    if (prefs.hasPinCode) {
-                        openPinLogin()
-                    } else {
-                        runApplication()
-                    }
+        launchDefault {
+            if (db.reminderGroupDao().all().isEmpty()) {
+                GroupsUtil.initDefault(this@SplashScreenActivity)
+            }
+            withUIContext {
+                if (prefs.hasPinCode) {
+                    openPinLogin()
+                } else {
+                    runApplication()
                 }
             }
         }
@@ -66,11 +61,6 @@ class SplashScreenActivity : ThemedActivity() {
 
     private fun openPinLogin() {
         startActivity(Intent(this, PinLoginActivity::class.java))
-        finish()
-    }
-
-    private fun openIntroScreen() {
-        startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 

@@ -535,7 +535,17 @@ class Prefs(context: Context) : SharedPrefs(context) {
 
     var isUserLogged: Boolean
         get() = getBoolean(PrefsConstants.USER_LOGGED)
-        set(value) = putBoolean(PrefsConstants.USER_LOGGED, value)
+        set(value) {
+            putBoolean(PrefsConstants.USER_LOGGED, value)
+            notifyKey(PrefsConstants.USER_LOGGED)
+        }
+
+    var isPrivacyPolicyShowed: Boolean
+        get() = getBoolean(PrefsConstants.PRIVACY_SHOWED)
+        set(value) {
+            putBoolean(PrefsConstants.PRIVACY_SHOWED, value)
+            notifyKey(PrefsConstants.PRIVACY_SHOWED)
+        }
 
     var isLiveEnabled: Boolean
         get() = getBoolean(PrefsConstants.LIVE_CONVERSATION)

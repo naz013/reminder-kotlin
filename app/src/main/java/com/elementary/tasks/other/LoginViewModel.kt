@@ -1,4 +1,4 @@
-package com.elementary.tasks.login
+package com.elementary.tasks.other
 
 import android.content.Context
 import androidx.lifecycle.LifecycleObserver

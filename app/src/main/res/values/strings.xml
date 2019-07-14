@@ -728,5 +728,9 @@
     <string name="backup_attached_files_and_melodies">Backup attached files and melodies</string>
     <string name="multiple_device_mode">Multiple device mode</string>
     <string name="save_backup_on_sd_card">Save backup on SD Card</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">By continue using Reminder application You accept Privacy Policy</string>
+    <string name="accept">Accept</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">If You have backed up data, You can Log In to Your cloud drive to restore it.</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.elementary.tasks.intro
+package com.elementary.tasks.other
 
 import android.annotation.SuppressLint
 import android.content.Intent
