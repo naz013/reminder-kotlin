@@ -135,7 +135,7 @@
                         android:contentDescription="@string/notes"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_notifications_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/notesButton"
@@ -146,7 +146,7 @@
                         android:contentDescription="@string/notes"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_note_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/calendarButton"
@@ -157,7 +157,7 @@
                         android:contentDescription="@string/calendar"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_today_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/birthdaysButton"
@@ -168,7 +168,7 @@
                         android:contentDescription="@string/calendar"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_cake_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/googleButton"
@@ -179,7 +179,7 @@
                         android:contentDescription="@string/google_tasks"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_google"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/groupsButton"
@@ -190,7 +190,7 @@
                         android:contentDescription="@string/groups"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/mapButton"
@@ -201,7 +201,7 @@
                         android:contentDescription="@string/map"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_map_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/archiveButton"
@@ -213,7 +213,7 @@
                         android:contentDescription="@string/trash"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_dns_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -273,7 +273,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="32dp"
                         app:srcCompat="@drawable/ic_empty_state_calendar"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
@@ -283,7 +283,7 @@
                         android:layout_marginBottom="32dp"
                         android:text="@string/you_re_all_done"
                         android:textAppearance="?textAppearanceHeadline6"
-                        android:textColor="@color/pureBlack" />
+                        android:textColor="?android:textColorPrimary" />
 
                 </LinearLayout>
 
@@ -354,7 +354,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="32dp"
                         app:srcCompat="@drawable/ic_empty_state_cake"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
@@ -364,7 +364,7 @@
                         android:layout_marginBottom="32dp"
                         android:text="@string/no_upcoming_birthdays"
                         android:textAppearance="?textAppearanceHeadline6"
-                        android:textColor="@color/pureBlack" />
+                        android:textColor="?android:textColorPrimary" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
