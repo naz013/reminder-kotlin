@@ -59,7 +59,7 @@
                         android:contentDescription="@string/new_tasks_list"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_add_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/listsView"
@@ -115,16 +115,15 @@
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_twotone_add_24px"
-            app:tint="?colorOnSecondary" />
+            android:text="@string/new_task"
+            app:icon="@drawable/ic_twotone_add_24px" />
 
         <LinearLayout
             android:id="@+id/notLoggedView"

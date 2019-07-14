@@ -34,7 +34,7 @@
                         android:contentDescription="@string/groups"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/archiveButton"
@@ -46,7 +46,7 @@
                         android:contentDescription="@string/trash"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/ic_twotone_dns_24px"
-                        app:tint="@color/pureBlack" />
+                        app:tint="?android:textColorPrimary" />
 
                 </LinearLayout>
 
@@ -101,7 +101,6 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_twotone_add_24px"
-            app:tint="?colorOnSecondary" />
+            app:srcCompat="@drawable/ic_twotone_add_24px" />
     </RelativeLayout>
 </layout>
