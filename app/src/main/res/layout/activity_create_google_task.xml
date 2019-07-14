@@ -14,7 +14,7 @@
             android:stateListAnimator="@animator/toolbar_animator"
             tools:targetApi="lollipop">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/progressMessageView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                         app:srcCompat="@drawable/ic_twotone_today_24px"
                         app:tint="?android:textColorPrimary" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/dateField"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                         app:srcCompat="@drawable/ic_twotone_access_time_24px"
                         app:tint="?android:textColorPrimary" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/timeField"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                         app:srcCompat="@drawable/ic_twotone_view_list_24px"
                         app:tint="?android:textColorPrimary" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/listText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
