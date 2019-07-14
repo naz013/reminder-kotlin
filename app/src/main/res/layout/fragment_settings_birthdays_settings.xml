@@ -119,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/progressMessageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -140,8 +140,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="32dp"
                 android:text="@string/scan_contacts"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?android:textColorPrimary" />
+                android:textAppearance="?textAppearanceButton" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

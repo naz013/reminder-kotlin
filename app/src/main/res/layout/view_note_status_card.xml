@@ -16,7 +16,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/show_in_status_bar"
@@ -31,21 +31,19 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonYesStatus"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="@string/yes"
-                    android:textColor="?colorOnSecondary"
                     android:textAppearance="?textAppearanceButton" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonNoStatus"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no"
-                    android:textColor="?colorOnSecondary"
                     android:textAppearance="?textAppearanceButton" />
 
             </LinearLayout>

@@ -17,7 +17,7 @@
             android:layout_marginEnd="@dimen/list_margin"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -59,7 +59,7 @@
                 app:prefs_primary_text="@string/export_to_stock_calendar"
                 app:prefs_type="check_switch" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -183,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/progressMessageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -203,8 +203,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/export_all_my_data"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?android:textColorPrimary" />
+                android:textAppearance="?textAppearanceButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/backupButton"
@@ -215,8 +214,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/backup_data_now"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?android:textColorPrimary" />
+                android:textAppearance="?textAppearanceButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/syncButton"
@@ -228,8 +226,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="32dp"
                 android:text="@string/sync_data_now"
-                android:textAppearance="?textAppearanceButton"
-                android:textColor="?android:textColorPrimary" />
+                android:textAppearance="?textAppearanceButton" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

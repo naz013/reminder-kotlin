@@ -47,7 +47,6 @@
             android:layout_margin="16dp"
             android:padding="16dp"
             android:text="@string/disable_pin"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+            android:textAppearance="?textAppearanceButton" />
     </LinearLayout>
 </layout>

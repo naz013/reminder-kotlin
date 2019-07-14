@@ -10,7 +10,7 @@
         android:background="@drawable/gradient_button_google_selector"
         android:minWidth="@dimen/home_action_button_size">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

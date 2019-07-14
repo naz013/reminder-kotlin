@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/actionCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatRadioButton
+                    <com.google.android.material.radiobutton.MaterialRadioButton
                         android:id="@+id/callAction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                         android:text="@string/make_call"
                         android:textAppearance="?textAppearanceCaption" />
 
-                    <androidx.appcompat.widget.AppCompatRadioButton
+                    <com.google.android.material.radiobutton.MaterialRadioButton
                         android:id="@+id/messageAction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

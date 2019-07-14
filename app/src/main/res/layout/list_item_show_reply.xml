@@ -18,7 +18,6 @@
             android:paddingTop="8dp"
             android:paddingRight="16dp"
             android:paddingBottom="8dp"
-            android:textColor="?android:textColorPrimary"
             android:text="@string/show_more"
             android:textAppearance="?textAppearanceButton" />
 

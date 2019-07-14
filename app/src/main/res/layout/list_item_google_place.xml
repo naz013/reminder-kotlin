@@ -35,7 +35,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/text1"
                     android:textAppearance="?textAppearanceSubtitle1"
                     android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:maxLines="2"
                     tools:text="Title" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/text2"
                     android:textAppearance="?textAppearanceSubtitle2"
                     android:layout_width="match_parent"
@@ -53,7 +53,7 @@
 
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/placeCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

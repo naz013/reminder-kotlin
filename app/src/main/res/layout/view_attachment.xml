@@ -21,7 +21,7 @@
             app:srcCompat="@drawable/ic_twotone_attachment_24px"
             app:tint="?android:textColorPrimary" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_height="32dp"
             android:layout_marginStart="12dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_clear_black_24dp"
+            app:srcCompat="@drawable/ic_clear_white_24dp"
             app:tint="?android:textColorPrimary" />
     </LinearLayout>
 </merge>

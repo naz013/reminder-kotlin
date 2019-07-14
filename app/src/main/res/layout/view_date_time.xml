@@ -20,7 +20,7 @@
             app:srcCompat="@drawable/ic_twotone_access_time_24px"
             app:tint="?android:textColorPrimary" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dateField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:textAppearance="?textAppearanceHeadline6"
             tools:text="Tue, 5 Nov 2015" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/timeField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
