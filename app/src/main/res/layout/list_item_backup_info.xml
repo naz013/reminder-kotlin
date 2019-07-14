@@ -34,7 +34,7 @@
                     app:srcCompat="@drawable/ic_twotone_more_vert_24px"
                     app:tint="?android:textColorPrimary" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/sourceName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                     android:contentDescription="@string/acc_contact_photo"
                     android:scaleType="centerCrop" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/cloudUser"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,14 +97,14 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/usedSpace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?textAppearanceBody1"
                         tools:text="Name" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/freeSpace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/cloudText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -132,7 +132,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     tools:text="Name" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/cloudCount"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

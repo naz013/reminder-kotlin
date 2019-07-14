@@ -26,7 +26,7 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/eventText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                     android:textAppearance="?textAppearanceBody1"
                     tools:text="Title" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/eventNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     tools:text="Number" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/eventDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/progressMessageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                     android:layout_height="72dp"
                     android:layout_marginBottom="24dp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/emptyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

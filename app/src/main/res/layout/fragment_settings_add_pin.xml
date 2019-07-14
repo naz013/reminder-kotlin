@@ -71,7 +71,6 @@
             android:layout_margin="16dp"
             android:padding="16dp"
             android:text="@string/save"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?android:textColorPrimary" />
+            android:textAppearance="?textAppearanceButton" />
     </LinearLayout>
 </layout>

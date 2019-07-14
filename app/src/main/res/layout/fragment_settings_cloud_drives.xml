@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/progressMessageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/dropboxTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -62,8 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/connect"
-                    android:textAppearance="?textAppearanceButton"
-                    android:textColor="?colorOnSecondary" />
+                    android:textAppearance="?textAppearanceButton" />
 
             </LinearLayout>
 
@@ -76,7 +75,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/gDriveTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -89,8 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/connect"
-                    android:textAppearance="?textAppearanceButton"
-                    android:textColor="?colorOnSecondary" />
+                    android:textAppearance="?textAppearanceButton" />
 
             </LinearLayout>
 
@@ -102,7 +100,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/gTasksTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -115,8 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/connect"
-                    android:textAppearance="?textAppearanceButton"
-                    android:textColor="?colorOnSecondary" />
+                    android:textAppearance="?textAppearanceButton"/>
 
             </LinearLayout>
         </LinearLayout>

@@ -5,12 +5,12 @@
 
     <com.google.android.material.chip.Chip
         android:id="@+id/chipItem"
+        style="@style/Widget.MaterialComponents.Chip.Action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:checkable="false"
         android:clickable="false"
-        style="@style/Widget.MaterialComponents.Chip.Action"
         android:textAppearance="?textAppearanceBody2"
         android:textColor="?android:textColorPrimary"
         app:chipBackgroundColor="@android:color/transparent"

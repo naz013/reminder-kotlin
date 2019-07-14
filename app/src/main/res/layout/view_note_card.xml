@@ -41,13 +41,12 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSave"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:textColor="?colorOnSecondary"
                 android:text="@string/save"
                 android:textAppearance="?textAppearanceButton" />
 
