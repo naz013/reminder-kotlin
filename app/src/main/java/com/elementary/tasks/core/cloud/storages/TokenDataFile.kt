@@ -4,11 +4,9 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.Keep
 import com.elementary.tasks.BuildConfig
-import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.daysAfter
 import com.elementary.tasks.core.utils.launchDefault
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.MediaType
@@ -126,19 +124,12 @@ class TokenDataFile : KoinComponent {
     private fun sendPost(data: ByteArray) = launchDefault {
         val client = OkHttpClient.Builder().build()
         try {
-            val stream = context.resources.openRawResource(R.raw.admin_token)
-            val googleCredential = GoogleCredential
-                    .fromStream(stream)
-                    .createScoped(listOf(SCOPE))
-            googleCredential.refreshToken()
-            val token = googleCredential.accessToken
-
             val body = RequestBody.create(MediaType.get("application/json; charset=utf-8"), data)
             val httpRequest = Request.Builder()
                     .post(body)
                     .url("https://fcm.googleapis.com/v1/projects/${BuildConfig.PROJECT_ID}/messages:send")
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Authorization", "Bearer $token")
+//                    .addHeader("Authorization", "Bearer $token")
                     .build()
 
             val response = client.newCall(httpRequest).execute()
