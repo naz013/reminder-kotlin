@@ -103,11 +103,12 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
             weekdayAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(R.id.weekdayGrid, weekdayAdapter)
 
-            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
-            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_calendar)
-            val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
-                    startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
+            TODO("Add new deep link")
+//            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
+//            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_calendar)
+//            val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
+//                    startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//            rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
 
             val monthAdapter = Intent(context, CalendarMonthService::class.java)
             monthAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)

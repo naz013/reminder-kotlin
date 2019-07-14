@@ -112,12 +112,14 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                     reminder.groupColor = group.groupColor
                     reminder.groupTitle = group.groupTitle
                     reminder.groupUuId = group.groupUuId
+                    appDb.reminderDao().insert(reminder)
                 }
-                appDb.reminderDao().insert(reminder)
             }
-            EventControlFactory.getController(reminder).start()
-            startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
-                    Constants.INTENT_ID, reminder.uuId)
+            if (reminder.groupUuId != "") {
+                EventControlFactory.getController(reminder).start()
+                startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
+                        Constants.INTENT_ID, reminder.uuId)
+            }
         }
     }
 

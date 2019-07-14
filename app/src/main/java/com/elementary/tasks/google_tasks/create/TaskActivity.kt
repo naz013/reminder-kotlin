@@ -418,15 +418,18 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
         return result.timeInMillis
     }
 
-    private fun createReminder(task: String): Reminder? {
-        val group = viewModel.defaultReminderGroup.value ?: return null
+    private fun createReminder(task: String): Reminder {
         val due = dateTime()
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
+        reminder.delay = 0
+        reminder.eventCount = 0
+        reminder.useGlobal = true
+        reminder.isActive = true
+        reminder.isRemoved = false
         reminder.summary = SuperUtil.normalizeSummary(task)
-        reminder.groupUuId = group.groupUuId
         reminder.startTime = TimeUtil.getGmtFromDateTime(due)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(due)
+        reminder.eventTime = reminder.startTime
         return reminder
     }
 

@@ -19,8 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -711,7 +711,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
 
         val startTime = dateTime()
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+        reminder.eventTime = reminder.startTime
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
             return null
