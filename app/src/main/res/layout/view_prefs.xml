@@ -26,8 +26,9 @@
                 android:id="@+id/iconView"
                 android:layout_width="40dp"
                 android:layout_height="24dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:srcCompat="@drawable/ic_twotone_track_changes_24px"
                 app:tint="?android:textColorPrimary" />
 
@@ -40,7 +41,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/prefsPrimaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +50,7 @@
                     android:textAppearance="?textAppearanceSubtitle1"
                     tools:text="Title" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/prefsSecondaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,7 +69,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/prefsCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,7 +77,7 @@
                     android:saveEnabled="false"
                     android:visibility="gone" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/prefsSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
@@ -85,7 +86,7 @@
                     android:saveEnabled="false"
                     android:visibility="gone" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/prefsValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
