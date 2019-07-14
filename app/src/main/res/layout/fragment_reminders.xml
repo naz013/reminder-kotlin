@@ -45,7 +45,7 @@
                         android:background="@drawable/gradient_button_birthdays_selector"
                         android:contentDescription="@string/trash"
                         android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_delete_24px"
+                        app:srcCompat="@drawable/ic_twotone_dns_24px"
                         app:tint="@color/pureBlack" />
 
                 </LinearLayout>

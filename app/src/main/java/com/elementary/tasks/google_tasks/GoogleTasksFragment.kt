@@ -49,6 +49,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
         updateProgress(false)
         initEmpty()
         initList()
+        checkGoogleStatus()
 
         initViewModel()
     }
@@ -99,13 +100,15 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun checkGoogleStatus() {
-        if (GTasks.getInstance(context!!)?.isLogged == true) {
+        val gTasks = GTasks.getInstance(context!!)
+        if (gTasks == null || !gTasks.isLogged) {
+            binding.notLoggedView.show()
+            binding.notLoggedView.setOnClickListener {  }
+            binding.fab.hide()
+        } else {
             binding.listsScrollView.show()
             binding.notLoggedView.hide()
             binding.fab.show()
-        } else {
-            binding.notLoggedView.show()
-            binding.fab.hide()
         }
     }
 
