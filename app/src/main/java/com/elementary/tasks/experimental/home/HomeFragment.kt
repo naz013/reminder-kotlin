@@ -1,5 +1,6 @@
 package com.elementary.tasks.experimental.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,16 +16,14 @@ import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
+import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 
-class HomeFragment : BaseFragment<HomeFragmentBinding>() {
+class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
     private lateinit var viewModel: HomeViewModel
     private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true)
@@ -108,9 +107,51 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionGoogle())
         }
 
+        updatePrivacyBanner()
+        updateLoginBanner()
+
         initRemindersList()
         initBirthdaysList()
         initViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        prefs.addObserver(PrefsConstants.PRIVACY_SHOWED, this)
+        prefs.addObserver(PrefsConstants.USER_LOGGED, this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        prefs.removeObserver(PrefsConstants.PRIVACY_SHOWED, this)
+        prefs.removeObserver(PrefsConstants.USER_LOGGED, this)
+    }
+
+    private fun updatePrivacyBanner() {
+        if (prefs.isPrivacyPolicyShowed) {
+            binding.privacyBanner.hide()
+        } else {
+            binding.privacyBanner.show()
+            binding.privacyButton.setOnClickListener { startActivity(Intent(context, PrivacyPolicyActivity::class.java)) }
+            binding.acceptButton.setOnClickListener { prefs.isPrivacyPolicyShowed = true }
+        }
+    }
+
+    private fun updateLoginBanner() {
+        if (prefs.isPrivacyPolicyShowed) {
+            if (prefs.isUserLogged) {
+                binding.loginBanner.hide()
+            } else {
+                binding.loginBanner.show()
+                binding.loginDismissButton.setOnClickListener { prefs.isUserLogged = true }
+                binding.loginButton.setOnClickListener {
+                    prefs.isUserLogged = true
+                    findNavController().navigate(HomeFragmentDirections.actionActionHomeToCloudDrives())
+                }
+            }
+        } else {
+            binding.loginBanner.hide()
+        }
     }
 
     private fun initRemindersList() {
@@ -194,5 +235,17 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun invoke(p1: String) {
+        when (p1) {
+            PrefsConstants.PRIVACY_SHOWED -> {
+                updatePrivacyBanner()
+                updateLoginBanner()
+            }
+            PrefsConstants.USER_LOGGED -> {
+                updateLoginBanner()
+            }
+        }
     }
 }
