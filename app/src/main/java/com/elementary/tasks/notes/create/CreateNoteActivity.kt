@@ -789,6 +789,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
 
         val lightColor = themeUtil.getNoteLightColor(pair.first, 100, palette)
         window.statusBarColor = lightColor
+        window.navigationBarColor = lightColor
         binding.bottomBar.setCardBackgroundColor(lightColor)
         binding.bottomBar.invalidate()
     }
