@@ -1,29 +1,28 @@
 package com.elementary.tasks.core.cloud.storages
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.Keep
-import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.daysAfter
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.hoursAfter
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 import timber.log.Timber
 
 
 class TokenDataFile : KoinComponent {
 
-    private val context: Context by inject()
     private val devices: MutableList<DeviceToken> = mutableListOf()
+    private var lastUpdateTime = 0L
+    var isLoading = false
     var isLoaded = false
         private set
+
+    fun isOld(): Boolean = (System.currentTimeMillis() - lastUpdateTime).hoursAfter() > 1
+
+    fun isEmpty(): Boolean = devices.isEmpty()
 
     fun parse(json: String?) {
         Timber.d("parse: $json")
@@ -31,15 +30,21 @@ class TokenDataFile : KoinComponent {
             val tokens = Gson().fromJson(json, Tokens::class.java)
             if (tokens != null) {
                 val oldTokens = this.devices.toList()
-                this.devices.clear()
-                this.devices.addAll(mergeTokens(tokens.tokens, oldTokens))
+                val newTokens = mergeTokens(tokens.tokens, oldTokens)
+                if (oldTokens != newTokens) {
+                    this.devices.clear()
+                    this.devices.addAll(newTokens)
+                }
+                lastUpdateTime = System.currentTimeMillis()
             }
         } catch (e: Exception) {
         }
         isLoaded = true
+        isLoading = false
     }
 
     private fun mergeTokens(newTokens: List<DeviceToken>, oldTokens: List<DeviceToken>): List<DeviceToken> {
+        Timber.d("mergeTokens: $oldTokens, NEW $newTokens")
         val list = mutableListOf<DeviceToken>()
         for (token in newTokens) {
             list.add(selectToken(token, oldTokens))
@@ -80,29 +85,39 @@ class TokenDataFile : KoinComponent {
     fun notifyDevices() {
         removeOldTokens()
         val withoutMe = this.devices.filter { it.model != myDevice() }.map { it.token }
-
-        val sender = NotificationSender(myDevice())
-        val data = NotificationData("sync", sender)
-        val notification = Notification(withoutMe.toList(), data)
-        val json = Gson().toJson(notification)
-        Timber.d("notifyDevices: $json")
-//        sendPost(json.toByteArray())
+        if (withoutMe.isEmpty()) {
+            Timber.d("notifyDevices: NO DEVICES")
+            return
+        }
+        val notification = Notification(withoutMe.toList(), "sync", myDevice(), TimeUtil.gmtDateTime)
+        Timber.d("notifyDevices: $notification")
+        val database = FirebaseDatabase.getInstance()
+        database.reference.child("notifications")
+                .setValue(notification)
+                .addOnSuccessListener { Timber.d("notifyDevices: FD WRITE SUCCESS") }
+                .addOnFailureListener { Timber.d("notifyDevices: FD WRITE ERROR: ${it.message}") }
     }
 
-    fun addDevice(token: String) {
+    fun addDevice(token: String): Boolean {
         removeOldTokens()
         var currentDevice = findCurrent()
         if (currentDevice == null) {
             currentDevice = DeviceToken(myDevice(), TimeUtil.gmtDateTime, token)
+        } else {
+            if (TimeUtil.getDateTimeFromGmt(currentDevice.updatedAt).hoursAfter() < 12) {
+                return false
+            }
         }
         currentDevice.token = token
         val withoutMe = this.devices.filter { it.model != myDevice() }
         this.devices.clear()
         this.devices.addAll(withoutMe)
         this.devices.add(currentDevice)
+        return true
     }
 
     private fun findCurrent(): DeviceToken? {
+        if (devices.isEmpty()) return null
         for (d in devices) {
             if (d.model == myDevice()) {
                 return d
@@ -112,7 +127,7 @@ class TokenDataFile : KoinComponent {
     }
 
     private fun removeOldTokens() {
-        val filtered = devices.filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() > 30 }
+        val filtered = devices.filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
         this.devices.clear()
         this.devices.addAll(filtered)
     }
@@ -121,48 +136,16 @@ class TokenDataFile : KoinComponent {
         return Build.MANUFACTURER + " " + Build.MODEL
     }
 
-    private fun sendPost(data: ByteArray) = launchDefault {
-        val client = OkHttpClient.Builder().build()
-        try {
-            val body = RequestBody.create(MediaType.get("application/json; charset=utf-8"), data)
-            val httpRequest = Request.Builder()
-                    .post(body)
-                    .url("https://fcm.googleapis.com/v1/projects/${BuildConfig.PROJECT_ID}/messages:send")
-                    .addHeader("Content-Type", "application/json")
-//                    .addHeader("Authorization", "Bearer $token")
-                    .build()
-
-            val response = client.newCall(httpRequest).execute()
-            if (response.code() == 200 || response.code() == 206) {
-                Timber.d("sendPost: ${response.code()}, ${response.message()}")
-            } else {
-                Timber.d("sendPost: ${response.code()}, ${response.message()}")
-            }
-        } catch (e: Exception) {
-            Timber.d("sendPost: ${e.message}")
-        }
-    }
-
     @Keep
     data class Notification(
             @SerializedName("tokens")
             var tokens: List<String> = listOf(),
-            @SerializedName("data")
-            var data: NotificationData = NotificationData()
-    )
-
-    @Keep
-    data class NotificationData(
             @SerializedName("type")
             var type: String = "",
             @SerializedName("sender")
-            var sender: NotificationSender = NotificationSender()
-    )
-
-    @Keep
-    data class NotificationSender(
-            @SerializedName("name")
-            var name: String = ""
+            var sender: String = "",
+            @SerializedName("createdAt")
+            var createdAt: String = ""
     )
 
     @Keep
@@ -183,6 +166,5 @@ class TokenDataFile : KoinComponent {
 
     companion object {
         const val FILE_NAME = "tokens.json"
-        private const val SCOPE = "https://www.googleapis.com/auth/firebase.messaging"
     }
 }

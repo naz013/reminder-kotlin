@@ -159,6 +159,11 @@ class Dropbox : Storage(), KoinComponent {
     }
 
     private suspend fun loadTokenFile() {
+        if (tokenDataFile.isLoading) return
+        if (!tokenDataFile.isEmpty() && !tokenDataFile.isOld()) {
+            return
+        }
+        tokenDataFile.isLoading = true
         val json = restore(TokenDataFile.FILE_NAME)
         tokenDataFile.parse(json)
         withUIContext {
@@ -185,6 +190,7 @@ class Dropbox : Storage(), KoinComponent {
                     TimeUtil.gmtDateTime,
                     "Token file"
             ))
+            withUIContext { tokenDataFile.notifyDevices() }
         }
     }
 
@@ -208,8 +214,9 @@ class Dropbox : Storage(), KoinComponent {
 
     fun updateToken(token: String?) {
         if (token == null) return
-        tokenDataFile.addDevice(token)
-        saveTokenFile()
+        if (tokenDataFile.addDevice(token)) {
+            if (!tokenDataFile.isLoading) saveTokenFile()
+        }
     }
 
     private fun folderFromFileName(fileName: String): String {
