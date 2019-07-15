@@ -174,6 +174,11 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     }
 
     private suspend fun loadTokenFile() {
+        if (tokenDataFile.isLoading) return
+        if (!tokenDataFile.isEmpty() && !tokenDataFile.isOld()) {
+            return
+        }
+        tokenDataFile.isLoading = true
         val json = restore(TokenDataFile.FILE_NAME)
         tokenDataFile.parse(json)
         withUIContext {
@@ -200,6 +205,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                     TimeUtil.gmtDateTime,
                     "Token file"
             ))
+            withUIContext { tokenDataFile.notifyDevices() }
         }
     }
 
@@ -223,8 +229,9 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
 
     fun updateToken(token: String?) {
         if (token == null) return
-        tokenDataFile.addDevice(token)
-        saveTokenFile()
+        if (tokenDataFile.addDevice(token)) {
+            if (!tokenDataFile.isLoading) saveTokenFile()
+        }
     }
 
     fun logOut() {
@@ -352,6 +359,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             if (instance == null) {
                 instance = GDrive(context)
             }
+            launchDefault { instance?.loadTokenFile() }
             return instance
         }
     }

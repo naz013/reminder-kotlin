@@ -123,8 +123,13 @@ fun Long.toCalendar(): Calendar {
 }
 
 fun Long.daysAfter(): Int {
-    val days = this / AlarmManager.INTERVAL_DAY
+    val days = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_DAY
     return days.toInt()
+}
+
+fun Long.hoursAfter(): Int {
+    val hours = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_HOUR
+    return hours.toInt()
 }
 
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
