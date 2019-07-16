@@ -82,14 +82,14 @@ class TokenDataFile : KoinComponent {
         return json
     }
 
-    fun notifyDevices() {
+    fun notifyDevices(type: String = "sync", details: String = "") {
         removeOldTokens()
         val withoutMe = this.devices.filter { it.model != myDevice() }.map { it.token }
         if (withoutMe.isEmpty()) {
             Timber.d("notifyDevices: NO DEVICES")
             return
         }
-        val notification = Notification(withoutMe.toList(), "sync", myDevice(), TimeUtil.gmtDateTime)
+        val notification = Notification(withoutMe.toList(), type, myDevice(), TimeUtil.gmtDateTime, details)
         Timber.d("notifyDevices: $notification")
         val database = FirebaseDatabase.getInstance()
         database.reference.child("notifications")
@@ -145,7 +145,9 @@ class TokenDataFile : KoinComponent {
             @SerializedName("sender")
             var sender: String = "",
             @SerializedName("createdAt")
-            var createdAt: String = ""
+            var createdAt: String = "",
+            @SerializedName("details")
+            var details: String = ""
     )
 
     @Keep

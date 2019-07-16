@@ -150,7 +150,7 @@ class Dropbox : Storage(), KoinComponent {
     override fun saveIndex(fileIndex: FileIndex) {
         indexDataFile.addIndex(fileIndex)
         saveIndexFile()
-        tokenDataFile.notifyDevices()
+        tokenDataFile.notifyDevices("file", fileIndex.id + fileIndex.ext)
     }
 
     override suspend fun loadIndex() {
@@ -190,7 +190,7 @@ class Dropbox : Storage(), KoinComponent {
                     TimeUtil.gmtDateTime,
                     "Token file"
             ))
-            withUIContext { tokenDataFile.notifyDevices() }
+            withUIContext { tokenDataFile.notifyDevices("tokens", TokenDataFile.FILE_NAME) }
         }
     }
 
