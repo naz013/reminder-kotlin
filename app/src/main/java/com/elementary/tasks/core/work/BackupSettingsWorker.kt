@@ -1,10 +1,7 @@
 package com.elementary.tasks.core.work
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.converters.SettingsConverter
 import com.elementary.tasks.core.cloud.repositories.SettingsRepository
@@ -28,6 +25,10 @@ class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : W
         fun schedule() {
             val work = OneTimeWorkRequest.Builder(BackupSettingsWorker::class.java)
                     .addTag(TAG)
+                    .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.UNMETERED)
+                            .setRequiresBatteryNotLow(true)
+                            .build())
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

@@ -1,10 +1,7 @@
 package com.elementary.tasks.core.work
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.BulkDataFlow
 import com.elementary.tasks.core.cloud.DataFlow
@@ -108,6 +105,10 @@ class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(
         fun schedule() {
             val work = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
                     .addTag(TAG)
+                    .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.UNMETERED)
+                            .setRequiresBatteryNotLow(true)
+                            .build())
                     .build()
             WorkManager.getInstance().enqueue(work)
         }
