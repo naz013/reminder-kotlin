@@ -20,7 +20,7 @@
                 android:id="@+id/emailLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginEnd="16dp"
@@ -31,13 +31,14 @@
                 <com.elementary.tasks.core.views.EmailAutoCompleteView
                     android:id="@+id/mail"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:hint="@string/e_mail"
-                    android:inputType="textEmailAddress"
-                    android:maxLength="50"
-                    android:maxLines="1"
+                    android:imeOptions="actionDone"
                     android:paddingStart="12dp"
-                    android:textAppearance="?textAppearanceSubtitle1" />
+                    android:paddingEnd="12dp"
+                    android:textAppearance="?textAppearanceSubtitle2"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="72" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
