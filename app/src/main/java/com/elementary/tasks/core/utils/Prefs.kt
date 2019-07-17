@@ -69,7 +69,7 @@ class Prefs(context: Context) : SharedPrefs(context) {
         set(value) = putBoolean(PrefsConstants.LOCAL_BACKUP, value)
 
     var multiDeviceModeEnabled: Boolean
-        get() = getBoolean(PrefsConstants.MULTI_DEVICE_MODE)
+        get() = Module.isPro && getBoolean(PrefsConstants.MULTI_DEVICE_MODE)
         set(value) = putBoolean(PrefsConstants.MULTI_DEVICE_MODE, value)
 
     var nightMode: Int

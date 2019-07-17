@@ -109,6 +109,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/multiple_device_mode"
+                app:prefs_pro="true"
                 app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
