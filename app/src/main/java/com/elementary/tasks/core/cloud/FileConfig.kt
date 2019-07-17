@@ -22,11 +22,6 @@ object FileConfig {
     const val FILE_NAME_BIRTHDAY = ".bi2"
 
     /**
-     * File extension for image.
-     */
-    const val FILE_NAME_IMAGE = ".jpeg"
-
-    /**
      * File extension for place.
      */
     const val FILE_NAME_PLACE = ".pl2"
