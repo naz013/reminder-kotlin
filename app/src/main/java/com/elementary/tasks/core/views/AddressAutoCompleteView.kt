@@ -2,6 +2,7 @@ package com.elementary.tasks.core.views
 
 import android.content.Context
 import android.location.Address
+import android.os.Build
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -18,6 +20,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.GeocoderTask
 import timber.log.Timber
+import java.util.*
 
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
@@ -109,6 +112,33 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
             }
             listener?.onItemClick(adapterView, view, i, l1)
             hideKb()
+        }
+    }
+
+    override fun getHint(): CharSequence? {
+        return if (isMeizu()) getSuperHintHack()
+        else super.getHint()
+    }
+
+    private fun isMeizu(): Boolean {
+        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
+        if (manufacturer.contains("meizu")) {
+            return true
+        }
+        return false
+    }
+
+    private fun getSuperHintHack(): CharSequence? {
+        val f = TextView::class.java.getDeclaredField("mHint")
+        f.isAccessible = true
+        return f.get(this) as? CharSequence
+    }
+
+    override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
+        return if (isMeizu()) {
+            null
+        } else {
+            super.onCreateInputConnection(outAttrs)
         }
     }
 
