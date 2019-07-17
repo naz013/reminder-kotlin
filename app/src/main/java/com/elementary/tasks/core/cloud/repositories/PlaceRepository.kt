@@ -14,4 +14,8 @@ class PlaceRepository : DatabaseRepository<Place>() {
     override suspend fun all(): List<Place> {
         return appDb.placesDao().all()
     }
+
+    override suspend fun delete(t: Place) {
+        appDb.placesDao().delete(t)
+    }
 }

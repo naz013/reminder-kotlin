@@ -156,7 +156,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     override fun saveIndex(fileIndex: FileIndex) {
         indexDataFile.addIndex(fileIndex)
         saveIndexFile()
-        tokenDataFile.notifyDevices("file", fileIndex.id + fileIndex.ext)
+        sendNotification("file", fileIndex.id + fileIndex.ext)
     }
 
     override fun removeIndex(id: String) {
@@ -171,6 +171,10 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     override suspend fun loadIndex() {
         loadIndexFile()
         loadTokenFile()
+    }
+
+    override fun sendNotification(type: String, details: String) {
+        tokenDataFile.notifyDevices(type, details)
     }
 
     private suspend fun loadTokenFile() {
@@ -205,7 +209,6 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                     TimeUtil.gmtDateTime,
                     "Token file"
             ))
-            withUIContext { tokenDataFile.notifyDevices("tokens", TokenDataFile.FILE_NAME) }
         }
     }
 

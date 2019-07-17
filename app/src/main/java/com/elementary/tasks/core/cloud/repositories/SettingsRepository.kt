@@ -36,4 +36,7 @@ class SettingsRepository : DatabaseRepository<SettingsModel>(), KoinComponent {
         val item = get("") ?: return listOf()
         return listOf(item)
     }
+
+    override suspend fun delete(t: SettingsModel) {
+    }
 }

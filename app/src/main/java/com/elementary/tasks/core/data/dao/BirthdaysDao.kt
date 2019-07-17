@@ -41,4 +41,7 @@ interface BirthdaysDao {
 
     @Delete
     suspend fun deleteAll(vararg birthdays: Birthday)
+
+    @Query("DELETE FROM Birthday WHERE uuId=:id")
+    fun delete(id: String)
 }

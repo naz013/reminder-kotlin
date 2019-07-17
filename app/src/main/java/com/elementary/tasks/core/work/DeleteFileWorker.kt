@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.*
 import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.completables.ReminderCompletable
+import com.elementary.tasks.core.cloud.completables.ReminderDeleteCompletable
 import com.elementary.tasks.core.cloud.converters.*
 import com.elementary.tasks.core.cloud.repositories.*
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
@@ -13,7 +13,7 @@ import org.koin.core.KoinComponent
 import timber.log.Timber
 import java.io.File
 
-class LoadFileWorker(context: Context, val workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+class DeleteFileWorker(context: Context, val workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
     override fun doWork(): Result {
         val fileName = workerParams.inputData.getString(ARG_FILE_NAME) ?: ""
@@ -24,28 +24,28 @@ class LoadFileWorker(context: Context, val workerParams: WorkerParameters) : Wor
             launchIo {
                 when  {
                     fileName.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
-                        DataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable())
-                                .restore(uuId, IndexTypes.TYPE_REMINDER)
+                        DataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderDeleteCompletable())
+                                .delete(uuId, IndexTypes.TYPE_REMINDER)
                     }
                     fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
                         DataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
-                                .restore(uuId, IndexTypes.TYPE_BIRTHDAY)
+                                .delete(uuId, IndexTypes.TYPE_BIRTHDAY)
                     }
                     fileName.endsWith(FileConfig.FILE_NAME_GROUP) -> {
                         DataFlow(GroupRepository(), GroupConverter(), storage, null)
-                                .restore(uuId, IndexTypes.TYPE_GROUP)
+                                .delete(uuId, IndexTypes.TYPE_GROUP)
                     }
                     fileName.endsWith(FileConfig.FILE_NAME_NOTE) -> {
                         DataFlow(NoteRepository(), NoteConverter(), storage, null)
-                                .restore(uuId, IndexTypes.TYPE_NOTE)
+                                .delete(uuId, IndexTypes.TYPE_NOTE)
                     }
                     fileName.endsWith(FileConfig.FILE_NAME_PLACE) -> {
                         DataFlow(PlaceRepository(), PlaceConverter(), storage, null)
-                                .restore(uuId, IndexTypes.TYPE_PLACE)
+                                .delete(uuId, IndexTypes.TYPE_PLACE)
                     }
                     fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
                         DataFlow(TemplateRepository(), TemplateConverter(), storage, null)
-                                .restore(uuId, IndexTypes.TYPE_TEMPLATE)
+                                .delete(uuId, IndexTypes.TYPE_TEMPLATE)
                     }
                 }
             }
@@ -62,11 +62,11 @@ class LoadFileWorker(context: Context, val workerParams: WorkerParameters) : Wor
     }
 
     companion object {
-        private const val TAG = "LoadFileWorker"
+        private const val TAG = "DeleteFileWorker"
         private const val ARG_FILE_NAME = "arg_file_name"
 
         fun schedule(fileName: String) {
-            val work = OneTimeWorkRequest.Builder(LoadFileWorker::class.java)
+            val work = OneTimeWorkRequest.Builder(DeleteFileWorker::class.java)
                     .addTag(TAG + fileName)
                     .setInputData(Data.Builder()
                             .putString(ARG_FILE_NAME, fileName)

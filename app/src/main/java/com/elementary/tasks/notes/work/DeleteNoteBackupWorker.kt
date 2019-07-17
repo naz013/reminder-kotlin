@@ -19,7 +19,7 @@ class DeleteNoteBackupWorker(context: Context, workerParams: WorkerParameters) :
             launchDefault {
                 DataFlow(NoteRepository(), NoteConverter(),
                         CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
-                        .delete(uuId, IndexTypes.TYPE_NOTE)
+                        .delete(uuId, IndexTypes.TYPE_NOTE, true)
             }
         }
         return Result.success()

@@ -11,6 +11,10 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
     }
 
     override suspend fun restore(fileName: String): String? {
+        storageList.forEach {
+            val data = it.restore(fileName)
+            if (data != null) return data
+        }
         return null
     }
 
@@ -58,5 +62,9 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
                 it.loadIndex()
             }
         }
+    }
+
+    override fun sendNotification(type: String, details: String) {
+        storageList.forEach { it.sendNotification(type, details) }
     }
 }
