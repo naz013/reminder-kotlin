@@ -14,4 +14,8 @@ class BirthdayRepository : DatabaseRepository<Birthday>() {
     override suspend fun all(): List<Birthday> {
         return appDb.birthdaysDao().all()
     }
+
+    override suspend fun delete(t: Birthday) {
+        appDb.birthdaysDao().delete(t)
+    }
 }

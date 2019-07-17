@@ -19,7 +19,7 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
             launchDefault {
                 DataFlow(ReminderRepository(), ReminderConverter(),
                         CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
-                        .delete(uuId, IndexTypes.TYPE_REMINDER)
+                        .delete(uuId, IndexTypes.TYPE_REMINDER, true)
             }
         }
         return Result.success()

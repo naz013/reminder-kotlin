@@ -3,6 +3,7 @@ package com.elementary.tasks.core.services
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.work.DeleteFileWorker
 import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.LoadTokensWorker
 import com.elementary.tasks.core.work.SyncDataWorker
@@ -25,6 +26,7 @@ class SyncMessagingService : FirebaseMessagingService() {
                 when (data["type"] ?: "") {
                     "tokens" -> LoadTokensWorker.schedule()
                     "file" -> LoadFileWorker.schedule(fileName)
+                    "delete" -> DeleteFileWorker.schedule(fileName)
                     else -> SyncDataWorker.schedule()
                 }
             } else {

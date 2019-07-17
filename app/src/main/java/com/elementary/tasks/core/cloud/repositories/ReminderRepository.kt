@@ -14,4 +14,8 @@ class ReminderRepository : DatabaseRepository<Reminder>() {
     override suspend fun all(): List<Reminder> {
         return appDb.reminderDao().all()
     }
+
+    override suspend fun delete(t: Reminder) {
+        appDb.reminderDao().delete(t)
+    }
 }

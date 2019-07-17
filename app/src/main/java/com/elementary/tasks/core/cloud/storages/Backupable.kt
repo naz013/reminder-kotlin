@@ -11,4 +11,6 @@ interface Backupable {
     suspend fun delete(fileName: String)
 
     fun restoreAll(ext: String, deleteFile: Boolean): Channel<String>
+
+    fun sendNotification(type: String, details: String)
 }

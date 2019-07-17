@@ -18,4 +18,12 @@ class NoteRepository : DatabaseRepository<NoteWithImages>() {
     override suspend fun all(): List<NoteWithImages> {
         return appDb.notesDao().all()
     }
+
+    override suspend fun delete(t: NoteWithImages) {
+        val note = t.note ?: return
+        appDb.notesDao().delete(note)
+        for (image in t.images) {
+            appDb.notesDao().delete(image)
+        }
+    }
 }

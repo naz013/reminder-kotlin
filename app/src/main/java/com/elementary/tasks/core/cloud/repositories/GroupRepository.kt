@@ -14,4 +14,8 @@ class GroupRepository : DatabaseRepository<ReminderGroup>() {
     override suspend fun all(): List<ReminderGroup> {
         return appDb.reminderGroupDao().all()
     }
+
+    override suspend fun delete(t: ReminderGroup) {
+        appDb.reminderGroupDao().delete(t)
+    }
 }

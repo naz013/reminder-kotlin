@@ -13,6 +13,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import timber.log.Timber
+import java.lang.Exception
 
 class DataFlow<T>(private val repository: Repository<T>,
                   private val convertible: Convertible<T>,
@@ -69,13 +70,25 @@ class DataFlow<T>(private val repository: Repository<T>,
         }
     }
 
-    suspend fun delete(id: String, type: IndexTypes) {
+    suspend fun delete(id: String, type: IndexTypes, notify: Boolean = false) {
         val fileName = fileName(id, type)
         if (id.isEmpty() || fileName.isEmpty()) {
             return
         }
         Timber.d("delete: $id")
+        try {
+            val t = repository.get(id)
+            if (t != null) {
+                completable?.action(t)
+                repository.delete(t)
+            }
+        } catch (e: Exception) {
+        }
         storage.delete(fileName)
+        storage.removeIndex(id)
+        if (notify) {
+            storage.sendNotification("delete", fileName)
+        }
     }
 
     private fun fileName(id: String, type: IndexTypes): String {

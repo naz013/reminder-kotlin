@@ -83,6 +83,9 @@ interface ReminderDao {
     @Delete
     fun delete(reminder: Reminder)
 
+    @Query("DELETE FROM Reminder WHERE uuId=:id")
+    fun delete(id: String)
+
     @Delete
     fun deleteAll(reminders: Iterable<Reminder>)
 

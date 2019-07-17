@@ -19,7 +19,7 @@ class DeleteBackupWorker(context: Context, workerParams: WorkerParameters) : Wor
             launchDefault {
                 DataFlow(PlaceRepository(), PlaceConverter(),
                         CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
-                        .delete(uuId, IndexTypes.TYPE_PLACE)
+                        .delete(uuId, IndexTypes.TYPE_PLACE, true)
             }
         }
         return Result.success()
