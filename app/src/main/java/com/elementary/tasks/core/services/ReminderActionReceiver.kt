@@ -14,6 +14,34 @@ import timber.log.Timber
 
 class ReminderActionReceiver : BaseBroadcast() {
 
+    override fun onReceive(context: Context, intent: Intent?) {
+        if (intent != null) {
+            val action = intent.action
+            Timber.d("onReceive: $action")
+            if (action != null) {
+                when {
+                    action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                    action.matches(ACTION_SNOOZE.toRegex()) -> snoozeReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                    action.matches(ACTION_RUN.toRegex()) -> {
+                        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+                        resolveAction(context, id)
+                    }
+                    else -> showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                }
+            }
+        }
+    }
+
+    private fun snoozeReminder(context: Context, id: String) {
+        launchDefault {
+            val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id)
+            if (reminder != null) {
+                EventControlFactory.getController(reminder).setDelay(prefs.snoozeTime)
+                endService(context, reminder.uniqueId)
+            }
+        }
+    }
+
     private fun showReminder(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
 
@@ -42,23 +70,6 @@ class ReminderActionReceiver : BaseBroadcast() {
 
     private fun endService(context: Context, id: Int) {
         Notifier.getManager(context)?.cancel(id)
-    }
-
-    override fun onReceive(context: Context, intent: Intent?) {
-        if (intent != null) {
-            val action = intent.action
-            Timber.d("onReceive: $action")
-            if (action != null) {
-                when {
-                    action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
-                    action.matches(ACTION_RUN.toRegex()) -> {
-                        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-                        resolveAction(context, id)
-                    }
-                    else -> showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
-                }
-            }
-        }
     }
 
     private fun sendCloseBroadcast(context: Context, id: String) {
@@ -113,6 +124,7 @@ class ReminderActionReceiver : BaseBroadcast() {
         const val ACTION_SHOW = Actions.Reminder.ACTION_SHOW_FULL
         const val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
         const val ACTION_RUN = Actions.Reminder.ACTION_RUN
+        const val ACTION_SNOOZE = Actions.Reminder.ACTION_SNOOZE
 
         fun showIntent(context: Context, id: String): Intent {
             val notificationIntent = Intent(context, ReminderActionReceiver::class.java)

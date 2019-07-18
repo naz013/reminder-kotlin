@@ -301,7 +301,6 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
                 channel.setAllowBubbles(false)
             }
             channel.setShowBadge(false)
-            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             return channel
         }
 

@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.services
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.IBinder
@@ -13,6 +14,7 @@ import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.utils.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 class GeolocationService : Service() {
 
@@ -49,7 +51,7 @@ class GeolocationService : Service() {
             locationA.longitude = lng
             checkReminders(locationA)
         }
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     private fun checkReminders(locationA: Location) {
@@ -87,7 +89,7 @@ class GeolocationService : Service() {
         locationB.latitude = place.latitude
         locationB.longitude = place.longitude
         val distance = locationA.distanceTo(locationB)
-        val roundedDistance = Math.round(distance)
+        val roundedDistance = distance.roundToInt()
         if (roundedDistance <= getRadius(place.radius)) {
             showReminder(reminder)
         } else {
@@ -101,7 +103,7 @@ class GeolocationService : Service() {
             locationB.latitude = place.latitude
             locationB.longitude = place.longitude
             val distance = locationA.distanceTo(locationB)
-            val roundedDistance = Math.round(distance)
+            val roundedDistance = distance.roundToInt()
             if (roundedDistance <= getRadius(place.radius)) {
                 showReminder(reminder)
                 break
@@ -121,7 +123,7 @@ class GeolocationService : Service() {
         locationB.latitude = place.latitude
         locationB.longitude = place.longitude
         val distance = locationA.distanceTo(locationB)
-        val roundedDistance = Math.round(distance)
+        val roundedDistance = distance.roundToInt()
         if (reminder.isLocked) {
             if (roundedDistance > getRadius(place.radius)) {
                 showReminder(reminder)
@@ -138,33 +140,18 @@ class GeolocationService : Service() {
         }
     }
 
+    private fun reminderAction(context: Context, id: String) {
+        val intent = Intent(context, ReminderActionReceiver::class.java)
+        intent.action = ReminderActionReceiver.ACTION_RUN
+        intent.putExtra(Constants.INTENT_ID, id)
+        context.sendBroadcast(intent)
+    }
+
     private suspend fun showReminder(reminder: Reminder) {
         if (reminder.isNotificationShown) return
         reminder.isNotificationShown = true
         appDb.reminderDao().insert(reminder)
-        var windowType = prefs.reminderType
-        val ignore = prefs.isIgnoreWindowType
-        if (!ignore) {
-            windowType = reminder.windowType
-        }
-        if (prefs.applyDoNotDisturb(reminder.priority)) {
-            if (prefs.doNotDisturbAction == 0) {
-                val delayTime = TimeUtil.millisToEndDnd(prefs.doNotDisturbFrom, prefs.doNotDisturbTo, System.currentTimeMillis())
-                if (delayTime > 0) {
-                    reminder.eventTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis() + delayTime)
-                    appDb.reminderDao().insert(reminder)
-                    EventJobScheduler.scheduleGpsDelay(applicationContext, reminder.uuId)
-                }
-            }
-        } else {
-            withUIContext {
-                if (windowType == 0) {
-                    sendBroadcast(ReminderActionReceiver.showIntent(applicationContext, reminder.uuId))
-                } else {
-                    ReminderUtils.showSimpleReminder(applicationContext, prefs, reminder.uuId)
-                }
-            }
-        }
+        withUIContext { reminderAction(applicationContext, reminder.uuId) }
     }
 
     private fun showNotification(roundedDistance: Int, reminder: Reminder) {
@@ -188,7 +175,6 @@ class GeolocationService : Service() {
         }
         builder.setContentTitle(getString(R.string.location_tracking_service_running))
         builder.setSmallIcon(R.drawable.ic_twotone_navigation_white)
-        builder.setCategory(NotificationCompat.CATEGORY_NAVIGATION)
         startForeground(NOTIFICATION_ID, builder.build())
     }
 
