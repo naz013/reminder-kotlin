@@ -68,7 +68,6 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         builder.setSmallIcon(R.drawable.ic_twotone_music_note_24px)
         builder.setContentTitle(getString(R.string.reminder_ongoing_service))
         builder.setContentText(getString(R.string.app_title))
-        builder.setCategory(NotificationCompat.CATEGORY_SERVICE)
         startForeground(3214, builder.build())
     }
 
@@ -398,6 +397,14 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         dismissIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
         val piDismiss = PendingIntent.getBroadcast(applicationContext, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         builder.addAction(R.drawable.ic_twotone_done_white, applicationContext.getString(R.string.ok), piDismiss)
+
+        if (!Reminder.isGpsType(reminder.type)) {
+            val snoozeIntent = Intent(applicationContext, ReminderActionReceiver::class.java)
+            snoozeIntent.action = ReminderActionReceiver.ACTION_SNOOZE
+            snoozeIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
+            val piSnooze = PendingIntent.getBroadcast(applicationContext, reminder.uniqueId, snoozeIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            builder.addAction(R.drawable.ic_twotone_snooze_24px, applicationContext.getString(R.string.acc_button_snooze), piSnooze)
+        }
 
         val isWear = prefs.isWearEnabled
         if (isWear) {

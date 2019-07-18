@@ -185,6 +185,13 @@ object ReminderUtils {
         }
         builder.setContentText(appName)
         builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
+        if (!Reminder.isGpsType(reminder.type)) {
+            val snoozeIntent = Intent(context, ReminderActionReceiver::class.java)
+            snoozeIntent.action = ReminderActionReceiver.ACTION_SNOOZE
+            snoozeIntent.putExtra(Constants.INTENT_ID, id)
+            val piSnooze = PendingIntent.getBroadcast(context, reminder.uniqueId, snoozeIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            builder.addAction(R.drawable.ic_twotone_snooze_24px, context.getString(R.string.acc_button_snooze), piSnooze)
+        }
         Notifier.getManager(context)?.notify(reminder.uniqueId, builder.build())
     }
 
