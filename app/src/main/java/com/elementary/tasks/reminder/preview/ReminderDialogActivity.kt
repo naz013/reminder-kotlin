@@ -626,6 +626,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(getString(R.string.choose_time))
         builder.setItems(items) { dialog, item1 ->
+            dialog.dismiss()
             var x = 0
             when (item1) {
                 0 -> x = 5
@@ -641,11 +642,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
                 10 -> x = 60 * 24 * 2
                 11 -> x = 60 * 24 * 7
             }
-            mControl?.setDelay(x)
-            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-            removeFlags()
-            finish()
+            delay(x)
         }
         builder.create().show()
     }
@@ -740,8 +737,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
     }
 
-    private fun delay() {
-        doActions({ it.setDelay(prefs.snoozeTime) }, { finish() })
+    private fun delay(minutes: Int = prefs.snoozeTime) {
+        doActions({ it.setDelay(minutes) }, {
+            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
+            finish()
+        })
     }
 
     private fun cancel() {
@@ -846,8 +846,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
 
     private fun priority(): Int {
-        val priority = mReminder?.priority ?: 2
-        return when (priority) {
+        return when (mReminder?.priority ?: 2) {
             0 -> NotificationCompat.PRIORITY_MIN
             1 -> NotificationCompat.PRIORITY_LOW
             2 -> NotificationCompat.PRIORITY_DEFAULT
