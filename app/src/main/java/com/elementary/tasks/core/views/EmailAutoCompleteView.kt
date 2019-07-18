@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.os.Build
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,19 +8,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputConnection
+import android.widget.AutoCompleteTextView
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
 import java.util.*
 
-class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
+class EmailAutoCompleteView : AutoCompleteTextView {
 
     private var mDataCallback: ((List<EmailItem>) -> Unit)? = null
     private var mContext: Context? = null
@@ -76,33 +72,6 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private fun performTypeValue(s: String) {
         adapter?.filter?.filter(s)
-    }
-
-    override fun getHint(): CharSequence? {
-        return if (isMeizu()) getSuperHintHack()
-        else super.getHint()
-    }
-
-    private fun isMeizu(): Boolean {
-        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
-        if (manufacturer.contains("meizu")) {
-            return true
-        }
-        return false
-    }
-
-    private fun getSuperHintHack(): CharSequence? {
-        val f = TextView::class.java.getDeclaredField("mHint")
-        f.isAccessible = true
-        return f.get(this) as? CharSequence
-    }
-
-    override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
-        return if (isMeizu()) {
-            null
-        } else {
-            super.onCreateInputConnection(outAttrs)
-        }
     }
 
     private inner class EmailAdapter(items: List<EmailItem>) : BaseAdapter(), Filterable {
