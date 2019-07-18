@@ -557,6 +557,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
         val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(getString(R.string.choose_time))
         builder.setItems(items) { dialog, item1 ->
+            dialog.dismiss()
             var x = 0
             when (item1) {
                 0 -> x = 5
@@ -572,11 +573,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
                 10 -> x = 60 * 24 * 2
                 11 -> x = 60 * 24 * 7
             }
-            mControl?.setDelay(x)
-            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-            removeFlags()
-            finish()
+            delay(x)
         }
         builder.create().show()
     }
@@ -664,9 +661,12 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
         }
     }
 
-    private fun delay() {
+    private fun delay(minutes: Int = prefs.snoozeTime) {
         discardNotification(id)
-        doActions({ it.setDelay(prefs.snoozeTime) }, { finish() })
+        doActions({ it.setDelay(minutes) }, {
+            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
+            finish()
+        })
     }
 
     private fun cancel() {
