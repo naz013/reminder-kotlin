@@ -1,12 +1,15 @@
 package com.elementary.tasks.navigation.settings
 
 import android.app.Activity.RESULT_OK
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.view.View
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
@@ -192,5 +195,34 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
 
     override fun noUpdate() {
         binding.updateBadge.visibility = View.GONE
+    }
+
+    private fun showProDialog() {
+        dialogues.getMaterialDialog(context!!)
+                .setTitle(getString(R.string.buy_pro))
+                .setMessage(getString(R.string.pro_advantages) + "\n" +
+                        getString(R.string.different_settings_for_birthdays) + "\n" +
+                        "- " + getString(R.string.additional_reminder) + "\n" +
+                        getString(R.string._led_notification_) + "\n" +
+                        getString(R.string.led_color_for_each_reminder) + "\n" +
+                        getString(R.string.styles_for_marker) + "\n" +
+                        "- " + getString(R.string.no_ads))
+                .setPositiveButton(R.string.buy) { dialog, _ ->
+                    dialog.dismiss()
+                    openMarket()
+                }
+                .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+                .setCancelable(true)
+                .create().show()
+    }
+
+    private fun openMarket() {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("market://details?id=" + "com.cray.software.justreminderpro")
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.could_not_launch_market, Toast.LENGTH_SHORT).show()
+        }
     }
 }

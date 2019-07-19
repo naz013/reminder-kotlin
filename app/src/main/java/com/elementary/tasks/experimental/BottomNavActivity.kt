@@ -1,15 +1,12 @@
 package com.elementary.tasks.experimental
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -32,28 +29,25 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
 
     private val buttonObservable: GlobalButtonObservable by inject()
-    private lateinit var viewModel: ConversationViewModel
-
+    private val viewModel: ConversationViewModel by lazy {
+        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+    }
+    private val noteViewModel: NoteViewModel by lazy {
+        ViewModelProviders.of(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
+    }
+    private val mNoteView: QuickNoteCoordinator by lazy {
+        val noteView = QuickNoteCoordinator(this, binding.quickNoteContainer, binding.quickNoteView,
+                noteViewModel, prefs, notifier)
+        noteView.hideNoteView()
+        noteView
+    }
     private var mFragment: BaseFragment<*>? = null
-    private var mNoteView: QuickNoteCoordinator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
         Timber.d("onCreate: ${this.javaClass}")
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
-        initQuickNote()
-        initViewModels()
-    }
-
-    private fun initViewModels() {
-        viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
-    }
-
-    private fun initQuickNote() {
-        val noteViewModel = ViewModelProviders.of(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
-//        mNoteView = QuickNoteCoordinator(this, binding.quickNoteContainer, binding.quickNoteView,
-//                noteViewModel, prefs, notifier)
     }
 
     override fun onResume() {
@@ -145,16 +139,6 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         mFragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun openMarket() {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse("market://details?id=" + "com.cray.software.justreminderpro")
-        try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, R.string.could_not_launch_market, Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         if (prefs.isBackupEnabled && prefs.isSettingsBackupEnabled) {
@@ -162,29 +146,9 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
         }
     }
 
-    private fun showProDialog() {
-        dialogues.getMaterialDialog(this)
-                .setTitle(getString(R.string.buy_pro))
-                .setMessage(getString(R.string.pro_advantages) + "\n" +
-                        getString(R.string.different_settings_for_birthdays) + "\n" +
-                        "- " + getString(R.string.additional_reminder) + "\n" +
-                        getString(R.string._led_notification_) + "\n" +
-                        getString(R.string.led_color_for_each_reminder) + "\n" +
-                        "- " + getString(R.string.exclusive_themes) + "\n" +
-                        getString(R.string.styles_for_marker) + "\n" +
-                        "- " + getString(R.string.no_ads))
-                .setPositiveButton(R.string.buy) { dialog, _ ->
-                    dialog.dismiss()
-                    openMarket()
-                }
-                .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-                .setCancelable(true)
-                .create().show()
-    }
-
     override fun invoke(view: View, action: GlobalButtonObservable.Action) {
         if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
-            mNoteView?.switchQuickNote()
+            mNoteView.switchQuickNote()
         } else if (action == GlobalButtonObservable.Action.VOICE) {
             SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
         }
@@ -192,7 +156,11 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
 
     override fun onBackPressed() {
         if (mFragment is HomeFragment) {
-            finishAffinity()
+            if (mNoteView.isNoteVisible) {
+                mNoteView.hideNoteView()
+            } else {
+                finishAffinity()
+            }
         } else {
             super.onBackPressed()
         }
