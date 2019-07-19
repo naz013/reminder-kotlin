@@ -76,15 +76,14 @@ class TokenDataFile : KoinComponent {
     }
 
     fun toJson(): String? {
-        removeOldTokens()
-        val json = Gson().toJson(Tokens(this.devices.toList()))
+        val json = Gson().toJson(Tokens(removeOldTokens(this.devices.toList())))
         Timber.d("toJson: $json")
         return json
     }
 
     fun notifyDevices(type: String = "sync", details: String = "") {
-        removeOldTokens()
-        val withoutMe = this.devices.filter { it.model != myDevice() }.map { it.token }
+        val filtered = removeOldTokens(this.devices.toList())
+        val withoutMe = filtered.filter { it.model != myDevice() }.map { it.token }
         if (withoutMe.isEmpty()) {
             Timber.d("notifyDevices: NO DEVICES")
             return
@@ -99,8 +98,8 @@ class TokenDataFile : KoinComponent {
     }
 
     fun addDevice(token: String): Boolean {
-        removeOldTokens()
-        var currentDevice = findCurrent()
+        val filtered = removeOldTokens(this.devices.toList())
+        var currentDevice = findCurrent(filtered)
         if (currentDevice == null) {
             currentDevice = DeviceToken(myDevice(), TimeUtil.gmtDateTime, token)
         } else {
@@ -109,16 +108,16 @@ class TokenDataFile : KoinComponent {
             }
         }
         currentDevice.token = token
-        val withoutMe = this.devices.filter { it.model != myDevice() }
+        val withoutMe = filtered.filter { it.model != myDevice() }
         this.devices.clear()
         this.devices.addAll(withoutMe)
         this.devices.add(currentDevice)
         return true
     }
 
-    private fun findCurrent(): DeviceToken? {
-        if (devices.isEmpty()) return null
-        for (d in devices) {
+    private fun findCurrent(list: List<DeviceToken>): DeviceToken? {
+        if (list.isEmpty()) return null
+        for (d in list) {
             if (d.model == myDevice()) {
                 return d
             }
@@ -126,10 +125,8 @@ class TokenDataFile : KoinComponent {
         return null
     }
 
-    private fun removeOldTokens() {
-        val filtered = devices.filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
-        this.devices.clear()
-        this.devices.addAll(filtered)
+    private fun removeOldTokens(list: List<DeviceToken>): List<DeviceToken> {
+        return list.filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
     }
 
     private fun myDevice(): String {
