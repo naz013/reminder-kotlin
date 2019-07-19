@@ -100,6 +100,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         binding.notesButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionNotes())
         }
+        binding.notesButton.setOnLongClickListener {
+            buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
+            true
+        }
         binding.calendarButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionCalendar())
         }
