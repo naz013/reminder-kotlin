@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Hatırlatıcı başarıyla içe aktarıldı</string>
     <string name="save_and_start_automatically">Kaydet ve otomatik olarak başla</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Paylaşılan veriler yalnızca bu ekran açıkken kullanılabilir</string>
+    <string name="accept">Kabul etmek</string>
+    <string name="backup_attached_files_and_melodies">Ekli dosyaları ve melodileri yedekle</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Hatırlatma uygulamasını kullanmaya devam ederek Gizlilik Politikası\'nı kabul etmiş olursunuz.</string>
+    <string name="dismiss">Reddet</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Verileri yedeklediyseniz, geri yüklemek için Bulut depolamanıza Giriş yapabilirsiniz.</string>
+    <string name="light">ışık</string>
+    <string name="multiple_device_mode">Çoklu cihaz modu</string>
+    <string name="no_upcoming_birthdays">Yaklaşan doğum günü yok</string>
+    <string name="reminder_ongoing_service">Hatırlatma uygulamasının devam eden servisi</string>
+    <string name="save_backup_on_sd_card">SD Kartta yedeklemeyi kaydet</string>
+    <string name="select_image">Fotoğraf seç</string>
+    <string name="select_melody">Melodiyi seç</string>
+    <string name="set_by_battery_saver">Pil Tasarrufu Seti</string>
+    <string name="system_default">Sistem varsayılanı</string>
+    <string name="you_re_all_done">Hepiniz bitti</string>
 
 </resources>

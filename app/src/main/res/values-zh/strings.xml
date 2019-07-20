@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">提醒导入成功</string>
     <string name="save_and_start_automatically">保存并自动启动</string>
     <string name="shared_data_available_only_while_this_screen_is_open">仅在此屏幕打开时可用的共享数据</string>
+    <string name="accept">接受</string>
+    <string name="backup_attached_files_and_melodies">备份附加文件和旋律</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">继续使用提醒应用程序您接受隐私政策</string>
+    <string name="dismiss">解雇</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">如果您已备份数据，则可以登录云存储以还原它们。</string>
+    <string name="light">光</string>
+    <string name="multiple_device_mode">多设备模式</string>
+    <string name="no_upcoming_birthdays">没有即将到来的生日</string>
+    <string name="reminder_ongoing_service">正在进行的提醒应用程序服务</string>
+    <string name="save_backup_on_sd_card">在SD卡上保存备份</string>
+    <string name="select_image">选择图像</string>
+    <string name="select_melody">选择旋律</string>
+    <string name="set_by_battery_saver">由电池节电器设置</string>
+    <string name="system_default">系统默认</string>
+    <string name="you_re_all_done">你们都完成了</string>
 
 </resources>

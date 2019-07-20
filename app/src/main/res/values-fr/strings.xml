@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Rappel importé avec succès</string>
     <string name="save_and_start_automatically">Sauvegarder et démarrer automatiquement</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Données partagées disponibles uniquement lorsque cet écran est ouvert</string>
+    <string name="accept">Accepter</string>
+    <string name="backup_attached_files_and_melodies">Sauvegarde des fichiers attachés et des mélodies</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">En continuant à utiliser l\'application Rappel, vous acceptez la politique de confidentialité</string>
+    <string name="dismiss">Rejeter</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Si vous avez sauvegardé des données, vous pouvez vous connecter à votre stockage en nuage pour les restaurer.</string>
+    <string name="light">Lumière</string>
+    <string name="multiple_device_mode">Mode multi-appareil</string>
+    <string name="no_upcoming_birthdays">Aucun anniversaire à venir</string>
+    <string name="reminder_ongoing_service">Service en cours de l\'application de rappel</string>
+    <string name="save_backup_on_sd_card">Sauvegarder la sauvegarde sur la carte SD</string>
+    <string name="select_image">Sélectionnez une image</string>
+    <string name="select_melody">Sélectionnez la mélodie</string>
+    <string name="set_by_battery_saver">Défini par Battery Saver</string>
+    <string name="system_default">Défaillance du système</string>
+    <string name="you_re_all_done">Vous êtes tous fait</string>
 
 </resources>
