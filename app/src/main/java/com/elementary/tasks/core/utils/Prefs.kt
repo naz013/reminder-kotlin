@@ -9,7 +9,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class Prefs(context: Context) : SharedPrefs(context) {
+class Prefs private constructor(context: Context) : SharedPrefs(context) {
 
     private val observersMap = mutableMapOf<String, List<((String) -> Unit)>>()
 
@@ -923,6 +923,16 @@ class Prefs(context: Context) : SharedPrefs(context) {
     }
 
     companion object {
+        private var instance: Prefs? = null
+        fun getInstance(context: Context): Prefs {
+            var prefs = instance
+            if (prefs == null) {
+               prefs = Prefs(context)
+            }
+            instance = prefs
+            return prefs
+        }
+
         const val DRIVE_USER_NONE = "none"
     }
 }

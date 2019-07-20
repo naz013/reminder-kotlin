@@ -11,6 +11,7 @@ import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.Storage
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import timber.log.Timber
 import java.lang.Exception
@@ -119,7 +120,8 @@ class DataFlow<T>(private val repository: Repository<T>,
             if (dropboxStorage.isLinked) {
                 storageList.add(dropboxStorage)
             }
-            if (!Module.isQ && Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+            if (!Module.isQ && Prefs.getInstance(context).localBackup
+                    && Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
                 storageList.add(LocalStorage(context))
             }
             return storageList

@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 fun utilModule() = module {
     single { AppDb.getAppDatabase(androidApplication()) }
-    single { Prefs(androidApplication()) }
+    single { Prefs.getInstance(androidApplication()) }
     single { SoundStackHolder(androidApplication(), get()) }
     single { ThemeUtil(androidApplication(), get()) }
     single { BackupTool(get()) }
