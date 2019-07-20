@@ -22,10 +22,7 @@ class ReminderActionReceiver : BaseBroadcast() {
                 when {
                     action.matches(ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                     action.matches(ACTION_SNOOZE.toRegex()) -> snoozeReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
-                    action.matches(ACTION_RUN.toRegex()) -> {
-                        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-                        resolveAction(context, id)
-                    }
+                    action.matches(ACTION_RUN.toRegex()) -> resolveAction(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                     else -> showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                 }
             }
@@ -44,9 +41,7 @@ class ReminderActionReceiver : BaseBroadcast() {
 
     private fun showReminder(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
-
         sendCloseBroadcast(context, id)
-
         if (Module.isQ) {
             qAction(reminder, context)
         } else {
@@ -99,7 +94,7 @@ class ReminderActionReceiver : BaseBroadcast() {
                     if (Module.isQ) {
                         qAction(reminder, context)
                     } else {
-                        if (windowType == 0) {
+                        if (windowType == 0 && !SuperUtil.isPhoneCallActive(context)) {
                             sendCloseBroadcast(context, id)
                             context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
                         } else {

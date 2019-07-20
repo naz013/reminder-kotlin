@@ -80,7 +80,7 @@ class EventJobService : Job(), KoinComponent {
     private fun missedCallAction(params: Params) {
         if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
             EventJobScheduler.scheduleMissedCall(prefs, params.tag)
-            if (Module.isQ) {
+            if (Module.isQ || SuperUtil.isPhoneCallActive(context)) {
                 ContextCompat.startForegroundService(context,
                         EventOperationalService.getIntent(context, params.tag,
                                 EventOperationalService.TYPE_MISSED,

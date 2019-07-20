@@ -34,6 +34,11 @@ import java.util.*
 
 object SuperUtil {
 
+    fun isPhoneCallActive(context: Context): Boolean {
+        val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return manager.mode == AudioManager.MODE_IN_CALL || manager.mode == AudioManager.MODE_IN_COMMUNICATION
+    }
+
     fun normalizeSummary(summary: String): String {
         return if (summary.length > Configs.MAX_REMINDER_SUMMARY_LENGTH) {
             summary.substring(0, Configs.MAX_REMINDER_SUMMARY_LENGTH)
@@ -45,7 +50,7 @@ object SuperUtil {
     fun wakeDevice(activity: Activity, id: String = UUID.randomUUID().toString()): PowerManager.WakeLock {
         val screenLock = (activity.getSystemService(Context.POWER_SERVICE) as PowerManager)
                 .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "reminder:ReminderAPPTAG:$id")
-        screenLock.acquire(10*60*1000L /*10 minutes*/)
+        screenLock.acquire(10 * 60 * 1000L /*10 minutes*/)
         return screenLock
     }
 
@@ -98,7 +103,7 @@ object SuperUtil {
             activity.setTurnScreenOn(true)
             activity.setShowWhenLocked(true)
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                     or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON

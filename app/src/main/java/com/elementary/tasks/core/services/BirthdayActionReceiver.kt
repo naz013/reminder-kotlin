@@ -15,6 +15,23 @@ import java.util.*
 
 class BirthdayActionReceiver : BaseBroadcast() {
 
+    override fun onReceive(context: Context, intent: Intent?) {
+        if (intent != null) {
+            val action = intent.action
+            Timber.d("onReceive: $action")
+            if (action != null) {
+                when {
+                    action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
+                    action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
+                    action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> {
+                        hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
+                    }
+                    else -> showReminder(context, intent)
+                }
+            }
+        }
+    }
+
     private fun updateBirthday(context: Context, item: Birthday) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
@@ -50,10 +67,8 @@ class BirthdayActionReceiver : BaseBroadcast() {
 
     private fun showReminder(context: Context, intent: Intent) {
         val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID) ?: "") ?: return
-
         sendCloseBroadcast(context, birthday.uuId)
-
-        if (Module.isQ) {
+        if (Module.isQ || SuperUtil.isPhoneCallActive(context)) {
             qAction(birthday, context)
         } else {
             val notificationIntent = ShowBirthdayActivity.getLaunchIntent(context, birthday.uuId)
@@ -78,23 +93,6 @@ class BirthdayActionReceiver : BaseBroadcast() {
         if (item != null) {
             updateBirthday(context, item)
             finish(context, notifier, item.uniqueId)
-        }
-    }
-
-    override fun onReceive(context: Context, intent: Intent?) {
-        if (intent != null) {
-            val action = intent.action
-            Timber.d("onReceive: $action")
-            if (action != null) {
-                when {
-                    action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
-                    action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
-                    action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> {
-                        hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
-                    }
-                    else -> showReminder(context, intent)
-                }
-            }
         }
     }
 
