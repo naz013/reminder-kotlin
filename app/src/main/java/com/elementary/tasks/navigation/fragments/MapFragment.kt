@@ -2,6 +2,7 @@ package com.elementary.tasks.navigation.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,31 +18,15 @@ import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
     private lateinit var viewModel: ActiveGpsRemindersViewModel
     private val mAdapter = LocationPlacesAdapter()
 
     private var mGoogleMap: AdvancedMapFragment? = null
+    private var behaviour: BottomSheetBehavior<LinearLayout>? = null
 
     private var clickedPosition: Int = 0
     private var pointer: Int = 0
@@ -63,6 +48,7 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        behaviour = BottomSheetBehavior.from(binding.placesListCard)
         initMap()
         initViews()
         initViewModel()
@@ -78,8 +64,8 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
     }
 
     private fun initMap() {
-        val map = AdvancedMapFragment.newInstance(false, false, false,
-                false, false, false, themeUtil.isDark)
+        val map = AdvancedMapFragment.newInstance(false, isPlaces = false, isSearch = false,
+                isStyles = false, isBack = false, isZoom = false, isDark = isDark)
         map.setCallback(mReadyCallback)
         map.setOnMarkerClick(mOnMarkerClick)
         fragmentManager?.beginTransaction()
@@ -106,6 +92,7 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
     }
 
     private fun showClickedPlace(position: Int, reminder: Reminder) {
+        behaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
         val maxPointer = reminder.places.size - 1
         if (position != clickedPosition) {
             pointer = 0

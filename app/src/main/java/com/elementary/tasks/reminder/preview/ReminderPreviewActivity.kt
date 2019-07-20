@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -46,7 +46,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>() {
+class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(R.layout.activity_reminder_preview) {
 
     private var mGoogleMap: AdvancedMapFragment? = null
     private lateinit var viewModel: ReminderViewModel
@@ -61,8 +61,6 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         openFullMap()
         false
     }
-
-    override fun layoutRes(): Int = R.layout.activity_reminder_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +77,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     }
 
     private fun makeCall(reminder: Reminder) {
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(reminder.target, this)
         }
     }
@@ -222,7 +220,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         binding.windowTypeView.text = getWindowType(reminder.windowType)
         binding.taskText.text = reminder.summary
         binding.type.text = ReminderUtils.getTypeString(this, reminder.type)
-        binding.itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
+        binding.itemPhoto.setImageResource(ThemeUtil.getReminderIllustration(reminder.type))
         binding.idView.text = reminder.uuId
 
         showDueAndRepeat(reminder)
@@ -427,10 +425,10 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_reminder_preview, menu)
 
-        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDark)
-        ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDark)
+        ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_edit_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 1, R.drawable.ic_twotone_share_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDarkMode)
+        ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDarkMode)
 
         if (Module.isPro && QrShareProvider.hasQrSupport()) {
             menu.add(Menu.NONE, MENU_ITEM_IN_APP_SHARE, 100, getString(R.string.in_app_sharing))
@@ -469,7 +467,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
     }
 
     private fun shareReminder() {
-        if (!Permissions.ensurePermissions(this, SD_PERM, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_PERM, Permissions.WRITE_EXTERNAL)) {
             return
         }
         reminder?.let {
@@ -595,7 +593,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
 
     private fun initMap() {
         val googleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                false, false, themeUtil.isDark)
+                false, false, isDarkMode)
         googleMap.setCallback(object : MapCallback {
             override fun onMapReady() {
                 googleMap.setSearchEnabled(false)
@@ -627,7 +625,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
         ViewUtils.listenScrollableView(binding.scrollView) {
             binding.appBar.isSelected = it > 0
         }
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     }
 
     override fun onBackPressed() {
@@ -636,7 +634,7 @@ class ReminderPreviewActivity : ThemedActivity<ActivityReminderPreviewBinding>()
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 CALL_PERM -> fabClick()
                 SD_PERM -> shareReminder()

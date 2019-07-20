@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
+import android.os.Build
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,9 +9,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.launchDefault
@@ -18,24 +22,6 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private var mData: List<PhoneItem> = ArrayList()
@@ -81,6 +67,33 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
 
     private fun performTypeValue(s: String) {
         adapter?.filter?.filter(s)
+    }
+
+    override fun getHint(): CharSequence? {
+        return if (isMeizu()) getSuperHintHack()
+        else super.getHint()
+    }
+
+    private fun isMeizu(): Boolean {
+        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
+        if (manufacturer.contains("meizu")) {
+            return true
+        }
+        return false
+    }
+
+    private fun getSuperHintHack(): CharSequence? {
+        val f = TextView::class.java.getDeclaredField("mHint")
+        f.isAccessible = true
+        return f.get(this) as? CharSequence
+    }
+
+    override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
+        return if (isMeizu()) {
+            null
+        } else {
+            super.onCreateInputConnection(outAttrs)
+        }
     }
 
     private inner class PhoneAdapter(items: List<PhoneItem>) : BaseAdapter(), Filterable {
@@ -139,9 +152,9 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
         }
 
         inner class ValueFilter : Filter() {
-            override fun performFiltering(constraint: CharSequence?): Filter.FilterResults {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val matcher = constraint?.toString()?.trim()?.toLowerCase() ?: ""
-                val results = Filter.FilterResults()
+                val results = FilterResults()
                 if (matcher.isNotEmpty()) {
                     val filterList = mData.filter { it.name.toLowerCase().contains(matcher) || it.phone.contains(matcher) }
                     results.count = filterList.size
@@ -153,7 +166,7 @@ class PhoneAutoCompleteView : AppCompatAutoCompleteTextView {
                 return results
             }
 
-            override fun publishResults(constraint: CharSequence?, results: Filter.FilterResults?) {
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 if (results != null) {
                     adapter?.setItems(results.values as List<PhoneItem>)
                     adapter?.notifyDataSetChanged()

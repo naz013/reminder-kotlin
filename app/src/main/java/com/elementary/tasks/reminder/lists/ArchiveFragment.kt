@@ -12,7 +12,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -39,7 +38,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
             allGroups = { return@ReminderResolver viewModel.groups }
     )
 
-    private var mAdapter = RemindersRecyclerAdapter()
+    private var mAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = false)
     private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
@@ -67,9 +66,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.fragment_trash, menu)
-
-        ViewUtils.tintMenuIcon(context!!, menu, 0, R.drawable.ic_twotone_search_24px, isDark)
-        ViewUtils.tintMenuIcon(context!!, menu, 1, R.drawable.ic_twotone_delete_sweep_24px, isDark)
 
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
@@ -134,8 +130,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     }
 
     private fun initList() {
-        mAdapter.setEditable(false)
-        mAdapter.showHeader = false
         mAdapter.prefsProvider = { prefs }
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
@@ -144,13 +138,13 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
                 }
             }
         }
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!) && resources.getBoolean(R.bool.is_tablet)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = LinearLayoutManager(context)
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
         binding.recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }, null)
+        ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }, null)
         reloadView(0)
     }
 

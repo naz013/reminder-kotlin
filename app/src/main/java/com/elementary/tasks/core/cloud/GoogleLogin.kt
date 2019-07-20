@@ -3,8 +3,8 @@ package com.elementary.tasks.core.cloud
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.launchIo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
@@ -12,24 +12,6 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.tasks.TasksScopes
 import timber.log.Timber
 
-/**
- * Copyright 2017 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
 
     private var mGoogleTasks: GTasks? = GTasks.getInstance(activity)
@@ -58,7 +40,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mGoogleDrive = null
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
+                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
                 .requestEmail()
                 .build()
         val client = GoogleSignIn.getClient(activity, signInOptions)
@@ -86,7 +68,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
         mDriveCallback = loginCallback
 
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
+                .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
                 .requestEmail()
                 .build()
         val client = GoogleSignIn.getClient(activity, signInOptions)
@@ -127,18 +109,11 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
                 .addOnSuccessListener { googleAccount ->
                     Timber.d("Signed in as ${googleAccount.email}")
                     finishLogin(googleAccount.account?.name ?: "")
-                    testSync()
                 }
                 .addOnFailureListener {
                     Timber.d("handleSignInResult: ${it.message}")
                     sendFail()
                 }
-    }
-
-    private fun testSync() {
-        launchIo {
-            GDrive.getInstance(activity)?.saveRemindersToDrive()
-        }
     }
 
     private fun finishLogin(account: String) {

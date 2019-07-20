@@ -24,24 +24,6 @@ import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
     lateinit var dayPagerAdapter: DayPagerAdapter
@@ -57,9 +39,9 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intent = arguments
-        if (intent != null) {
-            dateMills = intent.getLong(DATE_KEY, 0)
+        val bundle = arguments
+        if (bundle != null) {
+            dateMills = DayViewFragmentArgs.fromBundle(bundle).date
         }
     }
 
@@ -116,11 +98,6 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
         val monthTitle = StringUtils.capitalize(DateUtils.formatDateTime(activity, mills, MONTH_YEAR_FLAG).toString())
         callback?.onTitleChange(monthTitle)
         return monthTitle
-    }
-
-    override fun onResume() {
-        super.onResume()
-        callback?.onMenuSelect(R.id.nav_day_view)
     }
 
     override fun getTitle(): String = updateMenuTitles()
@@ -226,19 +203,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     }
 
     companion object {
-
-        private const val DATE_KEY = "date"
-        private const val POS_KEY = "position"
         private const val NUMBER_OF_PAGES = 4
         const val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR)
-
-        fun newInstance(date: Long, position: Int): DayViewFragment {
-            val pageFragment = DayViewFragment()
-            val arguments = Bundle()
-            arguments.putLong(DATE_KEY, date)
-            arguments.putInt(POS_KEY, position)
-            pageFragment.arguments = arguments
-            return pageFragment
-        }
     }
 }

@@ -8,16 +8,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.ListItemEmailBinding
 import java.util.*
 
-class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
+class EmailAutoCompleteView : AutoCompleteTextView {
 
     private var mDataCallback: ((List<EmailItem>) -> Unit)? = null
     private var mContext: Context? = null

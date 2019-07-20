@@ -2,34 +2,12 @@ package com.elementary.tasks.navigation.fragments
 
 import android.app.Activity
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.core.BindingFragment
+import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     var callback: FragmentCallback? = null
@@ -41,10 +19,11 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     protected val notifier: Notifier by inject()
     var isDark = false
         private set
-    private var mLastScroll: Int = 0
+    private var mLastAlpha: Float = 0f
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        isDark = ThemeUtil.isDarkMode(context)
         if (callback == null) {
             try {
                 callback = context as FragmentCallback?
@@ -53,15 +32,12 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        isDark = themeUtil.isDark
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+    protected fun toAlpha(scroll: Float, max: Float = 255f): Float = scroll / max
 
-    protected fun setScroll(scroll: Int) {
+    protected fun setToolbarAlpha(alpha: Float) {
         if (isRemoving) return
-        this.mLastScroll = scroll
-        callback?.onScrollUpdate(scroll)
+        this.mLastAlpha = alpha
+        callback?.onAlphaUpdate(alpha)
     }
 
     protected fun moveBack() {
@@ -83,9 +59,9 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     open fun canGoBack(): Boolean = true
 
     open fun onBackStackResume() {
-        callback?.onFragmentSelect(this)
+        callback?.setCurrentFragment(this)
         callback?.onTitleChange(getTitle())
-        setScroll(mLastScroll)
+        setToolbarAlpha(mLastAlpha)
     }
 
     override fun onResume() {
@@ -94,4 +70,8 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     }
 
     abstract fun getTitle(): String
+
+    companion object {
+        const val NESTED_SCROLL_MAX = 255f
+    }
 }

@@ -3,101 +3,29 @@ package com.elementary.tasks.navigation.settings.general
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.R
-import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.SplashScreenActivity
+import com.elementary.tasks.core.utils.Module.isQ
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.elementary.tasks.navigation.settings.general.home.PageIdentifier
-import com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
 
     private var mItemSelect: Int = 0
-    private val currentTheme: String
-        get() {
-            val theme = prefs.appTheme
-            val accent = themeUtil.accentNames()[prefs.appThemeColor]
-            return when (theme) {
-                ThemeUtil.THEME_AUTO -> getString(R.string.auto) + " ($accent)"
-                else -> SelectThemeActivity.NAMES[theme - 1] + " ($accent)"
-            }
-        }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_general
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         initAppTheme()
         init24TimePrefs()
         initLanguagePrefs()
-        initHomePage()
-        initColsPrefs()
-    }
-
-    private fun initColsPrefs() {
-        binding.twoColsPrefs.isChecked = prefs.isTwoColsEnabled
-        binding.twoColsPrefs.setOnClickListener { changeColsPrefs() }
-    }
-
-    private fun changeColsPrefs() {
-        val b = binding.twoColsPrefs.isChecked
-        prefs.isTwoColsEnabled = !b
-        binding.twoColsPrefs.isChecked = !b
-    }
-
-    private fun initHomePage() {
-        binding.homePrefs.setOnClickListener { showHomePageDialog() }
-        showHomePage()
-    }
-
-    private fun showHomePage() {
-        withContext {
-            binding.homePrefs.setDetailText(PageIdentifier.name(it, prefs.homePage))
-        }
-    }
-
-    private fun showHomePageDialog() {
-        withContext { ctx ->
-            val builder = dialogues.getMaterialDialog(ctx)
-            builder.setCancelable(true)
-            builder.setTitle(getString(R.string.start_screen))
-
-            val homePages = PageIdentifier.availablePages(ctx)
-
-            val init = prefs.homePage
-            mItemSelect = PageIdentifier.index(ctx, init)
-            builder.setSingleChoiceItems(homePages.map { it.name }.toTypedArray(), mItemSelect) { _, which -> mItemSelect = which }
-            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                prefs.homePage = homePages[mItemSelect].key
-                dialog.dismiss()
-                showHomePage()
-            }
-            builder.create().show()
-        }
     }
 
     private fun initLanguagePrefs() {
@@ -123,6 +51,9 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
                 prefs.appLanguage = mItemSelect
                 dialog.dismiss()
                 if (init != mItemSelect) restartApp()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
             builder.create().show()
         }
@@ -163,23 +94,75 @@ class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBind
                 dialog.dismiss()
                 showTimeFormat()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
 
     private fun initAppTheme() {
-        binding.appThemePrefs.setDetailText(currentTheme)
-        binding.appThemePrefs.setOnClickListener { selectTheme() }
+        binding.appThemePrefs.setDetailText(themeNames()[getThemeIndex(prefs.nightMode)])
+        binding.appThemePrefs.setOnClickListener {
+            showThemeDialog()
+        }
+    }
+
+    private fun showThemeDialog() {
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.theme))
+            mItemSelect = getThemeIndex(prefs.nightMode)
+            builder.setSingleChoiceItems(themeNames(), mItemSelect) { _, which -> mItemSelect = which }
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                prefs.nightMode = getTheme(mItemSelect)
+                dialog.dismiss()
+                activity?.recreate()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
+        }
+    }
+
+    private fun themeNames(): Array<String> {
+        return if(isQ) {
+            arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
+        } else {
+            arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.set_by_battery_saver))
+        }
+    }
+
+    private fun getTheme(index: Int): Int {
+        return if (isQ) {
+            when (index) {
+                0 -> AppCompatDelegate.MODE_NIGHT_NO
+                1 -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        } else {
+            when (index) {
+                0 -> AppCompatDelegate.MODE_NIGHT_NO
+                1 -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+            }
+        }
+    }
+
+    private fun getThemeIndex(theme: Int): Int {
+        return when (theme) {
+            AppCompatDelegate.MODE_NIGHT_NO -> 0
+            AppCompatDelegate.MODE_NIGHT_YES -> 1
+            else -> 2
+        }
     }
 
     override fun getTitle(): String = getString(R.string.general)
 
     private fun restartApp() {
-        startActivity(Intent(context, SplashScreen::class.java))
+        startActivity(Intent(context, SplashScreenActivity::class.java))
         activity?.finishAffinity()
-    }
-
-    private fun selectTheme() {
-        startActivity(Intent(context, SelectThemeActivity::class.java))
     }
 }

@@ -12,7 +12,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.AlarmReceiver
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsEventsImportBinding
@@ -23,24 +23,6 @@ import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(), CompoundButton.OnCheckedChangeListener {
 
     private var mItemSelect: Int = 0
@@ -93,6 +75,9 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
                 saveIntervalPrefs()
                 dialog.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -106,19 +91,19 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             4 -> prefs.autoCheckInterval = 48
         }
         withActivity {
-            if (Permissions.ensurePermissions(it, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            if (Permissions.checkPermission(it, AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                 startCheckService()
             }
         }
     }
 
     private fun startCheckService() {
-        withContext { AlarmReceiver().enableEventCheck(it) }
+        EventJobScheduler.scheduleEventCheck(prefs)
     }
 
     private fun loadCalendars() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, CALENDAR_PERM, Permissions.READ_CALENDAR)) {
+            if (!Permissions.checkPermission(it, CALENDAR_PERM, Permissions.READ_CALENDAR)) {
                 return@withActivity
             }
             list = calendarUtils.getCalendarsList()
@@ -146,7 +131,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
     private fun importEvents() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            if (!Permissions.checkPermission(it, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                 return@withActivity
             }
             if (list.isEmpty()) {
@@ -174,7 +159,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         when (buttonView.id) {
             R.id.autoCheck -> if (isChecked) {
                 withActivity {
-                    if (Permissions.ensurePermissions(it, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                    if (Permissions.checkPermission(it, 101, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                         autoCheck(true)
                     }
                 }
@@ -186,7 +171,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 101 -> autoCheck(true)
                 102 -> importEvents()
@@ -199,13 +184,10 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     private fun autoCheck(isChecked: Boolean) {
         prefs.isAutoEventsCheckEnabled = isChecked
         binding.syncInterval.isEnabled = isChecked
-        val alarm = AlarmReceiver()
-        withContext {
-            if (isChecked) {
-                alarm.enableEventCheck(it)
-            } else {
-                alarm.cancelEventCheck(it)
-            }
+        if (isChecked) {
+            EventJobScheduler.scheduleEventCheck(prefs)
+        } else {
+            EventJobScheduler.cancelEventCheck()
         }
     }
 
@@ -219,7 +201,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             val appDb = AppDb.getAppDatabase(ctx)
             if (map.containsKey(EVENT_KEY)) {
                 val eventItems = calendarUtils.getEvents(map[EVENT_KEY] ?: 0)
-                if (!eventItems.isEmpty()) {
+                if (eventItems.isNotEmpty()) {
                     val list = appDb.calendarEventsDao().eventIds()
                     for (item in eventItems) {
                         val itemId = item.id

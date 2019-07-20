@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_priority_high_24px"
                 app:prefs_primary_text="@string/default_priority"
                 app:prefs_type="none" />
 
@@ -40,6 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_block_24px"
                 app:prefs_primary_text="@string/do_not_disturb"
                 app:prefs_type="check_switch" />
 
@@ -48,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_access_time_24px"
                 app:prefs_primary_text="@string/from"
                 app:prefs_type="text" />
 
@@ -56,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_access_time_24px"
                 app:prefs_primary_text="@string/to"
                 app:prefs_type="text" />
 

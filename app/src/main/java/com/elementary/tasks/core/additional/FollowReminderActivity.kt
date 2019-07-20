@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -23,26 +23,7 @@ import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityFollowBinding
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-@Suppress("DEPRECATION")
-class FollowReminderActivity : ThemedActivity<ActivityFollowBinding>(), CompoundButton.OnCheckedChangeListener {
+class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.activity_follow), CompoundButton.OnCheckedChangeListener {
 
     private lateinit var viewModel: ReminderViewModel
 
@@ -113,8 +94,6 @@ class FollowReminderActivity : ThemedActivity<ActivityFollowBinding>(), Compound
             Reminder.BY_DATE_CALL
         else
             Reminder.BY_DATE_SMS
-
-    override fun layoutRes(): Int = R.layout.activity_follow
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -270,11 +249,11 @@ class FollowReminderActivity : ThemedActivity<ActivityFollowBinding>(), Compound
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, mYear, mMonth, mDay, mDateCallBack)
+        TimeUtil.showDatePicker(this, prefs, mYear, mMonth, mDay, mDateCallBack)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat, mCustomHour, mCustomMinute, mTimeCallBack)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormat, mCustomHour, mCustomMinute, mTimeCallBack)
     }
 
     private fun saveDateTask() {

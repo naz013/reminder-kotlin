@@ -5,32 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.elementary.tasks.R
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
+import org.koin.android.ext.android.inject
 import java.io.File
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthdayNotificationsBinding>() {
+
+    private val cacheUtil: CacheUtil by inject()
+    private val soundStackHolder: SoundStackHolder by inject()
 
     private var mItemSelect: Int = 0
 
@@ -39,7 +22,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         initGlobalPrefs()
@@ -115,6 +98,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                 }
                 showMelodyDuration()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -144,6 +130,9 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                 showLedColor()
                 dialog.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -164,6 +153,27 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         binding.chooseSoundPrefs.setOnClickListener { showSoundDialog() }
         binding.chooseSoundPrefs.setReverseDependentView(binding.globalOptionPrefs)
         showMelody()
+        soundStackHolder.initParams()
+        soundStackHolder.onlyPlay = true
+        soundStackHolder.playbackCallback = object : Sound.PlaybackCallback {
+            override fun onFinish() {
+                binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+                binding.chooseSoundPrefs.setLoading(false)
+            }
+
+            override fun onStart() {
+                binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_stop_24px)
+                binding.chooseSoundPrefs.setLoading(true)
+            }
+        }
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+        binding.chooseSoundPrefs.setCustomViewClickListener(View.OnClickListener {
+            if (soundStackHolder.sound?.isPlaying == true) {
+                soundStackHolder.sound?.stop(true)
+            } else {
+                soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.birthdayMelody).uri, false)
+            }
+        })
     }
 
     private fun showMelody() {
@@ -175,17 +185,18 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             Constants.SOUND_ALARM -> labels[2]
             else -> {
                 if (!filePath.matches("".toRegex())) {
-                    val sound = File(filePath)
-                    val fileName = sound.name
-                    val pos = fileName.lastIndexOf(".")
-                    val fileNameS = fileName.substring(0, pos)
-                    fileNameS
+                    val musicFile = File(filePath)
+                    musicFile.name
                 } else {
                     labels[1]
                 }
             }
         }
         binding.chooseSoundPrefs.setDetailText(label)
+    }
+
+    private fun isDefaultMelody(): Boolean {
+        return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM).contains(prefs.birthdayMelody)
     }
 
     private fun melodyLabels(): Array<String> {
@@ -211,15 +222,23 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
+                if (mItemSelect <= 2 && !isDefaultMelody()) {
+                    cacheUtil.removeFromCache(prefs.birthdayMelody)
+                }
                 when (mItemSelect) {
                     0 -> prefs.birthdayMelody = Constants.SOUND_RINGTONE
                     1 -> prefs.birthdayMelody = Constants.SOUND_NOTIFICATION
                     2 -> prefs.birthdayMelody = Constants.SOUND_ALARM
                     else -> {
-                        startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
+                        if (Permissions.checkPermission(it, Permissions.READ_EXTERNAL)) {
+                            cacheUtil.pickMelody(activity!!, MELODY_CODE)
+                        }
                     }
                 }
                 showMelody()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
             builder.create().show()
         }
@@ -277,9 +296,14 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     }
 
     private fun initWakePrefs() {
-        binding.wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
-        binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
-        binding.wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
+        if (Module.isQ) {
+            binding.wakeScreenOptionPrefs.hide()
+        } else {
+            binding.wakeScreenOptionPrefs.show()
+            binding.wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
+            binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs)
+            binding.wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
+        }
     }
 
     private fun changeWakePrefs() {
@@ -353,15 +377,24 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
-                if (filePath != null) {
-                    val file = File(filePath)
-                    if (file.exists()) {
-                        prefs.birthdayMelody = file.toString()
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+                    val filePath = cacheUtil.cacheFile(data)
+                    if (filePath != null) {
+                        val file = File(filePath)
+                        if (file.exists()) {
+                            prefs.birthdayMelody = file.toString()
+                        }
                     }
+                    showMelody()
                 }
-                showMelody()
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (soundStackHolder.sound?.isPlaying == true) {
+            soundStackHolder.sound?.stop(true)
         }
     }
 

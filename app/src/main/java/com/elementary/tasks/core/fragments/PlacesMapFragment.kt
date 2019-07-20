@@ -36,24 +36,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
     private var mMap: GoogleMap? = null
@@ -118,8 +100,14 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
                 for (model in spinnerArray) {
                     if (model.isSelected) {
                         if (model.position != null) {
-                            places.add(Place(markerRadius, markerStyle, model.latitude,
-                                    model.longitude, model.name, model.address, model.types))
+                            places.add(Place(
+                                    radius = markerRadius,
+                                    marker = markerStyle,
+                                    latitude = model.latitude,
+                                    longitude = model.longitude,
+                                    name = model.name,
+                                    address = model.address,
+                                    tags = model.types))
                         }
                     }
                 }
@@ -267,7 +255,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     }
 
     private fun showStyleDialog() {
-        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, themeUtil.colorsForSlider()) {
+        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, ThemeUtil.colorsForSlider(activity!!)) {
             prefs.markerStyle = it
             recreateStyle(it)
         }
@@ -353,7 +341,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
     @SuppressLint("MissingPermission")
     private fun setMyLocation() {
-        if (Permissions.ensurePermissions(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (Permissions.checkPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             mMap?.isMyLocationEnabled = true
         }
     }
@@ -515,12 +503,12 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            205 -> if (Permissions.isAllGranted(grantResults)) {
+            205 -> if (Permissions.checkPermission(grantResults)) {
                 setMyLocation()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()
             }
-            200 -> if (Permissions.isAllGranted(grantResults)) {
+            200 -> if (Permissions.checkPermission(grantResults)) {
                 startTracking()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()

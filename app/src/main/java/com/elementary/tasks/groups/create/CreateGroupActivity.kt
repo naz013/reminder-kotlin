@@ -8,7 +8,7 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
@@ -16,25 +16,7 @@ import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
 import org.koin.android.ext.android.inject
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
+class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout.activity_create_group) {
 
     private lateinit var viewModel: GroupViewModel
     private var mItem: ReminderGroup? = null
@@ -42,14 +24,12 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
 
     private val backupTool: BackupTool by inject()
 
-    override fun layoutRes(): Int = R.layout.activity_create_group
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initActionBar()
 
-        binding.colorSlider.setColors(themeUtil.colorsForSlider())
-        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setColors(ThemeUtil.colorsForSlider(this))
+        binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {
             binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
@@ -68,7 +48,7 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.setTitle(R.string.create_group)
     }
 
@@ -103,7 +83,7 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
     }
 
     private fun readUri() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         mUri?.let {
@@ -196,7 +176,7 @@ class CreateGroupActivity : ThemedActivity<ActivityCreateGroupBinding>() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == SD_REQ && Permissions.isAllGranted(grantResults)) {
+        if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
             readUri()
         }
     }

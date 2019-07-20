@@ -13,34 +13,21 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
-/**
- * Copyright 2015 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class CalendarWidget : AppWidgetProvider() {
+class CalendarWidget : AppWidgetProvider(), KoinComponent {
+
+    private val prefs: Prefs by inject()
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val sp = context.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
         for (i in appWidgetIds) {
-            updateWidget(context, appWidgetManager, sp, i)
+            updateWidget(context, appWidgetManager, sp, i, prefs)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
@@ -61,7 +48,7 @@ class CalendarWidget : AppWidgetProvider() {
     companion object {
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
-                         sp: SharedPreferences, widgetID: Int) {
+                         sp: SharedPreferences, widgetID: Int, prefs: Prefs) {
             val cal = GregorianCalendar()
             val month = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetID, 0)
             val year = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetID, 0)
@@ -116,27 +103,30 @@ class CalendarWidget : AppWidgetProvider() {
             weekdayAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(R.id.weekdayGrid, weekdayAdapter)
 
-            val startActivityIntent = Intent(context, MainActivity::class.java)
-            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_calendar)
-            val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
-                    startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
+            TODO("Add new deep link")
+//            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
+//            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_calendar)
+//            val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
+//                    startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//            rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
 
             val monthAdapter = Intent(context, CalendarMonthService::class.java)
             monthAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(R.id.monthGrid, monthAdapter)
 
-            var serviceIntent = Intent(context, CalendarUpdateService::class.java)
-            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            serviceIntent.putExtra("actionPlus", 2)
-            var servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setOnClickPendingIntent(R.id.btn_next, servicePendingIntent)
+            val nextIntent = Intent(context, CalendarNextReceiver::class.java)
+            nextIntent.action = CalendarNextReceiver.ACTION_NEXT
+            nextIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+            nextIntent.putExtra(CalendarNextReceiver.ARG_VALUE, 2)
+            val nextPendingIntent = PendingIntent.getBroadcast(context, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            rv.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent)
 
-            serviceIntent = Intent(context, CalendarUpdateMinusService::class.java)
-            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-            serviceIntent.putExtra("actionMinus", 1)
-            servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            rv.setOnClickPendingIntent(R.id.btn_prev, servicePendingIntent)
+            val previousIntent = Intent(context, CalendarPreviousReceiver::class.java)
+            previousIntent.action = CalendarPreviousReceiver.ACTION_PREVIOUS
+            previousIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+            previousIntent.putExtra(CalendarPreviousReceiver.ARG_VALUE, 1)
+            val previousPendingIntent = PendingIntent.getBroadcast(context, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            rv.setOnClickPendingIntent(R.id.btn_prev, previousPendingIntent)
 
             appWidgetManager.updateAppWidget(widgetID, rv)
             appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, R.id.weekdayGrid)

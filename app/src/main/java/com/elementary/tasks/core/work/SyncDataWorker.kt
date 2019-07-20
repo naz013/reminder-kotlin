@@ -1,32 +1,37 @@
 package com.elementary.tasks.core.work
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.cloud.BulkDataFlow
+import com.elementary.tasks.core.cloud.DataFlow
+import com.elementary.tasks.core.cloud.completables.ReminderCompletable
+import com.elementary.tasks.core.cloud.converters.*
+import com.elementary.tasks.core.cloud.repositories.*
+import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
     private val prefs: Prefs by inject()
-    private val backupTool: BackupTool by inject()
     private val appDb: AppDb by inject()
 
     override fun doWork(): Result {
         if (prefs.autoSyncState == 0) {
             return Result.success()
         }
-        val ioHelper = IoHelper(applicationContext, prefs, backupTool)
+        val storage = CompositeStorage(DataFlow.availableStorageList(applicationContext))
         val syncFlags = prefs.autoSyncFlags
         launchDefault {
             if (syncFlags.contains(FLAG_REMINDER)) {
-                ioHelper.restoreGroup(true)
+                BulkDataFlow(GroupRepository(), GroupConverter(), storage, null)
+                        .restore(IndexTypes.TYPE_GROUP, true)
                 val list = appDb.reminderGroupDao().all()
                 if (list.isEmpty()) {
                     val defUiID = GroupsUtil.initDefault(applicationContext)
@@ -36,35 +41,48 @@ class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(
                     }
                     appDb.reminderDao().insertAll(items)
                 }
-                ioHelper.backupGroup()
+                BulkDataFlow(GroupRepository(), GroupConverter(), storage, null)
+                        .backup()
 
-                ioHelper.restoreReminder(true)
-                ioHelper.backupReminder()
+                BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable())
+                        .restore(IndexTypes.TYPE_REMINDER, true)
+                BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, null)
+                        .backup()
             }
 
             if (syncFlags.contains(FLAG_NOTE)) {
-                ioHelper.restoreNote(true)
-                ioHelper.backupNote()
+                BulkDataFlow(NoteRepository(), NoteConverter(), storage, null)
+                        .restore(IndexTypes.TYPE_NOTE, true)
+                BulkDataFlow(NoteRepository(), NoteConverter(), storage, null)
+                        .backup()
             }
 
             if (syncFlags.contains(FLAG_BIRTHDAY)) {
-                ioHelper.restoreBirthday(true)
-                ioHelper.backupBirthday()
+                BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
+                        .restore(IndexTypes.TYPE_BIRTHDAY, true)
+                BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
+                        .backup()
             }
 
             if (syncFlags.contains(FLAG_PLACE)) {
-                ioHelper.restorePlaces(true)
-                ioHelper.backupPlaces()
+                BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null)
+                        .restore(IndexTypes.TYPE_PLACE, true)
+                BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null)
+                        .backup()
             }
 
             if (syncFlags.contains(FLAG_TEMPLATE)) {
-                ioHelper.restoreTemplates(true)
-                ioHelper.backupTemplates()
+                BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null)
+                        .restore(IndexTypes.TYPE_TEMPLATE, true)
+                BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null)
+                        .backup()
             }
 
             if (syncFlags.contains(FLAG_SETTINGS)) {
-                ioHelper.restoreSettings()
-                ioHelper.backupSettings()
+                BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null)
+                        .restore(IndexTypes.TYPE_SETTINGS, true)
+                BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null)
+                        .backup()
             }
 
             withUIContext {
@@ -87,6 +105,10 @@ class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(
         fun schedule() {
             val work = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
                     .addTag(TAG)
+                    .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.UNMETERED)
+                            .setRequiresBatteryNotLow(true)
+                            .build())
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

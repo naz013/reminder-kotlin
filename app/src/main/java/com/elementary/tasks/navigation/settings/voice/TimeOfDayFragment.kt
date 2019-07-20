@@ -3,38 +3,20 @@ package com.elementary.tasks.navigation.settings.voice
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.toDate
 import com.elementary.tasks.core.utils.toHm
 import com.elementary.tasks.databinding.FragmentSettingsTimeOfDayBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>(), View.OnClickListener {
 
-    private val viewModel: TimesViewModel by viewModel()
+    private lateinit var viewModel: TimesViewModel
     private var is24: Boolean = false
     private val format = SimpleDateFormat("HH:mm", Locale.getDefault())
 
@@ -42,6 +24,7 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(TimesViewModel::class.java)
 
         binding.nightTime.setOnClickListener(this)
         binding.eveningTime.setOnClickListener(this)
@@ -168,8 +151,7 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
 
     private fun timeDialog(h: Int, m: Int, callback: (hourOfDay: Int, minuteOfHour: Int) -> Unit) {
         withContext {
-            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat, h, m,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            TimeUtil.showTimePicker(it, prefs.is24HourFormat, h, m, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                         callback.invoke(hourOfDay, minute)
                     })
         }

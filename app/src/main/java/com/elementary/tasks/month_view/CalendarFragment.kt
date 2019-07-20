@@ -6,6 +6,7 @@ import android.text.format.DateUtils
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -14,7 +15,6 @@ import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
-import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
@@ -23,24 +23,6 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
 
     lateinit var dayPagerAdapter: MonthPagerAdapter
@@ -166,7 +148,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun onDateClick(date: Date) {
-        callback?.openFragment(DayViewFragment.newInstance(date.time, 0), "", true)
+        findNavController().navigate(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date.time))
     }
 
     override fun onDateLongClick(date: Date) {

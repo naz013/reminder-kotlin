@@ -6,12 +6,17 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.core.services.EventJobService
-import com.elementary.tasks.core.utils.components
+import com.elementary.tasks.core.utils.utilModule
 import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
-import org.koin.android.ext.android.startKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
+import org.koin.core.logger.MESSAGE
 import timber.log.Timber
 
+@Suppress("unused")
 class ReminderApp : MultiDexApplication() {
 
     override fun attachBaseContext(base: Context) {
@@ -24,7 +29,15 @@ class ReminderApp : MultiDexApplication() {
         Timber.plant(Timber.DebugTree())
         Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        startKoin(this, components())
+        val logger = object : Logger(level = Level.DEBUG) {
+            override fun log(level: Level, msg: MESSAGE) {
+            }
+        }
+        startKoin{
+            logger(logger)
+            androidContext(this@ReminderApp)
+            modules(listOf(utilModule()))
+        }
         JobManager.create(this).addJobCreator { EventJobService() }
     }
 }

@@ -9,11 +9,11 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.services.AlarmReceiver
-import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
@@ -25,24 +25,6 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var viewModel: BirthdaysViewModel
@@ -64,7 +46,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         initBirthdayReminderPrefs()
@@ -130,7 +112,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun initNotificationPrefs() {
-        binding.birthdayNotificationPrefs.setOnClickListener { callback?.openFragment(BirthdayNotificationFragment(), getString(R.string.birthday_notification)) }
+        binding.birthdayNotificationPrefs.setOnClickListener {
+            findNavController().navigate(BirthdaySettingsFragmentDirections.actionBirthdaySettingsFragmentToBirthdayNotificationFragment())
+        }
         binding.birthdayNotificationPrefs.setDependentView(binding.birthReminderPrefs)
     }
 
@@ -156,7 +140,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
     private fun scanForBirthdays() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(it, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)) {
                 return@withActivity
             }
             onProgress.invoke(true)
@@ -176,9 +160,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         binding.autoScanPrefs.isChecked = !isChecked
         prefs.isContactAutoCheckEnabled = !isChecked
         if (!isChecked) {
-            AlarmReceiver().enableBirthdayCheckAlarm()
+            EventJobScheduler.scheduleBirthdaysCheck()
         } else {
-            AlarmReceiver().cancelBirthdayCheckAlarm()
+            EventJobScheduler.cancelBirthdaysCheck()
         }
     }
 
@@ -190,7 +174,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
     private fun changeContactsPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(it, CONTACTS_CODE, Permissions.READ_CONTACTS)) {
                 return@withActivity
             }
             val isChecked = binding.useContactsPrefs.isChecked
@@ -211,7 +195,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         withContext {
-            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat, hour, minute, this)
+            TimeUtil.showTimePicker(it, prefs.is24HourFormat, hour, minute, this)
         }
     }
 
@@ -270,10 +254,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
             prefs.isBirthdayPermanentEnabled = !isChecked
             if (!isChecked) {
                 it.sendBroadcast(Intent(it, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_SHOW))
-                AlarmReceiver().enableBirthdayPermanentAlarm(it)
+                EventJobScheduler.scheduleBirthdayPermanent()
             } else {
                 it.sendBroadcast(Intent(it, PermanentBirthdayReceiver::class.java).setAction(PermanentBirthdayReceiver.ACTION_HIDE))
-                AlarmReceiver().cancelBirthdayPermanentAlarm(it)
+                EventJobScheduler.cancelBirthdayPermanent()
             }
         }
     }
@@ -304,10 +288,10 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         binding.birthReminderPrefs.isChecked = !isChecked
         prefs.isBirthdayReminderEnabled = !isChecked
         if (!isChecked) {
-            EventJobService.enableBirthdayAlarm(prefs)
+            EventJobScheduler.scheduleDailyBirthday(prefs)
         } else {
             cleanBirthdays()
-            EventJobService.cancelBirthdayAlarm()
+            EventJobScheduler.cancelDailyBirthday()
         }
     }
 
@@ -321,17 +305,17 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
         initBirthdayTimePrefs()
         if (prefs.isBirthdayReminderEnabled) {
-            EventJobService.enableBirthdayAlarm(prefs)
+            EventJobScheduler.scheduleDailyBirthday(prefs)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CONTACTS_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            CONTACTS_CODE -> if (Permissions.checkPermission(grantResults)) {
                 changeContactsPrefs()
             }
-            BIRTHDAYS_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            BIRTHDAYS_CODE -> if (Permissions.checkPermission(grantResults)) {
                 scanForBirthdays()
             }
         }

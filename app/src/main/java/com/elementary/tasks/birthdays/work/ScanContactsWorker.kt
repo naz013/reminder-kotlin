@@ -86,6 +86,7 @@ object ScanContactsWorker {
                                 if (!contacts.contains(birthdayItem)) {
                                     i += 1
                                 }
+                                birthdayItem.updatedAt = TimeUtil.gmtDateTime
                                 dao.insert(birthdayItem)
                                 break
                             }

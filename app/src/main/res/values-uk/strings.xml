@@ -164,7 +164,7 @@
     <string name="show_icon">"Показувати значок"</string>
     <string name="sound_and_vibration">"Звук і вібрація"</string>
     <string name="loudness">"Гучність"</string>
-    <string name="notification">"Повідомлення"</string>
+    <string name="notification">"Сповіщення"</string>
     <string name="unlock_screen">"Розблокування екрана"</string>
     <string name="send_sms">"Відправити SMS"</string>
     <string name="enable_sending_sms_automatically">"Включити відправку SMS автоматично"</string>
@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Нагадування успішно імпортовано</string>
     <string name="save_and_start_automatically">Зберегти та запустити автоматично</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Спільні дані доступні лише під час відкриття цього екрана</string>
+    <string name="accept">Прийняти</string>
+    <string name="backup_attached_files_and_melodies">Резервне копіювання прикріплених файлів і мелодій</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Продовжуючи використовувати додаток Reminder, Ви приймаєте Політику конфіденційності</string>
+    <string name="dismiss">Відхилити</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Якщо у вас є резервні копії даних, ви можете увійти до свого хмарного сховища, щоб відновити їх.</string>
+    <string name="light">Світла</string>
+    <string name="multiple_device_mode">Режим декількох пристроїв</string>
+    <string name="no_upcoming_birthdays">Немає запланованих днів народження</string>
+    <string name="reminder_ongoing_service">Поточна служба програми Reminder</string>
+    <string name="save_backup_on_sd_card">Збережіть резервну копію на карті SD</string>
+    <string name="select_image">Виберіть зображення</string>
+    <string name="select_melody">Виберіть мелодію</string>
+    <string name="set_by_battery_saver">Здається Battery Saver</string>
+    <string name="system_default">Система за замовчуванням</string>
+    <string name="you_re_all_done">Ви все зробили</string>
 
 </resources>

@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/cardSummary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -147,13 +147,6 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
 
-                        <com.elementary.tasks.core.views.DividerView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="60dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp" />
-
                         <com.elementary.tasks.core.views.WindowTypeView
                             android:id="@+id/windowTypeView"
                             android:layout_width="match_parent"
@@ -215,7 +208,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="16dp" />
 
-                        <androidx.appcompat.widget.AppCompatCheckBox
+                        <com.google.android.material.checkbox.MaterialCheckBox
                             android:id="@+id/exportToCalendar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -229,7 +222,7 @@
                             android:textAppearance="?textAppearanceBody1"
                             android:visibility="visible" />
 
-                        <androidx.appcompat.widget.AppCompatCheckBox
+                        <com.google.android.material.checkbox.MaterialCheckBox
                             android:id="@+id/exportToTasks"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

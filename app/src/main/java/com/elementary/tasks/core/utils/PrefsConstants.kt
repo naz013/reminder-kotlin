@@ -1,31 +1,11 @@
 package com.elementary.tasks.core.utils
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 object PrefsConstants {
 
     const val PREFS_NAME = "prefs_six"
     const val EVENTS_CALENDAR = "events_cal"
     const val AUTO_CHECK_FOR_EVENTS = "auto_events"
     const val AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval"
-    const val APP_THEME = "theme_"
-    const val APP_THEME_COLOR = "theme_color"
     const val DRIVE_USER = "ggl_user"
     const val TASKS_USER = "gtl_user"
     const val MAP_TYPE = "new_map_type"
@@ -50,6 +30,7 @@ object PrefsConstants {
     const val MARKER_STYLE = "marker_style"
     const val INFINITE_VIBRATION = "infinite_vibration"
     const val DATA_BACKUP = "data_backup"
+    @Deprecated("Should not use")
     const val SMART_FOLD = "smart_fold"
     const val NOTIFICATION_REPEAT = "notification_repeat"
     const val NOTIFICATION_REPEAT_INTERVAL = "notification_repeat_interval"
@@ -84,7 +65,6 @@ object PrefsConstants {
     const val TTS = "tts_enabled"
     const val TTS_LOCALE = "tts_locale"
     const val ITEM_PREVIEW = "item_preview"
-    const val UI_CHANGED = "ui_changed"
     const val CALENDAR_IMAGE = "calendar_image"
     const val EXPORT_SETTINGS = "export_settings"
     const val CUSTOM_SOUND = "custom_sound"
@@ -111,8 +91,6 @@ object PrefsConstants {
     const val IGNORE_WINDOW_TYPE = "ignore_window_type"
     const val PIN_CODE = "pin_code"
     const val USE_FINGERPRINT = "use_finger"
-    const val HOME_PAGE = "home_page"
-    const val TWO_COLS = "two_cols"
     const val ALLOW_SMS_AND_CALL = "allow_sms_and_call"
     const val MOVE_TO_TRASH = "move_to_trash"
     const val DEFAULT_PRIORITY = "default_priority"
@@ -132,6 +110,11 @@ object PrefsConstants {
     const val AUTO_BACKUP_STATE = "auto_backup_state"
     const val AUTO_BACKUP_FLAGS = "auto_backup_flags"
     const val AUTO_IMPORT_SHARED_DATA = "auto_import_shared_data"
+    const val NIGHT_MODE = "night_mode"
+    const val EXPORT_ATTACHED_FILES = "export_attached_files"
+    const val MULTI_DEVICE_MODE = "multi_device_mode"
+    const val LOCAL_BACKUP = "local_backup"
+    const val PRIVACY_SHOWED = "privacy_showed"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

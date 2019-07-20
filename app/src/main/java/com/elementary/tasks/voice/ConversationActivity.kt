@@ -20,7 +20,7 @@ import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VolumeDialog
@@ -36,7 +36,7 @@ import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.util.*
 
-class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
+class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layout.activity_conversation) {
 
     private var speech: SpeechRecognizer? = null
 
@@ -118,8 +118,6 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
             Timber.d("onEvent: ")
         }
     }
-
-    override fun layoutRes(): Int = R.layout.activity_conversation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -644,7 +642,7 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
     }
 
     private fun micClick() {
-        if (!Permissions.ensurePermissions(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
+        if (!Permissions.checkPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
             return
         }
         if (isListening) {
@@ -718,7 +716,7 @@ class ConversationActivity : ThemedActivity<ActivityConversationBinding>() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            AUDIO_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            AUDIO_CODE -> if (Permissions.checkPermission(grantResults)) {
                 micClick()
             }
         }

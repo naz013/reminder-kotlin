@@ -2,38 +2,27 @@ package com.elementary.tasks.navigation.settings
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding
+import org.koin.android.ext.android.inject
 import java.io.File
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
+
+    private val cacheUtil: CacheUtil by inject()
+    private val soundStackHolder: SoundStackHolder by inject()
 
     private var mItemSelect: Int = 0
 
@@ -42,7 +31,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         initManualPrefs()
@@ -83,9 +72,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initUnlockPriorityPrefs() {
-        binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
-        binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
-        showPriority()
+        if (Module.isQ) {
+            binding.unlockPriorityPrefs.hide()
+        } else {
+            binding.unlockPriorityPrefs.show()
+            binding.unlockPriorityPrefs.setOnClickListener { showPriorityDialog() }
+            binding.unlockPriorityPrefs.setDependentView(binding.unlockScreenPrefs)
+            showPriority()
+        }
     }
 
     private fun showPriority() {
@@ -141,8 +135,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initIgnoreWindowTypePrefs() {
-        binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
-        binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
+        if (Module.isQ) {
+            binding.ignoreWindowType.hide()
+        } else {
+            binding.ignoreWindowType.show()
+            binding.ignoreWindowType.setOnClickListener { changeIgnoreWindowTypePrefs() }
+            binding.ignoreWindowType.isChecked = prefs.isIgnoreWindowType
+        }
     }
 
     private fun showRepeatTimeDialog() {
@@ -303,7 +302,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         val isChecked = binding.autoCallPrefs.isChecked
         if (!isChecked) {
             withActivity {
-                if (Permissions.ensurePermissions(it, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
+                if (Permissions.checkPermission(it, PERM_AUTO_CALL, Permissions.CALL_PHONE)) {
                     binding.autoCallPrefs.isChecked = !isChecked
                     prefs.isAutoCallEnabled = !isChecked
                 } else {
@@ -318,9 +317,14 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initAutoCallPrefs() {
-        binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
-        binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
-        binding.autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
+        if (Module.isQ) {
+            binding.autoCallPrefs.hide()
+        } else {
+            binding.autoCallPrefs.show()
+            binding.autoCallPrefs.setOnClickListener { changeAutoCallPrefs() }
+            binding.autoCallPrefs.isChecked = prefs.isAutoCallEnabled
+            binding.autoCallPrefs.isEnabled = prefs.isTelephonyAllowed
+        }
     }
 
     private fun changeAutoLaunchPrefs() {
@@ -330,8 +334,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initAutoLaunchPrefs() {
-        binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
-        binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
+        if (Module.isQ) {
+            binding.autoLaunchPrefs.hide()
+        } else {
+            binding.autoLaunchPrefs.show()
+            binding.autoLaunchPrefs.setOnClickListener { changeAutoLaunchPrefs() }
+            binding.autoLaunchPrefs.isChecked = prefs.isAutoLaunchEnabled
+        }
     }
 
     private fun changeUnlockPrefs() {
@@ -341,8 +350,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun initUnlockPrefs() {
-        binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
-        binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
+        if (Module.isQ) {
+            binding.unlockScreenPrefs.hide()
+        } else {
+            binding.unlockScreenPrefs.show()
+            binding.unlockScreenPrefs.setOnClickListener { changeUnlockPrefs() }
+            binding.unlockScreenPrefs.isChecked = prefs.isDeviceUnlockEnabled
+        }
     }
 
     private fun showTtsLocaleDialog() {
@@ -426,7 +440,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             openNotificationsSettings()
             return
         }
-        dialogues.getNullableDialog(context)?.let {  builder ->
+        dialogues.getNullableDialog(context)?.let { builder ->
             builder.setTitle(R.string.loudness)
             val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
             b.seekBar.max = 25
@@ -485,13 +499,21 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 showStream()
                 dialog.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
 
     private fun initReminderTypePrefs() {
-        binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
-        showReminderType()
+        if (Module.isQ) {
+            binding.typePrefs.hide()
+        } else {
+            binding.typePrefs.show()
+            binding.typePrefs.setOnClickListener { showReminderTypeDialog() }
+            showReminderType()
+        }
     }
 
     private fun showReminderTypeDialog() {
@@ -509,6 +531,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 prefs.reminderType = mItemSelect
                 showReminderType()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             builder.create().show()
@@ -549,22 +574,40 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     private fun initMelodyPrefs() {
         binding.chooseSoundPrefs.setOnClickListener { showSoundDialog() }
         showMelody()
+        soundStackHolder.initParams()
+        soundStackHolder.onlyPlay = true
+        soundStackHolder.playbackCallback = object : Sound.PlaybackCallback {
+            override fun onFinish() {
+                binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+                binding.chooseSoundPrefs.setLoading(false)
+            }
+
+            override fun onStart() {
+                binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_stop_24px)
+                binding.chooseSoundPrefs.setLoading(true)
+            }
+        }
+        binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
+        binding.chooseSoundPrefs.setCustomViewClickListener(View.OnClickListener {
+            if (soundStackHolder.sound?.isPlaying == true) {
+                soundStackHolder.sound?.stop(true)
+            } else {
+                soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.melodyFile).uri, false)
+            }
+        })
     }
 
     private fun showMelody() {
         val filePath = prefs.melodyFile
         val labels = melodyLabels()
-        val label = when(filePath) {
+        val label = when (filePath) {
             Constants.SOUND_RINGTONE -> labels[0]
             Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> labels[1]
             Constants.SOUND_ALARM -> labels[2]
             else -> {
                 if (!filePath.matches("".toRegex())) {
-                    val sound = File(filePath)
-                    val fileName = sound.name
-                    val pos = fileName.lastIndexOf(".")
-                    val fileNameS = fileName.substring(0, pos)
-                    fileNameS
+                    val musicFile = File(filePath)
+                    musicFile.name
                 } else {
                     labels[1]
                 }
@@ -583,11 +626,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     }
 
     private fun showSoundDialog() {
-        withContext {
+        withActivity {
             val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.melody))
-            mItemSelect = when(prefs.melodyFile) {
+            mItemSelect = when (prefs.melodyFile) {
                 Constants.SOUND_RINGTONE -> 0
                 Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
                 Constants.SOUND_ALARM -> 2
@@ -596,18 +639,34 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
+                if (mItemSelect <= 2 && !isDefaultMelody()) {
+                    cacheUtil.removeFromCache(prefs.melodyFile)
+                }
                 when (mItemSelect) {
                     0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
                     1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
                     2 -> prefs.melodyFile = Constants.SOUND_ALARM
-                    else -> {
-                        startActivityForResult(Intent(it, FileExplorerActivity::class.java), MELODY_CODE)
-                    }
+                    else -> pickMelody()
                 }
                 showMelody()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
+    }
+
+    private fun pickMelody() {
+        withActivity {
+            if (Permissions.checkPermission(it, PERM_MELODY, Permissions.READ_EXTERNAL)) {
+                cacheUtil.pickMelody(it, MELODY_CODE)
+            }
+        }
+    }
+
+    private fun isDefaultMelody(): Boolean {
+        return listOf(Constants.SOUND_RINGTONE, Constants.SOUND_NOTIFICATION, Constants.SOUND_ALARM).contains(prefs.melodyFile)
     }
 
     private fun showMelodyDuration() {
@@ -640,7 +699,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             val builder = dialogues.getMaterialDialog(it)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.melody_playback_duration))
-            mItemSelect = when(prefs.playbackDuration) {
+            mItemSelect = when (prefs.playbackDuration) {
                 5 -> 1
                 10 -> 2
                 15 -> 3
@@ -662,6 +721,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                     else -> 0
                 }
                 showMelodyDuration()
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
             builder.create().show()
         }
@@ -686,7 +748,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             if (!SuperUtil.checkNotificationPermission(it)) {
                 SuperUtil.askNotificationPermission(it, dialogues)
             } else {
-                Permissions.ensurePermissions(it, PERM_BT, Permissions.BLUETOOTH)
+                Permissions.checkPermission(it, PERM_BT, Permissions.BLUETOOTH)
             }
         }
     }
@@ -790,6 +852,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 showImage()
                 dialog.dismiss()
             }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
             builder.create().show()
         }
     }
@@ -808,30 +873,60 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             }
         }
         binding.bgImagePrefs.setDetailText(title)
+        binding.bgImagePrefs.setViewDrawable(null)
+        if (prefs.screenImage != Constants.NONE) {
+            if (prefs.screenImage == Constants.DEFAULT) {
+                binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
+            } else {
+                val imageFile = File(prefs.screenImage)
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL) && imageFile.exists()) {
+                    Glide.with(context!!)
+                            .load(imageFile)
+                            .override(200, 200)
+                            .centerCrop()
+                            .into(object : CustomTarget<Drawable>() {
+                                override fun onLoadCleared(placeholder: Drawable?) {
+
+                                }
+
+                                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                                    binding.bgImagePrefs.setViewDrawable(resource)
+                                }
+                            })
+                } else {
+                    binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
+                }
+            }
+        }
     }
 
     override fun getTitle(): String = getString(R.string.notification)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
-                if (filePath != null) {
-                    val file = File(filePath)
-                    if (file.exists()) {
-                        prefs.melodyFile = file.toString()
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+                    val filePath = cacheUtil.cacheFile(data)
+                    if (filePath != null) {
+                        val file = File(filePath)
+                        if (file.exists()) {
+                            prefs.melodyFile = file.toString()
+                        }
                     }
+                    showMelody()
                 }
-                showMelody()
             }
             Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
-                val filePath = data?.getStringExtra(Constants.FILE_PICKED)
-                if (filePath != null) {
-                    val file = File(filePath)
-                    if (file.exists()) {
-                        prefs.screenImage = filePath
-                    } else {
-                        prefs.screenImage = Constants.DEFAULT
+                if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+                    val filePath = cacheUtil.cacheFile(data)
+                    if (filePath != null) {
+                        val file = File(filePath)
+                        if (file.exists()) {
+                            prefs.screenImage = filePath
+                        } else {
+                            prefs.screenImage = Constants.DEFAULT
+                        }
                     }
                     showImage()
                 }
@@ -841,19 +936,26 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 PERM_AUTO_CALL -> changeAutoCallPrefs()
                 PERM_IMAGE -> openImagePicker()
+                PERM_MELODY -> pickMelody()
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (soundStackHolder.sound?.isPlaying == true) {
+            soundStackHolder.sound?.stop(true)
         }
     }
 
     private fun openImagePicker() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
-                startActivityForResult(Intent(it, FileExplorerActivity::class.java).putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO),
-                        Constants.ACTION_REQUEST_GALLERY)
+            if (Permissions.checkPermission(it, PERM_IMAGE, Permissions.READ_EXTERNAL)) {
+                cacheUtil.pickImage(it, Constants.ACTION_REQUEST_GALLERY)
             }
         }
     }
@@ -874,5 +976,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         private const val PERM_BT = 1425
         private const val PERM_AUTO_CALL = 1427
         private const val PERM_IMAGE = 1428
+        private const val PERM_MELODY = 1429
     }
 }

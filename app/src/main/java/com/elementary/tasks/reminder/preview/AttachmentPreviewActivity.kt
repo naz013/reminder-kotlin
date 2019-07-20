@@ -6,16 +6,14 @@ import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityAttachmentPreviewBinding
 import com.squareup.picasso.Picasso
 import java.io.File
 
-class AttachmentPreviewActivity : ThemedActivity<ActivityAttachmentPreviewBinding>() {
-
-    override fun layoutRes(): Int = R.layout.activity_attachment_preview
+class AttachmentPreviewActivity : BindingActivity<ActivityAttachmentPreviewBinding>(R.layout.activity_attachment_preview) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         with(window) {
@@ -45,7 +43,7 @@ class AttachmentPreviewActivity : ThemedActivity<ActivityAttachmentPreviewBindin
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = ""
     }
 

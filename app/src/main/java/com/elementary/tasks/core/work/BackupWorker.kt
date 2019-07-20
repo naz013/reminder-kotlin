@@ -2,7 +2,12 @@ package com.elementary.tasks.core.work
 
 import android.content.Context
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.IoHelper
+import com.elementary.tasks.core.cloud.BulkDataFlow
+import com.elementary.tasks.core.cloud.DataFlow
+import com.elementary.tasks.core.cloud.completables.ReminderCompletable
+import com.elementary.tasks.core.cloud.converters.*
+import com.elementary.tasks.core.cloud.repositories.*
+import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job
@@ -28,9 +33,9 @@ object BackupWorker {
             value?.invoke(mJob != null)
         }
 
-    fun backup(context: Context, ioHelper: IoHelper) {
+    fun backup(context: Context) {
         mJob?.cancel()
-        launchSync(context, ioHelper)
+        launchSync(context)
     }
 
     fun unsubscribe() {
@@ -39,26 +44,28 @@ object BackupWorker {
         progress = null
     }
 
-    private fun launchSync(context: Context, ioHelper: IoHelper) {
+    private fun launchSync(context: Context) {
+        val storage = CompositeStorage(DataFlow.availableStorageList(context))
+
         mJob = launchIo {
             notifyMsg(context.getString(R.string.syncing_groups))
-            ioHelper.backupGroup()
+            BulkDataFlow(GroupRepository(), GroupConverter(), storage, null).backup()
 
             notifyMsg(context.getString(R.string.syncing_reminders))
-            ioHelper.backupReminder()
+            BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable()).backup()
 
             notifyMsg(context.getString(R.string.syncing_notes))
-            ioHelper.backupNote()
+            BulkDataFlow(NoteRepository(), NoteConverter(), storage, null).backup()
 
             notifyMsg(context.getString(R.string.syncing_birthdays))
-            ioHelper.backupBirthday()
+            BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null).backup()
 
             notifyMsg(context.getString(R.string.syncing_places))
-            ioHelper.backupPlaces()
+            BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null).backup()
 
             notifyMsg(context.getString(R.string.syncing_templates))
-            ioHelper.backupTemplates()
-            ioHelper.backupSettings()
+            BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null).backup()
+            BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null).backup()
 
             withUIContext {
                 onEnd?.invoke()

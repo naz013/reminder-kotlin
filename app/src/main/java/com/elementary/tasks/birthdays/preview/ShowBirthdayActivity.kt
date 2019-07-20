@@ -1,7 +1,9 @@
 package com.elementary.tasks.birthdays.preview
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -10,39 +12,27 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BaseNotificationActivity
+import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>() {
+class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>(R.layout.activity_show_birthday) {
 
     private lateinit var viewModel: BirthdayViewModel
+
+    private val themeUtil: ThemeUtil by inject()
+
     private var mBirthday: Birthday? = null
     private var isEventShowed = false
     override var isScreenResumed: Boolean = false
@@ -158,12 +148,22 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         }
     }
 
-    override fun layoutRes(): Int = R.layout.activity_show_birthday
+    private var mWasStopped = false
+    private val mLocalReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action ?: ""
+            val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
+            Timber.d("onReceive: $action, $mId")
+            if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && uuId == mId) {
+                finish()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
-        val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
         binding.buttonOk.setOnClickListener { ok() }
         binding.buttonCall.setOnClickListener { makeCall() }
@@ -176,7 +176,8 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
             isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
         }
 
-        initViewModel(key)
+        initViewModel(id)
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -272,7 +273,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         if (!isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled)) {
             val sound = sound
@@ -309,7 +310,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years, System.currentTimeMillis(), prefs.appLanguage))
         builder.setSmallIcon(R.drawable.ic_twotone_cake_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         if (isScreenResumed) {
             builder.priority = NotificationCompat.PRIORITY_LOW
         } else {
@@ -343,6 +344,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
 
     override fun onDestroy() {
         super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
         viewModel.birthday.removeObserver(mBirthdayObserver)
         lifecycle.removeObserver(viewModel)
         removeFlags()
@@ -359,7 +361,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     }
 
     private fun makeCall() {
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE) && mBirthday != null) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE) && mBirthday != null) {
             TelephonyUtil.makeCall(mBirthday?.number ?: "", this)
             updateBirthday(mBirthday)
         }
@@ -394,9 +396,14 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         finish()
     }
 
+    override fun onStop() {
+        super.onStop()
+        mWasStopped = true
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 CALL_PERM -> makeCall()
             }
@@ -409,6 +416,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
         private const val ARG_TEST = "arg_test"
         private const val ARG_TEST_ITEM = "arg_test_item"
         private const val ARG_IS_ROTATED = "arg_rotated"
+        const val ACTION_STOP_BG_ACTIVITY = "action.birthday.STOP.BG"
 
         fun mockTest(context: Context, birthday: Birthday) {
             val intent = Intent(context, ShowBirthdayActivity::class.java)

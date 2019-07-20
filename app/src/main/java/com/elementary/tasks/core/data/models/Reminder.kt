@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.data.models
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
 import com.elementary.tasks.core.data.converters.ListIntTypeConverter
@@ -9,27 +10,9 @@ import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 @Entity
 @TypeConverters(
         PlacesTypeConverter::class,
@@ -38,6 +21,7 @@ import java.util.*
         ListIntTypeConverter::class
 )
 @Keep
+@Parcelize
 data class Reminder(
         @SerializedName("summary")
         var summary: String = "",
@@ -45,6 +29,8 @@ data class Reminder(
         var noteId: String = "",
         @SerializedName("reminderType")
         var reminderType: Int = 0,
+        @SerializedName("eventState")
+        var eventState: Int = 1,
         @SerializedName("groupUuId")
         var groupUuId: String = "",
         @SerializedName("uuId")
@@ -138,13 +124,15 @@ data class Reminder(
         var windowType: Int = 0,
         @SerializedName("priority")
         var priority: Int = 2,
+        @SerializedName("updatedAt")
+        var updatedAt: String? = null,
         @ColumnInfo(name = "groupTitle")
         @Transient
         var groupTitle: String? = "",
         @ColumnInfo(name = "groupColor")
         @Transient
         var groupColor: Int = 0
-) : RecyclerInterface, Serializable {
+) : RecyclerInterface, Parcelable {
 
     val dateTime: Long
         get() = TimeUtil.getDateTimeFromGmt(eventTime)
@@ -209,9 +197,11 @@ data class Reminder(
         if (fullCopy) {
             this.uuId = item.uuId
             this.uniqueId = item.uniqueId
+            this.updatedAt = item.updatedAt
         } else {
             this.uuId = UUID.randomUUID().toString()
             this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
+            this.updatedAt = TimeUtil.gmtDateTime
         }
     }
 
@@ -229,8 +219,8 @@ data class Reminder(
     }
 
     fun isRepeating(): Boolean {
-        return !Reminder.isGpsType(type) && (repeatInterval > 0L || Reminder.isBase(type, Reminder.BY_WEEK)
-                || Reminder.isBase(type, Reminder.BY_MONTH) || Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR))
+        return !isGpsType(type) && (repeatInterval > 0L || isBase(type, BY_WEEK)
+                || isBase(type, BY_MONTH) || isBase(type, BY_DAY_OF_YEAR))
     }
 
     object Kind {

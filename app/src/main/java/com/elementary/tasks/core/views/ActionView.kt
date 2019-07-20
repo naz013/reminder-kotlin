@@ -14,24 +14,6 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class ActionView : LinearLayout, TextWatcher {
 
     private var mImm: InputMethodManager? = null
@@ -73,7 +55,7 @@ class ActionView : LinearLayout, TextWatcher {
 
     private fun init(context: Context) {
         View.inflate(context, R.layout.view_action, this)
-        orientation = LinearLayout.VERTICAL
+        orientation = VERTICAL
         binding = ActionViewBinding(this)
 
         binding.actionBlock.hide()
@@ -97,7 +79,7 @@ class ActionView : LinearLayout, TextWatcher {
         binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
         binding.callAction.isChecked = true
         binding.actionCheck.setOnCheckedChangeListener { _, b ->
-            if (!Permissions.ensurePermissions(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
                 binding.actionCheck.isChecked = false
                 return@setOnCheckedChangeListener
             }
@@ -133,7 +115,7 @@ class ActionView : LinearLayout, TextWatcher {
         this.mActivity = activity
     }
 
-    fun setContactClickListener(contactClickListener: View.OnClickListener) {
+    fun setContactClickListener(contactClickListener: OnClickListener) {
         binding.selectNumber.setOnClickListener(contactClickListener)
     }
 
@@ -151,7 +133,7 @@ class ActionView : LinearLayout, TextWatcher {
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
-            REQ_CONTACTS -> if (Permissions.isAllGranted(grantResults)) {
+            REQ_CONTACTS -> if (Permissions.checkPermission(grantResults)) {
                 binding.actionCheck.isChecked = true
                 binding.numberView.reloadContacts()
             }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
@@ -15,11 +16,97 @@
             android:layout_marginEnd="@dimen/list_margin"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/appNameBanner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/app_name"
+                    android:textAppearance="?textAppearanceHeadline5"
+                    app:fontFamily="@font/merriweathersans_light" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/appNameBannerPro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="PRO"
+                    android:textAppearance="?textAppearanceHeadline5"
+                    android:textColor="?colorSecondary"
+                    app:fontFamily="@font/merriweathersans_italic" />
+
+            </LinearLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sale_badge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:textAppearance="?textAppearanceBody1"
+                android:textColor="?colorSecondary"
+                android:visibility="visible"
+                tools:text="Sale till" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/update_badge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:textAppearance="?textAppearanceBody1"
+                android:textColor="?colorSecondary"
+                android:visibility="visible"
+                tools:text="New update" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/backupBadge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:text="@string/enable_data_backup_to_keep_your_reminders_in_safe"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary"
+                android:visibility="visible" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/playServicesWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:text="@string/google_play_services_not_found_some_functionality_is_disabled"
+                android:textAppearance="?textAppearanceSubtitle1"
+                android:textColor="@color/secondaryRed"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/doNoDisturbIcon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_moon"
+                app:tint="?colorSecondary" />
+
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/generalSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_divider_top="true"
                 app:prefs_icon="@drawable/ic_twotone_looks_24px"
                 app:prefs_primary_text="@string/general"
                 app:prefs_type="none" />
@@ -119,6 +206,14 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/other"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/buySettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/buy_pro"
                 app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView

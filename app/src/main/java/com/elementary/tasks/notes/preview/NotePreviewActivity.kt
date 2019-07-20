@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
@@ -29,7 +29,7 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.android.ext.android.inject
 import java.io.File
 
-class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
+class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout.activity_note_preview) {
 
     private var mNote: NoteWithImages? = null
     private var mReminder: Reminder? = null
@@ -41,14 +41,13 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
 
     private val mUiHandler = Handler(Looper.getMainLooper())
 
+    private val themeUtil: ThemeUtil by inject()
     private val backupTool: BackupTool by inject()
     private val imagesSingleton: ImagesSingleton by inject()
 
-    override fun layoutRes(): Int = R.layout.activity_note_preview
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isBgDark = isDark
+        isBgDark = isDarkMode
         mId = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initActionBar()
         updateTextColors()
@@ -163,11 +162,12 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
             binding.noteText.text = noteWithImages.getSummary()
             binding.noteText.typeface = AssetsUtil.getTypeface(this, noteWithImages.getStyle())
             window.statusBarColor = noteColor
+            window.navigationBarColor = noteColor
             binding.windowBackground.setBackgroundColor(noteColor)
-            isBgDark = if (themeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
-                isDark
+            isBgDark = if (ThemeUtil.isAlmostTransparent(noteWithImages.getOpacity())) {
+                isDarkMode
             } else {
-                themeUtil.isColorDark(noteColor)
+                ThemeUtil.isColorDark(noteColor)
             }
             updateTextColors()
             updateIcons()
@@ -208,7 +208,7 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
     }
 
     private fun shareNote() {
-        if (!Permissions.ensurePermissions(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         showProgress()
@@ -309,7 +309,7 @@ class NotePreviewActivity : ThemedActivity<ActivityNotePreviewBinding>() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            SEND_CODE -> if (Permissions.isAllGranted(grantResults)) {
+            SEND_CODE -> if (Permissions.checkPermission(grantResults)) {
                 shareNote()
             }
         }

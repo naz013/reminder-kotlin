@@ -1,7 +1,11 @@
 package com.elementary.tasks.google_tasks.list
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -9,86 +13,125 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BindingFragment
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
+import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
-import org.koin.android.ext.android.inject
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
+class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
     private val adapter = TasksRecyclerAdapter()
-    private lateinit var viewModel: GoogleTaskListViewModel
+    private val viewModel: GoogleTaskListViewModel by lazy {
+        ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
+    }
     private var mId: String = ""
-    private var mGoogleTaskListsMap: MutableMap<String, GoogleTaskList> = mutableMapOf()
+    private var googleTaskList: GoogleTaskList? = null
 
-    private val prefs: Prefs by inject()
+    override fun layoutRes(): Int = R.layout.fragment_google_list
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val fragment = parentFragment
-        if (fragment != null) {
-            val callback = fragment as PageCallback?
-            callback?.provideGoogleTasksLists {
-                mapLists(it)
-            }
-        }
-        if (arguments != null) {
-            mId = arguments?.getString(ARG_ID) ?: ""
+        setHasOptionsMenu(true)
+        val bundle = arguments
+        if (bundle != null) {
+            val args = TaskListFragmentArgs.fromBundle(bundle)
+            mId = args.argId
+            googleTaskList = args.argList
         }
     }
 
-    private fun mapLists(googleTaskLists: List<GoogleTaskList>) {
-        if (googleTaskLists.isNotEmpty()) {
-            mGoogleTaskListsMap.clear()
-            for (list in googleTaskLists) {
-                mGoogleTaskListsMap[list.listId] = list
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val googleTaskList = googleTaskList
+        if (googleTaskList != null) {
+            menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
+            if (googleTaskList.def != 1) {
+                menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
             }
-            adapter.googleTaskListMap = mGoogleTaskListsMap
+            menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
         }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun layoutRes(): Int = R.layout.fragment_google_list
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            MENU_ITEM_EDIT -> {
+                editListClick()
+                return true
+            }
+            MENU_ITEM_DELETE -> {
+                deleteDialog()
+                return true
+            }
+            MENU_ITEM_CLEAR -> {
+                clearList()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.progressMessageView.text = getString(R.string.please_wait)
+        binding.fab.setOnClickListener { addNewTask() }
+        binding.fab.backgroundTintList = ColorStateList.valueOf(themeUtil.getNoteLightColor(googleTaskList?.color ?: 0))
         updateProgress(false)
         initEmpty()
         initList()
         initViewModel()
     }
 
+    private fun editListClick() {
+        val googleTaskList = googleTaskList
+        if (googleTaskList != null) {
+            startActivity(Intent(context, TaskListActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, googleTaskList.listId))
+        }
+    }
+
+    private fun deleteDialog() {
+        withContext {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setCancelable(true)
+            builder.setMessage(R.string.delete_this_list)
+            builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
+            builder.setPositiveButton(R.string.yes) { dialog, _ ->
+                deleteList()
+                dialog.dismiss()
+            }
+            builder.create().show()
+        }
+    }
+
+    private fun deleteList() {
+        googleTaskList?.let {
+            viewModel.deleteGoogleTaskList(it)
+        }
+    }
+
+    private fun clearList() {
+        googleTaskList?.let {
+            viewModel.clearList(it)
+        }
+    }
+
+    private fun addNewTask() {
+        withContext {
+            TaskActivity.openLogged(it, Intent(context, TaskActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, mId)
+                    .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
+        }
+    }
+
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this,
-                GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
         viewModel.isInProgress.observe(this, Observer {
             if (it != null) {
                 updateProgress(it)
@@ -125,7 +168,6 @@ class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
     }
 
     private fun showTasks(googleTasks: List<GoogleTask>) {
-        adapter.googleTaskListMap = mGoogleTaskListsMap
         adapter.submitList(googleTasks)
         reloadView(googleTasks.size)
     }
@@ -136,11 +178,17 @@ class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
             viewModel.sync()
         }
 
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
+                    StaggeredGridLayoutManager.VERTICAL)
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
+        val map = mutableMapOf<String, GoogleTaskList>()
+        googleTaskList?.let {
+            map[it.listId] = it
+        }
+        adapter.googleTaskListMap = map
         adapter.actionsListener = object : ActionsListener<GoogleTask> {
             override fun onAction(view: View, position: Int, t: GoogleTask?, actions: ListActions) {
                 when (actions) {
@@ -174,20 +222,18 @@ class TaskListFragment : BindingFragment<FragmentGoogleListBinding>() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        callback?.onTitleChange(googleTaskList?.title ?: "")
+    }
+
+    override fun getTitle(): String {
+        return googleTaskList?.title ?: ""
+    }
+
     companion object {
-
-        private const val ARG_ID = "arg_id"
-        private const val ARG_LIST = "arg_list"
-
-        fun newInstance(id: String, googleTaskList: GoogleTaskList? = null): TaskListFragment {
-            val fragment = TaskListFragment()
-            val bundle = Bundle()
-            bundle.putString(ARG_ID, id)
-            if (googleTaskList != null) {
-                bundle.putSerializable(ARG_LIST, googleTaskList)
-            }
-            fragment.arguments = bundle
-            return fragment
-        }
+        const val MENU_ITEM_EDIT = 12
+        const val MENU_ITEM_DELETE = 13
+        const val MENU_ITEM_CLEAR = 14
     }
 }

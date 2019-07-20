@@ -16,7 +16,7 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.inject
+import org.koin.core.inject
 import timber.log.Timber
 import java.util.*
 

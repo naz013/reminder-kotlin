@@ -19,8 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -32,24 +32,22 @@ import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import com.elementary.tasks.notes.editor.ImageEditActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSelectionUtil.UriCallback {
+class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.activity_create_note), PhotoSelectionUtil.UriCallback {
 
     private var isBgDark = false
 
     private lateinit var viewModel: NoteViewModel
-    private val stateViewModel: CreateNoteViewModel by viewModel()
+    private lateinit var stateViewModel: CreateNoteViewModel
     private lateinit var photoSelectionUtil: PhotoSelectionUtil
 
     private val imagesGridAdapter = ImagesGridAdapter()
@@ -59,6 +57,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private var speech: SpeechRecognizer? = null
     private var mUri: Uri? = null
 
+    private val themeUtil: ThemeUtil by inject()
     private val backupTool: BackupTool by inject()
     private val imagesSingleton: ImagesSingleton by inject()
 
@@ -127,13 +126,12 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
     private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
 
-    override fun layoutRes(): Int = R.layout.activity_create_note
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
         lifecycle.addObserver(stateViewModel)
 
-        isBgDark = isDark
+        isBgDark = isDarkMode
 
         initActionBar()
         initMenu()
@@ -168,7 +166,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         super.onStart()
         photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
 
-        ViewUtils.registerDragAndDrop(this, binding.clickView, true, themeUtil.getSecondaryColor(), {
+        ViewUtils.registerDragAndDrop(this, binding.clickView, true, ThemeUtil.getSecondaryColor(this), {
             if (it.itemCount > 0) {
                 parseDrop(it)
             }
@@ -322,7 +320,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun micClick() {
-        if (!Permissions.ensurePermissions(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
+        if (!Permissions.checkPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)) {
             return
         }
         if (speech != null) {
@@ -359,7 +357,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         binding.fontButton.setOnClickListener { showStyleDialog() }
         binding.paletteButton.setOnClickListener { showPaletteDialog() }
 
-        binding.colorSlider.setSelectorColorResource(if (themeUtil.isDark) R.color.pureWhite else R.color.pureBlack)
+        binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
         binding.colorSlider.setListener { position, _ ->
             stateViewModel.colorOpacity.postValue(newPair(color = position))
             if (prefs.isNoteColorRememberingEnabled) {
@@ -382,8 +380,8 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
 
     private fun updateDarkness(pair: Pair<Int, Int>, palette: Int = palette()) {
         isBgDark = when {
-            themeUtil.isAlmostTransparent(pair.second) -> isDark
-            else -> themeUtil.isColorDark(themeUtil.getNoteLightColor(pair.first, pair.second, palette))
+            ThemeUtil.isAlmostTransparent(pair.second) -> isDarkMode
+            else -> ThemeUtil.isColorDark(themeUtil.getNoteLightColor(pair.first, pair.second, palette))
         }
     }
 
@@ -502,7 +500,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun loadNoteFromFile() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
@@ -550,7 +548,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         imagesGridAdapter.actionsListener = object : ActionsListener<ImageFile> {
             override fun onAction(view: View, position: Int, t: ImageFile?, actions: ListActions) {
                 when (actions) {
-                    ListActions.EDIT -> editImage(position)
                     ListActions.OPEN -> openImagePreview(position)
                     ListActions.REMOVE -> stateViewModel.removeImage(position)
                     else -> {
@@ -566,12 +563,6 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         imagesSingleton.setCurrent(imagesGridAdapter.data)
         startActivity(Intent(this, ImagePreviewActivity::class.java)
                 .putExtra(Constants.INTENT_POSITION, position))
-    }
-
-    private fun editImage(position: Int) {
-        imagesSingleton.setEditable(imagesGridAdapter.get(position))
-        stateViewModel.editPosition = position
-        startActivityForResult(Intent(this, ImageEditActivity::class.java), EDIT_CODE)
     }
 
     private fun showReminder(reminder: Reminder?) {
@@ -592,7 +583,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     }
 
     private fun shareNote() {
-        if (!Permissions.ensurePermissions(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
         val note = createObject() ?: return
@@ -720,7 +711,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
 
         val startTime = dateTime()
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+        reminder.eventTime = reminder.startTime
         if (!TimeCount.isCurrent(reminder.eventTime)) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
             return null
@@ -798,6 +789,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
 
         val lightColor = themeUtil.getNoteLightColor(pair.first, 100, palette)
         window.statusBarColor = lightColor
+        window.navigationBarColor = lightColor
         binding.bottomBar.setCardBackgroundColor(lightColor)
         binding.bottomBar.invalidate()
     }
@@ -811,7 +803,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
         val inflater = LayoutInflater.from(this)
         val adapter = object : ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_single_choice, names) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 var cView = convertView
                 if (cView == null) {
                     cView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null)
@@ -821,7 +813,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
                     textView.typeface = getTypeface(position)
                     textView.text = names[position]
                 }
-                return cView
+                return cView!!
             }
 
             private fun getTypeface(position: Int): Typeface? {
@@ -887,15 +879,15 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     private fun dateDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+        TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR),
                 c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     private fun timeDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat,
-                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), mCallBack)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE), mCallBack)
     }
 
     override fun onDestroy() {
@@ -954,7 +946,7 @@ class CreateNoteActivity : ThemedActivity<ActivityCreateNoteBinding>(), PhotoSel
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         photoSelectionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 AUDIO_CODE -> micClick()
                 SEND_CODE -> shareNote()

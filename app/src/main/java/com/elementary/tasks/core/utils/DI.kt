@@ -3,37 +3,25 @@ package com.elementary.tasks.core.utils
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.navigation.settings.voice.TimesViewModel
-import com.elementary.tasks.notes.create.CreateNoteViewModel
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import com.elementary.tasks.places.create.CreatePlaceViewModel
-import com.elementary.tasks.reminder.create.StateViewModel
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 fun utilModule() = module {
     single { AppDb.getAppDatabase(androidApplication()) }
-    single { Prefs(androidApplication()) }
+    single { Prefs.getInstance(androidApplication()) }
     single { SoundStackHolder(androidApplication(), get()) }
     single { ThemeUtil(androidApplication(), get()) }
     single { BackupTool(get()) }
-    single { Dialogues(get()) }
+    single { Dialogues() }
     single { Language(get()) }
-    single { Notifier(androidApplication(), get(), get()) }
+    single { Notifier(androidApplication(), get()) }
     single { CalendarUtils(androidApplication(), get(), get()) }
     single { providesRecognizer(get(), get()) }
     single { QrShareProvider(get()) }
+    single { CacheUtil(get()) }
     single { GlobalButtonObservable() }
     single { ImagesSingleton() }
-}
-
-fun viewModels() = module {
-    viewModel { StateViewModel() }
-    viewModel { CreatePlaceViewModel() }
-    viewModel { CreateNoteViewModel() }
-    viewModel { TimesViewModel() }
 }
 
 fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {
@@ -47,8 +35,4 @@ fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {
             .setLocale(lang)
             .setTimes(times)
             .build()
-}
-
-fun components(): List<Module> {
-    return listOf(utilModule(), viewModels())
 }

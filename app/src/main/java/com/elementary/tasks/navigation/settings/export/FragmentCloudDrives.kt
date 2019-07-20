@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.GDrive
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
@@ -21,24 +21,6 @@ import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import timber.log.Timber
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
 
     private lateinit var viewModel: CloudViewModel
@@ -52,7 +34,6 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
             } else {
                 binding.linkDropbox.text = getString(R.string.connect)
             }
-            callback?.refreshMenu()
         }
     }
 
@@ -127,7 +108,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     private fun googleTasksButtonClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, 104,
+            if (Permissions.checkPermission(it, 104,
                             Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                             Permissions.WRITE_EXTERNAL)) {
                 switchGoogleTasksStatus()
@@ -137,7 +118,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     private fun googleDriveButtonClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, 103,
+            if (Permissions.checkPermission(it, 103,
                             Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                             Permissions.WRITE_EXTERNAL)) {
                 switchGoogleDriveStatus()
@@ -169,12 +150,10 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
                             viewModel.loadGoogleTasks()
                         }
                         checkGoogleStatus()
-                        callback?.refreshMenu()
                     }
 
                     override fun onFail() {
                         showErrorDialog()
-                        callback?.refreshMenu()
                     }
                 })
             }
@@ -210,12 +189,10 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
                         if (isLogged) {
                             checkGoogleStatus()
                         }
-                        callback?.refreshMenu()
                     }
 
                     override fun onFail() {
                         showErrorDialog()
-                        callback?.refreshMenu()
                     }
                 })
             }
@@ -232,7 +209,6 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
             AppDb.getAppDatabase(ctx).googleTaskListsDao().deleteAll()
             withUIContext {
                 UpdatesHelper.updateTasksWidget(ctx)
-                callback?.refreshMenu()
                 updateProgress(false)
                 checkGoogleStatus()
             }
@@ -246,7 +222,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 103 -> switchGoogleDriveStatus()
                 104 -> switchGoogleTasksStatus()

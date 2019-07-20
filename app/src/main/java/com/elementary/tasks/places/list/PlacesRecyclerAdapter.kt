@@ -8,9 +8,14 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemPlaceBinding
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class PlacesRecyclerAdapter : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolder>(PlaceDiffCallback()) {
+class PlacesRecyclerAdapter : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolder>(PlaceDiffCallback()), KoinComponent {
+
+    private val themeUtil: ThemeUtil by inject()
 
     var actionsListener: ActionsListener<Place>? = null
 

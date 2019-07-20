@@ -11,11 +11,12 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.google.api.services.tasks.model.TaskLists
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
+class GoogleTaskListViewModel(listId: String) : BaseTaskListsViewModel() {
 
     var googleTaskList: LiveData<GoogleTaskList>
     val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
@@ -24,13 +25,8 @@ class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
 
     init {
         Timber.d("GoogleTaskListViewModel: $listId")
-        if (listId == null || listId == "") {
-            googleTasks = appDb.googleTasksDao().loadAll()
-            googleTaskList = appDb.googleTaskListsDao().loadById("")
-        } else {
-            googleTaskList = appDb.googleTaskListsDao().loadById(listId)
-            googleTasks = appDb.googleTasksDao().loadAllByList(listId)
-        }
+        googleTaskList = appDb.googleTaskListsDao().loadById(listId)
+        googleTasks = appDb.googleTasksDao().loadAllByList(listId)
     }
 
     fun sync() {
@@ -128,6 +124,27 @@ class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
         }
     }
 
+    fun clearList(googleTaskList: GoogleTaskList) {
+        val google = GTasks.getInstance(context)
+        if (google == null) {
+            postCommand(Commands.FAILED)
+            return
+        }
+        postInProgress(true)
+        launchDefault {
+            runBlocking {
+                val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, GTasks.TASKS_COMPLETE)
+                appDb.googleTasksDao().deleteAll(googleTasks)
+                google.clearTaskList(googleTaskList.listId)
+            }
+            postInProgress(false)
+            postCommand(Commands.UPDATED)
+            withUIContext {
+                UpdatesHelper.updateTasksWidget(context)
+            }
+        }
+    }
+
     fun saveLocalGoogleTaskList(googleTaskList: GoogleTaskList) {
         postInProgress(true)
         launchDefault {
@@ -137,7 +154,7 @@ class GoogleTaskListViewModel(listId: String?) : BaseTaskListsViewModel() {
         }
     }
 
-    class Factory(private val id: String?) : ViewModelProvider.NewInstanceFactory() {
+    class Factory(private val id: String) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return GoogleTaskListViewModel(id) as T

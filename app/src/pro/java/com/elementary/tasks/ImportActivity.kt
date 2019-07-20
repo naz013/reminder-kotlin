@@ -10,18 +10,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityImportSharingBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 
-class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
+class ImportActivity : BindingActivity<ActivityImportSharingBinding>(R.layout.activity_import_sharing) {
 
     private lateinit var viewModel: ShareViewModel
-
-    override fun layoutRes(): Int = R.layout.activity_import_sharing
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +85,7 @@ class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = getString(R.string.in_app_sharing)
     }
 
@@ -125,12 +123,10 @@ class ImportActivity : ThemedActivity<ActivityImportSharingBinding>() {
         Toast.makeText(this, getString(R.string.failed_to_read_data), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
-            when (item.itemId) {
-                android.R.id.home -> {
-                    finish()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

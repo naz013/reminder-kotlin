@@ -1,12 +1,16 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
+    <dimen name="alpha_emphasis_high">@dimen/mtrl_emphasis_high_type</dimen>
+    <dimen name="alpha_emphasis_medium">@dimen/mtrl_emphasis_medium</dimen>
+    <dimen name="alpha_emphasis_disabled">@dimen/mtrl_emphasis_disabled</dimen>
+
     <dimen name="drawable_circle_width">1dp</dimen>
 
     <dimen name="create_margin">16dp</dimen>
     <dimen name="create_imagebutton_size">50dp</dimen>
 
-    <dimen name="settings_view_size">25dp</dimen>
+    <dimen name="settings_view_size">40dp</dimen>
 
     <dimen name="create_note_text_size">20sp</dimen>
     <dimen name="create_note_image_button_size">40dp</dimen>
@@ -22,7 +26,9 @@
     <dimen name="material_margin">16dp</dimen>
     <dimen name="image_height">256dp</dimen>
     <dimen name="image_height_list">192dp</dimen>
+    <dimen name="home_action_button_size">64dp</dimen>
 
     <bool name="is_tablet">false</bool>
+    <integer name="num_of_cols">1</integer>
 
 </resources>

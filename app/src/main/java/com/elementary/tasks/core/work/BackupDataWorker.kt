@@ -1,23 +1,17 @@
 package com.elementary.tasks.core.work
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.IoHelper
-import com.elementary.tasks.core.utils.Prefs
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import androidx.work.*
+import com.elementary.tasks.core.cloud.BulkDataFlow
+import com.elementary.tasks.core.utils.launchIo
+import org.koin.core.KoinComponent
 
 class BackupDataWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
-    private val prefs: Prefs by inject()
-    private val backupTool: BackupTool by inject()
-
     override fun doWork(): Result {
-        IoHelper(applicationContext, prefs, backupTool).backup()
+        launchIo {
+            BulkDataFlow.fullBackup(applicationContext)
+        }
         return Result.success()
     }
 
@@ -26,7 +20,11 @@ class BackupDataWorker(context: Context, workerParams: WorkerParameters) : Worke
 
         fun schedule() {
             val work = OneTimeWorkRequest.Builder(BackupDataWorker::class.java)
-                    .addTag(BackupDataWorker.TAG)
+                    .addTag(TAG)
+                    .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.UNMETERED)
+                            .setRequiresBatteryNotLow(true)
+                            .build())
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

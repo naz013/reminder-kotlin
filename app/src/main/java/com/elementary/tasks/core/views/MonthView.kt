@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IntRange
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.Events
@@ -14,8 +15,8 @@ import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import hirondelle.date4j.DateTime
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*
@@ -30,15 +31,16 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     private var mDateTimeList: MutableList<DateTime>? = null
     private var eventsMap: Map<DateTime, Events> = HashMap()
 
-    private var mContext: Context? = null
-
     private lateinit var paint: Paint
     private lateinit var circlePaint: Paint
     private lateinit var borderPaint: Paint
+    private lateinit var touchPaint: Paint
 
     private lateinit var horizontalGradient: LinearGradient
     private lateinit var verticalGradient: LinearGradient
-    private lateinit var gradientColors: IntArray
+    private val gradientColors: IntArray by lazy {
+        intArrayOf(Color.TRANSPARENT, ThemeUtil.colorWithAlpha(ThemeUtil.getThemeSecondaryColor(context), 90), Color.TRANSPARENT)
+    }
 
     private var mCells: MutableList<Rect>? = null
     private val circlesMap = HashMap<Rect, List<Rect>>()
@@ -48,10 +50,11 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
 
     private var mDefaultColor: Int = 0
     private var mTodayColor: Int = 0
-    private var mTouchColor: Int = 0
 
     private var mTouchPosition = -1
     private var mTouchRect: Rect? = null
+    private var mNormalTypeface: Typeface? = null
+    private var mBoldTypeface: Typeface? = null
 
     private val mLongClickHandler = Handler()
     private var mDateClick: OnDateClick? = null
@@ -63,6 +66,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
                 mDateLongClick?.onLongClick(mDateTimeList!![mTouchPosition])
             }
             cancelTouch()
+            invalidate()
         }
     }
 
@@ -82,26 +86,30 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     }
 
     private fun init(context: Context) {
-        this.mContext = context
         val colorSecondary = ThemeUtil.getThemeSecondaryColor(context)
-        this.mTouchColor = ThemeUtil.colorWithAlpha(colorSecondary, 12)
-        this.gradientColors = intArrayOf(Color.TRANSPARENT, ThemeUtil.colorWithAlpha(colorSecondary, 90), Color.TRANSPARENT)
+
+        this.mDefaultColor = ContextCompat.getColor(context, R.color.color_on_background)
+        this.mTodayColor = themeUtil.getNoteLightColor(prefs.todayColor)
+
+        this.mNormalTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular)
+        this.mBoldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold)
 
         this.borderPaint = Paint()
         this.borderPaint.style = Paint.Style.STROKE
         this.borderPaint.strokeWidth = MeasureUtils.dp2px(context, 1).toFloat()
 
+        this.touchPaint = Paint()
+        this.touchPaint.isAntiAlias = true
+        this.touchPaint.style = Paint.Style.FILL
+        this.touchPaint.color = ThemeUtil.colorWithAlpha(colorSecondary, 50)
+
         this.paint = Paint()
         this.paint.isAntiAlias = true
+        this.paint.typeface = mNormalTypeface
+
         this.circlePaint = Paint()
         this.circlePaint.isAntiAlias = true
-        this.mDefaultColor = if (themeUtil.isDark) {
-            Color.WHITE
-        } else {
-            Color.BLACK
-        }
-        this.mTodayColor = themeUtil.getNoteLightColor(prefs.todayColor)
-        this.paint.typeface = ResourcesCompat.getFont(context, R.font.roboto_regular)
+
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         this.currentDay = calendar.get(Calendar.DAY_OF_MONTH)
@@ -180,9 +188,9 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
         }
         for (i in 0 until ROWS * COLS) {
             val rect = mCells!![i]
-            val color: Int
             val dateTime = mDateTimeList!![i]
-            color = if (mYear != dateTime.year || mMonth != dateTime.month) {
+            var typeface = mNormalTypeface
+            val color = if (mYear != dateTime.year || mMonth != dateTime.month) {
                 Color.GRAY
             } else {
                 if (eventsMap.containsKey(dateTime)) {
@@ -192,12 +200,13 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
                     }
                 }
                 if (dateTime.day == currentDay && dateTime.month == currentMonth && dateTime.year == currentYear) {
+                    typeface = mBoldTypeface
                     mTodayColor
                 } else {
                     mDefaultColor
                 }
             }
-            drawRectText(dateTime.day.toString(), canvas, rect, color, i)
+            drawRectText(dateTime.day.toString(), canvas, rect, color, i, typeface)
         }
         Timber.d("onDraw: ${(System.currentTimeMillis() - start)}")
     }
@@ -265,23 +274,28 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
         circlesMap[rect] = rects
     }
 
-    private fun drawRectText(text: String, canvas: Canvas, r: Rect, color: Int, i: Int) {
+    private fun drawRectText(text: String, canvas: Canvas, r: Rect, color: Int, position: Int, typeface: Typeface?) {
         paint.textSize = MeasureUtils.dp2px(context, 16).toFloat()
         paint.textAlign = Paint.Align.CENTER
         paint.alpha = 100
         paint.color = color
         paint.style = Paint.Style.FILL_AND_STROKE
+        paint.typeface = typeface
+
+        if (position == mTouchPosition) {
+            canvas.drawRect(r, touchPaint)
+        }
+
         val width = r.width()
         val numOfChars = paint.breakText(text, true, width.toFloat(), null)
         val start = (text.length - numOfChars) / 2
         canvas.drawText(text, start, start + numOfChars, r.exactCenterX(), r.exactCenterY(), paint)
-
-        if (i == 0 || ((i - 6) % 7) != 0) {
+        if (position == 0 || ((position - 6) % 7) != 0) {
             borderPaint.shader = verticalGradient
             canvas.drawLine(r.right.toFloat(), r.top.toFloat(),
                     r.right.toFloat(), r.bottom.toFloat(), borderPaint)
         }
-        if (i <= 34) {
+        if (position <= 34) {
             borderPaint.shader = horizontalGradient
             canvas.drawLine(r.left.toFloat(), r.bottom.toFloat(),
                     r.right.toFloat(), r.bottom.toFloat(), borderPaint)
@@ -307,6 +321,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
             mDateClick?.onClick(mDateTimeList!![mTouchPosition])
         }
         cancelTouch()
+        invalidate()
     }
 
     private fun performMove(motionEvent: MotionEvent) {
@@ -314,6 +329,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
         val y = motionEvent.y.toInt()
         if (mTouchRect != null && mTouchRect?.contains(x, y) == false) {
             cancelTouch()
+            invalidate()
         }
     }
 
@@ -331,6 +347,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
                 mTouchPosition = i
                 mTouchRect = rect
                 mLongClickHandler.postDelayed(mLongRunnable, LONG_CLICK_TIME)
+                invalidate()
                 break
             }
         }

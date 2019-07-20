@@ -10,24 +10,6 @@ import com.elementary.tasks.databinding.FragmentSettingsRemindersBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsRemindersBinding>() {
 
     private var mItemSelect: Int = 0
@@ -37,7 +19,7 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         initDefaultPriority()
@@ -134,8 +116,8 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val min = calendar.get(Calendar.MINUTE)
         withContext {
-            TimeUtil.showTimePicker(it, themeUtil.dialogStyle, prefs.is24HourFormat,
-                    hour, min, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            TimeUtil.showTimePicker(it, prefs.is24HourFormat, hour, min,
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 callback.invoke(hourOfDay, minute)
             })
         }

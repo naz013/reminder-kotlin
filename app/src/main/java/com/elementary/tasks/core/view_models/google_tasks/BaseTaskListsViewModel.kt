@@ -10,7 +10,7 @@ import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.inject
+import org.koin.core.inject
 import java.io.IOException
 
 abstract class BaseTaskListsViewModel : BaseDbViewModel() {

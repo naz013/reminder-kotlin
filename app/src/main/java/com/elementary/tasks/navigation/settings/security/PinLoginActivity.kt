@@ -7,37 +7,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
-import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.experimental.NavUtil
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class PinLoginActivity : ThemedActivity<ActivityPinLoginBinding>(), FingerInitializer.ReadyListener, FingerprintHelper.Callback {
+class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activity_pin_login),
+        FingerInitializer.ReadyListener, FingerprintHelper.Callback {
 
     private var fingerprintHelper: FingerprintHelper? = null
     private var isBack = false
-
-    override fun layoutRes(): Int = R.layout.activity_pin_login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +64,7 @@ class PinLoginActivity : ThemedActivity<ActivityPinLoginBinding>(), FingerInitia
     }
 
     private fun openApplication() {
-        startActivity(Intent(this@PinLoginActivity, MainActivity::class.java))
+        startActivity(Intent(this@PinLoginActivity, NavUtil.homeScreen(prefs)))
         finish()
     }
 

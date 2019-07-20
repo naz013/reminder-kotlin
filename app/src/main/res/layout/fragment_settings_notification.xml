@@ -15,7 +15,7 @@
             android:layout_marginEnd="@dimen/list_margin"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
                 app:prefs_primary_text="@string/notification_type"
                 app:prefs_type="none" />
 
@@ -69,9 +70,9 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/background"
-                app:prefs_type="none" />
+                app:prefs_type="view" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -110,7 +111,7 @@
                 app:prefs_secondary_text_on="@string/show_icon"
                 app:prefs_type="check_switch" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -164,7 +165,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_icon="@drawable/ic_twotone_music_note_24px"
                 app:prefs_primary_text="@string/melody"
-                app:prefs_type="none" />
+                app:prefs_type="view" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/melodyDurationPrefs"
@@ -207,6 +208,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_show_chart_24px"
                 app:prefs_primary_text="@string/increasing_loudness"
                 app:prefs_secondary_text_off="@string/use_selected_loudness_level"
                 app:prefs_secondary_text_on="@string/slowly_increase_loudness_level"
@@ -217,6 +219,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
+                app:prefs_icon="@drawable/ic_twotone_record_voice_over_24px"
                 app:prefs_primary_text="@string/voice_notification"
                 app:prefs_secondary_text_off="@string/play_melody"
                 app:prefs_secondary_text_on="@string/spell_event_summary"
@@ -231,7 +234,7 @@
                 app:prefs_primary_text="@string/language"
                 app:prefs_type="none" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

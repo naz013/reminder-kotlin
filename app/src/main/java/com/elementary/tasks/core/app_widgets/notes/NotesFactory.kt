@@ -12,28 +12,10 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
-/**
- * Copyright 2015 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
     private val notes = ArrayList<NoteWithImages>()
@@ -74,7 +56,7 @@ class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteVie
         }
         rv.setInt(R.id.noteBackground, "setBackgroundColor",
                 themeUtil.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette()))
-        if (themeUtil.isAlmostTransparent(note.getOpacity())) {
+        if (ThemeUtil.isAlmostTransparent(note.getOpacity())) {
             rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureWhite))
         } else {
             rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureBlack))

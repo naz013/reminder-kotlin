@@ -1,23 +1,21 @@
 package com.elementary.tasks.core.work
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.IoHelper
-import com.elementary.tasks.core.utils.Prefs
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import androidx.work.*
+import com.elementary.tasks.core.cloud.DataFlow
+import com.elementary.tasks.core.cloud.converters.SettingsConverter
+import com.elementary.tasks.core.cloud.repositories.SettingsRepository
+import com.elementary.tasks.core.cloud.storages.CompositeStorage
+import com.elementary.tasks.core.utils.launchIo
 
-class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
-
-    private val prefs: Prefs by inject()
-    private val backupTool: BackupTool by inject()
+class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        IoHelper(applicationContext, prefs, backupTool).backupSettings()
+        launchIo {
+            DataFlow(SettingsRepository(), SettingsConverter(),
+                    CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
+                    .backup("")
+        }
         return Result.success()
     }
 
@@ -26,7 +24,11 @@ class BackupSettingsWorker(context: Context, workerParams: WorkerParameters) : W
 
         fun schedule() {
             val work = OneTimeWorkRequest.Builder(BackupSettingsWorker::class.java)
-                    .addTag(BackupSettingsWorker.TAG)
+                    .addTag(TAG)
+                    .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.UNMETERED)
+                            .setRequiresBatteryNotLow(true)
+                            .build())
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

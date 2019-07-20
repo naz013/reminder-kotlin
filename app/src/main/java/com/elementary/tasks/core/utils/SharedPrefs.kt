@@ -6,25 +6,6 @@ import com.elementary.tasks.core.cloud.FileConfig
 import com.google.gson.Gson
 import java.io.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 abstract class SharedPrefs(protected val context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -108,6 +89,14 @@ abstract class SharedPrefs(protected val context: Context) {
         }
     }
 
+    fun all(): Map<String, *> {
+        return prefs.all
+    }
+
+    fun sharedPrefs(): SharedPreferences {
+        return prefs
+    }
+
     fun savePrefsBackup() {
         val dir = MemoryUtil.prefsDir
         if (dir != null) {
@@ -121,6 +110,9 @@ abstract class SharedPrefs(protected val context: Context) {
                 val list = prefs.all
                 if (list.containsKey(PrefsConstants.DRIVE_USER)) {
                     list.remove(PrefsConstants.DRIVE_USER)
+                }
+                if (list.containsKey(PrefsConstants.TASKS_USER)) {
+                    list.remove(PrefsConstants.TASKS_USER)
                 }
                 output.writeObject(list)
             } catch (e: IOException) {
@@ -146,7 +138,6 @@ abstract class SharedPrefs(protected val context: Context) {
             try {
                 input = ObjectInputStream(FileInputStream(prefsFile))
                 val prefEdit = prefs.edit()
-                prefEdit.clear()
                 val entries = input.readObject() as Map<String, *>
                 for ((key, v) in entries) {
                     when (v) {

@@ -715,4 +715,19 @@
     <string name="reminder_imported_success">Reminder imported successfully</string>
     <string name="save_and_start_automatically">Save and start automatically</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Shared data available only while this screen is open</string>
+    <string name="accept">Accept</string>
+    <string name="backup_attached_files_and_melodies">Backup attached files and melodies</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">By continue using Reminder application You accept Privacy Policy</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">If You have backed up data, You can Log In to Your cloud storage to restore them.</string>
+    <string name="light">Light</string>
+    <string name="multiple_device_mode">Multiple device mode</string>
+    <string name="no_upcoming_birthdays">No upcoming birthdays</string>
+    <string name="reminder_ongoing_service">Ongoing service of Reminder application</string>
+    <string name="save_backup_on_sd_card">Save backup on SD Card</string>
+    <string name="select_image">Select image</string>
+    <string name="select_melody">Select melody</string>
+    <string name="set_by_battery_saver">Set by Battery Saver</string>
+    <string name="system_default">System default</string>
+    <string name="you_re_all_done">You\'re all done</string>
 </resources>

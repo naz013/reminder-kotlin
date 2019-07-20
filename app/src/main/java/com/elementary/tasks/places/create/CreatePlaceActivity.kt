@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -17,17 +17,17 @@ import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
+class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
     private lateinit var viewModel: PlaceViewModel
-    private val stateViewModel: CreatePlaceViewModel by viewModel()
+    private lateinit var stateViewModel: CreatePlaceViewModel
 
     private var mGoogleMap: AdvancedMapFragment? = null
 
@@ -36,8 +36,6 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
 
     private val backupTool: BackupTool by inject()
 
-    override fun layoutRes(): Int = R.layout.activity_create_place
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stateViewModel.isPlaceEdited = savedInstanceState != null
@@ -45,7 +43,7 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
         initActionBar()
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, true, false, false,
-                prefs.markerStyle, themeUtil.isDark, false)
+                prefs.markerStyle, ThemeUtil.isDarkMode(this), false)
         mGoogleMap?.setListener(this)
         mGoogleMap?.setCallback(this)
 
@@ -76,6 +74,8 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
                 }
             }
         })
+
+        stateViewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
     }
 
     private fun loadPlace() {
@@ -95,7 +95,7 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
     }
 
     private fun readUri() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         mUri?.let {
@@ -216,7 +216,7 @@ class CreatePlaceActivity : ThemedActivity<ActivityCreatePlaceBinding>(), MapLis
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == SD_REQ && Permissions.isAllGranted(grantResults)) {
+        if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
             readUri()
         }
     }

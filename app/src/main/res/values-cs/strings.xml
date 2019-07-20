@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Připomenutí bylo úspěšně importováno</string>
     <string name="save_and_start_automatically">Uložit a spustit automaticky</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Sdílená data jsou k dispozici pouze v době, kdy je tato obrazovka otevřena</string>
+    <string name="accept">Přijmout</string>
+    <string name="backup_attached_files_and_melodies">Zálohujte připojené soubory a melodie</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Pokračováním v používání aplikace Reminder akceptujete Zásady ochrany osobních údajů</string>
+    <string name="dismiss">Propustit</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Pokud jste zálohovali data, můžete se přihlásit do cloudového úložiště a obnovit je.</string>
+    <string name="light">Světlo</string>
+    <string name="multiple_device_mode">Režim více zařízení</string>
+    <string name="no_upcoming_birthdays">Žádné nadcházející narozeniny</string>
+    <string name="reminder_ongoing_service">Průběžná služba aplikace Připomenutí</string>
+    <string name="save_backup_on_sd_card">Uložte zálohu na SD kartu</string>
+    <string name="select_image">Vyberte obrázek</string>
+    <string name="select_melody">Vyberte melodii</string>
+    <string name="set_by_battery_saver">Nastaveno šetřičem baterie</string>
+    <string name="system_default">Výchozí systém</string>
+    <string name="you_re_all_done">Jste hotovi</string>
 
 </resources>

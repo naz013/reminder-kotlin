@@ -7,24 +7,6 @@ import android.os.Build
 import com.elementary.tasks.R
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class Language(private val prefs: Prefs){
 
     /**
@@ -35,12 +17,11 @@ class Language(private val prefs: Prefs){
      */
     fun getLocale(isBirth: Boolean): Locale? {
         var res: Locale? = null
-        val locale: String = (if (isBirth) {
+        when ((if (isBirth) {
             prefs.birthdayTtsLocale
         } else {
             prefs.ttsLocale
-        })
-        when (locale) {
+        })) {
             ENGLISH -> res = Locale.ENGLISH
             FRENCH -> res = Locale.FRENCH
             GERMAN -> res = Locale.GERMAN
@@ -155,19 +136,19 @@ class Language(private val prefs: Prefs){
     }
 
     fun getLocaleByPosition(position: Int): String {
-        var locale = Language.ENGLISH
+        var locale = ENGLISH
         when (position) {
-            0 -> locale = Language.ENGLISH
-            1 -> locale = Language.FRENCH
-            2 -> locale = Language.GERMAN
-            3 -> locale = Language.ITALIAN
-            4 -> locale = Language.JAPANESE
-            5 -> locale = Language.KOREAN
-            6 -> locale = Language.POLISH
-            7 -> locale = Language.RUSSIAN
-            8 -> locale = Language.SPANISH
-            9 -> locale = Language.PORTUGUESE
-            10 -> locale = Language.UKRAINIAN
+            0 -> locale = ENGLISH
+            1 -> locale = FRENCH
+            2 -> locale = GERMAN
+            3 -> locale = ITALIAN
+            4 -> locale = JAPANESE
+            5 -> locale = KOREAN
+            6 -> locale = POLISH
+            7 -> locale = RUSSIAN
+            8 -> locale = SPANISH
+            9 -> locale = PORTUGUESE
+            10 -> locale = UKRAINIAN
         }
         return locale
     }
@@ -178,17 +159,17 @@ class Language(private val prefs: Prefs){
         }
         var mItemSelect = 0
         when {
-            locale.matches(Language.ENGLISH.toRegex()) -> mItemSelect = 0
-            locale.matches(Language.FRENCH.toRegex()) -> mItemSelect = 1
-            locale.matches(Language.GERMAN.toRegex()) -> mItemSelect = 2
-            locale.matches(Language.ITALIAN.toRegex()) -> mItemSelect = 3
-            locale.matches(Language.JAPANESE.toRegex()) -> mItemSelect = 4
-            locale.matches(Language.KOREAN.toRegex()) -> mItemSelect = 5
-            locale.matches(Language.POLISH.toRegex()) -> mItemSelect = 6
-            locale.matches(Language.RUSSIAN.toRegex()) -> mItemSelect = 7
-            locale.matches(Language.SPANISH.toRegex()) -> mItemSelect = 8
-            locale.matches(Language.PORTUGUESE.toRegex()) -> mItemSelect = 9
-            locale.matches(Language.UKRAINIAN.toRegex()) -> mItemSelect = 10
+            locale.matches(ENGLISH.toRegex()) -> mItemSelect = 0
+            locale.matches(FRENCH.toRegex()) -> mItemSelect = 1
+            locale.matches(GERMAN.toRegex()) -> mItemSelect = 2
+            locale.matches(ITALIAN.toRegex()) -> mItemSelect = 3
+            locale.matches(JAPANESE.toRegex()) -> mItemSelect = 4
+            locale.matches(KOREAN.toRegex()) -> mItemSelect = 5
+            locale.matches(POLISH.toRegex()) -> mItemSelect = 6
+            locale.matches(RUSSIAN.toRegex()) -> mItemSelect = 7
+            locale.matches(SPANISH.toRegex()) -> mItemSelect = 8
+            locale.matches(PORTUGUESE.toRegex()) -> mItemSelect = 9
+            locale.matches(UKRAINIAN.toRegex()) -> mItemSelect = 10
         }
         return mItemSelect
     }

@@ -31,24 +31,6 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<NoteWithImages>) -> Unit {
 
     private lateinit var viewModel: NotesViewModel
@@ -196,7 +178,11 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         return if (enableGrid) {
             LinearLayoutManager(context)
         } else {
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            if (resources.getBoolean(R.bool.is_tablet)) {
+                StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
+            } else {
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            }
         }
     }
 
@@ -216,7 +202,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
         }
         binding.recyclerView.adapter = mAdapter
         binding.recyclerView.itemAnimator = DefaultItemAnimator()
-        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }) {
+        ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()
             else binding.fab.hide()
         }

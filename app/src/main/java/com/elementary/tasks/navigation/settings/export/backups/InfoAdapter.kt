@@ -20,24 +20,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.concurrent.ExecutionException
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((BackupsFragment.Info?) -> Unit)?) {
 
     private val view: ListItemBackupInfoBinding
@@ -108,13 +90,13 @@ class InfoAdapter(private val layout: LinearLayout, private val mCallback: ((Bac
             var slice = PieSlice()
             val usTitle = String.format(binding.root.context.getString(R.string.used_x), used.toString())
             slice.title = usTitle
-            slice.color = ContextCompat.getColor(binding.root.context, R.color.redPrimary)
+            slice.color = ContextCompat.getColor(binding.root.context, R.color.secondaryRed)
             slice.value = used
             binding.usedSizeGraph.addSlice(slice)
             slice = PieSlice()
             val avTitle = String.format(binding.root.context.getString(R.string.available_x), free.toString())
             slice.title = avTitle
-            slice.color = ContextCompat.getColor(binding.root.context, R.color.greenPrimary)
+            slice.color = ContextCompat.getColor(binding.root.context, R.color.secondaryGreen)
             slice.value = free
             binding.usedSizeGraph.addSlice(slice)
             binding.usedSpace.text = String.format(binding.root.context.getString(R.string.used_x),

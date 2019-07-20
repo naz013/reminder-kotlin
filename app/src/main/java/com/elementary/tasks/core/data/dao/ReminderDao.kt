@@ -5,24 +5,6 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import com.elementary.tasks.core.data.models.Reminder
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 @Dao
 interface ReminderDao {
 
@@ -84,6 +66,14 @@ interface ReminderDao {
     @Query("SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId")
     fun getAllTypesInRange(active: Boolean, removed: Boolean, fromTime: String, toTime: String): List<Reminder>
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Transaction
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active
+        AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime
+        AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId LIMIT :limit""")
+    fun loadAllTypesInRange(active: Boolean = true, removed: Boolean = false, limit: Int = 3,
+                            fromTime: String, toTime: String): LiveData<List<Reminder>>
+
     @Insert(onConflict = REPLACE)
     fun insert(reminder: Reminder)
 
@@ -93,6 +83,19 @@ interface ReminderDao {
     @Delete
     fun delete(reminder: Reminder)
 
+    @Query("DELETE FROM Reminder WHERE uuId=:id")
+    fun delete(id: String)
+
     @Delete
     fun deleteAll(reminders: Iterable<Reminder>)
+
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Transaction
+    @Query("SELECT * FROM Reminder, ReminderGroup WHERE eventState=:status")
+    fun getAllByStatus(status: Int = 10): List<Reminder>
+
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Transaction
+    @Query("SELECT * FROM Reminder, ReminderGroup WHERE eventState=:status")
+    fun loadAllByStatus(status: Int = 10): LiveData<List<Reminder>>
 }

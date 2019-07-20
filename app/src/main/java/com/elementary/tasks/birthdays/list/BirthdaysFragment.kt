@@ -8,8 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,24 +25,6 @@ import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
     private lateinit var viewModel: BirthdaysViewModel
@@ -82,22 +62,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.fragment_trash, menu)
-        menu.findItem(R.id.action_delete_all)?.isVisible = false
-
-        withContext {
-            val searchIcon = ContextCompat.getDrawable(it, R.drawable.ic_twotone_search_24px)
-            if (searchIcon != null) {
-                if (isDark) {
-                    val white = ContextCompat.getColor(it, R.color.whitePrimary)
-                    DrawableCompat.setTint(searchIcon, white)
-                } else {
-                    val black = ContextCompat.getColor(it, R.color.pureBlack)
-                    DrawableCompat.setTint(searchIcon, black)
-                }
-            }
-            menu.getItem(0)?.icon = searchIcon
-        }
+        inflater.inflate(R.menu.fragment_active_menu, menu)
 
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
@@ -146,8 +111,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     override fun getTitle(): String = getString(R.string.birthdays)
 
     private fun initList() {
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
+                    StaggeredGridLayoutManager.VERTICAL)
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
@@ -160,7 +126,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
             }
         }
         binding.recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }) {
+        ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()
             else binding.fab.hide()
         }

@@ -13,6 +13,45 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/groupsButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/gradient_button_groups_selector"
+                        android:contentDescription="@string/groups"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_local_offer_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/archiveButton"
+                        android:layout_width="@dimen/home_action_button_size"
+                        android:layout_height="@dimen/home_action_button_size"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/gradient_button_birthdays_selector"
+                        android:contentDescription="@string/trash"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_twotone_dns_24px"
+                        app:tint="?android:textColorPrimary" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
             <LinearLayout
                 android:id="@+id/emptyItem"
                 android:layout_width="match_parent"
@@ -30,7 +69,7 @@
                     app:lottie_loop="true"
                     app:lottie_rawRes="@raw/empty_status" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/emptyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +101,6 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_twotone_add_24px"
-            app:tint="?colorOnSecondary" />
+            app:srcCompat="@drawable/ic_twotone_add_24px" />
     </RelativeLayout>
 </layout>

@@ -22,12 +22,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BaseNotificationActivity
+import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.ReminderActionReceiver
-import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
@@ -35,16 +35,17 @@ import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 
-class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>() {
+class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
     private lateinit var viewModel: ReminderViewModel
 
+    private val themeUtil: ThemeUtil by inject()
+
     private var shoppingAdapter: ShopListRecyclerAdapter = ShopListRecyclerAdapter()
-    private val repeater = RepeatNotificationReceiver()
-    private var sentReceiver: BroadcastReceiver? = null
 
     private var mReminder: Reminder? = null
     private var mControl: EventControl? = null
@@ -173,7 +174,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             return count == 10
         }
     private var mWasStopped = false
-
     private val mLocalReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val action = intent?.action ?: ""
@@ -184,8 +184,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             }
         }
     }
-
-    override fun layoutRes(): Int = R.layout.activity_reminder_dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -241,7 +239,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         binding.buttonDelay.setOnClickListener { delay() }
         binding.buttonDelayFor.setOnClickListener {
             showDialog()
-            repeater.cancelAlarm(this, id)
+            EventJobScheduler.cancelReminder(uuId)
             discardNotification(id)
         }
         binding.buttonAction.setOnClickListener { call() }
@@ -334,7 +332,11 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         if (Reminder.isKind(reminder.type, Reminder.Kind.CALL) || Reminder.isSame(reminder.type, Reminder.BY_SKYPE_VIDEO)) {
             if (!Reminder.isBase(reminder.type, Reminder.BY_SKYPE)) {
                 contactPhoto.visibility = View.VISIBLE
-                val conID = Contacts.getIdFromNumber(reminder.target, this)
+                val conID = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+                    Contacts.getIdFromNumber(reminder.target, this)
+                } else {
+                    0L
+                }
 
                 val name = Contacts.getNameFromNumber(reminder.target, this)
                 binding.remText.setText(R.string.make_call)
@@ -434,8 +436,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         } else if (Reminder.isSame(reminder.type, Reminder.BY_DATE_EMAIL)) {
             binding.remText.setText(R.string.e_mail)
             val conID = Contacts.getIdFromMail(reminder.target, this)
-            if (conID != 0) {
-                val photo = Contacts.getPhoto(conID.toLong())
+            if (conID != 0L) {
+                val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
                     Picasso.get().load(photo).into(contactPhoto)
                 } else {
@@ -523,7 +525,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         } else {
             showNotification()
             if (isRepeatEnabled) {
-                repeater.setAlarm(this, id)
+                EventJobScheduler.scheduleReminderRepeat(this, uuId, prefs)
             }
             if (isTtsEnabled) {
                 startTts()
@@ -592,16 +594,13 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver)
         viewModel.reminder.removeObserver(mReminderObserver)
         lifecycle.removeObserver(viewModel)
-        if (sentReceiver != null) {
-            unregisterReceiver(sentReceiver)
-        }
         removeFlags()
     }
 
     override fun onBackPressed() {
         discardMedia()
         if (prefs.isFoldingEnabled) {
-            repeater.cancelAlarm(this, id)
+            EventJobScheduler.cancelReminder(uuId)
             removeFlags()
             finish()
         } else {
@@ -620,7 +619,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     private fun cancelTasks() {
         discardNotification(id)
-        repeater.cancelAlarm(this, id)
     }
 
     private fun showDialog() {
@@ -628,6 +626,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         val builder = dialogues.getMaterialDialog(this)
         builder.setTitle(getString(R.string.choose_time))
         builder.setItems(items) { dialog, item1 ->
+            dialog.dismiss()
             var x = 0
             when (item1) {
                 0 -> x = 5
@@ -643,11 +642,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
                 10 -> x = 60 * 24 * 2
                 11 -> x = 60 * 24 * 7
             }
-            mControl?.setDelay(x)
-            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-            removeFlags()
-            finish()
+            delay(x)
         }
         builder.create().show()
     }
@@ -737,13 +732,16 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     private fun makeCall() {
         val reminder = mReminder ?: return
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(reminder.target, this)
         }
     }
 
-    private fun delay() {
-        doActions({ it.setDelay(prefs.snoozeTime) }, { finish() })
+    private fun delay(minutes: Int = prefs.snoozeTime) {
+        doActions({ it.setDelay(minutes) }, {
+            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show()
+            finish()
+        })
     }
 
     private fun cancel() {
@@ -761,24 +759,6 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         doActions({ it.next() }, { finish() })
     }
 
-    override fun onProgressHidden() {
-        binding.progressOverlay.visibility = View.GONE
-    }
-
-    override fun onProgressShow(message: String) {
-        binding.progressOverlay.visibility = View.VISIBLE
-    }
-
-    override fun showSendingError() {
-        showNotification()
-        binding.remText.text = getString(R.string.error_sending)
-        binding.remText.contentDescription = getString(R.string.error_sending)
-        binding.buttonAction.text = getString(R.string.retry)
-        if (binding.buttonAction.visibility == View.INVISIBLE) {
-            binding.buttonAction.visibility = View.VISIBLE
-        }
-    }
-
     private fun showFavouriteNotification() {
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(summary)
@@ -789,7 +769,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -852,7 +832,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -866,8 +846,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     }
 
     private fun priority(): Int {
-        val priority = mReminder?.priority ?: 2
-        return when (priority) {
+        return when (mReminder?.priority ?: 2) {
             0 -> NotificationCompat.PRIORITY_MIN
             1 -> NotificationCompat.PRIORITY_LOW
             2 -> NotificationCompat.PRIORITY_DEFAULT
@@ -923,7 +902,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         val isWear = prefs.isWearEnabled
         if (isWear) {
             builder.setOnlyAlertOnce(true)
@@ -939,7 +918,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CALL_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            CALL_PERM -> if (Permissions.checkPermission(grantResults)) {
                 makeCall()
             }
         }

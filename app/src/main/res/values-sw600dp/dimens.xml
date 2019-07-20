@@ -15,4 +15,5 @@
     <dimen name="image_height">404dp</dimen>
     <dimen name="image_height_list">256dp</dimen>
     <bool name="is_tablet">true</bool>
+    <integer name="num_of_cols">2</integer>
 </resources>

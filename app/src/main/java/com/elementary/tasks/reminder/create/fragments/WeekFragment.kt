@@ -132,8 +132,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
         binding.mondayCheck.setOnCheckedChangeListener(mCheckListener)
 
         binding.timeField.setOnClickListener {
-            TimeUtil.showTimePicker(activity!!, themeUtil.dialogStyle,
-                    prefs.is24HourFormat, iFace.state.hour, iFace.state.minute, mTimeSelect)
+            TimeUtil.showTimePicker(activity!!, prefs.is24HourFormat, iFace.state.hour, iFace.state.minute, mTimeSelect)
         }
         binding.timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
 

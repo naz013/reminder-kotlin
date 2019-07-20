@@ -3,70 +3,100 @@ package com.elementary.tasks.core.services
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.utils.TimeUtil.BIRTH_FORMAT
+import com.elementary.tasks.core.work.BackupDataWorker
+import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
+import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.evernote.android.job.Job
-import com.evernote.android.job.JobManager
-import com.evernote.android.job.JobRequest
-import com.evernote.android.job.util.support.PersistableBundleCompat
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class EventJobService : Job(), KoinComponent {
 
     private val prefs: Prefs by inject()
+    private val notifier: Notifier by inject()
+    private val appDb: AppDb by inject()
 
-    override fun onRunJob(params: Job.Params): Job.Result {
+    override fun onRunJob(params: Params): Result {
         Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
+        val bundle = params.extras
         when (params.tag) {
-            EVENT_BIRTHDAY -> birthdayAction(context)
+            EventJobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
+            EventJobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
+            EventJobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
+            EventJobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
+            EventJobScheduler.EVENT_CHECK -> eventsCheckAction()
             else -> {
-                val bundle = params.extras
                 when {
-                    bundle.getBoolean(ARG_MISSED, false) -> {
-                        if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
-                            openMissedScreen(params.tag)
-                            enableMissedCall(prefs, params.tag)
-                        } else if (prefs.doNotDisturbAction == 0) {
-                            enableMissedCall(prefs, params.tag)
-                        }
-                    }
-                    bundle.getBoolean(ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
-                    else -> start(context, params.tag)
+                    bundle.getBoolean(EventJobScheduler.ARG_MISSED, false) -> missedCallAction(params)
+                    bundle.getBoolean(EventJobScheduler.ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
+                    bundle.getBoolean(EventJobScheduler.ARG_REPEAT, false) -> repeatedReminderAction(context, params.tag)
+                    else -> reminderAction(context, params.tag)
                 }
             }
         }
-        return Job.Result.SUCCESS
+        return Result.SUCCESS
+    }
+
+    private fun repeatedReminderAction(context: Context, tag: String?) {
+        val id = tag ?: ""
+        val item = appDb.reminderDao().getById(id)
+        if (item != null) {
+            Timber.d("repeatedReminderAction: ${item.uuId}")
+            notifier.showRepeatedNotification(context, item)
+            EventJobScheduler.scheduleReminderRepeat(context, item.uuId, prefs)
+        }
+    }
+
+    private fun eventsCheckAction() {
+        CheckEventsWorker.schedule()
+        EventJobScheduler.scheduleEventCheck(prefs)
+    }
+
+    private fun autoBackupAction() {
+        BackupDataWorker.schedule()
+        EventJobScheduler.scheduleAutoBackup(prefs)
+    }
+
+    private fun autoSyncAction() {
+        SyncDataWorker.schedule()
+        EventJobScheduler.scheduleAutoSync(prefs)
+    }
+
+    private fun birthdayPermanentAction() {
+        if (prefs.isBirthdayPermanentEnabled) {
+            notifier.showBirthdayPermanent()
+        }
+    }
+
+    private fun missedCallAction(params: Params) {
+        if (!prefs.applyDoNotDisturb(prefs.missedCallPriority)) {
+            EventJobScheduler.scheduleMissedCall(prefs, params.tag)
+            if (Module.isQ) {
+                ContextCompat.startForegroundService(context,
+                        EventOperationalService.getIntent(context, params.tag,
+                                EventOperationalService.TYPE_MISSED,
+                                EventOperationalService.ACTION_PLAY,
+                                0))
+            } else {
+                openMissedScreen(params.tag)
+            }
+        } else if (prefs.doNotDisturbAction == 0) {
+            EventJobScheduler.scheduleMissedCall(prefs, params.tag)
+        }
     }
 
     private fun birthdayAction(context: Context) {
-        cancelBirthdayAlarm()
-        enableBirthdayAlarm(prefs)
+        EventJobScheduler.cancelDailyBirthday()
+        EventJobScheduler.scheduleDailyBirthday(prefs)
         launchDefault {
             val daysBefore = prefs.daysToBirthday
             val applyDnd = prefs.applyDoNotDisturb(prefs.birthdayPriority)
@@ -79,7 +109,15 @@ class EventJobService : Job(), KoinComponent {
                 val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
                 if (!applyDnd && birthValue == mDate && year != mYear) {
                     withUIContext {
-                        showBirthday(context, item)
+                        if (Module.isQ) {
+                            ContextCompat.startForegroundService(context,
+                                    EventOperationalService.getIntent(context, item.uuId,
+                                            EventOperationalService.TYPE_BIRTHDAY,
+                                            EventOperationalService.ACTION_PLAY,
+                                            item.uniqueId))
+                        } else {
+                            showBirthday(context, item)
+                        }
                     }
                 }
             }
@@ -104,148 +142,14 @@ class EventJobService : Job(), KoinComponent {
     }
 
     private fun openMissedScreen(tag: String) {
-        val resultIntent = Intent(context, MissedCallDialogActivity::class.java)
-        resultIntent.putExtra(Constants.INTENT_ID, tag)
-        resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+        val resultIntent = MissedCallDialogActivity.getLaunchIntent(context, tag)
         context.startActivity(resultIntent)
     }
 
-    private fun start(context: Context, id: String) {
+    private fun reminderAction(context: Context, id: String) {
         val intent = Intent(context, ReminderActionReceiver::class.java)
         intent.action = ReminderActionReceiver.ACTION_RUN
         intent.putExtra(Constants.INTENT_ID, id)
         context.sendBroadcast(intent)
-    }
-
-    companion object {
-        private const val EVENT_BIRTHDAY = "event_birthday"
-
-        private const val ARG_LOCATION = "arg_location"
-        private const val ARG_MISSED = "arg_missed"
-
-        fun cancelBirthdayAlarm() {
-            cancelReminder(EVENT_BIRTHDAY)
-        }
-
-        fun enableBirthdayAlarm(prefs: Prefs) {
-            val time = prefs.birthdayTime
-            val mills = TimeUtil.getBirthdayTime(time) - System.currentTimeMillis()
-            if (mills <= 0) return
-            JobRequest.Builder(EVENT_BIRTHDAY)
-                    .setExact(mills)
-                    .setRequiresCharging(false)
-                    .setRequiresDeviceIdle(false)
-                    .setRequiresBatteryNotLow(false)
-                    .build()
-                    .schedule()
-        }
-
-        internal fun enableMissedCall(prefs: Prefs, number: String?) {
-            if (number == null) return
-            val time = prefs.missedReminderTime
-            val mills = (time * (1000 * 60)).toLong()
-            val bundle = PersistableBundleCompat()
-            bundle.putBoolean(ARG_MISSED, true)
-            JobRequest.Builder(number)
-                    .setExact(mills)
-                    .setRequiresCharging(false)
-                    .setRequiresDeviceIdle(false)
-                    .setRequiresBatteryNotLow(false)
-                    .setRequiresStorageNotLow(false)
-                    .setExtras(bundle)
-                    .setUpdateCurrent(true)
-                    .build()
-                    .schedule()
-        }
-
-        fun cancelMissedCall(number: String?) {
-            if (number == null) return
-            cancelReminder(number)
-        }
-
-        fun enableDelay(time: Int, id: String) {
-            val min = TimeCount.MINUTE
-            val millis = min * time
-            enableDelay(millis, id)
-        }
-
-        fun enableDelay(millis: Long, id: String) {
-            if (millis <= 0) {
-                return
-            }
-            JobRequest.Builder(id)
-                    .setExact(millis)
-                    .setRequiresCharging(false)
-                    .setRequiresDeviceIdle(false)
-                    .setRequiresBatteryNotLow(false)
-                    .setRequiresStorageNotLow(false)
-                    .setUpdateCurrent(true)
-                    .build()
-                    .schedule()
-        }
-
-        fun enablePositionDelay(context: Context, id: String): Boolean {
-            val item = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return false
-            val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
-            val mills = due - System.currentTimeMillis()
-            if (due == 0L || mills <= 0) {
-                return false
-            }
-            val bundle = PersistableBundleCompat()
-            bundle.putBoolean(ARG_LOCATION, true)
-            JobRequest.Builder(item.uuId)
-                    .setExact(mills)
-                    .setRequiresCharging(false)
-                    .setRequiresDeviceIdle(false)
-                    .setRequiresBatteryNotLow(false)
-                    .setRequiresStorageNotLow(false)
-                    .setUpdateCurrent(true)
-                    .setExtras(bundle)
-                    .build()
-                    .schedule()
-            return true
-        }
-
-        fun enableReminder(reminder: Reminder?) {
-            if (reminder == null) return
-            var due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            Timber.d("enableReminder: ${TimeUtil.logTime(due)}")
-            Timber.d("enableReminder: noe -> ${TimeUtil.logTime()}")
-            if (due == 0L) {
-                return
-            }
-            if (reminder.remindBefore != 0L) {
-                due -= reminder.remindBefore
-            }
-            if (!Reminder.isBase(reminder.type, Reminder.BY_TIME)) {
-                val calendar = Calendar.getInstance()
-                calendar.timeInMillis = due
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                due = calendar.timeInMillis
-            }
-            var millis = due - System.currentTimeMillis()
-            if (millis < 0) {
-               millis = 100L
-            }
-            JobRequest.Builder(reminder.uuId)
-                    .setExact(millis)
-                    .setRequiresCharging(false)
-                    .setRequiresDeviceIdle(false)
-                    .setRequiresBatteryNotLow(false)
-                    .setRequiresStorageNotLow(false)
-                    .setUpdateCurrent(true)
-                    .build()
-                    .schedule()
-        }
-
-        fun isEnabledReminder(id: String): Boolean {
-            return !JobManager.instance().getAllJobsForTag(id).isEmpty()
-        }
-
-        fun cancelReminder(tag: String) {
-            Timber.i("cancelReminder: $tag")
-            JobManager.instance().cancelAllForTag(tag)
-        }
     }
 }

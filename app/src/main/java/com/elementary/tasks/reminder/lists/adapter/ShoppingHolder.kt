@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.lists.adapter
 
-import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.databinding.ListItemShopItemBinding
 
@@ -45,8 +41,6 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
         binding.taskText.text = reminder.summary
         loadCheck(reminder)
         loadContainer(reminder.type)
-        loadType(reminder.type)
-        loadPriority(reminder.priority)
         loadGroup(reminder)
         loadShoppingDate(reminder)
         loadItems(reminder.shoppings)
@@ -69,19 +63,9 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     }
 
     private fun loadGroup(reminder: Reminder) {
-        val colorStateList = ColorStateList.valueOf(themeUtil.getCategoryColor(reminder.groupColor))
-        binding.chipPriority.chipStrokeColor = colorStateList
-        binding.chipType.chipStrokeColor = colorStateList
-        binding.chipGroup.chipStrokeColor = colorStateList
-        binding.chipGroup.text = reminder.groupTitle
-    }
-
-    private fun loadPriority(type: Int) {
-        binding.chipPriority.text = ReminderUtils.getPriorityTitle(itemView.context, type)
-    }
-
-    private fun loadType(type: Int) {
-        binding.chipType.text = ReminderUtils.getTypeString(itemView.context, type)
+        val priority = ReminderUtils.getPriorityTitle(itemView.context, reminder.priority)
+        val typeLabel = ReminderUtils.getTypeString(itemView.context, reminder.type)
+        binding.reminderTypeGroup.text = "$typeLabel (${reminder.groupTitle}, $priority)"
     }
 
     private fun loadLeft(item: Reminder) {
@@ -93,7 +77,7 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
     }
 
     private fun loadItems(shoppings: List<ShopItem>) {
-        val isDark = themeUtil.isDark
+        val isDark = ThemeUtil.isDarkMode(itemView.context)
         binding.todoList.visibility = View.VISIBLE
         binding.todoList.isFocusableInTouchMode = false
         binding.todoList.isFocusable = false

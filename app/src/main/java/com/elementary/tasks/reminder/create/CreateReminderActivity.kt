@@ -21,12 +21,11 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -38,15 +37,14 @@ import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
-class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), ReminderInterface {
+class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder), ReminderInterface {
 
     private lateinit var viewModel: ReminderViewModel
     private lateinit var conversationViewModel: ConversationViewModel
-    private val stateViewModel: StateViewModel by viewModel()
+    private lateinit var stateViewModel: StateViewModel
 
     private var fragment: TypeFragment<*>? = null
     private var mUri: Uri? = null
@@ -62,6 +60,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     override var canExportToCalendar: Boolean = false
 
     private val backupTool: BackupTool by inject()
+    private val cacheUtil: CacheUtil by inject()
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -79,10 +78,9 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         }
     }
 
-    override fun layoutRes(): Int = R.layout.activity_create_reminder
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
         canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
@@ -106,7 +104,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     private fun hasGpsPermission(code: Int): Boolean {
-        if (!Permissions.ensurePermissions(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (!Permissions.checkPermission(this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             return false
         }
         return true
@@ -117,7 +115,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
             DATE -> replaceFragment(DateFragment())
             TIMER -> replaceFragment(TimerFragment())
             WEEK -> replaceFragment(WeekFragment())
-            EMAIL -> if (Permissions.ensurePermissions(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
+            EMAIL -> if (Permissions.checkPermission(this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS)) {
                 replaceFragment(EmailFragment())
             } else {
                 binding.navSpinner.setSelection(DATE)
@@ -133,7 +131,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                 binding.navSpinner.setSelection(DATE)
             }
             GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
-                replaceFragment(PlacesFragment())
+                replaceFragment(PlacesTypeFragment())
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
@@ -202,7 +200,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     private fun readFromIntent() {
-        if (Permissions.ensurePermissions(this, SD_PERM, Permissions.READ_EXTERNAL)) {
+        if (Permissions.checkPermission(this, SD_PERM, Permissions.READ_EXTERNAL)) {
             mUri?.let {
                 try {
                     val scheme = it.scheme
@@ -353,14 +351,13 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
     }
 
     override fun selectMelody() {
-        if (Permissions.ensurePermissions(this,330, Permissions.READ_EXTERNAL)) {
-            startActivityForResult(Intent(this, FileExplorerActivity::class.java),
-                    Constants.REQUEST_CODE_SELECTED_MELODY)
+        if (Permissions.checkPermission(this,330, Permissions.READ_EXTERNAL)) {
+            cacheUtil.pickMelody(this, Constants.REQUEST_CODE_SELECTED_MELODY)
         }
     }
 
     override fun attachFile() {
-        if (Permissions.ensurePermissions(this, 331, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+        if (Permissions.checkPermission(this, 331, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             selectAnyFile()
         }
     }
@@ -405,7 +402,7 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         menuInflater.inflate(R.menu.menu_create_reminder, menu)
         if (Module.hasMicrophone(this)) {
             menu[0].isVisible = true
-            ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDark)
+            ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_mic_24px, isDarkMode)
         } else {
             menu[0].isVisible = false
         }
@@ -435,9 +432,13 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
                 }
             }
         } else if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == Activity.RESULT_OK) {
-            val melodyPath = data?.getStringExtra(Constants.FILE_PICKED) ?: ""
-            fragment?.onMelodySelect(melodyPath)
-            showCurrentMelody()
+            if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+                val melodyPath = cacheUtil.cacheFile(data)
+                if (melodyPath != null) {
+                    fragment?.onMelodySelect(melodyPath)
+                    showCurrentMelody()
+                }
+            }
         } else if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 fragment?.onAttachmentSelect(it)
@@ -467,25 +468,25 @@ class CreateReminderActivity : ThemedActivity<ActivityCreateReminderBinding>(), 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CONTACTS_REQUEST_E -> if (Permissions.isAllGranted(grantResults)) {
+            CONTACTS_REQUEST_E -> if (Permissions.checkPermission(grantResults)) {
                 binding.navSpinner.setSelection(EMAIL)
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
-            GPS_PLACE -> if (Permissions.isAllGranted(grantResults)) {
+            GPS_PLACE -> if (Permissions.checkPermission(grantResults)) {
                 binding.navSpinner.setSelection(GPS_PLACE)
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
-            GPS -> if (Permissions.isAllGranted(grantResults)) {
+            GPS -> if (Permissions.checkPermission(grantResults)) {
                 binding.navSpinner.setSelection(GPS)
             } else {
                 binding.navSpinner.setSelection(DATE)
             }
-            331 -> if (Permissions.isAllGranted(grantResults)) {
+            331 -> if (Permissions.checkPermission(grantResults)) {
                 selectAnyFile()
             }
-            SD_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            SD_PERM -> if (Permissions.checkPermission(grantResults)) {
                 readFromIntent()
             }
         }

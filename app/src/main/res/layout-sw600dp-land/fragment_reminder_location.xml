@@ -5,14 +5,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +38,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/remind_me"
-                        android:inputType="textMultiLine"
                         android:maxLength="300"
                         android:maxLines="6"
                         android:textAppearance="?textAppearanceSubtitle1" />
@@ -74,21 +73,20 @@
 
                 <LinearLayout
                     android:id="@+id/searchBlock"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp">
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/addressLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="-4dp"
-                        android:layout_marginBottom="-8dp"
                         app:boxBackgroundColor="?colorSecondary12"
                         app:boxCornerRadiusTopEnd="5dp"
                         app:boxCornerRadiusTopStart="5dp">
@@ -96,32 +94,33 @@
                         <com.elementary.tasks.core.views.AddressAutoCompleteView
                             android:id="@+id/addressField"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="56dp"
+                            android:gravity="bottom"
                             android:hint="@string/address"
+                            android:imeOptions="actionDone"
                             android:maxLines="1"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
+                            android:paddingBottom="8dp"
                             android:textAppearance="?textAppearanceSubtitle2" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <androidx.appcompat.widget.AppCompatImageButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/clearButton"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerInside"
-                        app:backgroundTint="?colorSecondary"
-                        app:tint="?colorOnSecondary"
-                        app:srcCompat="@drawable/ic_twotone_backspace_24px" />
+                        style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="8dp"
+                        app:icon="@drawable/ic_twotone_backspace_24px" />
 
-                    <androidx.appcompat.widget.AppCompatImageButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/mapButton"
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerInside"
-                        app:tint="?colorOnSecondary"
-                        app:backgroundTint="?colorSecondary"
-                        app:srcCompat="@drawable/ic_twotone_map_24px" />
+                        style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="8dp"
+                        app:icon="@drawable/ic_twotone_map_24px" />
 
                 </LinearLayout>
 
@@ -232,13 +231,6 @@
                                 android:layout_marginTop="8dp"
                                 android:layout_marginRight="16dp" />
 
-                            <com.elementary.tasks.core.views.DividerView
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginStart="60dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginEnd="16dp" />
-
                             <com.elementary.tasks.core.views.WindowTypeView
                                 android:id="@+id/windowTypeView"
                                 android:layout_width="match_parent"
@@ -337,8 +329,8 @@
         <FrameLayout
             android:id="@+id/mapContainer"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:visibility="visible">
 
             <LinearLayout

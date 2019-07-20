@@ -11,37 +11,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
-import com.elementary.tasks.core.BaseNotificationActivity
+import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.sql.Date
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>() {
+class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
 
     private lateinit var viewModel: MissedCallViewModel
+
+    private val themeUtil: ThemeUtil by inject()
 
     private var mMissedCall: MissedCall? = null
     private var isEventShowed = false
@@ -61,7 +46,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         get() = ""
 
     override val id: Int
-        get() = mMissedCall?.uniqueId ?: 0
+        get() = mMissedCall?.uniqueId ?: 2122
 
     override val ledColor: Int
         get() = LED.getLED(prefs.ledColor)
@@ -87,11 +72,10 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         }
     }
 
-    override fun layoutRes(): Int = R.layout.activity_missed_dialog
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         super.onCreate(savedInstanceState)
+
+        isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
 
         binding.contactPhoto.borderColor = themeUtil.getNoteLightColor()
         binding.contactPhoto.visibility = View.GONE
@@ -160,19 +144,20 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         } catch (e: NullPointerException) {
             Timber.d("showInfo: ${e.message}")
         }
-
-        val name = Contacts.getNameFromNumber(missedCall.number, this)
-        if (missedCall.number != "") {
+        val name: String
+        if (missedCall.number.isNotEmpty() && Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+            name = Contacts.getNameFromNumber(missedCall.number, this) ?: missedCall.number
             val conID = Contacts.getIdFromNumber(missedCall.number, this)
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
                 Picasso.get().load(photo).into(binding.contactPhoto)
             } else {
-                BitmapUtils.imageFromName(name ?: missedCall.number) {
+                BitmapUtils.imageFromName(name) {
                     binding.contactPhoto.setImageDrawable(it)
                 }
             }
         } else {
+            name = missedCall.number
             binding.contactPhoto.visibility = View.INVISIBLE
         }
 
@@ -182,7 +167,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         binding.contactName.text = name
         binding.contactNumber.text = missedCall.number
 
-        showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
+        showMissedReminder(name)
         init()
     }
 
@@ -209,7 +194,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     }
 
     private fun makeCall() {
-        if (Permissions.ensurePermissions(this, CALL_PERM, Permissions.CALL_PHONE)) {
+        if (Permissions.checkPermission(this, CALL_PERM, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(mMissedCall?.number ?: "", this)
             removeMissed()
         }
@@ -235,7 +220,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            CALL_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            CALL_PERM -> if (Permissions.checkPermission(grantResults)) {
                 makeCall()
             }
         }
@@ -265,7 +250,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
         }
         builder.setContentText(appName)
         builder.setSmallIcon(R.drawable.ic_twotone_call_white)
-        builder.color = ContextCompat.getColor(this, R.color.bluePrimary)
+        builder.color = ContextCompat.getColor(this, R.color.secondaryBlue)
         if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
                         || SuperUtil.checkNotificationPermission(this)
                         && prefs.isSoundInSilentModeEnabled)) {
@@ -303,6 +288,13 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
             intent.putExtra(ARG_TEST, true)
             intent.putExtra(ARG_TEST_ITEM, missedCall)
             context.startActivity(intent)
+        }
+
+        fun getLaunchIntent(context: Context, id: String): Intent {
+            val resultIntent = Intent(context, MissedCallDialogActivity::class.java)
+            resultIntent.putExtra(Constants.INTENT_ID, id)
+            resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+            return resultIntent
         }
     }
 }

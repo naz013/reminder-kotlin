@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Erinnerung erfolgreich importiert</string>
     <string name="save_and_start_automatically">Speichern Sie und starten Sie automatisch</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Freigegebene Daten nur verfügbar, wenn dieser Bildschirm geöffnet ist</string>
+    <string name="accept">Akzeptieren</string>
+    <string name="backup_attached_files_and_melodies">Sichern Sie angehängte Dateien und Melodien</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Wenn Sie die Erinnerungsanwendung weiterhin verwenden, akzeptieren Sie die Datenschutzbestimmungen</string>
+    <string name="dismiss">Entlassen</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Wenn Sie Daten gesichert haben, können Sie sich bei Ihrem Cloud-Speicher anmelden, um sie wiederherzustellen.</string>
+    <string name="light">Licht</string>
+    <string name="multiple_device_mode">Mehrgerätemodus</string>
+    <string name="no_upcoming_birthdays">Keine anstehenden Geburtstage</string>
+    <string name="reminder_ongoing_service">Laufender Service der Reminder-Anwendung</string>
+    <string name="save_backup_on_sd_card">Sicherung auf SD-Karte speichern</string>
+    <string name="select_image">Bild auswählen</string>
+    <string name="select_melody">Melodie auswählen</string>
+    <string name="set_by_battery_saver">Wird vom Battery Saver eingestellt</string>
+    <string name="system_default">Systemfehler</string>
+    <string name="you_re_all_done">Du bist fertig</string>
 
 </resources>

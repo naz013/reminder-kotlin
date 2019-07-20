@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
@@ -12,11 +12,9 @@ import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 import org.koin.android.ext.android.inject
 import java.util.*
 
-class ImagePreviewActivity : ThemedActivity<ActivityImagePreviewBinding>() {
+class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>(R.layout.activity_image_preview) {
 
     private val imagesSingleton: ImagesSingleton by inject()
-
-    override fun layoutRes(): Int = R.layout.activity_image_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +64,7 @@ class ImagePreviewActivity : ThemedActivity<ActivityImagePreviewBinding>() {
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.title = ""
     }
 

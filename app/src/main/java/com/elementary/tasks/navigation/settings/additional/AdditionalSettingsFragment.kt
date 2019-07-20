@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
@@ -13,24 +14,6 @@ import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAdditionalBinding>() {
 
     private var mItemSelect: Int = 0
@@ -40,7 +23,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
         initMissedPrefs()
@@ -84,7 +67,9 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun initMessagesPrefs() {
         val mMessagesPrefs = binding.templatesPrefs
-        mMessagesPrefs.setOnClickListener { callback?.openFragment(TemplatesFragment(), getString(R.string.messages)) }
+        mMessagesPrefs.setOnClickListener {
+            findNavController().navigate(AdditionalSettingsFragmentDirections.actionAdditionalSettingsFragmentToTemplatesFragment())
+        }
         mMessagesPrefs.setDependentView(binding.quickSMSPrefs)
     }
 
@@ -111,7 +96,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun changeFollowPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, FOLLOW, Permissions.READ_PHONE_STATE)) {
+            if (!Permissions.checkPermission(it, FOLLOW, Permissions.READ_PHONE_STATE)) {
                 return@withActivity
             }
             val isChecked = binding.followReminderPrefs.isChecked
@@ -122,7 +107,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun changeMissedPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, MISSED, Permissions.READ_PHONE_STATE)) {
+            if (!Permissions.checkPermission(it, MISSED, Permissions.READ_PHONE_STATE)) {
                 return@withActivity
             }
             val isChecked = binding.missedPrefs.isChecked
@@ -133,7 +118,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     private fun changeQuickSmsPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
+            if (!Permissions.checkPermission(it, QUICK_SMS, Permissions.READ_PHONE_STATE)) {
                 return@withActivity
             }
             val isChecked = binding.quickSMSPrefs.isChecked
@@ -181,7 +166,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 MISSED -> changeMissedPrefs()
                 QUICK_SMS -> changeQuickSmsPrefs()

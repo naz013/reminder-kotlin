@@ -1,17 +1,17 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputFilter
+import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.ViewDataBinding
-import com.elementary.tasks.core.BindingFragment
+import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
@@ -97,8 +97,13 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
             }
         }
         windowTypeView?.let {
-            it.bindProperty(iFace.state.reminder.windowType) { type ->
-                iFace.state.reminder.windowType = type
+            if (Module.isQ) {
+                it.hide()
+            } else {
+                it.show()
+                it.bindProperty(iFace.state.reminder.windowType) { type ->
+                    iFace.state.reminder.windowType = type
+                }
             }
         }
         priorityPickerView?.let {
@@ -125,6 +130,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
         }
         summaryView?.let {
             it.filters = arrayOf(InputFilter.LengthFilter(Configs.MAX_REMINDER_SUMMARY_LENGTH))
+            it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
             it.bindProperty(iFace.state.reminder.summary) { summary ->
                 iFace.state.reminder.summary = summary.trim()
             }
@@ -147,7 +153,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
             it.onFileSelectListener = {
                 iFace.attachFile()
             }
-            ViewUtils.registerDragAndDrop(activity!!, it, true, themeUtil.getSecondaryColor(),
+            ViewUtils.registerDragAndDrop(activity!!, it, true, ThemeUtil.getSecondaryColor(it.context),
                     { clipData ->
                         if (clipData.itemCount > 0) {
                             it.setUri(clipData.getItemAt(0).uri)
@@ -283,15 +289,20 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
     }
 
     private fun selectContact() {
-        if (Permissions.ensurePermissions(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
+        if (Permissions.checkPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
             SuperUtil.selectContact(activity!!, Constants.REQUEST_CODE_CONTACTS)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
-            actionView?.number = data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
+        if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
+            if (Permissions.checkPermission(activity!!, CONTACTS, Permissions.READ_CONTACTS)) {
+                val contact = Contacts.readPickerResults(context!!, requestCode, resultCode, data)
+                if (contact != null) {
+                    actionView?.number = contact.phone
+                }
+            }
         }
     }
 
@@ -299,7 +310,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         actionView?.onRequestPermissionsResult(requestCode, grantResults)
         when (requestCode) {
-            CONTACTS -> if (Permissions.isAllGranted(grantResults)) selectContact()
+            CONTACTS -> if (Permissions.checkPermission(grantResults)) selectContact()
         }
     }
 

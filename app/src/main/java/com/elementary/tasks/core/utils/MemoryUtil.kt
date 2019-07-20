@@ -11,25 +11,6 @@ import timber.log.Timber
 import java.io.*
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 object MemoryUtil {
 
     const val DIR_SD = "backup"
@@ -40,20 +21,6 @@ object MemoryUtil {
     const val DIR_PLACES_SD = "places"
     const val DIR_TEMPLATES_SD = "templates"
     private const val DIR_MAIL_SD = "mail_attachments"
-    private const val DIR_SD_DBX_TMP = "tmp_dropbox"
-    private const val DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes"
-    private const val DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups"
-    private const val DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays"
-    private const val DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places"
-    private const val DIR_TEMPLATES_SD_DBX_TMP = "tmp_dropbox_templates"
-    private const val DIR_PREFERENCES_SD_DBX_TMP = "tmp_dropbox_preferences"
-    private const val DIR_SD_GDRIVE_TMP = "tmp_gdrive"
-    private const val DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes"
-    private const val DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group"
-    private const val DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays"
-    private const val DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places"
-    private const val DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates"
-    private const val DIR_PREFERENCES_SD_GDRIVE_TMP = "tmp_gdrive_preferences"
 
     val isSdPresent: Boolean
         get() {
@@ -79,53 +46,11 @@ object MemoryUtil {
     val templatesDir: File?
         get() = getDir(DIR_TEMPLATES_SD)
 
-    val googlePlacesDir: File?
-        get() = getDir(DIR_PLACES_SD_GDRIVE_TMP)
-
-    val googleTemplatesDir: File?
-        get() = getDir(DIR_TEMPLATES_SD_GDRIVE_TMP)
-
-    val dropboxPlacesDir: File?
-        get() = getDir(DIR_PLACES_SD_DBX_TMP)
-
-    val dropboxTemplatesDir: File?
-        get() = getDir(DIR_TEMPLATES_SD_DBX_TMP)
-
-    val dropboxRemindersDir: File?
-        get() = getDir(DIR_SD_DBX_TMP)
-
-    val dropboxGroupsDir: File?
-        get() = getDir(DIR_GROUP_SD_DBX_TMP)
-
-    val dropboxBirthdaysDir: File?
-        get() = getDir(DIR_BIRTHDAY_SD_DBX_TMP)
-
-    val dropboxNotesDir: File?
-        get() = getDir(DIR_NOTES_SD_DBX_TMP)
-
-    val googleRemindersDir: File?
-        get() = getDir(DIR_SD_GDRIVE_TMP)
-
-    val googleGroupsDir: File?
-        get() = getDir(DIR_GROUP_SD_GDRIVE_TMP)
-
-    val googleBirthdaysDir: File?
-        get() = getDir(DIR_BIRTHDAY_SD_GDRIVE_TMP)
-
-    val googleNotesDir: File?
-        get() = getDir(DIR_NOTES_SD_GDRIVE_TMP)
-
     val mailDir: File?
         get() = getDir(DIR_MAIL_SD)
 
     val prefsDir: File?
         get() = getDir(DIR_PREFS)
-
-    val googlePrefsDir: File?
-        get() = getDir(DIR_PREFERENCES_SD_GDRIVE_TMP)
-
-    val dropboxPrefsDir: File?
-        get() = getDir(DIR_PREFERENCES_SD_DBX_TMP)
 
     val parent: File?
         get() = getDir("")
@@ -224,6 +149,55 @@ object MemoryUtil {
         }
     }
 
+    fun readFileContent(cr: ContentResolver, name: Uri): String? {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = cr.openInputStream(name)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (inputStream == null) {
+            return null
+        }
+        val r = BufferedReader(InputStreamReader(inputStream))
+        val total = StringBuilder()
+        var line: String?
+        try {
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+        } catch (e: Exception) {
+            Timber.d("readFileContent: ${e.message}")
+            return null
+        }
+        inputStream.close()
+        return total.toString()
+    }
+
+    fun readFileContent(file: File): String? {
+        try {
+            val inputStream = FileInputStream(file)
+            val r = BufferedReader(InputStreamReader(inputStream))
+            val total = StringBuilder()
+            var line: String?
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+            inputStream.close()
+            return total.toString()
+        } catch (e: Exception) {
+            Timber.d("readFileContent: ${e.message}")
+            return null
+        }
+    }
+
     /**
      * Write data to file.
      *
@@ -297,5 +271,63 @@ object MemoryUtil {
             return null
         }
         return file.toString()
+    }
+
+    fun encryptJson(data: String?): String? {
+        if (data == null) return null
+        try {
+            val inputStream = ByteArrayInputStream(data.toByteArray())
+            val buffer = ByteArray(8192)
+            var bytesRead: Int
+            val output = ByteArrayOutputStream()
+            val output64 = Base64OutputStream(output, Base64.DEFAULT)
+            try {
+                do {
+                    bytesRead = inputStream.read(buffer)
+                    if (bytesRead != -1) {
+                        output64.write(buffer, 0, bytesRead)
+                    }
+                } while (bytesRead != -1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            output64.close()
+
+            val encrypted = output.toString()
+            output.close()
+            return encrypted
+        } catch (e: SecurityException) {
+            return null
+        }
+    }
+
+    fun decryptToJson(encrypted: String?): String? {
+        if (encrypted == null) return null
+        return try {
+            val inputStream = ByteArrayInputStream(encrypted.toByteArray())
+            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+            val r = BufferedReader(InputStreamReader(output64))
+            val total = StringBuilder()
+            var line: String?
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+            output64.close()
+            inputStream.close()
+            val res = total.toString()
+            if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
+                Timber.d("readFileToJson: $res")
+                res
+            } else {
+                Timber.d("readFileToJson: Bad JSON")
+                null
+            }
+        } catch (e: Exception) {
+            Timber.d("readFileToJson: Bad JSON")
+            null
+        }
     }
 }

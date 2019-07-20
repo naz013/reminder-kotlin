@@ -69,7 +69,10 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
     }
 
     override fun prepare(): Reminder? {
-        if (!Permissions.ensureForeground(activity!!, 1212)) {
+        if (!Permissions.ensureForeground(activity!!, REQ_FOREGROUND)) {
+            return null
+        }
+        if (!Permissions.ensureBackgroundLocation(activity!!, REQ_BG_LOCATION)) {
             return null
         }
         val reminder = super.prepare() ?: return null
@@ -100,7 +103,12 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
             }
         }
         val radius = mAdvancedMapFragment?.markerRadius ?: prefs.radius
-        reminder.places = listOf(Place(radius, map.markerStyle, pos.latitude, pos.longitude, reminder.summary, number, listOf()))
+        reminder.places = listOf(Place(
+                radius = radius,
+                marker = map.markerStyle,
+                latitude = pos.latitude,
+                longitude = pos.longitude,
+                name = reminder.summary))
         reminder.target = number
         reminder.type = type
         reminder.exportToCalendar = false
@@ -241,5 +249,10 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
         } else {
             binding.enterCheck.isChecked = true
         }
+    }
+
+    companion object {
+        const val REQ_FOREGROUND = 2121
+        const val REQ_BG_LOCATION = 2122
     }
 }

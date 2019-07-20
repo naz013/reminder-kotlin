@@ -69,8 +69,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:name=".ReminderApp"
@@ -81,7 +83,7 @@
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Light1.Blue"
+        android:theme="@style/MyTheme.DayNight"
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="n">
@@ -90,9 +92,11 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".navigation.MainActivity" />
+        <activity android:name=".experimental.BottomNavActivity">
+            <nav-graph android:value="@navigation/home_nav" />
+        </activity>
         <activity
-            android:name=".core.IntentActivity"
+            android:name=".core.arch.IntentActivity"
             android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
             android:label="@string/import_file"
@@ -109,7 +113,6 @@
                 <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -193,14 +196,14 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.ta2" />
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.ta2" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name="com.elementary.tasks.navigation.settings.general.theme.SelectThemeActivity" />
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden"
@@ -228,11 +231,6 @@
             android:excludeFromRecents="true" />
         <activity
             android:name=".core.additional.FollowReminderActivity"
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
-            android:name=".core.file_explorer.FileExplorerActivity"
-            android:configChanges="keyboardHidden"
             android:excludeFromRecents="true"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
@@ -303,22 +301,28 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.chromium.arc.intent.action.CREATE_NOTE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
@@ -354,11 +358,10 @@
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateUnchanged" />
         <activity
-            android:name=".core.contacts.SelectContactActivity"
-            android:excludeFromRecents="true"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
             android:name=".reminder.preview.ReminderDialogActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".reminder.preview.ReminderDialog29Activity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".core.apps.SelectApplicationActivity"
@@ -372,42 +375,40 @@
             android:name=".missed_calls.MissedCallDialogActivity"
             android:excludeFromRecents="true" />
         <activity
+            android:name=".missed_calls.MissedCallDialog29Activity"
+            android:excludeFromRecents="true" />
+        <activity
             android:name=".birthdays.preview.ShowBirthdayActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".birthdays.preview.ShowBirthday29Activity"
             android:excludeFromRecents="true" />
         <activity
             android:name=".navigation.settings.security.PinLoginActivity"
             android:excludeFromRecents="true" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
-        <activity android:name=".intro.PrivacyPolicyActivity" />
+        <activity android:name=".other.PrivacyPolicyActivity" />
         <activity android:name=".reminder.preview.AttachmentPreviewActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog" />
+            android:excludeFromRecents="true" />
         <activity
             android:name=".core.dialogs.VoiceResultDialog"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog" />
+            android:excludeFromRecents="true" />
         <activity
             android:name=".core.dialogs.VolumeDialog"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog" />
-        <activity
-            android:name=".notes.editor.ImageEditActivity"
             android:excludeFromRecents="true" />
         <activity android:name=".voice.ConversationActivity" />
         <activity
-            android:name=".core.SplashScreen"
+            android:name=".core.SplashScreenActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/SplashScreenTheme.Light2">
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".login.LoginActivity" />
 
         <receiver
             android:name=".core.services.CallReceiver"
@@ -416,8 +417,6 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".core.services.AlarmReceiver" />
-        <receiver android:name=".core.services.RepeatNotificationReceiver" />
         <receiver android:name=".core.services.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -428,6 +427,18 @@
         <service
             android:name=".core.services.GeolocationService"
             android:enabled="true" />
+
+        <service
+            android:name=".core.services.EventOperationalService"
+            android:enabled="true" />
+
+        <service
+            android:name=".core.services.SyncMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name=".core.app_widgets.buttons.CombinedButtonsWidget"
@@ -564,19 +575,25 @@
         <activity
             android:name=".core.app_widgets.buttons.VoiceWidgetDialog"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="true"
-            android:theme="@style/Light1.Dialog">
+            android:excludeFromRecents="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".core.app_widgets.calendar.CalendarUpdateMinusService"
-            android:enabled="true" />
-        <service
-            android:name=".core.app_widgets.calendar.CalendarUpdateService"
-            android:enabled="true" />
+        <receiver
+            android:name=".core.app_widgets.calendar.CalendarPreviousReceiver">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".core.app_widgets.calendar.CalendarNextReceiver">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name="com.evernote.android.job.gcm.PlatformGcmService"
@@ -595,7 +612,6 @@
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask">
             <intent-filter>
-
                 <data android:scheme="db-4zi1d414h0v8sxe" />
 
                 <action android:name="android.intent.action.VIEW" />
@@ -618,9 +634,9 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e319ad50eeab199ac7860c9873cac1803c44386c" />
     </application>
+
 </manifest>

@@ -35,7 +35,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/task"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                     android:textAppearance="?textAppearanceSubtitle1"
                     tools:text="Task" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
 
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/taskDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -26,8 +26,9 @@
                 android:id="@+id/iconView"
                 android:layout_width="40dp"
                 android:layout_height="24dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:srcCompat="@drawable/ic_twotone_track_changes_24px"
                 app:tint="?android:textColorPrimary" />
 
@@ -40,7 +41,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/prefsPrimaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +50,7 @@
                     android:textAppearance="?textAppearanceSubtitle1"
                     tools:text="Title" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/prefsSecondaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,7 +69,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/prefsCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,16 +77,16 @@
                     android:saveEnabled="false"
                     android:visibility="gone" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/prefsSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:clickable="false"
                     android:gravity="center"
                     android:saveEnabled="false"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/prefsValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,15 +96,25 @@
                     android:visibility="gone"
                     tools:text="02" />
 
-                <View
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/prefsView"
                     android:layout_width="@dimen/settings_view_size"
                     android:layout_height="@dimen/settings_view_size"
                     android:layout_marginEnd="5dp"
-                    android:visibility="gone" />
+                    android:scaleType="centerInside"
+                    android:visibility="visible" />
 
             </LinearLayout>
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressViewPrefs"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:indeterminate="true" />
 
         <com.elementary.tasks.core.views.DividerView
             android:id="@+id/dividerBottom"

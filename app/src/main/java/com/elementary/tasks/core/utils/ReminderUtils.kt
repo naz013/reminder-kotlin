@@ -15,27 +15,35 @@ import com.elementary.tasks.core.services.ReminderActionReceiver
 import timber.log.Timber
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 object ReminderUtils {
 
     const val DAY_CHECKED = 1
+
+    fun getSound(context: Context, prefs: Prefs, melody: String?): Melody {
+        return getSound(context, prefs.melodyFile, melody)
+    }
+
+    fun getSound(context: Context, defMelody: String, melody: String?): Melody {
+        return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
+            val uri = UriUtil.getUri(context, melody)
+            if (uri != null) {
+                Melody(ReminderUtils.MelodyType.FILE, uri)
+            } else {
+                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
+            }
+        } else {
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
+                val uri = UriUtil.getUri(context, defMelody)
+                if (uri != null) {
+                    Melody(ReminderUtils.MelodyType.FILE, uri)
+                } else {
+                    Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
+                }
+            } else {
+                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
+            }
+        }
+    }
 
     fun getSoundUri(context: Context, prefs: Prefs, melody: String?): Uri {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
@@ -51,7 +59,11 @@ object ReminderUtils {
     }
 
     private fun defUri(prefs: Prefs): Uri {
-        return when (prefs.melodyFile) {
+        return defUri(prefs.melodyFile)
+    }
+
+    private fun defUri(prefsMelody: String): Uri {
+        return when (prefsMelody) {
             Constants.SOUND_RINGTONE -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
             Constants.SOUND_ALARM -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             else -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -173,6 +185,13 @@ object ReminderUtils {
         }
         builder.setContentText(appName)
         builder.addAction(R.drawable.ic_twotone_done_white, context.getString(R.string.ok), piDismiss)
+        if (!Reminder.isGpsType(reminder.type)) {
+            val snoozeIntent = Intent(context, ReminderActionReceiver::class.java)
+            snoozeIntent.action = ReminderActionReceiver.ACTION_SNOOZE
+            snoozeIntent.putExtra(Constants.INTENT_ID, id)
+            val piSnooze = PendingIntent.getBroadcast(context, reminder.uniqueId, snoozeIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            builder.addAction(R.drawable.ic_twotone_snooze_24px, context.getString(R.string.acc_button_snooze), piSnooze)
+        }
         Notifier.getManager(context)?.notify(reminder.uniqueId, builder.build())
     }
 
@@ -294,4 +313,10 @@ object ReminderUtils {
             else -> context.getString(R.string.by_date)
         }
     }
+
+    enum class MelodyType {
+        DEFAULT,
+        FILE
+    }
+    data class Melody(val melodyType: MelodyType, val uri: Uri)
 }

@@ -1,13 +1,19 @@
 package com.elementary.tasks.core.utils
 
 import android.app.Activity
+import android.app.AlarmManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.views.*
@@ -17,21 +23,10 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+fun <T> ViewModel.mutableLiveDataOf() = MutableLiveData<T>()
+
+fun <T : ViewDataBinding> FragmentActivity.activityBinding(@LayoutRes resId: Int) = ActivityBindingProperty<T>(resId)
+
 fun File.copyInputStreamToFile(inputStream: InputStream) {
     inputStream.use { input ->
         this.outputStream().use { fileOut ->
@@ -83,6 +78,10 @@ fun View.isNotVisible(): Boolean = visibility == View.INVISIBLE
 
 fun View.isGone(): Boolean = visibility == View.GONE
 
+fun View.transparent() {
+    visibility = View.INVISIBLE
+}
+
 fun View.hide() {
     visibility = View.GONE
 }
@@ -123,12 +122,21 @@ fun Long.toCalendar(): Calendar {
     return calendar
 }
 
+fun Long.daysAfter(): Int {
+    val days = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_DAY
+    return days.toInt()
+}
+
+fun Long.hoursAfter(): Int {
+    val hours = (System.currentTimeMillis() - this) / AlarmManager.INTERVAL_HOUR
+    return hours.toInt()
+}
+
 fun TuneExtraView.Extra.fromReminder(reminder: Reminder): TuneExtraView.Extra {
     this.useGlobal = reminder.useGlobal
     this.vibrate = reminder.vibrate
     this.repeatNotification = reminder.repeatNotification
     this.notifyByVoice = reminder.notifyByVoice
-    this.awake = reminder.awake
     this.unlock = reminder.unlock
     this.auto = reminder.auto
     return this
@@ -139,7 +147,6 @@ fun TuneExtraView.Extra.toReminder(reminder: Reminder): Reminder {
     reminder.vibrate = this.vibrate
     reminder.repeatNotification = this.repeatNotification
     reminder.notifyByVoice = this.notifyByVoice
-    reminder.awake = this.awake
     reminder.unlock = this.unlock
     reminder.auto = this.auto
     return reminder

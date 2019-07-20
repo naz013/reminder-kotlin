@@ -1,38 +1,42 @@
 package com.elementary.tasks.core.utils
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.provider.ContactsContract
-
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import androidx.annotation.RequiresPermission
 
 object Contacts {
 
-    /**
-     * Holder photo of contact.
-     *
-     * @param contactId contact identifier.
-     * @return Contact photo
-     */
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
+    fun pickContact(activity: Activity, code: Int) {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        activity.startActivityForResult(intent, code)
+    }
+
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
+    fun readPickerResults(context: Context, requestCode: Int, resultCode: Int, data: Intent?): Contact? {
+        if (resultCode == Activity.RESULT_OK) {
+            val uri = data?.data
+            if (uri != null) {
+                val cursor = context.contentResolver.query(uri, null, null, null, null)
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        val phoneNo = cursor.getString(cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER))
+                        val name = cursor.getString(cursor . getColumnIndex (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                        return Contact(name, phone = phoneNo)
+                    }
+                    cursor.close()
+                }
+            }
+        }
+        return null
+    }
+
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
     fun getPhoto(contactId: Long): Uri? {
         if (contactId == 0L) {
             return null
@@ -41,13 +45,7 @@ object Contacts {
         return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.DISPLAY_PHOTO)
     }
 
-    /**
-     * Holder contact identifier by contact phoneNumber.
-     *
-     * @param phoneNumber contact phoneNumber.
-     * @param context     application context.
-     * @return Contact identifier
-     */
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
     fun getIdFromNumber(phoneNumber: String?, context: Context): Long {
         if (phoneNumber == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
         var phoneContactID = 0L
@@ -69,35 +67,23 @@ object Contacts {
         return phoneContactID
     }
 
-    /**
-     * Holder contact identifier by contact e-mail.
-     *
-     * @param eMail   contact e-mail.
-     * @param context application context.
-     * @return Contact identifier
-     */
-    fun getIdFromMail(eMail: String?, context: Context): Int {
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
+    fun getIdFromMail(eMail: String?, context: Context): Long {
         if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0
         val uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail))
-        var contactId = 0
+        var contactId = 0L
         val contentResolver = context.contentResolver
         val contactLookup = contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID), null, null, null)
         contactLookup.use { look ->
             if (look != null && look.count > 0) {
                 look.moveToNext()
-                contactId = look.getInt(look.getColumnIndex(ContactsContract.PhoneLookup._ID))
+                contactId = look.getLong(look.getColumnIndex(ContactsContract.PhoneLookup._ID))
             }
         }
         return contactId
     }
 
-    /**
-     * Holder contact name by contact e_mail.
-     *
-     * @param eMail   contact e-mail.
-     * @param context application context.
-     * @return Contact name
-     */
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
     fun getNameFromMail(eMail: String?, context: Context): String? {
         if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return null
         val uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail))
@@ -113,13 +99,7 @@ object Contacts {
         return name
     }
 
-    /**
-     * Holder contact name by contact number.
-     *
-     * @param contactNumber contact number.
-     * @param context       application context.
-     * @return Contact name
-     */
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
     fun getNameFromNumber(contactNumber: String?, context: Context): String? {
         var phoneContactID: String? = null
         if (contactNumber != null && Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
@@ -142,13 +122,7 @@ object Contacts {
         return phoneContactID
     }
 
-    /**
-     * Holder contact number by contact name.
-     *
-     * @param name    contact name.
-     * @param context application context.
-     * @return Phone number
-     */
+    @RequiresPermission(value = Permissions.READ_CONTACTS)
     fun getNumber(n: String?, context: Context): String {
         var name = n
         var number = ""
@@ -172,4 +146,11 @@ object Contacts {
 
         return number
     }
+
+    data class Contact(
+            val name: String = "",
+            val phone: String = "",
+            val email: String = "",
+            val photo: Uri? = null
+    )
 }

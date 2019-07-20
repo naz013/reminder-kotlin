@@ -11,9 +11,9 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="64dp"
             android:layout_marginEnd="64dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -31,13 +31,17 @@
                 <com.elementary.tasks.core.views.EmailAutoCompleteView
                     android:id="@+id/mail"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
+                    android:gravity="bottom"
                     android:hint="@string/e_mail"
+                    android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
-                    android:maxLength="50"
+                    android:maxLength="72"
                     android:maxLines="1"
                     android:paddingStart="12dp"
-                    android:textAppearance="?textAppearanceSubtitle1" />
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:textAppearance="?textAppearanceSubtitle2" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -178,13 +182,6 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp" />
-
-                <com.elementary.tasks.core.views.DividerView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="60dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp" />
 
                 <com.elementary.tasks.core.views.WindowTypeView
                     android:id="@+id/windowTypeView"

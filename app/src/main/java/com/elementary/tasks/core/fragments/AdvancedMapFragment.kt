@@ -256,7 +256,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission")
     private fun moveToMyLocation() {
-        if (!Permissions.ensurePermissions(activity!!, REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (!Permissions.checkPermission(activity!!, REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             return
         }
         if (mMap != null) {
@@ -370,7 +370,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     }
 
     private fun showStyleDialog() {
-        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, themeUtil.colorsForSlider()) {
+        dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, ThemeUtil.colorsForSlider(context!!)) {
             prefs.markerStyle = it
             recreateStyle(it)
         }
@@ -470,7 +470,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     @SuppressLint("MissingPermission")
     private fun setMyLocation() {
         val context = activity ?: return
-        if (Permissions.ensurePermissions(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (Permissions.checkPermission(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             mMap?.isMyLocationEnabled = true
         }
     }
@@ -589,10 +589,10 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            REQ_LOC -> if (Permissions.isAllGranted(grantResults)) {
+            REQ_LOC -> if (Permissions.checkPermission(grantResults)) {
                 moveToMyLocation()
             }
-            205 -> if (Permissions.isAllGranted(grantResults)) {
+            205 -> if (Permissions.checkPermission(grantResults)) {
                 setMyLocation()
             } else {
                 Toast.makeText(context, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show()

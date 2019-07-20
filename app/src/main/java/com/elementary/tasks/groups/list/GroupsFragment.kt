@@ -10,33 +10,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
     private lateinit var viewModel: GroupsViewModel
@@ -70,7 +49,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     private fun changeColor(reminderGroup: ReminderGroup) {
-        dialogues.showColorDialog(activity!!, reminderGroup.groupColor, getString(R.string.color), themeUtil.colorsForSlider()) {
+        dialogues.showColorDialog(activity!!, reminderGroup.groupColor, getString(R.string.color), ThemeUtil.colorsForSlider(activity!!)) {
             viewModel.changeGroupColor(reminderGroup, it)
         }
     }
@@ -92,13 +71,13 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
             }
         }
 
-        if (prefs.isTwoColsEnabled && ViewUtils.isHorizontal(context!!)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        if (resources.getBoolean(R.bool.is_tablet)) {
+            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols), StaggeredGridLayoutManager.VERTICAL)
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
         binding.recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(binding.recyclerView, { setScroll(it) }) {
+        ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()
             else binding.fab.hide()
         }

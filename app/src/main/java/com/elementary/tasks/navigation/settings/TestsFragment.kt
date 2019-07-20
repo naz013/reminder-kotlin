@@ -5,35 +5,21 @@ import android.text.TextUtils
 import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.FragmentSettingsTestsBinding
+import com.elementary.tasks.missed_calls.MissedCallDialog29Activity
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
+import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import java.util.*
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
     override fun layoutRes(): Int = R.layout.fragment_settings_tests
@@ -43,18 +29,23 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
         binding.birthdayDialogWindow.setOnClickListener { openBirthdayScreen() }
         binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
+        binding.missedCallWindow.setOnClickListener { openMissedScreen() }
 
-        binding.missedCallWindow.setOnClickListener {
-            MissedCallDialogActivity.mockTest(context!!,
-                    MissedCall(number = "2454548", dateTime = System.currentTimeMillis()))
-        }
-
-        binding.quickSmsWindow.setOnClickListener {
-            QuickSmsActivity.openScreen(context!!, "2454548")
-        }
+        binding.quickSmsWindow.setOnClickListener { QuickSmsActivity.openScreen(context!!, "2454548") }
 
         binding.afterCallWindow.setOnClickListener {
             FollowReminderActivity.mockScreen(context!!, "2454548", System.currentTimeMillis())
+        }
+    }
+
+    private fun openMissedScreen() {
+        val missedCall = MissedCall(number = "2454548", dateTime = System.currentTimeMillis())
+        withContext {
+            if (Module.isQ) {
+                MissedCallDialog29Activity.mockTest(it, missedCall)
+            } else {
+                MissedCallDialogActivity.mockTest(it, missedCall)
+            }
         }
     }
 
@@ -65,7 +56,13 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
             this.type = Reminder.BY_DATE_CALL
             this.useGlobal = true
         }
-        ReminderDialogActivity.mockTest(context!!, reminder)
+        withContext {
+            if (Module.isQ) {
+                ReminderDialog29Activity.mockTest(it, reminder)
+            } else {
+                ReminderDialogActivity.mockTest(it, reminder)
+            }
+        }
     }
 
     private fun openBirthdayScreen() {
@@ -84,7 +81,13 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
             this.dayMonth = "$day|$month"
         }
-        ShowBirthdayActivity.mockTest(context!!, birthday)
+        withContext {
+            if (Module.isQ) {
+                ShowBirthday29Activity.mockTest(it, birthday)
+            } else {
+                ShowBirthdayActivity.mockTest(it, birthday)
+            }
+        }
     }
 
     override fun getTitle(): String = "Tests"

@@ -4,10 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
-import com.elementary.tasks.core.cloud.Dropbox
-import com.elementary.tasks.core.cloud.GDrive
-import com.elementary.tasks.core.services.AlarmReceiver
+import com.elementary.tasks.core.cloud.storages.Dropbox
+import com.elementary.tasks.core.cloud.storages.GDrive
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.work.BackupWorker
 import com.elementary.tasks.core.work.ExportAllDataWorker
@@ -16,28 +17,12 @@ import com.elementary.tasks.core.work.SyncWorker
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding
 import com.elementary.tasks.navigation.settings.BaseCalendarFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
     private val backupTool: BackupTool by inject()
@@ -74,10 +59,12 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.listenScrollableView(binding.scrollView) {
-            setScroll(it)
+            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
 
-        binding.cloudsPrefs.setOnClickListener { callback?.openFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
+        binding.cloudsPrefs.setOnClickListener {
+            findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives())
+        }
 
         initBackupPrefs()
         initExportToCalendarPrefs()
@@ -89,9 +76,12 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
         initAutoBackupPrefs()
         initAutoSyncPrefs()
+        initBackupFilesPrefs()
+        initMultiDevicePrefs()
+        initLocalBackupPrefs()
 
         binding.backupsPrefs.setOnClickListener {
-            callback?.openFragment(BackupsFragment.newInstance(), getString(R.string.backup_files))
+            findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment())
         }
         binding.backupsPrefs.setDependentView(binding.backupDataPrefs)
     }
@@ -110,12 +100,76 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         ExportAllDataWorker.unsubscribe()
     }
 
+    private fun initLocalBackupPrefs() {
+        if (Module.isQ) {
+            binding.localPrefs.hide()
+        } else {
+            binding.localPrefs.show()
+            binding.localPrefs.isChecked = prefs.localBackup
+            binding.localPrefs.setOnClickListener { changeLocalBackupPrefs() }
+            binding.localPrefs.setDependentView(binding.backupDataPrefs)
+        }
+    }
+
+    private fun changeLocalBackupPrefs() {
+        val isChecked = binding.localPrefs.isChecked
+        if (!isChecked) {
+            if (!Permissions.checkPermission(activity!!, PERM_LOCAL_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+                return
+            }
+        }
+        binding.localPrefs.isChecked = !isChecked
+        prefs.localBackup = !isChecked
+    }
+
+    private fun initBackupFilesPrefs() {
+        binding.backupFilesPrefs.hide()
+//        binding.backupFilesPrefs.isChecked = prefs.backupAttachedFiles
+//        binding.backupFilesPrefs.setOnClickListener { changeBackupFilesPrefs() }
+//        binding.backupFilesPrefs.setDependentView(binding.backupDataPrefs)
+    }
+
+    private fun changeBackupFilesPrefs() {
+        val isChecked = binding.backupFilesPrefs.isChecked
+        binding.backupFilesPrefs.isChecked = !isChecked
+        prefs.backupAttachedFiles = !isChecked
+    }
+
+    private fun initMultiDevicePrefs() {
+        binding.multiDevicePrefs.isChecked = prefs.multiDeviceModeEnabled
+        binding.multiDevicePrefs.setOnClickListener { changeMultiDevicePrefs() }
+        binding.multiDevicePrefs.setDependentView(binding.backupDataPrefs)
+    }
+
+    private fun changeMultiDevicePrefs() {
+        val isChecked = binding.multiDevicePrefs.isChecked
+        binding.multiDevicePrefs.isChecked = !isChecked
+        prefs.multiDeviceModeEnabled = !isChecked
+
+        if (prefs.multiDeviceModeEnabled) {
+            FirebaseInstanceId.getInstance().instanceId
+                    .addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            return@OnCompleteListener
+                        }
+                        val token = task.result?.token
+                        withContext {
+                            val dropbox = Dropbox()
+                            if (dropbox.isLinked) {
+                                dropbox.updateToken(token)
+                            }
+                            GDrive.getInstance(it)?.updateToken(token)
+                        }
+                    })
+        }
+    }
+
     private fun initAutoSyncPrefs() {
         binding.autoSyncPrefs.setOnClickListener {
             showIntervalDialog(getString(R.string.automatically_sync), prefs.autoSyncState) { state ->
                 prefs.autoSyncState = stateFromPosition(state)
                 showSyncState()
-                withContext { AlarmReceiver().enableAutoSync(it) }
+                EventJobScheduler.scheduleAutoSync(prefs)
             }
         }
         binding.autoSyncPrefs.setDependentView(binding.backupDataPrefs)
@@ -172,9 +226,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun syncClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 onProgress.invoke(true)
-                SyncWorker.sync(it, IoHelper(it, prefs, backupTool))
+                SyncWorker.sync(it)
             }
         }
     }
@@ -197,9 +251,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun exportClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
                 onProgress.invoke(true)
-                ExportAllDataWorker.export(IoHelper(it, prefs, backupTool))
+                ExportAllDataWorker.export(backupTool)
             }
         }
     }
@@ -219,9 +273,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun backupClick() {
         withActivity {
-            if (Permissions.ensurePermissions(it, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            if (Permissions.checkPermission(it, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 onProgress.invoke(true)
-                BackupWorker.backup(it, IoHelper(it, prefs, backupTool))
+                BackupWorker.backup(it)
             }
         }
     }
@@ -285,7 +339,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             showIntervalDialog(getString(R.string.automatically_backup), prefs.autoBackupState) { state ->
                 prefs.autoBackupState = stateFromPosition(state)
                 showBackupState()
-                withContext { AlarmReceiver().enableAutoBackup(it) }
+                EventJobScheduler.scheduleAutoBackup(prefs)
             }
         }
         binding.autoBackupPrefs.setDependentView(binding.backupDataPrefs)
@@ -446,7 +500,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun changeExportToCalendarPrefs() {
         withActivity {
-            if (!Permissions.ensurePermissions(it, CALENDAR_CODE, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            if (!Permissions.checkPermission(it, CALENDAR_CODE, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                 return@withActivity
             }
             val isChecked = binding.exportToCalendarPrefs.isChecked
@@ -461,7 +515,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun showSelectCalendarDialog(): Boolean {
         val activity = activity ?: return false
-        if (!Permissions.ensurePermissions(activity, CALENDAR_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+        if (!Permissions.checkPermission(activity, CALENDAR_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
             return false
         }
         mDataList.clear()
@@ -508,13 +562,14 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Permissions.isAllGranted(grantResults)) {
+        if (Permissions.checkPermission(grantResults)) {
             when (requestCode) {
                 CALENDAR_CODE -> changeExportToCalendarPrefs()
                 CALENDAR_PERM -> showSelectCalendarDialog()
                 PERM_BACKUP -> backupClick()
                 PERM_EXPORT -> exportClick()
                 PERM_SYNC -> syncClick()
+                PERM_LOCAL_BACKUP -> changeLocalBackupPrefs()
             }
         }
     }
@@ -545,5 +600,6 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         private const val PERM_SYNC = 501
         private const val PERM_BACKUP = 502
         private const val PERM_EXPORT = 503
+        private const val PERM_LOCAL_BACKUP = 504
     }
 }

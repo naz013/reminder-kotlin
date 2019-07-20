@@ -9,34 +9,13 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
+import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.utils.Module
 import timber.log.Timber
 
-/**
- * Copyright 2018 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class DropboxLogin(private val mContext: Activity, private val mCallback: DropboxLogin.LoginCallback) {
+class DropboxLogin(private val mContext: Activity, private val mCallback: LoginCallback) {
 
     private val mDropbox: Dropbox = Dropbox()
-
-    init {
-        this.mDropbox.startSession()
-    }
 
     fun login() {
         var isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO)

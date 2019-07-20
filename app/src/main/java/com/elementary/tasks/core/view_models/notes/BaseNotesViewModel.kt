@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
@@ -13,7 +14,7 @@ import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import com.elementary.tasks.notes.work.SingleBackupWorker
 import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import kotlinx.coroutines.runBlocking
-import org.koin.standalone.inject
+import org.koin.core.inject
 import timber.log.Timber
 
 abstract class BaseNotesViewModel : BaseDbViewModel() {
@@ -41,6 +42,7 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
         note.note?.color = color
         postInProgress(true)
         launchDefault {
+            v.updatedAt = TimeUtil.gmtDateTime
             runBlocking {
                 appDb.notesDao().insert(v)
             }
@@ -54,6 +56,7 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
         val v = note.note ?: return
         postInProgress(true)
         launchDefault {
+            v.updatedAt = TimeUtil.gmtDateTime
             runBlocking {
                 saveImages(note.images, v.key)
                 appDb.notesDao().insert(v)
@@ -86,6 +89,7 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
         val v = note.note ?: return
         postInProgress(true)
         launchDefault {
+            v.updatedAt = TimeUtil.gmtDateTime
             Timber.d("saveNote: %s", note)
             runBlocking {
                 saveImages(note.images, v.key)
@@ -108,13 +112,14 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
                     reminder.groupColor = group.groupColor
                     reminder.groupTitle = group.groupTitle
                     reminder.groupUuId = group.groupUuId
+                    appDb.reminderDao().insert(reminder)
                 }
-
-                appDb.reminderDao().insert(reminder)
             }
-            EventControlFactory.getController(reminder).start()
-            startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
-                    Constants.INTENT_ID, reminder.uuId)
+            if (reminder.groupUuId != "") {
+                EventControlFactory.getController(reminder).start()
+                startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
+                        Constants.INTENT_ID, reminder.uuId)
+            }
         }
     }
 

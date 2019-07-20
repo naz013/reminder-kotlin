@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -12,28 +12,41 @@
             android:layout_height="match_parent"
             android:orientation="vertical" />
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:id="@+id/placesListCard"
             android:layout_width="256dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="-15dp"
-            android:paddingEnd="15dp"
-            android:visibility="visible"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="4dp">
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/bottom_sheet_bg"
+            android:orientation="vertical"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="128dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/events"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?textAppearanceHeadline6" />
+
+            <com.elementary.tasks.core.views.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="15dp" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/emptyItem"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="visible">
@@ -47,7 +60,7 @@
                     app:lottie_loop="true"
                     app:lottie_rawRes="@raw/empty_status" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/emptyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,6 +70,6 @@
                     android:textAppearance="?textAppearanceHeadline6" />
 
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </RelativeLayout>
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/selectInterval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                         android:textAppearance="?textAppearanceBody1"
                         tools:text="From" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
 
                 </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/selectHours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

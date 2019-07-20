@@ -9,7 +9,7 @@
         android:layout_marginBottom="5dp"
         android:focusable="false">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/shopText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

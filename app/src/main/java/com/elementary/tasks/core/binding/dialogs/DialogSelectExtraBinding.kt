@@ -10,7 +10,6 @@ class DialogSelectExtraBinding(view: View) : Binding(view) {
     val extraSwitch: SwitchCompat by bindView(R.id.extraSwitch)
     val vibrationCheck: CheckBox by bindView(R.id.vibrationCheck)
     val voiceCheck: CheckBox by bindView(R.id.voiceCheck)
-    val wakeCheck: CheckBox by bindView(R.id.wakeCheck)
     val unlockCheck: CheckBox by bindView(R.id.unlockCheck)
     val repeatCheck: CheckBox by bindView(R.id.repeatCheck)
     val autoCheck: CheckBox by bindView(R.id.autoCheck)

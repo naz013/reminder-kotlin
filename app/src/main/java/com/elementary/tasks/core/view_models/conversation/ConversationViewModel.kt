@@ -15,7 +15,7 @@ import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.SplashScreen
+import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
@@ -24,12 +24,12 @@ import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
-import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
-import org.koin.standalone.inject
+import org.koin.core.inject
 import timber.log.Timber
 import java.util.*
 
@@ -245,7 +245,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
                 val types = model.type
                 if (types == ActionType.ACTION && isWidget) {
                     when (model.action) {
-                        Action.APP -> context.startActivity(Intent(context, SplashScreen::class.java))
+                        Action.APP -> context.startActivity(Intent(context, SplashScreenActivity::class.java))
                         Action.HELP -> context.startActivity(Intent(context, VoiceHelpActivity::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
                         Action.BIRTHDAY -> AddBirthdayActivity.openLogged(context)
@@ -255,9 +255,10 @@ class ConversationViewModel : BaseRemindersViewModel() {
                         Action.TRASH -> emptyTrash(true)
                         Action.DISABLE -> disableAllReminders(true)
                         Action.SETTINGS -> {
-                            val startActivityIntent = Intent(context, MainActivity::class.java)
-                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
-                            context.startActivity(startActivityIntent)
+                            TODO("Add new deep link")
+//                            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
+//                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
+//                            context.startActivity(startActivityIntent)
                         }
                         Action.REPORT -> {
                             context.startActivity(Intent(context, SendFeedbackActivity::class.java)
@@ -387,6 +388,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
             saveQuickReminder(note.key, note.summary)
         }
         launchDefault {
+            note.updatedAt = TimeUtil.gmtDateTime
             appDb.notesDao().insert(note)
         }
         UpdatesHelper.updateNotesWidget(context)
@@ -418,7 +420,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
     }
 
     fun createGroup(model: Model): ReminderGroup {
-        return ReminderGroup(model.summary, Random().nextInt(16))
+        return ReminderGroup(groupTitle = model.summary, groupColor = Random().nextInt(16))
     }
 
     fun saveGroup(model: ReminderGroup, showToast: Boolean) {

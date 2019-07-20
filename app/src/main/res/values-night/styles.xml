@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Toolbar-->
+    <style name="Widget.MyTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface">
+
+    </style>
+
+    <style name="ActionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">?colorControlNormal</item>
+    </style>
+
+    <style name="BackButtonStyle" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">?colorControlNormal</item>
+    </style>
+</resources>

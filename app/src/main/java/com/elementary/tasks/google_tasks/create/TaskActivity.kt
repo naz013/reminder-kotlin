@@ -14,7 +14,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -30,25 +30,7 @@ import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
+class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.activity_create_google_task) {
 
     private lateinit var stateViewModel: StateViewModel
     private lateinit var viewModel: GoogleTaskViewModel
@@ -72,8 +54,6 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
         c.set(Calendar.MINUTE, minute)
         stateViewModel.time.postValue(c.timeInMillis)
     }
-
-    override fun layoutRes(): Int = R.layout.activity_create_google_task
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -262,7 +242,7 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
         binding.toolbar.setTitle(R.string.new_task)
     }
 
@@ -438,15 +418,18 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
         return result.timeInMillis
     }
 
-    private fun createReminder(task: String): Reminder? {
-        val group = viewModel.defaultReminderGroup.value ?: return null
+    private fun createReminder(task: String): Reminder {
         val due = dateTime()
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
+        reminder.delay = 0
+        reminder.eventCount = 0
+        reminder.useGlobal = true
+        reminder.isActive = true
+        reminder.isRemoved = false
         reminder.summary = SuperUtil.normalizeSummary(task)
-        reminder.groupUuId = group.groupUuId
         reminder.startTime = TimeUtil.getGmtFromDateTime(due)
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(due)
+        reminder.eventTime = reminder.startTime
         return reminder
     }
 
@@ -501,15 +484,15 @@ class TaskActivity : ThemedActivity<ActivityCreateGoogleTaskBinding>() {
     private fun dateDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.date.value ?: System.currentTimeMillis()
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
-                c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
+        TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     private fun timeDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = stateViewModel.time.value ?: System.currentTimeMillis()
-        TimeUtil.showTimePicker(this, themeUtil.dialogStyle, prefs.is24HourFormat,
-                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), mTimeCallBack)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormat, c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE), mTimeCallBack)
     }
 
     override fun onDestroy() {

@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.work
 
-import com.elementary.tasks.core.utils.IoHelper
+import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job
@@ -18,9 +18,9 @@ object ExportAllDataWorker {
             value?.invoke(mJob != null)
         }
 
-    fun export(ioHelper: IoHelper) {
+    fun export(backupTool: BackupTool) {
         mJob?.cancel()
-        launchSync(ioHelper)
+        launchSync(backupTool)
     }
 
     fun unsubscribe() {
@@ -28,9 +28,9 @@ object ExportAllDataWorker {
         listener = null
     }
 
-    private fun launchSync(ioHelper: IoHelper) {
+    private fun launchSync(backupTool: BackupTool) {
         mJob = launchIo {
-            val file = ioHelper.exportAllToFile()
+            val file = backupTool.exportAll()
             withUIContext {
                 onEnd?.invoke(file)
             }

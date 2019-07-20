@@ -8,8 +8,7 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.services.EventJobService
-import com.elementary.tasks.core.services.RepeatNotificationReceiver
+import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
@@ -17,28 +16,10 @@ import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.google.gson.Gson
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminder) {
 
     protected fun enableReminder() {
-        EventJobService.enableReminder(reminder)
+        EventJobScheduler.scheduleReminder(reminder)
     }
 
     protected fun export() {
@@ -95,8 +76,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
 
     override fun pause(): Boolean {
         notifier.hideNotification(reminder.uniqueId)
-        EventJobService.cancelReminder(reminder.uuId)
-        RepeatNotificationReceiver().cancelAlarm(context, reminder.uniqueId)
+        EventJobScheduler.cancelReminder(reminder.uuId)
         return true
     }
 
@@ -111,6 +91,6 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
     }
 
     override fun setDelay(delay: Int) {
-        EventJobService.enableDelay(delay, reminder.uuId)
+        EventJobScheduler.scheduleReminderDelay(delay, reminder.uuId)
     }
 }

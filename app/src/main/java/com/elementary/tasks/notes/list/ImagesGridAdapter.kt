@@ -10,7 +10,6 @@ import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ListItemNoteImageBinding
 import com.elementary.tasks.notes.create.DecodeImages
 
@@ -60,18 +59,8 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
                 binding.removeButton.setOnClickListener {
                     actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.REMOVE)
                 }
-                if (Module.isPro) {
-                    binding.editButton.visibility = View.GONE
-//                    binding.editButton.visibility = View.VISIBLE
-//                    binding.editButton.setOnClickListener { view ->
-//                        actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
-//                    }
-                } else {
-                    binding.editButton.visibility = View.GONE
-                }
             } else {
                 binding.removeButton.visibility = View.GONE
-                binding.editButton.visibility = View.GONE
             }
         }
 

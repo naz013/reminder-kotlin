@@ -14,37 +14,20 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
+import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.ParseException
 import java.util.*
 
-/**
- * Copyright 2016 Nazar Suhovich
- *
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.ActivityAddBirthdayBinding>() {
+class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout.activity_add_birthday) {
 
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
@@ -59,8 +42,6 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         viewModel.date.postValue(calendar.timeInMillis)
     }
-
-    override fun layoutRes(): Int = R.layout.activity_add_birthday
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +82,7 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDark)
+        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     }
 
     private fun showBirthday(birthday: Birthday?) {
@@ -159,7 +140,7 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     }
 
     private fun readUri() {
-        if (!Permissions.ensurePermissions(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
         mUri?.let {
@@ -201,7 +182,7 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     }
 
     private fun checkContactPermission(code: Int): Boolean {
-        if (!Permissions.ensurePermissions(this, code, Permissions.READ_CONTACTS)) {
+        if (!Permissions.checkPermission(this, code, Permissions.READ_CONTACTS)) {
             return false
         }
         return true
@@ -271,6 +252,7 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
             this.number = number
             this.day = calendar.get(Calendar.DAY_OF_MONTH)
             this.month = calendar.get(Calendar.MONTH)
+            this.dayMonth = "${this.day}|${this.month}"
         }
         viewModel.saveBirthday(birthday)
     }
@@ -289,18 +271,21 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     private fun dateDialog() {
         val c = Calendar.getInstance()
         c.timeInMillis = viewModel.date.value ?: System.currentTimeMillis()
-        TimeUtil.showDatePicker(this, themeUtil.dialogStyle, prefs, c.get(Calendar.YEAR),
+        TimeUtil.showDatePicker(this, prefs, c.get(Calendar.YEAR),
                 c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), mDateCallBack)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
-            if (resultCode == Activity.RESULT_OK) {
-                val name = data?.getStringExtra(Constants.SELECTED_CONTACT_NAME) ?: ""
-                if (binding.birthName.text.toString().trim() == "") {
-                    binding.birthName.setText(name)
+            if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+                val contact = Contacts.readPickerResults(this, requestCode, resultCode, data)
+                if (contact != null) {
+                    if (binding.birthName.text.toString().trim() == "") {
+                        binding.birthName.setText(contact.name)
+                    }
+                    binding.numberView.setText(contact.phone)
                 }
-                binding.numberView.setText(data?.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: "")
             }
         } else if (requestCode == PinLoginActivity.REQ_CODE) {
             if (resultCode != Activity.RESULT_OK) {
@@ -314,13 +299,13 @@ class AddBirthdayActivity : ThemedActivity<com.elementary.tasks.databinding.Acti
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            101 -> if (Permissions.isAllGranted(grantResults)) {
-                SuperUtil.selectContact(this@AddBirthdayActivity, Constants.REQUEST_CODE_CONTACTS)
+            101 -> if (Permissions.checkPermission(grantResults)) {
+                SuperUtil.selectContact(this, Constants.REQUEST_CODE_CONTACTS)
             }
-            CONTACT_PERM -> if (Permissions.isAllGranted(grantResults)) {
+            CONTACT_PERM -> if (Permissions.checkPermission(grantResults)) {
                 saveBirthday()
             }
-            SD_REQ -> if (Permissions.isAllGranted(grantResults)) {
+            SD_REQ -> if (Permissions.checkPermission(grantResults)) {
 
             }
         }
