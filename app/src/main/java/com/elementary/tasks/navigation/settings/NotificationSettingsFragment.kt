@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -573,6 +574,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     private fun initMelodyPrefs() {
         binding.chooseSoundPrefs.setOnClickListener { showSoundDialog() }
+        binding.chooseSoundPrefs.setViewTintColor(iconTintColor())
         showMelody()
         soundStackHolder.initParams()
         soundStackHolder.onlyPlay = true
@@ -595,6 +597,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.melodyFile).uri, false)
             }
         })
+    }
+
+    private fun iconTintColor(): Int {
+        return if (isDark) ContextCompat.getColor(context!!, R.color.pureWhite)
+        else ContextCompat.getColor(context!!, R.color.pureBlack)
     }
 
     private fun showMelody() {

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
@@ -152,6 +153,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
     private fun initMelodyPrefs() {
         binding.chooseSoundPrefs.setOnClickListener { showSoundDialog() }
         binding.chooseSoundPrefs.setReverseDependentView(binding.globalOptionPrefs)
+        binding.chooseSoundPrefs.setViewTintColor(iconTintColor())
         showMelody()
         soundStackHolder.initParams()
         soundStackHolder.onlyPlay = true
@@ -174,6 +176,11 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                 soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.birthdayMelody).uri, false)
             }
         })
+    }
+
+    private fun iconTintColor(): Int {
+        return if (isDark) ContextCompat.getColor(context!!, R.color.pureWhite)
+        else ContextCompat.getColor(context!!, R.color.pureBlack)
     }
 
     private fun showMelody() {

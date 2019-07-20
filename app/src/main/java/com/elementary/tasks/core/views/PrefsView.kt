@@ -273,6 +273,12 @@ class PrefsView : RelativeLayout {
         }
     }
 
+    fun setViewTintColor(@ColorInt color: Int) {
+        if (color != 0) {
+            binding.prefsView.setColorFilter(color)
+        }
+    }
+
     fun setViewDrawable(drawable: Drawable?) {
         binding.prefsView.setImageDrawable(drawable)
     }

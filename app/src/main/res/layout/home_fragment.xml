@@ -279,8 +279,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="32dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="32dp"
                         android:layout_marginBottom="32dp"
+                        android:gravity="center"
                         android:text="@string/you_re_all_done"
                         android:textAppearance="?textAppearanceHeadline6"
                         android:textColor="?android:textColorPrimary" />
@@ -360,8 +363,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="32dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="32dp"
                         android:layout_marginBottom="32dp"
+                        android:gravity="center"
                         android:text="@string/no_upcoming_birthdays"
                         android:textAppearance="?textAppearanceHeadline6"
                         android:textColor="?android:textColorPrimary" />
