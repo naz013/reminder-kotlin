@@ -137,6 +137,12 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
         binding.testsScreen.setOnClickListener {
             findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
         }
+        binding.buySettings.setOnClickListener { showProDialog() }
+        if (!Module.isPro && !SuperUtil.isAppInstalled(context!!, "com.cray.software.justreminderpro")) {
+            binding.buySettings.show()
+        } else {
+            binding.buySettings.hide()
+        }
 
         withContext {
             if (Module.hasLocation(it)) {
@@ -203,6 +209,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
                 .setMessage(getString(R.string.pro_advantages) + "\n" +
                         getString(R.string.different_settings_for_birthdays) + "\n" +
                         "- " + getString(R.string.additional_reminder) + "\n" +
+                        getString(R.string.multiple_device_mode) + "\n" +
                         getString(R.string._led_notification_) + "\n" +
                         getString(R.string.led_color_for_each_reminder) + "\n" +
                         getString(R.string.styles_for_marker) + "\n" +
