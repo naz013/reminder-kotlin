@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Przypomnienie zostało zaimportowane pomyślnie</string>
     <string name="save_and_start_automatically">Zapisz i uruchom automatycznie</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Udostępnione dane są dostępne tylko wtedy, gdy ten ekran jest otwarty</string>
+    <string name="accept">Akceptować</string>
+    <string name="backup_attached_files_and_melodies">Kopiuj załączone pliki i melodie</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Kontynuuj korzystanie z aplikacji Przypomnienie Akceptujesz politykę prywatności</string>
+    <string name="dismiss">Odwołać</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Jeśli wykonałeś kopię zapasową danych, możesz zalogować się do magazynu w chmurze, aby je przywrócić.</string>
+    <string name="light">Światło</string>
+    <string name="multiple_device_mode">Tryb wielu urządzeń</string>
+    <string name="no_upcoming_birthdays">Brak nadchodzących urodzin</string>
+    <string name="reminder_ongoing_service">Bieżąca obsługa aplikacji Przypomnienie</string>
+    <string name="save_backup_on_sd_card">Zapisz kopię zapasową na karcie SD</string>
+    <string name="select_image">Wybierz obraz</string>
+    <string name="select_melody">Wybierz melodię</string>
+    <string name="set_by_battery_saver">Ustaw przez oszczędzanie baterii</string>
+    <string name="system_default">Domyślne ustawienie systemowe</string>
+    <string name="you_re_all_done">Wszystko gotowe</string>
 
 </resources>

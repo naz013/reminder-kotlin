@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Recordatorio importado con éxito</string>
     <string name="save_and_start_automatically">Guarda y comienza automáticamente</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Datos compartidos disponibles solo mientras esta pantalla está abierta</string>
+    <string name="accept">Aceptar</string>
+    <string name="backup_attached_files_and_melodies">Copia de seguridad de archivos adjuntos y melodías</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Al continuar utilizando la aplicación Recordatorio, acepta la Política de privacidad.</string>
+    <string name="dismiss">Despedir</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Si ha realizado una copia de seguridad de los datos, puede iniciar sesión en su almacenamiento en la nube para restaurarlos.</string>
+    <string name="light">Ligera</string>
+    <string name="multiple_device_mode">Modo de dispositivo múltiple</string>
+    <string name="no_upcoming_birthdays">No hay cumpleaños próximos</string>
+    <string name="reminder_ongoing_service">Servicio continuo de aplicación de recordatorio.</string>
+    <string name="save_backup_on_sd_card">Guardar copia de seguridad en la tarjeta SD</string>
+    <string name="select_image">Seleccionar imagen</string>
+    <string name="select_melody">Seleccionar melodía</string>
+    <string name="set_by_battery_saver">Establecer por ahorro de batería</string>
+    <string name="system_default">Sistema por defecto</string>
+    <string name="you_re_all_done">Estas todo listo</string>
 
 </resources>

@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">अनुस्मारक सफलतापूर्वक आयात किया गया</string>
     <string name="save_and_start_automatically">सहेजें और स्वचालित रूप से प्रारंभ करें</string>
     <string name="shared_data_available_only_while_this_screen_is_open">यह स्क्रीन खुली होने पर ही साझा किया गया डेटा उपलब्ध है</string>
+    <string name="accept">स्वीकार करने के लिए</string>
+    <string name="backup_attached_files_and_melodies">बैकअप संलग्न फाइलें और धुन</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">अनुस्मारक एप्लिकेशन का उपयोग जारी रखकर आप गोपनीयता नीति स्वीकार करते हैं</string>
+    <string name="dismiss">खारिज</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">यदि आपके पास डेटा बैकअप है, तो आप उन्हें पुनर्स्थापित करने के लिए अपने क्लाउड स्टोरेज में लॉग इन कर सकते हैं।</string>
+    <string name="light">रोशनी</string>
+    <string name="multiple_device_mode">मल्टीपल डिवाइस मोड</string>
+    <string name="no_upcoming_birthdays">कोई आगामी जन्मदिन नहीं</string>
+    <string name="reminder_ongoing_service">रिमाइंडर एप्लिकेशन की चालू सेवा</string>
+    <string name="save_backup_on_sd_card">एसडी कार्ड पर बैकअप सहेजें</string>
+    <string name="select_image">छवि चुने</string>
+    <string name="select_melody">राग का चयन करें</string>
+    <string name="set_by_battery_saver">बैटरी सेवर द्वारा सेट करें</string>
+    <string name="system_default">सिस्टम डिफ़ॉल्ट</string>
+    <string name="you_re_all_done">तुम सब हो गया</string>
 
 </resources>

@@ -715,5 +715,20 @@
     <string name="reminder_imported_success">Lembrete importado com sucesso</string>
     <string name="save_and_start_automatically">Salve e inicie automaticamente</string>
     <string name="shared_data_available_only_while_this_screen_is_open">Dados compartilhados disponíveis somente enquanto esta tela estiver aberta</string>
+    <string name="accept">Aceitar</string>
+    <string name="backup_attached_files_and_melodies">Backup de arquivos anexados e melodias</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">Por continuar usando o aplicativo Lembrete Você aceita Política de Privacidade</string>
+    <string name="dismiss">Dispensar</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">Se você fez backup dos dados, poderá fazer o login no seu armazenamento em nuvem para restaurá-los.</string>
+    <string name="light">Leve</string>
+    <string name="multiple_device_mode">Modo de vários dispositivos</string>
+    <string name="no_upcoming_birthdays">Sem aniversários futuros</string>
+    <string name="reminder_ongoing_service">Serviço contínuo do aplicativo Lembrete</string>
+    <string name="save_backup_on_sd_card">Salvar backup no cartão SD</string>
+    <string name="select_image">Selecione a imagem</string>
+    <string name="select_melody">Selecione a melodia</string>
+    <string name="set_by_battery_saver">Definido por Battery Saver</string>
+    <string name="system_default">Sistema padrão</string>
+    <string name="you_re_all_done">Está tudo pronto</string>
 
 </resources>

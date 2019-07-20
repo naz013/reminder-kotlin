@@ -716,5 +716,20 @@
     <string name="reminder_imported_success">リマインダーをインポートしました</string>
     <string name="save_and_start_automatically">保存して自動的に起動</string>
     <string name="shared_data_available_only_while_this_screen_is_open">この画面が開いている間だけ共有データが利用可能</string>
+    <string name="accept">受け入れるために</string>
+    <string name="backup_attached_files_and_melodies">添付ファイルとメロディのバックアップ</string>
+    <string name="by_continue_using_reminder_application_you_accept_privacy_policy">リマインダーアプリケーションを使用し続けることにより、あなたはプライバシーポリシーに同意します</string>
+    <string name="dismiss">やめる</string>
+    <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">データをバックアップした場合は、クラウドストレージにログインして復元することができます。</string>
+    <string name="light">光</string>
+    <string name="multiple_device_mode">マルチデバイスモード</string>
+    <string name="no_upcoming_birthdays">今後の誕生日はありません</string>
+    <string name="reminder_ongoing_service">リマインダーアプリケーションの継続サービス</string>
+    <string name="save_backup_on_sd_card">SDカードにバックアップを保存</string>
+    <string name="select_image">画像を選択</string>
+    <string name="select_melody">メロディを選択</string>
+    <string name="set_by_battery_saver">バッテリーセーバーで設定</string>
+    <string name="system_default">システムのデフォルト</string>
+    <string name="you_re_all_done">あなたはすべて終わった</string>
 
 </resources>
