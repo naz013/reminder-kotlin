@@ -222,6 +222,34 @@ object ViewUtils {
         }
     }
 
+    fun listenScrollableView(recyclerView: RecyclerView, fabListener: (show: Boolean) -> Unit) {
+        if (Module.isMarshmallow) {
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val scrollY = recyclerView.scrollY
+                    Timber.d("onScrolled: $scrollY")
+                    if (scrollY > 0) {
+                        fabListener.invoke(false)
+                    } else {
+                        fabListener.invoke(true)
+                    }
+                }
+            })
+        } else {
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val scrollY = recyclerView.scrollY
+                    if (scrollY > 0) {
+                        fabListener.invoke(false)
+                    } else {
+                        fabListener.invoke(true)
+                    }
+                }
+            })
+        }
+    }
+
     fun fadeInAnimation(view: View) {
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.interpolator = DecelerateInterpolator()

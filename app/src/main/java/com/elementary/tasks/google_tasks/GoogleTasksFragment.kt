@@ -184,6 +184,10 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
             }
         }
         binding.recyclerView.adapter = adapter
+        ViewUtils.listenScrollableView(binding.recyclerView) {
+            if (it) binding.fab.extend()
+            else binding.fab.shrink()
+        }
 
         binding.listsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         listsRecyclerAdapter.actionsListener = object : ActionsListener<GoogleTaskList> {

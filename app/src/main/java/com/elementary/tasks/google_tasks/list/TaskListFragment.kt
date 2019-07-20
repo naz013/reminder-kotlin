@@ -18,6 +18,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
@@ -200,6 +201,10 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
             }
         }
         binding.recyclerView.adapter = adapter
+        ViewUtils.listenScrollableView(binding.recyclerView, {}) {
+            if (it) binding.fab.extend()
+            else binding.fab.shrink()
+        }
     }
 
     private fun editTask(googleTask: GoogleTask) {
