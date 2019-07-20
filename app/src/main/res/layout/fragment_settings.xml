@@ -209,6 +209,14 @@
                 app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/buySettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/buy_pro"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/testsScreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
