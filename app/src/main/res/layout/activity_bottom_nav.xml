@@ -32,27 +32,44 @@
                 tools:title="Text" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ScrollView
+        <RelativeLayout
             android:id="@+id/quickNoteContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/whitePrimary30"
-            android:overScrollMode="never"
-            android:scrollbars="none"
             android:visibility="gone">
 
-            <LinearLayout
-                android:id="@+id/quickNoteView"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="@dimen/material_margin"
-                android:layout_marginTop="72dp"
-                android:layout_marginEnd="@dimen/material_margin"
-                android:layout_marginBottom="16dp"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
-            </LinearLayout>
-        </ScrollView>
+                <LinearLayout
+                    android:id="@+id/quickNoteView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/material_margin"
+                    android:layout_marginTop="72dp"
+                    android:layout_marginEnd="@dimen/material_margin"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </ScrollView>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/closeButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/drawable_secondary"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_cancel_24px"
+                app:tint="?colorOnSecondary" />
+        </RelativeLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
