@@ -14,7 +14,7 @@ class HomeViewModel : BaseRemindersViewModel() {
 
     private val notifier: Notifier by inject()
 
-    val reminders = appDb.reminderDao().loadAllTypesInRange(limit = 3,
+    val reminders = appDb.reminderDao().loadAllTypesInRange(limit = 5,
             fromTime = TimeUtil.getDayStart(), toTime = TimeUtil.getDayEnd())
 
     val birthdays = appDb.birthdaysDao().loadAll(TimeUtil.getBirthdayDayMonth())

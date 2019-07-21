@@ -148,9 +148,7 @@ object ReminderUtils {
         val piDismiss = PendingIntent.getBroadcast(context, reminder.uniqueId, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         builder.setSmallIcon(R.drawable.ic_twotone_notifications_white)
-        val notificationIntent = Intent(context, ReminderActionReceiver::class.java)
-        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-        notificationIntent.putExtra(Constants.INTENT_ID, id)
+        val notificationIntent = ReminderActionReceiver.showIntent(context, id)
         val intent = PendingIntent.getBroadcast(context, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         builder.setContentIntent(intent)
         builder.setAutoCancel(false)

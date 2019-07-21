@@ -9,6 +9,7 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
 
@@ -43,11 +44,14 @@ class ReminderActionReceiver : BaseBroadcast() {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         sendCloseBroadcast(context, id)
         if (Module.isQ) {
-            qAction(reminder, context)
+            val intent = ReminderDialog29Activity.getLaunchIntent(context, id)
+            intent.putExtra(Constants.INTENT_NOTIFICATION, true)
+            context.startActivity(intent)
+            endService(context, reminder.uniqueId)
         } else {
-            val notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id)
-            notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
-            context.startActivity(notificationIntent)
+            val intent = ReminderDialogActivity.getLaunchIntent(context, id)
+            intent.putExtra(Constants.INTENT_NOTIFICATION, true)
+            context.startActivity(intent)
             endService(context, reminder.uniqueId)
         }
     }

@@ -785,9 +785,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     private fun showReminderNotification() {
         Timber.d("showReminderNotification: $id")
 
-        val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
-        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
+        val notificationIntent = ReminderActionReceiver.showIntent(this, uuId)
         val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         val builder: NotificationCompat.Builder
@@ -879,9 +877,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         }
         builder.setContentTitle(summary)
 
-        val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
-        notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
+        val notificationIntent = ReminderActionReceiver.showIntent(this, uuId)
         val intent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         builder.setContentIntent(intent)

@@ -381,14 +381,12 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         builder.color = ThemeUtil.getSecondaryColor(applicationContext)
         builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
-        if (reminder.priority > 2) {
+        if (reminder.priority >= 2 && Module.isQ) {
             val fullScreenIntent = ReminderDialog29Activity.getLaunchIntent(applicationContext, reminder.uuId)
             val fullScreenPendingIntent = PendingIntent.getActivity(this, reminder.uniqueId, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setFullScreenIntent(fullScreenPendingIntent, true)
         } else {
-            val notificationIntent = Intent(this, ReminderActionReceiver::class.java)
-            notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-            notificationIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
+            val notificationIntent = ReminderActionReceiver.showIntent(applicationContext, reminder.uuId)
             val intent = PendingIntent.getBroadcast(this, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setContentIntent(intent)
         }

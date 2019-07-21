@@ -224,14 +224,12 @@ class Notifier(private val context: Context, private val prefs: Prefs) {
         builder.color = ThemeUtil.getSecondaryColor(context)
         builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
 
-        if (reminder.priority > 2) {
+        if (reminder.priority >= 2 && Module.isQ) {
             val fullScreenIntent = ReminderDialog29Activity.getLaunchIntent(context, reminder.uuId)
             val fullScreenPendingIntent = PendingIntent.getActivity(context, reminder.uniqueId, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setFullScreenIntent(fullScreenPendingIntent, true)
         } else {
-            val notificationIntent = Intent(context, ReminderActionReceiver::class.java)
-            notificationIntent.action = ReminderActionReceiver.ACTION_SHOW
-            notificationIntent.putExtra(Constants.INTENT_ID, reminder.uuId)
+            val notificationIntent = ReminderActionReceiver.showIntent(context, reminder.uuId)
             val intent = PendingIntent.getBroadcast(context, reminder.uniqueId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setContentIntent(intent)
         }

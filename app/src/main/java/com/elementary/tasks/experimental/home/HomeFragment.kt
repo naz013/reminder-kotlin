@@ -17,6 +17,7 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
@@ -25,9 +26,12 @@ import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by lazy {
+        ViewModelProviders.of(this).get(HomeViewModel::class.java)
+    }
     private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true)
     private val birthdaysAdapter = BirthdaysRecyclerAdapter()
+    private var mPosition: Int = 0
 
     private val reminderResolver = ReminderResolver(
             dialogAction = { return@ReminderResolver dialogues },
@@ -163,6 +167,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         remindersAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 if (t != null) {
+                    mPosition = position
                     reminderResolver.resolveAction(view, t, actions)
                 }
             }
@@ -184,7 +189,6 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         viewModel.reminders.observe(this, Observer {
             if (it != null) {
                 remindersAdapter.submitList(it)
@@ -195,6 +199,13 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
             if (it != null) {
                 birthdaysAdapter.submitList(it)
                 updateBirthdaysEmpty(it.size)
+            }
+        })
+        viewModel.result.observe(this, Observer {
+            if (it != null) {
+                if (it == Commands.FAILED) {
+                    remindersAdapter.notifyItemChanged(mPosition)
+                }
             }
         })
     }

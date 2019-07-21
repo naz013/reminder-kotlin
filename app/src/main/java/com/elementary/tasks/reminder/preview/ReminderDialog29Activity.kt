@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -40,6 +41,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 
+@RequiresApi(29)
 class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
     private lateinit var viewModel: ReminderViewModel
@@ -781,6 +783,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
         private const val ARG_TEST_ITEM = "arg_test_item"
         const val ACTION_STOP_BG_ACTIVITY = "action.STOP.BG"
 
+        @RequiresApi(29)
         fun mockTest(context: Context, reminder: Reminder) {
             val intent = Intent(context, ReminderDialog29Activity::class.java)
             intent.putExtra(ARG_TEST, true)
@@ -788,6 +791,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
             context.startActivity(intent)
         }
 
+        @RequiresApi(29)
         fun getLaunchIntent(context: Context, id: String): Intent {
             val resultIntent = Intent(context, ReminderDialog29Activity::class.java)
             resultIntent.putExtra(Constants.INTENT_ID, id)

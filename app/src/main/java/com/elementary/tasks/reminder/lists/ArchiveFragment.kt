@@ -27,7 +27,9 @@ import com.elementary.tasks.reminder.lists.filters.SearchModifier
 
 class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Reminder>) -> Unit {
 
-    private lateinit var viewModel: ArchiveRemindersViewModel
+    private val viewModel: ArchiveRemindersViewModel by lazy {
+        ViewModelProviders.of(this).get(ArchiveRemindersViewModel::class.java)
+    }
 
     private val reminderResolver = ReminderResolver(
             dialogAction = { return@ReminderResolver dialogues },
@@ -38,7 +40,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
             allGroups = { return@ReminderResolver viewModel.groups }
     )
 
-    private var mAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = false)
+    private var remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = false)
     private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
@@ -89,7 +91,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_delete_all -> {
-                viewModel.deleteAll(mAdapter.data)
+                viewModel.deleteAll(remindersAdapter.data)
                 return true
             }
         }
@@ -105,7 +107,6 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ArchiveRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
@@ -130,8 +131,8 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     }
 
     private fun initList() {
-        mAdapter.prefsProvider = { prefs }
-        mAdapter.actionsListener = object : ActionsListener<Reminder> {
+        remindersAdapter.prefsProvider = { prefs }
+        remindersAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 if (t != null) {
                     reminderResolver.resolveAction(view, t, actions)
@@ -143,7 +144,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
-        binding.recyclerView.adapter = mAdapter
+        binding.recyclerView.adapter = remindersAdapter
         ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }, null)
         reloadView(0)
     }
@@ -157,7 +158,7 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     }
 
     override fun invoke(result: List<Reminder>) {
-        mAdapter.submitList(result)
+        remindersAdapter.submitList(result)
         binding.recyclerView.smoothScrollToPosition(0)
         reloadView(result.size)
     }

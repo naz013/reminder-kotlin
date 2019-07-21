@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -31,7 +32,10 @@ import timber.log.Timber
 
 class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (List<Reminder>) -> Unit {
 
-    private lateinit var viewModel: ActiveRemindersViewModel
+    private val viewModel: ActiveRemindersViewModel by lazy {
+        ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
+    }
+    private var mPosition: Int = 0
 
     private val reminderResolver = ReminderResolver(
             dialogAction = { return@ReminderResolver dialogues },
@@ -50,7 +54,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             allGroups = { return@ReminderResolver viewModel.groups }
     )
 
-    private val mAdapter = RemindersRecyclerAdapter(showHeader = true, isEditable = true)
+    private val remindersAdapter = RemindersRecyclerAdapter(showHeader = true, isEditable = true)
     private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
@@ -116,7 +120,6 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
@@ -125,8 +128,15 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         viewModel.error.observe(this, Observer {
             Timber.d("initViewModel: onError -> $it")
             if (it != null) {
-                mAdapter.notifyDataSetChanged()
+                remindersAdapter.notifyDataSetChanged()
                 Toast.makeText(context!!, it, Toast.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.result.observe(this, Observer {
+            if (it != null) {
+                if (it == Commands.FAILED) {
+                    remindersAdapter.notifyItemChanged(mPosition)
+                }
             }
         })
     }
@@ -137,10 +147,11 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     }
 
     private fun initList() {
-        mAdapter.prefsProvider = { prefs }
-        mAdapter.actionsListener = object : ActionsListener<Reminder> {
+        remindersAdapter.prefsProvider = { prefs }
+        remindersAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 if (t != null) {
+                    mPosition = position
                     reminderResolver.resolveAction(view, t, actions)
                 }
             }
@@ -150,7 +161,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         } else {
             binding.recyclerView.layoutManager = LinearLayoutManager(context)
         }
-        binding.recyclerView.adapter = mAdapter
+        binding.recyclerView.adapter = remindersAdapter
         ViewUtils.listenScrollableView(binding.recyclerView, listener = { setToolbarAlpha(toAlpha(it.toFloat())) }) {
             if (it) binding.fab.show()
             else binding.fab.hide()
@@ -169,7 +180,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     }
 
     override fun invoke(result: List<Reminder>) {
-        mAdapter.submitList(result)
+        remindersAdapter.submitList(result)
         binding.recyclerView.smoothScrollToPosition(0)
         reloadView(result.size)
     }
