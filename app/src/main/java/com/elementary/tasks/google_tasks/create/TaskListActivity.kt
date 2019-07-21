@@ -7,8 +7,8 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
@@ -19,15 +19,19 @@ import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 
 class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout.activity_create_task_list) {
 
-    private lateinit var viewModel: GoogleTaskListViewModel
-    private lateinit var stateViewModel: StateViewModel
+    private val viewModel: GoogleTaskListViewModel by lazy {
+        ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(getId()))
+                .get(GoogleTaskListViewModel::class.java)
+    }
+    private val stateViewModel: StateViewModel by lazy {
+        ViewModelProviders.of(this).get(StateViewModel::class.java)
+    }
 
     private var mItem: GoogleTaskList? = null
     private var mIsLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
         binding.progressMessageView.text = getString(R.string.please_wait)
         updateProgress(false)
 
@@ -40,8 +44,10 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout
             updateProgress(savedInstanceState.getBoolean(ARG_LOADING, false))
         }
 
-        initViewModel(intent.getStringExtra(Constants.INTENT_ID) ?: "")
+        initViewModel()
     }
+
+    private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(ARG_COLOR, binding.colorSlider.selectedItem)
@@ -67,8 +73,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout
         binding.toolbar.setTitle(R.string.new_tasks_list)
     }
 
-    private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(id)).get(GoogleTaskListViewModel::class.java)
+    private fun initViewModel() {
         viewModel.googleTaskList.observe(this, Observer { googleTaskList ->
             googleTaskList?.let { editTaskList(it) }
         })

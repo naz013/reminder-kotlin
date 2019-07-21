@@ -27,7 +27,9 @@ import java.util.*
 
 class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>(), TimePickerDialog.OnTimeSetListener {
 
-    private lateinit var viewModel: BirthdaysViewModel
+    private val viewModel: BirthdaysViewModel by lazy {
+        ViewModelProviders.of(this).get(BirthdaysViewModel::class.java)
+    }
     private var mItemSelect: Int = 0
 
     private val onProgress: (Boolean) -> Unit = {
@@ -98,7 +100,6 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(BirthdaysViewModel::class.java)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {

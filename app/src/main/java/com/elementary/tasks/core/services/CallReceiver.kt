@@ -13,23 +13,23 @@ import timber.log.Timber
 
 class CallReceiver : BaseBroadcast() {
 
-    private lateinit var mContext: Context
+    private val appDb: AppDb by inject()
+
     private var mIncomingNumber: String? = null
     private var prevState: Int = 0
     private var startCallTime: Long = 0
 
-    private val appDb: AppDb by inject()
-
     override fun onReceive(context: Context, intent: Intent) {
-        mContext = context
-        val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
-        if (telephony != null && prefs.isTelephonyAllowed) {
-            val customPhoneListener = CustomPhoneStateListener()
-            telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
+        if (intent.action ?: "" == "android.intent.action.PHONE_STATE") {
+            val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+            if (telephony != null && prefs.isTelephonyAllowed) {
+                val customPhoneListener = CustomPhoneStateListener(context)
+                telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
+            }
         }
     }
 
-    inner class CustomPhoneStateListener : PhoneStateListener() {
+    inner class CustomPhoneStateListener(private var context: Context) : PhoneStateListener() {
 
         override fun onCallStateChanged(state: Int, incomingNumber: String?) {
             Timber.d("onCallStateChanged: $incomingNumber")
@@ -51,7 +51,7 @@ class CallReceiver : BaseBroadcast() {
                         if (prefs.isTelephonyAllowed && mIncomingNumber != null && isFollow) {
                             val number = mIncomingNumber
                             if (number != null) {
-                                FollowReminderActivity.mockScreen(mContext, number, startCallTime)
+                                FollowReminderActivity.mockScreen(context, number, startCallTime)
                             }
                         }
                     } else if (prevState == TelephonyManager.CALL_STATE_RINGING) {
@@ -77,7 +77,7 @@ class CallReceiver : BaseBroadcast() {
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                                 val number = mIncomingNumber
                                 if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
-                                    QuickSmsActivity.openScreen(mContext, number)
+                                    QuickSmsActivity.openScreen(context, number)
                                 }
                             }
                         }

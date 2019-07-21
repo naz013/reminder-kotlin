@@ -19,7 +19,9 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 
 class ImportActivity : BindingActivity<ActivityImportSharingBinding>(R.layout.activity_import_sharing) {
 
-    private lateinit var viewModel: ShareViewModel
+    private val viewModel: ShareViewModel by lazy {
+        ViewModelProviders.of(this).get(ShareViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +42,6 @@ class ImportActivity : BindingActivity<ActivityImportSharingBinding>(R.layout.ac
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
         viewModel.isLogged.observe(this, Observer {
             if (it != null) {
                 binding.shareButton.isEnabled = it

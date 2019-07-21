@@ -19,7 +19,9 @@ import timber.log.Timber
 
 class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
-    private lateinit var remotePrefs: RemotePrefs
+    private val remotePrefs: RemotePrefs by lazy {
+        RemotePrefs(context!!)
+    }
     private val prefsObserver: (String) -> Unit = {
         Handler(Looper.getMainLooper()).post {
             if (it == PrefsConstants.DATA_BACKUP) {
@@ -31,11 +33,6 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
     }
 
     override fun layoutRes(): Int = R.layout.fragment_settings
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        remotePrefs = RemotePrefs(context!!)
-    }
 
     override fun onResume() {
         super.onResume()

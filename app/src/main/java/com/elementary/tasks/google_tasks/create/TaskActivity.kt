@@ -32,7 +32,9 @@ import java.util.*
 
 class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.activity_create_google_task) {
 
-    private lateinit var stateViewModel: StateViewModel
+    private val stateViewModel: StateViewModel by lazy {
+        ViewModelProviders.of(this).get(StateViewModel::class.java)
+    }
     private lateinit var viewModel: GoogleTaskViewModel
 
     private var mIsLoading = false
@@ -57,7 +59,6 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
         lifecycle.addObserver(stateViewModel)
         initToolbar()
         initFields()

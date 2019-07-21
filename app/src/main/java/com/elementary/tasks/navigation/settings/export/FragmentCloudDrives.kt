@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
-import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
@@ -23,10 +23,6 @@ import timber.log.Timber
 
 class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
 
-    private lateinit var viewModel: CloudViewModel
-    private lateinit var mDropbox: DropboxLogin
-    private lateinit var mGoogleLogin: GoogleLogin
-
     private val mDropboxCallback = object : DropboxLogin.LoginCallback {
         override fun onSuccess(b: Boolean) {
             if (b) {
@@ -35,6 +31,16 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
                 binding.linkDropbox.text = getString(R.string.connect)
             }
         }
+    }
+
+    private val viewModel: CloudViewModel by lazy {
+        ViewModelProviders.of(this).get(CloudViewModel::class.java)
+    }
+    private val mDropbox: DropboxLogin by lazy {
+        DropboxLogin(activity!!, mDropboxCallback)
+    }
+    private val mGoogleLogin: GoogleLogin by lazy {
+        GoogleLogin(activity!!, prefs)
     }
 
     private fun showErrorDialog() {
@@ -46,19 +52,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CloudViewModel::class.java)
-    }
-
     override fun layoutRes(): Int = R.layout.fragment_settings_cloud_drives
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateProgress(false)
         binding.progressMessageView.text = getString(R.string.please_wait)
-        mDropbox = DropboxLogin(activity!!, mDropboxCallback)
-        mGoogleLogin = GoogleLogin(activity!!, prefs)
         mGoogleLogin.googleStatus = {
             checkGoogleStatus()
         }

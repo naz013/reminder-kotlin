@@ -42,9 +42,15 @@ import java.io.File
 
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder), ReminderInterface {
 
-    private lateinit var viewModel: ReminderViewModel
-    private lateinit var conversationViewModel: ConversationViewModel
-    private lateinit var stateViewModel: StateViewModel
+    private val viewModel: ReminderViewModel by lazy {
+        ViewModelProviders.of(this, ReminderViewModel.Factory(getId())).get(ReminderViewModel::class.java)
+    }
+    private val conversationViewModel: ConversationViewModel by lazy {
+        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+    }
+    private val stateViewModel: StateViewModel by lazy {
+        ViewModelProviders.of(this).get(StateViewModel::class.java)
+    }
 
     private var fragment: TypeFragment<*>? = null
     private var mUri: Uri? = null
@@ -80,7 +86,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stateViewModel = ViewModelProviders.of(this).get(StateViewModel::class.java)
         hasLocation = Module.hasLocation(this)
         mIsTablet = resources.getBoolean(R.bool.is_tablet)
         canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
@@ -138,9 +143,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         }
     }
 
-    private fun initViewModel(id: String) {
-        conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
+    private fun initViewModel() {
         viewModel.reminder.observe(this, mReminderObserver)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
@@ -162,10 +165,12 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         })
     }
 
+    private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
     private fun loadReminder() {
-        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+        val id = getId()
         val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
-        initViewModel(id)
+        initViewModel()
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if ("text/plain" == intent.type) {

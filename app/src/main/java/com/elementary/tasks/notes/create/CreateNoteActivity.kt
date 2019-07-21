@@ -44,11 +44,20 @@ import java.util.*
 
 class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.activity_create_note), PhotoSelectionUtil.UriCallback {
 
+    private val themeUtil: ThemeUtil by inject()
+    private val backupTool: BackupTool by inject()
+    private val imagesSingleton: ImagesSingleton by inject()
     private var isBgDark = false
 
-    private lateinit var viewModel: NoteViewModel
-    private lateinit var stateViewModel: CreateNoteViewModel
-    private lateinit var photoSelectionUtil: PhotoSelectionUtil
+    private val viewModel: NoteViewModel by lazy {
+        ViewModelProviders.of(this, NoteViewModel.Factory(getId())).get(NoteViewModel::class.java)
+    }
+    private val stateViewModel: CreateNoteViewModel by lazy {
+        ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
+    }
+    private val photoSelectionUtil: PhotoSelectionUtil by lazy {
+        PhotoSelectionUtil(this, dialogues, true, this)
+    }
 
     private val imagesGridAdapter = ImagesGridAdapter()
 
@@ -56,10 +65,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     private var mReminder: Reminder? = null
     private var speech: SpeechRecognizer? = null
     private var mUri: Uri? = null
-
-    private val themeUtil: ThemeUtil by inject()
-    private val backupTool: BackupTool by inject()
-    private val imagesSingleton: ImagesSingleton by inject()
 
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle?) {
@@ -128,7 +133,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stateViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
         lifecycle.addObserver(stateViewModel)
 
         isBgDark = isDarkMode
@@ -164,8 +168,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
 
     override fun onStart() {
         super.onStart()
-        photoSelectionUtil = PhotoSelectionUtil(this, dialogues, true, this)
-
         ViewUtils.registerDragAndDrop(this, binding.clickView, true, ThemeUtil.getSecondaryColor(this), {
             if (it.itemCount > 0) {
                 parseDrop(it)
@@ -420,9 +422,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         stateViewModel.isReminderAttached.postValue(!isReminderAdded())
     }
 
+    private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
     private fun loadNote() {
-        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        initViewModel(id)
+        initViewModel()
         when {
             intent?.action == Intent.ACTION_SEND -> {
                 if ("text/plain" == intent.type) {
@@ -456,10 +459,9 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         stateViewModel.setImage(image, stateViewModel.editPosition)
     }
 
-    private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(id)).get(NoteViewModel::class.java)
+    private fun initViewModel() {
         viewModel.note.observe(this, mNoteObserver)
-        viewModel.reminder.observe(this, Observer<Reminder> { this.showReminder(it) })
+        viewModel.reminder.observe(this, Observer { this.showReminder(it) })
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 Timber.d("initViewModel: $commands")

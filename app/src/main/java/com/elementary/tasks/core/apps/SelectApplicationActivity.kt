@@ -21,7 +21,9 @@ import com.elementary.tasks.databinding.ActivityApplicationListBinding
 
 class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>(R.layout.activity_application_list) {
 
-    private lateinit var viewModel: SelectApplicationViewModel
+    private val viewModel: SelectApplicationViewModel by lazy {
+        ViewModelProviders.of(this).get(SelectApplicationViewModel::class.java)
+    }
     private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
     private val searchModifier = object : SearchModifier<ApplicationItem>(null, {
         adapter.submitList(it)
@@ -36,7 +38,6 @@ class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SelectApplicationViewModel::class.java)
         viewModel.packageManager = packageManager
         viewModel.loadApps()
 

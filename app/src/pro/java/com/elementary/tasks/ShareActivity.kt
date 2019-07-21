@@ -16,7 +16,7 @@ import timber.log.Timber
 class ShareActivity : BindingActivity<ActivityShareBinding>(R.layout.activity_share) {
 
     private val qrShareProvider: QrShareProvider by inject()
-    private lateinit var auth: FirebaseAuth
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     private var mData: String? = ""
     private var mType: String? = ""
@@ -36,8 +36,6 @@ class ShareActivity : BindingActivity<ActivityShareBinding>(R.layout.activity_sh
         }
         mData = data
         mType = type
-
-        auth = FirebaseAuth.getInstance()
     }
 
     override fun onStart() {

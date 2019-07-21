@@ -23,7 +23,9 @@ import timber.log.Timber
 class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
     private val timesAdapter = TimesAdapter()
-    lateinit var viewModel: UsedTimeViewModel
+    private val viewModel: UsedTimeViewModel by lazy {
+        ViewModelProviders.of(this).get(UsedTimeViewModel::class.java)
+    }
 
     override fun prepare(): Reminder? {
         val reminder = iFace.state.reminder
@@ -130,7 +132,6 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(UsedTimeViewModel::class.java)
         viewModel.usedTimeList.observe(this, Observer {
             if (it != null) {
                 timesAdapter.updateData(it)

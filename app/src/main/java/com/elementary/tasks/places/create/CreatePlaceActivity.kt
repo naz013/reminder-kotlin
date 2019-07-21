@@ -26,15 +26,16 @@ import org.koin.android.ext.android.inject
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
-    private lateinit var viewModel: PlaceViewModel
-    private lateinit var stateViewModel: CreatePlaceViewModel
-
+    private val backupTool: BackupTool by inject()
+    private val viewModel: PlaceViewModel by lazy {
+        ViewModelProviders.of(this, PlaceViewModel.Factory(getId())).get(PlaceViewModel::class.java)
+    }
+    private val stateViewModel: CreatePlaceViewModel by lazy {
+        ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
+    }
     private var mGoogleMap: AdvancedMapFragment? = null
-
     private var mItem: Place? = null
     private var mUri: Uri? = null
-
-    private val backupTool: BackupTool by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +43,15 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
 
         initActionBar()
 
-        mGoogleMap = AdvancedMapFragment.newInstance(false, true, false, false,
-                prefs.markerStyle, ThemeUtil.isDarkMode(this), false)
+        mGoogleMap = AdvancedMapFragment.newInstance(
+                isPlaces = false,
+                isStyles = true,
+                isBack = false,
+                isZoom = false,
+                markerStyle = prefs.markerStyle,
+                isDark = ThemeUtil.isDarkMode(this),
+                isRadius = false
+        )
         mGoogleMap?.setListener(this)
         mGoogleMap?.setCallback(this)
 
@@ -60,8 +68,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         binding.backButton.setOnClickListener { finish() }
     }
 
-    private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, PlaceViewModel.Factory(id)).get(PlaceViewModel::class.java)
+    private fun initViewModel() {
         viewModel.place.observe(this, Observer { place ->
             place?.let { showPlace(it) }
         })
@@ -74,13 +81,12 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
                 }
             }
         })
-
-        stateViewModel = ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
     }
 
+    private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
     private fun loadPlace() {
-        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        initViewModel(id)
+        initViewModel()
         if (intent.data != null) {
             mUri = intent.data
             readUri()
@@ -175,7 +181,8 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         val map = mGoogleMap ?: return
         if (stateViewModel.place.hasLatLng()) {
             map.setStyle(stateViewModel.place.marker)
-            mGoogleMap?.addMarker(stateViewModel.place.latLng(), stateViewModel.place.name, true, true, -1)
+            mGoogleMap?.addMarker(stateViewModel.place.latLng(), stateViewModel.place.name,
+                    clear = true, animate = true, radius = -1)
         }
     }
 

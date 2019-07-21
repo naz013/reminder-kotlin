@@ -16,7 +16,9 @@ import org.koin.android.ext.android.inject
 
 class VoiceWidgetDialog : FragmentActivity() {
 
-    private lateinit var viewModel: ConversationViewModel
+    private val viewModel: ConversationViewModel by lazy {
+        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+    }
     private val notifier: Notifier by inject()
     private val prefs: Prefs by inject()
     private val language: Language by inject()
@@ -27,7 +29,6 @@ class VoiceWidgetDialog : FragmentActivity() {
         mIsLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
         if (Module.hasMicrophone(this)) {
-            viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
             if (prefs.hasPinCode && !mIsLogged) {
                 PinLoginActivity.verify(this)
             } else {

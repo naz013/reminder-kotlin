@@ -41,7 +41,9 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
     private var speech: SpeechRecognizer? = null
 
     private val mAdapter = ConversationAdapter()
-    private lateinit var viewModel: ConversationViewModel
+    private val viewModel: ConversationViewModel by lazy {
+        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+    }
     private var tts: TextToSpeech? = null
     private var isTtsReady = false
     private var isListening = false
@@ -141,7 +143,6 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
@@ -234,13 +235,11 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
             viewModel.removeAsk()
         }
         Timber.d("performResult: $model")
-        val actionType = model.type
-        when (actionType) {
+        when (model.type) {
             ActionType.REMINDER -> reminderAction(model)
             ActionType.NOTE -> noteAction(model)
             ActionType.ACTION -> {
-                val action = model.action
-                when (action) {
+                when (model.action) {
                     Action.BIRTHDAY -> {
                         stopView()
                         AddBirthdayActivity.openLogged(this)
@@ -264,8 +263,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
             ActionType.SHOW -> {
                 stopView()
                 Timber.d("performResult: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true)}")
-                val action = model.action
-                when (action) {
+                when (model.action) {
                     Action.REMINDERS -> viewModel.getReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
                     Action.NOTES -> viewModel.getNotes()
                     Action.GROUPS -> showGroups()
@@ -683,6 +681,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CHECK_CODE) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 tts = TextToSpeech(this, mTextToSpeechListener)

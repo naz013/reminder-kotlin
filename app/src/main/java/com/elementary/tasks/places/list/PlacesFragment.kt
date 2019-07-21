@@ -27,7 +27,9 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
-    private lateinit var viewModel: PlacesViewModel
+    private val viewModel: PlacesViewModel by lazy {
+        ViewModelProviders.of(this).get(PlacesViewModel::class.java)
+    }
 
     private val mAdapter = PlacesRecyclerAdapter()
     private var mSearchView: SearchView? = null
@@ -99,7 +101,6 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
         viewModel.places.observe(this, Observer { places ->
             if (places != null) {
                 searchModifier.original = places
