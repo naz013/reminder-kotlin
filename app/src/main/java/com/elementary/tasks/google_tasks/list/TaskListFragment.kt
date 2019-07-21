@@ -27,11 +27,9 @@ import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import org.koin.android.ext.android.inject
 
 class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
-    private val themeUtil: ThemeUtil by inject()
     private val adapter = TasksRecyclerAdapter()
     private val viewModel: GoogleTaskListViewModel by lazy {
         ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
@@ -86,7 +84,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding.progressMessageView.text = getString(R.string.please_wait)
         binding.fab.setOnClickListener { addNewTask() }
-        binding.fab.backgroundTintList = ColorStateList.valueOf(themeUtil.getNoteLightColor(googleTaskList?.color ?: 0))
+        binding.fab.backgroundTintList = ColorStateList.valueOf(ThemeUtil.themedColor(view.context, googleTaskList?.color ?: 0))
         updateProgress(false)
         initEmpty()
         initList()

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -15,14 +15,11 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ListItemGoogleTaskBinding
-import org.koin.core.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
-        BaseHolder<ListItemGoogleTaskBinding>(parent, R.layout.list_item_google_task) {
-
-    private val themeUtil: ThemeUtil by inject()
+        HolderBinding<ListItemGoogleTaskBinding>(parent, R.layout.list_item_google_task) {
 
     init {
         binding.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }
@@ -45,12 +42,12 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
         val color = if (item.listId != "" && map.containsKey(item.listId)) {
             val googleTaskList = map[item.listId]
             if (googleTaskList != null) {
-                themeUtil.getNoteLightColor(googleTaskList.color)
+                ThemeUtil.themedColor(view.context, googleTaskList.color)
             } else {
-                themeUtil.getNoteLightColor(0)
+                ThemeUtil.themedColor(view.context, 0)
             }
         } else {
-            themeUtil.getNoteLightColor(0)
+            ThemeUtil.themedColor(view.context, 0)
         }
         view.setImageBitmap(createIcon(view.context, item.status == GTasks.TASKS_COMPLETE, color))
     }

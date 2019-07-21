@@ -31,7 +31,6 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
     private var mYear: Int = 0
 
     private val prefs: Prefs by inject()
-    private val themeUtil: ThemeUtil by inject()
 
     override fun onCreate() {
         mDateTimeList.clear()
@@ -184,13 +183,13 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
                 if (day == selDay && month == selMonth) {
                     if (item.isHasReminders && year == selYear) {
                         rv.setInt(R.id.reminderMark, "setBackgroundColor",
-                                themeUtil.colorReminderCalendar())
+                                ThemeUtil.colorReminderCalendar(mContext, prefs))
                     } else {
                         rv.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
                     }
                     if (item.isHasBirthdays) {
                         rv.setInt(R.id.birthdayMark, "setBackgroundColor",
-                                themeUtil.colorBirthdayCalendar())
+                                ThemeUtil.colorBirthdayCalendar(mContext, prefs))
                     } else {
                         rv.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
                     }
@@ -201,7 +200,7 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
 
         if (mDay == selDay && mMonth == selMonth && mYear == realYear && mMonth == realMonth + 1
                 && mYear == selYear) {
-            rv.setInt(R.id.currentMark, "setBackgroundColor", themeUtil.colorCurrentCalendar())
+            rv.setInt(R.id.currentMark, "setBackgroundColor", ThemeUtil.colorCurrentCalendar(mContext, prefs))
         } else {
             rv.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)
         }

@@ -70,7 +70,6 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
         }
     }
 
-    private val themeUtil: ThemeUtil by inject()
     private val prefs: Prefs by inject()
 
     constructor(context: Context) : super(context) {
@@ -89,7 +88,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
         val colorSecondary = ThemeUtil.getThemeSecondaryColor(context)
 
         this.mDefaultColor = ContextCompat.getColor(context, R.color.color_on_background)
-        this.mTodayColor = themeUtil.getNoteLightColor(prefs.todayColor)
+        this.mTodayColor = ThemeUtil.themedColor(context, prefs.todayColor)
 
         this.mNormalTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular)
         this.mBoldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold)

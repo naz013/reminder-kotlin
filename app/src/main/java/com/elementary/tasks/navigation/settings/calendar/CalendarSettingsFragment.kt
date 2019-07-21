@@ -8,12 +8,10 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import org.koin.android.ext.android.inject
 
 class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBinding>() {
 
     private var mItemSelect: Int = 0
-    private val themeUtil: ThemeUtil by inject()
 
     override fun layoutRes(): Int = R.layout.fragment_settings_calendar
 
@@ -58,7 +56,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
     private fun showColorPopup(current: Int, title: String, onSave: (Int) -> Unit) {
         withActivity { act ->
-            dialogues.showColorDialog(act, current, title, ThemeUtil.colorsForSlider(act)) {
+            dialogues.showColorDialog(act, current, title, ThemeUtil.colorsForSliderThemed(act)) {
                 onSave.invoke(it)
             }
         }
@@ -95,7 +93,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     }
 
     private fun initRemindersColorPrefs() {
-        binding.reminderColorPrefs.setViewColor(themeUtil.colorReminderCalendar())
+        binding.reminderColorPrefs.setViewColor(ThemeUtil.colorReminderCalendar(context!!, prefs))
     }
 
     private fun initRemindersPrefs() {
@@ -123,10 +121,10 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
     override fun getTitle(): String = getString(R.string.calendar)
 
     private fun initBirthdaysColorPrefs() {
-        binding.selectedColorPrefs.setViewColor(themeUtil.colorBirthdayCalendar())
+        binding.selectedColorPrefs.setViewColor(ThemeUtil.colorBirthdayCalendar(context!!, prefs))
     }
 
     private fun initTodayColorPrefs() {
-        binding.themeColorPrefs.setViewColor(themeUtil.colorCurrentCalendar())
+        binding.themeColorPrefs.setViewColor(ThemeUtil.colorCurrentCalendar(context!!, prefs))
     }
 }

@@ -25,7 +25,7 @@ class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsS
 
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID)
-    private val themeUtil: ThemeUtil by inject()
+
     private val appDb: AppDb by inject()
     private val mData = ArrayList<GoogleTask>()
     private val map = HashMap<String, Int>()
@@ -81,9 +81,9 @@ class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsS
 
         val task = mData[i]
         val listColor = if (map.containsKey(task.listId)) {
-            themeUtil.getNoteLightColor(map[task.listId] ?: 0)
+            ThemeUtil.themedColor(mContext, map[task.listId] ?: 0)
         } else {
-            themeUtil.getNoteLightColor(0)
+            ThemeUtil.themedColor(mContext, 0)
         }
 
         val icon = if (task.status == GTasks.TASKS_COMPLETE) {

@@ -36,7 +36,7 @@ class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout
         updateProgress(false)
 
         initActionBar()
-        binding.colorSlider.setColors(ThemeUtil.colorsForSlider(this))
+        binding.colorSlider.setColors(ThemeUtil.colorsForSliderThemed(this))
         binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {

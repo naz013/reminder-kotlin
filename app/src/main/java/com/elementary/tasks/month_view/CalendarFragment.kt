@@ -20,7 +20,6 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
 import org.apache.commons.lang3.StringUtils
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,7 +28,6 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
 
     lateinit var dayPagerAdapter: MonthPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
-    private val themeUtil: ThemeUtil by inject()
     private val mViewModel: MonthViewViewModel by lazy {
         ViewModelProviders.of(this,
                 MonthViewViewModel.Factory(prefs.isRemindersInCalendarEnabled,
@@ -144,11 +142,11 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun birthdayColor(): Int {
-        return themeUtil.colorBirthdayCalendar()
+        return ThemeUtil.colorBirthdayCalendar(context!!, prefs)
     }
 
     override fun reminderColor(): Int {
-        return themeUtil.colorReminderCalendar()
+        return ThemeUtil.colorReminderCalendar(context!!, prefs)
     }
 
     override fun onDateClick(date: Date) {

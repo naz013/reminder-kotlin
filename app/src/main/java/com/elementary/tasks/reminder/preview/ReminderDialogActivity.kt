@@ -35,15 +35,12 @@ import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
 
 class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
     private lateinit var viewModel: ReminderViewModel
-
-    private val themeUtil: ThemeUtil by inject()
 
     private var shoppingAdapter: ShopListRecyclerAdapter = ShopListRecyclerAdapter()
 
@@ -313,7 +310,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         else binding.buttonAttachment?.hide()
 
         val contactPhoto = binding.contactPhoto
-        contactPhoto.borderColor = themeUtil.getNoteLightColor()
+        contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
         contactPhoto.visibility = View.GONE
 
         binding.todoList.layoutManager = LinearLayoutManager(this)

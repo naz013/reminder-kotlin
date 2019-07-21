@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,7 +74,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         }
         setOnMarkerClick(onMarkerClickListener)
         if (lastPos != null) {
-            addMarker(lastPos, lastPos.toString(), true, false, markerRadius)
+            addMarker(lastPos, lastPos.toString(), clear = true, animate = false, radius = markerRadius)
         }
         mCallback?.onMapReady()
     }
@@ -124,8 +125,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil.getColor(marker.fillColor))
-                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
+                    .fillColor(ContextCompat.getColor(context!!, marker.fillColor))
+                    .strokeColor(ContextCompat.getColor(context!!, marker.strokeColor)))
             if (animate) animate(pos)
         }
     }
@@ -157,8 +158,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil.getColor(marker.fillColor))
-                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
+                    .fillColor(ContextCompat.getColor(context!!, marker.fillColor))
+                    .strokeColor(ContextCompat.getColor(context!!, marker.strokeColor)))
             if (animate) animate(pos)
             return true
         } else {
@@ -190,8 +191,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
                     .center(lastPos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil.getColor(marker.fillColor))
-                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
+                    .fillColor(ContextCompat.getColor(context!!, marker.fillColor))
+                    .strokeColor(ContextCompat.getColor(context!!, marker.strokeColor)))
             animate(lastPos!!)
         }
     }
@@ -222,8 +223,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
                         .center(lastPos)
                         .radius(markerRadius.toDouble())
                         .strokeWidth(strokeWidth)
-                        .fillColor(themeUtil.getColor(marker.fillColor))
-                        .strokeColor(themeUtil.getColor(marker.strokeColor)))
+                        .fillColor(ContextCompat.getColor(context!!, marker.fillColor))
+                        .strokeColor(ContextCompat.getColor(context!!, marker.strokeColor)))
             }
             animate(lastPos!!)
         }
@@ -334,7 +335,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
         setOnMapClickListener(GoogleMap.OnMapClickListener { latLng ->
             hideLayers()
             if (isTouch) {
-                addMarker(latLng, markerTitle, true, true, markerRadius)
+                addMarker(latLng, markerTitle, clear = true, animate = true, radius = markerRadius)
             }
         })
 
@@ -348,7 +349,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
             val lat = sel.latitude
             val lon = sel.longitude
             val pos = LatLng(lat, lon)
-            addMarker(pos, getFormattedAddress(sel), true, true, markerRadius)
+            addMarker(pos, getFormattedAddress(sel), clear = true, animate = true, radius = markerRadius)
         }
         initPlacesViewModel()
     }
@@ -483,9 +484,11 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
                         hideLayers()
                         if (t != null) {
                             if (!Module.isPro) {
-                                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, true, markerRadius)
+                                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true,
+                                        animate = true, radius = markerRadius)
                             } else {
-                                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, t.marker, true, markerRadius)
+                                addMarker(LatLng(t.latitude, t.longitude), markerTitle, true,
+                                        t.marker, true, markerRadius)
                             }
                         }
                     }

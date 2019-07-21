@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BaseHolder
+import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemGoogleTasksListBinding
-import org.koin.core.inject
 
 class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Holder>(GoogleTasksListDiffCallback()) {
 
@@ -24,8 +23,8 @@ class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Ho
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder = Holder(parent)
 
-    inner class Holder(parent: ViewGroup) : BaseHolder<ListItemGoogleTasksListBinding>(parent, R.layout.list_item_google_tasks_list) {
-        private val themeUtil: ThemeUtil by inject()
+    inner class Holder(parent: ViewGroup) : HolderBinding<ListItemGoogleTasksListBinding>(parent,
+            R.layout.list_item_google_tasks_list) {
 
         init {
             binding.clickView.setOnClickListener { actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN) }
@@ -33,7 +32,7 @@ class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Ho
 
         fun bind(googleTaskList: GoogleTaskList) {
             binding.textView.text = googleTaskList.title
-            val color = themeUtil.getNoteLightColor(googleTaskList.color)
+            val color = ThemeUtil.themedColor(binding.textView.context, googleTaskList.color)
             binding.clickView.background = stateList(color)
         }
 

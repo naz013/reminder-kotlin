@@ -75,26 +75,6 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
             return R.drawable.preview_map_day
         }
 
-    @ColorInt
-    fun getColor(@ColorRes color: Int): Int {
-        return ContextCompat.getColor(context, color)
-    }
-
-    @ColorInt
-    fun colorBirthdayCalendar(): Int {
-        return getNoteLightColor(prefs.birthdayColor)
-    }
-
-    @ColorInt
-    fun colorReminderCalendar(): Int {
-        return getNoteLightColor(prefs.reminderColor)
-    }
-
-    @ColorInt
-    fun colorCurrentCalendar(): Int {
-        return getNoteLightColor(prefs.todayColor)
-    }
-
     fun getMarkerRadiusStyle(color: Int): Marker {
         val fillColor: Int
         val strokeColor: Int
@@ -194,7 +174,7 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
             Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
             else -> color = R.color.blueAccentOld
         }
-        return getColor(color)
+        return ContextCompat.getColor(context, color)
     }
 
     @ColorInt
@@ -397,6 +377,21 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
             val green = android.graphics.Color.green(color)
             val blue = android.graphics.Color.blue(color)
             return android.graphics.Color.argb(alpha.toInt(), red, green, blue)
+        }
+
+        @ColorInt
+        fun colorBirthdayCalendar(context: Context, prefs: Prefs): Int {
+            return themedColor(context, prefs.birthdayColor)
+        }
+
+        @ColorInt
+        fun colorReminderCalendar(context: Context, prefs: Prefs): Int {
+            return themedColor(context, prefs.reminderColor)
+        }
+
+        @ColorInt
+        fun colorCurrentCalendar(context: Context, prefs: Prefs): Int {
+            return themedColor(context, prefs.todayColor)
         }
     }
 }

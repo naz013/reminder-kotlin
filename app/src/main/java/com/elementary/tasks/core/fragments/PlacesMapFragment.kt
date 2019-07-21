@@ -9,6 +9,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -158,8 +159,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil.getColor(marker.fillColor))
-                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
+                    .fillColor(ContextCompat.getColor(context!!, marker.fillColor))
+                    .strokeColor(ContextCompat.getColor(context!!, marker.strokeColor)))
             if (animate) {
                 animate(pos)
             }
