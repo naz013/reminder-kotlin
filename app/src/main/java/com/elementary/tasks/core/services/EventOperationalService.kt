@@ -68,6 +68,11 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         builder.setSmallIcon(R.drawable.ic_twotone_music_note_24px)
         builder.setContentTitle(getString(R.string.reminder_ongoing_service))
         builder.setContentText(getString(R.string.app_title))
+
+        val dismissIntent = getIntent(applicationContext, ACTION_FORCE)
+        val piDismiss = PendingIntent.getService(applicationContext, 0, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        builder.addAction(R.drawable.ic_twotone_block_24px, getString(R.string.acc_stop), piDismiss)
         startForeground(3214, builder.build())
     }
 
@@ -84,6 +89,20 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
             val action = intent.action ?: ""
 
             Timber.d("onHandleIntent: $id, $type, $action")
+
+            if (action == ACTION_FORCE) {
+                try {
+                    tts?.stop()
+                    tts?.shutdown()
+                } catch (e: Exception) {
+                }
+                try {
+                    soundStackHolder.sound?.stop(true)
+                } catch (e: Exception) {
+                }
+                stopForeground(true)
+                return
+            }
 
             if (id.isEmpty() && type.isEmpty()) {
                 checkForStop()
@@ -512,6 +531,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     companion object {
         const val ACTION_PLAY = Actions.ACTION_PLAY
         const val ACTION_STOP = Actions.ACTION_STOP
+        const val ACTION_FORCE = Actions.ACTION_FORCE
         private const val ARG_ID = "arg_id"
         private const val ARG_TYPE = "arg_type"
         private const val ARG_NOTIFICATION_ID = "arg_notification_id"
@@ -521,6 +541,12 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
         const val TYPE_MISSED = "type_missed_call"
 
         private val instanceCount = AtomicInteger(0)
+
+        fun getIntent(context: Context, action: String): Intent {
+            val intent = Intent(context, EventOperationalService::class.java)
+            intent.action = action
+            return intent
+        }
 
         fun getIntent(context: Context, id: String, type: String, action: String, notificationId: Int): Intent {
             val intent = Intent(context, EventOperationalService::class.java)

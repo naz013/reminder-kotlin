@@ -2,6 +2,10 @@ package com.elementary.tasks
 
 class Actions {
 
+    const val ACTION_PLAY = "com.elementary.tasks.ACTION_PLAY"
+    const val ACTION_STOP = "com.elementary.tasks.ACTION_STOP"
+    const val ACTION_FORCE = "com.elementary.tasks.ACTION_FORCE"
+
     object Reminder {
         const val ACTION_SB_HIDE = "com.elementary.tasks.HIDE"
         const val ACTION_SB_SHOW = "com.elementary.tasks.SHOW"

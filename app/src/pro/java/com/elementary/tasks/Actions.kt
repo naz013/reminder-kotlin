@@ -4,6 +4,7 @@ object Actions {
 
     const val ACTION_PLAY = "com.elementary.tasks.pro.ACTION_PLAY"
     const val ACTION_STOP = "com.elementary.tasks.pro.ACTION_STOP"
+    const val ACTION_FORCE = "com.elementary.tasks.pro.ACTION_FORCE"
 
     object Reminder {
         const val ACTION_SB_HIDE = "com.elementary.tasks.pro.HIDE"
