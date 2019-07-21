@@ -22,13 +22,19 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.day_view.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.inject
 import java.util.*
 
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
+    private val buttonObservable: GlobalButtonObservable by inject()
     lateinit var dayPagerAdapter: DayPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
-    private lateinit var viewModel: DayViewViewModel
+    private val mViewModel: DayViewViewModel by lazy {
+        ViewModelProviders.of(this,
+                DayViewViewModel.Factory(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
+                .get(DayViewViewModel::class.java)
+    }
     private var eventsPagerItem: EventsPagerItem? = null
     private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
 
@@ -73,10 +79,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this,
-                DayViewViewModel.Factory(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
-                .get(DayViewViewModel::class.java)
-        viewModel.events.observe(this, Observer<Pair<EventsPagerItem, List<EventModel>>> {
+        mViewModel.events.observe(this, Observer<Pair<EventsPagerItem, List<EventModel>>> {
             val item = eventsPagerItem
             if (it != null && item != null) {
                 val foundItem = it.first
@@ -130,13 +133,13 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     }
 
     override fun getViewModel(): DayViewViewModel {
-        return viewModel
+        return mViewModel
     }
 
     override fun find(eventsPagerItem: EventsPagerItem, listener: ((EventsPagerItem, List<EventModel>) -> Unit)?) {
         this.eventsPagerItem = eventsPagerItem
         this.listener = listener
-        viewModel.findEvents(eventsPagerItem)
+        mViewModel.findEvents(eventsPagerItem)
     }
 
     private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {

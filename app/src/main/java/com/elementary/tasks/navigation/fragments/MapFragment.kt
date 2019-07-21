@@ -22,7 +22,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
-    private lateinit var viewModel: ActiveGpsRemindersViewModel
+    private val viewModel: ActiveGpsRemindersViewModel by lazy {
+        ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel::class.java)
+    }
     private val mAdapter = LocationPlacesAdapter()
 
     private var mGoogleMap: AdvancedMapFragment? = null
@@ -55,7 +57,6 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer { reminders ->
             if (reminders != null && mGoogleMap != null) {
                 showData(reminders)

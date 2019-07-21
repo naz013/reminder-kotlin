@@ -33,8 +33,13 @@ import java.io.File
 
 class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<NoteWithImages>) -> Unit {
 
-    private lateinit var viewModel: NotesViewModel
+    private val viewModel: NotesViewModel by lazy {
+        ViewModelProviders.of(this).get(NotesViewModel::class.java)
+    }
     private val backupTool: BackupTool by inject()
+    private val themeUtil: ThemeUtil by inject()
+    private val buttonObservable: GlobalButtonObservable by inject()
+    private val notifier: Notifier by inject()
 
     private var mAdapter = NotesRecyclerAdapter()
     private var enableGrid = false
@@ -165,7 +170,6 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         viewModel.notes.observe(this, Observer { list ->
             if (list != null) {
                 Timber.d("initViewModel: $list")

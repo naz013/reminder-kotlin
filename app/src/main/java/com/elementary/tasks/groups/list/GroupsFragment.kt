@@ -18,7 +18,9 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
 class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
-    private lateinit var viewModel: GroupsViewModel
+    private val viewModel: GroupsViewModel by lazy {
+        ViewModelProviders.of(this).get(GroupsViewModel::class.java)
+    }
     private var mAdapter: GroupsRecyclerAdapter = GroupsRecyclerAdapter()
 
     override fun layoutRes(): Int = R.layout.fragment_groups
@@ -35,7 +37,6 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(GroupsViewModel::class.java)
         viewModel.allGroups.observe(this, Observer { groups ->
             if (groups != null) {
                 showGroups(groups.toList())
@@ -49,7 +50,8 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     private fun changeColor(reminderGroup: ReminderGroup) {
-        dialogues.showColorDialog(activity!!, reminderGroup.groupColor, getString(R.string.color), ThemeUtil.colorsForSlider(activity!!)) {
+        dialogues.showColorDialog(activity!!, reminderGroup.groupColor, getString(R.string.color),
+                ThemeUtil.colorsForSliderThemed(activity!!)) {
             viewModel.changeGroupColor(reminderGroup, it)
         }
     }

@@ -28,7 +28,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
         super.onCreate(savedInstanceState)
         initActionBar()
 
-        binding.colorSlider.setColors(ThemeUtil.colorsForSlider(this))
+        binding.colorSlider.setColors(ThemeUtil.colorsForSliderThemed(this))
         binding.colorSlider.setSelectorColorResource(if (isDarkMode) R.color.pureWhite else R.color.pureBlack)
 
         if (savedInstanceState != null) {

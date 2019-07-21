@@ -9,11 +9,13 @@ import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.google.android.gms.maps.GoogleMap
+import org.koin.android.ext.android.inject
 import java.util.*
 
 class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
 
     private var mItemSelect: Int = 0
+    private val themeUtil: ThemeUtil by inject()
 
     override fun layoutRes(): Int = R.layout.fragment_settings_location
 

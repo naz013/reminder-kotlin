@@ -45,6 +45,23 @@
     <color name="material_grey_dialog">#424242</color>
     <color name="material_divider">#b6b6b6</color>
 
+    <color name="redAccentOld">#FF5252</color>
+    <color name="pinkAccentOld">#FF4081</color>
+    <color name="purpleAccentOld">#E040FB</color>
+    <color name="purpleDeepAccentOld">#7C4DFF</color>
+    <color name="indigoAccentOld">#536DFE</color>
+    <color name="blueAccentOld">#448AFF</color>
+    <color name="blueLightAccentOld">#40C4FF</color>
+    <color name="cyanAccentOld">#18FFFF</color>
+    <color name="tealAccentOld">#64FFDA</color>
+    <color name="greenAccentOld">#69F0AE</color>
+    <color name="greenLightAccentOld">#B2FF59</color>
+    <color name="limeAccentOld">#EEFF41</color>
+    <color name="yellowAccentOld">#FFFF00</color>
+    <color name="amberAccentOld">#FFD740</color>
+    <color name="orangeAccentOld">#FFAB40</color>
+    <color name="orangeDeepAccentOld">#FF6E40</color>
+
     <color name="redAccent">#FF5252</color>
     <color name="pinkAccent">#FF4081</color>
     <color name="purpleAccent">#E040FB</color>

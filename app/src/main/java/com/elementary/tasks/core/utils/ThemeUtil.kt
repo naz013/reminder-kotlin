@@ -175,24 +175,24 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
     fun getNoteLightColor(code: Int = Color.RED): Int {
         val color: Int
         when (code) {
-            Color.RED -> color = R.color.redAccent
-            Color.PURPLE -> color = R.color.purpleAccent
-            Color.LIGHT_GREEN -> color = R.color.greenLightAccent
-            Color.GREEN -> color = R.color.greenAccent
-            Color.LIGHT_BLUE -> color = R.color.blueLightAccent
-            Color.BLUE -> color = R.color.blueAccent
-            Color.YELLOW -> color = R.color.yellowAccent
-            Color.ORANGE -> color = R.color.orangeAccent
-            Color.CYAN -> color = R.color.cyanAccent
-            Color.PINK -> color = R.color.pinkAccent
-            Color.TEAL -> color = R.color.tealAccent
-            Color.AMBER -> color = R.color.amberAccent
-            Color.DEEP_PURPLE -> color = R.color.purpleDeepAccent
-            Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
-            Color.LIME -> color = R.color.limeAccent
-            Color.INDIGO -> color = R.color.indigoAccent
+            Color.RED -> color = R.color.redAccentOld
+            Color.PURPLE -> color = R.color.purpleAccentOld
+            Color.LIGHT_GREEN -> color = R.color.greenLightAccentOld
+            Color.GREEN -> color = R.color.greenAccentOld
+            Color.LIGHT_BLUE -> color = R.color.blueLightAccentOld
+            Color.BLUE -> color = R.color.blueAccentOld
+            Color.YELLOW -> color = R.color.yellowAccentOld
+            Color.ORANGE -> color = R.color.orangeAccentOld
+            Color.CYAN -> color = R.color.cyanAccentOld
+            Color.PINK -> color = R.color.pinkAccentOld
+            Color.TEAL -> color = R.color.tealAccentOld
+            Color.AMBER -> color = R.color.amberAccentOld
+            Color.DEEP_PURPLE -> color = R.color.purpleDeepAccentOld
+            Color.DEEP_ORANGE -> color = R.color.orangeDeepAccentOld
+            Color.LIME -> color = R.color.limeAccentOld
+            Color.INDIGO -> color = R.color.indigoAccentOld
             Color.LIVING_CORAL -> color = R.color.secondaryLivingCoral
-            else -> color = R.color.blueAccent
+            else -> color = R.color.blueAccentOld
         }
         return getColor(color)
     }
@@ -298,6 +298,28 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
         @ColorInt
         fun colorsForSlider(context: Context): IntArray {
             return intArrayOf(
+                    ContextCompat.getColor(context, R.color.redAccentOld),
+                    ContextCompat.getColor(context, R.color.pinkAccentOld),
+                    ContextCompat.getColor(context, R.color.purpleAccentOld),
+                    ContextCompat.getColor(context, R.color.purpleDeepAccentOld),
+                    ContextCompat.getColor(context, R.color.indigoAccentOld),
+                    ContextCompat.getColor(context, R.color.blueAccentOld),
+                    ContextCompat.getColor(context, R.color.blueLightAccentOld),
+                    ContextCompat.getColor(context, R.color.cyanAccentOld),
+                    ContextCompat.getColor(context, R.color.tealAccentOld),
+                    ContextCompat.getColor(context, R.color.greenAccentOld),
+                    ContextCompat.getColor(context, R.color.greenLightAccentOld),
+                    ContextCompat.getColor(context, R.color.limeAccentOld),
+                    ContextCompat.getColor(context, R.color.yellowAccentOld),
+                    ContextCompat.getColor(context, R.color.amberAccentOld),
+                    ContextCompat.getColor(context, R.color.orangeAccentOld),
+                    ContextCompat.getColor(context, R.color.orangeDeepAccentOld)
+            )
+        }
+
+        @ColorInt
+        fun colorsForSliderThemed(context: Context): IntArray {
+            return intArrayOf(
                     ContextCompat.getColor(context, R.color.redAccent),
                     ContextCompat.getColor(context, R.color.pinkAccent),
                     ContextCompat.getColor(context, R.color.purpleAccent),
@@ -315,6 +337,31 @@ class ThemeUtil(private val context: Context, private val prefs: Prefs) {
                     ContextCompat.getColor(context, R.color.orangeAccent),
                     ContextCompat.getColor(context, R.color.orangeDeepAccent)
             )
+        }
+
+        @ColorInt
+        fun themedColor(context: Context, code: Int = Color.RED): Int {
+            val color: Int
+            when (code) {
+                Color.RED -> color = R.color.redAccent
+                Color.PURPLE -> color = R.color.purpleAccent
+                Color.LIGHT_GREEN -> color = R.color.greenLightAccent
+                Color.GREEN -> color = R.color.greenAccent
+                Color.LIGHT_BLUE -> color = R.color.blueLightAccent
+                Color.BLUE -> color = R.color.blueAccent
+                Color.YELLOW -> color = R.color.yellowAccent
+                Color.ORANGE -> color = R.color.orangeAccent
+                Color.CYAN -> color = R.color.cyanAccent
+                Color.PINK -> color = R.color.pinkAccent
+                Color.TEAL -> color = R.color.tealAccent
+                Color.AMBER -> color = R.color.amberAccent
+                Color.DEEP_PURPLE -> color = R.color.purpleDeepAccent
+                Color.DEEP_ORANGE -> color = R.color.orangeDeepAccent
+                Color.LIME -> color = R.color.limeAccent
+                Color.INDIGO -> color = R.color.indigoAccent
+                else -> color = R.color.blueAccent
+            }
+            return ContextCompat.getColor(context, color)
         }
 
         fun isDarkMode(context: Context): Boolean {

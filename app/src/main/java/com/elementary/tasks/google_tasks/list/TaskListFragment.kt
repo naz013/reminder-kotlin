@@ -18,6 +18,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
@@ -26,9 +27,11 @@ import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import org.koin.android.ext.android.inject
 
 class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
+    private val themeUtil: ThemeUtil by inject()
     private val adapter = TasksRecyclerAdapter()
     private val viewModel: GoogleTaskListViewModel by lazy {
         ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)

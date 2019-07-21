@@ -24,6 +24,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     private val cacheUtil: CacheUtil by inject()
     private val soundStackHolder: SoundStackHolder by inject()
+    private val notifier: Notifier by inject()
 
     private var mItemSelect: Int = 0
 

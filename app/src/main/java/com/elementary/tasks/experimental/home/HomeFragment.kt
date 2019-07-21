@@ -23,9 +23,11 @@ import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
+import org.koin.android.ext.android.inject
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
+    private val buttonObservable: GlobalButtonObservable by inject()
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }

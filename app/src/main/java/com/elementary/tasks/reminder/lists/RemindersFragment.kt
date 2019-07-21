@@ -25,10 +25,12 @@ import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (List<Reminder>) -> Unit {
 
+    private val buttonObservable: GlobalButtonObservable by inject()
     private val viewModel: ActiveRemindersViewModel by lazy {
         ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
     }

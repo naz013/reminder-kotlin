@@ -8,10 +8,12 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsCalendarBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import org.koin.android.ext.android.inject
 
 class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBinding>() {
 
     private var mItemSelect: Int = 0
+    private val themeUtil: ThemeUtil by inject()
 
     override fun layoutRes(): Int = R.layout.fragment_settings_calendar
 

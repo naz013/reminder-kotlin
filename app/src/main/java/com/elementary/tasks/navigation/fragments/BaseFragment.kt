@@ -4,7 +4,10 @@ import android.app.Activity
 import android.content.Context
 import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.core.arch.BindingFragment
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.FragmentCallback
 import org.koin.android.ext.android.inject
 
@@ -12,11 +15,10 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     var callback: FragmentCallback? = null
         private set
+
     protected val prefs: Prefs by inject()
     protected val dialogues: Dialogues by inject()
-    protected val themeUtil: ThemeUtil by inject()
-    protected val buttonObservable: GlobalButtonObservable by inject()
-    protected val notifier: Notifier by inject()
+
     var isDark = false
         private set
     private var mLastAlpha: Float = 0f

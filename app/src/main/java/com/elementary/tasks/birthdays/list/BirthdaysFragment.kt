@@ -27,7 +27,9 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
-    private lateinit var viewModel: BirthdaysViewModel
+    private val viewModel: BirthdaysViewModel by lazy {
+        ViewModelProviders.of(this).get(BirthdaysViewModel::class.java)
+    }
     private val birthdayResolver = BirthdayResolver(
             dialogAction = { dialogues },
             deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
@@ -100,7 +102,6 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(BirthdaysViewModel::class.java)
         viewModel.birthdays.observe(this, Observer { list ->
             if (list != null) {
                 filterController.original = list

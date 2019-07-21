@@ -12,6 +12,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
 import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
@@ -19,6 +20,7 @@ import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import hirondelle.date4j.DateTime
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,7 +29,12 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
 
     lateinit var dayPagerAdapter: MonthPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
-    private lateinit var viewModel: MonthViewViewModel
+    private val themeUtil: ThemeUtil by inject()
+    private val mViewModel: MonthViewViewModel by lazy {
+        ViewModelProviders.of(this,
+                MonthViewViewModel.Factory(prefs.isRemindersInCalendarEnabled,
+                        prefs.isFutureEventEnabled)).get(MonthViewViewModel::class.java)
+    }
     private var monthPagerItem: MonthPagerItem? = null
     private var listener: ((MonthPagerItem, List<EventModel>) -> Unit)? = null
     private val eventsList: MutableList<EventModel> = mutableListOf()
@@ -76,10 +83,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this,
-                MonthViewViewModel.Factory(prefs.isRemindersInCalendarEnabled,
-                        prefs.isFutureEventEnabled)).get(MonthViewViewModel::class.java)
-        viewModel.events.observe(this, Observer<Pair<MonthPagerItem, List<EventModel>>> {
+        mViewModel.events.observe(this, Observer<Pair<MonthPagerItem, List<EventModel>>> {
             val item = monthPagerItem
             if (it != null && item != null) {
                 val foundItem = it.first
@@ -132,11 +136,11 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
         Timber.d("find: $monthPagerItem")
         this.monthPagerItem = monthPagerItem
         this.listener = listener
-        viewModel.findEvents(monthPagerItem)
+        mViewModel.findEvents(monthPagerItem)
     }
 
     override fun getViewModel(): MonthViewViewModel {
-        return viewModel
+        return mViewModel
     }
 
     override fun birthdayColor(): Int {

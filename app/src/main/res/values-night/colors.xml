@@ -21,4 +21,21 @@
     <color name="color_on_surface">#ffffff</color>
     <color name="color_on_error">#000000</color>
 
+    <color name="redAccent">#ff8a80</color>
+    <color name="pinkAccent">#ff80ab</color>
+    <color name="purpleAccent">#ea80fc</color>
+    <color name="purpleDeepAccent">#b388ff</color>
+    <color name="indigoAccent">#8c9eff</color>
+    <color name="blueAccent">#82b1ff</color>
+    <color name="blueLightAccent">#80d8ff</color>
+    <color name="cyanAccent">#84ffff</color>
+    <color name="tealAccent">#a7ffeb</color>
+    <color name="greenAccent">#b9f6ca</color>
+    <color name="greenLightAccent">#ccff90</color>
+    <color name="limeAccent">#f4ff81</color>
+    <color name="yellowAccent">#ffff8d</color>
+    <color name="amberAccent">#ffe57f</color>
+    <color name="orangeAccent">#ffd180</color>
+    <color name="orangeDeepAccent">#ff9e80</color>
+
 </resources>
