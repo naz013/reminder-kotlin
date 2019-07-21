@@ -142,7 +142,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         launchDefault {
             if (!EventControlFactory.getController(reminder).onOff()) {
                 postInProgress(false)
-                postCommand(Commands.FAILED)
+                postCommand(Commands.OUTDATED)
             } else {
                 backupReminder(reminder.uuId)
                 postInProgress(false)

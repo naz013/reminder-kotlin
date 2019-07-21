@@ -203,8 +203,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         })
         viewModel.result.observe(this, Observer {
             if (it != null) {
-                if (it == Commands.FAILED) {
+                if (it == Commands.OUTDATED) {
                     remindersAdapter.notifyItemChanged(mPosition)
+                    toast(R.string.reminder_is_outdated)
                 }
             }
         })

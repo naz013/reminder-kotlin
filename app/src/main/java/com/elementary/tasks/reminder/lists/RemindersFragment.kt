@@ -16,10 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.GlobalButtonObservable
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentRemindersBinding
@@ -134,8 +131,9 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         })
         viewModel.result.observe(this, Observer {
             if (it != null) {
-                if (it == Commands.FAILED) {
+                if (it == Commands.OUTDATED) {
                     remindersAdapter.notifyItemChanged(mPosition)
+                    toast(R.string.reminder_is_outdated)
                 }
             }
         })

@@ -6,11 +6,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +25,22 @@ import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import java.util.*
+
+fun Activity.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
+}
+
+fun Activity.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
+}
+
+fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context!!, message, duration).show()
+}
+
+fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context!!, message, duration).show()
+}
 
 fun <T> ViewModel.mutableLiveDataOf() = MutableLiveData<T>()
 

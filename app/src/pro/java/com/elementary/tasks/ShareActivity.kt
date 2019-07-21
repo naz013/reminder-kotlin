@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.databinding.ActivityShareBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -105,7 +105,7 @@ class ShareActivity : BindingActivity<ActivityShareBinding>(R.layout.activity_sh
 
     private fun showError() {
         binding.shareButton.isEnabled = true
-        Toast.makeText(this, getString(R.string.failed_to_share_data), Toast.LENGTH_SHORT).show()
+        toast(getString(R.string.failed_to_share_data))
     }
 
     private fun clear() {
