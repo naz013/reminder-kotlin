@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class EventOperationalService : Service(), Sound.PlaybackCallback {
 
-    private val notifier: Notifier by inject()
     private val appDb: AppDb by inject()
     private val prefs: Prefs by inject()
     private val language: Language by inject()
@@ -122,7 +121,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                                 }
                             }
                             ACTION_STOP == action -> {
-                                notifier.hideNotification(notificationId)
+                                Notifier.hideNotification(applicationContext, notificationId)
                                 decrement(true)
                             }
                         }
@@ -135,7 +134,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                                 showBirthdayNotification(birthday)
                             }
                             ACTION_STOP == action -> {
-                                notifier.hideNotification(notificationId)
+                                Notifier.hideNotification(applicationContext, notificationId)
                                 decrement(true)
                             }
                         }
@@ -148,7 +147,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                                 showMissedNotification(missedCall)
                             }
                             ACTION_STOP == action -> {
-                                notifier.hideNotification(notificationId)
+                                Notifier.hideNotification(applicationContext, notificationId)
                                 decrement(true)
                             }
                         }

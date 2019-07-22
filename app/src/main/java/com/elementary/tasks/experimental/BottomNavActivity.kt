@@ -38,7 +38,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     private val mNoteView: QuickNoteCoordinator by lazy {
         binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }
         val noteView = QuickNoteCoordinator(this, binding.quickNoteContainer, binding.quickNoteView,
-                noteViewModel, prefs, notifier)
+                noteViewModel, prefs)
         noteView.hideNoteView()
         noteView
     }

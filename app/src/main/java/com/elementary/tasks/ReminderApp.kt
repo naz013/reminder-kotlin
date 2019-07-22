@@ -6,6 +6,7 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.utilModule
 import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
@@ -38,6 +39,7 @@ class ReminderApp : MultiDexApplication() {
             androidContext(this@ReminderApp)
             modules(listOf(utilModule()))
         }
+        Notifier.createChannels(this)
         JobManager.create(this).addJobCreator { EventJobService() }
     }
 }

@@ -21,8 +21,7 @@ import java.util.*
 class QuickNoteCoordinator(private val context: Context, private val parent: ViewGroup,
                            private val noteList: ViewGroup,
                            private var noteViewModel: NoteViewModel,
-                           private val prefs: Prefs,
-                           private val notifier: Notifier) {
+                           private val prefs: Prefs) {
 
     val isNoteVisible: Boolean
         get() = parent.visibility == View.VISIBLE
@@ -157,7 +156,7 @@ class QuickNoteCoordinator(private val context: Context, private val parent: Vie
     }
 
     private fun showInStatusBar(item: NoteWithImages) {
-        notifier.showNoteNotification(item)
+        Notifier.showNoteNotification(context, prefs, item)
         hideNoteView()
     }
 }

@@ -5,6 +5,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 
@@ -38,7 +39,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
             reminder.isRemoved = true
         }
         super.save()
-        notifier.hideNotification(reminder.uniqueId)
+        Notifier.hideNotification(context, reminder.uniqueId)
         stopTracking(false)
         return true
     }
@@ -79,7 +80,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
     override fun pause(): Boolean {
         EventJobScheduler.cancelReminder(reminder.uuId)
-        notifier.hideNotification(reminder.uniqueId)
+        Notifier.hideNotification(context, reminder.uniqueId)
         stopTracking(true)
         return true
     }

@@ -14,7 +14,6 @@ abstract class ThemedActivity : AppCompatActivity() {
     protected val prefs: Prefs by inject()
     protected val language: Language by inject()
     protected val dialogues: Dialogues by inject()
-    protected val notifier: Notifier by inject()
 
     protected var isDarkMode = false
         private set

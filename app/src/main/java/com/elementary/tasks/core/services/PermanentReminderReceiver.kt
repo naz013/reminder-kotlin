@@ -3,22 +3,24 @@ package com.elementary.tasks.core.services
 import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.Actions
+import com.elementary.tasks.core.utils.Notifier
 
 class PermanentReminderReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (!prefs.isSbNotificationEnabled) {
-            notifier.hideNotification(PERM_ID)
+            Notifier.hideNotification(context, PERM_ID)
+            return
         }
         if (intent != null) {
             val action = intent.action
             if (action != null && action.matches(ACTION_SHOW.toRegex())) {
-                notifier.showReminderPermanent()
+                Notifier.showReminderPermanent(context, prefs)
             } else {
-                notifier.hideNotification(PERM_ID)
+                Notifier.hideNotification(context, PERM_ID)
             }
         } else {
-            notifier.hideNotification(PERM_ID)
+            Notifier.hideNotification(context, PERM_ID)
         }
     }
 

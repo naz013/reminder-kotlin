@@ -24,7 +24,6 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     private val cacheUtil: CacheUtil by inject()
     private val soundStackHolder: SoundStackHolder by inject()
-    private val notifier: Notifier by inject()
 
     private var mItemSelect: Int = 0
 
@@ -793,7 +792,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         val isChecked = binding.statusIconPrefs.isChecked
         binding.statusIconPrefs.isChecked = !isChecked
         prefs.isSbIconEnabled = !isChecked
-        notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+        Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
     }
 
     private fun initSbIconPrefs() {
@@ -807,9 +806,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         binding.permanentNotificationPrefs.isChecked = !isChecked
         prefs.isSbNotificationEnabled = !isChecked
         if (prefs.isSbNotificationEnabled) {
-            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+            Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
         } else {
-            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_HIDE)
+            Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_HIDE)
         }
     }
 

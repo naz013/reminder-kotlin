@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.view_models.birthdays
 
+import android.content.Context
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
@@ -13,7 +14,7 @@ import org.koin.core.inject
 
 abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
 
-    private val notifier: Notifier by inject()
+    private val context: Context by inject()
 
     fun deleteBirthday(birthday: Birthday) {
         postInProgress(true)
@@ -28,7 +29,7 @@ abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
 
     protected fun updateBirthdayPermanent() {
         if (prefs.isBirthdayPermanentEnabled) {
-            notifier.showBirthdayPermanent()
+            Notifier.showBirthdayPermanent(context, prefs)
         }
     }
 

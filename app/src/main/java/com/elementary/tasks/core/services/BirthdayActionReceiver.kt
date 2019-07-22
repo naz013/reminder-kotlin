@@ -48,7 +48,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
         if (item != null) {
             TelephonyUtil.sendSms(item.number, context)
             updateBirthday(context, item)
-            finish(context, notifier, item.uniqueId)
+            finish(context, item.uniqueId)
         } else {
             hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
         }
@@ -59,7 +59,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
         if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(item.number, context)
             updateBirthday(context, item)
-            finish(context, notifier, item.uniqueId)
+            finish(context, item.uniqueId)
         } else {
             hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
         }
@@ -74,7 +74,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
             val notificationIntent = ShowBirthdayActivity.getLaunchIntent(context, birthday.uuId)
             notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
             context.startActivity(notificationIntent)
-            notifier.hideNotification(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)
+            Notifier.hideNotification(context, PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)
         }
     }
 
@@ -92,7 +92,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
         val item = AppDb.getAppDatabase(context).birthdaysDao().getById(id)
         if (item != null) {
             updateBirthday(context, item)
-            finish(context, notifier, item.uniqueId)
+            finish(context, item.uniqueId)
         }
     }
 
@@ -130,8 +130,8 @@ class BirthdayActionReceiver : BaseBroadcast() {
             return intent
         }
 
-        private fun finish(context: Context, notifier: Notifier, id: Int) {
-            notifier.hideNotification( id)
+        private fun finish(context: Context, id: Int) {
+            Notifier.hideNotification(context, id)
             UpdatesHelper.updateWidget(context)
             UpdatesHelper.updateCalendarWidget(context)
         }

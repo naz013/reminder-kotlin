@@ -1,5 +1,6 @@
 package com.elementary.tasks.experimental.home
 
+import android.content.Context
 import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Constants
@@ -12,7 +13,7 @@ import org.koin.core.inject
 
 class HomeViewModel : BaseRemindersViewModel() {
 
-    private val notifier: Notifier by inject()
+    private val context: Context by inject()
 
     val reminders = appDb.reminderDao().loadAllTypesInRange(limit = 5,
             fromTime = TimeUtil.getDayStart(), toTime = TimeUtil.getDayEnd())
@@ -32,7 +33,7 @@ class HomeViewModel : BaseRemindersViewModel() {
 
     private fun updateBirthdayPermanent() {
         if (prefs.isBirthdayPermanentEnabled) {
-            notifier.showBirthdayPermanent()
+            Notifier.showBirthdayPermanent(context, prefs)
         }
     }
 }

@@ -15,7 +15,6 @@ abstract class EventManager(val reminder: Reminder) : EventControl, KoinComponen
 
     protected val db: AppDb by inject()
     protected val prefs: Prefs by inject()
-    protected val notifier: Notifier by inject()
     protected val calendarUtils: CalendarUtils by inject()
     protected val context: Context by inject()
 
@@ -23,7 +22,7 @@ abstract class EventManager(val reminder: Reminder) : EventControl, KoinComponen
         db.reminderDao().insert(reminder)
         UpdatesHelper.updateWidget(context)
         if (prefs.isSbNotificationEnabled) {
-            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+            Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 
@@ -31,7 +30,7 @@ abstract class EventManager(val reminder: Reminder) : EventControl, KoinComponen
         db.reminderDao().delete(reminder)
         UpdatesHelper.updateWidget(context)
         if (prefs.isSbNotificationEnabled) {
-            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+            Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 }

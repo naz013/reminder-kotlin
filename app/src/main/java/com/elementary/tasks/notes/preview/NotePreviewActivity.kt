@@ -146,7 +146,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     private fun moveToStatus() {
         val noteWithImages = mNote
         if (noteWithImages != null) {
-            notifier.showNoteNotification(noteWithImages)
+            Notifier.showNoteNotification(this, prefs, noteWithImages)
         }
     }
 

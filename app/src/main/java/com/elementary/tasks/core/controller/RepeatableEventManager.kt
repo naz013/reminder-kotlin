@@ -10,6 +10,7 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
@@ -75,7 +76,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
     }
 
     override fun pause(): Boolean {
-        notifier.hideNotification(reminder.uniqueId)
+        Notifier.hideNotification(context, reminder.uniqueId)
         EventJobScheduler.cancelReminder(reminder.uuId)
         return true
     }

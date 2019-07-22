@@ -19,7 +19,6 @@ class VoiceWidgetDialog : FragmentActivity() {
     private val viewModel: ConversationViewModel by lazy {
         ViewModelProviders.of(this).get(ConversationViewModel::class.java)
     }
-    private val notifier: Notifier by inject()
     private val prefs: Prefs by inject()
     private val language: Language by inject()
     private var mIsLogged = false
@@ -56,7 +55,7 @@ class VoiceWidgetDialog : FragmentActivity() {
                     ?: ArrayList()
             viewModel.parseResults(matches, true, this)
             if (prefs.isSbNotificationEnabled) {
-                notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+                Notifier.updateReminderPermanent(applicationContext, PermanentReminderReceiver.ACTION_SHOW)
             }
             finish()
         } else {

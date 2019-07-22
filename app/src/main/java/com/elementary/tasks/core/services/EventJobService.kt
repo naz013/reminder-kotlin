@@ -22,7 +22,6 @@ import java.util.*
 class EventJobService : Job(), KoinComponent {
 
     private val prefs: Prefs by inject()
-    private val notifier: Notifier by inject()
     private val appDb: AppDb by inject()
 
     override fun onRunJob(params: Params): Result {
@@ -51,7 +50,7 @@ class EventJobService : Job(), KoinComponent {
         val item = appDb.reminderDao().getById(id)
         if (item != null) {
             Timber.d("repeatedReminderAction: ${item.uuId}")
-            notifier.showRepeatedNotification(context, item)
+            Notifier.showRepeatedNotification(context, prefs, item)
             EventJobScheduler.scheduleReminderRepeat(context, item.uuId, prefs)
         }
     }
@@ -73,7 +72,7 @@ class EventJobService : Job(), KoinComponent {
 
     private fun birthdayPermanentAction() {
         if (prefs.isBirthdayPermanentEnabled) {
-            notifier.showBirthdayPermanent()
+            Notifier.showBirthdayPermanent(context, prefs)
         }
     }
 

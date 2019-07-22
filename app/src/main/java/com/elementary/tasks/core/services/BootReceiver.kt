@@ -3,6 +3,7 @@ package com.elementary.tasks.core.services
 import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.core.utils.Notifier
 import timber.log.Timber
 
 class BootReceiver : BaseBroadcast() {
@@ -15,7 +16,7 @@ class BootReceiver : BaseBroadcast() {
                 EventJobScheduler.scheduleDailyBirthday(prefs)
             }
             if (prefs.isSbNotificationEnabled) {
-                notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+                Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
             }
             if (prefs.isContactAutoCheckEnabled) {
                 EventJobScheduler.scheduleBirthdaysCheck()
@@ -29,7 +30,7 @@ class BootReceiver : BaseBroadcast() {
             }
             if (prefs.isBirthdayPermanentEnabled) {
                 EventJobScheduler.scheduleBirthdayPermanent()
-                notifier.showBirthdayPermanent()
+                Notifier.showBirthdayPermanent(context, prefs)
             }
         }
     }

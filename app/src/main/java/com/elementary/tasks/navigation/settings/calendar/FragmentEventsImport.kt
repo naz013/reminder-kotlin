@@ -21,12 +21,10 @@ import kotlinx.coroutines.Job
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
-import org.koin.android.ext.android.inject
 import java.util.*
 
 class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(), CompoundButton.OnCheckedChangeListener {
 
-    private val notifier: Notifier by inject()
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()
     private var mJob: Job? = null
@@ -264,7 +262,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
                 } else {
                     Toast.makeText(ctx, "$eventsCount " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
                     UpdatesHelper.updateCalendarWidget(ctx)
-                    notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+                    Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
                 }
             }
         }

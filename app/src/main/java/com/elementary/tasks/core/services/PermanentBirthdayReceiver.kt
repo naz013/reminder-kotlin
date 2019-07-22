@@ -3,23 +3,24 @@ package com.elementary.tasks.core.services
 import android.content.Context
 import android.content.Intent
 import com.elementary.tasks.Actions
+import com.elementary.tasks.core.utils.Notifier
 
 class PermanentBirthdayReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (!prefs.isBirthdayPermanentEnabled) {
-            notifier.hideNotification(BIRTHDAY_PERM_ID)
+            Notifier.hideNotification(context, BIRTHDAY_PERM_ID)
             return
         }
         if (intent != null) {
             val action = intent.action
             if (action != null && action.matches(ACTION_SHOW.toRegex())) {
-                notifier.showBirthdayPermanent()
+                Notifier.showBirthdayPermanent(context, prefs)
             } else {
-                notifier.hideNotification(BIRTHDAY_PERM_ID)
+                Notifier.hideNotification(context, BIRTHDAY_PERM_ID)
             }
         } else {
-            notifier.hideNotification(BIRTHDAY_PERM_ID)
+            Notifier.hideNotification(context, BIRTHDAY_PERM_ID)
         }
     }
 

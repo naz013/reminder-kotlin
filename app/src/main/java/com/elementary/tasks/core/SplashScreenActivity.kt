@@ -7,6 +7,7 @@ import com.elementary.tasks.core.arch.ThemedActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.EnableThread
+import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.experimental.NavUtil
@@ -22,7 +23,7 @@ class SplashScreenActivity : ThemedActivity() {
         super.onCreate(savedInstanceState)
         initPrefs()
         if (prefs.isSbNotificationEnabled) {
-            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
+            Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 

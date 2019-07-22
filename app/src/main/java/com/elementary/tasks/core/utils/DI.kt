@@ -15,7 +15,6 @@ fun utilModule() = module {
     single { BackupTool(get()) }
     single { Dialogues() }
     single { Language(get()) }
-    single { Notifier(androidApplication(), get()) }
     single { CalendarUtils(androidApplication(), get(), get()) }
     single { providesRecognizer(get(), get()) }
     single { QrShareProvider(get()) }
