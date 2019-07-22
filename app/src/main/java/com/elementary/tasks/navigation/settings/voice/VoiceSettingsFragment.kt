@@ -23,7 +23,7 @@ class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>
             findNavController().navigate(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment())
         }
         binding.helpPrefs.setOnClickListener {
-            findNavController().navigate(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment())
+            findNavController().navigate(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToHelpFragment2())
         }
         initConversationPrefs()
     }
