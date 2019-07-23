@@ -84,7 +84,6 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding.progressMessageView.text = getString(R.string.please_wait)
         binding.fab.setOnClickListener { addNewTask() }
-        binding.fab.backgroundTintList = ColorStateList.valueOf(ThemeUtil.themedColor(view.context, googleTaskList?.color ?: 0))
         updateProgress(false)
         initEmpty()
         initList()
@@ -147,6 +146,11 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
         viewModel.googleTasks.observe(this, Observer { googleTasks ->
             if (googleTasks != null) {
                 showTasks(googleTasks)
+            }
+        })
+        viewModel.googleTaskList.observe(this, Observer {
+            if (it != null) {
+                showGoogleTaskList(it)
             }
         })
     }
@@ -230,7 +234,15 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
     override fun onResume() {
         super.onResume()
-        callback?.onTitleChange(googleTaskList?.title ?: "")
+        googleTaskList?.let { showGoogleTaskList(it) }
+    }
+
+    private fun showGoogleTaskList(googleTaskList: GoogleTaskList) {
+        callback?.onTitleChange(googleTaskList.title)
+        binding.fab.backgroundTintList = ColorStateList.valueOf(ThemeUtil.themedColor(context!!, googleTaskList.color))
+        val map = mutableMapOf<String, GoogleTaskList>()
+        map[googleTaskList.listId] = googleTaskList
+        adapter.googleTaskListMap = map
     }
 
     override fun getTitle(): String {

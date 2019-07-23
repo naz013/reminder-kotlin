@@ -1,10 +1,12 @@
 package com.backdoor.engine;
 
+import com.backdoor.engine.misc.ContactsInterface;
 import com.backdoor.engine.misc.Locale;
 import com.backdoor.engine.misc.TimeUtil;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class WorkerTest {
 
@@ -95,7 +97,9 @@ public class WorkerTest {
 
     @Test
     public void checkPt() {
-        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.PT).setTimes(null).build();
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.PT).setTimes(null)
+                .setContactsInterface(Mockito.mock(ContactsInterface.class))
+                .build();
         for (String in : TEST_PT) {
             System.out.println("Input " + in);
             Model out = recognizer.parse(in);
