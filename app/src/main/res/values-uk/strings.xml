@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Здається Battery Saver</string>
     <string name="system_default">Система за замовчуванням</string>
     <string name="you_re_all_done">Ви все зробили</string>
+    <string name="do_not_show_permanent_on_home">Не показувати постійне нагадування на головному екрані</string>
+    <string name="permanent_on_home">Постійне нагадування на головному екрані</string>
+    <string name="show_permanent_on_home">Показати постійне нагадування на головному екрані</string>
 
 </resources>

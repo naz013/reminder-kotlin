@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Défini par Battery Saver</string>
     <string name="system_default">Défaillance du système</string>
     <string name="you_re_all_done">Vous êtes tous fait</string>
+    <string name="do_not_show_permanent_on_home">Ne pas afficher de rappel permanent sur l\'écran d\'accueil</string>
+    <string name="permanent_on_home">Rappel permanent sur l\'écran d\'accueil</string>
+    <string name="show_permanent_on_home">Afficher le rappel permanent sur l\'écran d\'accueil</string>
 
 </resources>

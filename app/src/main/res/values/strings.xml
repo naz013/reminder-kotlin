@@ -734,6 +734,6 @@
     <string name="if_you_have_backed_up_data_you_can_log_in_to_your_cloud_drive_to_restore_it">If You have backed up data, You can Log In to Your cloud storage to restore them.</string>
     <string name="do_not_show_permanent_on_home">Do not show permanent reminder on home screen</string>
     <string name="show_permanent_on_home">Show permanent reminder on home screen</string>
-    <string name="permanent_on_home">Permanent on home</string>
+    <string name="permanent_on_home">Permanent reminder on home screen</string>
 
 </resources>

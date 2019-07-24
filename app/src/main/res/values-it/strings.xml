@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Impostato da Battery Saver</string>
     <string name="system_default">Default del sistema</string>
     <string name="you_re_all_done">Hai finito</string>
+    <string name="do_not_show_permanent_on_home">Non mostrare promemoria permanenti sulla schermata principale</string>
+    <string name="permanent_on_home">Promemoria permanente sulla schermata principale</string>
+    <string name="show_permanent_on_home">Mostra promemoria permanente sulla schermata principale</string>
 
 </resources>

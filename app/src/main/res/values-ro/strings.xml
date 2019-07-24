@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Setat de economizorul de baterii</string>
     <string name="system_default">Defectiune de sistem</string>
     <string name="you_re_all_done">Sunteți toți gata</string>
+    <string name="do_not_show_permanent_on_home">Nu afișați memento permanentă pe ecranul de întâmpinare</string>
+    <string name="permanent_on_home">Remediu permanent pe ecranul de pornire</string>
+    <string name="show_permanent_on_home">Afișați un memento permanent pe ecranul de pornire</string>
 
 </resources>

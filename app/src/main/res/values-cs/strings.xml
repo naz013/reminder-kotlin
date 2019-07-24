@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Nastaveno šetřičem baterie</string>
     <string name="system_default">Výchozí systém</string>
     <string name="you_re_all_done">Jste hotovi</string>
+    <string name="do_not_show_permanent_on_home">Na domovské obrazovce nezobrazovat trvalé připomenutí</string>
+    <string name="permanent_on_home">Trvalé připomenutí na domovské obrazovce</string>
+    <string name="show_permanent_on_home">Zobrazit trvalé připomenutí na domovské obrazovce</string>
 
 </resources>

@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">由电池节电器设置</string>
     <string name="system_default">系统默认</string>
     <string name="you_re_all_done">你们都完成了</string>
+    <string name="do_not_show_permanent_on_home">不要在主屏幕上显示永久提醒</string>
+    <string name="permanent_on_home">主屏幕上的永久提醒</string>
+    <string name="show_permanent_on_home">在主屏幕上显示永久提醒</string>
 
 </resources>

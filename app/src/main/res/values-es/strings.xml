@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Establecer por ahorro de batería</string>
     <string name="system_default">Sistema por defecto</string>
     <string name="you_re_all_done">Estas todo listo</string>
+    <string name="do_not_show_permanent_on_home">No mostrar recordatorio permanente en la pantalla de inicio</string>
+    <string name="permanent_on_home">Recordatorio permanente en la pantalla de inicio</string>
+    <string name="show_permanent_on_home">Mostrar recordatorio permanente en la pantalla de inicio</string>
 
 </resources>

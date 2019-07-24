@@ -731,5 +731,8 @@
     <string name="set_by_battery_saver">バッテリーセーバーで設定</string>
     <string name="system_default">システムのデフォルト</string>
     <string name="you_re_all_done">あなたはすべて終わった</string>
+    <string name="do_not_show_permanent_on_home">ホーム画面に永久的な通知を表示しない</string>
+    <string name="permanent_on_home">ホーム画面に永久的な通知</string>
+    <string name="show_permanent_on_home">ホーム画面に永久的な通知を表示</string>
 
 </resources>

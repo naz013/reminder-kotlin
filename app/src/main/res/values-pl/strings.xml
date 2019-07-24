@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Ustaw przez oszczędzanie baterii</string>
     <string name="system_default">Domyślne ustawienie systemowe</string>
     <string name="you_re_all_done">Wszystko gotowe</string>
+    <string name="do_not_show_permanent_on_home">Nie pokazuj stałego przypomnienia na ekranie głównym</string>
+    <string name="permanent_on_home">Stałe przypomnienie na ekranie głównym</string>
+    <string name="show_permanent_on_home">Pokaż stałe przypomnienie na ekranie głównym</string>
 
 </resources>

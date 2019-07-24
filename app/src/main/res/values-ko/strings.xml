@@ -732,5 +732,8 @@
     <string name="set_by_battery_saver">배터리 세이버로 설정</string>
     <string name="system_default">시스템 기본값</string>
     <string name="you_re_all_done">너 다 끝났어.</string>
+    <string name="do_not_show_permanent_on_home">홈 화면에 영구 알림을 표시하지 않음</string>
+    <string name="permanent_on_home">홈 화면의 영구 알림</string>
+    <string name="show_permanent_on_home">홈 화면에 영구 알림 표시</string>
 
 </resources>

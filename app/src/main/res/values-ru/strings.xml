@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Задается Battery Saver</string>
     <string name="system_default">Системные установки по умолчанию</string>
     <string name="you_re_all_done">Вы все сделали</string>
+    <string name="do_not_show_permanent_on_home">Не показывать постоянное напоминание на главном экране</string>
+    <string name="permanent_on_home">Постоянное напоминание на главном экране</string>
+    <string name="show_permanent_on_home">Показать постоянное напоминание на главном экране</string>
 
 </resources>

@@ -730,4 +730,7 @@
     <string name="set_by_battery_saver">Set by Battery Saver</string>
     <string name="system_default">System default</string>
     <string name="you_re_all_done">You\'re all done</string>
+    <string name="do_not_show_permanent_on_home">Do not show permanent reminder on home screen</string>
+    <string name="permanent_on_home">Permanent reminder on home screen</string>
+    <string name="show_permanent_on_home">Show permanent reminder on home screen</string>
 </resources>

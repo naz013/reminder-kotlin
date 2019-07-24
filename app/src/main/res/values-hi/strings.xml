@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">बैटरी सेवर द्वारा सेट करें</string>
     <string name="system_default">सिस्टम डिफ़ॉल्ट</string>
     <string name="you_re_all_done">तुम सब हो गया</string>
+    <string name="do_not_show_permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक न दिखाएं</string>
+    <string name="permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक</string>
+    <string name="show_permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक दिखाएं</string>
 
 </resources>

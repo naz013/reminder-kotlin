@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Wird vom Battery Saver eingestellt</string>
     <string name="system_default">Systemfehler</string>
     <string name="you_re_all_done">Du bist fertig</string>
+    <string name="do_not_show_permanent_on_home">Keine permanente Erinnerung auf dem Startbildschirm anzeigen</string>
+    <string name="permanent_on_home">Permanente Erinnerung auf dem Startbildschirm</string>
+    <string name="show_permanent_on_home">Permanente Erinnerung auf dem Startbildschirm anzeigen</string>
 
 </resources>

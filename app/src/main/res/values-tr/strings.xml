@@ -730,5 +730,8 @@
     <string name="set_by_battery_saver">Pil Tasarrufu Seti</string>
     <string name="system_default">Sistem varsayılanı</string>
     <string name="you_re_all_done">Hepiniz bitti</string>
+    <string name="do_not_show_permanent_on_home">Ana ekranda kalıcı hatırlatıcı gösterme</string>
+    <string name="permanent_on_home">Ana ekranda kalıcı hatırlatma</string>
+    <string name="show_permanent_on_home">Ana ekranda kalıcı hatırlatıcı göster</string>
 
 </resources>
