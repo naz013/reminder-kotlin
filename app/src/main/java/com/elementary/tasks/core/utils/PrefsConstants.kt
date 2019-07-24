@@ -115,6 +115,7 @@ object PrefsConstants {
     const val MULTI_DEVICE_MODE = "multi_device_mode"
     const val LOCAL_BACKUP = "local_backup"
     const val PRIVACY_SHOWED = "privacy_showed"
+    const val SHOW_PERMANENT_REMINDERS = "show_permanent_reminders"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

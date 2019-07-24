@@ -69,9 +69,19 @@ interface ReminderDao {
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
     @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active
-        AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime
-        AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId LIMIT :limit""")
-    fun loadAllTypesInRange(active: Boolean = true, removed: Boolean = false, limit: Int = 3,
+        AND isRemoved=:removed AND eventTime!='' AND eventTime>=:fromTime
+        AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId 
+        ORDER BY Reminder.eventTime ASC""")
+    fun loadAllTypesInRange(active: Boolean = true, removed: Boolean = false,
+                            fromTime: String, toTime: String): LiveData<List<Reminder>>
+
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Transaction
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE (isActive=:active
+        AND isRemoved=:removed) AND (eventTime=='' OR (eventTime>=:fromTime
+        AND eventTime<:toTime)) AND ReminderGroup.groupUuId=Reminder.groupUuId 
+        ORDER BY Reminder.eventTime ASC""")
+    fun loadAllTypesInRangeWithPermanent(active: Boolean = true, removed: Boolean = false,
                             fromTime: String, toTime: String): LiveData<List<Reminder>>
 
     @Insert(onConflict = REPLACE)

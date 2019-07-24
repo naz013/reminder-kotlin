@@ -59,6 +59,13 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         return false
     }
 
+    var showPermanentOnHome: Boolean
+        get() = getBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS)
+        set(value) {
+            putBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS, value)
+            notifyKey(PrefsConstants.SHOW_PERMANENT_REMINDERS)
+        }
+
     var backupAttachedFiles: Boolean
         get() = getBoolean(PrefsConstants.EXPORT_ATTACHED_FILES)
         set(value) = putBoolean(PrefsConstants.EXPORT_ATTACHED_FILES, value)

@@ -17,6 +17,16 @@
             android:orientation="vertical">
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/permanentPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/permanent_on_home"
+                app:prefs_secondary_text_off="@string/do_not_show_permanent_on_home"
+                app:prefs_secondary_text_on="@string/show_permanent_on_home"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/defaultPriorityPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

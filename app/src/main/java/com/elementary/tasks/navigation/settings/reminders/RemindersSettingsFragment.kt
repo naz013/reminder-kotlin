@@ -28,6 +28,18 @@ class RemindersSettingsFragment : BaseSettingsFragment<FragmentSettingsReminders
         initTimesPrefs()
         initActionPrefs()
         initIgnorePrefs()
+        initPermanentPrefs()
+    }
+
+    private fun initPermanentPrefs() {
+        binding.permanentPrefs.setOnClickListener { changePermanent() }
+        binding.permanentPrefs.isChecked = prefs.showPermanentOnHome
+    }
+
+    private fun changePermanent() {
+        val isChecked = binding.permanentPrefs.isChecked
+        binding.permanentPrefs.isChecked = !isChecked
+        prefs.showPermanentOnHome = !isChecked
     }
 
     private fun initIgnorePrefs() {
