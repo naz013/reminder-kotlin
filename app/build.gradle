@@ -151,7 +151,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
-    proImplementation 'com.google.firebase:firebase-database:18.0.0'
+    implementation 'com.google.firebase:firebase-database:18.0.0'
     proImplementation 'com.google.firebase:firebase-auth:18.1.0'
     proImplementation 'com.github.kenglxn.QRGen:android:2.4.0'
 

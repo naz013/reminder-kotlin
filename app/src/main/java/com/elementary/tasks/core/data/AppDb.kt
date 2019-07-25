@@ -94,11 +94,22 @@ abstract class AppDb : RoomDatabase() {
                     database.execSQL("DROP INDEX index_UsedTime_timeString")
                 } catch (e: SQLiteException) {
                 }
-
-                database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
-                database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
-                database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
-                database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+                try {
+                    database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
 
 //                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
 //                        previousId TEXT NOT NULL,
@@ -118,11 +129,22 @@ abstract class AppDb : RoomDatabase() {
                     database.execSQL("DROP INDEX index_UsedTime_timeString")
                 } catch (e: SQLiteException) {
                 }
-
-                database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
-                database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
-                database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
-                database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+                try {
+                    database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
 
 //                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
 //                        previousId TEXT NOT NULL,
@@ -134,10 +156,22 @@ abstract class AppDb : RoomDatabase() {
         }
         private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
-                database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
-                database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
-                database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+                try {
+                    database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+                } catch (e: SQLiteException) {
+                }
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+                } catch (e: SQLiteException) {
+                }
 
 //                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
 //                        previousId TEXT NOT NULL,
