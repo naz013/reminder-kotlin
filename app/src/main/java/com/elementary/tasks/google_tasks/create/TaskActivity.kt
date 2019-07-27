@@ -59,6 +59,12 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val gTasks = GTasks.getInstance(this)
+        if (gTasks == null || !gTasks.isLogged) {
+            finish()
+            return
+        }
+
         lifecycle.addObserver(stateViewModel)
         initToolbar()
         initFields()

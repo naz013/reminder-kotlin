@@ -92,6 +92,17 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <activity
+            android:name=".core.SplashScreenActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/SplashScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".experimental.BottomNavActivity">
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
@@ -399,16 +410,6 @@
             android:name=".core.dialogs.VolumeDialog"
             android:excludeFromRecents="true" />
         <activity android:name=".voice.ConversationActivity" />
-        <activity
-            android:name=".core.SplashScreenActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/SplashScreenTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <receiver
             android:name=".core.services.CallReceiver"
@@ -426,11 +427,15 @@
 
         <service
             android:name=".core.services.GeolocationService"
-            android:enabled="true" />
+            android:foregroundServiceType="location"
+            android:enabled="true"
+            tools:targetApi="q" />
 
         <service
             android:name=".core.services.EventOperationalService"
-            android:enabled="true" />
+            android:foregroundServiceType="dataSync"
+            android:enabled="true"
+            tools:targetApi="q" />
 
         <service
             android:name=".core.services.SyncMessagingService"
