@@ -68,14 +68,14 @@ class CalendarWidget : AppWidgetProvider() {
             rv.setTextViewText(R.id.widgetTitle, date)
 
             if (WidgetUtils.isDarkBg(headerBgColor)) {
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_white, R.color.pureWhite,
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureWhite,
                         R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
                     it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
                     return@initButton it
                 }
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_white, R.color.pureWhite,
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.color.pureWhite,
                         R.id.btn_add_task, CreateReminderActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_white, R.color.pureWhite,
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.color.pureWhite,
                         R.id.btn_voice, VoiceWidgetDialog::class.java)
 
                 WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_left_24px, R.id.btn_prev, R.color.pureWhite)

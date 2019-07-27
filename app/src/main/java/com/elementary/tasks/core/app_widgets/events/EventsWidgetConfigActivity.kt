@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetCurrentTasksConfigBinding
@@ -56,7 +56,8 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     }
 
     private fun updateText(code: Int) {
-        if (WidgetUtils.isDarkBg(code)) {
+        val isDark = WidgetUtils.isDarkBg(code)
+        if (isDark) {
             binding.statusIcon.setImageBitmap(ViewUtils.createIcon(this, R.drawable.ic_twotone_alarm_24px,
                     ContextCompat.getColor(this, R.color.pureWhite)))
             binding.taskText.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
@@ -76,15 +77,13 @@ class EventsWidgetConfigActivity : BindingActivity<ActivityWidgetCurrentTasksCon
     }
 
     private fun updateIcons(code: Int) {
-        if (WidgetUtils.isDarkBg(code)) {
-            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_white)
-            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_white)
-            binding.btnVoice.setImageResource(R.drawable.ic_twotone_mic_white)
+        val isDark = WidgetUtils.isDarkBg(code)
+        binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
+        binding.btnAddTask.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
+        binding.btnVoice.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_mic_24px, isDark))
+        if (isDark) {
             binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_24px)
-            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_24px)
-            binding.btnVoice.setImageResource(R.drawable.ic_twotone_mic_24px)
             binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }

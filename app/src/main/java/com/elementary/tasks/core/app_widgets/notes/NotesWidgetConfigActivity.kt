@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetNoteConfigBinding
 
 class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBinding>(R.layout.activity_widget_note_config) {
@@ -37,13 +38,12 @@ class NotesWidgetConfigActivity : BindingActivity<ActivityWidgetNoteConfigBindin
     }
 
     private fun updateIcons(code: Int) {
-        if (WidgetUtils.isDarkBg(code)) {
-            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_white)
-            binding.btnAddNote.setImageResource(R.drawable.ic_twotone_add_white)
+        val isDark = WidgetUtils.isDarkBg(code)
+        binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
+        binding.btnAddNote.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
+        if (isDark) {
             binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_24px)
-            binding.btnAddNote.setImageResource(R.drawable.ic_twotone_add_24px)
             binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }

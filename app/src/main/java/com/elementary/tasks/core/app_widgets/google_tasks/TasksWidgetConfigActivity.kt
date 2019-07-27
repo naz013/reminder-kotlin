@@ -8,8 +8,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
@@ -91,13 +91,12 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
     }
 
     private fun updateIcons(code: Int) {
-        if (WidgetUtils.isDarkBg(code)) {
-            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_white)
-            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_white)
+        val isDark = WidgetUtils.isDarkBg(code)
+        binding.btnSettings.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_settings_24px, isDark))
+        binding.btnAddTask.setImageDrawable(ViewUtils.tintIcon(this, R.drawable.ic_twotone_add_24px, isDark))
+        if (isDark) {
             binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureWhite))
         } else {
-            binding.btnSettings.setImageResource(R.drawable.ic_twotone_settings_24px)
-            binding.btnAddTask.setImageResource(R.drawable.ic_twotone_add_24px)
             binding.widgetTitle.setTextColor(ContextCompat.getColor(this, R.color.pureBlack))
         }
     }
