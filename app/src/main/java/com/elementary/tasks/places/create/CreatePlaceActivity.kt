@@ -187,7 +187,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_palce_edit, menu)
+        menuInflater.inflate(R.menu.menu_place_edit, menu)
         if (mItem != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
