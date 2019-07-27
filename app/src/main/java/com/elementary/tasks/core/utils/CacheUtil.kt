@@ -3,8 +3,10 @@ package com.elementary.tasks.core.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.provider.OpenableColumns
 import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import timber.log.Timber
@@ -66,9 +68,23 @@ class CacheUtil(val context: Context) {
         val cacheDir = context.externalCacheDir ?: context.cacheDir
         val inputStream = context.contentResolver.openInputStream(uri)
         val fileId = DocumentsContract.getDocumentId(uri)
-        val file = File(cacheDir, fileId)
 
-        Timber.d("cacheFile: $fileId, ${file.absolutePath}, $inputStream")
+        val cursor: Cursor? = context.contentResolver.query( uri, null, null,
+                null, null, null)
+
+        val name = cursor?.use {
+            if (it.moveToFirst()) {
+                val displayName: String =
+                        it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                displayName
+            } else {
+                ""
+            }
+        }
+        val fileName = if (name.isNullOrEmpty()) fileId else name
+        val file = File(cacheDir, fileName)
+
+        Timber.d("cacheFile: $fileId, ${file.absolutePath}, $fileName")
 
         if (hasCache(fileId) && file.exists()) {
             Timber.d("cacheFile: FROM CACHE")
@@ -84,11 +100,9 @@ class CacheUtil(val context: Context) {
                 }
             }
             file.copyInputStreamToFile(inputStream)
-            saveCache(file.absolutePath)
+            saveCache(fileId)
             return file.absolutePath
         }
-
-
         return null
     }
 

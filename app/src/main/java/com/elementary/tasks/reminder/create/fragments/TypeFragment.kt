@@ -279,9 +279,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
     fun onMelodySelect(path: String) {
         iFace.state.reminder.melodyPath = path
-        if (isResumed) {
-            melodyView?.file = path
-        }
+        melodyView?.file = path
     }
 
     fun onAttachmentSelect(uri: Uri) {
