@@ -48,7 +48,7 @@ object Notifier {
     private fun createSystemChannel(context: Context): NotificationChannel {
         val name = context.getString(R.string.info_channel)
         val descr = context.getString(R.string.channel_for_other_info_notifications)
-        val importance = NotificationManager.IMPORTANCE_UNSPECIFIED
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(CHANNEL_SYSTEM, name, importance)
         channel.description = descr
         if (Module.isQ) {
