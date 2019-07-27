@@ -100,7 +100,7 @@ class CalendarWidgetConfigActivity : BindingActivity<ActivityWidgetCalendarConfi
                 .apply()
 
         val appWidgetManager = AppWidgetManager.getInstance(this)
-        CalendarWidget.updateWidget(this, appWidgetManager, sp, widgetID, prefs)
+        CalendarWidget.updateWidget(this, appWidgetManager, sp, widgetID)
         setResult(RESULT_OK, resultValue)
         finish()
     }

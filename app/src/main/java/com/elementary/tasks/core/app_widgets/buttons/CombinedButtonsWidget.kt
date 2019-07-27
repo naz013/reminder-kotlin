@@ -32,15 +32,23 @@ class CombinedButtonsWidget : AppWidgetProvider() {
             rv.setInt(R.id.widgetBg, "setBackgroundResource", WidgetUtils.newWidgetBg(color))
 
             if (WidgetUtils.isDarkBg(color)) {
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_white, R.id.btn_add_reminder, CreateReminderActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_note_white, R.id.btn_add_note, CreateNoteActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_white, R.id.btn_add_birthday, AddBirthdayActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_white, R.id.btn_voice, VoiceWidgetDialog::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.color.pureWhite,
+                        R.id.btn_add_reminder, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_note_24px, R.color.pureWhite,
+                        R.id.btn_add_note, CreateNoteActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.color.pureWhite,
+                        R.id.btn_add_birthday, AddBirthdayActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.color.pureWhite,
+                        R.id.btn_voice, VoiceWidgetDialog::class.java)
             } else {
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.id.btn_add_reminder, CreateReminderActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_note_24px, R.id.btn_add_note, CreateNoteActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.id.btn_add_birthday, AddBirthdayActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.id.btn_voice, VoiceWidgetDialog::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_alarm_24px, R.color.pureBlack,
+                        R.id.btn_add_reminder, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_note_24px, R.color.pureBlack,
+                        R.id.btn_add_note, CreateNoteActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_cake_24px, R.color.pureBlack,
+                        R.id.btn_add_birthday, AddBirthdayActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.color.pureBlack,
+                        R.id.btn_voice, VoiceWidgetDialog::class.java)
             }
 
             appWidgetManager.updateAppWidget(widgetID, rv)

@@ -13,8 +13,8 @@ import com.elementary.tasks.core.utils.ViewUtils
 
 object WidgetUtils {
 
-    fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int,
-                   cls: Class<*>, extras: ((Intent) -> Intent)? = null) {
+    fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @ColorRes color: Int,
+                   @IdRes viewId: Int, cls: Class<*>, extras: ((Intent) -> Intent)? = null) {
         var configIntent = Intent(context, cls)
         if (extras != null) {
             configIntent = extras.invoke(configIntent)
@@ -22,15 +22,15 @@ object WidgetUtils {
         extras?.invoke(configIntent)
         val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
         rv.setOnClickPendingIntent(viewId, configPendingIntent)
-        setIcon(rv, iconId, viewId)
+        setIcon(context, rv, iconId, viewId, color)
     }
 
-    fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int,
-                   cls: Class<*>) {
+    fun initButton(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @ColorRes color: Int,
+                   @IdRes viewId: Int, cls: Class<*>) {
         val configIntent = Intent(context, cls)
         val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
         rv.setOnClickPendingIntent(viewId, configPendingIntent)
-        setIcon(rv, iconId, viewId)
+        setIcon(context, rv, iconId, viewId, color)
     }
 
     fun setIcon(context: Context, rv: RemoteViews, @DrawableRes iconId: Int, @IdRes viewId: Int, @ColorRes color: Int) {

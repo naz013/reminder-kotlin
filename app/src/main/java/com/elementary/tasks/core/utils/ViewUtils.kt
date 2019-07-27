@@ -110,9 +110,9 @@ object ViewUtils {
         var icon = ContextCompat.getDrawable(context, res)
         if (icon != null) {
             icon = (DrawableCompat.wrap(icon)).mutate()
-            DrawableCompat.setTint(icon, color)
-            DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
             if (icon != null) {
+                DrawableCompat.setTint(icon, color)
+                DrawableCompat.setTintMode(icon, PorterDuff.Mode.SRC_IN)
                 val bitmap = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmap)
                 icon.setBounds(0, 0, canvas.width, canvas.height)

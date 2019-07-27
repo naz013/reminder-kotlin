@@ -12,21 +12,16 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.experimental.BottomNavActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 import java.util.*
 
-class CalendarWidget : AppWidgetProvider(), KoinComponent {
-
-    private val prefs: Prefs by inject()
+class CalendarWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val sp = context.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
         for (i in appWidgetIds) {
-            updateWidget(context, appWidgetManager, sp, i, prefs)
+            updateWidget(context, appWidgetManager, sp, i)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
@@ -47,7 +42,7 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
     companion object {
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
-                         sp: SharedPreferences, widgetID: Int, prefs: Prefs) {
+                         sp: SharedPreferences, widgetID: Int) {
             val cal = GregorianCalendar()
             val month = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_MONTH + widgetID, 0)
             val year = sp.getInt(CalendarWidgetConfigActivity.CALENDAR_WIDGET_YEAR + widgetID, 0)
@@ -73,24 +68,30 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
             rv.setTextViewText(R.id.widgetTitle, date)
 
             if (WidgetUtils.isDarkBg(headerBgColor)) {
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_white, R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_white, R.color.pureWhite,
+                        R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
                     it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
                     return@initButton it
                 }
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_white, R.id.btn_add_task, CreateReminderActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_white, R.id.btn_voice, VoiceWidgetDialog::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_white, R.color.pureWhite,
+                        R.id.btn_add_task, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_white, R.color.pureWhite,
+                        R.id.btn_voice, VoiceWidgetDialog::class.java)
 
                 WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_left_24px, R.id.btn_prev, R.color.pureWhite)
                 WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_right_24px, R.id.btn_next, R.color.pureWhite)
 
                 rv.setTextColor(R.id.widgetTitle, ContextCompat.getColor(context, R.color.pureWhite))
             } else {
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_settings_24px, R.color.pureBlack,
+                        R.id.btn_settings, CalendarWidgetConfigActivity::class.java) {
                     it.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
                     return@initButton it
                 }
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.id.btn_add_task, CreateReminderActivity::class.java)
-                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.id.btn_voice, VoiceWidgetDialog::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_add_24px, R.color.pureBlack,
+                        R.id.btn_add_task, CreateReminderActivity::class.java)
+                WidgetUtils.initButton(context, rv, R.drawable.ic_twotone_mic_24px, R.color.pureBlack,
+                        R.id.btn_voice, VoiceWidgetDialog::class.java)
 
                 WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_left_24px, R.id.btn_prev, R.color.pureBlack)
                 WidgetUtils.setIcon(context, rv, R.drawable.ic_twotone_keyboard_arrow_right_24px, R.id.btn_next, R.color.pureBlack)
