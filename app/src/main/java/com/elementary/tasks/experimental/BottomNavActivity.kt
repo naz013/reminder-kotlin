@@ -8,6 +8,7 @@ import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.elementary.tasks.R
@@ -47,8 +48,27 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
-        Timber.d("onCreate: ${this.javaClass}")
+        Timber.d("onCreate: ${intent.action}, ${intent.data?.toString()}, ${intent.extras?.keySet()}")
         binding.toolbar.setupWithNavController(findNavController(R.id.mainNavigationFragment))
+        if (intent.action == Intent.ACTION_VIEW) {
+            when (intent.getIntExtra(ARG_DEST, Dest.DAY_VIEW)) {
+                Dest.DAY_VIEW -> {
+                    NavDeepLinkBuilder(this)
+                            .setGraph(R.navigation.home_nav)
+                            .setArguments(intent.extras)
+                            .setDestination(R.id.dayViewFragment)
+                            .createTaskStackBuilder()
+                            .startActivities()
+                }
+                Dest.SETTINGS -> {
+                    NavDeepLinkBuilder(this)
+                            .setGraph(R.navigation.home_nav)
+                            .setDestination(R.id.settingsFragment)
+                            .createTaskStackBuilder()
+                            .startActivities()
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -169,5 +189,11 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
 
     companion object {
         const val VOICE_RECOGNITION_REQUEST_CODE = 109
+        const val ARG_DEST = "arg_dest"
+
+        object Dest {
+            const val DAY_VIEW = 0
+            const val SETTINGS = 1
+        }
     }
 }

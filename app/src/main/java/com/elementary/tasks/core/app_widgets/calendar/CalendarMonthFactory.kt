@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.experimental.BottomNavActivity
 import hirondelle.date4j.DateTime
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -217,6 +218,7 @@ class CalendarMonthFactory constructor(private val mContext: Context, intent: In
 
         val fillInIntent = Intent()
         fillInIntent.putExtra("date", dateMills)
+        fillInIntent.putExtra(BottomNavActivity.ARG_DEST, BottomNavActivity.Companion.Dest.DAY_VIEW)
         rv.setOnClickFillInIntent(R.id.textView, fillInIntent)
         return rv
     }

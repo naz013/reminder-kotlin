@@ -2,6 +2,7 @@ package com.elementary.tasks.core.view_models.conversation
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.widget.Toast
@@ -24,7 +25,7 @@ import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
-import com.elementary.tasks.experimental.NavUtil
+import com.elementary.tasks.experimental.BottomNavActivity
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
@@ -170,7 +171,8 @@ class ConversationViewModel : BaseRemindersViewModel() {
     fun getShoppingReminders() {
         postInProgress(true)
         launchDefault {
-            val list = LinkedList(appDb.reminderDao().getAllTypes(true, false, intArrayOf(Reminder.BY_DATE_SHOP)))
+            val list = LinkedList(appDb.reminderDao().getAllTypes(true, removed = false,
+                    types = intArrayOf(Reminder.BY_DATE_SHOP)))
             postInProgress(false)
             _shoppingLists.postValue(list)
         }
@@ -180,10 +182,10 @@ class ConversationViewModel : BaseRemindersViewModel() {
         postInProgress(true)
         launchDefault {
             val list = LinkedList(appDb.reminderDao().getAllTypesInRange(
-                    true,
-                    false,
-                    TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
-                    TimeUtil.getGmtFromDateTime(dateTime)))
+                    active = true,
+                    removed = false,
+                    fromTime = TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
+                    toTime = TimeUtil.getGmtFromDateTime(dateTime)))
             postInProgress(false)
             _enabledReminders.postValue(list)
         }
@@ -255,10 +257,10 @@ class ConversationViewModel : BaseRemindersViewModel() {
                         Action.TRASH -> emptyTrash(true)
                         Action.DISABLE -> disableAllReminders(true)
                         Action.SETTINGS -> {
-                            TODO("Add new deep link")
-//                            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
-//                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
-//                            context.startActivity(startActivityIntent)
+                            val activityIntent = Intent(context, BottomNavActivity::class.java)
+                            activityIntent.action = Intent.ACTION_VIEW
+                            activityIntent.putExtra(BottomNavActivity.ARG_DEST, BottomNavActivity.Companion.Dest.SETTINGS)
+                            context.startActivity(activityIntent)
                         }
                         Action.REPORT -> {
                             context.startActivity(Intent(context, SendFeedbackActivity::class.java)

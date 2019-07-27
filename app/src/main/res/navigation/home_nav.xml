@@ -186,6 +186,9 @@
             android:name="date"
             android:defaultValue="0L"
             app:argType="long" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="reminderapp.com/calendar/{date}" />
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
@@ -461,6 +464,9 @@
         <action
             android:id="@+id/action_voiceSettingsFragment_to_helpFragment2"
             app:destination="@id/voiceHelpFragment" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="reminderapp.com/settings" />
     </fragment>
     <fragment
         android:id="@+id/timeOfDayFragment"

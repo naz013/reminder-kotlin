@@ -12,9 +12,8 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
-import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.experimental.NavUtil
+import com.elementary.tasks.experimental.BottomNavActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -103,12 +102,11 @@ class CalendarWidget : AppWidgetProvider(), KoinComponent {
             weekdayAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(R.id.weekdayGrid, weekdayAdapter)
 
-            TODO("Add new deep link")
-//            val startActivityIntent = Intent(context, NavUtil.homeScreen(prefs))
-//            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_calendar)
-//            val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
-//                    startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-//            rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
+            val startActivityIntent = Intent(context, BottomNavActivity::class.java)
+            startActivityIntent.action = Intent.ACTION_VIEW
+            val startActivityPendingIntent = PendingIntent.getActivity(context, 0,
+                    startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            rv.setPendingIntentTemplate(R.id.monthGrid, startActivityPendingIntent)
 
             val monthAdapter = Intent(context, CalendarMonthService::class.java)
             monthAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
