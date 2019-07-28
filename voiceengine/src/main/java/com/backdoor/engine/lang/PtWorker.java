@@ -4,7 +4,6 @@ import com.backdoor.engine.misc.Action;
 import com.backdoor.engine.misc.Ampm;
 import com.backdoor.engine.misc.Long;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -252,7 +251,7 @@ class PtWorker extends Worker {
                 try {
                     date = format.parse(time);
                     if (date != null) return date;
-                } catch (NullPointerException | ParseException ignored) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -270,7 +269,7 @@ class PtWorker extends Worker {
                 try {
                     Integer.parseInt(parts[i - index]);
                     parts[i - index] = "";
-                } catch (NumberFormatException ignored) {
+                } catch (Exception ignored) {
                 }
             }
             if (hasMinutes(part) != -1) {
@@ -278,7 +277,7 @@ class PtWorker extends Worker {
                 try {
                     Integer.parseInt(parts[i - index]);
                     parts[i - index] = "";
-                } catch (NumberFormatException ignored) {
+                } catch (Exception ignored) {
                 }
                 parts[i] = "";
             }
