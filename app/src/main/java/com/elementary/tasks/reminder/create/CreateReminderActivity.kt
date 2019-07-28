@@ -327,10 +327,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     }
 
     private fun replaceFragment(fragment: TypeFragment<*>) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.main_container, fragment, null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commitAllowingStateLoss()
+        try {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_container, fragment, null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commitAllowingStateLoss()
+        } catch (e: Exception) {
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
