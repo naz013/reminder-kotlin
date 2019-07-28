@@ -12,8 +12,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 260
-        versionName '8.0.0'
+        versionCode 261
+        versionName '8.0.1'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -45,7 +45,7 @@ android {
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
             buildConfigField "String", "PROJECT_ID", "\"future-graph-651\""
-            versionCode 230
+            versionCode 231
         }
     }
     packagingOptions {

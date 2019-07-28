@@ -1,8 +1,13 @@
 package com.elementary.tasks.core.cloud.storages
 
+import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.google.gson.Gson
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import org.json.JSONObject
 import timber.log.Timber
+import java.lang.reflect.Type
 
 class IndexDataFile {
 

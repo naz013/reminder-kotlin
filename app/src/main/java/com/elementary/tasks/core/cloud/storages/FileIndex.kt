@@ -17,6 +17,7 @@ data class FileIndex(
         @SerializedName("melody")
         var melody: String = "",
         @SerializedName("type")
+        @Transient
         var type: IndexTypes = IndexTypes.TYPE_REMINDER,
         @SerializedName("json")
         var json: String? = null
