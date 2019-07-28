@@ -30,7 +30,11 @@ class AppsRecyclerAdapter : ListAdapter<ApplicationItem, AppsRecyclerAdapter.App
 
         init {
             binding.clickView.setOnClickListener {
-                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+                try {
+                    actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+                } catch (e: Exception) {
+                    actionsListener?.onAction(it, adapterPosition, null, ListActions.OPEN)
+                }
             }
         }
     }
