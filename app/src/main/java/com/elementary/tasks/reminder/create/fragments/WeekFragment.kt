@@ -157,6 +157,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     }
 
     override fun updateActions() {
+        if (!isAdded) return
         if (binding.actionView.hasAction()) {
             if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
                 binding.tuneExtraView.hasAutoExtra = false
