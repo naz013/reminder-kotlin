@@ -67,7 +67,11 @@ class CacheUtil(val context: Context) {
     fun cacheFile(uri: Uri): String? {
         val cacheDir = context.externalCacheDir ?: context.cacheDir
         val inputStream = context.contentResolver.openInputStream(uri)
-        val fileId = DocumentsContract.getDocumentId(uri)
+        val fileId = try {
+            DocumentsContract.getDocumentId(uri)
+        } catch (e: Exception) {
+            ""
+        }
 
         val cursor: Cursor? = context.contentResolver.query( uri, null, null,
                 null, null, null)
@@ -80,13 +84,18 @@ class CacheUtil(val context: Context) {
             } else {
                 ""
             }
+        } ?: ""
+        if (name.isEmpty() && fileId.isEmpty()) {
+            return null
         }
-        val fileName = if (name.isNullOrEmpty()) fileId else name
+
+        val fileName = if (name.isEmpty()) fileId else name
         val file = File(cacheDir, fileName)
+        val fId = if (fileId.isEmpty()) name else fileId
 
-        Timber.d("cacheFile: $fileId, ${file.absolutePath}, $fileName")
+        Timber.d("cacheFile: $fId, ${file.absolutePath}, $fileName")
 
-        if (hasCache(fileId) && file.exists()) {
+        if (hasCache(fId) && file.exists()) {
             Timber.d("cacheFile: FROM CACHE")
             return file.absolutePath
         }
@@ -100,7 +109,7 @@ class CacheUtil(val context: Context) {
                 }
             }
             file.copyInputStreamToFile(inputStream)
-            saveCache(fileId)
+            saveCache(fId)
             return file.absolutePath
         }
         return null
