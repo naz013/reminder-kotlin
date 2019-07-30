@@ -318,7 +318,8 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
     }
 
     private fun showTime() {
-        binding.timeField.text = TimeUtil.getTime(stateViewModel.time.value ?: System.currentTimeMillis(),
+        binding.timeField.text = TimeUtil.getTime(stateViewModel.time.value
+                ?: System.currentTimeMillis(),
                 prefs.is24HourFormat, prefs.appLanguage)
     }
 
@@ -504,8 +505,11 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycle.removeObserver(stateViewModel)
-        lifecycle.removeObserver(viewModel)
+        try {
+            lifecycle.removeObserver(stateViewModel)
+            lifecycle.removeObserver(viewModel)
+        } catch (e: Exception) {
+        }
         hideKeyboard()
         UpdatesHelper.updateTasksWidget(this)
     }

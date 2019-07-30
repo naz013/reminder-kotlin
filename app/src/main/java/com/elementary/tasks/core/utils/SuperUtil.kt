@@ -20,6 +20,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.buttons.VoiceWidgetDialog
@@ -132,11 +133,7 @@ object SuperUtil {
         }
         val intent = Intent(context, GeolocationService::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (Module.isOreo) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
-        }
+        ContextCompat.startForegroundService(context, intent)
     }
 
     fun isHeadsetUsing(context: Context): Boolean {
