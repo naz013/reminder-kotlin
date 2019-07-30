@@ -1,27 +1,28 @@
 package com.elementary.tasks.core.cloud.storages
 
-import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.google.gson.Gson
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
 import org.json.JSONObject
 import timber.log.Timber
-import java.lang.reflect.Type
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class IndexDataFile {
 
     private var jsonObject: JSONObject = JSONObject()
+    private val lock = ReentrantReadWriteLock()
     var isLoaded = false
         private set
 
     fun addIndex(fileIndex: FileIndex) {
+        lock.writeLock().lock()
         jsonObject.put(fileIndex.id, Gson().toJson(fileIndex))
+        lock.writeLock().unlock()
     }
 
     fun removeIndex(id: String) {
         if (hasIndex(id)) {
+            lock.writeLock().lock()
             jsonObject.remove(id)
+            lock.writeLock().unlock()
         }
     }
 
@@ -54,7 +55,9 @@ class IndexDataFile {
     }
 
     fun toJson(): String? {
+        lock.readLock().lock()
         val json = jsonObject.toString()
+        lock.readLock().unlock()
         Timber.d("toJson: $json")
         return json
     }
