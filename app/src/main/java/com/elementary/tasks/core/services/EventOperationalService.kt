@@ -76,6 +76,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        showForegroundNotification()
         onHandleIntent(intent)
         return super.onStartCommand(intent, flags, startId)
     }
