@@ -28,23 +28,23 @@ object TimeUtil {
 
     private fun dateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, HH:mm", lang)
 
-    private fun dateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, hh:mm a", lang)
+    private fun dateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy, h:mm a", lang)
 
     fun fullDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy", lang)
 
     private fun fullDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy HH:mm", lang)
 
-    private fun fullDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy hh:mm a", lang)
+    private fun fullDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("EEE, dd MMM yyyy h:mm a", lang)
 
     private fun time24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("HH:mm", lang)
 
-    private fun time12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("hh:mm a", lang)
+    private fun time12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("h:mm a", lang)
 
     fun simpleDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM", lang)
 
     private fun simpleDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, HH:mm", lang)
 
-    private fun simpleDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, hh:mm a", lang)
+    private fun simpleDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, h:mm a", lang)
 
     fun date(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy", lang)
 
@@ -383,13 +383,13 @@ object TimeUtil {
             if (is24) {
                 SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc)
             } else {
-                SimpleDateFormat("EEEE, MMMM dd yyyy hh:mm a", loc)
+                SimpleDateFormat("EEEE, MMMM dd yyyy h:mm a", loc)
             }
         } else {
             if (is24) {
                 SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc)
             } else {
-                SimpleDateFormat("EEEE, dd MMMM yyyy hh:mm a", loc)
+                SimpleDateFormat("EEEE, dd MMMM yyyy h:mm a", loc)
             }
         }
         return format.format(calendar.time)
