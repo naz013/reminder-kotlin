@@ -108,10 +108,16 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
         }
 
         binding.archiveButton.setOnClickListener {
-            findNavController().navigate(RemindersFragmentDirections.actionRemindersFragmentToArchiveFragment())
+            try {
+                findNavController().navigate(RemindersFragmentDirections.actionRemindersFragmentToArchiveFragment())
+            } catch (e: IllegalArgumentException) {
+            }
         }
         binding.groupsButton.setOnClickListener {
-            findNavController().navigate(RemindersFragmentDirections.actionRemindersFragmentToGroupsFragment())
+            try {
+                findNavController().navigate(RemindersFragmentDirections.actionRemindersFragmentToGroupsFragment())
+            } catch (e: IllegalArgumentException) {
+            }
         }
 
         initList()
