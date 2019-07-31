@@ -70,10 +70,12 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
             launchDefault {
                 delay(250)
                 withUIContext {
+                    val birthdayColor = callback?.birthdayColor() ?: Color.GREEN
+                    val reminderColor = callback?.reminderColor() ?: Color.BLUE
                     callback?.find(item) { eventsPagerItem, list ->
                         Timber.d("requestData: result -> $eventsPagerItem, ${list.size}")
                         launchDefault {
-                            val data = mapData(list)
+                            val data = mapData(list, birthdayColor, reminderColor)
                             withUIContext {
                                 if (isResumed) binding.monthView.setEventsMap(data)
                             }
@@ -84,10 +86,8 @@ class MonthFragment : BindingFragment<FragmentMonthViewBinding>() {
         }
     }
 
-    private fun mapData(list: List<EventModel>): Map<DateTime, Events> {
+    private fun mapData(list: List<EventModel>, birthdayColor: Int, reminderColor: Int): Map<DateTime, Events> {
         val map = mutableMapOf<DateTime, Events>()
-        val birthdayColor = callback?.birthdayColor() ?: Color.GREEN
-        val reminderColor = callback?.reminderColor() ?: Color.BLUE
         for (model in list) {
             val obj = model.model
             if (obj is Birthday) {

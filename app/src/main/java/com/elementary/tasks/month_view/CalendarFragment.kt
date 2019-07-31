@@ -1,6 +1,7 @@
 package com.elementary.tasks.month_view
 
 import android.app.AlarmManager
+import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
@@ -142,11 +143,15 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun birthdayColor(): Int {
-        return ThemeUtil.colorBirthdayCalendar(context!!, prefs)
+        val ctx = context
+        return if (ctx == null || !isAdded) Color.GREEN
+        else ThemeUtil.colorBirthdayCalendar(ctx, prefs)
     }
 
     override fun reminderColor(): Int {
-        return ThemeUtil.colorReminderCalendar(context!!, prefs)
+        val ctx = context
+        return if (ctx == null || !isAdded) Color.BLUE
+        else ThemeUtil.colorReminderCalendar(ctx, prefs)
     }
 
     override fun onDateClick(date: Date) {
