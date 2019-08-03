@@ -92,7 +92,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
             readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
-                mItem = intent.getSerializableExtra(Constants.INTENT_ITEM) as Place?
+                mItem = intent.getParcelableExtra(Constants.INTENT_ITEM) as Place?
                 showPlace(mItem)
             } catch (e: Exception) {
                 e.printStackTrace()

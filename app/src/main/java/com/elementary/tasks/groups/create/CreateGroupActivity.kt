@@ -73,7 +73,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
             readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
-                (intent.getSerializableExtra(Constants.INTENT_ITEM) as ReminderGroup?)?.let {
+                (intent.getParcelableExtra(Constants.INTENT_ITEM) as ReminderGroup?)?.let {
                     showGroup(it)
                 }
             } catch (e: Exception) {

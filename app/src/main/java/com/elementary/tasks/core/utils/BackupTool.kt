@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.utils
 
-import android.content.ContentResolver
-import android.net.Uri
+import android.content.Context
 import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.converters.PlaceConverter
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
@@ -12,9 +10,11 @@ import com.elementary.tasks.core.utils.MemoryUtil.writeFile
 import com.elementary.tasks.core.utils.MemoryUtil.writeFileNoEncryption
 import com.google.gson.Gson
 import timber.log.Timber
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
+import java.nio.charset.Charset
 
 class BackupTool(private val appDb: AppDb) {
 
@@ -50,15 +50,6 @@ class BackupTool(private val appDb: AppDb) {
         }
     }
 
-    fun getTemplate(cr: ContentResolver, name: Uri): SmsTemplate? {
-        return try {
-            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), SmsTemplate::class.java))
-            item.get()
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
     fun getTemplate(filePath: String?, json: String?): SmsTemplate? {
         return try {
             return if (filePath != null && MemoryUtil.isSdPresent) {
@@ -71,15 +62,6 @@ class BackupTool(private val appDb: AppDb) {
                 null
             }
         } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    fun getPlace(cr: ContentResolver, name: Uri): Place? {
-        return try {
-            val data = MemoryUtil.readFileContent(cr, name) ?: return null
-            return PlaceConverter().convert(data)
-        } catch (e: Exception) {
             null
         }
     }
@@ -100,15 +82,6 @@ class BackupTool(private val appDb: AppDb) {
         }
     }
 
-    fun getBirthday(cr: ContentResolver, name: Uri): Birthday? {
-        return try {
-            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Birthday::class.java))
-            return item.get()
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
     fun getBirthday(filePath: String?, json: String?): Birthday? {
         return try {
             return if (filePath != null && MemoryUtil.isSdPresent) {
@@ -120,15 +93,6 @@ class BackupTool(private val appDb: AppDb) {
             } else {
                 null
             }
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    fun getGroup(cr: ContentResolver, name: Uri): ReminderGroup? {
-        return try {
-            val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), ReminderGroup::class.java))
-            return item.get()
         } catch (e: java.lang.Exception) {
             null
         }
@@ -166,14 +130,6 @@ class BackupTool(private val appDb: AppDb) {
         return null
     }
 
-    fun getReminder(cr: ContentResolver, name: Uri): Reminder? {
-        return try {
-            return Gson().fromJson(readFileToJson(cr, name), Reminder::class.java)
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
     fun getReminder(filePath: String?, json: String?): Reminder? {
         return try {
             return if (filePath != null && MemoryUtil.isSdPresent) {
@@ -187,24 +143,6 @@ class BackupTool(private val appDb: AppDb) {
             }
         } catch (e: java.lang.Exception) {
             null
-        }
-    }
-
-    fun getNote(cr: ContentResolver, uri: Uri): NoteWithImages? {
-        Timber.d("getNote: $uri")
-        try {
-            val weakNote = WeakReference(Gson().fromJson(readFileToJson(cr, uri), OldNote::class.java))
-            val oldNote = weakNote.get() ?: return null
-            val noteWithImages = NoteWithImages()
-            oldNote.images.forEach {
-                it.noteId = oldNote.key
-            }
-            noteWithImages.note = Note(oldNote)
-            noteWithImages.images = oldNote.images
-            return noteWithImages
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
         }
     }
 
@@ -258,6 +196,29 @@ class BackupTool(private val appDb: AppDb) {
         } else {
             null
         }
+    }
+
+    fun createPlace(context: Context, item: Place): File? {
+        val json = Gson().toJson(item)
+        val encrypted = MemoryUtil.encryptJson(json) ?: return null
+        val cacheDir = context.externalCacheDir ?: context.cacheDir
+        val file = File(cacheDir, item.id + FileConfig.FILE_NAME_PLACE)
+        if (!file.createNewFile()) {
+            try {
+                file.delete()
+                file.createNewFile()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        try {
+            val inputStream = ByteArrayInputStream(encrypted.toByteArray(Charset.defaultCharset()))
+            file.copyInputStreamToFile(inputStream)
+            inputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return file
     }
 
     @Keep

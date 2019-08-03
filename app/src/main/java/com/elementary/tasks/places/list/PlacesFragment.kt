@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,16 +18,17 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.filter.SearchModifier
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import org.koin.android.ext.android.inject
+import java.io.File
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
+    private val backupTool: BackupTool by inject()
     private val viewModel: PlacesViewModel by lazy {
         ViewModelProviders.of(this).get(PlacesViewModel::class.java)
     }
@@ -146,16 +148,41 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
     private fun showMore(view: View, place: Place) {
         Dialogues.showPopup(view, { i ->
-            if (i == 0) {
-                openPlace(place)
-            } else if (i == 1) {
-                withContext {
+            when (i) {
+                0 -> openPlace(place)
+                1 -> sharePlace(place)
+                2 -> withContext {
                     dialogues.askConfirmation(it, getString(R.string.delete)) { b ->
                         if (b) viewModel.deletePlace(place)
                     }
                 }
             }
-        }, getString(R.string.edit), getString(R.string.delete))
+        }, getString(R.string.edit), getString(R.string.share), getString(R.string.delete))
+    }
+
+    private fun sharePlace(place: Place) {
+        launchDefault {
+            val file = backupTool.createPlace(context!!, place)
+            withUIContext {
+                if (file != null) {
+                    sendPlace(place, file)
+                } else {
+                    showErrorSending()
+                }
+            }
+        }
+    }
+
+    private fun sendPlace(place: Place, file: File) {
+        if (!file.exists() || !file.canRead()) {
+            showErrorSending()
+            return
+        }
+        TelephonyUtil.sendFile(file, context!!, place.name)
+    }
+
+    private fun showErrorSending() {
+        Toast.makeText(context, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
     }
 
     private fun openPlace(place: Place) {

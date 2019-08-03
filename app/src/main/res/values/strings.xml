@@ -735,5 +735,6 @@
     <string name="do_not_show_permanent_on_home">Do not show permanent reminder on home screen</string>
     <string name="show_permanent_on_home">Show permanent reminder on home screen</string>
     <string name="permanent_on_home">Permanent reminder on home screen</string>
+    <string name="unsupported_file_format">Unsupported file format</string>
 
 </resources>

@@ -191,7 +191,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
             }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
-                    val reminder = intent.getSerializableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
+                    val reminder = intent.getParcelableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
                     editReminder(reminder, false)
                 } catch (e: Exception) {
                 }

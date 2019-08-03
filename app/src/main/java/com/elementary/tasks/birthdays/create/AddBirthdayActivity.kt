@@ -123,7 +123,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
             }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
-                    mBirthday = intent.getSerializableExtra(Constants.INTENT_ITEM) as Birthday?
+                    mBirthday = intent.getParcelableExtra(Constants.INTENT_ITEM) as Birthday?
                     showBirthday(mBirthday)
                 } catch (e: Exception) {
                 }

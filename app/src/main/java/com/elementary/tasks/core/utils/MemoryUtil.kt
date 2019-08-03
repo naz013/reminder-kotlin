@@ -1,25 +1,35 @@
 package com.elementary.tasks.core.utils
 
 import android.content.ContentResolver
+import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Base64DataException
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
+import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.data.models.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.google.gson.stream.JsonReader
 import timber.log.Timber
 import java.io.*
 import java.util.*
+import kotlin.math.ln
+import kotlin.math.pow
 
 object MemoryUtil {
 
-    const val DIR_SD = "backup"
+    private const val DIR_SD = "backup"
     private const val DIR_PREFS = "preferences"
-    const val DIR_NOTES_SD = "notes"
-    const val DIR_GROUP_SD = "groups"
-    const val DIR_BIRTHDAY_SD = "birthdays"
-    const val DIR_PLACES_SD = "places"
-    const val DIR_TEMPLATES_SD = "templates"
+    private const val DIR_NOTES_SD = "notes"
+    private const val DIR_GROUP_SD = "groups"
+    private const val DIR_BIRTHDAY_SD = "birthdays"
+    private const val DIR_PLACES_SD = "places"
+    private const val DIR_TEMPLATES_SD = "templates"
     private const val DIR_MAIL_SD = "mail_attachments"
 
     val isSdPresent: Boolean
@@ -75,9 +85,9 @@ object MemoryUtil {
         if (bytes < unit) {
             return "$bytes B"
         }
-        val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
+        val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
         val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""
-        return String.format(Locale.US, "%.1f %sB", bytes / Math.pow(unit.toDouble(), exp.toDouble()), pre)
+        return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 
     @Throws(IOException::class)
@@ -147,35 +157,6 @@ object MemoryUtil {
         } catch (e: Exception) {
             throw IOException("No read permission")
         }
-    }
-
-    fun readFileContent(cr: ContentResolver, name: Uri): String? {
-        var inputStream: InputStream? = null
-        try {
-            inputStream = cr.openInputStream(name)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (inputStream == null) {
-            return null
-        }
-        val r = BufferedReader(InputStreamReader(inputStream))
-        val total = StringBuilder()
-        var line: String?
-        try {
-            do {
-                line = r.readLine()
-                if (line != null) {
-                    total.append(line)
-                }
-            } while (line != null)
-        } catch (e: Exception) {
-            Timber.d("readFileContent: ${e.message}")
-            return null
-        }
-        inputStream.close()
-        return total.toString()
     }
 
     fun readFileContent(file: File): String? {
@@ -327,6 +308,63 @@ object MemoryUtil {
             }
         } catch (e: Exception) {
             Timber.d("readFileToJson: Bad JSON")
+            null
+        }
+    }
+
+    fun decryptToJson(context: Context, uri: Uri): Any? {
+        val cr = context.contentResolver ?: return null
+        var inputStream: InputStream? = null
+        try {
+            inputStream = cr.openInputStream(uri)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        if (inputStream == null) {
+            return null
+        }
+        val cursor: Cursor? = cr.query( uri, null, null,
+                null, null, null)
+
+        val name = cursor?.use {
+            if (it.moveToFirst()) {
+                val displayName: String =
+                        it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                displayName
+            } else {
+                ""
+            }
+        } ?: ""
+        Timber.d("decryptToJson: $name")
+        return try {
+            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+            val r = JsonReader(BufferedReader(InputStreamReader(output64)))
+            val type = when {
+                name.endsWith(FileConfig.FILE_NAME_PLACE) -> {
+                    object : TypeToken<Place>() {}.type
+                }
+                name.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
+                    object : TypeToken<Reminder>() {}.type
+                }
+                name.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
+                    object : TypeToken<Birthday>() {}.type
+                }
+                name.endsWith(FileConfig.FILE_NAME_GROUP) -> {
+                    object : TypeToken<ReminderGroup>() {}.type
+                }
+                name.endsWith(FileConfig.FILE_NAME_NOTE) -> {
+                    object : TypeToken<OldNote>() {}.type
+                }
+                name.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
+                    object : TypeToken<SmsTemplate>() {}.type
+                }
+                else -> null
+            }
+            Gson().fromJson(r, type)
+        } catch (e: Exception) {
+            Timber.d("decryptToJson: Bad JSON")
+            e.printStackTrace()
             null
         }
     }

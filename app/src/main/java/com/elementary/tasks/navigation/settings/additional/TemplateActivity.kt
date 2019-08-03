@@ -39,7 +39,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
             readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
-                val item = intent.getSerializableExtra(Constants.INTENT_ITEM) as SmsTemplate?
+                val item = intent.getParcelableExtra(Constants.INTENT_ITEM) as SmsTemplate?
                 if (item != null) {
                     showTemplate(item)
                 }

@@ -444,7 +444,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
                     loadNoteFromFile()
                 } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
                     try {
-                        val note = intent.getSerializableExtra(Constants.INTENT_ITEM) as NoteWithImages?
+                        val note = intent.getParcelableExtra(Constants.INTENT_ITEM) as NoteWithImages?
                         showNote(note)
                     } catch (e: Exception) {
                         e.printStackTrace()
