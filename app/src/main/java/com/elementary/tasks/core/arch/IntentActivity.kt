@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.data.models.*
+import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.toast
@@ -41,13 +42,8 @@ class IntentActivity: ThemedActivity() {
                         finish()
                     }
                     is OldNote -> {
-                        val noteWithImages = NoteWithImages()
-                        any.images.forEach {
-                            it.noteId = any.key
-                        }
-                        noteWithImages.note = Note(any)
-                        noteWithImages.images = any.images
-                        if (noteWithImages.isValid()) {
+                        val noteWithImages = BackupTool.oldNoteToNew(any)
+                        if (noteWithImages != null) {
                             startActivity(Intent(this, CreateNoteActivity::class.java)
                                     .putExtra(Constants.INTENT_ITEM, noteWithImages))
                         } else {
@@ -119,7 +115,7 @@ private fun Place.isValid(): Boolean {
     return latitude != 0.0 && longitude != 0.0 && name.isNotBlank()
 }
 
-private fun NoteWithImages.isValid(): Boolean {
+fun NoteWithImages.isValid(): Boolean {
     val nt = note
     return nt != null && nt.key.isNotEmpty()
 }

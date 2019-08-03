@@ -33,7 +33,7 @@ object UriUtil {
     }
 
     fun getUri(context: Context, filePath: String): Uri? {
-        Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)
+        Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $filePath")
         return if (Module.isNougat) {
             try {
                 FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
@@ -47,7 +47,7 @@ object UriUtil {
     }
 
     fun getUri(context: Context, file: File): Uri? {
-        Timber.d("getUri: %s", BuildConfig.APPLICATION_ID)
+        Timber.d("getUri: ${BuildConfig.APPLICATION_ID}, $file")
         return if (Module.isNougat) {
             try {
                 FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)

@@ -253,7 +253,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         withActivity {
             if (Permissions.checkPermission(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
                 onProgress.invoke(true)
-                ExportAllDataWorker.export(backupTool)
+                ExportAllDataWorker.export(it, backupTool)
             }
         }
     }

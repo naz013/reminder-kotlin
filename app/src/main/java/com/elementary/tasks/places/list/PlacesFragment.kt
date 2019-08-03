@@ -162,7 +162,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
     private fun sharePlace(place: Place) {
         launchDefault {
-            val file = backupTool.createPlace(context!!, place)
+            val file = backupTool.placeToFile(context!!, place)
             withUIContext {
                 if (file != null) {
                     sendPlace(place, file)

@@ -14,15 +14,12 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
-import org.koin.android.ext.android.inject
 
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout.activity_create_group) {
 
     private lateinit var viewModel: GroupViewModel
     private var mItem: ReminderGroup? = null
     private var mUri: Uri? = null
-
-    private val backupTool: BackupTool by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,9 +85,13 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
         }
         mUri?.let {
             try {
-                val scheme = it.scheme
-                (if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getGroup(it.path, null)
+                (if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                    val any = MemoryUtil.decryptToJson(this, it)
+                    if (any != null && any is ReminderGroup) {
+                        any
+                    } else {
+                        null
+                    }
                 } else null)?.let { item -> showGroup(item) }
             } catch (e: Exception) {
                 e.printStackTrace()

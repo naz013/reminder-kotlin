@@ -213,7 +213,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
         }
         showProgress()
         launchDefault {
-            val file = backupTool.createNote(mNote)
+            val file = backupTool.noteToFile(this@NotePreviewActivity, mNote)
             withUIContext {
                 hideProgress()
                 if (file != null) {

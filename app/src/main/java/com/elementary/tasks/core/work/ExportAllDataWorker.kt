@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.work
 
+import android.content.Context
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
@@ -18,9 +19,9 @@ object ExportAllDataWorker {
             value?.invoke(mJob != null)
         }
 
-    fun export(backupTool: BackupTool) {
+    fun export(context: Context, backupTool: BackupTool) {
         mJob?.cancel()
-        launchSync(backupTool)
+        launchSync(context, backupTool)
     }
 
     fun unsubscribe() {
@@ -28,9 +29,9 @@ object ExportAllDataWorker {
         listener = null
     }
 
-    private fun launchSync(backupTool: BackupTool) {
+    private fun launchSync(context: Context, backupTool: BackupTool) {
         mJob = launchIo {
-            val file = backupTool.exportAll()
+            val file = backupTool.exportAll(context)
             withUIContext {
                 onEnd?.invoke(file)
             }

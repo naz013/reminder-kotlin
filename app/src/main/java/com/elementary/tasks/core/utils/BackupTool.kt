@@ -2,23 +2,21 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import androidx.annotation.Keep
+import com.elementary.tasks.core.arch.isValid
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
-import com.elementary.tasks.core.utils.MemoryUtil.writeFile
 import com.elementary.tasks.core.utils.MemoryUtil.writeFileNoEncryption
 import com.google.gson.Gson
 import timber.log.Timber
-import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.IOException
+import java.io.FileOutputStream
 import java.lang.ref.WeakReference
-import java.nio.charset.Charset
 
 class BackupTool(private val appDb: AppDb) {
 
-    fun exportAll(): File? {
+    fun exportAll(context: Context): File? {
         val allData = AllData(
                 reminders = appDb.reminderDao().all(),
                 groups = appDb.reminderGroupDao().all(),
@@ -27,13 +25,13 @@ class BackupTool(private val appDb: AppDb) {
                 templates = appDb.smsTemplatesDao().all(),
                 birthdays = appDb.birthdaysDao().all()
         )
-        return createAllDataFile(allData)
+        return createAllDataFile(context, allData)
     }
 
-    private fun createAllDataFile(item: AllData): File? {
+    private fun createAllDataFile(context: Context, item: AllData): File? {
         val jsonData = WeakReference(Gson().toJson(item))
         val file: File
-        val dir = MemoryUtil.mailDir
+        val dir = context.externalCacheDir ?: context.cacheDir
         return if (dir != null) {
             val exportFileName = TimeUtil.gmtDateTime + FileConfig.FILE_NAME_FULL_BACKUP
             file = File(dir, exportFileName)
@@ -46,102 +44,6 @@ class BackupTool(private val appDb: AppDb) {
                 null
             }
         } else {
-            null
-        }
-    }
-
-    fun getTemplate(filePath: String?, json: String?): SmsTemplate? {
-        return try {
-            return if (filePath != null && MemoryUtil.isSdPresent) {
-                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), SmsTemplate::class.java))
-                item.get()
-            } else if (json != null) {
-                val item = WeakReference(Gson().fromJson(json, SmsTemplate::class.java))
-                item.get()
-            } else {
-                null
-            }
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    fun getPlace(filePath: String?, json: String?): Place? {
-        return try {
-            return if (filePath != null && MemoryUtil.isSdPresent) {
-                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Place::class.java))
-                item.get()
-            } else if (json != null) {
-                val item = WeakReference(Gson().fromJson(json, Place::class.java))
-                item.get()
-            } else {
-                null
-            }
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    fun getBirthday(filePath: String?, json: String?): Birthday? {
-        return try {
-            return if (filePath != null && MemoryUtil.isSdPresent) {
-                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Birthday::class.java))
-                item.get()
-            } else if (json != null) {
-                val item = WeakReference(Gson().fromJson(json, Birthday::class.java))
-                item.get()
-            } else {
-                null
-            }
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    fun getGroup(filePath: String?, json: String?): ReminderGroup? {
-        return try {
-            return if (filePath != null && MemoryUtil.isSdPresent) {
-                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), ReminderGroup::class.java))
-                item.get()
-            } else if (json != null) {
-                val item = WeakReference(Gson().fromJson(json, ReminderGroup::class.java))
-                item.get()
-            } else {
-                null
-            }
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    fun exportReminder(item: Reminder): String? {
-        val jsonData = WeakReference(Gson().toJson(item))
-        val dir = MemoryUtil.remindersDir
-        if (dir != null) {
-            val exportFileName = item.uuId + FileConfig.FILE_NAME_REMINDER
-            try {
-                return writeFile(File(dir, exportFileName), jsonData.get())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        } else {
-            Timber.d("Couldn't find external storage!")
-        }
-        return null
-    }
-
-    fun getReminder(filePath: String?, json: String?): Reminder? {
-        return try {
-            return if (filePath != null && MemoryUtil.isSdPresent) {
-                val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Reminder::class.java))
-                item.get()
-            } else if (json != null) {
-                val item = WeakReference(Gson().fromJson(json, Reminder::class.java))
-                item.get()
-            } else {
-                null
-            }
-        } catch (e: java.lang.Exception) {
             null
         }
     }
@@ -177,32 +79,34 @@ class BackupTool(private val appDb: AppDb) {
         }
     }
 
-    fun createNote(item: NoteWithImages?): File? {
-        val note = item?.note ?: return null
-        val jsonData = WeakReference(Gson().toJson(OldNote(item)))
-        val file: File
-        val dir = MemoryUtil.mailDir
-        return if (dir != null) {
-            val exportFileName = note.key + FileConfig.FILE_NAME_NOTE
-            file = File(dir, exportFileName)
-            try {
-                writeFile(file, jsonData.get())
-                jsonData.clear()
-                file
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            null
-        }
+    fun reminderToFile(context: Context, item: Reminder): File? {
+        return anyToFile(context, item, item.uuId + FileConfig.FILE_NAME_REMINDER)
     }
 
-    fun createPlace(context: Context, item: Place): File? {
-        val json = Gson().toJson(item)
-        val encrypted = MemoryUtil.encryptJson(json) ?: return null
-        val cacheDir = context.externalCacheDir ?: context.cacheDir
-        val file = File(cacheDir, item.id + FileConfig.FILE_NAME_PLACE)
+    fun noteToFile(context: Context, item: NoteWithImages?): File? {
+        val note = item?.note ?: return null
+        return anyToFile(context, item, note.key + FileConfig.FILE_NAME_NOTE)
+    }
+
+    fun placeToFile(context: Context, item: Place): File? {
+        return anyToFile(context, item, item.id + FileConfig.FILE_NAME_PLACE)
+    }
+
+    fun templateToFile(context: Context, item: SmsTemplate): File? {
+        return anyToFile(context, item, item.key + FileConfig.FILE_NAME_TEMPLATE)
+    }
+
+    fun birthdayToFile(context: Context, item: Birthday): File? {
+        return anyToFile(context, item, item.uuId + FileConfig.FILE_NAME_BIRTHDAY)
+    }
+
+    fun groupToFile(context: Context, item: ReminderGroup): File? {
+        return anyToFile(context, item, item.groupUuId + FileConfig.FILE_NAME_GROUP)
+    }
+
+    fun anyToFile(context: Context, any: Any, fileName: String): File? {
+        val cacheDir = context.getExternalFilesDir("share") ?: context.filesDir
+        val file = File(cacheDir, fileName)
         if (!file.createNewFile()) {
             try {
                 file.delete()
@@ -211,14 +115,37 @@ class BackupTool(private val appDb: AppDb) {
                 e.printStackTrace()
             }
         }
-        try {
-            val inputStream = ByteArrayInputStream(encrypted.toByteArray(Charset.defaultCharset()))
-            file.copyInputStreamToFile(inputStream)
-            inputStream.close()
+        return try {
+            val outputStream = FileOutputStream(file)
+            return if (MemoryUtil.toStream(any, outputStream)) {
+                outputStream.flush()
+                outputStream.close()
+                file
+            } else {
+                outputStream.flush()
+                outputStream.close()
+                null
+            }
         } catch (e: Exception) {
             e.printStackTrace()
+            null
         }
-        return file
+    }
+
+    companion object {
+        fun oldNoteToNew(oldNote: OldNote): NoteWithImages? {
+            val noteWithImages = NoteWithImages()
+            oldNote.images.forEach {
+                it.noteId = oldNote.key
+            }
+            noteWithImages.note = Note(oldNote)
+            noteWithImages.images = oldNote.images
+            return if (noteWithImages.isValid()) {
+                noteWithImages
+            } else {
+                null
+            }
+        }
     }
 
     @Keep

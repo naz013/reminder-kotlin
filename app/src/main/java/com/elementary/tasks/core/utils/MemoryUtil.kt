@@ -1,13 +1,11 @@
 package com.elementary.tasks.core.utils
 
-import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.OpenableColumns
 import android.util.Base64
-import android.util.Base64DataException
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import com.elementary.tasks.core.cloud.FileConfig
@@ -15,11 +13,14 @@ import com.elementary.tasks.core.data.models.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import timber.log.Timber
 import java.io.*
+import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.math.ln
 import kotlin.math.pow
+
 
 object MemoryUtil {
 
@@ -30,7 +31,6 @@ object MemoryUtil {
     private const val DIR_BIRTHDAY_SD = "birthdays"
     private const val DIR_PLACES_SD = "places"
     private const val DIR_TEMPLATES_SD = "templates"
-    private const val DIR_MAIL_SD = "mail_attachments"
 
     val isSdPresent: Boolean
         get() {
@@ -55,9 +55,6 @@ object MemoryUtil {
 
     val templatesDir: File?
         get() = getDir(DIR_TEMPLATES_SD)
-
-    val mailDir: File?
-        get() = getDir(DIR_MAIL_SD)
 
     val prefsDir: File?
         get() = getDir(DIR_PREFS)
@@ -88,46 +85,6 @@ object MemoryUtil {
         val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
         val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""
         return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
-    }
-
-    @Throws(IOException::class)
-    fun readFileToJson(cr: ContentResolver, name: Uri): String? {
-        var inputStream: InputStream? = null
-        try {
-            inputStream = cr.openInputStream(name)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: SecurityException) {
-            e.printStackTrace()
-        }
-
-        if (inputStream == null) {
-            return null
-        }
-        val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
-        val r = BufferedReader(InputStreamReader(output64))
-        val total = StringBuilder()
-        var line: String?
-        try {
-            do {
-                line = r.readLine()
-                if (line != null) {
-                    total.append(line)
-                }
-            } while (line != null)
-        } catch (e: Base64DataException) {
-            throw IOException("Bad JSON")
-        }
-        output64.close()
-        inputStream.close()
-        val res = total.toString()
-        return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-            Timber.d("readFileToJson: $res")
-            res
-        } else {
-            Timber.d("readFileToJson: Bad JSON")
-            throw IOException("Bad JSON")
-        }
     }
 
     @Throws(IOException::class)
@@ -177,49 +134,6 @@ object MemoryUtil {
             Timber.d("readFileContent: ${e.message}")
             return null
         }
-    }
-
-    /**
-     * Write data to file.
-     *
-     * @param file target file.
-     * @param data object data.
-     * @return Path to file
-     * @throws IOException
-     */
-    @Throws(IOException::class)
-    fun writeFile(file: File, data: String?): String? {
-        if (data == null) return null
-        try {
-            val inputStream = ByteArrayInputStream(data.toByteArray())
-            val buffer = ByteArray(8192)
-            var bytesRead: Int
-            val output = ByteArrayOutputStream()
-            val output64 = Base64OutputStream(output, Base64.DEFAULT)
-            try {
-                do {
-                    bytesRead = inputStream.read(buffer)
-                    if (bytesRead != -1) {
-                        output64.write(buffer, 0, bytesRead)
-                    }
-                } while (bytesRead != -1)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            output64.close()
-
-            if (file.exists()) {
-                file.delete()
-            }
-            val fw = FileWriter(file)
-            fw.write(output.toString())
-            fw.close()
-            output.close()
-        } catch (e: SecurityException) {
-            return null
-        }
-        return file.toString()
     }
 
     @Throws(IOException::class)
@@ -312,6 +226,30 @@ object MemoryUtil {
         }
     }
 
+    fun toStream(any: Any, outputStream: OutputStream): Boolean {
+        try {
+            val output64 = Base64OutputStream(outputStream, Base64.DEFAULT)
+            val bufferedWriter = BufferedWriter(OutputStreamWriter(output64, StandardCharsets.UTF_8))
+            val writer = JsonWriter(bufferedWriter)
+            val type = when (any) {
+                is Reminder -> object : TypeToken<Reminder>() {}.type
+                is Place -> object : TypeToken<Place>() {}.type
+                is Birthday -> object : TypeToken<Birthday>() {}.type
+                is ReminderGroup -> object : TypeToken<ReminderGroup>() {}.type
+                is SmsTemplate -> object : TypeToken<SmsTemplate>() {}.type
+                is NoteWithImages -> object : TypeToken<OldNote>() {}.type
+                else -> null
+            } ?: return false
+            Timber.d("toStream: $type, $any")
+            Gson().toJson(if (any is NoteWithImages) OldNote(any) else any, type, writer)
+            writer.close()
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     fun decryptToJson(context: Context, uri: Uri): Any? {
         val cr = context.contentResolver ?: return null
         var inputStream: InputStream? = null
@@ -324,7 +262,7 @@ object MemoryUtil {
         if (inputStream == null) {
             return null
         }
-        val cursor: Cursor? = cr.query( uri, null, null,
+        val cursor: Cursor? = cr.query(uri, null, null,
                 null, null, null)
 
         val name = cursor?.use {

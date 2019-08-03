@@ -3,6 +3,7 @@ package com.elementary.tasks.core.cloud.storages
 import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.google.gson.annotations.SerializedName
+import java.io.OutputStream
 
 @Keep
 data class FileIndex(
@@ -20,5 +21,9 @@ data class FileIndex(
         @Transient
         var type: IndexTypes = IndexTypes.TYPE_REMINDER,
         @SerializedName("json")
-        var json: String? = null
+        @Transient
+        var json: String? = null,
+        @SerializedName("stream")
+        @Transient
+        var stream: OutputStream? = null
 )

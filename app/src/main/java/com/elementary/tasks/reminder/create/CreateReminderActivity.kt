@@ -65,7 +65,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     override var canExportToTasks: Boolean = false
     override var canExportToCalendar: Boolean = false
 
-    private val backupTool: BackupTool by inject()
     private val cacheUtil: CacheUtil by inject()
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
@@ -208,9 +207,13 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         if (Permissions.checkPermission(this, SD_PERM, Permissions.READ_EXTERNAL)) {
             mUri?.let {
                 try {
-                    val scheme = it.scheme
-                    val reminder = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                        backupTool.getReminder(it.path, null) ?: Reminder()
+                    val reminder = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                        val any = MemoryUtil.decryptToJson(this, it)
+                        if (any != null && any is Reminder) {
+                            any
+                        } else {
+                            Reminder()
+                        }
                     } else Reminder()
                     editReminder(reminder, false)
                 } catch (e: java.lang.Exception) {

@@ -14,15 +14,12 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
-import org.koin.android.ext.android.inject
 
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activity_template) {
 
     private lateinit var viewModel: SmsTemplateViewModel
     private var mItem: SmsTemplate? = null
     private var mUri: Uri? = null
-
-    private val backupTool: BackupTool by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +52,11 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
         }
         mUri?.let {
             try {
-                val scheme = it.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getTemplate(it.path, null)
+                mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                    val any = MemoryUtil.decryptToJson(this, it)
+                    if (any != null && any is SmsTemplate) {
+                        any
+                    } else null
                 } else null
                 mItem?.let { item -> showTemplate(item) }
             } catch (e: Exception) {

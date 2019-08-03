@@ -22,7 +22,6 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import com.elementary.tasks.navigation.settings.security.PinLoginActivity
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.ParseException
 import java.util.*
@@ -32,7 +31,6 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     private lateinit var viewModel: BirthdayViewModel
     private var mBirthday: Birthday? = null
     private var mUri: Uri? = null
-    private val backupTool: BackupTool by inject()
 
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         val calendar = Calendar.getInstance()
@@ -145,9 +143,11 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
         }
         mUri?.let {
             try {
-                val scheme = it.scheme
-                mBirthday = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getBirthday(it.path, null)
+                mBirthday = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                    val any = MemoryUtil.decryptToJson(this, it)
+                    if (any != null && any is Birthday) {
+                        any
+                    } else null
                 } else null
                 showBirthday(mBirthday)
             } catch (e: Exception) {

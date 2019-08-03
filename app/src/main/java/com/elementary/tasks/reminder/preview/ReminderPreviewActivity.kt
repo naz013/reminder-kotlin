@@ -198,7 +198,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         reminder.places.forEach {
             val lat = it.latitude
             val lon = it.longitude
-            mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, false, false, it.radius)
+            mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, clear = false,
+                    animate = false, radius = it.radius)
             places += String.format(Locale.getDefault(), "%.5f %.5f", lat, lon)
             places += "\n"
         }
@@ -438,8 +439,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val ids = item.itemId
-        when (ids) {
+        when (item.itemId) {
             R.id.action_delete -> removeReminder()
             android.R.id.home -> closeWindow()
             R.id.action_make_copy -> makeCopy()
@@ -472,11 +472,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         }
         reminder?.let {
             launchDefault {
-                val path = backupTool.exportReminder(it)
-                Timber.d("shareReminder: $path")
-                if (path != null) {
+                val file = backupTool.reminderToFile(this@ReminderPreviewActivity, it)
+                Timber.d("shareReminder: $file")
+                if (file != null) {
                     withUIContext {
-                        TelephonyUtil.sendFile(File(path), this@ReminderPreviewActivity)
+                        TelephonyUtil.sendFile(file, this@ReminderPreviewActivity, it.summary)
                     }
                 }
             }
@@ -592,8 +592,9 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
 
     private fun initMap() {
-        val googleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                false, false, isDarkMode)
+        val googleMap = AdvancedMapFragment.newInstance(isTouch = false, isPlaces = false,
+                isSearch = false, isStyles = false, isBack = false, isZoom = false,
+                isDark = isDarkMode)
         googleMap.setCallback(object : MapCallback {
             override fun onMapReady() {
                 googleMap.setSearchEnabled(false)

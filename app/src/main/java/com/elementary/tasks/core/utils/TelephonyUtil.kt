@@ -40,13 +40,14 @@ object TelephonyUtil {
 
     fun sendFile(file: File, context: Context, message: String?) {
         val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "text/plain"
+        intent.type = "*/*"
         intent.putExtra(Intent.EXTRA_SUBJECT, message)
         val uri = UriUtil.getUri(context, file)
         intent.putExtra(Intent.EXTRA_STREAM, uri)
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         try {
-            context.startActivity(Intent.createChooser(intent, "Send email..."))
+            val chooser = Intent.createChooser(intent, "Send email...")
+            context.startActivity(chooser)
         } catch (e: Exception) {
             Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }

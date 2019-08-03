@@ -14,19 +14,17 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
-import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
-import org.koin.android.ext.android.inject
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
-    private val backupTool: BackupTool by inject()
     private val viewModel: PlaceViewModel by lazy {
         ViewModelProviders.of(this, PlaceViewModel.Factory(getId())).get(PlaceViewModel::class.java)
     }
@@ -106,9 +104,11 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         }
         mUri?.let {
             try {
-                val scheme = it.scheme
-                mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                    backupTool.getPlace(it.path, null)
+                mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                    val any = MemoryUtil.decryptToJson(this, it)
+                    if (any != null && any is Place) {
+                        any
+                    } else null
                 } else null
                 showPlace(mItem)
             } catch (e: Exception) {

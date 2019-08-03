@@ -101,7 +101,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     private fun shareNote(note: NoteWithImages) {
         showProgress()
         launchDefault {
-            val file = backupTool.createNote(note)
+            val file = backupTool.noteToFile(context!!, note)
             withUIContext {
                 hideProgress()
                 if (file != null) {

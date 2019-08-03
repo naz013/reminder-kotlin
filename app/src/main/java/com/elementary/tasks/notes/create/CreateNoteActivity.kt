@@ -21,10 +21,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
-import com.elementary.tasks.core.data.models.ImageFile
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
@@ -509,9 +506,13 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         if (mUri != null) {
             mUri?.let {
                 try {
-                    val scheme = it.scheme
-                    mItem = if (ContentResolver.SCHEME_CONTENT != scheme) {
-                        backupTool.getNote(it.path, null)
+                    mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                        val any = MemoryUtil.decryptToJson(this, it)
+                        if (any != null && any is OldNote) {
+                            BackupTool.oldNoteToNew(any)
+                        } else {
+                            null
+                        }
                     } else {
                         null
                     }
@@ -591,7 +592,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         val note = createObject() ?: return
         showProgress()
         launchDefault {
-            val file = backupTool.createNote(note)
+            val file = backupTool.noteToFile(this@CreateNoteActivity, note)
             withUIContext {
                 hideProgress()
                 if (file != null) {
