@@ -6,10 +6,8 @@ import com.elementary.tasks.core.arch.isValid
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.*
-import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
 import com.elementary.tasks.core.utils.MemoryUtil.writeFileNoEncryption
 import com.google.gson.Gson
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
@@ -44,37 +42,6 @@ class BackupTool(private val appDb: AppDb) {
                 null
             }
         } else {
-            null
-        }
-    }
-
-    fun getNote(filePath: String?, json: String?): NoteWithImages? {
-        Timber.d("getNote: $filePath, $json")
-        return try {
-            if (filePath != null && MemoryUtil.isSdPresent) {
-                val oldNote = Gson().fromJson(readFileToJson(filePath), OldNote::class.java)
-                        ?: return null
-                val noteWithImages = NoteWithImages()
-                oldNote.images.forEach {
-                    it.noteId = oldNote.key
-                }
-                noteWithImages.note = Note(oldNote)
-                noteWithImages.images = oldNote.images
-                return noteWithImages
-            } else if (json != null) {
-                val weakNote = WeakReference(Gson().fromJson(json, OldNote::class.java))
-                val oldNote = weakNote.get() ?: return null
-                val noteWithImages = NoteWithImages()
-                oldNote.images.forEach {
-                    it.noteId = oldNote.key
-                }
-                noteWithImages.note = Note(oldNote)
-                noteWithImages.images = oldNote.images
-                return noteWithImages
-            } else {
-                return null
-            }
-        } catch (e: java.lang.Exception) {
             null
         }
     }

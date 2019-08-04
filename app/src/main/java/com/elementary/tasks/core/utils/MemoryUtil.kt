@@ -32,7 +32,7 @@ object MemoryUtil {
     private const val DIR_PLACES_SD = "places"
     private const val DIR_TEMPLATES_SD = "templates"
 
-    val isSdPresent: Boolean
+    private val isSdPresent: Boolean
         get() {
             val state = Environment.getExternalStorageState()
             return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
@@ -87,35 +87,6 @@ object MemoryUtil {
         return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 
-    @Throws(IOException::class)
-    fun readFileToJson(path: String): String {
-        try {
-            val inputStream = FileInputStream(path)
-            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
-            val r = BufferedReader(InputStreamReader(output64))
-            val total = StringBuilder()
-            var line: String?
-            do {
-                line = r.readLine()
-                if (line != null) {
-                    total.append(line)
-                }
-            } while (line != null)
-            output64.close()
-            inputStream.close()
-            val res = total.toString()
-            return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-                Timber.d("readFileToJson: $res")
-                res
-            } else {
-                Timber.d("readFileToJson: Bad JSON")
-                throw IOException("Bad JSON")
-            }
-        } catch (e: Exception) {
-            throw IOException("No read permission")
-        }
-    }
-
     fun readFileContent(file: File): String? {
         try {
             val inputStream = FileInputStream(file)
@@ -166,34 +137,6 @@ object MemoryUtil {
             return null
         }
         return file.toString()
-    }
-
-    fun encryptJson(data: String?): String? {
-        if (data == null) return null
-        try {
-            val inputStream = ByteArrayInputStream(data.toByteArray())
-            val buffer = ByteArray(8192)
-            var bytesRead: Int
-            val output = ByteArrayOutputStream()
-            val output64 = Base64OutputStream(output, Base64.DEFAULT)
-            try {
-                do {
-                    bytesRead = inputStream.read(buffer)
-                    if (bytesRead != -1) {
-                        output64.write(buffer, 0, bytesRead)
-                    }
-                } while (bytesRead != -1)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            output64.close()
-
-            val encrypted = output.toString()
-            output.close()
-            return encrypted
-        } catch (e: SecurityException) {
-            return null
-        }
     }
 
     fun decryptToJson(encrypted: String?): String? {

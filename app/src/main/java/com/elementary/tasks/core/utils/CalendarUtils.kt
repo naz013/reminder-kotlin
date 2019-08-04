@@ -8,6 +8,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
+import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
@@ -89,6 +90,7 @@ class CalendarUtils(private val context: Context, private val prefs: Prefs, priv
         return list
     }
 
+    @RequiresPermission(Permissions.READ_CALENDAR)
     fun getEvent(id: Long, uuId: String): EventItem? {
         if (id == 0L) return null
         try {

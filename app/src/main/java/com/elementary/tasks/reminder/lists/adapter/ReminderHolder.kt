@@ -61,6 +61,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
             binding.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
         } else {
             binding.remainingTime.text = ""
+            binding.remainingTime.transparent()
         }
     }
 
@@ -108,7 +109,11 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
             binding.reminderPhone.text = number
         } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
             binding.reminderPhone.visibility = View.VISIBLE
-            val name = Contacts.getNameFromNumber(number, binding.reminderPhone.context)
+            val name = if (Permissions.checkPermission(binding.reminderPhone.context, Permissions.READ_CONTACTS)) {
+                Contacts.getNameFromNumber(number, binding.reminderPhone.context)
+            } else {
+                null
+            }
             if (name == null) {
                 binding.reminderPhone.text = number
             } else {
@@ -126,7 +131,9 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
             binding.reminderPhone.visibility = View.VISIBLE
             binding.reminderPhone.text = "$name/$number"
         } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
-            val name = Contacts.getNameFromMail(number, binding.reminderPhone.context)
+            val name = if (Permissions.checkPermission(binding.reminderPhone.context, Permissions.READ_CONTACTS)) {
+                Contacts.getNameFromMail(number, binding.reminderPhone.context)
+            } else null
             binding.reminderPhone.visibility = View.VISIBLE
             if (name == null) {
                 binding.reminderPhone.text = number
