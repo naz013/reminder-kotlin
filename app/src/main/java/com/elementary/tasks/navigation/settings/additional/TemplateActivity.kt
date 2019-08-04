@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.additional
 
 import android.content.ContentResolver
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,12 +13,15 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
+import java.util.*
 
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activity_template) {
 
-    private lateinit var viewModel: SmsTemplateViewModel
+    private val viewModel: SmsTemplateViewModel by lazy {
+        ViewModelProviders.of(this, SmsTemplateViewModel.Factory(getId()))
+                .get(SmsTemplateViewModel::class.java)
+    }
     private var mItem: SmsTemplate? = null
-    private var mUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,18 +29,18 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
         loadTemplate()
     }
 
+    private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
     private fun loadTemplate() {
         val intent = intent
-        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        initViewModel(id)
+        initViewModel()
         if (intent.data != null) {
-            mUri = intent.data
             readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
                 val item = intent.getParcelableExtra(Constants.INTENT_ITEM) as SmsTemplate?
                 if (item != null) {
-                    showTemplate(item)
+                    showTemplate(item, true)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -50,7 +52,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
         if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
-        mUri?.let {
+        intent.data?.let {
             try {
                 mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
                     val any = MemoryUtil.decryptToJson(this, it)
@@ -58,16 +60,14 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
                         any
                     } else null
                 } else null
-                mItem?.let { item -> showTemplate(item) }
+                mItem?.let { item -> showTemplate(item, true) }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, SmsTemplateViewModel.Factory(id))
-                .get(SmsTemplateViewModel::class.java)
+    private fun initViewModel() {
         viewModel.smsTemplate.observe(this, Observer{ smsTemplate ->
             if (smsTemplate != null) {
                 showTemplate(smsTemplate)
@@ -84,12 +84,16 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
         })
     }
 
-    private fun showTemplate(smsTemplate: SmsTemplate) {
+    private fun showTemplate(smsTemplate: SmsTemplate, fromFile: Boolean = false) {
         this.mItem = smsTemplate
         binding.toolbar.title = getString(R.string.edit_template)
         if (!viewModel.isEdited) {
             binding.messageInput.setText(smsTemplate.title)
             viewModel.isEdited = true
+            viewModel.isFromFile = fromFile
+            if (fromFile) {
+                viewModel.findSame(smsTemplate.key)
+            }
         }
     }
 
@@ -104,7 +108,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_add -> {
-                saveTemplate()
+                askCopySaving()
                 return true
             }
             android.R.id.home -> {
@@ -119,11 +123,33 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
         return super.onOptionsItemSelected(item)
     }
 
+    private fun askCopySaving() {
+        if (viewModel.isFromFile && viewModel.hasSameInDb) {
+            dialogues.getMaterialDialog(this)
+                    .setMessage(R.string.same_template_message)
+                    .setPositiveButton(R.string.keep) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        saveTemplate(true)
+                    }
+                    .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        saveTemplate()
+                    }
+                    .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .create()
+                    .show()
+        } else {
+            saveTemplate()
+        }
+    }
+
     private fun deleteItem() {
         mItem?.let { viewModel.deleteSmsTemplate(it) }
     }
 
-    private fun saveTemplate() {
+    private fun saveTemplate(newId: Boolean = false) {
         val text = binding.messageInput.text.toString().trim()
         if (text.isEmpty()) {
             binding.messageLayout.error = getString(R.string.must_be_not_empty)
@@ -135,12 +161,15 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
             this.date = date
             this.title = text
         }
+        if (newId) {
+            item.key = UUID.randomUUID().toString()
+        }
         viewModel.saveTemplate(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_create_template, menu)
-        if (mItem != null) {
+        if (mItem != null && !viewModel.isFromFile) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true

@@ -13,6 +13,15 @@ class SmsTemplateViewModel private constructor(key: String) : BaseSmsTemplatesVi
 
     val smsTemplate = appDb.smsTemplatesDao().loadByKey(key)
     var isEdited = false
+    var hasSameInDb: Boolean = false
+    var isFromFile: Boolean = false
+
+    fun findSame(id: String) {
+        launchDefault {
+            val template = appDb.smsTemplatesDao().getByKey(id)
+            hasSameInDb = template != null
+        }
+    }
 
     fun saveTemplate(smsTemplate: SmsTemplate) {
         postInProgress(true)
