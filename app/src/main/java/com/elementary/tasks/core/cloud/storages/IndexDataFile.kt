@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.cloud.storages
 
+import android.text.TextUtils
 import com.google.gson.GsonBuilder
 import org.json.JSONObject
 import timber.log.Timber
@@ -60,6 +61,15 @@ class IndexDataFile {
 
     fun toJson(): String? {
         lock.readLock().lock()
+        for (key in jsonObject.keys()) {
+            try {
+                val fileIndex = gson.fromJson(jsonObject.getJSONObject(key).toString(), FileIndex::class.java)
+                if (fileIndex != null && !TextUtils.isEmpty(fileIndex.json)) {
+                    jsonObject.put(fileIndex.id, gson.toJson(fileIndex))
+                }
+            } catch (e: Exception) {
+            }
+        }
         val json = jsonObject.toString()
         lock.readLock().unlock()
         Timber.d("toJson: $json")
