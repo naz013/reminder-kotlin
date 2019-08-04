@@ -554,7 +554,11 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
 
     private fun showStream() {
         val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
-        binding.streamPrefs.setDetailText(types[prefs.soundStream - 3])
+        try {
+            binding.streamPrefs.setDetailText(types[prefs.soundStream - 3])
+        } catch (e: Exception) {
+            binding.streamPrefs.setDetailText(types[0])
+        }
     }
 
     private fun changeSystemLoudnessPrefs() {
