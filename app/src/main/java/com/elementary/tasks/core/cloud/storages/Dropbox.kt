@@ -46,7 +46,34 @@ class Dropbox : Storage(), KoinComponent {
         startSession()
     }
 
-    override suspend fun backup(json: String, metadata: Metadata) {
+    override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
+        if (!isLinked) {
+            return
+        }
+        val api = mDBApi ?: return
+        val stream = fileIndex.stream
+        val json = fileIndex.json
+        if (stream == null) {
+            if (json != null) {
+                backup(json, metadata)
+            }
+        } else {
+            val folder = folderFromExt(metadata.fileExt)
+            Timber.d("backup: ${metadata.fileName}, $folder")
+            val fis = ByteArrayInputStream(stream.toByteArray())
+            try {
+                api.files().uploadBuilder(folder + metadata.fileName)
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(fis)
+                fis.close()
+                stream.close()
+            } catch (e: Exception) {
+                Timber.d("backup: ${e.message}")
+            }
+        }
+    }
+
+    private fun backup(json: String, metadata: Metadata) {
         if (!isLinked) {
             return
         }

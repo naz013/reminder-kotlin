@@ -6,8 +6,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 
 class CompositeStorage(private val storageList: List<Storage>) : Storage() {
-    override suspend fun backup(json: String, metadata: Metadata) {
-        storageList.forEach { it.backup(json, metadata) }
+
+    override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
+        storageList.forEach { it.backup(fileIndex, metadata) }
     }
 
     override suspend fun restore(fileName: String): String? {

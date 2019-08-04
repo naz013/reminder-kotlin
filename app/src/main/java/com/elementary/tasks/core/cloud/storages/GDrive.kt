@@ -3,11 +3,13 @@ package com.elementary.tasks.core.cloud.storages
 import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.core.cloud.FileConfig
+import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
@@ -56,7 +58,49 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         }
     }
 
-    override suspend fun backup(json: String, metadata: com.elementary.tasks.core.cloud.converters.Metadata) {
+    override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
+        val service = driveService ?: return
+        if (!isLogged) return
+        if (TextUtils.isEmpty(metadata.fileName)) return
+        val stream = fileIndex.stream
+        val json = fileIndex.json
+        if (stream == null) {
+            if (json != null) {
+                backup(json, metadata)
+            }
+        } else {
+            try {
+                removeAllCopies(metadata.fileName)
+                val fileMetadata = File()
+                fileMetadata.name = metadata.fileName
+                fileMetadata.description = metadata.meta
+                fileMetadata.parents = PARENTS
+                val mediaContent = ByteArrayContent("text/plain", stream.toByteArray())
+                val driveFile = service.files().create(fileMetadata, mediaContent)
+                        .setFields("id")
+                        .execute()
+                stream.close()
+                Timber.d("backup: STREAM ${driveFile.id}, ${metadata.fileName}")
+                showContent(driveFile.id)
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    private fun showContent(id: String) {
+        val service = driveService ?: return
+        if (!isLogged) return
+        try {
+            val out = ByteArrayOutputStream()
+            service.files().get(id).executeMediaAndDownloadTo(out)
+            val data = out.toString()
+            Timber.d("showContent: $id, $data")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun backup(json: String, metadata: Metadata) {
         val service = driveService ?: return
         if (!isLogged) return
         if (TextUtils.isEmpty(metadata.fileName)) return
@@ -71,7 +115,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                     .setFields("id")
                     .execute()
             Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
         }
     }
 
@@ -202,7 +246,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     private fun saveTokenFile() {
         launchDefault {
             val json = tokenDataFile.toJson() ?: return@launchDefault
-            backup(json, com.elementary.tasks.core.cloud.converters.Metadata(
+            backup(json, Metadata(
                     "",
                     TokenDataFile.FILE_NAME,
                     FileConfig.FILE_NAME_JSON,
@@ -220,7 +264,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     private fun saveIndexFile() {
         launchDefault {
             val json = indexDataFile.toJson() ?: return@launchDefault
-            backup(json, com.elementary.tasks.core.cloud.converters.Metadata(
+            backup(json, Metadata(
                     "",
                     IndexDataFile.FILE_NAME,
                     FileConfig.FILE_NAME_JSON,
@@ -283,6 +327,8 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                         title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++
                         title.endsWith(FileConfig.FILE_NAME_NOTE) -> count++
                         title.endsWith(FileConfig.FILE_NAME_REMINDER) -> count++
+                        title.contains(TokenDataFile.FILE_NAME) -> count++
+                        title.contains(IndexDataFile.FILE_NAME) -> count++
                     }
                 }
                 request.pageToken = files.nextPageToken

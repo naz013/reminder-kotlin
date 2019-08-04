@@ -1,20 +1,24 @@
 package com.elementary.tasks.core.cloud.storages
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.concurrent.locks.ReentrantReadWriteLock
+
 
 class IndexDataFile {
 
     private var jsonObject: JSONObject = JSONObject()
     private val lock = ReentrantReadWriteLock()
+    private val gson = GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create()
     var isLoaded = false
         private set
 
     fun addIndex(fileIndex: FileIndex) {
         lock.writeLock().lock()
-        jsonObject.put(fileIndex.id, Gson().toJson(fileIndex))
+        jsonObject.put(fileIndex.id, gson.toJson(fileIndex))
         lock.writeLock().unlock()
     }
 
@@ -29,7 +33,7 @@ class IndexDataFile {
     fun isFileChanged(id: String, updatedAt: String): Boolean {
         if (!hasIndex(id)) return true
         return try {
-            val fileIndex = Gson().fromJson(jsonObject.getJSONObject(id).toString(), FileIndex::class.java)
+            val fileIndex = gson.fromJson(jsonObject.getJSONObject(id).toString(), FileIndex::class.java)
             fileIndex == null || fileIndex.updatedAt != updatedAt
         } catch (e: Exception) {
             true

@@ -5,6 +5,7 @@ import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 
 class TemplateConverter : Convertible<SmsTemplate> {
 
@@ -20,14 +21,15 @@ class TemplateConverter : Convertible<SmsTemplate> {
 
     override fun convert(t: SmsTemplate): FileIndex? {
         return try {
-            val json = Gson().toJson(t)
-            val encrypted = MemoryUtil.encryptJson(json)
+            val stream = ByteArrayOutputStream()
+            MemoryUtil.toStream(t, stream)
             FileIndex().apply {
-                this.json = encrypted
+                this.stream = stream
                 this.ext = FileConfig.FILE_NAME_TEMPLATE
                 this.id = t.key
                 this.updatedAt = t.date
                 this.type = IndexTypes.TYPE_TEMPLATE
+                this.readyToBackup = true
             }
         } catch (e: Exception) {
             null

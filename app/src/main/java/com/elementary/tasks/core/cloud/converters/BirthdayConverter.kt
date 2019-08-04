@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 
 class BirthdayConverter : Convertible<Birthday> {
 
@@ -21,14 +22,15 @@ class BirthdayConverter : Convertible<Birthday> {
 
     override fun convert(t: Birthday): FileIndex? {
         return try {
-            val json = Gson().toJson(t)
-            val encrypted = MemoryUtil.encryptJson(json)
+            val stream = ByteArrayOutputStream()
+            MemoryUtil.toStream(t, stream)
             FileIndex().apply {
-                this.json = encrypted
+                this.stream = stream
                 this.ext = FileConfig.FILE_NAME_BIRTHDAY
                 this.id = t.uuId
                 this.updatedAt = t.updatedAt ?: TimeUtil.gmtDateTime
                 this.type = IndexTypes.TYPE_BIRTHDAY
+                this.readyToBackup = true
             }
         } catch (e: Exception) {
             null

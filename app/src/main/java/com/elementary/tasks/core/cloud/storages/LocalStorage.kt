@@ -9,13 +9,38 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.launchDefault
 import kotlinx.coroutines.channels.Channel
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 
 class LocalStorage(context: Context) : Storage() {
 
     private val hasSdPermission = Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)
 
-    override suspend fun backup(json: String, metadata: Metadata) {
+    override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
+        if (!Module.isQ && hasSdPermission) {
+            val stream = fileIndex.stream
+            val json = fileIndex.json
+            if (stream == null) {
+                if (json != null) {
+                    backup(json, metadata)
+                }
+            } else {
+                val dir = folderFromExt(metadata.fileExt)
+                if (dir != null) {
+                    try {
+                        val fos = FileOutputStream(File(dir, metadata.fileName))
+                        fos.write(stream.toByteArray())
+                        fos.close()
+                        stream.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun backup(json: String, metadata: Metadata) {
         if (!Module.isQ && hasSdPermission) {
             val dir = folderFromExt(metadata.fileExt)
             if (dir != null) {
@@ -119,7 +144,7 @@ class LocalStorage(context: Context) : Storage() {
     }
 
     private fun folderFromExt(ext: String): File? {
-        return when(ext) {
+        return when (ext) {
             FileConfig.FILE_NAME_NOTE -> MemoryUtil.notesDir
             FileConfig.FILE_NAME_GROUP -> MemoryUtil.groupsDir
             FileConfig.FILE_NAME_BIRTHDAY -> MemoryUtil.birthdaysDir

@@ -2,20 +2,26 @@ package com.elementary.tasks.core.cloud.storages
 
 import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.converters.IndexTypes
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.io.OutputStream
+import java.io.ByteArrayOutputStream
 
 @Keep
 data class FileIndex(
         @SerializedName("ext")
+        @Expose
         var ext: String = "",
         @SerializedName("updatedAt")
+        @Expose
         var updatedAt: String = "",
         @SerializedName("id")
+        @Expose
         var id: String = "",
         @SerializedName("attachment")
+        @Expose
         var attachment: String = "",
         @SerializedName("melody")
+        @Expose
         var melody: String = "",
         @SerializedName("type")
         @Transient
@@ -25,5 +31,8 @@ data class FileIndex(
         var json: String? = null,
         @SerializedName("stream")
         @Transient
-        var stream: OutputStream? = null
+        var stream: ByteArrayOutputStream? = null,
+        @SerializedName("readyToBackup")
+        @Transient
+        var readyToBackup: Boolean = false
 )

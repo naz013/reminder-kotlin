@@ -41,6 +41,7 @@ class SettingsConverter : Convertible<SettingsModel> {
                     this.id = "app"
                     this.updatedAt = TimeUtil.gmtDateTime
                     this.type = IndexTypes.TYPE_SETTINGS
+                    this.readyToBackup = true
                 }
             } catch (e: IOException) {
                 null

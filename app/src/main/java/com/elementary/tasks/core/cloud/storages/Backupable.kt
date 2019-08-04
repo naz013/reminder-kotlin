@@ -4,7 +4,7 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import kotlinx.coroutines.channels.Channel
 
 interface Backupable {
-    suspend fun backup(json: String, metadata: Metadata)
+    suspend fun backup(fileIndex: FileIndex, metadata: Metadata)
 
     suspend fun restore(fileName: String): String?
 

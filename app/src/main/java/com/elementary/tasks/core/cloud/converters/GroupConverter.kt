@@ -5,6 +5,7 @@ import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 
 class GroupConverter : Convertible<ReminderGroup> {
 
@@ -20,14 +21,15 @@ class GroupConverter : Convertible<ReminderGroup> {
 
     override fun convert(t: ReminderGroup): FileIndex? {
         return try {
-            val json = Gson().toJson(t)
-            val encrypted = MemoryUtil.encryptJson(json)
+            val stream = ByteArrayOutputStream()
+            MemoryUtil.toStream(t, stream)
             FileIndex().apply {
-                this.json = encrypted
+                this.stream = stream
                 this.ext = FileConfig.FILE_NAME_GROUP
                 this.id = t.groupUuId
                 this.updatedAt = t.groupDateTime
                 this.type = IndexTypes.TYPE_GROUP
+                this.readyToBackup = true
             }
         } catch (e: Exception) {
             null

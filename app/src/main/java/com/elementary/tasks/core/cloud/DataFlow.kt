@@ -14,7 +14,6 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import timber.log.Timber
-import java.lang.Exception
 
 class DataFlow<T>(private val repository: Repository<T>,
                   private val convertible: Convertible<T>,
@@ -37,13 +36,12 @@ class DataFlow<T>(private val repository: Repository<T>,
             storage.removeIndex(metadata.id)
             return
         }
-        val json = fileIndex.json
-        if (json == null) {
+        if (!fileIndex.readyToBackup) {
             storage.removeIndex(metadata.id)
             return
         }
 
-        storage.backup(json, metadata)
+        storage.backup(fileIndex, metadata)
         storage.saveIndex(fileIndex)
         completable?.action(item)
         Timber.d("backup: ${metadata.id}")

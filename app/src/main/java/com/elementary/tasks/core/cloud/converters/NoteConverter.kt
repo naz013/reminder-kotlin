@@ -7,6 +7,7 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.google.gson.Gson
+import java.io.ByteArrayOutputStream
 import java.lang.ref.WeakReference
 
 class NoteConverter : Convertible<NoteWithImages> {
@@ -23,14 +24,15 @@ class NoteConverter : Convertible<NoteWithImages> {
 
     override fun convert(t: NoteWithImages): FileIndex? {
         return try {
-            val json = Gson().toJson(OldNote(t))
-            val encrypted = MemoryUtil.encryptJson(json)
+            val stream = ByteArrayOutputStream()
+            MemoryUtil.toStream(t, stream)
             FileIndex().apply {
-                this.json = encrypted
+                this.stream = stream
                 this.ext = FileConfig.FILE_NAME_NOTE
                 this.id = t.getKey()
                 this.updatedAt = t.getGmtTime()
                 this.type = IndexTypes.TYPE_NOTE
+                this.readyToBackup = true
             }
         } catch (e: Exception) {
             null
