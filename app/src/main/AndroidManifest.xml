@@ -80,13 +80,14 @@
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_title"
+        android:requestLegacyExternalStorage="true"
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyTheme.DayNight"
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
-        tools:targetApi="n">
+        tools:targetApi="q">
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -218,6 +219,7 @@
         <activity
             android:name=".navigation.settings.additional.TemplateActivity"
             android:configChanges="keyboardHidden"
+            android:label="@string/create_template"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -247,6 +249,7 @@
         <activity
             android:name=".groups.create.CreateGroupActivity"
             android:configChanges="keyboardHidden"
+            android:label="@string/create_group"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -269,6 +272,7 @@
         <activity
             android:name=".places.create.CreatePlaceActivity"
             android:configChanges="keyboardHidden"
+            android:label="@string/new_place"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -339,6 +343,7 @@
         </activity>
         <activity
             android:name=".birthdays.create.AddBirthdayActivity"
+            android:label="@string/add_birthday"
             android:windowSoftInputMode="stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -427,14 +432,14 @@
 
         <service
             android:name=".core.services.GeolocationService"
-            android:foregroundServiceType="location"
             android:enabled="true"
+            android:foregroundServiceType="location"
             tools:targetApi="q" />
 
         <service
             android:name=".core.services.EventOperationalService"
-            android:foregroundServiceType="dataSync"
             android:enabled="true"
+            android:foregroundServiceType="dataSync"
             tools:targetApi="q" />
 
         <service
@@ -586,15 +591,13 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".core.app_widgets.calendar.CalendarPreviousReceiver">
+        <receiver android:name=".core.app_widgets.calendar.CalendarPreviousReceiver">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_PREVIOUS" />
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".core.app_widgets.calendar.CalendarNextReceiver">
+        <receiver android:name=".core.app_widgets.calendar.CalendarNextReceiver">
             <intent-filter>
                 <action android:name="com.elementary.tasks.core.app_widgets.calendar.ACTION_NEXT" />
             </intent-filter>

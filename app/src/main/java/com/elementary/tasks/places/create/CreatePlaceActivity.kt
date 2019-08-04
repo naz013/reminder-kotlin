@@ -1,7 +1,6 @@
 package com.elementary.tasks.places.create
 
 import android.content.ContentResolver
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -22,6 +22,8 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
+import timber.log.Timber
+import java.util.*
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
@@ -33,7 +35,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     }
     private var mGoogleMap: AdvancedMapFragment? = null
     private var mItem: Place? = null
-    private var mUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,12 +87,11 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     private fun loadPlace() {
         initViewModel()
         if (intent.data != null) {
-            mUri = intent.data
             readUri()
         } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
             try {
                 mItem = intent.getParcelableExtra(Constants.INTENT_ITEM) as Place?
-                showPlace(mItem)
+                showPlace(mItem, true)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -99,25 +99,26 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     }
 
     private fun readUri() {
-        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
             return
         }
-        mUri?.let {
+        intent.data?.let {
+            Timber.d("readUri: $it")
             try {
                 mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                    val any = MemoryUtil.decryptToJson(this, it)
+                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_PLACE)
                     if (any != null && any is Place) {
                         any
                     } else null
                 } else null
-                showPlace(mItem)
+                showPlace(mItem, true)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    private fun showPlace(place: Place?) {
+    private fun showPlace(place: Place?, fromFile: Boolean = false) {
         this.mItem = place
         place?.let {
             binding.titleView.text = getString(R.string.edit_place)
@@ -125,42 +126,45 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
                 binding.placeName.setText(place.name)
                 stateViewModel.place = place
                 stateViewModel.isPlaceEdited = true
+                stateViewModel.isFromFile = fromFile
+                if (fromFile) {
+                    viewModel.findSame(it.id)
+                }
                 showPlaceOnMap()
             }
         }
     }
 
-    private fun addPlace() {
-        if (stateViewModel.place.hasLatLng()) {
-            var name: String = binding.placeName.text.toString().trim()
-            if (name == "") {
-                name = stateViewModel.place.name
-            }
-            if (name == "") {
-                binding.placeLayout.error = getString(R.string.must_be_not_empty)
-                binding.placeLayout.isErrorEnabled = true
-                return
-            }
-            val latitude = stateViewModel.place.latitude
-            val longitude = stateViewModel.place.longitude
-            val marker = mGoogleMap?.markerStyle ?: prefs.markerStyle
-            val item = (mItem ?: Place()).apply {
-                this.name = name
-                this.latitude = latitude
-                this.longitude = longitude
-                this.marker = marker
-                this.radius = prefs.radius
-            }
-            viewModel.savePlace(item)
-        } else {
-            Toast.makeText(this, getString(R.string.you_dont_select_place), Toast.LENGTH_SHORT).show()
+    private fun savePlace(newId: Boolean = false) {
+        var name: String = binding.placeName.text.toString().trim()
+        if (name == "") {
+            name = stateViewModel.place.name
         }
+        if (name == "") {
+            binding.placeLayout.error = getString(R.string.must_be_not_empty)
+            binding.placeLayout.isErrorEnabled = true
+            return
+        }
+        val latitude = stateViewModel.place.latitude
+        val longitude = stateViewModel.place.longitude
+        val marker = mGoogleMap?.markerStyle ?: prefs.markerStyle
+        val item = (mItem ?: Place()).apply {
+            this.name = name
+            this.latitude = latitude
+            this.longitude = longitude
+            this.marker = marker
+            this.radius = prefs.radius
+        }
+        if (newId) {
+            item.id = UUID.randomUUID().toString()
+        }
+        viewModel.savePlace(item)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_add -> {
-                addPlace()
+                askCopySaving()
                 true
             }
             MENU_ITEM_DELETE -> {
@@ -170,6 +174,29 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun askCopySaving() {
+        if (stateViewModel.place.hasLatLng()) {
+            if (stateViewModel.isFromFile && viewModel.hasSameInDb) {
+                dialogues.getMaterialDialog(this)
+                        .setMessage(getString(R.string.same_place_message))
+                        .setPositiveButton(getString(R.string.keep)) { dialogInterface, _ ->
+                            dialogInterface.dismiss()
+                            savePlace(true)
+                        }
+                        .setNegativeButton(getString(R.string.replace)) { dialogInterface, _ ->
+                            dialogInterface.dismiss()
+                            savePlace()
+                        }
+                        .create()
+                        .show()
+            } else {
+                savePlace()
+            }
+        } else {
+            Toast.makeText(this, getString(R.string.you_dont_select_place), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -188,7 +215,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_place_edit, menu)
-        if (mItem != null) {
+        if (mItem != null && !stateViewModel.isFromFile) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true

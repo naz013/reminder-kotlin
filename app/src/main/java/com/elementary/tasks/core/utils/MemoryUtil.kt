@@ -250,7 +250,7 @@ object MemoryUtil {
         }
     }
 
-    fun decryptToJson(context: Context, uri: Uri): Any? {
+    fun decryptToJson(context: Context, uri: Uri, source: String = ""): Any? {
         val cr = context.contentResolver ?: return null
         var inputStream: InputStream? = null
         try {
@@ -271,10 +271,10 @@ object MemoryUtil {
                         it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                 displayName
             } else {
-                ""
+                source
             }
-        } ?: ""
-        Timber.d("decryptToJson: $name")
+        } ?: source
+        Timber.d("decryptToJson: $name, $source")
         return try {
             val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
             val r = JsonReader(BufferedReader(InputStreamReader(output64)))

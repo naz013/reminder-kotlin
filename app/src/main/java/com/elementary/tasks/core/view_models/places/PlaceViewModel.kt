@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 class PlaceViewModel private constructor(key: String) : BasePlacesViewModel() {
 
     var place = appDb.placesDao().loadByKey(key)
+    var hasSameInDb: Boolean = false
 
     fun savePlace(place: Place) {
         postInProgress(true)
@@ -22,6 +23,13 @@ class PlaceViewModel private constructor(key: String) : BasePlacesViewModel() {
             startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
             postInProgress(false)
             postCommand(Commands.SAVED)
+        }
+    }
+
+    fun findSame(id: String) {
+        launchDefault {
+            val place = appDb.placesDao().getByKey(id)
+            hasSameInDb = place != null
         }
     }
 

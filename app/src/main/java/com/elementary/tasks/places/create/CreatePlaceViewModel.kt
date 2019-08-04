@@ -8,5 +8,6 @@ class CreatePlaceViewModel : ViewModel(), LifecycleObserver {
 
     var place: Place = Place()
     var isPlaceEdited = false
+    var isFromFile: Boolean = false
 
 }
