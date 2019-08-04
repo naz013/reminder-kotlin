@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
@@ -15,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.*
@@ -28,9 +28,10 @@ import java.util.*
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout.activity_add_birthday) {
 
-    private lateinit var viewModel: BirthdayViewModel
+    private val viewModel: BirthdayViewModel by lazy {
+        ViewModelProviders.of(this, BirthdayViewModel.Factory(getId())).get(BirthdayViewModel::class.java)
+    }
     private var mBirthday: Birthday? = null
-    private var mUri: Uri? = null
 
     private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         val calendar = Calendar.getInstance()
@@ -69,9 +70,10 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
         }
     }
 
+    private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
     override fun onStart() {
         super.onStart()
-
         if (prefs.hasPinCode && !viewModel.isLogged) {
             PinLoginActivity.verify(this)
         }
@@ -83,7 +85,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
         binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
     }
 
-    private fun showBirthday(birthday: Birthday?) {
+    private fun showBirthday(birthday: Birthday?, fromFile: Boolean = false) {
         this.mBirthday = birthday
 
         val calendar = Calendar.getInstance()
@@ -107,22 +109,24 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
                     binding.contactCheck.isChecked = true
                 }
                 viewModel.isEdited = true
+                viewModel.isFromFile = fromFile
+                if (fromFile) {
+                    viewModel.findSame(birthday.uuId)
+                }
             }
         }
     }
 
     private fun loadBirthday() {
-        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        initViewModel(id)
+        initViewModel()
         when {
             intent.data != null -> {
-                mUri = intent.data
                 readUri()
             }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
                     mBirthday = intent.getParcelableExtra(Constants.INTENT_ITEM) as Birthday?
-                    showBirthday(mBirthday)
+                    showBirthday(mBirthday, true)
                 } catch (e: Exception) {
                 }
             }
@@ -141,25 +145,24 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
         if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
-        mUri?.let {
+        intent.data?.let {
             try {
                 mBirthday = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                    val any = MemoryUtil.decryptToJson(this, it)
+                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_BIRTHDAY)
                     if (any != null && any is Birthday) {
                         any
                     } else null
                 } else null
-                showBirthday(mBirthday)
+                showBirthday(mBirthday, true)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
-        viewModel.birthday.observe(this, Observer<Birthday> { this.showBirthday(it) })
-        viewModel.result.observe(this, Observer<Commands> { commands ->
+    private fun initViewModel() {
+        viewModel.birthday.observe(this, Observer { this.showBirthday(it) })
+        viewModel.result.observe(this, Observer { commands ->
             commands?.let {
                 when (it) {
                     Commands.SAVED, Commands.DELETED -> closeScreen()
@@ -197,7 +200,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_simple_save_action, menu)
-        if (mBirthday != null) {
+        if (mBirthday != null && !viewModel.isFromFile) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true
@@ -206,7 +209,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_add -> {
-                saveBirthday()
+                askCopySaving()
                 true
             }
             android.R.id.home -> {
@@ -223,7 +226,29 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
         }
     }
 
-    private fun saveBirthday() {
+    private fun askCopySaving() {
+        if (viewModel.isFromFile && viewModel.hasSameInDb) {
+            dialogues.getMaterialDialog(this)
+                    .setMessage(R.string.same_birthday_message)
+                    .setPositiveButton(R.string.keep) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        saveBirthday(true)
+                    }
+                    .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        saveBirthday()
+                    }
+                    .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .create()
+                    .show()
+        } else {
+            saveBirthday()
+        }
+    }
+
+    private fun saveBirthday(newId: Boolean = false) {
         val contact = binding.birthName.text.toString().trim()
         if (contact == "") {
             binding.birthNameLayout.error = getString(R.string.must_be_not_empty)
@@ -253,6 +278,9 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
             this.day = calendar.get(Calendar.DAY_OF_MONTH)
             this.month = calendar.get(Calendar.MONTH)
             this.dayMonth = "${this.day}|${this.month}"
+        }
+        if (newId) {
+            birthday.uuId = UUID.randomUUID().toString()
         }
         viewModel.saveBirthday(birthday)
     }
@@ -303,7 +331,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
                 SuperUtil.selectContact(this, Constants.REQUEST_CODE_CONTACTS)
             }
             CONTACT_PERM -> if (Permissions.checkPermission(grantResults)) {
-                saveBirthday()
+                askCopySaving()
             }
             SD_REQ -> if (Permissions.checkPermission(grantResults)) {
 

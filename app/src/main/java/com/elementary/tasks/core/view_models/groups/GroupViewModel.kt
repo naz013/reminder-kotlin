@@ -13,6 +13,16 @@ class GroupViewModel private constructor(id: String) : BaseGroupsViewModel() {
 
     val reminderGroup = appDb.reminderGroupDao().loadById(id)
     var isEdited = false
+    var hasSameInDb: Boolean = false
+    var isFromFile: Boolean = false
+    var isLogged = false
+
+    fun findSame(id: String) {
+        launchDefault {
+            val group = appDb.reminderGroupDao().getById(id)
+            hasSameInDb = group != null
+        }
+    }
 
     fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
         postInProgress(true)

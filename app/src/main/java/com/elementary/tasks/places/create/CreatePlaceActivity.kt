@@ -103,7 +103,6 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
             return
         }
         intent.data?.let {
-            Timber.d("readUri: $it")
             try {
                 mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
                     val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_PLACE)
@@ -181,14 +180,17 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         if (stateViewModel.place.hasLatLng()) {
             if (stateViewModel.isFromFile && viewModel.hasSameInDb) {
                 dialogues.getMaterialDialog(this)
-                        .setMessage(getString(R.string.same_place_message))
-                        .setPositiveButton(getString(R.string.keep)) { dialogInterface, _ ->
+                        .setMessage(R.string.same_place_message)
+                        .setPositiveButton(R.string.keep) { dialogInterface, _ ->
                             dialogInterface.dismiss()
                             savePlace(true)
                         }
-                        .setNegativeButton(getString(R.string.replace)) { dialogInterface, _ ->
+                        .setNegativeButton(R.string.replace) { dialogInterface, _ ->
                             dialogInterface.dismiss()
                             savePlace()
+                        }
+                        .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+                            dialogInterface.dismiss()
                         }
                         .create()
                         .show()
