@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -61,7 +62,6 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     private var mItem: NoteWithImages? = null
     private var mReminder: Reminder? = null
     private var speech: SpeechRecognizer? = null
-    private var mUri: Uri? = null
 
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle?) {
@@ -436,13 +436,12 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
                 handleSendMultipleImages(intent)
             }
             else -> {
-                mUri = intent.data
-                if (mUri != null) {
+                if (intent.data != null) {
                     loadNoteFromFile()
                 } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
                     try {
                         val note = intent.getParcelableExtra(Constants.INTENT_ITEM) as NoteWithImages?
-                        showNote(note)
+                        showNote(note, true)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -502,35 +501,26 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         if (!Permissions.checkPermission(this, SD_REQ, Permissions.READ_EXTERNAL)) {
             return
         }
-        val filePath = intent.getStringExtra(Constants.FILE_PICKED) ?: ""
-        if (mUri != null) {
-            mUri?.let {
-                try {
-                    mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                        val any = MemoryUtil.decryptToJson(this, it)
-                        if (any != null && any is OldNote) {
-                            BackupTool.oldNoteToNew(any)
-                        } else {
-                            null
-                        }
+        intent.data?.let {
+            try {
+                mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_NOTE)
+                    if (any != null && any is OldNote) {
+                        BackupTool.oldNoteToNew(any)
                     } else {
                         null
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } else {
+                    null
                 }
-            }
-        } else {
-            try {
-                mItem = backupTool.getNote(filePath, null)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        showNote(mItem)
+        showNote(mItem, true)
     }
 
-    private fun showNote(noteWithImages: NoteWithImages?) {
+    private fun showNote(noteWithImages: NoteWithImages?, fromFile: Boolean = false) {
         this.mItem = noteWithImages
         Timber.d("showNote: $noteWithImages")
         if (noteWithImages != null && !stateViewModel.isNoteEdited) {
@@ -543,6 +533,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
             stateViewModel.images.postValue(noteWithImages.images)
             stateViewModel.colorOpacity.postValue(newPair(note.color, note.opacity))
             stateViewModel.isNoteEdited = true
+            stateViewModel.isFromFile = fromFile
+            if (fromFile) {
+                viewModel.findSame(note.key)
+            }
         }
     }
 
@@ -659,7 +653,29 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         return noteWithImages
     }
 
-    private fun saveNote() {
+    private fun askCopySaving() {
+        if (stateViewModel.isFromFile && viewModel.hasSameInDb) {
+            dialogues.getMaterialDialog(this)
+                    .setMessage(R.string.same_note_message)
+                    .setPositiveButton(R.string.keep) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        saveNote(true)
+                    }
+                    .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        saveNote()
+                    }
+                    .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .create()
+                    .show()
+        } else {
+            saveNote()
+        }
+    }
+
+    private fun saveNote(newId: Boolean = false) {
         val noteWithImages = createObject() ?: return
         val hasReminder = stateViewModel.isReminderAttached.value ?: false
         if (!hasReminder && mItem != null) removeNoteFromReminder()
@@ -672,7 +688,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         if (prefs.isNoteColorRememberingEnabled) {
             prefs.lastNoteColor = noteWithImages.getColor()
         }
-
+        if (newId) {
+            noteWithImages.note?.key = UUID.randomUUID().toString()
+            reminder?.noteId = noteWithImages.getKey()
+        }
         viewModel.note.removeObserver(mNoteObserver)
         viewModel.saveNote(noteWithImages, reminder)
     }
@@ -744,7 +763,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
                 return true
             }
             R.id.action_add -> {
-                saveNote()
+                askCopySaving()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -772,7 +791,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_create_note, menu)
         ViewUtils.tintMenuIcon(this, menu, 0, R.drawable.ic_twotone_done_24px, isBgDark)
-        if (mItem != null) {
+        if (mItem != null && !stateViewModel.isFromFile) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true

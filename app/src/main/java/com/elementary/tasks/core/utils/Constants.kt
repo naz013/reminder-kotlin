@@ -17,8 +17,6 @@ object Constants {
     const val INTENT_ITEM = "item_item"
     const val SELECTED_CONTACT_NUMBER = "contact_number"
     const val SELECTED_TIME = "call_time"
-    const val FILE_PICKED = "selected_file"
-    const val FILE_TYPE = "file_type"
     const val REQUEST_CODE_SELECTED_MELODY = 500
     const val REQUEST_CODE_CONTACTS = 101
     const val REQUEST_CODE_APPLICATION = 117

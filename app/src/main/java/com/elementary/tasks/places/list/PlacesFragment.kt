@@ -99,7 +99,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun addPlace() {
-        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(""))
+        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity("", true))
     }
 
     private fun initViewModel() {
@@ -186,7 +186,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun openPlace(place: Place) {
-        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id))
+        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true))
     }
 
     private fun refreshView(count: Int) {

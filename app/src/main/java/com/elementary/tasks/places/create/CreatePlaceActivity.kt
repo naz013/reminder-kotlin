@@ -1,6 +1,9 @@
 package com.elementary.tasks.places.create
 
+import android.app.Activity
 import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -21,8 +24,8 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
+import com.elementary.tasks.navigation.settings.security.PinLoginActivity
 import com.google.android.gms.maps.model.LatLng
-import timber.log.Timber
 import java.util.*
 
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
@@ -59,6 +62,17 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
                 .addToBackStack(null)
                 .commit()
         loadPlace()
+
+        if (savedInstanceState == null) {
+            stateViewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (prefs.hasPinCode && !stateViewModel.isLogged) {
+            PinLoginActivity.verify(this)
+        }
     }
 
     private fun initActionBar() {
@@ -250,6 +264,17 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PinLoginActivity.REQ_CODE) {
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            } else {
+                stateViewModel.isLogged = true
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == SD_REQ && Permissions.checkPermission(grantResults)) {
@@ -260,5 +285,16 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     companion object {
         private const val SD_REQ = 555
         private const val MENU_ITEM_DELETE = 12
+        private const val ARG_LOGGED = "arg_logged"
+
+        fun openLogged(context: Context, intent: Intent? = null) {
+            if (intent == null) {
+                context.startActivity(Intent(context, CreatePlaceActivity::class.java)
+                        .putExtra(ARG_LOGGED, true))
+            } else {
+                intent.putExtra(ARG_LOGGED, true)
+                context.startActivity(intent)
+            }
+        }
     }
 }

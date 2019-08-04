@@ -397,6 +397,9 @@
         <argument
             android:name="item_id"
             app:argType="string" />
+        <argument
+            android:name="arg_logged"
+            app:argType="boolean" />
     </activity>
     <navigation
         android:id="@+id/navigation2"

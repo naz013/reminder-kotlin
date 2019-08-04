@@ -33,7 +33,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     private fun addGroup() {
-        startActivity(Intent(context, CreateGroupActivity::class.java))
+        CreateGroupActivity.openLogged(context!!)
     }
 
     private fun initViewModel() {
@@ -110,7 +110,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     private fun editGroup(t: ReminderGroup) {
-        startActivity(Intent(context, CreateGroupActivity::class.java)
+        CreateGroupActivity.openLogged(context!!, Intent(context, CreateGroupActivity::class.java)
                 .putExtra(Constants.INTENT_ID, t.groupUuId))
     }
 
