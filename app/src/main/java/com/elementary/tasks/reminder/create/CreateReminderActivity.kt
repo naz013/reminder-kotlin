@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.Menu
@@ -23,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
+import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
@@ -39,6 +39,7 @@ import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
+import java.util.*
 
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder), ReminderInterface {
 
@@ -53,8 +54,6 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     }
 
     private var fragment: TypeFragment<*>? = null
-    private var mUri: Uri? = null
-
     private var isEditing: Boolean = false
     private var mIsTablet = false
     private var hasLocation = false
@@ -185,13 +184,12 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
                 editReminder(stateViewModel.reminder, false)
             }
             intent.data != null -> {
-                mUri = intent.data
                 readFromIntent()
             }
             intent.hasExtra(Constants.INTENT_ITEM) -> {
                 try {
                     val reminder = intent.getParcelableExtra(Constants.INTENT_ITEM) as Reminder? ?: Reminder()
-                    editReminder(reminder, false)
+                    editReminder(reminder, false, fromFile = true)
                 } catch (e: Exception) {
                 }
             }
@@ -205,17 +203,19 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
 
     private fun readFromIntent() {
         if (Permissions.checkPermission(this, SD_PERM, Permissions.READ_EXTERNAL)) {
-            mUri?.let {
+            intent.data?.let {
                 try {
+                    var fromFile = false
                     val reminder = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                        val any = MemoryUtil.decryptToJson(this, it)
+                        val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_REMINDER)
                         if (any != null && any is Reminder) {
+                            fromFile = true
                             any
                         } else {
                             Reminder()
                         }
                     } else Reminder()
-                    editReminder(reminder, false)
+                    editReminder(reminder, false, fromFile)
                 } catch (e: java.lang.Exception) {
                     Timber.d("loadReminder: ${e.message}")
                 }
@@ -223,15 +223,18 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         }
     }
 
-    private fun editReminder(reminder: Reminder, stop: Boolean = true) {
+    private fun editReminder(reminder: Reminder, stop: Boolean = true, fromFile: Boolean = false) {
         Timber.d("editReminder: $stop, $reminder")
         stateViewModel.reminder = reminder
+        stateViewModel.isFromFile = fromFile
+        if (fromFile) {
+            viewModel.findSame(reminder.uuId)
+        }
         if (stop) {
             viewModel.pauseReminder(reminder)
             stateViewModel.original = reminder
             stateViewModel.isPaused = true
-        }
-        else {
+        } else {
             val group = defGroup
             if (reminder.groupUuId.isBlank() && group != null) {
                 stateViewModel.reminder.groupUuId = group.groupUuId
@@ -342,7 +345,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_add -> {
-                save()
+                askCopySaving()
                 return true
             }
             R.id.action_voice -> {
@@ -398,12 +401,37 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         }
     }
 
-    private fun save() {
+    private fun askCopySaving() {
+        if (stateViewModel.isFromFile && viewModel.hasSameInDb) {
+            dialogues.getMaterialDialog(this)
+                    .setMessage(R.string.same_reminder_message)
+                    .setPositiveButton(R.string.keep) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        save(true)
+                    }
+                    .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        save()
+                    }
+                    .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .create()
+                    .show()
+        } else {
+            save()
+        }
+    }
+
+    private fun save(newId: Boolean = false) {
         fragment?.let {
             it.prepare()?.let { item ->
                 Timber.d("save: %s", item)
                 viewModel.reminder.removeObserver(mReminderObserver)
                 stateViewModel.isSaving = true
+                if (newId) {
+                    item.uuId = UUID.randomUUID().toString()
+                }
                 viewModel.saveAndStartReminder(item, isEditing)
             }
         }
@@ -417,7 +445,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
         } else {
             menu[0].isVisible = false
         }
-        if (isEditing) {
+        if (isEditing && !stateViewModel.isFromFile) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
         return true

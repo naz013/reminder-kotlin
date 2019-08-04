@@ -44,6 +44,7 @@ class StateViewModel : ViewModel(), LifecycleObserver {
     var isPaused: Boolean = false
     var original: Reminder? = null
     var isSaving: Boolean = false
+    var isFromFile: Boolean = false
 
     init {
         setDateTime()

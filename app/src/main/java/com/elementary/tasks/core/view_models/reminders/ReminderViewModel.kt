@@ -19,6 +19,15 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
     val calendarEvent: LiveData<List<CalendarUtils.EventItem>> = _calendarEvent
     val clearExtraData = MutableLiveData<Boolean>()
 
+    var hasSameInDb: Boolean = false
+
+    fun findSame(id: String) {
+        launchDefault {
+            val reminder = appDb.reminderDao().getById(id)
+            hasSameInDb = reminder != null
+        }
+    }
+
     val reminder = appDb.reminderDao().loadById(id)
     private val mObserver = Observer<Reminder> {
         Timber.d("ReminderViewModel: $it")
