@@ -733,4 +733,14 @@
     <string name="do_not_show_permanent_on_home">Do not show permanent reminder on home screen</string>
     <string name="permanent_on_home">Permanent reminder on home screen</string>
     <string name="show_permanent_on_home">Show permanent reminder on home screen</string>
+    <string name="add_google_task">Add Google Task</string>
+    <string name="keep">Keep</string>
+    <string name="replace">Replace</string>
+    <string name="same_birthday_message">Birthday with same ID was found in application. Keep both or replace current?</string>
+    <string name="same_group_message">Group with same ID was found in application. Keep both or replace current?</string>
+    <string name="same_note_message">Note with same ID was found in application. Keep both or replace current?</string>
+    <string name="same_place_message">Place with same ID was found in application. Keep both or replace current?</string>
+    <string name="same_reminder_message">Reminder with same ID was found in application. Keep both or replace current?</string>
+    <string name="same_template_message">SMS template with same ID was found in application. Keep both or replace current?</string>
+    <string name="unsupported_file_format">Unsupported file format</string>
 </resources>

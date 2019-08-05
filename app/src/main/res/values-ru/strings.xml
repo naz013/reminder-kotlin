@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Не показывать постоянное напоминание на главном экране</string>
     <string name="permanent_on_home">Постоянное напоминание на главном экране</string>
     <string name="show_permanent_on_home">Показать постоянное напоминание на главном экране</string>
+    <string name="add_google_task">Добавить задачу Google</string>
+    <string name="keep">Сохранить</string>
+    <string name="replace">Заменить</string>
+    <string name="same_birthday_message">День рождения с тем же идентификатором, найденным в приложении. Сохранить оба или заменить текущий?</string>
+    <string name="same_group_message">Группа с таким же идентификатором найдена в приложении. Сохранить оба или заменить текущий?</string>
+    <string name="same_note_message">Примечание с тем же идентификатором, найденным в приложении. Сохранить оба или заменить текущий?</string>
+    <string name="same_place_message">Место с тем же идентификатором было найдено в приложении. Сохранить оба или заменить текущий?</string>
+    <string name="same_reminder_message">Напоминание с тем же идентификатором было найдено в приложении. Сохранить оба или заменить текущий?</string>
+    <string name="same_template_message">Шаблон SMS с тем же идентификатором был найден в приложении. Сохранить оба или заменить текущий?</string>
+    <string name="unsupported_file_format">Неподдерживаемый формат файла</string>
 
 </resources>

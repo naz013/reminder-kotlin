@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">No mostrar recordatorio permanente en la pantalla de inicio</string>
     <string name="permanent_on_home">Recordatorio permanente en la pantalla de inicio</string>
     <string name="show_permanent_on_home">Mostrar recordatorio permanente en la pantalla de inicio</string>
+    <string name="add_google_task">Agregar tarea de Google</string>
+    <string name="keep">Guardar</string>
+    <string name="replace">Para reemplazar</string>
+    <string name="same_birthday_message">Cumpleaños con el mismo identificador encontrado en la aplicación. Mantener ambos o reemplazar actual?</string>
+    <string name="same_group_message">Grupo con el mismo identificador encontrado en la aplicación. Mantener ambos o reemplazar actual?</string>
+    <string name="same_note_message">Nota con el mismo identificador encontrado en la aplicación. Mantener ambos o reemplazar actual?</string>
+    <string name="same_place_message">Se encontró un lugar con el mismo identificador en la aplicación. Mantener ambos o reemplazar actual?</string>
+    <string name="same_reminder_message">Se encontró un recordatorio con el mismo identificador en la aplicación. Mantener ambos o reemplazar actual?</string>
+    <string name="same_template_message">Se encontró una plantilla de SMS con el mismo identificador en la aplicación. Mantener ambos o reemplazar actual?</string>
+    <string name="unsupported_file_format">Formato de archivo no soportado</string>
 
 </resources>

@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Non mostrare promemoria permanenti sulla schermata principale</string>
     <string name="permanent_on_home">Promemoria permanente sulla schermata principale</string>
     <string name="show_permanent_on_home">Mostra promemoria permanente sulla schermata principale</string>
+    <string name="add_google_task">Aggiungi Google Task</string>
+    <string name="keep">Tenere</string>
+    <string name="replace">Rimpiazzare</string>
+    <string name="same_birthday_message">Compleanno con lo stesso identificativo trovato nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
+    <string name="same_group_message">Gruppo con lo stesso identificativo trovato nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
+    <string name="same_note_message">Nota con lo stesso identificativo trovato nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
+    <string name="same_place_message">Il posto con lo stesso identificativo è stato trovato nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
+    <string name="same_reminder_message">È stato trovato un promemoria con lo stesso identificativo nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
+    <string name="same_template_message">È stato trovato un modello SMS con lo stesso identificativo nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
+    <string name="unsupported_file_format">Formato file non supportato</string>
 
 </resources>

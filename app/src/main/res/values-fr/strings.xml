@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Ne pas afficher de rappel permanent sur l\'écran d\'accueil</string>
     <string name="permanent_on_home">Rappel permanent sur l\'écran d\'accueil</string>
     <string name="show_permanent_on_home">Afficher le rappel permanent sur l\'écran d\'accueil</string>
+    <string name="add_google_task">Ajouter une tâche Google</string>
+    <string name="keep">Conserver</string>
+    <string name="replace">Remplacer</string>
+    <string name="same_birthday_message">Anniversaire avec le même identifiant trouvé dans l\'application. Garder les deux ou remplacer le courant?</string>
+    <string name="same_group_message">Groupe avec le même identifiant trouvé dans l\'application. Garder les deux ou remplacer le courant?</string>
+    <string name="same_note_message">Note avec le même identifiant trouvé dans l\'application. Garder les deux ou remplacer le courant?</string>
+    <string name="same_place_message">Lieu avec le même identifiant a été trouvé dans l\'application. Garder les deux ou remplacer le courant?</string>
+    <string name="same_reminder_message">Un rappel avec le même identifiant a été trouvé dans l\'application. Garder les deux ou remplacer le courant?</string>
+    <string name="same_template_message">Un modèle SMS avec le même identifiant a été trouvé dans l\'application. Garder les deux ou remplacer le courant?</string>
+    <string name="unsupported_file_format">Format de fichier non pris en charge</string>
 
 </resources>

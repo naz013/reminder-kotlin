@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Ana ekranda kalıcı hatırlatıcı gösterme</string>
     <string name="permanent_on_home">Ana ekranda kalıcı hatırlatma</string>
     <string name="show_permanent_on_home">Ana ekranda kalıcı hatırlatıcı göster</string>
+    <string name="add_google_task">Google Görev Ekle</string>
+    <string name="keep">Tutmak</string>
+    <string name="replace">Değiştirmek</string>
+    <string name="same_birthday_message">Uygulamada bulunan aynı tanımlayıcılı doğum günü. Her ikisini de sakla ya da akımı değiştir?</string>
+    <string name="same_group_message">Uygulamada bulunan aynı tanımlayıcıya sahip grup. İkisini de saklayın veya akımı değiştirin?</string>
+    <string name="same_note_message">Uygulamada bulunan aynı tanımlayıcıya dikkat edin. Her ikisini de sakla ya da akımı değiştir?</string>
+    <string name="same_place_message">Uygulamada aynı tanımlayıcıya sahip yer bulundu. Her ikisini de sakla ya da akımı değiştir?</string>
+    <string name="same_reminder_message">Uygulamada aynı tanımlayıcıya sahip hatırlatıcı bulundu. İkisini de saklayın veya akımı değiştirin?</string>
+    <string name="same_template_message">Uygulamada aynı tanımlayıcıya sahip SMS şablonu bulundu. Her ikisini de sakla ya da akımı değiştir?</string>
+    <string name="unsupported_file_format">Desteklenmeyen dosya formatı</string>
 
 </resources>

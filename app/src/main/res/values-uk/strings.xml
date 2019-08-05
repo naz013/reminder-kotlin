@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Не показувати постійне нагадування на головному екрані</string>
     <string name="permanent_on_home">Постійне нагадування на головному екрані</string>
     <string name="show_permanent_on_home">Показати постійне нагадування на головному екрані</string>
+    <string name="add_google_task">Додати Завдання Google</string>
+    <string name="keep">Залишити</string>
+    <string name="replace">Замінити</string>
+    <string name="same_birthday_message">День народження з таким самим ідентифікатором знайдено у застосуванні Тримати обидва або замінити поточний?</string>
+    <string name="same_group_message">Група з тим самим ідентифікатором, знайденим у додатку. Тримати обидва або замінити поточний?</string>
+    <string name="same_note_message">Примітка з тим самим ідентифікатором, який знайдено у застосуванні. Тримати обидва або замінити поточний?</string>
+    <string name="same_place_message">Місце з таким же ідентифікатором знайдено в додатку. Тримати обидва або замінити поточний?</string>
+    <string name="same_reminder_message">Нагадування з таким же ідентифікатором знайдено в додатку. Тримати обидва або замінити поточний?</string>
+    <string name="same_template_message">У програмі знайдено шаблон SMS із тим самим ідентифікатором. Тримати обидва або замінити поточний?</string>
+    <string name="unsupported_file_format">Непідтримуваний формат файлу</string>
 
 </resources>

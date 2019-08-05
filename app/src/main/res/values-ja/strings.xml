@@ -734,5 +734,15 @@
     <string name="do_not_show_permanent_on_home">ホーム画面に永久的な通知を表示しない</string>
     <string name="permanent_on_home">ホーム画面に永久的な通知</string>
     <string name="show_permanent_on_home">ホーム画面に永久的な通知を表示</string>
+    <string name="add_google_task">Googleタスクを追加</string>
+    <string name="keep">キープ</string>
+    <string name="replace">交換する</string>
+    <string name="same_birthday_message">アプリケーションで見つかった同じ識別子を持つ誕生日。 両方を維持するか、最新のものに置き換えますか？</string>
+    <string name="same_group_message">アプリケーションで見つかった同じ識別子を持つグループ。 両方を維持するか、最新のものに置き換えますか？</string>
+    <string name="same_note_message">アプリケーションで見つかった同じ識別子を持つメモ。 両方を維持するか、最新のものに置き換えますか？</string>
+    <string name="same_place_message">アプリケーションで同じ識別子を持つ場所が見つかりました。 両方を維持するか、最新のものに置き換えますか？</string>
+    <string name="same_reminder_message">アプリケーションで同じ識別子のアラームが見つかりました。 両方を維持するか、最新のものに置き換えますか？</string>
+    <string name="same_template_message">アプリケーションで同じ識別子を持つSMSテンプレートが見つかりました。 両方を維持するか、最新のものに置き換えますか？</string>
+    <string name="unsupported_file_format">サポートされていないファイル形式</string>
 
 </resources>

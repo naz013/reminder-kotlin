@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Keine permanente Erinnerung auf dem Startbildschirm anzeigen</string>
     <string name="permanent_on_home">Permanente Erinnerung auf dem Startbildschirm</string>
     <string name="show_permanent_on_home">Permanente Erinnerung auf dem Startbildschirm anzeigen</string>
+    <string name="add_google_task">Google Task hinzufügen</string>
+    <string name="keep">Behalten</string>
+    <string name="replace">Ersetzen</string>
+    <string name="same_birthday_message">Geburtstag mit der gleichen ID in der Anwendung gefunden. Beides behalten oder Strom tauschen?</string>
+    <string name="same_group_message">Gruppe mit der gleichen ID in der Anwendung gefunden. Beides behalten oder Strom tauschen?</string>
+    <string name="same_note_message">Beachten Sie mit der gleichen Kennung in der Anwendung gefunden. Beides behalten oder Strom tauschen?</string>
+    <string name="same_place_message">In der Anwendung wurde ein Ort mit derselben Kennung gefunden. Beides behalten oder Strom tauschen?</string>
+    <string name="same_reminder_message">In der Anwendung wurde eine Erinnerung mit derselben Kennung gefunden. Beides behalten oder Strom tauschen?</string>
+    <string name="same_template_message">SMS-Vorlage mit derselben ID wurde in der Anwendung gefunden. Beides behalten oder Strom tauschen?</string>
+    <string name="unsupported_file_format">Nicht unterstütztes Dateiformat</string>
 
 </resources>

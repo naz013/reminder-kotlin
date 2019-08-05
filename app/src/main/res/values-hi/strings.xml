@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक न दिखाएं</string>
     <string name="permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक</string>
     <string name="show_permanent_on_home">होम स्क्रीन पर स्थायी अनुस्मारक दिखाएं</string>
+    <string name="add_google_task">Google टास्क जोड़ें</string>
+    <string name="keep">को रखने के</string>
+    <string name="replace">बदलने के लिए</string>
+    <string name="same_birthday_message">एक ही पहचानकर्ता के साथ जन्मदिन आवेदन में मिला। दोनों को रखें या वर्तमान को बदलें?</string>
+    <string name="same_group_message">आवेदन में पाया गया समान पहचानकर्ता वाला समूह। दोनों को रखें या वर्तमान को बदलें?</string>
+    <string name="same_note_message">आवेदन में पाए गए समान पहचानकर्ता के साथ नोट करें। दोनों को रखें या वर्तमान को बदलें?</string>
+    <string name="same_place_message">आवेदन में समान पहचानकर्ता के साथ स्थान पाया गया। दोनों को रखें या वर्तमान को बदलें?</string>
+    <string name="same_reminder_message">आवेदन में समान पहचानकर्ता के साथ अनुस्मारक मिला। दोनों को रखें या वर्तमान को बदलें?</string>
+    <string name="same_template_message">एक ही पहचानकर्ता के साथ एसएमएस टेम्पलेट आवेदन में पाया गया था। दोनों को रखें या वर्तमान को बदलें?</string>
+    <string name="unsupported_file_format">असमर्थित फ़ाइल स्वरूप</string>
 
 </resources>

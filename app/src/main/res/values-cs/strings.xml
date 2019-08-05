@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Na domovské obrazovce nezobrazovat trvalé připomenutí</string>
     <string name="permanent_on_home">Trvalé připomenutí na domovské obrazovce</string>
     <string name="show_permanent_on_home">Zobrazit trvalé připomenutí na domovské obrazovce</string>
+    <string name="add_google_task">Přidejte úkol Google</string>
+    <string name="keep">Udržet</string>
+    <string name="replace">Nahradit</string>
+    <string name="same_birthday_message">Narozeniny se stejným identifikátorem nalezeným v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
+    <string name="same_group_message">Skupina se stejným identifikátorem nalezeným v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
+    <string name="same_note_message">Poznámka se stejným identifikátorem nalezeným v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
+    <string name="same_place_message">Místo se stejným identifikátorem bylo nalezeno v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
+    <string name="same_reminder_message">Připomenutí se stejným identifikátorem bylo nalezeno v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
+    <string name="same_template_message">V aplikaci byla nalezena šablona SMS se stejným identifikátorem. Ponechat oba nebo nahradit aktuální?</string>
+    <string name="unsupported_file_format">Nepodporovaný formát souboru</string>
 
 </resources>

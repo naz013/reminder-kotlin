@@ -109,8 +109,8 @@ class SplashScreenActivity : ThemedActivity() {
                 val gTasks = GTasks.getInstance(this)
                 if (gTasks != null && gTasks.isLogged) {
                     val shortcut3 = ShortcutInfo.Builder(this, "id.google.tasks")
-                            .setShortLabel("Add Google Task")
-                            .setLongLabel("Add Google Task")
+                            .setShortLabel(getString(R.string.add_google_task))
+                            .setLongLabel(getString(R.string.add_google_task))
                             .setIcon(Icon.createWithResource(this, R.drawable.add_google_shortcut))
                             .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, BottomNavActivity::class.java),
                                     Intent(Intent.ACTION_VIEW).setClass(this, TaskActivity::class.java)))

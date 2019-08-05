@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">不要在主屏幕上显示永久提醒</string>
     <string name="permanent_on_home">主屏幕上的永久提醒</string>
     <string name="show_permanent_on_home">在主屏幕上显示永久提醒</string>
+    <string name="add_google_task">添加Google任务</string>
+    <string name="keep">存</string>
+    <string name="replace">取代</string>
+    <string name="same_birthday_message">在应用程序中找到相同标识符的生日 保持两者还是更换电流？</string>
+    <string name="same_group_message">在应用程序中找到相同标识符的组。 保持两者还是更换电流？</string>
+    <string name="same_note_message">注意在应用程序中找到相同的标识符 保持两者还是更换电流？</string>
+    <string name="same_place_message">在申请中找到了具有相同标识符的地方。 保持两者还是更换电流？</string>
+    <string name="same_reminder_message">在应用程序中找到了具有相同标识符的提醒。 保持两者还是更换电流？</string>
+    <string name="same_template_message">在应用程序中找到具有相同标识符的SMS模板。 保持两者还是更换电流？</string>
+    <string name="unsupported_file_format">不支持的文件格式</string>
 
 </resources>

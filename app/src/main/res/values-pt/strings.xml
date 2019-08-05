@@ -733,5 +733,15 @@
     <string name="do_not_show_permanent_on_home">Não mostrar lembrete permanente na tela inicial</string>
     <string name="permanent_on_home">Lembrete permanente na tela inicial</string>
     <string name="show_permanent_on_home">Mostrar lembrete permanente na tela inicial</string>
+    <string name="add_google_task">Adicionar tarefa do Google</string>
+    <string name="keep">Manter</string>
+    <string name="replace">Para substituir</string>
+    <string name="same_birthday_message">Aniversário com o mesmo identificador encontrado no aplicativo. Mantenha ambos ou substitua a corrente?</string>
+    <string name="same_group_message">Grupo com o mesmo identificador encontrado no aplicativo. Mantenha ambos ou substitua a corrente?</string>
+    <string name="same_note_message">Observe com o mesmo identificador encontrado no aplicativo. Mantenha ambos ou substitua a corrente?</string>
+    <string name="same_place_message">Coloque com o mesmo identificador encontrado no aplicativo. Mantenha ambos ou substitua a corrente?</string>
+    <string name="same_reminder_message">Lembrete com o mesmo identificador foi encontrado no aplicativo. Mantenha ambos ou substitua a corrente?</string>
+    <string name="same_template_message">O modelo SMS com o mesmo identificador foi encontrado no aplicativo. Mantenha ambos ou substitua a corrente?</string>
+    <string name="unsupported_file_format">Formato de arquivo não suportado</string>
 
 </resources>

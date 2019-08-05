@@ -735,5 +735,15 @@
     <string name="do_not_show_permanent_on_home">홈 화면에 영구 알림을 표시하지 않음</string>
     <string name="permanent_on_home">홈 화면의 영구 알림</string>
     <string name="show_permanent_on_home">홈 화면에 영구 알림 표시</string>
+    <string name="add_google_task">Google 할 일 추가</string>
+    <string name="keep">유지</string>
+    <string name="replace">교체</string>
+    <string name="same_birthday_message">애플리케이션에서 동일한 식별자가있는 생일. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
+    <string name="same_group_message">응용 프로그램에서 동일한 식별자가있는 그룹. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
+    <string name="same_note_message">응용 프로그램과 동일한 식별자가있는 참고. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
+    <string name="same_place_message">애플리케이션에서 동일한 식별자가있는 장소가 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
+    <string name="same_reminder_message">응용 프로그램에서 동일한 식별자가있는 알림이 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
+    <string name="same_template_message">동일한 식별자를 가진 SMS 템플릿이 응용 프로그램에서 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
+    <string name="unsupported_file_format">지원되지 않는 파일 형식</string>
 
 </resources>
