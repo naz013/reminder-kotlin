@@ -130,8 +130,9 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
 
     private fun editReminder() {
         val reminder = iFace.state.reminder
-        if (iFace.state.isShopItemsEdited) {
+        if (!iFace.state.isShopItemsEdited) {
             mAdapter.data = reminder.shoppings
+            iFace.state.isShopItemsEdited = true
             iFace.state.shopItems = reminder.shoppings
             binding.attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
         } else {
