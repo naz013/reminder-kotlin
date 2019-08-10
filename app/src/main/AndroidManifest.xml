@@ -95,7 +95,6 @@
 
         <activity
             android:name=".core.SplashScreenActivity"
-            android:excludeFromRecents="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
