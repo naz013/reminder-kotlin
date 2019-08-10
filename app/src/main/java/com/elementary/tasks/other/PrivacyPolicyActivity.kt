@@ -47,8 +47,8 @@ class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>(R.la
         binding.toolbar.title = getString(R.string.privacy_policy)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                return true

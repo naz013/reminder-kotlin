@@ -24,14 +24,14 @@ class ExclusionPickerView : LinearLayout {
 
     private lateinit var binding: ExclusionPickerViewBinding
     var onExclusionUpdateListener: ((hours: List<Int>, from: String, to: String) -> Unit)? = null
-    private var mHours: MutableList<Int> = mutableListOf()
+    private val mHours = mutableListOf<Int>()
     private var mFrom: String = ""
     private var mTo: String = ""
     private var fromHour: Int = 0
     private var fromMinute: Int = 0
     private var toHour: Int = 0
     private var toMinute: Int = 0
-    private var buttons: MutableList<ToggleButton> = mutableListOf()
+    private val buttons = mutableListOf<ToggleButton>()
 
     private val selectedList: MutableList<Int>
         @SuppressLint("ResourceType")
@@ -60,15 +60,15 @@ class ExclusionPickerView : LinearLayout {
             binding.to.setOnClickListener { toTime(binding.to) }
             initButtons(binding)
             if (mFrom != "" && mTo != "") {
-                calendar.time = TimeUtil.getDate(mFrom)
+                calendar.time = TimeUtil.getDate(mFrom) ?: Date()
                 fromHour = calendar.get(Calendar.HOUR_OF_DAY)
                 fromMinute = calendar.get(Calendar.MINUTE)
-                calendar.time = TimeUtil.getDate(mTo)
+                calendar.time = TimeUtil.getDate(mTo) ?: Date()
                 toHour = calendar.get(Calendar.HOUR_OF_DAY)
                 toMinute = calendar.get(Calendar.MINUTE)
                 binding.selectInterval.isChecked = true
             }
-            if (!mHours.isEmpty()) {
+            if (mHours.isNotEmpty()) {
                 binding.selectHours.isChecked = true
             }
             return binding
@@ -98,7 +98,8 @@ class ExclusionPickerView : LinearLayout {
     }
 
     fun setHours(hours: List<Int>) {
-        mHours = hours.toMutableList()
+        mHours.clear()
+        mHours.addAll(hours)
         showHours()
     }
 
@@ -138,7 +139,8 @@ class ExclusionPickerView : LinearLayout {
     private fun saveExclusion(b: DialogExclusionPickerBinding) {
         when {
             b.selectHours.isChecked -> {
-                mHours = selectedList
+                mHours.clear()
+                mHours.addAll(selectedList)
                 showHours()
                 onExclusionUpdateListener?.invoke(mHours, mFrom, mTo)
             }
@@ -194,8 +196,9 @@ class ExclusionPickerView : LinearLayout {
 
     private fun setId(vararg buttons: ToggleButton) {
         var i = 100
-        this.buttons = mutableListOf()
-        val selected = ArrayList(mHours)
+        this.buttons.clear()
+        val selected = mutableListOf<Int>()
+        selected.addAll(mHours)
         for (button in buttons) {
             button.id = i
             button.setBackgroundResource(R.drawable.toggle_blue)

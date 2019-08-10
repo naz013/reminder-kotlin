@@ -1,10 +1,7 @@
 package com.elementary.tasks.core.calendar
 
-import java.util.ArrayList
-import kotlin.Comparator
-
 class Events {
-    private var events: ArrayList<Event> = ArrayList()
+    private var events = mutableListOf<Event>()
     private var mPosition = 0
 
     val nextWithoutMoving: Event?

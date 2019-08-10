@@ -43,7 +43,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     }
 
     private var mCells: MutableList<Rect>? = null
-    private val circlesMap = HashMap<Rect, List<Rect>>()
+    private val circlesMap = mutableMapOf<Rect, List<Rect>>()
 
     private var mWidth: Int = 0
     private var mHeight: Int = 0

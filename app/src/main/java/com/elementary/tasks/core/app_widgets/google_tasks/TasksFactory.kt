@@ -27,8 +27,8 @@ class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsS
             AppWidgetManager.INVALID_APPWIDGET_ID)
 
     private val appDb: AppDb by inject()
-    private val mData = ArrayList<GoogleTask>()
-    private val map = HashMap<String, Int>()
+    private val mData = mutableListOf<GoogleTask>()
+    private val map = mutableMapOf<String, Int>()
 
     override fun onCreate() {
         mData.clear()

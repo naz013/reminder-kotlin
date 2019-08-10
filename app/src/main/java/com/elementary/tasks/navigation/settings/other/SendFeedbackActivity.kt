@@ -55,33 +55,31 @@ class SendFeedbackActivity : BindingActivity<ActivitySendFeedbackBinding>(R.layo
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
-            when (item.itemId) {
-                R.id.action_refresh -> {
-                    binding.webView.reload()
-                    return true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_refresh -> {
+                binding.webView.reload()
+                return true
+            }
+            R.id.action_forward -> {
+                if (binding.webView.canGoForward()) {
+                    binding.webView.goForward()
                 }
-                R.id.action_forward -> {
-                    if (binding.webView.canGoForward()) {
-                        binding.webView.goForward()
-                    }
-                    return true
+                return true
+            }
+            R.id.action_back -> {
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack()
                 }
-                R.id.action_back -> {
-                    if (binding.webView.canGoBack()) {
-                        binding.webView.goBack()
-                    }
-                    return true
-                }
-                R.id.action_email -> {
-                    sendEmail()
-                    return true
-                }
-                android.R.id.home -> {
-                    finish()
-                    return true
-                }
+                return true
+            }
+            R.id.action_email -> {
+                sendEmail()
+                return true
+            }
+            android.R.id.home -> {
+                finish()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)

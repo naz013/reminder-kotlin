@@ -9,7 +9,7 @@ import java.util.*
 
 class PieGraph : View {
 
-    private var slices: MutableList<PieSlice> = ArrayList()
+    private var slices = mutableListOf<PieSlice>()
     private val paint = Paint()
     private val path = Path()
 
@@ -21,9 +21,9 @@ class PieGraph : View {
         }
     private var listener: OnSliceClickedListener? = null
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     public override fun onDraw(canvas: Canvas) {
         canvas.drawColor(Color.TRANSPARENT)
@@ -73,7 +73,7 @@ class PieGraph : View {
                 canvas.drawPath(path, paint)
                 paint.alpha = 255
             }
-            currentAngle = currentAngle + currentSweep
+            currentAngle += currentSweep
         }
     }
 
@@ -84,7 +84,11 @@ class PieGraph : View {
         var count = 0
         for (slice in slices) {
             val r = Region()
-            r.setPath(slice.path, slice.region)
+            val path = slice.path
+            val region = slice.region
+            if (path != null && region != null) {
+                r.setPath(path, region)
+            }
             if (r.contains(point.x, point.y) && event.action == MotionEvent.ACTION_DOWN) {
                 indexSelected = count
             } else if (event.action == MotionEvent.ACTION_UP) {

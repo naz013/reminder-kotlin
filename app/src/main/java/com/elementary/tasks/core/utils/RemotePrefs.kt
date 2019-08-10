@@ -6,14 +6,13 @@ import com.elementary.tasks.R
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import timber.log.Timber
-import java.util.*
 
 class RemotePrefs(context: Context) {
 
     private val mFirebaseRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
-    private val mObservers = ArrayList<SaleObserver>()
-    private val mUpdateObservers = ArrayList<UpdateObserver>()
+    private val mObservers = mutableListOf<SaleObserver>()
+    private val mUpdateObservers = mutableListOf<UpdateObserver>()
     private val pm: PackageManager = context.packageManager
     private val packageName: String = context.packageName
 

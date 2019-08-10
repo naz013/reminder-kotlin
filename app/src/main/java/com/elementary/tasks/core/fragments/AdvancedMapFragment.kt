@@ -265,7 +265,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
             val criteria = Criteria()
             var location: Location? = null
             try {
-                location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
+                location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false) ?: "")
             } catch (e: IllegalArgumentException) {
                 Timber.d("moveToMyLocation: ${e.message}")
             }

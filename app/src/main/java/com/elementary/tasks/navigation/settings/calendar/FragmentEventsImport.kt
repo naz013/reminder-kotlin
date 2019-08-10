@@ -142,7 +142,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
                 Toast.makeText(it, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show()
                 return@withActivity
             }
-            val map = HashMap<String, Int>()
+            val map = mutableMapOf<String, Int>()
             val selectedPosition = binding.eventCalendar.selectedItemPosition - 1
             map[EVENT_KEY] = list[selectedPosition].id
             val isEnabled = prefs.isCalendarEnabled
@@ -191,7 +191,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         }
     }
 
-    private fun import(map: HashMap<String, Int>) {
+    private fun import(map: Map<String, Int>) {
         val ctx = context ?: return
         binding.button.isEnabled = false
         binding.progressView.visibility = View.VISIBLE
