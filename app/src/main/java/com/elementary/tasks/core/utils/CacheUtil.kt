@@ -66,7 +66,7 @@ class CacheUtil(val context: Context) {
     @RequiresPermission(Permissions.READ_EXTERNAL)
     fun cacheFile(uri: Uri): String? {
         val cacheDir = context.externalCacheDir ?: context.cacheDir
-        val inputStream = context.contentResolver.openInputStream(uri)
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
         val fileId = try {
             DocumentsContract.getDocumentId(uri)
         } catch (e: Exception) {
@@ -100,7 +100,7 @@ class CacheUtil(val context: Context) {
             return file.absolutePath
         }
 
-        if (inputStream != null) {
+        return try {
             if (!file.createNewFile()) {
                 try {
                     file.delete()
@@ -110,9 +110,10 @@ class CacheUtil(val context: Context) {
             }
             file.copyInputStreamToFile(inputStream)
             saveCache(fId)
-            return file.absolutePath
+            file.absolutePath
+        } catch (e: Exception) {
+            null
         }
-        return null
     }
 
     private fun hasCache(path: String): Boolean {
