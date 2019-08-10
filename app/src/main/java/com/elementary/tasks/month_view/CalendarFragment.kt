@@ -155,7 +155,10 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun onDateClick(date: Date) {
-        findNavController().navigate(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date.time))
+        try {
+            findNavController().navigate(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date.time))
+        } catch (e: Exception) {
+        }
     }
 
     override fun onDateLongClick(date: Date) {
