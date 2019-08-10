@@ -87,7 +87,7 @@ object MemoryUtil {
         return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 
-    fun readFileContent(file: File): String? {
+    fun readFileContent(file: File): String {
         try {
             val inputStream = FileInputStream(file)
             val r = BufferedReader(InputStreamReader(inputStream))
@@ -103,7 +103,7 @@ object MemoryUtil {
             return total.toString()
         } catch (e: Exception) {
             Timber.d("readFileContent: ${e.message}")
-            return null
+            throw IllegalStateException("Failed to read file")
         }
     }
 

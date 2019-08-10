@@ -6,11 +6,12 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.launchIo
 import kotlinx.coroutines.channels.Channel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.ref.WeakReference
 
 class LocalStorage(context: Context) : Storage() {
 
@@ -59,7 +60,11 @@ class LocalStorage(context: Context) : Storage() {
             if (dir != null) {
                 val file = File(dir, fileName)
                 return if (file.exists()) {
-                    MemoryUtil.readFileContent(file)
+                    try {
+                        MemoryUtil.readFileContent(file)
+                    } catch (e: Exception) {
+                        null
+                    }
                 } else {
                     null
                 }
@@ -70,7 +75,7 @@ class LocalStorage(context: Context) : Storage() {
 
     override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
         val channel = Channel<String>()
-        if (Module.isQ || hasSdPermission) {
+        if (Module.isQ || !hasSdPermission) {
             channel.cancel()
             return channel
         }
@@ -84,12 +89,13 @@ class LocalStorage(context: Context) : Storage() {
             channel.cancel()
             return channel
         }
-        launchDefault {
+        launchIo {
             for (f in files) {
                 try {
-                    val data = MemoryUtil.readFileContent(f)
-                    if (data != null) {
-                        channel.send(data)
+                    try {
+                        val data = WeakReference(MemoryUtil.readFileContent(f))
+                        channel.send(data.get() ?: "")
+                    } catch (e: Exception) {
                     }
                     if (deleteFile && f.exists()) {
                         f.delete()
@@ -97,6 +103,7 @@ class LocalStorage(context: Context) : Storage() {
                 } catch (e: Exception) {
                 }
             }
+            channel.close()
         }
         return channel
     }

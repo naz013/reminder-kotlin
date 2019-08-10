@@ -111,7 +111,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         fun availableStorageList(context: Context): List<Storage> {
             val storageList = mutableListOf<Storage>()
             val googleStorage = GDrive.getInstance(context)
-            if (googleStorage != null) {
+            if (googleStorage != null && googleStorage.isLogged) {
                 storageList.add(googleStorage)
             }
             val dropboxStorage = Dropbox()

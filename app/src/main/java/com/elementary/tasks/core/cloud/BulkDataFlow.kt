@@ -8,6 +8,7 @@ import com.elementary.tasks.core.cloud.repositories.*
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.cloud.storages.Storage
 import kotlinx.coroutines.channels.consumeEach
+import timber.log.Timber
 
 class BulkDataFlow<T>(private val repository: Repository<T>,
                       private val convertible: Convertible<T>,
@@ -24,6 +25,8 @@ class BulkDataFlow<T>(private val repository: Repository<T>,
 
     suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {
         storage.restoreAll(dataFlow.getFileExt(indexTypes), deleteFile).consumeEach {
+            Timber.d("restore: $it")
+            if (it.isEmpty()) return
             val item = convertible.convert(it) ?: return
             repository.insert(item)
             completable?.action(item)

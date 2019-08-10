@@ -4,8 +4,13 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.launchIo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import timber.log.Timber
 
 class CompositeStorage(private val storageList: List<Storage>) : Storage() {
+
+    init {
+        Timber.d("init: $storageList")
+    }
 
     override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
         storageList.forEach { it.backup(fileIndex, metadata) }
