@@ -67,10 +67,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         super.onViewCreated(view, savedInstanceState)
 
         binding.addReminderButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToCreateReminderActivity(""))
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToCreateReminderActivity("", true))
         }
         binding.addBirthdayButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity(""))
+            findNavController().navigate(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity("", true))
         }
 
         binding.remindersHeader.setOnClickListener {

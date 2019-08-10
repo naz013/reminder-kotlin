@@ -32,9 +32,6 @@
             android:id="@+id/action_actionHome_to_addBirthdayActivity"
             app:destination="@id/addBirthdayActivity" />
         <action
-            android:id="@+id/action_actionHome_to_reminderPreviewActivity"
-            app:destination="@id/reminderPreviewActivity" />
-        <action
             android:id="@+id/action_actionHome_to_actionNotes"
             app:destination="@id/actionNotes" />
         <action
@@ -59,9 +56,6 @@
         <action
             android:id="@+id/action_actionNotes_to_settingsFragment"
             app:destination="@+id/settingsFragment" />
-        <action
-            android:id="@+id/action_actionNotes_to_notePreviewActivity"
-            app:destination="@id/notePreviewActivity" />
     </fragment>
 
     <fragment
@@ -101,9 +95,6 @@
             android:id="@+id/action_remindersFragment_to_createReminderActivity"
             app:destination="@id/createReminderActivity" />
         <action
-            android:id="@+id/action_remindersFragment_to_reminderPreviewActivity"
-            app:destination="@id/reminderPreviewActivity" />
-        <action
             android:id="@+id/action_remindersFragment_to_groupsFragment"
             app:destination="@id/groupsFragment" />
     </fragment>
@@ -136,9 +127,6 @@
         <action
             android:id="@+id/action_mapFragment_to_createReminderActivity"
             app:destination="@id/createReminderActivity" />
-        <action
-            android:id="@+id/action_mapFragment_to_reminderPreviewActivity"
-            app:destination="@id/reminderPreviewActivity" />
     </fragment>
     <fragment
         android:id="@+id/archiveFragment"
@@ -157,6 +145,9 @@
         <argument
             android:name="item_id"
             app:argType="string" />
+        <argument
+            android:name="arg_logged"
+            app:argType="boolean" />
     </activity>
     <activity
         android:id="@+id/addBirthdayActivity"
@@ -166,17 +157,10 @@
         <argument
             android:name="item_id"
             app:argType="string" />
+        <argument
+            android:name="arg_logged"
+            app:argType="boolean" />
     </activity>
-    <activity
-        android:id="@+id/reminderPreviewActivity"
-        android:name="com.elementary.tasks.reminder.preview.ReminderPreviewActivity"
-        android:label="@string/reminder"
-        tools:layout="@layout/activity_reminder_preview" />
-    <activity
-        android:id="@+id/notePreviewActivity"
-        android:name="com.elementary.tasks.notes.preview.NotePreviewActivity"
-        android:label="@string/note"
-        tools:layout="@layout/activity_note_preview" />
     <fragment
         android:id="@+id/dayViewFragment"
         android:name="com.elementary.tasks.day_view.DayViewFragment"
@@ -489,6 +473,9 @@
         <argument
             android:name="item_id"
             app:argType="string" />
+        <argument
+            android:name="arg_logged"
+            app:argType="boolean" />
     </activity>
     <fragment
         android:id="@+id/testsFragment"
