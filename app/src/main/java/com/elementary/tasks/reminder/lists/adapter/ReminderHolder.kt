@@ -2,6 +2,9 @@ package com.elementary.tasks.reminder.lists.adapter
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -20,22 +23,22 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
 
     init {
         if (editable) {
-            binding.itemCheck.visibility = View.VISIBLE
+            binding.itemCheck.show()
         } else {
-            binding.itemCheck.visibility = View.GONE
+            binding.itemCheck.hide()
         }
         if (!hasHeader) {
-            binding.listHeader.visibility = View.GONE
+            binding.listHeader.hide()
         }
-        binding.todoList.visibility = View.GONE
+        binding.todoList.hide()
         binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         binding.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
 
         if (showMore) {
             binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-            binding.buttonMore.visibility = View.VISIBLE
+            binding.buttonMore.show()
         } else {
-            binding.buttonMore.visibility = View.GONE
+            binding.buttonMore.hide()
         }
     }
 
@@ -44,9 +47,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
         loadDate(reminder)
         loadCheck(reminder)
         loadContact(reminder)
-        loadLeft(reminder)
-        loadRepeat(reminder)
-        loadContainer(reminder.type)
+        loadRepeatLeft(reminder)
         loadGroup(reminder)
     }
 
@@ -56,31 +57,43 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
         binding.reminderTypeGroup.text = "$typeLabel (${reminder.groupTitle}, $priority)"
     }
 
-    private fun loadLeft(item: Reminder) {
-        if (item.isActive && !item.isRemoved) {
-            binding.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
+    private fun loadRepeatLeft(reminder: Reminder) {
+        val visible = !(Reminder.isBase(reminder.type, Reminder.BY_LOCATION)
+                || Reminder.isBase(reminder.type, Reminder.BY_OUT)
+                || Reminder.isBase(reminder.type, Reminder.BY_PLACES))
+        if (visible) {
+            binding.reminderRepeatLeft.show()
+            val context = binding.reminderRepeatLeft.context
+            val spannableStringBuilder = SpannableStringBuilder()
+            val repeatText = when {
+                Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> String.format(context.getString(R.string.xM), reminder.repeatInterval.toString())
+                Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> ReminderUtils.getRepeatString(context, prefs, reminder.weekdays)
+                Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
+                else -> IntervalUtil.getInterval(context, reminder.repeatInterval)
+            }
+            var text = "!!!$repeatText"
+            if (reminder.isActive && !reminder.isRemoved) {
+                val remainingText = TimeCount.getRemaining(itemView.context, reminder.eventTime,
+                        reminder.delay, prefs.appLanguage)
+                text += "\n"
+                text += "!!!$remainingText"
+                spannableStringBuilder.append(text)
+                val stIndex = text.lastIndexOf("!!!")
+                if (stIndex != -1) {
+                    spannableStringBuilder.setSpan(ImageSpan(context, R.drawable.ic_twotone_done_24px),
+                            stIndex, stIndex + 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                }
+            } else {
+                spannableStringBuilder.append(text)
+            }
+            spannableStringBuilder.setSpan(ImageSpan(context, R.drawable.ic_twotone_repeat_24px),
+                    0, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            binding.reminderRepeatLeft.text = spannableStringBuilder
         } else {
-            binding.remainingTime.text = ""
-            binding.remainingTime.transparent()
+            binding.reminderRepeatLeft.hide()
         }
-    }
 
-    private fun loadRepeat(model: Reminder) {
-        val context = binding.repeatInterval.context
-        when {
-            Reminder.isBase(model.type, Reminder.BY_MONTH) -> binding.repeatInterval.text = String.format(binding.repeatInterval.context.getString(R.string.xM), model.repeatInterval.toString())
-            Reminder.isBase(model.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = ReminderUtils.getRepeatString(context, prefs, model.weekdays)
-            Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeatInterval.text = binding.repeatInterval.context.getString(R.string.yearly)
-            else -> binding.repeatInterval.text = IntervalUtil.getInterval(context, model.repeatInterval)
-        }
-    }
 
-    private fun loadContainer(type: Int) {
-        if (Reminder.isBase(type, Reminder.BY_LOCATION) || Reminder.isBase(type, Reminder.BY_OUT) || Reminder.isBase(type, Reminder.BY_PLACES)) {
-            binding.endContainer.visibility = View.GONE
-        } else {
-            binding.endContainer.visibility = View.VISIBLE
-        }
     }
 
     private fun loadDate(model: Reminder) {
@@ -95,7 +108,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
 
     private fun loadCheck(item: Reminder?) {
         if (item == null || item.isRemoved) {
-            binding.itemCheck.visibility = View.GONE
+            binding.itemCheck.hide()
             return
         }
         binding.itemCheck.isChecked = item.isActive
@@ -105,10 +118,10 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
         val type = model.type
         val number = model.target
         if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
-            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.show()
             binding.reminderPhone.text = number
         } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
-            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.show()
             val name = if (Permissions.checkPermission(binding.reminderPhone.context, Permissions.READ_CONTACTS)) {
                 Contacts.getNameFromNumber(number, binding.reminderPhone.context)
             } else {
@@ -128,23 +141,23 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
             }
 
             val name = (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
-            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.show()
             binding.reminderPhone.text = "$name/$number"
         } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
             val name = if (Permissions.checkPermission(binding.reminderPhone.context, Permissions.READ_CONTACTS)) {
                 Contacts.getNameFromMail(number, binding.reminderPhone.context)
             } else null
-            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.show()
             if (name == null) {
                 binding.reminderPhone.text = number
             } else {
                 binding.reminderPhone.text = "$name($number)"
             }
         } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
-            binding.reminderPhone.visibility = View.VISIBLE
+            binding.reminderPhone.show()
             binding.reminderPhone.text = number
         } else {
-            binding.reminderPhone.visibility = View.GONE
+            binding.reminderPhone.hide()
         }
     }
 }

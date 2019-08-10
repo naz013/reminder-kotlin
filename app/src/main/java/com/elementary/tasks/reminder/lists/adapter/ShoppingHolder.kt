@@ -1,6 +1,8 @@
 package com.elementary.tasks.reminder.lists.adapter
 
 import android.graphics.Paint
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,26 +23,25 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
 
     init {
         if (editable) {
-            binding.itemCheck.visibility = View.VISIBLE
+            binding.itemCheck.show()
         } else {
-            binding.itemCheck.visibility = View.GONE
+            binding.itemCheck.hide()
         }
-        binding.reminderPhone.visibility = View.GONE
+        binding.reminderPhone.hide()
         binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         binding.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
 
         if (showMore) {
             binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-            binding.buttonMore.visibility = View.VISIBLE
+            binding.buttonMore.show()
         } else {
-            binding.buttonMore.visibility = View.GONE
+            binding.buttonMore.hide()
         }
     }
 
     fun setData(reminder: Reminder) {
         binding.taskText.text = reminder.summary
         loadCheck(reminder)
-        loadContainer(reminder.type)
         loadGroup(reminder)
         loadShoppingDate(reminder)
         loadItems(reminder.shoppings)
@@ -48,18 +49,10 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
 
     private fun loadCheck(item: Reminder?) {
         if (item == null || item.isRemoved) {
-            binding.itemCheck.visibility = View.GONE
+            binding.itemCheck.hide()
             return
         }
         binding.itemCheck.isChecked = item.isActive
-    }
-
-    private fun loadContainer(type: Int) {
-        if (Reminder.isBase(type, Reminder.BY_LOCATION) || Reminder.isBase(type, Reminder.BY_OUT) || Reminder.isBase(type, Reminder.BY_PLACES)) {
-            binding.endContainer.visibility = View.GONE
-        } else {
-            binding.endContainer.visibility = View.VISIBLE
-        }
     }
 
     private fun loadGroup(reminder: Reminder) {
@@ -70,15 +63,21 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            binding.remainingTime.text = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
+            val context = binding.reminderRepeatLeft.context
+            val spannableStringBuilder = SpannableStringBuilder()
+            val remainingText = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
+            spannableStringBuilder.append("!!!$remainingText")
+            spannableStringBuilder.setSpan(CenteredImageSpan(context, R.drawable.ic_twotone_repeat_24px),
+                    0, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            binding.reminderRepeatLeft.text = spannableStringBuilder
         } else {
-            binding.remainingTime.text = ""
+            binding.reminderRepeatLeft.text = ""
         }
     }
 
     private fun loadItems(shoppings: List<ShopItem>) {
         val isDark = ThemeUtil.isDarkMode(itemView.context)
-        binding.todoList.visibility = View.VISIBLE
+        binding.todoList.show()
         binding.todoList.isFocusableInTouchMode = false
         binding.todoList.isFocusable = false
         binding.todoList.removeAllViewsInLayout()
@@ -104,12 +103,12 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
             }
             count++
             if (count == 9) {
-                checkView.visibility = View.INVISIBLE
+                checkView.transparent()
                 textView.text = "..."
                 binding.todoList.addView(bind.root)
                 break
             } else {
-                checkView.visibility = View.VISIBLE
+                checkView.show()
                 textView.text = list.summary
                 binding.todoList.addView(bind.root)
             }
@@ -120,11 +119,15 @@ class ShoppingHolder(parent: ViewGroup, val editable: Boolean, showMore: Boolean
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
             binding.taskDate.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormat, prefs.appLanguage)
-            binding.taskDate.visibility = View.VISIBLE
-            loadLeft(reminder)
+            binding.taskDate.show()
+            if (reminder.isActive && !reminder.isRemoved) {
+                loadLeft(reminder)
+            } else {
+                binding.reminderRepeatLeft.hide()
+            }
         } else {
-            binding.taskDate.visibility = View.GONE
-            binding.endContainer.visibility = View.GONE
+            binding.taskDate.hide()
+            binding.reminderRepeatLeft.hide()
         }
     }
 }

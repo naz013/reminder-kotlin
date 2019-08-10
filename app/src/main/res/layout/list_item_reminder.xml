@@ -15,7 +15,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
-            android:textAppearance="?textAppearanceSubtitle2"
+            android:textAppearance="?textAppearanceHeadline6"
             android:visibility="visible"
             tools:text="@string/tomorrow" />
 
@@ -63,7 +63,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:textAppearance="?textAppearanceHeadline6"
+                        android:textAppearance="?textAppearanceSubtitle1"
                         tools:text="Hello" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -72,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:maxLines="1"
-                        android:textAppearance="?textAppearanceSubtitle1"
+                        android:textAppearance="?textAppearanceBody2"
                         tools:text="25/05/2018" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:maxLines="1"
-                        android:textAppearance="?textAppearanceSubtitle2"
+                        android:textAppearance="?textAppearanceBody2"
                         android:visibility="visible"
                         tools:text="1256356549k" />
 
@@ -90,8 +90,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:maxLines="1"
-                        android:textAppearance="?textAppearanceBody1"
+                        android:maxLines="2"
+                        android:textAppearance="?textAppearanceBody2"
                         android:visibility="visible"
                         tools:text="Timer" />
 
@@ -107,40 +107,15 @@
                         android:scrollbars="none"
                         android:visibility="visible" />
 
-                    <LinearLayout
-                        android:id="@+id/endContainer"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/reminderRepeatLeft"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:orientation="horizontal"
-                        android:visibility="visible">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/repeatInterval"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_twotone_repeat_24px"
-                            android:drawablePadding="4dp"
-                            android:gravity="center"
-                            android:textAppearance="?textAppearanceBody2"
-                            app:drawableTint="?android:textColorPrimary"
-                            tools:text="every day" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/remainingTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:drawableStart="@drawable/ic_twotone_done_24px"
-                            android:drawablePadding="4dp"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:visibility="visible"
-                            app:drawableTint="?android:textColorPrimary"
-                            tools:text="10 minutes" />
-
-                    </LinearLayout>
+                        android:maxLines="2"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:visibility="visible"
+                        tools:text="every day" />
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
