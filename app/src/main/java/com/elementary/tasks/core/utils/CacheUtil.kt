@@ -42,6 +42,7 @@ class CacheUtil(val context: Context) {
     @RequiresPermission(Permissions.READ_EXTERNAL)
     fun pickFile(activity: Activity, code: Int) {
         val intent = Intent()
+        intent.type = "*/*"
         intent.action = Intent.ACTION_GET_CONTENT
         try {
             activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file)), code)

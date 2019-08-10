@@ -40,4 +40,7 @@ interface ReminderGroupDao {
 
     @Query("SELECT * FROM ReminderGroup WHERE groupUuId=:id")
     fun getById(id: String): ReminderGroup?
+
+    @Query("DELETE FROM ReminderGroup")
+    fun deleteAll()
 }

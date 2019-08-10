@@ -32,4 +32,7 @@ interface SmsTemplatesDao {
 
     @Query("SELECT * FROM SmsTemplate WHERE `key`=:key")
     fun getByKey(key: String): SmsTemplate?
+
+    @Query("DELETE FROM SmsTemplate")
+    fun deleteAll()
 }

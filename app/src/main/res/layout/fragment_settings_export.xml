@@ -207,6 +207,18 @@
                 android:textAppearance="?textAppearanceButton" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/importButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:text="@string/import_data_from_rbak_file"
+                android:textAppearance="?textAppearanceButton" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/backupButton"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"

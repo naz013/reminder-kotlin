@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.settings.export
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
@@ -26,19 +28,22 @@ import java.util.*
 class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
     private val backupTool: BackupTool by inject()
+    private val cacheUtil: CacheUtil by inject()
 
     private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
     private var mItemSelect: Int = 0
+    private var keepOldData: Boolean = true
 
     private val currentPosition: Int
         get() {
             return findPosition(mDataList)
         }
     private val onSyncEnd: () -> Unit = {
-        binding.progressView.visibility = View.INVISIBLE
+        binding.progressView.hide()
         binding.syncButton.isEnabled = true
         binding.backupButton.isEnabled = true
         binding.exportButton.isEnabled = true
+        binding.importButton.isEnabled = true
     }
     private val onMessage: (String) -> Unit = {
         binding.progressMessageView.text = it
@@ -48,7 +53,8 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             binding.syncButton.isEnabled = false
             binding.backupButton.isEnabled = false
             binding.exportButton.isEnabled = false
-            binding.progressView.visibility = View.VISIBLE
+            binding.importButton.isEnabled = false
+            binding.progressView.show()
         } else {
             onSyncEnd.invoke()
         }
@@ -61,6 +67,8 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         ViewUtils.listenScrollableView(binding.scrollView) {
             setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
         }
+
+        onSyncEnd.invoke()
 
         binding.cloudsPrefs.setOnClickListener {
             findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives())
@@ -91,6 +99,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         initSyncButton()
         initBackupButton()
         initExportButton()
+        initImportButton()
     }
 
     override fun onDestroy() {
@@ -98,6 +107,46 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         SyncWorker.unsubscribe()
         BackupWorker.unsubscribe()
         ExportAllDataWorker.unsubscribe()
+    }
+
+    private fun initImportButton() {
+        if (prefs.isBackupEnabled) {
+            binding.importButton.isEnabled = true
+            binding.importButton.show()
+            binding.importButton.setOnClickListener { showImportDialog() }
+        } else {
+            binding.importButton.hide()
+        }
+    }
+
+    private fun showImportDialog() {
+        withContext {
+            dialogues.getMaterialDialog(it)
+                    .setMessage(R.string.what_to_do_with_current_data)
+                    .setPositiveButton(R.string.keep) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        keepOldData = true
+                        pickFile()
+                    }
+                    .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                        keepOldData = false
+                        pickFile()
+                    }
+                    .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .create()
+                    .show()
+        }
+    }
+
+    private fun pickFile() {
+        withActivity {
+            if (Permissions.checkPermission(it, PERM_PICK_RBAK, Permissions.READ_EXTERNAL)) {
+                cacheUtil.pickFile(it, REQ_PICK_RBAK)
+            }
+        }
     }
 
     private fun initLocalBackupPrefs() {
@@ -570,6 +619,22 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
                 PERM_EXPORT -> exportClick()
                 PERM_SYNC -> syncClick()
                 PERM_LOCAL_BACKUP -> changeLocalBackupPrefs()
+                PERM_PICK_RBAK -> pickFile()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_PICK_RBAK && resultCode == Activity.RESULT_OK) {
+            onProgress.invoke(true)
+            backupTool.importAll(context!!, data?.data, keepOldData) {
+                onSyncEnd.invoke()
+                if (it) {
+                    toast(getString(R.string.backup_file_imported_successfully))
+                } else {
+                    toast(getString(R.string.failed_to_import_backup))
+                }
             }
         }
     }
@@ -596,10 +661,13 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     companion object {
         private const val CALENDAR_CODE = 124
+        private const val REQ_PICK_RBAK = 600
+
         private const val CALENDAR_PERM = 500
         private const val PERM_SYNC = 501
         private const val PERM_BACKUP = 502
         private const val PERM_EXPORT = 503
         private const val PERM_LOCAL_BACKUP = 504
+        private const val PERM_PICK_RBAK = 505
     }
 }

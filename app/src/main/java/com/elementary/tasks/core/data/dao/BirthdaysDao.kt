@@ -44,4 +44,7 @@ interface BirthdaysDao {
 
     @Query("DELETE FROM Birthday WHERE uuId=:id")
     fun delete(id: String)
+
+    @Query("DELETE FROM Birthday")
+    fun deleteAll()
 }

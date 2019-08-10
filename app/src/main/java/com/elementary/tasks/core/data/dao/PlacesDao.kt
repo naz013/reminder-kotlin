@@ -33,4 +33,7 @@ interface PlacesDao {
 
     @Query("SELECT * FROM Place WHERE id=:id")
     fun getByKey(id: String): Place?
+
+    @Query("DELETE FROM Place")
+    fun deleteAll()
 }

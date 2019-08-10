@@ -745,5 +745,9 @@
     <string name="keep">Keep</string>
     <string name="replace">Replace</string>
     <string name="add_google_task">Add Google Task</string>
+    <string name="import_data_from_rbak_file">Import data from .RBAK file</string>
+    <string name="backup_file_imported_successfully">Backup file imported successfully</string>
+    <string name="failed_to_import_backup">Failed to import backup file</string>
+    <string name="what_to_do_with_current_data">What to do with current data?</string>
 
 </resources>

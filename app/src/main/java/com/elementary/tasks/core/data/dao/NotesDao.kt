@@ -44,4 +44,10 @@ interface NotesDao {
 
     @Delete
     fun delete(imageFile: ImageFile)
+
+    @Query("DELETE FROM Note")
+    fun deleteAllNotes()
+
+    @Query("DELETE FROM ImageFile")
+    fun deleteAllImages()
 }
