@@ -743,5 +743,9 @@
     <string name="same_reminder_message">Memento cu același identificator a fost găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
     <string name="same_template_message">Șablonul SMS cu același identificator a fost găsit în aplicație. Păstrați ambele sau înlocuiți curentul?</string>
     <string name="unsupported_file_format">Format de fișier neacceptat</string>
+    <string name="backup_file_imported_successfully">Fișierul de rezervă importat cu succes</string>
+    <string name="failed_to_import_backup">Imposibil de importat fișierul de rezervă</string>
+    <string name="import_data_from_rbak_file">Importați datele din fișierul .RBAK</string>
+    <string name="what_to_do_with_current_data">Ce să faci cu datele actuale?</string>
 
 </resources>

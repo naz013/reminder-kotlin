@@ -743,5 +743,9 @@
     <string name="same_reminder_message">Připomenutí se stejným identifikátorem bylo nalezeno v aplikaci. Ponechat oba nebo nahradit aktuální?</string>
     <string name="same_template_message">V aplikaci byla nalezena šablona SMS se stejným identifikátorem. Ponechat oba nebo nahradit aktuální?</string>
     <string name="unsupported_file_format">Nepodporovaný formát souboru</string>
+    <string name="backup_file_imported_successfully">Záložní soubor byl úspěšně importován</string>
+    <string name="failed_to_import_backup">Import záložního souboru se nezdařil</string>
+    <string name="import_data_from_rbak_file">Importujte data ze souboru .RBAK</string>
+    <string name="what_to_do_with_current_data">Co dělat se současnými daty?</string>
 
 </resources>

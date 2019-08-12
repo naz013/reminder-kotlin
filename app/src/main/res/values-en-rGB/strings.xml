@@ -743,4 +743,8 @@
     <string name="same_reminder_message">Reminder with same ID was found in application. Keep both or replace current?</string>
     <string name="same_template_message">SMS template with same ID was found in application. Keep both or replace current?</string>
     <string name="unsupported_file_format">Unsupported file format</string>
+    <string name="backup_file_imported_successfully">Backup file imported successfully</string>
+    <string name="failed_to_import_backup">Failed to import backup file</string>
+    <string name="import_data_from_rbak_file">Import data from .RBAK file</string>
+    <string name="what_to_do_with_current_data">What to do with current data?</string>
 </resources>

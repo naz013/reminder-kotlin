@@ -743,5 +743,9 @@
     <string name="same_reminder_message">Нагадування з таким же ідентифікатором знайдено в додатку. Тримати обидва або замінити поточний?</string>
     <string name="same_template_message">У програмі знайдено шаблон SMS із тим самим ідентифікатором. Тримати обидва або замінити поточний?</string>
     <string name="unsupported_file_format">Непідтримуваний формат файлу</string>
+    <string name="backup_file_imported_successfully">Файл резервного копіювання успішно імпортований</string>
+    <string name="failed_to_import_backup">Не вдалося імпортувати файл резервної копії</string>
+    <string name="import_data_from_rbak_file">Імпорт даних з файлу .RBAK</string>
+    <string name="what_to_do_with_current_data">Що робити з поточними даними?</string>
 
 </resources>

@@ -743,5 +743,9 @@
     <string name="same_reminder_message">在应用程序中找到了具有相同标识符的提醒。 保持两者还是更换电流？</string>
     <string name="same_template_message">在应用程序中找到具有相同标识符的SMS模板。 保持两者还是更换电流？</string>
     <string name="unsupported_file_format">不支持的文件格式</string>
+    <string name="backup_file_imported_successfully">备份文件导入成功</string>
+    <string name="failed_to_import_backup">无法导入备份文件</string>
+    <string name="import_data_from_rbak_file">从.RBAK文件导入数据</string>
+    <string name="what_to_do_with_current_data">如何处理当前数据？</string>
 
 </resources>

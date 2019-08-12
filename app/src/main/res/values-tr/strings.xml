@@ -743,5 +743,9 @@
     <string name="same_reminder_message">Uygulamada aynı tanımlayıcıya sahip hatırlatıcı bulundu. İkisini de saklayın veya akımı değiştirin?</string>
     <string name="same_template_message">Uygulamada aynı tanımlayıcıya sahip SMS şablonu bulundu. Her ikisini de sakla ya da akımı değiştir?</string>
     <string name="unsupported_file_format">Desteklenmeyen dosya formatı</string>
+    <string name="backup_file_imported_successfully">Yedekleme dosyası başarıyla içe aktarıldı</string>
+    <string name="failed_to_import_backup">Yedekleme dosyası alınamadı</string>
+    <string name="import_data_from_rbak_file">.RBAK dosyasından veri alma</string>
+    <string name="what_to_do_with_current_data">Mevcut verilerle ne yapmalı?</string>
 
 </resources>

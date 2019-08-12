@@ -744,5 +744,9 @@
     <string name="same_reminder_message">アプリケーションで同じ識別子のアラームが見つかりました。 両方を維持するか、最新のものに置き換えますか？</string>
     <string name="same_template_message">アプリケーションで同じ識別子を持つSMSテンプレートが見つかりました。 両方を維持するか、最新のものに置き換えますか？</string>
     <string name="unsupported_file_format">サポートされていないファイル形式</string>
+    <string name="backup_file_imported_successfully">バックアップファイルが正常にインポートされました</string>
+    <string name="failed_to_import_backup">バックアップファイルをインポートできませんでした</string>
+    <string name="import_data_from_rbak_file">.RBAKファイルからデータをインポートする</string>
+    <string name="what_to_do_with_current_data">現在のデータをどうしますか？</string>
 
 </resources>

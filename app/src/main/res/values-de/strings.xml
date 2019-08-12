@@ -743,5 +743,9 @@
     <string name="same_reminder_message">In der Anwendung wurde eine Erinnerung mit derselben Kennung gefunden. Beides behalten oder Strom tauschen?</string>
     <string name="same_template_message">SMS-Vorlage mit derselben ID wurde in der Anwendung gefunden. Beides behalten oder Strom tauschen?</string>
     <string name="unsupported_file_format">Nicht unterstütztes Dateiformat</string>
+    <string name="backup_file_imported_successfully">Sicherungsdatei erfolgreich importiert</string>
+    <string name="failed_to_import_backup">Fehler beim Importieren der Sicherungsdatei</string>
+    <string name="import_data_from_rbak_file">Importieren Sie Daten aus der .RBAK-Datei</string>
+    <string name="what_to_do_with_current_data">Was tun mit aktuellen Daten?</string>
 
 </resources>

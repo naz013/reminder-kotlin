@@ -745,5 +745,9 @@
     <string name="same_reminder_message">응용 프로그램에서 동일한 식별자가있는 알림이 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
     <string name="same_template_message">동일한 식별자를 가진 SMS 템플릿이 응용 프로그램에서 발견되었습니다. 둘 다 유지하거나 전류를 교체 하시겠습니까?</string>
     <string name="unsupported_file_format">지원되지 않는 파일 형식</string>
+    <string name="backup_file_imported_successfully">백업 파일을 성공적으로 가져 왔습니다</string>
+    <string name="failed_to_import_backup">백업 파일을 가져 오지 못했습니다</string>
+    <string name="import_data_from_rbak_file">.RBAK 파일에서 데이터 가져 오기</string>
+    <string name="what_to_do_with_current_data">현재 데이터로 무엇을해야합니까?</string>
 
 </resources>

@@ -743,5 +743,9 @@
     <string name="same_reminder_message">È stato trovato un promemoria con lo stesso identificativo nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
     <string name="same_template_message">È stato trovato un modello SMS con lo stesso identificativo nell\'applicazione. Mantenere entrambi o sostituire corrente?</string>
     <string name="unsupported_file_format">Formato file non supportato</string>
+    <string name="backup_file_imported_successfully">File di backup importato correttamente</string>
+    <string name="failed_to_import_backup">Impossibile importare il file di backup</string>
+    <string name="import_data_from_rbak_file">Importa i dati dal file .RBAK</string>
+    <string name="what_to_do_with_current_data">Cosa fare con i dati attuali?</string>
 
 </resources>
