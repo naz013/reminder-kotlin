@@ -36,6 +36,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
 
         if (savedInstanceState != null) {
             binding.colorSlider.setSelection(savedInstanceState.getInt(ARG_COLOR, 0))
+        } else {
             viewModel.isLogged = intent.getBooleanExtra(ARG_LOGGED, false)
         }
 
