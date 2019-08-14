@@ -184,7 +184,11 @@ object MemoryUtil {
                 else -> null
             } ?: return false
             Timber.d("toStream: $type, $any")
-            Gson().toJson(if (any is NoteWithImages) OldNote(any) else any, type, writer)
+            try {
+                Gson().toJson(if (any is NoteWithImages) OldNote(any) else any, type, writer)
+            } catch (e: IncompatibleClassChangeError) {
+                return false
+            }
             writer.close()
             return true
         } catch (e: Exception) {
