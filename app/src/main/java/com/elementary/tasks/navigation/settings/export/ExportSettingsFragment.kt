@@ -630,10 +630,12 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             onProgress.invoke(true)
             backupTool.importAll(context!!, data?.data, keepOldData) {
                 onSyncEnd.invoke()
-                if (it) {
-                    toast(getString(R.string.backup_file_imported_successfully))
-                } else {
-                    toast(getString(R.string.failed_to_import_backup))
+                binding.importButton.post {
+                    if (it) {
+                        toast(getString(R.string.backup_file_imported_successfully))
+                    } else {
+                        toast(getString(R.string.failed_to_import_backup))
+                    }
                 }
             }
         }
