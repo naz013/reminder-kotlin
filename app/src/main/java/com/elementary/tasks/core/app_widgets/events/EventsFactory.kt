@@ -20,8 +20,8 @@ import java.util.*
 
 class EventsFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
 
-    private val data = ArrayList<CalendarItem>()
-    private val map = HashMap<String, Reminder>()
+    private var data = mutableListOf<CalendarItem>()
+    private val map = mutableMapOf<String, Reminder>()
     private val prefs: Prefs by inject()
     private val appDb: AppDb by inject()
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
@@ -103,7 +103,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
                 n++
             } while (n <= 7)
         }
-        data.sortedBy { it.date }
+        data = data.sortedBy { it.date }.toMutableList()
     }
 
     override fun onDestroy() {
@@ -150,7 +150,7 @@ class EventsFactory constructor(private val mContext: Context, intent: Intent) :
             rv.setImageViewBitmap(R.id.statusIcon, icon)
 
             var task = item.name
-            if (task == null || task.isBlank()) {
+            if (task == null || task.isBlank() && Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
                 task = Contacts.getNameFromNumber(item.number, mContext)
             }
             rv.setTextViewText(R.id.taskText, task)
