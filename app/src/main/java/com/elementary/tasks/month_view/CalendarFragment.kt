@@ -5,9 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -15,10 +17,13 @@ import com.elementary.tasks.core.calendar.InfiniteViewPager
 import com.elementary.tasks.core.calendar.WeekdayArrayAdapter
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.toast
 import com.elementary.tasks.core.view_models.month_view.MonthViewViewModel
 import com.elementary.tasks.databinding.FragmentFlextCalBinding
+import com.elementary.tasks.day_view.DayViewFragment
 import com.elementary.tasks.day_view.day.EventModel
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import hirondelle.date4j.DateTime
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
@@ -27,7 +32,8 @@ import java.util.*
 
 class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthCallback {
 
-    lateinit var dayPagerAdapter: MonthPagerAdapter
+    private lateinit var dayPagerAdapter: MonthPagerAdapter
+    private var behaviour: BottomSheetBehavior<LinearLayout>? = null
     private val datePageChangeListener = DatePageChangeListener()
     private val mViewModel: MonthViewViewModel by lazy {
         ViewModelProviders.of(this,
@@ -74,6 +80,9 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        behaviour = BottomSheetBehavior.from(binding.eventsCard)
+        behaviour?.state = BottomSheetBehavior.STATE_HIDDEN
+
         binding.weekdayView.adapter = weekdayAdapter
 
         initPager()
@@ -82,7 +91,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     private fun initViewModel() {
-        mViewModel.events.observe(this, Observer<Pair<MonthPagerItem, List<EventModel>>> {
+        mViewModel.events.observe(this, Observer {
             val item = monthPagerItem
             if (it != null && item != null) {
                 val foundItem = it.first
@@ -163,7 +172,38 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
 
     override fun onDateLongClick(date: Date) {
         dateMills = date.time
-        showActionDialog(true, eventsList)
+        showSheet(eventsList)
+    }
+
+    private fun showSheet(list: List<EventModel> = listOf()) {
+        withContext {
+            binding.addBirth.setOnClickListener {
+                addBirthday()
+            }
+            binding.addBirth.setOnLongClickListener {
+                toast(getString(R.string.add_birthday))
+                true
+            }
+            binding.addEvent.setOnClickListener {
+                addReminder()
+            }
+            binding.addEvent.setOnLongClickListener {
+                toast(getString(R.string.add_reminder_menu))
+                true
+            }
+            if (list.isNotEmpty()) {
+                binding.loadingView.visibility = View.VISIBLE
+                binding.eventsList.layoutManager = LinearLayoutManager(it)
+                loadEvents(binding.eventsList, binding.loadingView, list)
+            } else {
+                binding.loadingView.visibility = View.GONE
+            }
+            if (dateMills != 0L) {
+                val monthTitle = DateUtils.formatDateTime(activity, dateMills, DayViewFragment.MONTH_YEAR_FLAG).toString()
+                binding.dateLabel.text = monthTitle
+            }
+            behaviour?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        }
     }
 
     private inner class DatePageChangeListener : ViewPager.OnPageChangeListener {

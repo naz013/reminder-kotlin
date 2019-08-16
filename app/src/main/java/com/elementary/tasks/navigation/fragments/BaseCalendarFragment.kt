@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -66,7 +67,7 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
             if (showEvents && list.isNotEmpty()) {
                 binding.loadingView.visibility = View.VISIBLE
                 binding.eventsList.layoutManager = LinearLayoutManager(it)
-                loadEvents(binding, list)
+                loadEvents(binding.eventsList, binding.loadingView, list)
             } else {
                 binding.loadingView.visibility = View.GONE
             }
@@ -93,7 +94,7 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
         Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
     }
 
-    private fun loadEvents(binding: DialogActionPickerBinding, list: List<EventModel>) {
+    protected fun loadEvents(listView: RecyclerView, emptyView: View, list: List<EventModel>) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = dateMills
         val year = calendar.get(Calendar.YEAR)
@@ -123,11 +124,11 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
             } catch (e: IllegalArgumentException) {
                 res
             }
-            withUIContext { showList(binding, sorted) }
+            withUIContext { showList(listView, emptyView, sorted) }
         }
     }
 
-    private fun showList(binding: DialogActionPickerBinding, res: List<EventModel>) {
+    private fun showList(listView: RecyclerView, emptyView: View, res: List<EventModel>) {
         val adapter = CalendarEventsAdapter()
         adapter.setEventListener(object : ActionsListener<EventModel> {
             override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
@@ -143,12 +144,12 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
         })
         adapter.showMore = false
         adapter.setData(res)
-        binding.eventsList.adapter = adapter
-        binding.eventsList.visibility = View.VISIBLE
-        binding.loadingView.visibility = View.GONE
+        listView.adapter = adapter
+        listView.show()
+        emptyView.hide()
     }
 
-    private fun addReminder() {
+    protected fun addReminder() {
         if (isAdded) {
             withActivity {
                 CreateReminderActivity.openLogged(it, Intent(it, CreateReminderActivity::class.java)
@@ -157,7 +158,7 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
         }
     }
 
-    private fun addBirthday() {
+    protected fun addBirthday() {
         if (isAdded) {
             withActivity {
                 AddBirthdayActivity.openLogged(it, Intent(it, AddBirthdayActivity::class.java)
