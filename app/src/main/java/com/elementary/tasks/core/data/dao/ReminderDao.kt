@@ -28,42 +28,54 @@ interface ReminderDao {
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
+        AND ReminderGroup.groupUuId=Reminder.groupUuId 
+        ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
     fun loadNotRemoved(removed: Boolean = false): LiveData<List<Reminder>>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE Reminder.isRemoved=:removed 
+        AND ReminderGroup.groupUuId=Reminder.groupUuId 
+        ORDER BY Reminder.isActive DESC, Reminder.eventTime ASC""")
     fun getNotRemoved(removed: Boolean = false): List<Reminder>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active AND isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
+        AND isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId""")
     fun loadType(active: Boolean, removed: Boolean): LiveData<List<Reminder>>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isRemoved=:removed 
+        AND eventTime!=0 AND eventTime>=:fromTime AND eventTime<:toTime 
+        AND ReminderGroup.groupUuId=Reminder.groupUuId""")
     fun getActiveInRange(removed: Boolean, fromTime: String, toTime: String): List<Reminder>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active AND isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
+        AND isRemoved=:removed AND ReminderGroup.groupUuId=Reminder.groupUuId""")
     fun getAll(active: Boolean, removed: Boolean): List<Reminder>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active AND isRemoved=:removed AND type IN (:types) AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
+        AND isRemoved=:removed AND type IN (:types) AND ReminderGroup.groupUuId=Reminder.groupUuId""")
     fun getAllTypes(active: Boolean, removed: Boolean, types: IntArray): List<Reminder>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active AND isRemoved=:removed AND type IN (:types) AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
+        AND isRemoved=:removed AND type IN (:types) AND ReminderGroup.groupUuId=Reminder.groupUuId""")
     fun loadAllTypes(active: Boolean, removed: Boolean, types: IntArray): LiveData<List<Reminder>>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId")
+    @Query("""SELECT * FROM Reminder, ReminderGroup WHERE isActive=:active 
+        AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime 
+        AND eventTime<:toTime AND ReminderGroup.groupUuId=Reminder.groupUuId""")
     fun getAllTypesInRange(active: Boolean, removed: Boolean, fromTime: String, toTime: String): List<Reminder>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)

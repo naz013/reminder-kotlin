@@ -30,6 +30,9 @@ interface BirthdaysDao {
     @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
     fun loadAll(dayMonth: String): LiveData<List<Birthday>>
 
+    @Query("SELECT * FROM Birthday WHERE dayMonth IN (:dayMonths)")
+    fun findAll(dayMonths: List<String>): LiveData<List<Birthday>>
+
     @Insert(onConflict = REPLACE)
     suspend fun insert(birthday: Birthday)
 

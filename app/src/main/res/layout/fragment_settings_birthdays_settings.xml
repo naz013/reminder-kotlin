@@ -75,6 +75,14 @@
                 app:prefs_type="text" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/homePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/birthdays_on_home_for_next"
+                app:prefs_type="text" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/birthdayNotificationPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

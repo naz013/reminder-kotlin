@@ -55,6 +55,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         initBirthdaysWidgetPrefs()
         initPermanentPrefs()
         initDaysToPrefs()
+        initHomeDaysPrefs()
         initBirthdayTimePrefs()
         initContactsPrefs()
         initContactsAutoPrefs()
@@ -198,6 +199,60 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         withContext {
             TimeUtil.showTimePicker(it, prefs.is24HourFormat, hour, minute, this)
         }
+    }
+
+    private fun initHomeDaysPrefs() {
+        binding.homePrefs.setOnClickListener { showHomeDaysDialog() }
+        binding.homePrefs.setDependentView(binding.birthReminderPrefs)
+        showHomeDays()
+    }
+
+    private fun showHomeDays() {
+        binding.homePrefs.setDetailText(homeText(prefs.birthdayDurationInDays))
+    }
+
+    private fun homeText(i: Int): String {
+        return if (i <= 0) {
+            getString(R.string.x_day, "1")
+        } else {
+            getString(R.string.x_days, (i + 1).toString())
+        }
+    }
+
+    private fun showHomeDaysDialog() {
+        withActivity {
+            val builder = dialogues.getMaterialDialog(it)
+            builder.setTitle(R.string.birthdays_on_home_for_next)
+            val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+            b.seekBar.max = 5
+            b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    b.titleView.text = homeText(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+                }
+            })
+            val days = prefs.birthdayDurationInDays
+            b.seekBar.progress = days
+            b.titleView.text = homeText(days)
+            builder.setView(b.root)
+            builder.setPositiveButton(R.string.ok) { _, _ -> saveHomeDays(b.seekBar.progress) }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            Dialogues.setFullWidthDialog(dialog, it)
+        }
+    }
+
+    private fun saveHomeDays(progress: Int) {
+        prefs.birthdayDurationInDays = progress
+        showHomeDays()
     }
 
     private fun initDaysToPrefs() {

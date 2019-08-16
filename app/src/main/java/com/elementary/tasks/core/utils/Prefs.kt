@@ -472,6 +472,10 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.DAYS_TO_BIRTHDAY)
         set(value) = putInt(PrefsConstants.DAYS_TO_BIRTHDAY, value)
 
+    var birthdayDurationInDays: Int
+        get() = getInt(PrefsConstants.TO_BIRTHDAY_DAYS)
+        set(value) = putInt(PrefsConstants.TO_BIRTHDAY_DAYS, value)
+
     var isContactBirthdaysEnabled: Boolean
         get() = getBoolean(PrefsConstants.CONTACT_BIRTHDAYS)
         set(value) = putBoolean(PrefsConstants.CONTACT_BIRTHDAYS, value)

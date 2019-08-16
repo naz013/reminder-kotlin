@@ -54,9 +54,22 @@ object TimeUtil {
 
     fun year(lang: Int = 0): SimpleDateFormat = localizedDateFormat("yyyy", lang)
 
-    fun getBirthdayDayMonth(millis: Long = System.currentTimeMillis()): String {
+    fun getBirthdayDayMonthList(start: Long = System.currentTimeMillis(), duration: Int = 1): List<String> {
+        val list = mutableListOf<String>()
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
+        for (n in 0 until duration) {
+            calendar.timeInMillis = start + (AlarmManager.INTERVAL_DAY * n)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val month = calendar.get(Calendar.MONTH)
+            list.add("$day|$month")
+        }
+        Timber.d("getBirthdayDayMonthList: $list")
+        return list
+    }
+
+    fun getBirthdayDayMonth(start: Long = System.currentTimeMillis()): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = start
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH)
         return "$day|$month"

@@ -116,6 +116,7 @@ object PrefsConstants {
     const val LOCAL_BACKUP = "local_backup"
     const val PRIVACY_SHOWED = "privacy_showed"
     const val SHOW_PERMANENT_REMINDERS = "show_permanent_reminders"
+    const val TO_BIRTHDAY_DAYS = "to_birthday_days"
 
     const val REMINDER_CHANGED = "reminder_changed"
     const val LAST_USED_REMINDER = "last_reminder"

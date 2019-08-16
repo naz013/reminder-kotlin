@@ -18,8 +18,7 @@ class HomeViewModel : BaseRemindersViewModel(), (String) -> Unit {
     private val _reminders = mutableLiveDataOf<List<Reminder>>()
     private var liveData: LiveData<List<Reminder>>? = null
     val reminders: LiveData<List<Reminder>> = _reminders
-
-    val birthdays = appDb.birthdaysDao().loadAll(TimeUtil.getBirthdayDayMonth())
+    val birthdays = appDb.birthdaysDao().findAll(TimeUtil.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1))
 
     init {
         prefs.addObserver(PrefsConstants.SHOW_PERMANENT_REMINDERS, this)

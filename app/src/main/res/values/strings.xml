@@ -749,5 +749,6 @@
     <string name="backup_file_imported_successfully">Backup file imported successfully</string>
     <string name="failed_to_import_backup">Failed to import backup file</string>
     <string name="what_to_do_with_current_data">What to do with current data?</string>
+    <string name="birthdays_on_home_for_next">Birthdays on home screen for next</string>
 
 </resources>
