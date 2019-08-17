@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import coil.api.load
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
@@ -17,7 +18,6 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
-import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.sql.Date
 
@@ -147,7 +147,10 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
             val conID = Contacts.getIdFromNumber(missedCall.number, this)
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
-                Picasso.get().load(photo).into(binding.contactPhoto)
+                binding.contactPhoto.load(photo) {
+                    crossfade(true)
+                    lifecycle(lifecycle)
+                }
             } else {
                 BitmapUtils.imageFromName(name) {
                     binding.contactPhoto.setImageDrawable(it)

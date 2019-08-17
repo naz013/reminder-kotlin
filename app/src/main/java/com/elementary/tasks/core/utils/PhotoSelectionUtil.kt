@@ -9,8 +9,10 @@ import android.provider.MediaStore
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
+import coil.Coil
+import coil.api.get
 import com.elementary.tasks.R
-import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
@@ -213,17 +215,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val dialogues: 
         if (Patterns.WEB_URL.matcher(url).matches()) {
             launchDefault {
                 try {
-                    val bitmap = Picasso.get()
-                            .load(url)
-                            .get()
-                    if (bitmap != null) {
-                        withUIContext {
-                            mCallback?.onBitmapReady(bitmap)
-                        }
-                    } else {
-                        withUIContext {
-                            Toast.makeText(activity, R.string.failed_to_download, Toast.LENGTH_SHORT).show()
-                        }
+                    val bitmap = Coil.get(url) {
+                        this.bitmapConfig(Bitmap.Config.ARGB_8888)
+                    }.toBitmap()
+                    withUIContext {
+                        mCallback?.onBitmapReady(bitmap)
                     }
                 } catch (e: Exception) {
                     Timber.d("downloadUrl: $e")

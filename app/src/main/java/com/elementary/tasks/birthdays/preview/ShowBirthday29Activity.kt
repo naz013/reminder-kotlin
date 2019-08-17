@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import coil.api.load
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -18,7 +19,6 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
-import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.util.*
 
@@ -94,7 +94,10 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>(R.la
         }
         val photo = Contacts.getPhoto(birthday.contactId)
         if (photo != null) {
-            Picasso.get().load(photo).into(binding.contactPhoto)
+            binding.contactPhoto.load(photo) {
+                crossfade(true)
+                lifecycle(lifecycle)
+            }
             binding.contactPhoto.visibility = View.VISIBLE
         } else {
             binding.contactPhoto.visibility = View.GONE

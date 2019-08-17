@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.preview
 import android.app.ActivityOptions
 import android.app.AlarmManager
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
@@ -17,6 +16,8 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.Coil
+import coil.api.load
 import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -39,8 +40,6 @@ import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.File
@@ -379,20 +378,18 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         return if (windowType == 0) getString(R.string.full_screen) else getString(R.string.simple)
     }
 
-    private val imageTarget: Target = object : Target {
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-            Timber.d("onPrepareLoad: ")
-        }
-
-        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-            Timber.d("onBitmapFailed: $e")
+    private val imageTarget = object : coil.target.Target {
+        override fun onError(error: Drawable?) {
+            super.onError(error)
+            Timber.d("onError: $error")
             binding.attachmentsView.hide()
         }
 
-        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-            Timber.d("onBitmapLoaded: ${bitmap != null}")
+        override fun onSuccess(result: Drawable) {
+            super.onSuccess(result)
+            Timber.d("onSuccess: ")
             binding.attachmentsView.show()
-            binding.attachmentImage.setImageBitmap(bitmap)
+            binding.attachmentImage.setImageDrawable(result)
             binding.attachmentsView.setOnClickListener {
                 reminder?.let {
                     val options = ActivityOptions.makeSceneTransitionAnimation(this@ReminderPreviewActivity,
@@ -412,10 +409,18 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
             binding.attachmentView.show()
             val file = File(reminder.attachmentFile)
             if (file.exists()) {
-                Picasso.get().load(file).into(imageTarget)
+                Coil.load(this, file) {
+                    target(imageTarget)
+                    crossfade(true)
+                    lifecycle(lifecycle)
+                }
             } else {
                 val uri = Uri.parse(reminder.attachmentFile)
-                Picasso.get().load(uri).into(imageTarget)
+                Coil.load(this, uri) {
+                    target(imageTarget)
+                    crossfade(true)
+                    lifecycle(lifecycle)
+                }
             }
         } else {
             binding.attachmentView.hide()
