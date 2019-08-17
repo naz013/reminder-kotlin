@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
@@ -67,54 +66,54 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         super.onViewCreated(view, savedInstanceState)
 
         binding.addReminderButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToCreateReminderActivity("", true))
+            safeNavigation(HomeFragmentDirections.actionActionHomeToCreateReminderActivity("", true))
         }
         binding.addBirthdayButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity("", true))
+            safeNavigation(HomeFragmentDirections.actionActionHomeToAddBirthdayActivity("", true))
         }
 
         binding.remindersHeader.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
         binding.emptyRemindersState.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
         binding.remindersButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToRemindersFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToRemindersFragment())
         }
 
         binding.archiveButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToArchiveFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToArchiveFragment())
         }
 
         binding.birthdaysHeader.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }
         binding.emptyBirthdaysState.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }
         binding.birthdaysButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToBirthdaysFragment())
         }
 
         binding.groupsButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToGroupsFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToGroupsFragment())
         }
         binding.mapButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToMapFragment())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToMapFragment())
         }
         binding.notesButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionNotes())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToActionNotes())
         }
         binding.notesButton.setOnLongClickListener {
             buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
             true
         }
         binding.calendarButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionCalendar())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToActionCalendar())
         }
         binding.googleButton.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionActionHomeToActionGoogle())
+            safeNavigation(HomeFragmentDirections.actionActionHomeToActionGoogle())
         }
 
         updatePrivacyBanner()
@@ -156,7 +155,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
                 binding.loginDismissButton.setOnClickListener { prefs.isUserLogged = true }
                 binding.loginButton.setOnClickListener {
                     prefs.isUserLogged = true
-                    findNavController().navigate(HomeFragmentDirections.actionActionHomeToCloudDrives())
+                    safeNavigation(HomeFragmentDirections.actionActionHomeToCloudDrives())
                 }
             }
         } else {
@@ -248,7 +247,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
                 return true
             }
             R.id.action_settings -> {
-                findNavController().navigate(HomeFragmentDirections.actionActionHomeToSettingsFragment())
+                safeNavigation(HomeFragmentDirections.actionActionHomeToSettingsFragment())
                 return true
             }
         }

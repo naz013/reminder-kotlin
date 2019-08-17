@@ -3,9 +3,10 @@ package com.elementary.tasks.navigation.fragments
 import android.app.Activity
 import android.content.Context
 import androidx.databinding.ViewDataBinding
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.FragmentCallback
@@ -72,6 +73,19 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
     }
 
     abstract fun getTitle(): String
+
+    protected fun safeNavigation(navDirections: NavDirections) {
+        safeNavigation {
+            findNavController().navigate(navDirections)
+        }
+    }
+
+    protected fun safeNavigation(function: () -> Unit) {
+        try {
+            function.invoke()
+        } catch (e: Exception) {
+        }
+    }
 
     companion object {
         const val NESTED_SCROLL_MAX = 255f
