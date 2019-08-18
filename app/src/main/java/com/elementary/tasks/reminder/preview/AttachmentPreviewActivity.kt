@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
-import coil.api.load
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityAttachmentPreviewBinding
+import com.squareup.picasso.Picasso
 import java.io.File
 
 class AttachmentPreviewActivity : BindingActivity<ActivityAttachmentPreviewBinding>(R.layout.activity_attachment_preview) {
@@ -30,17 +30,13 @@ class AttachmentPreviewActivity : BindingActivity<ActivityAttachmentPreviewBindi
         binding.toolbar.title = path
         val file = File(path)
         if (file.exists()) {
-            binding.ivPhoto.load(file) {
-                crossfade(true)
-                lifecycle(lifecycle)
-            }
+            Picasso.get().load(file).into(binding.ivPhoto)
         } else {
             val uri = Uri.parse(path)
             binding.toolbar.title = uri.lastPathSegment
-            binding.ivPhoto.load(uri) {
-                crossfade(true)
-                lifecycle(lifecycle)
-            }
+            Picasso.get()
+                    .load(uri)
+                    .into(binding.ivPhoto)
         }
     }
 

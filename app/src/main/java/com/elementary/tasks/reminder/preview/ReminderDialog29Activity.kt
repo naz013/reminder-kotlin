@@ -22,7 +22,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.api.load
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -37,6 +36,7 @@ import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 import java.io.File
 
@@ -117,10 +117,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
             } else {
                 val imageFile = File(prefs.screenImage)
                 if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL) && imageFile.exists()) {
-                    binding.bgImage.load(imageFile) {
-                        this.size(1080, 1080)
-                        this.lifecycle(lifecycle)
-                    }
+                    Picasso.get()
+                            .load(imageFile)
+                            .resize(1080, 1080)
+                            .centerCrop()
+                            .into(binding.bgImage)
                 } else {
                     binding.bgImage.setImageResource(R.drawable.widget_preview_bg)
                 }
@@ -282,10 +283,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
 
                 val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
-                    contactPhoto.load(photo) {
-                        this.crossfade(true)
-                        this.lifecycle(lifecycle)
-                    }
+                    Picasso.get().load(photo).into(contactPhoto)
                 } else {
                     BitmapUtils.imageFromName(name ?: reminder.target) {
                         contactPhoto.setImageDrawable(it)
@@ -344,10 +342,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
 
                 val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
-                    contactPhoto.load(photo) {
-                        this.crossfade(true)
-                        this.lifecycle(lifecycle)
-                    }
+                    Picasso.get().load(photo).into(contactPhoto)
                 } else {
                     BitmapUtils.imageFromName(name ?: reminder.target) {
                         contactPhoto.setImageDrawable(it)
@@ -387,10 +382,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
             if (conID != 0L) {
                 val photo = Contacts.getPhoto(conID)
                 if (photo != null) {
-                    contactPhoto.load(photo) {
-                        this.crossfade(true)
-                        this.lifecycle(lifecycle)
-                    }
+                    Picasso.get().load(photo).into(contactPhoto)
                 } else {
                     contactPhoto.visibility = View.GONE
                 }
