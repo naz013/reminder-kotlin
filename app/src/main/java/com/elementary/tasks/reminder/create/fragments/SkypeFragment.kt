@@ -32,18 +32,25 @@ class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
         }
         val type = getType(binding.skypeGroup.checkedRadioButtonId)
         val startTime = binding.dateView.dateTime
+        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+        if (!TimeCount.isCurrent(startTime)) {
+            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
+            return null
+        }
         if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
             iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
+        val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.target = number
         reminder.type = type
-        reminder.startTime = reminder.eventTime
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-        if (!TimeCount.isCurrent(reminder.eventTime)) {
-            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
-            return null
-        }
+        reminder.eventTime = gmtTime
+        reminder.startTime = gmtTime
+        reminder.after = 0L
+        reminder.dayOfMonth = 0
+        reminder.delay = 0
+        reminder.eventCount = 0
+        reminder.repeatInterval = 0
         return reminder
     }
 

@@ -49,10 +49,16 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
             return null
         }
 
+        val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.target = number
         reminder.type = type
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.startTime = reminder.eventTime
+        reminder.eventTime = gmtTime
+        reminder.startTime = gmtTime
+        reminder.dayOfMonth = 0
+        reminder.after = 0L
+        reminder.delay = 0
+        reminder.eventCount = 0
+        reminder.repeatInterval = 0
         return reminder
     }
 

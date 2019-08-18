@@ -114,6 +114,9 @@ class LocationFragment : RadiusTypeFragment<FragmentReminderLocationBinding>() {
         reminder.exportToCalendar = false
         reminder.exportToTasks = false
         reminder.hasReminder = binding.attackDelay.isChecked
+        reminder.after = 0L
+        reminder.delay = 0
+        reminder.eventCount = 0
         if (binding.attackDelay.isChecked) {
             val startTime = binding.dateView.dateTime
             reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)

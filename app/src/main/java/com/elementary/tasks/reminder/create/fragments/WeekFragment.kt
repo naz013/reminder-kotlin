@@ -81,6 +81,9 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
         reminder.weekdays = weekdays
         reminder.target = number
         reminder.type = type
+        reminder.after = 0L
+        reminder.delay = 0
+        reminder.eventCount = 0
         reminder.repeatInterval = 0
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         val startTime = TimeCount.getNextWeekdayTime(reminder)

@@ -53,6 +53,9 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
         reminder.type = type
         reminder.dayOfMonth = iFace.state.day
         reminder.monthOfYear = iFace.state.month
+        reminder.after = 0L
+        reminder.delay = 0
+        reminder.eventCount = 0
         reminder.repeatInterval = 0
 
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)

@@ -87,6 +87,9 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
             iFace.showSnackbar(getString(R.string.reminder_is_outdated))
             return null
         }
+        reminder.after = 0L
+        reminder.delay = 0
+        reminder.eventCount = 0
         return reminder
     }
 

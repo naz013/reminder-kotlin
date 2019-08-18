@@ -37,12 +37,17 @@ class EmailFragment : RepeatableTypeFragment<FragmentReminderEmailBinding>() {
             iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
             return null
         }
-
+        val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.subject = subjectString
         reminder.target = email
         reminder.type = Reminder.BY_DATE_EMAIL
-        reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.startTime = reminder.eventTime
+        reminder.eventTime = gmtTime
+        reminder.startTime = gmtTime
+        reminder.after = 0L
+        reminder.dayOfMonth = 0
+        reminder.delay = 0
+        reminder.eventCount = 0
+        reminder.repeatInterval = 0
         return reminder
     }
 
