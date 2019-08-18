@@ -50,7 +50,7 @@ class EventJobService : Job(), KoinComponent {
         val item = appDb.reminderDao().getById(id)
         if (item != null) {
             Timber.d("repeatedReminderAction: ${item.uuId}")
-            Notifier.showRepeatedNotification(context, prefs, item)
+            reminderAction(context, item.uuId)
             EventJobScheduler.scheduleReminderRepeat(context, item.uuId, prefs)
         }
     }
