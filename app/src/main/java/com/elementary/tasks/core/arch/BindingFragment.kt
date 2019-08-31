@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -24,6 +25,14 @@ abstract class BindingFragment<B : ViewDataBinding> : Fragment() {
             binding = DataBindingUtil.bind(view)!!
         }
         return view
+    }
+
+    protected fun string(@StringRes res: Int): String {
+        return if (context != null && isAdded) {
+            getString(res)
+        } else {
+            ""
+        }
     }
 
     @LayoutRes

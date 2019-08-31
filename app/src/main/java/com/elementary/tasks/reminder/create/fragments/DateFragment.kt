@@ -18,7 +18,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
         var type = Reminder.BY_DATE
         val isAction = binding.actionView.hasAction()
         if (TextUtils.isEmpty(reminder.summary) && !isAction) {
-            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+            binding.taskLayout.error = string(R.string.task_summary_is_empty)
             binding.taskLayout.isErrorEnabled = true
             return null
         }
@@ -26,7 +26,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
         if (isAction) {
             number = binding.actionView.number
             if (TextUtils.isEmpty(number)) {
-                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
+                iFace.showSnackbar(string(R.string.you_dont_insert_number))
                 return null
             }
             type = if (binding.actionView.type == ActionView.TYPE_CALL) {
@@ -40,12 +40,12 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
         val startTime = binding.dateView.dateTime
         Timber.d("EVENT_TIME ${TimeUtil.logTime(startTime)}")
         if (!TimeCount.isCurrent(startTime)) {
-            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
+            iFace.showSnackbar(string(R.string.reminder_is_outdated))
             return null
         }
 
         if (!validBefore(startTime, reminder)) {
-            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+            iFace.showSnackbar(string(R.string.invalid_remind_before_parameter))
             return null
         }
 
@@ -102,7 +102,7 @@ class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
                 binding.tuneExtraView.hasAutoExtra = false
             } else {
                 binding.tuneExtraView.hasAutoExtra = true
-                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+                binding.tuneExtraView.hint = string(R.string.enable_making_phone_calls_automatically)
             }
         } else {
             binding.tuneExtraView.hasAutoExtra = false
