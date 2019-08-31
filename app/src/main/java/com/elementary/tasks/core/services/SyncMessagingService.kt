@@ -16,11 +16,11 @@ class SyncMessagingService : FirebaseMessagingService() {
 
     private val prefs: Prefs by inject()
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        Timber.d("onMessageReceived: ${remoteMessage?.data}")
+        Timber.d("onMessageReceived: ${remoteMessage.data}")
         if (prefs.multiDeviceModeEnabled && prefs.isBackupEnabled) {
-            val data = remoteMessage?.data
+            val data = remoteMessage.data
             if (data != null) {
                 val fileName = data["details"] ?: ""
                 when (data["type"] ?: "") {
@@ -35,7 +35,7 @@ class SyncMessagingService : FirebaseMessagingService() {
         }
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         super.onNewToken(token)
         val dropbox = Dropbox()
         if (dropbox.isLinked) {
