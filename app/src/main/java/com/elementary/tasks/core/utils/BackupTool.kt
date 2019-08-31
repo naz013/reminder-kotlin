@@ -14,6 +14,7 @@ import com.google.gson.annotations.SerializedName
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.ref.WeakReference
 
@@ -24,7 +25,11 @@ class BackupTool(private val appDb: AppDb) {
             callback.invoke(false)
             return
         }
-        val stream = context.contentResolver.openInputStream(uri)
+        var stream: InputStream? = null
+        try {
+            stream = context.contentResolver.openInputStream(uri)
+        } catch (e: Exception) {
+        }
         if (stream == null) {
             callback.invoke(false)
             return
