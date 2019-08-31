@@ -235,8 +235,8 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
         binding.buttonEdit.setOnClickListener { editReminder() }
         binding.buttonDelay.setOnClickListener { delay() }
         binding.buttonDelayFor.setOnClickListener {
-            showDialog()
             EventJobScheduler.cancelReminder(uuId)
+            showDialog()
             discardNotification(id)
         }
         binding.buttonAction.setOnClickListener { call() }
@@ -932,6 +932,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
             finish()
             return
         }
+        EventJobScheduler.cancelReminder(reminder.uuId)
         val control = mControl
         launchDefault {
             if (control != null) {

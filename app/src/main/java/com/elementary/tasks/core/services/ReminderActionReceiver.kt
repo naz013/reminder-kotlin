@@ -57,6 +57,7 @@ class ReminderActionReceiver : BaseBroadcast() {
     }
 
     private fun hidePermanent(context: Context, id: String) {
+        EventJobScheduler.cancelReminder(id)
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         EventControlFactory.getController(reminder).next()
         ContextCompat.startForegroundService(context,
