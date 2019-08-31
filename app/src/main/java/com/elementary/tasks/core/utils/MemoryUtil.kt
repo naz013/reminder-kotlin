@@ -186,7 +186,9 @@ object MemoryUtil {
             Timber.d("toStream: $type, $any")
             try {
                 Gson().toJson(if (any is NoteWithImages) OldNote(any) else any, type, writer)
-            } catch (e: IncompatibleClassChangeError) {
+            } catch (e: Exception) {
+                return false
+            } catch (e: OutOfMemoryError) {
                 return false
             }
             writer.close()
