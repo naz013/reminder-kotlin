@@ -214,15 +214,19 @@ object MemoryUtil {
         val cursor: Cursor? = cr.query(uri, null, null,
                 null, null, null)
 
-        val name = cursor?.use {
-            if (it.moveToFirst()) {
-                val displayName: String =
-                        it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                displayName
-            } else {
-                source
-            }
-        } ?: source
+        val name = try {
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val displayName: String =
+                            it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    displayName
+                } else {
+                    source
+                }
+            } ?: source
+        } catch (e: Exception) {
+            source
+        }
         Timber.d("decryptToJson: $name, $source")
         return try {
             val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
