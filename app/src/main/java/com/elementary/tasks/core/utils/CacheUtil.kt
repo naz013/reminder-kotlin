@@ -67,7 +67,11 @@ class CacheUtil(val context: Context) {
     @RequiresPermission(Permissions.READ_EXTERNAL)
     fun cacheFile(uri: Uri): String? {
         val cacheDir = context.externalCacheDir ?: context.cacheDir
-        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val inputStream = try {
+            context.contentResolver.openInputStream(uri)
+        } catch (e: Exception) {
+            null
+        } ?: return null
         val fileId = try {
             DocumentsContract.getDocumentId(uri)
         } catch (e: Exception) {
