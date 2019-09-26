@@ -187,6 +187,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         }
         binding.birthdaysList.layoutManager = LinearLayoutManager(context)
         binding.birthdaysList.adapter = birthdaysAdapter
+
+        if (prefs.isBirthdayReminderEnabled) {
+            binding.birthdaysBlock.show()
+        } else {
+            binding.birthdaysBlock.hide()
+        }
     }
 
     private fun initViewModel() {

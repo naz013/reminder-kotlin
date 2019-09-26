@@ -57,10 +57,6 @@
     </style>
 
     <style name="Base.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="alphaEmphasisHigh">@dimen/alpha_emphasis_high</item>
-        <item name="alphaEmphasisMedium">@dimen/alpha_emphasis_medium</item>
-        <item name="alphaEmphasisDisabled">@dimen/alpha_emphasis_disabled</item>
-
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

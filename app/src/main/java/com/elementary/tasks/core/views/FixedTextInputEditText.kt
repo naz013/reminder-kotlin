@@ -36,7 +36,7 @@ class FixedTextInputEditText : TextInputEditText {
         return f.get(this) as? CharSequence
     }
 
-    override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
+    override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         return if (isMeizu()) {
             null
         } else {
