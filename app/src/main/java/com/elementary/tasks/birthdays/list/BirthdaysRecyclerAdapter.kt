@@ -9,6 +9,11 @@ class BirthdaysRecyclerAdapter : ListAdapter<Birthday, BirthdayHolder>(BirthdayD
 
     var actionsListener: ActionsListener<Birthday>? = null
 
+    override fun getItem(position: Int): Birthday? {
+        if (position < 0 || position >= itemCount) return null
+        return super.getItem(position)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BirthdayHolder {
         return BirthdayHolder(parent) { view, i, listActions ->
             actionsListener?.onAction(view, i, getItem(i), listActions)
@@ -16,6 +21,6 @@ class BirthdaysRecyclerAdapter : ListAdapter<Birthday, BirthdayHolder>(BirthdayD
     }
 
     override fun onBindViewHolder(holder: BirthdayHolder, position: Int) {
-        holder.setData(getItem(position))
+        getItem(position)?.let { holder.setData(it) }
     }
 }
