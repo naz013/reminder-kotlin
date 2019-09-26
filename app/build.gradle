@@ -12,8 +12,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 269
-        versionName '8.0.8'
+        versionCode 270
+        versionName '8.0.9'
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         renderscriptTargetApi 21
@@ -47,7 +47,7 @@ android {
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
             buildConfigField "String", "PROJECT_ID", "\"future-graph-651\""
-            versionCode 239
+            versionCode 240
         }
     }
     packagingOptions {
@@ -154,7 +154,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     implementation 'com.google.firebase:firebase-database:19.1.0'
-    proImplementation 'com.google.firebase:firebase-auth:19.0.0'
+    proImplementation 'com.google.firebase:firebase-auth:19.1.0'
     proImplementation 'com.github.kenglxn.QRGen:android:2.4.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
