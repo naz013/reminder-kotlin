@@ -20,11 +20,8 @@ class LocalStorage(context: Context) : Storage() {
     override suspend fun backup(fileIndex: FileIndex, metadata: Metadata) {
         if (!Module.isQ && hasSdPermission) {
             val stream = fileIndex.stream
-            val json = fileIndex.json
             if (stream == null) {
-                if (json != null) {
-                    backup(json, metadata)
-                }
+                return
             } else {
                 val dir = folderFromExt(metadata.fileExt)
                 if (dir != null) {
@@ -36,19 +33,6 @@ class LocalStorage(context: Context) : Storage() {
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
-                }
-            }
-        }
-    }
-
-    private fun backup(json: String, metadata: Metadata) {
-        if (!Module.isQ && hasSdPermission) {
-            val dir = folderFromExt(metadata.fileExt)
-            if (dir != null) {
-                try {
-                    MemoryUtil.writeFileNoEncryption(File(dir, metadata.fileName), json)
-                } catch (e: IOException) {
-                    e.printStackTrace()
                 }
             }
         }

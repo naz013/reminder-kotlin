@@ -3,9 +3,13 @@ package com.elementary.tasks.core.cloud.converters
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SettingsModel
+import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeUtil
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 class SettingsConverter : Convertible<SettingsModel> {
 
@@ -22,7 +26,7 @@ class SettingsConverter : Convertible<SettingsModel> {
     override fun convert(t: SettingsModel): FileIndex? {
         return try {
             var output: ObjectOutputStream? = null
-            val outputBytes = ByteArrayOutputStream()
+            val outputBytes = CopyByteArrayStream()
             try {
                 output = ObjectOutputStream(outputBytes)
                 val list = t.data
@@ -33,10 +37,8 @@ class SettingsConverter : Convertible<SettingsModel> {
                     list.remove(PrefsConstants.TASKS_USER)
                 }
                 output.writeObject(list)
-                val data = outputBytes.toString()
-                output.close()
                 FileIndex().apply {
-                    this.json = data
+                    this.stream = outputBytes
                     this.ext = FileConfig.FILE_NAME_SETTINGS_EXT
                     this.id = "app"
                     this.updatedAt = TimeUtil.gmtDateTime

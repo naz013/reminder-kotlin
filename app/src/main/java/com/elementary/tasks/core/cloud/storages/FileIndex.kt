@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud.storages
 
 import androidx.annotation.Keep
 import com.elementary.tasks.core.cloud.converters.IndexTypes
+import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.ByteArrayOutputStream
@@ -31,7 +32,7 @@ data class FileIndex(
         var json: String? = null,
         @SerializedName("stream")
         @Transient
-        var stream: ByteArrayOutputStream? = null,
+        var stream: CopyByteArrayStream? = null,
         @SerializedName("readyToBackup")
         @Transient
         var readyToBackup: Boolean = false

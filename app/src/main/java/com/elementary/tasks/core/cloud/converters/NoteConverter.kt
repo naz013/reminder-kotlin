@@ -5,9 +5,9 @@ import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
+import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.google.gson.Gson
-import java.io.ByteArrayOutputStream
 import java.lang.ref.WeakReference
 
 class NoteConverter : Convertible<NoteWithImages> {
@@ -24,7 +24,7 @@ class NoteConverter : Convertible<NoteWithImages> {
 
     override fun convert(t: NoteWithImages): FileIndex? {
         return try {
-            val stream = ByteArrayOutputStream()
+            val stream = CopyByteArrayStream()
             MemoryUtil.toStream(t, stream)
             FileIndex().apply {
                 this.stream = stream

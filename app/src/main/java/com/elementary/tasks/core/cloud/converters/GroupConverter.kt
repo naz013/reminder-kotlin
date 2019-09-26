@@ -3,9 +3,9 @@ package com.elementary.tasks.core.cloud.converters
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.ReminderGroup
+import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.google.gson.Gson
-import java.io.ByteArrayOutputStream
 
 class GroupConverter : Convertible<ReminderGroup> {
 
@@ -21,7 +21,7 @@ class GroupConverter : Convertible<ReminderGroup> {
 
     override fun convert(t: ReminderGroup): FileIndex? {
         return try {
-            val stream = ByteArrayOutputStream()
+            val stream = CopyByteArrayStream()
             MemoryUtil.toStream(t, stream)
             FileIndex().apply {
                 this.stream = stream

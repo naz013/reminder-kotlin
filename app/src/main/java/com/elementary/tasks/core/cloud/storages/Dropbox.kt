@@ -52,11 +52,8 @@ class Dropbox : Storage(), KoinComponent {
         }
         val api = mDBApi ?: return
         val stream = fileIndex.stream
-        val json = fileIndex.json
         if (stream == null) {
-            if (json != null) {
-                backup(json, metadata)
-            }
+            return
         } else {
             val folder = folderFromExt(metadata.fileExt)
             Timber.d("backup: ${metadata.fileName}, $folder")
@@ -68,7 +65,7 @@ class Dropbox : Storage(), KoinComponent {
                 fis.close()
                 stream.close()
             } catch (e: Exception) {
-                Timber.d("backup: ${e.message}")
+            } catch (e: OutOfMemoryError) {
             }
         }
     }
@@ -87,7 +84,7 @@ class Dropbox : Storage(), KoinComponent {
                     .uploadAndFinish(fis)
             fis.close()
         } catch (e: Exception) {
-            Timber.d("backup: ${e.message}")
+        } catch (e: OutOfMemoryError) {
         }
     }
 

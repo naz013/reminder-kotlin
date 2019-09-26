@@ -9,7 +9,6 @@ import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
@@ -63,11 +62,8 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         if (!isLogged) return
         if (TextUtils.isEmpty(metadata.fileName)) return
         val stream = fileIndex.stream
-        val json = fileIndex.json
         if (stream == null) {
-            if (json != null) {
-                backup(json, metadata)
-            }
+            return
         } else {
             try {
                 removeAllCopies(metadata.fileName)
@@ -75,14 +71,15 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 fileMetadata.name = metadata.fileName
                 fileMetadata.description = metadata.meta
                 fileMetadata.parents = PARENTS
-                val mediaContent = ByteArrayContent("text/plain", stream.toByteArray())
+                val mediaContent = InputStreamContent("text/plain", stream.toInputStream())
                 val driveFile = service.files().create(fileMetadata, mediaContent)
                         .setFields("id")
                         .execute()
                 stream.close()
                 Timber.d("backup: STREAM ${driveFile.id}, ${metadata.fileName}")
                 showContent(driveFile.id)
-            } catch (e: Exception) {
+            } catch (e: Exception ) {
+            } catch (e: OutOfMemoryError) {
             }
         }
     }
@@ -116,6 +113,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                     .execute()
             Timber.d("backup: ${driveFile.id}, ${metadata.fileName}")
         } catch (e: Exception) {
+        } catch (e: OutOfMemoryError) {
         }
     }
 

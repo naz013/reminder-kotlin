@@ -3,9 +3,9 @@ package com.elementary.tasks.core.cloud.converters
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.google.gson.Gson
-import java.io.ByteArrayOutputStream
 
 class TemplateConverter : Convertible<SmsTemplate> {
 
@@ -21,7 +21,7 @@ class TemplateConverter : Convertible<SmsTemplate> {
 
     override fun convert(t: SmsTemplate): FileIndex? {
         return try {
-            val stream = ByteArrayOutputStream()
+            val stream = CopyByteArrayStream()
             MemoryUtil.toStream(t, stream)
             FileIndex().apply {
                 this.stream = stream
