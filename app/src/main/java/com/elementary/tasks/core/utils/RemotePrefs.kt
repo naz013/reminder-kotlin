@@ -9,7 +9,11 @@ import timber.log.Timber
 
 class RemotePrefs(context: Context) {
 
-    private val mFirebaseRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    private val mFirebaseRemoteConfig: FirebaseRemoteConfig? = try {
+        FirebaseRemoteConfig.getInstance()
+    } catch (e: Exception) {
+        null
+    }
 
     private val mObservers = mutableListOf<SaleObserver>()
     private val mUpdateObservers = mutableListOf<UpdateObserver>()
@@ -19,16 +23,16 @@ class RemotePrefs(context: Context) {
     init {
         val configSettings = FirebaseRemoteConfigSettings.Builder()
                 .build()
-        this.mFirebaseRemoteConfig.setConfigSettings(configSettings)
-        this.mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults)
+        this.mFirebaseRemoteConfig?.setConfigSettings(configSettings)
+        this.mFirebaseRemoteConfig?.setDefaults(R.xml.remote_config_defaults)
         fetchConfig()
     }
 
     private fun fetchConfig() {
-        mFirebaseRemoteConfig.fetch(3600).addOnCompleteListener { task ->
+        mFirebaseRemoteConfig?.fetch(3600)?.addOnCompleteListener { task ->
             Timber.d("fetchConfig: ${task.isSuccessful}")
             if (task.isSuccessful) {
-                mFirebaseRemoteConfig.activateFetched()
+                mFirebaseRemoteConfig?.activateFetched()
             }
             displayVersionMessage()
             if (!Module.isPro) displaySaleMessage()
@@ -62,12 +66,12 @@ class RemotePrefs(context: Context) {
     }
 
     private fun displayVersionMessage() {
-        val versionCode = mFirebaseRemoteConfig.getLong(VERSION_CODE)
+        val versionCode = mFirebaseRemoteConfig?.getLong(VERSION_CODE) ?: 0
         try {
             val pInfo = pm.getPackageInfo(packageName, 0)
             val verCode = pInfo.versionCode
             if (versionCode > verCode) {
-                val version = mFirebaseRemoteConfig.getString(VERSION_NAME)
+                val version = mFirebaseRemoteConfig?.getString(VERSION_NAME) ?: ""
                 for (observer in mUpdateObservers) {
                     observer.onUpdate(version)
                 }
@@ -87,10 +91,10 @@ class RemotePrefs(context: Context) {
     }
 
     private fun displaySaleMessage() {
-        val isSale = mFirebaseRemoteConfig.getBoolean(SALE_STARTED)
+        val isSale = mFirebaseRemoteConfig?.getBoolean(SALE_STARTED) ?: false
         if (isSale) {
-            val expiry = mFirebaseRemoteConfig.getString(SALE_EXPIRY_DATE)
-            val discount = mFirebaseRemoteConfig.getString(SALE_VALUE)
+            val expiry = mFirebaseRemoteConfig?.getString(SALE_EXPIRY_DATE) ?: ""
+            val discount = mFirebaseRemoteConfig?.getString(SALE_VALUE) ?: ""
             for (observer in mObservers) {
                 observer.onSale(discount, expiry)
             }
