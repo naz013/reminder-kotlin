@@ -11,6 +11,7 @@ import androidx.annotation.RequiresPermission
 import com.elementary.tasks.R
 import timber.log.Timber
 import java.io.File
+import java.io.FileNotFoundException
 
 
 class CacheUtil(val context: Context) {
@@ -69,6 +70,8 @@ class CacheUtil(val context: Context) {
         val cacheDir = context.externalCacheDir ?: context.cacheDir
         val inputStream = try {
             context.contentResolver.openInputStream(uri)
+        } catch (e: FileNotFoundException) {
+            null
         } catch (e: Exception) {
             null
         } ?: return null
