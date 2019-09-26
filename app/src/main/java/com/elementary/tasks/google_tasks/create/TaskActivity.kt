@@ -14,8 +14,8 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -516,7 +516,10 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
 
     override fun onBackPressed() {
         if (mIsLoading) return
-        super.onBackPressed()
+        try {
+            super.onBackPressed()
+        } catch (e: Exception) {
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
