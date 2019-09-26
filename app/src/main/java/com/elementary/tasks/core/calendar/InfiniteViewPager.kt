@@ -3,9 +3,9 @@ package com.elementary.tasks.core.calendar
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+
 
 class InfiniteViewPager : ViewPager {
     private var enabled = true
@@ -28,7 +28,23 @@ class InfiniteViewPager : ViewPager {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return enabled && super.onTouchEvent(event)
+        try {
+            return enabled && super.onTouchEvent(event)
+        } catch (ex: IllegalArgumentException) {
+            ex.printStackTrace()
+        }
+
+        return false
+    }
+
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        try {
+            return super.onInterceptTouchEvent(event)
+        } catch (ex: IllegalArgumentException) {
+            ex.printStackTrace()
+        }
+
+        return false
     }
 
     companion object {
