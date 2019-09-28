@@ -6,7 +6,7 @@ import androidx.annotation.LayoutRes
 
 class AdsProvider {
 
-    fun showReminderBanner(viewGroup: ViewGroup, bannerId: String, @LayoutRes res: Int, failListener: (() -> Unit)? = null) {
+    fun showBanner(viewGroup: ViewGroup, bannerId: String, @LayoutRes res: Int, failListener: (() -> Unit)? = null) {
     }
 
     fun destroy() {

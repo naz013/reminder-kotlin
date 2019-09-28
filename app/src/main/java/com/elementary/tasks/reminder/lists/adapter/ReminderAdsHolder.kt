@@ -11,7 +11,7 @@ class ReminderAdsHolder(parent: ViewGroup, adsProvider: AdsProvider, failListene
     : BaseHolder<ListItemReminderAdsBinding>(parent, R.layout.list_item_reminder_ads) {
 
     init {
-        adsProvider.showReminderBanner(
+        adsProvider.showBanner(
                 binding.adsHolder,
                 AdsProvider.REMINDER_BANNER_ID,
                 R.layout.list_item_ads_hor,

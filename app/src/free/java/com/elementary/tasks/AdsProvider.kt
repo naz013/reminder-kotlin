@@ -26,7 +26,7 @@ class AdsProvider {
         wasError = false
     }
 
-    fun showReminderBanner(viewGroup: ViewGroup, bannerId: String, @LayoutRes res: Int, failListener: (() -> Unit)? = null) {
+    fun showBanner(viewGroup: ViewGroup, bannerId: String, @LayoutRes res: Int, failListener: (() -> Unit)? = null) {
         val adLoader = AdLoader.Builder(viewGroup.context, bannerId)
                 .forUnifiedNativeAd { ad : UnifiedNativeAd ->
                     unifiedNativeAd?.destroy()

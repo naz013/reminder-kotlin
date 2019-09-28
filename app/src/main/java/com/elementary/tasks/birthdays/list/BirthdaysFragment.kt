@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
+import com.elementary.tasks.birthdays.list.filters.BirthdayAdsHolder
 import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.data.models.Birthday
@@ -35,7 +36,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
             deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
     )
 
-    private val mAdapter = BirthdaysRecyclerAdapter()
+    private val mAdapter = BirthdaysRecyclerAdapter {
+        filterController.original = viewModel.birthdays.value ?: listOf()
+    }
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
@@ -78,12 +81,6 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
                 searchView.setOnQueryTextListener(queryTextListener)
                 searchView.setOnCloseListener(mSearchCloseListener)
             }
-        }
-        if (mSearchMenu != null) {
-
-        }
-        if (mSearchView != null) {
-
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -143,15 +140,9 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     }
 
     override fun invoke(result: List<Birthday>) {
-        mAdapter.submitList(result)
+        val newList = BirthdayAdsHolder.updateList(result)
+        mAdapter.submitList(newList)
         binding.recyclerView.smoothScrollToPosition(0)
-        refreshView(result.size)
-    }
-
-    companion object {
-
-        fun newInstance(): BirthdaysFragment {
-            return BirthdaysFragment()
-        }
+        refreshView(newList.size)
     }
 }

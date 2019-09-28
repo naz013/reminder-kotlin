@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
+import com.elementary.tasks.birthdays.list.filters.BirthdayAdsHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -34,7 +35,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true) {
         showReminders(viewModel.reminders.value ?: listOf())
     }
-    private val birthdaysAdapter = BirthdaysRecyclerAdapter()
+    private val birthdaysAdapter = BirthdaysRecyclerAdapter {
+        showBirthdays(viewModel.birthdays.value ?: listOf())
+    }
     private var mPosition: Int = 0
 
     private val reminderResolver = ReminderResolver(
@@ -208,8 +211,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
         })
         viewModel.birthdays.observe(this, Observer {
             if (it != null) {
-                birthdaysAdapter.submitList(it)
-                updateBirthdaysEmpty(it.size)
+                showBirthdays(it)
+            } else {
+                showBirthdays(listOf())
             }
         })
         viewModel.result.observe(this, Observer {
@@ -220,6 +224,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
                 }
             }
         })
+    }
+
+    private fun showBirthdays(list: List<Birthday>) {
+        val newList = BirthdayAdsHolder.updateList(list)
+        birthdaysAdapter.submitList(newList)
+        updateBirthdaysEmpty(newList.size)
     }
 
     private fun showReminders(list: List<Reminder>) {
