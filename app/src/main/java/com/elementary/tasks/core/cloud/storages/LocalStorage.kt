@@ -110,6 +110,9 @@ class LocalStorage(context: Context) : Storage() {
     override fun saveIndex(fileIndex: FileIndex) {
     }
 
+    override suspend fun saveIndex() {
+    }
+
     override fun hasIndex(id: String): Boolean {
         return true
     }

@@ -7,9 +7,9 @@ import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.InputStreamContent
+import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
@@ -41,7 +41,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             Timber.d("GDrive: user -> $user")
             val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(DriveScopes.DRIVE_APPDATA))
             credential.selectedAccountName = user
-            driveService = Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+            driveService = Drive.Builder(NetHttpTransport(), GsonFactory(), credential)
                     .setApplicationName(APPLICATION_NAME)
                     .build()
             isLogged = true
