@@ -22,6 +22,7 @@ import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.databinding.FragmentTrashBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
+import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 
@@ -40,7 +41,9 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
             allGroups = { return@ReminderResolver viewModel.groups }
     )
 
-    private var remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = false)
+    private var remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = false) {
+        showData(viewModel.events.value ?: listOf())
+    }
     private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
@@ -158,8 +161,14 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     }
 
     override fun invoke(result: List<Reminder>) {
-        remindersAdapter.submitList(result)
+        val newList = ReminderAdsHolder.updateList(result)
+        remindersAdapter.submitList(newList)
         binding.recyclerView.smoothScrollToPosition(0)
-        reloadView(result.size)
+        reloadView(newList.size)
+    }
+
+    override fun onDestroy() {
+        remindersAdapter.onDestroy()
+        super.onDestroy()
     }
 }

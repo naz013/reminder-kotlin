@@ -50,5 +50,8 @@
                 <action android:name="com.elementary.tasks.reminder.EVENT_EDIT" />
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5133908997831400~9675541050"/>
     </application>
 </manifest>

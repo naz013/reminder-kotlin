@@ -157,6 +157,8 @@ dependencies {
     proImplementation 'com.google.firebase:firebase-auth:19.1.0'
     proImplementation 'com.github.kenglxn.QRGen:android:2.4.0'
 
+    freeImplementation 'com.google.firebase:firebase-ads:18.2.0'
+
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
     implementation('com.github.bumptech.glide:glide:4.9.0') {

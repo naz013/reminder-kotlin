@@ -21,6 +21,7 @@ import com.elementary.tasks.databinding.HomeFragmentBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.other.PrivacyPolicyActivity
 import com.elementary.tasks.reminder.ReminderResolver
+import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -30,7 +31,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
-    private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true)
+    private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true) {
+        showReminders(viewModel.reminders.value ?: listOf())
+    }
     private val birthdaysAdapter = BirthdaysRecyclerAdapter()
     private var mPosition: Int = 0
 
@@ -198,8 +201,9 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     private fun initViewModel() {
         viewModel.reminders.observe(this, Observer {
             if (it != null) {
-                remindersAdapter.submitList(it)
-                updateRemindersEmpty(it.size)
+                showReminders(it)
+            } else {
+                showReminders(listOf())
             }
         })
         viewModel.birthdays.observe(this, Observer {
@@ -216,6 +220,12 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
                 }
             }
         })
+    }
+
+    private fun showReminders(list: List<Reminder>) {
+        val newList = ReminderAdsHolder.updateList(list)
+        remindersAdapter.submitList(newList)
+        updateRemindersEmpty(newList.size)
     }
 
     private fun updateBirthdaysEmpty(size: Int) {
@@ -270,5 +280,10 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
                 updateLoginBanner()
             }
         }
+    }
+
+    override fun onDestroy() {
+        remindersAdapter.onDestroy()
+        super.onDestroy()
     }
 }

@@ -6,22 +6,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
-class RemindersRecyclerAdapter(
-        private var showHeader: Boolean = true,
-        private var isEditable: Boolean = true
+class RemindersRecyclerAdapter(private var showHeader: Boolean = true,
+                               private var isEditable: Boolean = true,
+                               private val refreshListener: () -> Unit
 ) : ListAdapter<Reminder, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
 
     var actionsListener: ActionsListener<Reminder>? = null
     var prefsProvider: (() -> Prefs)? = null
-
     var data = listOf<Reminder>()
         private set
+    private val adsProvider = AdsProvider()
 
     init {
         registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -109,12 +110,12 @@ class RemindersRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == Reminder.REMINDER) {
-            ReminderHolder(parent, true, isEditable, true) { view, i, listActions ->
+        return when (viewType) {
+            Reminder.REMINDER -> ReminderHolder(parent, true, isEditable, true) { view, i, listActions ->
                 actionsListener?.onAction(view, i, find(i), listActions)
             }
-        } else {
-            ShoppingHolder(parent, isEditable, true) { view, i, listActions ->
+            AdsProvider.ADS_VIEW_TYPE -> ReminderAdsHolder(parent, adsProvider, refreshListener)
+            else -> ShoppingHolder(parent, isEditable, true) { view, i, listActions ->
                 actionsListener?.onAction(view, i, find(i), listActions)
             }
         }
@@ -152,11 +153,19 @@ class RemindersRecyclerAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return item.viewType
+        return if (item.uuId == AdsProvider.REMINDER_BANNER_ID) {
+            AdsProvider.ADS_VIEW_TYPE
+        } else {
+            item.viewType
+        }
     }
 
     override fun getItemId(position: Int): Long {
         val item = getItem(position)
         return item.uniqueId.toLong()
+    }
+
+    fun onDestroy() {
+        adsProvider.destroy()
     }
 }

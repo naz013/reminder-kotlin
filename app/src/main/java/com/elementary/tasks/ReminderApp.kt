@@ -41,5 +41,6 @@ class ReminderApp : MultiDexApplication() {
         }
         Notifier.createChannels(this)
         JobManager.create(this).addJobCreator { EventJobService() }
+        AdsProvider.init(this)
     }
 }

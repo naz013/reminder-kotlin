@@ -22,6 +22,7 @@ import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.android.ext.android.inject
@@ -52,7 +53,9 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
             allGroups = { return@ReminderResolver viewModel.groups }
     )
 
-    private val remindersAdapter = RemindersRecyclerAdapter(showHeader = true, isEditable = true)
+    private val remindersAdapter = RemindersRecyclerAdapter(showHeader = true, isEditable = true) {
+        showData(viewModel.events.value ?: listOf())
+    }
     private val searchModifier = SearchModifier(null, this)
 
     private var mSearchView: SearchView? = null
@@ -179,8 +182,14 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     }
 
     override fun invoke(result: List<Reminder>) {
-        remindersAdapter.submitList(result)
+        val newList = ReminderAdsHolder.updateList(result)
+        remindersAdapter.submitList(newList)
         binding.recyclerView.smoothScrollToPosition(0)
-        reloadView(result.size)
+        reloadView(newList.size)
+    }
+
+    override fun onDestroy() {
+        remindersAdapter.onDestroy()
+        super.onDestroy()
     }
 }
