@@ -748,5 +748,7 @@
     <string name="failed_to_import_backup">バックアップファイルをインポートできませんでした</string>
     <string name="import_data_from_rbak_file">.RBAKファイルからデータをインポートする</string>
     <string name="what_to_do_with_current_data">現在のデータをどうしますか？</string>
+    <string name="birthdays_on_home_for_next">次のホーム画面での誕生日</string>
+    <string name="phone_calls_and_sms">電話とSMS</string>
 
 </resources>

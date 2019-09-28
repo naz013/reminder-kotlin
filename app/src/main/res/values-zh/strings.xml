@@ -747,5 +747,7 @@
     <string name="failed_to_import_backup">无法导入备份文件</string>
     <string name="import_data_from_rbak_file">从.RBAK文件导入数据</string>
     <string name="what_to_do_with_current_data">如何处理当前数据？</string>
+    <string name="birthdays_on_home_for_next">下一个主屏幕上的生日</string>
+    <string name="phone_calls_and_sms">电话和短信</string>
 
 </resources>

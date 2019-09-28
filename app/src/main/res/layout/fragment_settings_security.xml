@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_icon="@drawable/ic_twotone_call_24px"
-                app:prefs_primary_text="Phone calls and SMS"
+                app:prefs_primary_text="@string/phone_calls_and_sms"
                 app:prefs_secondary_text_off="@string/hide_that_functionality"
                 app:prefs_secondary_text_on="@string/allow_phone_call_and_sms_func"
                 app:prefs_type="check_switch" />

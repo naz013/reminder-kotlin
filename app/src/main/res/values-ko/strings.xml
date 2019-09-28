@@ -749,5 +749,7 @@
     <string name="failed_to_import_backup">백업 파일을 가져 오지 못했습니다</string>
     <string name="import_data_from_rbak_file">.RBAK 파일에서 데이터 가져 오기</string>
     <string name="what_to_do_with_current_data">현재 데이터로 무엇을해야합니까?</string>
+    <string name="birthdays_on_home_for_next">다음에 대한 홈 화면의 생일</string>
+    <string name="phone_calls_and_sms">전화 통화 및 SMS</string>
 
 </resources>

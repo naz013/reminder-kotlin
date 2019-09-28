@@ -747,5 +747,7 @@
     <string name="failed_to_import_backup">बैकअप फ़ाइल आयात करने में विफल</string>
     <string name="import_data_from_rbak_file">.RBAK फ़ाइल से डेटा आयात करें</string>
     <string name="what_to_do_with_current_data">वर्तमान डेटा के साथ क्या करना है?</string>
+    <string name="birthdays_on_home_for_next">अगले दिन के लिए होम स्क्रीन पर जन्मदिन</string>
+    <string name="phone_calls_and_sms">फोन कॉल और एस.एम.एस.</string>
 
 </resources>

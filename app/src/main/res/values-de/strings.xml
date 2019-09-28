@@ -747,5 +747,7 @@
     <string name="failed_to_import_backup">Fehler beim Importieren der Sicherungsdatei</string>
     <string name="import_data_from_rbak_file">Importieren Sie Daten aus der .RBAK-Datei</string>
     <string name="what_to_do_with_current_data">Was tun mit aktuellen Daten?</string>
+    <string name="birthdays_on_home_for_next">Geburtstage auf dem Startbildschirm für den nächsten</string>
+    <string name="phone_calls_and_sms">Anrufe und SMS</string>
 
 </resources>

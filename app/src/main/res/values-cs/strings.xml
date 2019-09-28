@@ -747,5 +747,7 @@
     <string name="failed_to_import_backup">Import záložního souboru se nezdařil</string>
     <string name="import_data_from_rbak_file">Importujte data ze souboru .RBAK</string>
     <string name="what_to_do_with_current_data">Co dělat se současnými daty?</string>
+    <string name="birthdays_on_home_for_next">Narozeniny na domovské obrazovce pro další</string>
+    <string name="phone_calls_and_sms">Telefonní hovory a SMS</string>
 
 </resources>

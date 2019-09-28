@@ -747,5 +747,7 @@
     <string name="failed_to_import_backup">Yedekleme dosyası alınamadı</string>
     <string name="import_data_from_rbak_file">.RBAK dosyasından veri alma</string>
     <string name="what_to_do_with_current_data">Mevcut verilerle ne yapmalı?</string>
+    <string name="birthdays_on_home_for_next">Gelecek için ana ekranda doğum günleri</string>
+    <string name="phone_calls_and_sms">Telefon görüşmeleri ve SMS</string>
 
 </resources>
