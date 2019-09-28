@@ -129,6 +129,22 @@ object TimeUtil {
             }
         }
 
+    fun getFireMillis(gmt: String?): Long {
+        if (gmt.isNullOrEmpty()) return 0
+        try {
+            FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
+            val date = FIRE_DATE_FORMAT.parse(gmt) ?: return 0
+            return date.time
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            e.printStackTrace()
+        }
+        return 0
+    }
+
     fun getFireFormatted(prefs: Prefs, gmt: String?): String? {
         if (gmt.isNullOrEmpty()) return null
         try {

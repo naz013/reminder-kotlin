@@ -178,7 +178,8 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
 
     override fun onSale(discount: String, expiryDate: String) {
         val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
-        if (TextUtils.isEmpty(expiry) || !TimeCount.isCurrent(expiryDate)) {
+        val millis = TimeUtil.getFireMillis(expiryDate)
+        if (TextUtils.isEmpty(expiry) || millis < System.currentTimeMillis()) {
             binding.saleBadge.visibility = View.GONE
         } else {
             binding.saleBadge.visibility = View.VISIBLE
