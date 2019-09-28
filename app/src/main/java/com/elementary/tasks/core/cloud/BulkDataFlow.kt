@@ -19,8 +19,9 @@ class BulkDataFlow<T>(private val repository: Repository<T>,
 
     suspend fun backup() {
         repository.all().forEach {
-            dataFlow.backup(it)
+            dataFlow.backup(it, false)
         }
+        dataFlow.saveIndex()
     }
 
     suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {

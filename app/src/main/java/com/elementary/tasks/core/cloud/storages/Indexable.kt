@@ -10,4 +10,6 @@ interface Indexable {
     fun needBackup(id: String, updatedAt: String): Boolean
 
     suspend fun loadIndex()
+
+    suspend fun saveIndex()
 }

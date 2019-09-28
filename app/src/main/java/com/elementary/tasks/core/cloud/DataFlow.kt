@@ -20,16 +20,20 @@ class DataFlow<T>(private val repository: Repository<T>,
                   private val storage: Storage,
                   private val completable: Completable<T>? = null) {
 
-    suspend fun backup(id: String) {
+    suspend fun saveIndex() {
+        storage.saveIndex()
+    }
+
+    suspend fun backup(id: String, updateIndex: Boolean = true) {
         val item = repository.get(id)
         if (item == null) {
             storage.removeIndex(id)
             return
         }
-        backup(item)
+        backup(item, updateIndex)
     }
 
-    suspend fun backup(item: T) {
+    suspend fun backup(item: T, updateIndex: Boolean = true) {
         val fileIndex = convertible.convert(item)
         val metadata = convertible.metadata(item)
         if (fileIndex == null) {
@@ -42,7 +46,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         }
 
         storage.backup(fileIndex, metadata)
-        storage.saveIndex(fileIndex)
+        if (updateIndex) storage.saveIndex(fileIndex)
         completable?.action(item)
         Timber.d("backup: ${metadata.id}")
     }
@@ -106,6 +110,8 @@ class DataFlow<T>(private val repository: Repository<T>,
             IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
         }
     }
+
+
 
     companion object {
         fun availableStorageList(context: Context): List<Storage> {

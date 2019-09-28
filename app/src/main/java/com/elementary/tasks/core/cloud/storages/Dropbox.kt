@@ -182,6 +182,10 @@ class Dropbox : Storage(), KoinComponent {
         loadTokenFile()
     }
 
+    override suspend fun saveIndex() {
+        saveIndexFile()
+    }
+
     override fun sendNotification(type: String, details: String) {
         tokenDataFile.notifyDevices(type, details)
     }

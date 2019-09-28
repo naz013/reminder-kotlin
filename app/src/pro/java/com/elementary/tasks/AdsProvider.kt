@@ -14,6 +14,8 @@ class AdsProvider {
 
     companion object {
         const val REMINDER_BANNER_ID = ""
+        const val NOTE_BANNER_ID = ""
+        const val BIRTHDAY_BANNER_ID = ""
         const val ADS_VIEW_TYPE = 100
 
         fun numberOfAds(contentSize: Int): Int {

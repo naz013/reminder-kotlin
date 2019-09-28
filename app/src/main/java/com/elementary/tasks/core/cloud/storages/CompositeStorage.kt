@@ -54,6 +54,10 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
         storageList.forEach { it.saveIndex(fileIndex) }
     }
 
+    override suspend fun saveIndex() {
+        storageList.forEach { it.saveIndex() }
+    }
+
     override fun hasIndex(id: String): Boolean {
         return false
     }

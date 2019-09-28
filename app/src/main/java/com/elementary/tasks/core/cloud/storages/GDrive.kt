@@ -206,6 +206,10 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         saveIndexFile()
     }
 
+    override suspend fun saveIndex() {
+        saveIndexFile()
+    }
+
     override fun needBackup(id: String, updatedAt: String): Boolean {
         return indexDataFile.isFileChanged(id, updatedAt)
     }
