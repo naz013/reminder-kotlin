@@ -42,10 +42,6 @@ object TimeUtil {
 
     fun simpleDate(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM", lang)
 
-    private fun simpleDateTime24(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, HH:mm", lang)
-
-    private fun simpleDateTime12(lang: Int = 0): SimpleDateFormat = localizedDateFormat("d MMMM, h:mm a", lang)
-
     fun date(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd MMM yyyy", lang)
 
     fun day(lang: Int = 0): SimpleDateFormat = localizedDateFormat("dd", lang)
@@ -65,14 +61,6 @@ object TimeUtil {
         }
         Timber.d("getBirthdayDayMonthList: $list")
         return list
-    }
-
-    fun getBirthdayDayMonth(start: Long = System.currentTimeMillis()): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = start
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH)
-        return "$day|$month"
     }
 
     fun getDayStart(millis: Long = System.currentTimeMillis()): String {
@@ -118,9 +106,9 @@ object TimeUtil {
         var year = ""
 
         try {
-            day = TimeUtil.day(lang).format(date)
-            month = TimeUtil.month(lang).format(date)
-            year = TimeUtil.year(lang).format(date)
+            day = day(lang).format(date)
+            month = month(lang).format(date)
+            year = year(lang).format(date)
         } catch (e: ParseException) {
             e.printStackTrace()
         } catch (e: NumberFormatException) {
@@ -186,7 +174,7 @@ object TimeUtil {
     fun getFutureBirthdayDate(birthdayTime: Long, fullDate: String): DateItem? {
         var date: Date? = null
         try {
-            date = TimeUtil.BIRTH_DATE_FORMAT.parse(fullDate)
+            date = BIRTH_DATE_FORMAT.parse(fullDate)
         } catch (e: ParseException) {
             e.printStackTrace()
         } catch (e: NumberFormatException) {
@@ -464,16 +452,6 @@ object TimeUtil {
         return date(lang).format(calendar.time)
     }
 
-    fun getSimpleDateTime(date: Long, is24: Boolean, lang: Int = 0): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = date
-        return if (is24) {
-            simpleDateTime24(lang).format(calendar.time)
-        } else {
-            simpleDateTime12(lang).format(calendar.time)
-        }
-    }
-
     private fun getGoogleTaskDate(date: Date, lang: Int = 0): String {
         return fullDate(lang).format(date)
     }
@@ -508,7 +486,7 @@ object TimeUtil {
         }
 
         return if (date != null) {
-            TimeUtil.date(lang).format(date)
+            date(lang).format(date)
         } else {
             dateOfBirth
         }
@@ -561,18 +539,6 @@ object TimeUtil {
         calendar.timeInMillis = at
         val mYear = calendar.get(Calendar.YEAR)
         return mYear - year
-    }
-
-    fun getDate(year: Int, month: Int, day: Int): Date {
-        val cal1 = Calendar.getInstance()
-        cal1.set(Calendar.YEAR, year)
-        cal1.set(Calendar.MONTH, month)
-        cal1.set(Calendar.DAY_OF_MONTH, day)
-        cal1.set(Calendar.HOUR_OF_DAY, 0)
-        cal1.set(Calendar.MINUTE, 0)
-        cal1.set(Calendar.SECOND, 0)
-        cal1.set(Calendar.MILLISECOND, 0)
-        return cal1.time
     }
 
     fun generateAfterString(time: Long): String {
