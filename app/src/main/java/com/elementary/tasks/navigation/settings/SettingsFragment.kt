@@ -205,8 +205,8 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
                 .setTitle(getString(R.string.buy_pro))
                 .setMessage(getString(R.string.pro_advantages) + "\n" +
                         getString(R.string.different_settings_for_birthdays) + "\n" +
-                        "- " + getString(R.string.additional_reminder) + "\n" +
-                        getString(R.string.multiple_device_mode) + "\n" +
+                        "- " + getString(R.string.additional_reminder) + ";" + "\n" +
+                        "- " + getString(R.string.multiple_device_mode) + ";" + "\n" +
                         getString(R.string._led_notification_) + "\n" +
                         getString(R.string.led_color_for_each_reminder) + "\n" +
                         getString(R.string.styles_for_marker) + "\n" +
