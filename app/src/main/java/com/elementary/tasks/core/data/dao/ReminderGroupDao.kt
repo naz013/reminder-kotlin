@@ -9,11 +9,9 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface ReminderGroupDao {
 
-    @Transaction
     @Query("SELECT * FROM ReminderGroup WHERE isDefaultGroup=:isDef LIMIT 1")
     fun defaultGroup(isDef: Boolean = true): ReminderGroup?
 
-    @Transaction
     @Query("SELECT * FROM ReminderGroup ORDER BY isDefaultGroup DESC")
     fun all(): List<ReminderGroup>
 

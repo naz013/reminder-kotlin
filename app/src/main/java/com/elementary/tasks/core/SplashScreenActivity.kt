@@ -57,8 +57,11 @@ class SplashScreenActivity : ThemedActivity() {
     private fun gotoApp() {
         checkIfAppUpdated()
         launchDefault {
-            if (db.reminderGroupDao().all().isEmpty()) {
-                GroupsUtil.initDefault(this@SplashScreenActivity)
+            try {
+                if (db.reminderGroupDao().all().isEmpty()) {
+                    GroupsUtil.initDefault(this@SplashScreenActivity)
+                }
+            } catch (e: Exception) {
             }
             withUIContext {
                 enableShortcuts()
