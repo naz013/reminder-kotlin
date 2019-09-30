@@ -21,6 +21,7 @@ import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
+import com.elementary.tasks.google_tasks.list.GoogleTaskAdsHolder
 import com.elementary.tasks.google_tasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -34,7 +35,9 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     private val googleLogin: GoogleLogin by lazy {
         GoogleLogin(activity!!, prefs)
     }
-    private val adapter = TasksRecyclerAdapter()
+    private val adapter = TasksRecyclerAdapter {
+        showTasks(viewModel.allGoogleTasks.value ?: listOf())
+    }
     private val listsRecyclerAdapter = ListsRecyclerAdapter()
 
     override fun layoutRes(): Int = R.layout.fragment_google_tasks
@@ -148,8 +151,9 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun showTasks(list: List<GoogleTask>) {
-        adapter.submitList(list)
-        reloadView(list.size)
+        val newList = GoogleTaskAdsHolder.updateList(list)
+        adapter.submitList(newList)
+        reloadView(newList.size)
     }
 
     private fun showLists(list: List<GoogleTaskList>) {

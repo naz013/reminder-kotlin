@@ -30,7 +30,9 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
 class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
-    private val adapter = TasksRecyclerAdapter()
+    private val adapter = TasksRecyclerAdapter {
+        showTasks(viewModel.googleTasks.value ?: listOf())
+    }
     private val viewModel: GoogleTaskListViewModel by lazy {
         ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
     }
@@ -174,8 +176,9 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
     }
 
     private fun showTasks(googleTasks: List<GoogleTask>) {
-        adapter.submitList(googleTasks)
-        reloadView(googleTasks.size)
+        val newList = GoogleTaskAdsHolder.updateList(googleTasks)
+        adapter.submitList(newList)
+        reloadView(newList.size)
     }
 
     private fun initList() {

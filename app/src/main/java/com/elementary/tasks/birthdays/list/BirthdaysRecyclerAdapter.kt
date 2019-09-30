@@ -25,7 +25,6 @@ class BirthdaysRecyclerAdapter(private val refreshListener: () -> Unit)
                 actionsListener?.onAction(view, i, getItem(i), listActions)
             }
         }
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
