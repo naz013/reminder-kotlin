@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud.storages
 
 import android.content.Context
 import android.text.TextUtils
+import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
 import com.elementary.tasks.core.utils.*
@@ -77,7 +78,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                         .execute()
                 stream.close()
                 Timber.d("backup: STREAM ${driveFile.id}, ${metadata.fileName}")
-                showContent(driveFile.id)
+                if (BuildConfig.DEBUG) showContent(driveFile.id)
             } catch (e: Exception ) {
             } catch (e: OutOfMemoryError) {
             }
