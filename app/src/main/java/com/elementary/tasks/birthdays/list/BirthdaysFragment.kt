@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.birthdays.list.filters.BirthdayAdsHolder
 import com.elementary.tasks.birthdays.list.filters.SearchModifier
 import com.elementary.tasks.birthdays.list.filters.SortModifier
 import com.elementary.tasks.core.data.models.Birthday

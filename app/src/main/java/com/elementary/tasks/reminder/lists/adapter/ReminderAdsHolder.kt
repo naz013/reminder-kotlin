@@ -24,7 +24,11 @@ class ReminderAdsHolder(parent: ViewGroup, adsProvider: AdsProvider, failListene
         fun updateList(list: List<Reminder>): List<Reminder> {
             return if (AdsProvider.hasAds() && list.isNotEmpty()) {
                 val mutable = list.toMutableList()
-                mutable.add(list.size / 2 + 1, Reminder().apply { this.uuId = AdsProvider.REMINDER_BANNER_ID })
+                if (list.size > 6) {
+                    mutable.add(3, Reminder().apply { this.uuId = AdsProvider.REMINDER_BANNER_ID })
+                } else {
+                    mutable.add(list.size / 2 + 1, Reminder().apply { this.uuId = AdsProvider.REMINDER_BANNER_ID })
+                }
                 mutable
             } else {
                 list

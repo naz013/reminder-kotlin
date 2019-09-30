@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
-import com.elementary.tasks.birthdays.list.filters.BirthdayAdsHolder
+import com.elementary.tasks.birthdays.list.BirthdayAdsHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener

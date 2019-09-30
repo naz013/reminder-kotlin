@@ -124,6 +124,7 @@ class AdsProvider {
         const val REMINDER_BANNER_ID = "ca-app-pub-5133908997831400/1092844800"
         const val NOTE_BANNER_ID = "ca-app-pub-5133908997831400/9698572063"
         const val BIRTHDAY_BANNER_ID = "ca-app-pub-5133908997831400/5543225709"
+        const val GTASKS_BANNER_ID = "ca-app-pub-5133908997831400/1152801971"
         const val ADS_VIEW_TYPE = 100
 
         private var wasError = false

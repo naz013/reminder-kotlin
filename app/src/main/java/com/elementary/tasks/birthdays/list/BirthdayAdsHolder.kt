@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays.list.filters
+package com.elementary.tasks.birthdays.list
 
 import android.view.ViewGroup
 import com.elementary.tasks.AdsProvider
@@ -24,7 +24,11 @@ class BirthdayAdsHolder(parent: ViewGroup, adsProvider: AdsProvider, failListene
         fun updateList(list: List<Birthday>): List<Birthday> {
             return if (AdsProvider.hasAds() && list.isNotEmpty()) {
                 val mutable = list.toMutableList()
-                mutable.add(list.size / 2 + 1, Birthday().apply { this.uuId = AdsProvider.BIRTHDAY_BANNER_ID })
+                if (list.size > 6) {
+                    mutable.add(3, Birthday().apply { this.uuId = AdsProvider.BIRTHDAY_BANNER_ID })
+                } else {
+                    mutable.add(list.size / 2 + 1, Birthday().apply { this.uuId = AdsProvider.BIRTHDAY_BANNER_ID })
+                }
                 mutable
             } else {
                 list
