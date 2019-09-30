@@ -78,7 +78,11 @@ class RemindersRecyclerAdapter(private var showHeader: Boolean = true,
         var prevItem: Reminder? = null
         try {
             prevItem = getItem(position - 1)
+            if (prevItem != null && prevItem.uuId == AdsProvider.REMINDER_BANNER_ID) {
+                prevItem = getItem(position - 2)
+            }
         } catch (ignored: Exception) {
+            prevItem = null
         }
 
         val context = listHeader.context
