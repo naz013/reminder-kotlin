@@ -194,6 +194,7 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
                 it.show()
                 it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
                     iFace.state.reminder.exportToCalendar = isChecked
+                    if (isChecked) iFace.state.reminder.calendarId = prefs.defaultCalendarId
                 }
             } else {
                 it.hide()
