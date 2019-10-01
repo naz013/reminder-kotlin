@@ -84,7 +84,8 @@ class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
                 priorityPickerView = binding.priorityView,
                 repeatLimitView = binding.repeatLimitView,
                 repeatView = binding.repeatView,
-                windowTypeView = binding.windowTypeView
+                windowTypeView = binding.windowTypeView,
+                calendarPicker = binding.calendarPicker
         )
     }
 

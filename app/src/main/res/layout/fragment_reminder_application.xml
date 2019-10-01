@@ -177,7 +177,7 @@
                     android:id="@+id/moreLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:expansion_expanded="false">
+                    app:expansion_expanded="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -314,6 +314,13 @@
                             android:text="@string/add_to_calendar"
                             android:textAppearance="?textAppearanceBody1"
                             android:visibility="visible" />
+
+                        <com.elementary.tasks.core.views.HorizontalSelectorView
+                            android:id="@+id/calendarPicker"
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_height="wrap_content" />
 
                         <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/exportToTasks"

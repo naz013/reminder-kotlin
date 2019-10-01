@@ -101,7 +101,8 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
                 repeatLimitView = binding.repeatLimitView,
                 repeatView = binding.repeatView,
                 windowTypeView = binding.windowTypeView,
-                actionView = binding.actionView
+                actionView = binding.actionView,
+                calendarPicker = binding.calendarPicker
         )
     }
 

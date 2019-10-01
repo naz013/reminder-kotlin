@@ -116,7 +116,8 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
                 priorityPickerView = binding.priorityView,
                 repeatLimitView = binding.repeatLimitView,
                 windowTypeView = binding.windowTypeView,
-                actionView = binding.actionView
+                actionView = binding.actionView,
+                calendarPicker = binding.calendarPicker
         )
     }
 

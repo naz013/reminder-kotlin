@@ -173,6 +173,10 @@ class Dialogues {
         private const val MAX_RADIUS = 100000
         private const val MAX_DEF_RADIUS = 5000
 
+        fun getMaterialDialog(context: Context): MaterialAlertDialogBuilder {
+            return MaterialAlertDialogBuilder(context)
+        }
+
         fun showPopup(anchor: View,
                       listener: ((Int) -> Unit)?, vararg actions: String) {
             val popupMenu = PopupMenu(anchor.context, anchor)

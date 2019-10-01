@@ -29,6 +29,11 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
     protected val prefs: Prefs by inject()
     protected val dialogues: Dialogues by inject()
     protected val themeUtil: ThemeUtil by inject()
+    protected val calendarUtils: CalendarUtils by inject()
+
+    private val calendars: List<CalendarUtils.CalendarItem> by lazy {
+        calendarUtils.getCalendarsList()
+    }
 
     private var melodyView: MelodyView? = null
     private var attachmentView: AttachmentView? = null
@@ -59,7 +64,8 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
                            summaryView: TextInputEditText? = null, repeatView: RepeatView? = null,
                            dateTimeView: DateTimeView? = null, priorityPickerView: PriorityPickerView? = null,
                            windowTypeView: WindowTypeView? = null, repeatLimitView: RepeatLimitView? = null,
-                           loudnessPickerView: LoudnessPickerView? = null, actionView: ActionView? = null) {
+                           loudnessPickerView: LoudnessPickerView? = null, actionView: ActionView? = null,
+                           calendarPicker: HorizontalSelectorView? = null) {
         this.attachmentView = attachmentView
         this.melodyView = melodyView
         this.groupView = groupView
@@ -194,10 +200,15 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
                 it.show()
                 it.bindProperty(iFace.state.reminder.exportToCalendar) { isChecked ->
                     iFace.state.reminder.exportToCalendar = isChecked
-                    if (isChecked) iFace.state.reminder.calendarId = prefs.defaultCalendarId
+                    if (isChecked) {
+                        calendarPicker?.show()
+                    } else {
+                        calendarPicker?.hide()
+                    }
                 }
             } else {
                 it.hide()
+                calendarPicker?.hide()
             }
         }
         tasksCheck?.let {
@@ -215,6 +226,33 @@ abstract class TypeFragment<B : ViewDataBinding> : BindingFragment<B>() {
             it.bindProperty(iFace.state.reminder) { reminder ->
                 iFace.state.reminder.copyExtra(reminder)
             }
+        }
+        if (iFace.canExportToCalendar) {
+            calendarPicker?.let {
+                it.pickerProvider = {
+                    calendars.map { calendarItem -> calendarItem.name }
+                }
+                it.titleProvider = { pointer -> calendars[pointer].name }
+                it.dataSize = calendars.size
+                it.selectListener = { pointer, _ ->
+                    iFace.state.reminder.calendarId = calendars[pointer].id
+                }
+                var index = 0
+                for (c in calendars) {
+                    if (c.id == iFace.state.reminder.calendarId) {
+                        index = calendars.indexOf(c)
+                        break
+                    }
+                }
+                it.selectItem(index)
+            }
+            if (calendarCheck?.isChecked == true) {
+                calendarPicker?.show()
+            } else {
+                calendarPicker?.hide()
+            }
+        } else {
+            calendarPicker?.hide()
         }
         updateHeader()
     }

@@ -254,6 +254,13 @@
                             android:textAppearance="?textAppearanceBody1"
                             android:visibility="visible" />
 
+                        <com.elementary.tasks.core.views.HorizontalSelectorView
+                            android:id="@+id/calendarPicker"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginEnd="16dp" />
+
                         <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/exportToTasks"
                             android:layout_width="match_parent"
