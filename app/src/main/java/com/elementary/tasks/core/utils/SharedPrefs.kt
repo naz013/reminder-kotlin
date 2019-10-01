@@ -9,6 +9,24 @@ import java.io.*
 abstract class SharedPrefs(protected val context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
+    fun getLongArray(stringToLoad: String): Array<Long> {
+        return try {
+            prefs.getStringSet(stringToLoad, setOf<String>())?.map {
+                try {
+                    it.toLong()
+                } catch (e: Exception) {
+                    0L
+                }
+            }?.toTypedArray() ?: arrayOf()
+        } catch (e: Exception) {
+            arrayOf()
+        }
+    }
+
+    fun putLongArray(stringToSave: String, array: Array<Long>) {
+        prefs.edit().putStringSet(stringToSave, array.map { it.toString() }.toSet()).apply()
+    }
+
     fun putStringArray(stringToSave: String, array: Array<String>) {
         prefs.edit().putStringSet(stringToSave, array.toSet()).apply()
     }
@@ -63,6 +81,10 @@ abstract class SharedPrefs(protected val context: Context) {
 
     fun hasKey(checkString: String): Boolean {
         return prefs.contains(checkString)
+    }
+
+    fun removeKey(checkString: String) {
+        prefs.edit().remove(checkString).apply()
     }
 
     fun putBoolean(stringToSave: String, value: Boolean) {

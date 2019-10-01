@@ -16,14 +16,14 @@ import com.elementary.tasks.core.data.models.Reminder
 import timber.log.Timber
 import java.util.*
 
-class CalendarUtils(private val context: Context, private val prefs: Prefs, private val appDb: AppDb){
+class CalendarUtils(private val context: Context, private val prefs: Prefs, private val appDb: AppDb) {
 
     /**
      * Add event to calendar.
      */
     fun addEvent(reminder: Reminder) {
-        val mId = prefs.calendarId
-        if (mId != 0) {
+        val mId = reminder.calendarId
+        if (mId != 0L) {
             val tz = TimeZone.getDefault()
             val timeZone = tz.displayName
             val cr = context.contentResolver
@@ -106,13 +106,14 @@ class CalendarUtils(private val context: Context, private val prefs: Prefs, priv
                             CalendarContract.Events._ID,
                             CalendarContract.Events.CALENDAR_ID,
                             CalendarContract.Events.ALL_DAY
-                    ), CalendarContract.Events._ID+ "='" + id + "'", null, "dtstart ASC")
+                    ), CalendarContract.Events._ID + "='" + id + "'", null, "dtstart ASC")
             if (c != null && c.moveToFirst()) {
                 val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
-                val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION)) ?: ""
+                val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION))
+                        ?: ""
                 val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE)) ?: ""
                 val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE)) ?: ""
-                val calendarId = c.getInt(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
+                val calendarId = c.getLong(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
                 val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
                 val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
                 val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
@@ -169,7 +170,7 @@ class CalendarUtils(private val context: Context, private val prefs: Prefs, priv
 
         if (c != null && c.moveToFirst()) {
             do {
-                val mID = c.getInt(c.getColumnIndex(mProjection[0]))
+                val mID = c.getLong(c.getColumnIndex(mProjection[0]))
                 val title = c.getString(c.getColumnIndex(mProjection[2])) ?: ""
                 ids.add(CalendarItem(title, mID))
             } while (c.moveToNext())
@@ -178,31 +179,38 @@ class CalendarUtils(private val context: Context, private val prefs: Prefs, priv
         return ids
     }
 
-    fun getEvents(id: Int): List<EventItem> {
-        val list = ArrayList<EventItem>()
+    fun getEvents(ids: Array<Long>): List<EventItem> {
+        if (ids.isEmpty()) return listOf()
         if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            return list
+            return listOf()
         }
+        val list = mutableListOf<EventItem>()
         try {
             val contentResolver = context.contentResolver
-            val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
-                    arrayOf(CalendarContract.Events.TITLE, CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND, CalendarContract.Events.RRULE, CalendarContract.Events.RDATE, CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ALL_DAY),
-                    CalendarContract.Events.CALENDAR_ID + "='" + id + "'", null, "dtstart ASC")
-            if (c != null && c.moveToFirst()) {
-                do {
-                    val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)) ?: ""
-                    val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION)) ?: ""
-                    val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE)) ?: ""
-                    val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE)) ?: ""
-                    val calendarId = c.getInt(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
-                    val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
-                    val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
-                    val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
-                    val eventID = c.getLong(c.getColumnIndex(CalendarContract.Events._ID))
-                    list.add(EventItem(title, description, rrule, rDate,
-                            calendarId, allDay, dtStart, dtEnd, eventID))
-                } while (c.moveToNext())
-                c.close()
+            for (id in ids) {
+                val c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
+                        arrayOf(CalendarContract.Events.TITLE, CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND, CalendarContract.Events.RRULE, CalendarContract.Events.RDATE, CalendarContract.Events._ID, CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.ALL_DAY),
+                        CalendarContract.Events.CALENDAR_ID + "='" + id + "'", null, "dtstart ASC")
+                if (c != null && c.moveToFirst()) {
+                    do {
+                        val title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE))
+                                ?: ""
+                        val description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION))
+                                ?: ""
+                        val rrule = c.getString(c.getColumnIndex(CalendarContract.Events.RRULE))
+                                ?: ""
+                        val rDate = c.getString(c.getColumnIndex(CalendarContract.Events.RDATE))
+                                ?: ""
+                        val calendarId = c.getLong(c.getColumnIndex(CalendarContract.Events.CALENDAR_ID))
+                        val allDay = c.getInt(c.getColumnIndex(CalendarContract.Events.ALL_DAY))
+                        val dtStart = c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART))
+                        val dtEnd = c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND))
+                        val eventID = c.getLong(c.getColumnIndex(CalendarContract.Events._ID))
+                        list.add(EventItem(title, description, rrule, rDate,
+                                calendarId, allDay, dtStart, dtEnd, eventID, ""))
+                    } while (c.moveToNext())
+                    c.close()
+                }
             }
         } catch (e: Exception) {
         }
@@ -210,8 +218,9 @@ class CalendarUtils(private val context: Context, private val prefs: Prefs, priv
     }
 
     data class EventItem(val title: String, val description: String, val rrule: String,
-                         private val rDate: String, val calendarID: Int, val allDay: Int,
-                         val dtStart: Long, val dtEnd: Long, val id: Long, var localId: String = "")
+                         private val rDate: String, val calendarId: Long, val allDay: Int,
+                         val dtStart: Long, val dtEnd: Long, val id: Long,
+                         var localId: String = "")
 
-    data class CalendarItem(val name: String, val id: Int)
+    data class CalendarItem(val name: String, val id: Long, var isSelected: Boolean = false)
 }

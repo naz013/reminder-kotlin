@@ -50,15 +50,15 @@ object EventJobScheduler {
         cancelReminder(EVENT_CHECK)
     }
 
-    fun scheduleBirthdaysCheck() {
+    fun scheduleBirthdaysCheck(context: Context) {
         val work = PeriodicWorkRequest.Builder(CheckBirthdaysWorker::class.java, 24, TimeUnit.HOURS, 1, TimeUnit.HOURS)
                 .addTag(EVENT_CHECK_BIRTHDAYS)
                 .build()
-        WorkManager.getInstance().enqueue(work)
+        WorkManager.getInstance(context).enqueue(work)
     }
 
-    fun cancelBirthdaysCheck() {
-        WorkManager.getInstance().cancelAllWorkByTag(EVENT_CHECK_BIRTHDAYS)
+    fun cancelBirthdaysCheck(context: Context) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(EVENT_CHECK_BIRTHDAYS)
     }
 
     fun scheduleBirthdayPermanent() {

@@ -59,6 +59,10 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         return false
     }
 
+    var trackCalendarIds: Array<Long>
+        get() = getLongArray(PrefsConstants.CALENDAR_IDS)
+        set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
+
     var showPermanentOnHome: Boolean
         get() = getBoolean(PrefsConstants.SHOW_PERMANENT_REMINDERS)
         set(value) {
@@ -424,9 +428,14 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.EVENT_DURATION)
         set(value) = putInt(PrefsConstants.EVENT_DURATION, value)
 
-    var calendarId: Int
+    @Deprecated("Use {defaultCalendarId} parameter")
+    private var calendarId: Int
         get() = getInt(PrefsConstants.CALENDAR_ID)
         set(value) = putInt(PrefsConstants.CALENDAR_ID, value)
+
+    var defaultCalendarId: Long
+        get() = getLong(PrefsConstants.DEFAULT_CALENDAR_ID)
+        set(value) = putLong(PrefsConstants.DEFAULT_CALENDAR_ID, value)
 
     var isFutureEventEnabled: Boolean
         get() = getBoolean(PrefsConstants.CALENDAR_FEATURE_TASKS)
@@ -448,7 +457,8 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL)
         set(value) = putInt(PrefsConstants.AUTO_CHECK_FOR_EVENTS_INTERVAL, value)
 
-    var eventsCalendar: Int
+    @Deprecated("Use {calendarIds} parameter")
+    private var eventsCalendar: Int
         get() = getInt(PrefsConstants.EVENTS_CALENDAR)
         set(value) = putInt(PrefsConstants.EVENTS_CALENDAR, value)
 
@@ -692,6 +702,18 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
     }
 
     fun checkPrefs() {
+        if (hasKey(PrefsConstants.CALENDAR_ID)) {
+            if (calendarId != 0) {
+                defaultCalendarId = calendarId.toLong()
+            }
+            removeKey(PrefsConstants.CALENDAR_ID)
+        }
+        if (hasKey(PrefsConstants.EVENTS_CALENDAR)) {
+            if (eventsCalendar != 0) {
+                trackCalendarIds = arrayOf(eventsCalendar.toLong())
+            }
+            removeKey(PrefsConstants.EVENTS_CALENDAR)
+        }
         if (!hasKey(PrefsConstants.TODAY_COLOR)) {
             putInt(PrefsConstants.TODAY_COLOR, 4)
         }

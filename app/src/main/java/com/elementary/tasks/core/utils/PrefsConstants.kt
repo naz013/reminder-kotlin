@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 object PrefsConstants {
 
     const val PREFS_NAME = "prefs_six"
+    @Deprecated("Should not use")
     const val EVENTS_CALENDAR = "events_cal"
     const val AUTO_CHECK_FOR_EVENTS = "auto_events"
     const val AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval"
@@ -23,7 +24,10 @@ object PrefsConstants {
     const val DELAY_TIME = "delay_time"
     const val EVENT_DURATION = "event_duration"
     const val EXPORT_TO_CALENDAR = "export_to_calendar"
+    @Deprecated("Should not use")
     const val CALENDAR_ID = "cal_id"
+    const val CALENDAR_IDS = "calendar_ids"
+    const val DEFAULT_CALENDAR_ID = "default_calendar_id"
     const val AUTO_CHECK_BIRTHDAYS = "birthdays_auto_scan"
     const val LED_STATUS = "led_status"
     const val LED_COLOR = "led_color"

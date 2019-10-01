@@ -242,7 +242,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
     private fun findPosition(list: List<CalendarUtils.CalendarItem>): Int {
         if (list.isEmpty()) return -1
-        val id = prefs.calendarId
+        val id = prefs.defaultCalendarId
         for (i in list.indices) {
             val item = list[i]
             if (item.id == id) {
@@ -581,7 +581,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         }
         builder.setPositiveButton(R.string.save) { dialog, _ ->
             if (mItemSelect != -1 && mItemSelect < mDataList.size) {
-                prefs.calendarId = mDataList[mItemSelect].id
+                prefs.defaultCalendarId = mDataList[mItemSelect].id
             }
             dialog.dismiss()
             showCurrentCalendar()

@@ -19,7 +19,7 @@ class BootReceiver : BaseBroadcast() {
                 Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
             }
             if (prefs.isContactAutoCheckEnabled) {
-                EventJobScheduler.scheduleBirthdaysCheck()
+                EventJobScheduler.scheduleBirthdaysCheck(context)
             }
             if (prefs.isAutoEventsCheckEnabled) {
                 EventJobScheduler.scheduleEventCheck(prefs)

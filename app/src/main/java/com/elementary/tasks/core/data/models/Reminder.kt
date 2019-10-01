@@ -118,6 +118,8 @@ data class Reminder(
         var hasReminder: Boolean = false,
         @SerializedName("duration")
         var duration: Long = 0,
+        @SerializedName("calendarId")
+        var calendarId: Long = 0,
         @SerializedName("remindBefore")
         var remindBefore: Long = 0,
         @SerializedName("windowType")
@@ -194,6 +196,7 @@ data class Reminder(
         this.hasReminder = item.hasReminder
         this.groupTitle = item.groupTitle
         this.groupColor = item.groupColor
+        this.calendarId = item.calendarId
         if (fullCopy) {
             this.uuId = item.uuId
             this.uniqueId = item.uniqueId

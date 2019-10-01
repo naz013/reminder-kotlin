@@ -3,9 +3,9 @@ package com.elementary.tasks.navigation.settings.calendar
 import android.app.AlarmManager
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -25,6 +25,7 @@ import java.util.*
 
 class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(), CompoundButton.OnCheckedChangeListener {
 
+    private val calendarsAdapter = CalendarsAdapter()
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()
     private var mJob: Job? = null
@@ -59,6 +60,9 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         binding.autoCheck.setOnCheckedChangeListener(this)
         binding.autoCheck.isChecked = prefs.isAutoEventsCheckEnabled
         binding.syncInterval.isEnabled = false
+
+        binding.eventCalendars.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.eventCalendars.adapter = calendarsAdapter
     }
 
     private fun showIntervalDialog() {
@@ -110,15 +114,8 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             if (list.isEmpty()) {
                 Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
             }
-            val spinnerArray = ArrayList<String>()
-            spinnerArray.add(getString(R.string.choose_calendar))
-            if (list.isNotEmpty()) {
-                for (item in list) {
-                    spinnerArray.add(item.name)
-                }
-            }
-            val spinnerArrayAdapter = ArrayAdapter(it, android.R.layout.simple_list_item_1, spinnerArray)
-            binding.eventCalendar.adapter = spinnerArrayAdapter
+            calendarsAdapter.data = list
+            calendarsAdapter.selectIds(prefs.trackCalendarIds)
         }
     }
 
@@ -138,20 +135,18 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
                 Toast.makeText(it, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
                 return@withActivity
             }
-            if (binding.eventCalendar.selectedItemPosition == 0) {
+            val selectedIds = calendarsAdapter.getSelectedIds()
+            if (selectedIds.isEmpty()) {
                 Toast.makeText(it, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show()
                 return@withActivity
             }
-            val map = mutableMapOf<String, Int>()
-            val selectedPosition = binding.eventCalendar.selectedItemPosition - 1
-            map[EVENT_KEY] = list[selectedPosition].id
             val isEnabled = prefs.isCalendarEnabled
             if (!isEnabled) {
                 prefs.isCalendarEnabled = true
-                prefs.calendarId = list[selectedPosition].id
+                prefs.defaultCalendarId = selectedIds[0]
             }
-            prefs.eventsCalendar = list[selectedPosition].id
-            import(map)
+            prefs.trackCalendarIds = selectedIds
+            import(selectedIds)
         }
     }
 
@@ -191,7 +186,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         }
     }
 
-    private fun import(map: Map<String, Int>) {
+    private fun import(ids: Array<Long>) {
         val ctx = context ?: return
         binding.button.isEnabled = false
         binding.progressView.visibility = View.VISIBLE
@@ -199,54 +194,52 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
             val currTime = System.currentTimeMillis()
             var eventsCount = 0
             val appDb = AppDb.getAppDatabase(ctx)
-            if (map.containsKey(EVENT_KEY)) {
-                val eventItems = calendarUtils.getEvents(map[EVENT_KEY] ?: 0)
-                if (eventItems.isNotEmpty()) {
-                    val list = appDb.calendarEventsDao().eventIds()
-                    for (item in eventItems) {
-                        val itemId = item.id
-                        if (!list.contains(itemId)) {
-                            val rrule = item.rrule
-                            var repeat: Long = 0
-                            if (rrule != "" && !rrule.matches("".toRegex())) {
-                                try {
-                                    val rule = RecurrenceRule(rrule)
-                                    val interval = rule.interval
-                                    val freq = rule.freq
-                                    repeat = when {
-                                        freq === Freq.SECONDLY -> interval * TimeCount.SECOND
-                                        freq === Freq.MINUTELY -> interval * TimeCount.MINUTE
-                                        freq === Freq.HOURLY -> interval * TimeCount.HOUR
-                                        freq === Freq.WEEKLY -> interval.toLong() * 7 * TimeCount.DAY
-                                        freq === Freq.MONTHLY -> interval.toLong() * 30 * TimeCount.DAY
-                                        freq === Freq.YEARLY -> interval.toLong() * 365 * TimeCount.DAY
-                                        else -> interval * TimeCount.DAY
-                                    }
-                                } catch (e: InvalidRecurrenceRuleException) {
-                                    e.printStackTrace()
+            val eventItems = calendarUtils.getEvents(ids)
+            if (eventItems.isNotEmpty()) {
+                val list = appDb.calendarEventsDao().eventIds()
+                for (item in eventItems) {
+                    val itemId = item.id
+                    if (!list.contains(itemId)) {
+                        val rrule = item.rrule
+                        var repeat: Long = 0
+                        if (rrule != "" && !rrule.matches("".toRegex())) {
+                            try {
+                                val rule = RecurrenceRule(rrule)
+                                val interval = rule.interval
+                                val freq = rule.freq
+                                repeat = when {
+                                    freq === Freq.SECONDLY -> interval * TimeCount.SECOND
+                                    freq === Freq.MINUTELY -> interval * TimeCount.MINUTE
+                                    freq === Freq.HOURLY -> interval * TimeCount.HOUR
+                                    freq === Freq.WEEKLY -> interval.toLong() * 7 * TimeCount.DAY
+                                    freq === Freq.MONTHLY -> interval.toLong() * 30 * TimeCount.DAY
+                                    freq === Freq.YEARLY -> interval.toLong() * 365 * TimeCount.DAY
+                                    else -> interval * TimeCount.DAY
                                 }
+                            } catch (e: InvalidRecurrenceRuleException) {
+                                e.printStackTrace()
                             }
-                            val summary = item.title
-                            val group = appDb.reminderGroupDao().defaultGroup()
-                            var categoryId = ""
-                            if (group != null) {
-                                categoryId = group.groupUuId
-                            }
-                            val calendar = Calendar.getInstance()
-                            var dtStart = item.dtStart
-                            calendar.timeInMillis = dtStart
-                            if (dtStart >= currTime) {
+                        }
+                        val summary = item.title
+                        val group = appDb.reminderGroupDao().defaultGroup()
+                        var categoryId = ""
+                        if (group != null) {
+                            categoryId = group.groupUuId
+                        }
+                        val calendar = Calendar.getInstance()
+                        var dtStart = item.dtStart
+                        calendar.timeInMillis = dtStart
+                        if (dtStart >= currTime) {
+                            eventsCount += 1
+                            saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId, appDb)
+                        } else {
+                            if (repeat > 0) {
+                                do {
+                                    calendar.timeInMillis = dtStart + repeat * AlarmManager.INTERVAL_DAY
+                                    dtStart = calendar.timeInMillis
+                                } while (dtStart < currTime)
                                 eventsCount += 1
-                                saveReminder(itemId, summary, dtStart, repeat, categoryId, appDb)
-                            } else {
-                                if (repeat > 0) {
-                                    do {
-                                        calendar.timeInMillis = dtStart + repeat * AlarmManager.INTERVAL_DAY
-                                        dtStart = calendar.timeInMillis
-                                    } while (dtStart < currTime)
-                                    eventsCount += 1
-                                    saveReminder(itemId, summary, dtStart, repeat, categoryId, appDb)
-                                }
+                                saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId, appDb)
                             }
                         }
                     }
@@ -268,12 +261,14 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
         }
     }
 
-    private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String, appDb: AppDb) {
+    private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long,
+                             categoryId: String, calendarId: Long, appDb: AppDb) {
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
         reminder.repeatInterval = repeat
         reminder.groupUuId = categoryId
         reminder.summary = summary
+        reminder.calendarId = calendarId
         reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
         reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
         appDb.reminderDao().insert(reminder)
@@ -287,8 +282,6 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     }
 
     companion object {
-
-        const val EVENT_KEY = "Events"
         private const val CALENDAR_PERM = 500
         private const val AUTO_PERM = 501
     }

@@ -23,7 +23,7 @@ import com.elementary.tasks.core.data.models.*
     ImageFile::class,
 //    ReminderChain::class,
     SmsTemplate::class
-], version = 4, exportSchema = false)
+], version = 5, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
@@ -90,6 +90,14 @@ abstract class AppDb : RoomDatabase() {
 //                        PRIMARY KEY(uuId))""")
             }
         }
+        private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                try {
+                    database.execSQL("ALTER TABLE Reminder ADD COLUMN calendarId INTEGER DEFAULT 0 NOT NULL")
+                } catch (e: Exception) {
+                }
+            }
+        }
 
         fun getAppDatabase(context: Context): AppDb {
             var instance = INSTANCE
@@ -98,7 +106,8 @@ abstract class AppDb : RoomDatabase() {
                         .addMigrations(
                                 MIGRATION_1_2,
                                 MIGRATION_2_3,
-                                MIGRATION_3_4
+                                MIGRATION_3_4,
+                                MIGRATION_4_5
                         )
                         .allowMainThreadQueries()
                         .build()

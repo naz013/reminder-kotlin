@@ -34,8 +34,7 @@ class CheckEventsWorker(context: Context, workerParams: WorkerParameters) : Work
     private fun launchCheckEvents(context: Context) {
         launchDefault {
             val currTime = System.currentTimeMillis()
-            val calID = prefs.eventsCalendar
-            val eventItems = calendarUtils.getEvents(calID)
+            val eventItems = calendarUtils.getEvents(prefs.trackCalendarIds)
             if (eventItems.isNotEmpty()) {
                 val list = AppDb.getAppDatabase(context).calendarEventsDao().eventIds()
                 for (item in eventItems) {
@@ -72,14 +71,14 @@ class CheckEventsWorker(context: Context, workerParams: WorkerParameters) : Work
                         var dtStart = item.dtStart
                         calendar.timeInMillis = dtStart
                         if (dtStart >= currTime) {
-                            saveReminder(itemId, summary, dtStart, repeat, categoryId)
+                            saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId)
                         } else {
                             if (repeat > 0) {
                                 do {
                                     calendar.timeInMillis = dtStart + repeat * AlarmManager.INTERVAL_DAY
                                     dtStart = calendar.timeInMillis
                                 } while (dtStart < currTime)
-                                saveReminder(itemId, summary, dtStart, repeat, categoryId)
+                                saveReminder(itemId, summary, dtStart, repeat, categoryId, item.calendarId)
                             }
                         }
                     }
@@ -88,12 +87,14 @@ class CheckEventsWorker(context: Context, workerParams: WorkerParameters) : Work
         }
     }
 
-    private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String) {
+    private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long,
+                             categoryId: String, calendarId: Long) {
         val reminder = Reminder()
         reminder.type = Reminder.BY_DATE
         reminder.repeatInterval = repeat
         reminder.groupUuId = categoryId
         reminder.summary = summary
+        reminder.calendarId = calendarId
         reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
         reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
         appDb.reminderDao().insert(reminder)
@@ -104,11 +105,11 @@ class CheckEventsWorker(context: Context, workerParams: WorkerParameters) : Work
     companion object {
         private const val TAG = "CheckEventsWorker"
 
-        fun schedule() {
+        fun schedule(context: Context) {
             val work = OneTimeWorkRequest.Builder(CheckEventsWorker::class.java)
                     .addTag(TAG)
                     .build()
-            WorkManager.getInstance().enqueue(work)
+            WorkManager.getInstance(context).enqueue(work)
         }
     }
 }

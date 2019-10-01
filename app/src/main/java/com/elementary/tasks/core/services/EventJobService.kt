@@ -56,7 +56,7 @@ class EventJobService : Job(), KoinComponent {
     }
 
     private fun eventsCheckAction() {
-        CheckEventsWorker.schedule()
+        CheckEventsWorker.schedule(context)
         EventJobScheduler.scheduleEventCheck(prefs)
     }
 

@@ -162,9 +162,9 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         binding.autoScanPrefs.isChecked = !isChecked
         prefs.isContactAutoCheckEnabled = !isChecked
         if (!isChecked) {
-            EventJobScheduler.scheduleBirthdaysCheck()
+            EventJobScheduler.scheduleBirthdaysCheck(context!!)
         } else {
-            EventJobScheduler.cancelBirthdaysCheck()
+            EventJobScheduler.cancelBirthdaysCheck(context!!)
         }
     }
 
