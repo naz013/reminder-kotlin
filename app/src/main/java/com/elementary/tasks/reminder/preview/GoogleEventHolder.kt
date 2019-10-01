@@ -4,9 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.ListItemGoogleCalendarEventBinding
 
 class GoogleEventHolder (parent: ViewGroup, listener: ((View, CalendarUtils.EventItem?, ListActions) -> Unit)?) :
@@ -22,6 +20,12 @@ class GoogleEventHolder (parent: ViewGroup, listener: ((View, CalendarUtils.Even
         this.eventItem = eventItem
         binding.task.text = eventItem.title
         binding.note.text = eventItem.description
+        if (eventItem.calendarName.isEmpty()) {
+            binding.calendarName.hide()
+        } else {
+            binding.calendarName.text = eventItem.calendarName
+            binding.calendarName.show()
+        }
         if (eventItem.dtStart != 0L) {
             binding.dtStart.text = TimeUtil.getFullDateTime(eventItem.dtStart, prefs.is24HourFormat, prefs.appLanguage)
         }

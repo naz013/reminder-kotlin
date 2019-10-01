@@ -46,7 +46,17 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
                 _googleTask.postValue(Pair(appDb.googleTaskListsDao().getById(googleTask.listId), googleTask))
             }
             val events = calendarUtils.loadEvents(reminder.uuId)
-            _calendarEvent.postValue(events)
+            if (events.isNotEmpty()) {
+                val calendars = calendarUtils.getCalendarsList()
+                for (c in calendars) {
+                    for (e in events) {
+                        if (e.calendarId == c.id) {
+                            e.calendarName = c.name
+                        }
+                    }
+                }
+                _calendarEvent.postValue(events)
+            }
         }
     }
 

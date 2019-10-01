@@ -36,6 +36,15 @@
                     tools:text="Task" />
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/calendarName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:maxLines="1"
+                    android:textAppearance="?textAppearanceBody2"
+                    tools:text="Calendar name" />
+
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
