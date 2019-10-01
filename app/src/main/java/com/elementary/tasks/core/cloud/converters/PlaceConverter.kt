@@ -5,7 +5,8 @@ import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.google.gson.Gson
+import timber.log.Timber
+import java.io.InputStream
 
 class PlaceConverter : Convertible<Place> {
 
@@ -32,16 +33,18 @@ class PlaceConverter : Convertible<Place> {
                 this.readyToBackup = true
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): Place? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): Place? {
         return try {
-            val json = MemoryUtil.decryptToJson(encrypted) ?: return null
-            return Gson().fromJson(json, Place::class.java)
+            val place = MemoryUtil.fromStream(stream, Place::class.java)
+            stream.close()
+            return place
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

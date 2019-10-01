@@ -87,26 +87,6 @@ object MemoryUtil {
         return String.format(Locale.US, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 
-    fun readFileContent(file: File): String {
-        try {
-            val inputStream = FileInputStream(file)
-            val r = BufferedReader(InputStreamReader(inputStream))
-            val total = StringBuilder()
-            var line: String?
-            do {
-                line = r.readLine()
-                if (line != null) {
-                    total.append(line)
-                }
-            } while (line != null)
-            inputStream.close()
-            return total.toString()
-        } catch (e: Exception) {
-            Timber.d("readFileContent: ${e.message}")
-            throw IllegalStateException("Failed to read file")
-        }
-    }
-
     @Throws(IOException::class)
     fun writeFileNoEncryption(file: File, data: String?): String? {
         if (data == null) return null
@@ -139,33 +119,46 @@ object MemoryUtil {
         return file.toString()
     }
 
-    fun decryptToJson(encrypted: String?): String? {
-        if (encrypted == null) return null
-        return try {
-            val inputStream = ByteArrayInputStream(encrypted.toByteArray())
-            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
-            val r = BufferedReader(InputStreamReader(output64))
-            val total = StringBuilder()
-            var line: String?
-            do {
-                line = r.readLine()
-                if (line != null) {
-                    total.append(line)
-                }
-            } while (line != null)
-            output64.close()
-            inputStream.close()
-            val res = total.toString()
-            if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]")) {
-                Timber.d("readFileToJson: $res")
-                res
-            } else {
-                Timber.d("readFileToJson: Bad JSON")
-                null
+    fun <T> fromStream(stream: InputStream, clazz: Class<T>): T? {
+        try {
+            val output64 = Base64InputStream(stream, Base64.DEFAULT)
+            val bufferedReader = BufferedReader(InputStreamReader(output64))
+            val reader = JsonReader(bufferedReader)
+            Timber.d("fromStream: $stream, $clazz")
+            val t: T?
+            try {
+                t = Gson().fromJson<T>(reader, clazz)
+            } catch (e: Exception) {
+                return null
+            } catch (e: OutOfMemoryError) {
+                return null
             }
+            reader.close()
+            return t
         } catch (e: Exception) {
-            Timber.d("readFileToJson: Bad JSON")
-            null
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    fun <T> fromStreamNoDecrypt(stream: InputStream, clazz: Class<T>): T? {
+        try {
+            val bufferedReader = BufferedReader(InputStreamReader(stream))
+            val reader = JsonReader(bufferedReader)
+            Timber.d("fromStream: $stream, $clazz")
+            val t: T?
+            try {
+                t = Gson().fromJson<T>(reader, clazz)
+            } catch (e: Exception) {
+                return null
+            } catch (e: OutOfMemoryError) {
+                return null
+            }
+            reader.close()
+            return t
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
         }
     }
 
@@ -199,7 +192,7 @@ object MemoryUtil {
         }
     }
 
-    fun decryptToJson(context: Context, uri: Uri, source: String = ""): Any? {
+    fun readFromUri(context: Context, uri: Uri, source: String = ""): Any? {
         val cr = context.contentResolver ?: return null
         var inputStream: InputStream? = null
         try {
@@ -227,7 +220,7 @@ object MemoryUtil {
         } catch (e: Exception) {
             source
         }
-        Timber.d("decryptToJson: $name, $source")
+        Timber.d("readFromUri: $name, $source")
         return try {
             val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
             val r = JsonReader(BufferedReader(InputStreamReader(output64)))
@@ -254,7 +247,7 @@ object MemoryUtil {
             }
             Gson().fromJson(r, type)
         } catch (e: Exception) {
-            Timber.d("decryptToJson: Bad JSON")
+            Timber.d("readFromUri: Bad JSON")
             e.printStackTrace()
             null
         }

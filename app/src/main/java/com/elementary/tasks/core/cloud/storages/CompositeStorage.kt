@@ -5,6 +5,7 @@ import com.elementary.tasks.core.utils.launchIo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import timber.log.Timber
+import java.io.InputStream
 
 class CompositeStorage(private val storageList: List<Storage>) : Storage() {
 
@@ -16,7 +17,7 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
         storageList.forEach { it.backup(fileIndex, metadata) }
     }
 
-    override suspend fun restore(fileName: String): String? {
+    override suspend fun restore(fileName: String): InputStream? {
         storageList.forEach {
             val data = it.restore(fileName)
             if (data != null) return data
@@ -24,8 +25,8 @@ class CompositeStorage(private val storageList: List<Storage>) : Storage() {
         return null
     }
 
-    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
-        val channel = Channel<String>()
+    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+        val channel = Channel<InputStream>()
         if (storageList.isEmpty()) {
             channel.cancel()
             return channel

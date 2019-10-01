@@ -336,6 +336,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         initSyncButton()
         initBackupButton()
         initExportButton()
+        initImportButton()
     }
 
     private fun initClearDataPrefs() {

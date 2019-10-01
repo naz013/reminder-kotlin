@@ -119,7 +119,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
         intent.data?.let {
             try {
                 mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_PLACE)
+                    val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_PLACE)
                     if (any != null && any is Place) {
                         any
                     } else null

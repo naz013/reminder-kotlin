@@ -61,12 +61,12 @@ class EventJobService : Job(), KoinComponent {
     }
 
     private fun autoBackupAction() {
-        BackupDataWorker.schedule()
+        BackupDataWorker.schedule(context)
         EventJobScheduler.scheduleAutoBackup(prefs)
     }
 
     private fun autoSyncAction() {
-        SyncDataWorker.schedule()
+        SyncDataWorker.schedule(context)
         EventJobScheduler.scheduleAutoSync(prefs)
     }
 

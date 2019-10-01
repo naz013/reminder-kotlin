@@ -7,7 +7,8 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.OldNote
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.google.gson.Gson
+import timber.log.Timber
+import java.io.InputStream
 import java.lang.ref.WeakReference
 
 class NoteConverter : Convertible<NoteWithImages> {
@@ -35,15 +36,15 @@ class NoteConverter : Convertible<NoteWithImages> {
                 this.readyToBackup = true
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): NoteWithImages? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): NoteWithImages? {
         return try {
-            val json = MemoryUtil.decryptToJson(encrypted) ?: return null
-            val weakNote = WeakReference(Gson().fromJson(json, OldNote::class.java))
+            val weakNote = WeakReference(MemoryUtil.fromStream(stream, OldNote::class.java))
+            stream.close()
             val oldNote = weakNote.get() ?: return null
             val noteWithImages = NoteWithImages()
             oldNote.images.forEach {
@@ -53,6 +54,7 @@ class NoteConverter : Convertible<NoteWithImages> {
             noteWithImages.images = oldNote.images
             return noteWithImages
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

@@ -207,7 +207,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
                 try {
                     var fromFile = false
                     val reminder = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                        val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_REMINDER)
+                        val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_REMINDER)
                         if (any != null && any is Reminder) {
                             fromFile = true
                             any

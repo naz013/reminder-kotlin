@@ -5,7 +5,8 @@ import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.google.gson.Gson
+import timber.log.Timber
+import java.io.InputStream
 
 class GroupConverter : Convertible<ReminderGroup> {
 
@@ -32,16 +33,18 @@ class GroupConverter : Convertible<ReminderGroup> {
                 this.readyToBackup = true
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): ReminderGroup? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): ReminderGroup? {
         return try {
-            val json = MemoryUtil.decryptToJson(encrypted) ?: return null
-            return Gson().fromJson(json, ReminderGroup::class.java)
+            val group = MemoryUtil.fromStream(stream, ReminderGroup::class.java)
+            stream.close()
+            return group
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

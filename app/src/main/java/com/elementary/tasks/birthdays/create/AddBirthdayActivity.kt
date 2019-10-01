@@ -148,7 +148,7 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
         intent.data?.let {
             try {
                 mBirthday = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_BIRTHDAY)
+                    val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_BIRTHDAY)
                     if (any != null && any is Birthday) {
                         any
                     } else null

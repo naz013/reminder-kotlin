@@ -1,9 +1,10 @@
 package com.elementary.tasks.core.cloud.storages
 
-import android.text.TextUtils
 import com.google.gson.GsonBuilder
 import org.json.JSONObject
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
@@ -45,8 +46,22 @@ class IndexDataFile {
         return jsonObject.has(id)
     }
 
-    fun parse(json: String?) {
-        Timber.d("parse: $json")
+    fun parse(stream: InputStream?) {
+        Timber.d("parse: $stream")
+        if (stream == null) {
+            isLoaded = true
+            return
+        }
+        var json: String? = ""
+        try {
+            val out = ByteArrayOutputStream()
+            stream.use {
+                it.copyTo(out)
+            }
+            json = out.toString()
+            stream.close()
+        } catch (e: Exception) {
+        }
         if (json == null) {
             isLoaded = true
             return
@@ -64,7 +79,7 @@ class IndexDataFile {
         for (key in jsonObject.keys()) {
             try {
                 val fileIndex = gson.fromJson(jsonObject.getJSONObject(key).toString(), FileIndex::class.java)
-                if (fileIndex != null && !TextUtils.isEmpty(fileIndex.json)) {
+                if (fileIndex != null && fileIndex.isOk()) {
                     jsonObject.put(fileIndex.id, gson.toJson(fileIndex))
                 }
             } catch (e: Exception) {

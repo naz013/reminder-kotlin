@@ -8,10 +8,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.launchIo
 import kotlinx.coroutines.channels.Channel
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.lang.ref.WeakReference
+import java.io.*
 
 class LocalStorage(context: Context) : Storage() {
 
@@ -38,14 +35,14 @@ class LocalStorage(context: Context) : Storage() {
         }
     }
 
-    override suspend fun restore(fileName: String): String? {
+    override suspend fun restore(fileName: String): InputStream? {
         if (!Module.isQ && hasSdPermission) {
             val dir = folderFromFileName(fileName)
             if (dir != null) {
                 val file = File(dir, fileName)
                 return if (file.exists()) {
                     try {
-                        MemoryUtil.readFileContent(file)
+                        FileInputStream(file)
                     } catch (e: Exception) {
                         null
                     }
@@ -57,8 +54,8 @@ class LocalStorage(context: Context) : Storage() {
         return null
     }
 
-    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
-        val channel = Channel<String>()
+    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+        val channel = Channel<InputStream>()
         if (Module.isQ || !hasSdPermission) {
             channel.cancel()
             return channel
@@ -77,8 +74,7 @@ class LocalStorage(context: Context) : Storage() {
             for (f in files) {
                 try {
                     try {
-                        val data = WeakReference(MemoryUtil.readFileContent(f))
-                        channel.send(data.get() ?: "")
+                        channel.send(FileInputStream(f))
                     } catch (e: Exception) {
                     }
                     if (deleteFile && f.exists()) {

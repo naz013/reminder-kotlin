@@ -56,8 +56,8 @@ class DataFlow<T>(private val repository: Repository<T>,
         if (id.isEmpty() || fileName.isEmpty()) {
             return
         }
-        val encrypted = storage.restore(fileName) ?: return
-        val item = convertible.convert(encrypted) ?: return
+        val inputStream = storage.restore(fileName) ?: return
+        val item = convertible.convert(inputStream) ?: return
         val localItem = repository.get(id)
         val needUpdate = if (localItem != null) {
             val metadata = convertible.metadata(item)
@@ -110,8 +110,6 @@ class DataFlow<T>(private val repository: Repository<T>,
             IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
         }
     }
-
-
 
     companion object {
         fun availableStorageList(context: Context): List<Storage> {

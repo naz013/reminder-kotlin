@@ -1,13 +1,16 @@
 package com.elementary.tasks.core.cloud.converters
 
+import android.util.Base64
+import android.util.Base64InputStream
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SettingsModel
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeUtil
-import java.io.ByteArrayInputStream
+import timber.log.Timber
 import java.io.IOException
+import java.io.InputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
@@ -58,16 +61,16 @@ class SettingsConverter : Convertible<SettingsModel> {
                 }
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): SettingsModel? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): SettingsModel? {
         return try {
             var input: ObjectInputStream? = null
             try {
-                input = ObjectInputStream(ByteArrayInputStream(encrypted.toByteArray()))
+                input = ObjectInputStream(Base64InputStream(stream, Base64.DEFAULT))
                 val entries = input.readObject() as MutableMap<String, *>
                 SettingsModel(entries)
             } catch (e: Exception) {
@@ -81,6 +84,7 @@ class SettingsConverter : Convertible<SettingsModel> {
                 }
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

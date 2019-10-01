@@ -6,7 +6,8 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.google.gson.Gson
+import timber.log.Timber
+import java.io.InputStream
 
 class BirthdayConverter : Convertible<Birthday> {
 
@@ -33,16 +34,18 @@ class BirthdayConverter : Convertible<Birthday> {
                 this.readyToBackup = true
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): Birthday? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): Birthday? {
         return try {
-            val json = MemoryUtil.decryptToJson(encrypted) ?: return null
-            return Gson().fromJson(json, Birthday::class.java)
+            val birthday = MemoryUtil.fromStream(stream, Birthday::class.java)
+            stream.close()
+            return birthday
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

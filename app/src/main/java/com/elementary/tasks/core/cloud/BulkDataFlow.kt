@@ -26,9 +26,8 @@ class BulkDataFlow<T>(private val repository: Repository<T>,
 
     suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {
         storage.restoreAll(dataFlow.getFileExt(indexTypes), deleteFile).consumeEach {
-            Timber.d("restore: $it")
-            if (it.isEmpty()) return
             val item = convertible.convert(it) ?: return
+            Timber.d("restore: $item")
             repository.insert(item)
             completable?.action(item)
         }

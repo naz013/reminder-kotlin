@@ -102,7 +102,7 @@ class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(
         const val FLAG_TEMPLATE = "flag.template"
         const val FLAG_SETTINGS = "flag.settings"
 
-        fun schedule() {
+        fun schedule(context: Context) {
             val work = OneTimeWorkRequest.Builder(SyncDataWorker::class.java)
                     .addTag(TAG)
                     .setConstraints(Constraints.Builder()
@@ -110,7 +110,7 @@ class SyncDataWorker(context: Context, workerParams: WorkerParameters) : Worker(
                             .setRequiresBatteryNotLow(true)
                             .build())
                     .build()
-            WorkManager.getInstance().enqueue(work)
+            WorkManager.getInstance(context).enqueue(work)
         }
     }
 }

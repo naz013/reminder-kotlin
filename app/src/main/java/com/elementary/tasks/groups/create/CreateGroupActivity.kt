@@ -105,7 +105,7 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
         intent.data?.let {
             try {
                 (if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_GROUP)
+                    val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_GROUP)
                     if (any != null && any is ReminderGroup) {
                         any
                     } else {

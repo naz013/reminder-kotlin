@@ -24,13 +24,13 @@ class SyncMessagingService : FirebaseMessagingService() {
             if (data != null) {
                 val fileName = data["details"] ?: ""
                 when (data["type"] ?: "") {
-                    "tokens" -> LoadTokensWorker.schedule()
-                    "file" -> LoadFileWorker.schedule(fileName)
-                    "delete" -> DeleteFileWorker.schedule(fileName)
-                    else -> SyncDataWorker.schedule()
+                    "tokens" -> LoadTokensWorker.schedule(applicationContext)
+                    "file" -> LoadFileWorker.schedule(applicationContext, fileName)
+                    "delete" -> DeleteFileWorker.schedule(applicationContext, fileName)
+                    else -> SyncDataWorker.schedule(applicationContext)
                 }
             } else {
-                SyncDataWorker.schedule()
+                SyncDataWorker.schedule(applicationContext)
             }
         }
     }

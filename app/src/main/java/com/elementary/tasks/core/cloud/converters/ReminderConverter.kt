@@ -6,7 +6,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.google.gson.Gson
+import timber.log.Timber
+import java.io.InputStream
 
 class ReminderConverter : Convertible<Reminder> {
 
@@ -35,16 +36,18 @@ class ReminderConverter : Convertible<Reminder> {
                 this.readyToBackup = true
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): Reminder? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): Reminder? {
         return try {
-            val json = MemoryUtil.decryptToJson(encrypted) ?: return null
-            return Gson().fromJson(json, Reminder::class.java)
+            val reminder = MemoryUtil.fromStream(stream, Reminder::class.java)
+            stream.close()
+            return reminder
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

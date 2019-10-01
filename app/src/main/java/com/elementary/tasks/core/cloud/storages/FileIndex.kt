@@ -5,7 +5,6 @@ import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.io.ByteArrayOutputStream
 
 @Keep
 data class FileIndex(
@@ -27,13 +26,14 @@ data class FileIndex(
         @SerializedName("type")
         @Transient
         var type: IndexTypes = IndexTypes.TYPE_REMINDER,
-        @SerializedName("json")
-        @Transient
-        var json: String? = null,
         @SerializedName("stream")
         @Transient
         var stream: CopyByteArrayStream? = null,
         @SerializedName("readyToBackup")
         @Transient
         var readyToBackup: Boolean = false
-)
+) {
+    fun isOk(): Boolean {
+        return ext.isNotEmpty() && id.isEmpty()
+    }
+}

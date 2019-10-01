@@ -504,7 +504,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
         intent.data?.let {
             try {
                 mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
-                    val any = MemoryUtil.decryptToJson(this, it, FileConfig.FILE_NAME_NOTE)
+                    val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_NOTE)
                     if (any != null && any is OldNote) {
                         BackupTool.oldNoteToNew(any)
                     } else {

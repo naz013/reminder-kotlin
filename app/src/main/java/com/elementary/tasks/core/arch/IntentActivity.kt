@@ -28,7 +28,7 @@ class IntentActivity: ThemedActivity() {
         Timber.d("onCreate: $data, $scheme")
 
         if (ContentResolver.SCHEME_CONTENT == scheme) {
-            val any = MemoryUtil.decryptToJson(this, data)
+            val any = MemoryUtil.readFromUri(this, data)
             Timber.d("getPlace: $any")
             if (any != null) {
                 when (any) {

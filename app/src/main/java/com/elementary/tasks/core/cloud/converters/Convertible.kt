@@ -1,17 +1,12 @@
 package com.elementary.tasks.core.cloud.converters
 
 import com.elementary.tasks.core.cloud.storages.FileIndex
+import java.io.InputStream
 
 interface Convertible<T> {
-    /**
-     * Convert object to json.
-     */
     fun convert(t: T): FileIndex?
 
-    /**
-     * Convert from json to object.
-     */
-    fun convert(encrypted: String): T?
+    fun convert(stream: InputStream): T?
 
     fun metadata(t: T): Metadata
 }

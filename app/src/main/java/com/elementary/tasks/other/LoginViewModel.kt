@@ -122,7 +122,7 @@ class LoginViewModel : ViewModel(), LifecycleObserver, KoinComponent {
                 dao.insert(item)
             }
             if (prefs.isBackupEnabled) {
-                BackupDataWorker.schedule()
+                BackupDataWorker.schedule(context)
             }
         }
     }

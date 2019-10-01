@@ -20,7 +20,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 class Dropbox : Storage(), KoinComponent {
 
@@ -88,7 +88,7 @@ class Dropbox : Storage(), KoinComponent {
         }
     }
 
-    override suspend fun restore(fileName: String): String? {
+    override suspend fun restore(fileName: String): InputStream? {
         if (!isLinked) {
             return null
         }
@@ -96,19 +96,15 @@ class Dropbox : Storage(), KoinComponent {
         val folder = folderFromFileName(fileName)
         Timber.d("restore: $fileName, $folder")
         return try {
-            val outputStream = ByteArrayOutputStream()
-            api.files().download(folder + fileName).download(outputStream)
-            val data = outputStream.toString()
-            outputStream.close()
-            data
+            api.files().download(folder + fileName).inputStream
         } catch (e: Exception) {
             Timber.d("restore: ${e.message}")
             null
         }
     }
 
-    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
-        val channel = Channel<String>()
+    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+        val channel = Channel<InputStream>()
         if (!isLinked) {
             channel.cancel()
             return channel
@@ -126,11 +122,7 @@ class Dropbox : Storage(), KoinComponent {
                 if (result != null) {
                     for (e in result.entries) {
                         val fileName = e.name
-                        val outputStream = ByteArrayOutputStream()
-                        api.files().download(folder + fileName).download(outputStream)
-                        val data = outputStream.toString()
-                        outputStream.close()
-                        channel.send(data)
+                        channel.send(api.files().download(folder + fileName).inputStream)
                         if (deleteFile) {
                             api.files().deleteV2(e.pathLower)
                         }
@@ -196,8 +188,8 @@ class Dropbox : Storage(), KoinComponent {
             return
         }
         tokenDataFile.isLoading = true
-        val json = restore(TokenDataFile.FILE_NAME)
-        tokenDataFile.parse(json)
+        val inputStream = restore(TokenDataFile.FILE_NAME) ?: return
+        tokenDataFile.parse(inputStream)
         withUIContext {
             if (prefs.multiDeviceModeEnabled) {
                 FirebaseInstanceId.getInstance().instanceId
@@ -226,8 +218,8 @@ class Dropbox : Storage(), KoinComponent {
     }
 
     private suspend fun loadIndexFile() {
-        val json = restore(IndexDataFile.FILE_NAME)
-        indexDataFile.parse(json)
+        val inputStream = restore(IndexDataFile.FILE_NAME)
+        indexDataFile.parse(inputStream)
     }
 
     private fun saveIndexFile() {

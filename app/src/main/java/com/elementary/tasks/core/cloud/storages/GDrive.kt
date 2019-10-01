@@ -22,6 +22,7 @@ import org.koin.core.inject
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.util.*
 
 class GDrive private constructor(context: Context) : Storage(), KoinComponent {
@@ -79,7 +80,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 stream.close()
                 Timber.d("backup: STREAM ${driveFile.id}, ${metadata.fileName}")
                 if (BuildConfig.DEBUG) showContent(driveFile.id)
-            } catch (e: Exception ) {
+            } catch (e: Exception) {
             } catch (e: OutOfMemoryError) {
             }
         }
@@ -118,7 +119,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         }
     }
 
-    override suspend fun restore(fileName: String): String? {
+    override suspend fun restore(fileName: String): InputStream? {
         Timber.d("restore: $fileName")
         val service = driveService ?: return null
         if (!isLogged) return null
@@ -134,9 +135,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                     Timber.d("restore: ${f.name}, ${f.id}, $fileName")
                     val title = f.name
                     if (title == fileName) {
-                        val out = ByteArrayOutputStream()
-                        service.files().get(f.id).executeMediaAndDownloadTo(out)
-                        return out.toString()
+                        return service.files().get(f.id).executeMediaAsInputStream()
                     }
                 }
                 request.pageToken = filesResult.nextPageToken
@@ -147,8 +146,8 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
         return null
     }
 
-    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<String> {
-        val channel = Channel<String>()
+    override fun restoreAll(ext: String, deleteFile: Boolean): Channel<InputStream> {
+        val channel = Channel<InputStream>()
         val service = driveService
         if (service == null) {
             channel.cancel()
@@ -171,9 +170,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                         Timber.d("restoreAll: ${f.name}, ${f.id}, $ext")
                         val title = f.name
                         if (title.endsWith(ext)) {
-                            val out = ByteArrayOutputStream()
-                            service.files().get(f.id).executeMediaAndDownloadTo(out)
-                            channel.send(out.toString())
+                            channel.send(service.files().get(f.id).executeMediaAsInputStream())
                             if (deleteFile) {
                                 service.files().delete(f.id).execute()
                             }
@@ -230,8 +227,8 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             return
         }
         tokenDataFile.isLoading = true
-        val json = restore(TokenDataFile.FILE_NAME)
-        tokenDataFile.parse(json)
+        val inputStream = restore(TokenDataFile.FILE_NAME) ?: return
+        tokenDataFile.parse(inputStream)
         withUIContext {
             if (prefs.multiDeviceModeEnabled) {
                 FirebaseInstanceId.getInstance().instanceId
@@ -260,8 +257,8 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     }
 
     private suspend fun loadIndexFile() {
-        val json = restore(IndexDataFile.FILE_NAME)
-        indexDataFile.parse(json)
+        val inputStream = restore(IndexDataFile.FILE_NAME)
+        indexDataFile.parse(inputStream)
     }
 
     private fun saveIndexFile() {
@@ -297,10 +294,12 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             val service = driveService ?: return null
             if (!isLogged) return null
             try {
-                val about = service.about().get().setFields("user, storageQuota").execute() ?: return null
+                val about = service.about().get().setFields("user, storageQuota").execute()
+                        ?: return null
                 val quota = about.storageQuota ?: return null
                 return UserItem(name = about.user.displayName ?: "", quota = quota.limit,
-                        used = quota.usage, count = countFiles(), photo = about.user.photoLink ?: "")
+                        used = quota.usage, count = countFiles(), photo = about.user.photoLink
+                        ?: "")
             } catch (e: Exception) {
                 e.printStackTrace()
             }

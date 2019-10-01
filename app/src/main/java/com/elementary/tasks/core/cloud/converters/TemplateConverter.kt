@@ -5,7 +5,8 @@ import com.elementary.tasks.core.cloud.storages.FileIndex
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.CopyByteArrayStream
 import com.elementary.tasks.core.utils.MemoryUtil
-import com.google.gson.Gson
+import timber.log.Timber
+import java.io.InputStream
 
 class TemplateConverter : Convertible<SmsTemplate> {
 
@@ -32,16 +33,18 @@ class TemplateConverter : Convertible<SmsTemplate> {
                 this.readyToBackup = true
             }
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }
 
-    override fun convert(encrypted: String): SmsTemplate? {
-        if (encrypted.isEmpty()) return null
+    override fun convert(stream: InputStream): SmsTemplate? {
         return try {
-            val json = MemoryUtil.decryptToJson(encrypted) ?: return null
-            return Gson().fromJson(json, SmsTemplate::class.java)
+            val template = MemoryUtil.fromStream(stream, SmsTemplate::class.java)
+            stream.close()
+            return template
         } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

@@ -19,7 +19,7 @@ class LoadTokensWorker(context: Context, workerParams: WorkerParameters) : Worke
     companion object {
         private const val TAG = "LoadTokensWorker"
 
-        fun schedule() {
+        fun schedule(context: Context) {
             val work = OneTimeWorkRequest.Builder(LoadTokensWorker::class.java)
                     .addTag(TAG)
                     .setConstraints(Constraints.Builder()
@@ -27,7 +27,7 @@ class LoadTokensWorker(context: Context, workerParams: WorkerParameters) : Worke
                             .setRequiresBatteryNotLow(true)
                             .build())
                     .build()
-            WorkManager.getInstance().enqueue(work)
+            WorkManager.getInstance(context).enqueue(work)
         }
     }
 }

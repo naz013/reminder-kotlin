@@ -65,7 +65,7 @@ class LoadFileWorker(context: Context, val workerParams: WorkerParameters) : Wor
         private const val TAG = "LoadFileWorker"
         private const val ARG_FILE_NAME = "arg_file_name"
 
-        fun schedule(fileName: String) {
+        fun schedule(context: Context, fileName: String) {
             val work = OneTimeWorkRequest.Builder(LoadFileWorker::class.java)
                     .addTag(TAG + fileName)
                     .setInputData(Data.Builder()
@@ -76,7 +76,7 @@ class LoadFileWorker(context: Context, val workerParams: WorkerParameters) : Wor
                             .setRequiresBatteryNotLow(true)
                             .build())
                     .build()
-            WorkManager.getInstance().enqueue(work)
+            WorkManager.getInstance(context).enqueue(work)
         }
     }
 }
