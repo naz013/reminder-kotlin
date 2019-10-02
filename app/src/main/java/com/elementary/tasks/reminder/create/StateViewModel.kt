@@ -1,17 +1,36 @@
 package com.elementary.tasks.reminder.create
 
+import android.content.Context
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.PrefsConstants
+import com.elementary.tasks.core.utils.mutableLiveDataOf
+import com.elementary.tasks.reminder.create.selector.Option
+import com.elementary.tasks.reminder.create.selector.OptionsFactory
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
-class StateViewModel : ViewModel(), LifecycleObserver {
+class StateViewModel : ViewModel(), LifecycleObserver, KoinComponent, (String) -> Unit {
+
+    private val prefs: Prefs by inject()
+    private val context: Context by inject()
+
+    private val _options = mutableLiveDataOf<List<Option>>()
+    val options: LiveData<List<Option>> = _options
 
     var shopItems: List<ShopItem> = listOf()
     var weekdays: List<Int> = listOf()
     var reminder: Reminder = Reminder()
+        set(value) {
+            field = value
+            initOptions(value.type)
+        }
     var group: ReminderGroup? = null
 
     var isShopItemsEdited: Boolean = false
@@ -47,7 +66,19 @@ class StateViewModel : ViewModel(), LifecycleObserver {
     var isFromFile: Boolean = false
 
     init {
+        prefs.addObserver(PrefsConstants.REMINDER_OPTIONS, this)
+        initOptions()
         setDateTime()
+    }
+
+    private fun initOptions(type: Int = 0) {
+        val keys = prefs.reminderOptions
+        _options.postValue(OptionsFactory.createList(
+                context,
+                keys,
+                if (type != 0) OptionsFactory.keyFromType(type) else "",
+                prefs.lastUsedReminder
+        ))
     }
 
     private fun setDateTime(millis: Long = System.currentTimeMillis()) {
@@ -58,5 +89,14 @@ class StateViewModel : ViewModel(), LifecycleObserver {
         year = calendar.get(Calendar.YEAR)
         hour = calendar.get(Calendar.HOUR)
         minute = calendar.get(Calendar.MINUTE)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        prefs.removeObserver(PrefsConstants.REMINDER_OPTIONS, this)
+    }
+
+    override fun invoke(p1: String) {
+        initOptions(reminder.type)
     }
 }

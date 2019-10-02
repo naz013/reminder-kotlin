@@ -121,9 +121,10 @@ object PrefsConstants {
     const val PRIVACY_SHOWED = "privacy_showed"
     const val SHOW_PERMANENT_REMINDERS = "show_permanent_reminders"
     const val TO_BIRTHDAY_DAYS = "to_birthday_days"
+    const val REMINDER_OPTIONS = "reminder_options"
 
     const val REMINDER_CHANGED = "reminder_changed"
-    const val LAST_USED_REMINDER = "last_reminder"
+    const val LAST_USED_REMINDER = "last_reminder_key"
     const val LAST_LIST = "last_list"
     const val NOTES_ORDER = "notes_ordering"
     const val NOTES_LIST_STYLE = "notes_style"
