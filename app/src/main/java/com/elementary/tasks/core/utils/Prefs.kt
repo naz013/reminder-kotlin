@@ -59,10 +59,6 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         return false
     }
 
-    var reminderOptions: Array<String>
-        get() = getStringArray(PrefsConstants.REMINDER_OPTIONS)
-        set(value) = putStringArray(PrefsConstants.REMINDER_OPTIONS, value)
-
     var trackCalendarIds: Array<Long>
         get() = getLongArray(PrefsConstants.CALENDAR_IDS)
         set(value) = putLongArray(PrefsConstants.CALENDAR_IDS, value)
@@ -201,9 +197,9 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.TELL_ABOUT_EVENT)
         set(value) = putBoolean(PrefsConstants.TELL_ABOUT_EVENT, value)
 
-    var lastUsedReminder: String
-        get() = getString(PrefsConstants.LAST_USED_REMINDER)
-        set(value) = putString(PrefsConstants.LAST_USED_REMINDER, value)
+    var lastUsedReminder: Int
+        get() = getInt(PrefsConstants.LAST_USED_REMINDER)
+        set(value) = putInt(PrefsConstants.LAST_USED_REMINDER, value)
 
     var markerStyle: Int
         get() = getInt(PrefsConstants.MARKER_STYLE)

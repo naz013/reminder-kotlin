@@ -10,9 +10,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:colorBackground"
-            android:orientation="vertical"
+            android:layout_height="?attr/actionBarSize"
             android:stateListAnimator="@animator/toolbar_animator"
             tools:targetApi="lollipop">
 
@@ -20,19 +18,14 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?android:colorBackground"
-                android:elevation="0dp" />
+                android:background="?android:colorBackground">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?colorSecondary" />
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/navSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/optionsList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+            </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
