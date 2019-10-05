@@ -65,8 +65,12 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     val isPlaying: Boolean
         get() {
             return try {
-                val mp = mMediaPlayer ?: return false
-                mp.isPlaying
+                val mp = mMediaPlayer
+                val ringtone = mRingtone
+                if (mp == null && ringtone == null) return false
+                if (mp != null && mp.isPlaying) return true
+                if (ringtone != null && ringtone.isPlaying) return true
+                false
             } catch (e: Exception) {
                 false
             }
@@ -201,7 +205,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
         }
     }
 
-    private fun playRingtone(path: Uri) {
+    fun playRingtone(path: Uri) {
         Timber.d("playRingtone: $path")
         notifyStart()
         mRingtone = RingtoneManager.getRingtone(mContext, path)

@@ -3,11 +3,14 @@ package com.elementary.tasks.navigation.settings
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -598,7 +601,12 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             if (soundStackHolder.sound?.isPlaying == true) {
                 soundStackHolder.sound?.stop(true)
             } else {
-                soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.melodyFile).uri, false)
+                val melody = ReminderUtils.getSound(context!!, prefs, prefs.melodyFile)
+                if (melody.melodyType == ReminderUtils.MelodyType.RINGTONE) {
+                    soundStackHolder.sound?.playRingtone(melody.uri)
+                } else {
+                    soundStackHolder.sound?.playAlarm(melody.uri, false)
+                }
             }
         })
     }
@@ -618,7 +626,16 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
             else -> {
                 if (!filePath.matches("".toRegex())) {
                     val musicFile = File(filePath)
-                    musicFile.name
+                    if (musicFile.exists()) {
+                        musicFile.name
+                    } else {
+                        val ringtone = RingtoneManager.getRingtone(context, filePath.toUri())
+                        if (ringtone != null) {
+                            ringtone.getTitle(context)
+                        } else {
+                            labels[1]
+                        }
+                    }
                 } else {
                     labels[1]
                 }
@@ -632,7 +649,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 getString(R.string.default_string) + ": " + getString(R.string.ringtone),
                 getString(R.string.default_string) + ": " + getString(R.string.notification),
                 getString(R.string.default_string) + ": " + getString(R.string.alarm),
-                getString(R.string.choose_file)
+                getString(R.string.choose_file),
+                getString(R.string.choose_ringtone)
         )
     }
 
@@ -645,7 +663,19 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 Constants.SOUND_RINGTONE -> 0
                 Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
                 Constants.SOUND_ALARM -> 2
-                else -> 3
+                else -> {
+                    val musicFile = File(prefs.melodyFile)
+                    if (musicFile.exists()) {
+                        3
+                    } else {
+                        val ringtone = RingtoneManager.getRingtone(context, prefs.melodyFile.toUri())
+                        if (ringtone != null) {
+                            4
+                        } else {
+                            1
+                        }
+                    }
+                }
             }
             builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
@@ -657,7 +687,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                     0 -> prefs.melodyFile = Constants.SOUND_RINGTONE
                     1 -> prefs.melodyFile = Constants.SOUND_NOTIFICATION
                     2 -> prefs.melodyFile = Constants.SOUND_ALARM
-                    else -> pickMelody()
+                    3 -> pickMelody()
+                    else -> pickRingtone()
                 }
                 showMelody()
             }
@@ -665,6 +696,17 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                 dialog.dismiss()
             }
             builder.create().show()
+        }
+    }
+
+    private fun pickRingtone() {
+        withActivity {
+            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone_for_notifications))
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
+            startActivityForResult(intent, RINGTONE_CODE)
         }
     }
 
@@ -928,6 +970,13 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
                     showMelody()
                 }
             }
+            RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
+                val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                if (uri != null) {
+                    prefs.melodyFile = uri.toString()
+                    showMelody()
+                }
+            }
             Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
                 if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
                     val filePath = cacheUtil.cacheFile(data)
@@ -984,6 +1033,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     companion object {
 
         private const val MELODY_CODE = 125
+        private const val RINGTONE_CODE = 126
         private const val PERM_BT = 1425
         private const val PERM_AUTO_CALL = 1427
         private const val PERM_IMAGE = 1428

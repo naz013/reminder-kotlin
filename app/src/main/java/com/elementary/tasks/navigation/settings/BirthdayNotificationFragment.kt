@@ -2,9 +2,12 @@ package com.elementary.tasks.navigation.settings
 
 import android.app.Activity
 import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBirthdayNotificationsBinding
@@ -173,7 +176,12 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             if (soundStackHolder.sound?.isPlaying == true) {
                 soundStackHolder.sound?.stop(true)
             } else {
-                soundStackHolder.sound?.playAlarm(ReminderUtils.getSound(context!!, prefs, prefs.birthdayMelody).uri, false)
+                val melody = ReminderUtils.getSound(context!!, prefs, prefs.melodyFile)
+                if (melody.melodyType == ReminderUtils.MelodyType.RINGTONE) {
+                    soundStackHolder.sound?.playRingtone(melody.uri)
+                } else {
+                    soundStackHolder.sound?.playAlarm(melody.uri, false)
+                }
             }
         })
     }
@@ -193,13 +201,41 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
             else -> {
                 if (!filePath.matches("".toRegex())) {
                     val musicFile = File(filePath)
-                    musicFile.name
+                    if (musicFile.exists()) {
+                        musicFile.name
+                    } else {
+                        val ringtone = RingtoneManager.getRingtone(context, filePath.toUri())
+                        if (ringtone != null) {
+                            ringtone.getTitle(context)
+                        } else {
+                            labels[1]
+                        }
+                    }
                 } else {
                     labels[1]
                 }
             }
         }
         binding.chooseSoundPrefs.setDetailText(label)
+    }
+
+    private fun pickRingtone() {
+        withActivity {
+            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone_for_notifications))
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL)
+            startActivityForResult(intent, RINGTONE_CODE)
+        }
+    }
+
+    private fun pickMelody() {
+        withActivity {
+            if (Permissions.checkPermission(it, PERM_MELODY, Permissions.READ_EXTERNAL)) {
+                cacheUtil.pickMelody(it, MELODY_CODE)
+            }
+        }
     }
 
     private fun isDefaultMelody(): Boolean {
@@ -211,7 +247,8 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                 getString(R.string.default_string) + ": " + getString(R.string.ringtone),
                 getString(R.string.default_string) + ": " + getString(R.string.notification),
                 getString(R.string.default_string) + ": " + getString(R.string.alarm),
-                getString(R.string.choose_file)
+                getString(R.string.choose_file),
+                getString(R.string.choose_ringtone)
         )
     }
 
@@ -224,7 +261,19 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                 Constants.SOUND_RINGTONE -> 0
                 Constants.SOUND_NOTIFICATION, Constants.DEFAULT -> 1
                 Constants.SOUND_ALARM -> 2
-                else -> 3
+                else -> {
+                    val musicFile = File(prefs.birthdayMelody)
+                    if (musicFile.exists()) {
+                        3
+                    } else {
+                        val ringtone = RingtoneManager.getRingtone(context, prefs.birthdayMelody.toUri())
+                        if (ringtone != null) {
+                            4
+                        } else {
+                            1
+                        }
+                    }
+                }
             }
             builder.setSingleChoiceItems(melodyLabels(), mItemSelect) { _, which -> mItemSelect = which }
             builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
@@ -236,11 +285,8 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                     0 -> prefs.birthdayMelody = Constants.SOUND_RINGTONE
                     1 -> prefs.birthdayMelody = Constants.SOUND_NOTIFICATION
                     2 -> prefs.birthdayMelody = Constants.SOUND_ALARM
-                    else -> {
-                        if (Permissions.checkPermission(it, Permissions.READ_EXTERNAL)) {
-                            cacheUtil.pickMelody(activity!!, MELODY_CODE)
-                        }
-                    }
+                    3 -> pickMelody()
+                    else -> pickRingtone()
                 }
                 showMelody()
             }
@@ -395,6 +441,13 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
                     showMelody()
                 }
             }
+            RINGTONE_CODE -> if (resultCode == Activity.RESULT_OK) {
+                val uri = data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                if (uri != null) {
+                    prefs.birthdayMelody = uri.toString()
+                    showMelody()
+                }
+            }
         }
     }
 
@@ -405,7 +458,18 @@ class BirthdayNotificationFragment : BaseSettingsFragment<FragmentSettingsBirthd
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Permissions.checkPermission(grantResults)) {
+            when (requestCode) {
+                PERM_MELODY -> pickMelody()
+            }
+        }
+    }
+
     companion object {
-        private const val MELODY_CODE = 126
+        private const val MELODY_CODE = 125
+        private const val RINGTONE_CODE = 126
+        private const val PERM_MELODY = 1429
     }
 }

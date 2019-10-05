@@ -7,6 +7,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
@@ -27,20 +28,30 @@ object ReminderUtils {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
             val uri = UriUtil.getUri(context, melody)
             if (uri != null) {
-                Melody(ReminderUtils.MelodyType.FILE, uri)
+                Melody(MelodyType.FILE, uri)
             } else {
-                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
+                val ringtone = RingtoneManager.getRingtone(context, melody.toUri())
+                if (ringtone != null) {
+                    Melody(MelodyType.RINGTONE, melody.toUri())
+                } else {
+                    Melody(MelodyType.DEFAULT, defUri(defMelody))
+                }
             }
         } else {
             if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 val uri = UriUtil.getUri(context, defMelody)
                 if (uri != null) {
-                    Melody(ReminderUtils.MelodyType.FILE, uri)
+                    Melody(MelodyType.FILE, uri)
                 } else {
-                    Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
+                    val ringtone = RingtoneManager.getRingtone(context, defMelody.toUri())
+                    if (ringtone != null) {
+                        Melody(MelodyType.RINGTONE, defMelody.toUri())
+                    } else {
+                        Melody(MelodyType.DEFAULT, defUri(defMelody))
+                    }
                 }
             } else {
-                Melody(ReminderUtils.MelodyType.DEFAULT, defUri(defMelody))
+                Melody(MelodyType.DEFAULT, defUri(defMelody))
             }
         }
     }
@@ -314,6 +325,7 @@ object ReminderUtils {
 
     enum class MelodyType {
         DEFAULT,
+        RINGTONE,
         FILE
     }
     data class Melody(val melodyType: MelodyType, val uri: Uri)

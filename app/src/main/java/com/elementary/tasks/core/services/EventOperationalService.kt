@@ -507,7 +507,12 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
             playDefaultMelody()
             tts?.speak(summary, TextToSpeech.QUEUE_FLUSH, null, null)
         } catch (e: Exception) {
-            playMelody(ReminderUtils.getSound(this, prefs, melodyPath).uri)
+            val melody = ReminderUtils.getSound(this, prefs, melodyPath)
+            if (melody.melodyType == ReminderUtils.MelodyType.FILE) {
+                playMelody(melody.uri)
+            } else {
+                soundStackHolder.sound?.playRingtone(melody.uri)
+            }
         }
     }
 
