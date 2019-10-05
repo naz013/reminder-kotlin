@@ -348,15 +348,13 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             val request = service.files().list()
                     .setSpaces("appDataFolder")
                     .setFields("nextPageToken, files(id, name)")
+                    .setPageSize(10)
                     .setQ("mimeType = 'text/plain' and name contains '$fileName'")
-            do {
-                val files = request.execute()
-                val fileList = files.files as ArrayList<File>
-                for (f in fileList) {
-                    service.files().delete(f.id).execute()
-                }
-                request.pageToken = files.nextPageToken
-            } while (request.pageToken != null)
+            val files = request.execute()
+            val fileList = files.files as ArrayList<File>
+            for (f in fileList) {
+                service.files().delete(f.id).execute()
+            }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
