@@ -20,7 +20,7 @@ import com.elementary.tasks.experimental.BottomNavActivity
 import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.android.ext.android.inject

@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import java.util.*
 
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout.activity_create_group) {

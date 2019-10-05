@@ -32,7 +32,7 @@ import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.ListItemNavigationBinding
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils

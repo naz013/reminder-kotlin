@@ -753,5 +753,8 @@
     <string name="phone_calls_and_sms">Phone calls and SMS</string>
     <string name="choose_ringtone">Choose ringtone</string>
     <string name="select_ringtone_for_notifications">Select ringtone for notifications</string>
+    <string name="try_again">Try again</string>
+    <string name="enter_your_pin">Enter your PIN?</string>
+    <string name="enter_pin">Enter PIN</string>
 
 </resources>

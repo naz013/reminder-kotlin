@@ -29,7 +29,7 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity

@@ -13,7 +13,7 @@ import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBinding
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import timber.log.Timber
 
 class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {

@@ -24,7 +24,7 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 

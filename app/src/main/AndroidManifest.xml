@@ -399,7 +399,7 @@
             android:name=".birthdays.preview.ShowBirthday29Activity"
             android:excludeFromRecents="true" />
         <activity
-            android:name=".navigation.settings.security.PinLoginActivity"
+            android:name=".pin.PinLoginActivity"
             android:excludeFromRecents="true" />
         <activity android:name=".navigation.settings.other.SendFeedbackActivity" />
         <activity android:name=".other.PrivacyPolicyActivity" />

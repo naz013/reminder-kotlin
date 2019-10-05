@@ -12,15 +12,6 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="centerInside"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/ic_twotone_backspace_24px"
-            app:tint="?android:textColorPrimary" />
-
         <LinearLayout
             android:id="@+id/birdsView"
             android:layout_width="0dp"
@@ -72,178 +63,240 @@
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
+        android:orientation="horizontal">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b1"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="1" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b2"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="2" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b3"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="3" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
+        android:orientation="horizontal">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b4"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="4" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b5"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="5" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b6"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="6" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
+        android:orientation="horizontal">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b7"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="7" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b8"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="8" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/b9"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t9"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="9" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
+        android:orientation="horizontal">
+
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/deleteButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:id="@+id/bF"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_twotone_backspace_24px"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_twotone_fingerprint_24px"
             app:tint="?android:textColorPrimary" />
 
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?colorSecondary" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="1"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="2"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="3"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="4"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="5"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b6"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="6"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="7"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b8"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="8"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/b9"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="9"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="0"
-            android:textAppearance="?textAppearanceHeadline4"
-            android:visibility="invisible"
-            tools:ignore="HardcodedText" />
-
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/b0"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
             android:background="?selectableItemBackground"
-            android:gravity="center"
-            android:text="0"
-            android:textAppearance="?textAppearanceHeadline4"
-            tools:ignore="HardcodedText" />
+            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="?selectableItemBackground"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/t0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline4"
+                tools:text="0" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bC"
+            android:layout_width="@dimen/pin_digit_size"
+            android:layout_height="@dimen/pin_digit_size"
+            android:layout_marginStart="@dimen/pin_view_space_btw_digits"
+            android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="0"
-            android:textAppearance="?textAppearanceHeadline4"
-            android:visibility="invisible"
-            tools:ignore="HardcodedText" />
+            android:scaleType="centerInside"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_clear_white_24dp"
+            app:tint="?android:textColorPrimary" />
     </LinearLayout>
 </LinearLayout>

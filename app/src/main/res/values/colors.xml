@@ -22,6 +22,8 @@
     <color name="color_on_error">#ffffff</color>
     <color name="color_blur">#80FFFFFF</color>
 
+    <color name="color_success">#4caf50</color>
+
     <!--OLD COLORS-->
 
     <color name="pureWhite">#FFFFFF</color>

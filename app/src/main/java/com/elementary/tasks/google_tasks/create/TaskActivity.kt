@@ -27,7 +27,7 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
-import com.elementary.tasks.navigation.settings.security.PinLoginActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import java.util.*
 
 class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.activity_create_google_task) {
