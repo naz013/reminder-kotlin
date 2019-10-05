@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -99,7 +98,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun addPlace() {
-        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity("", true))
+        safeNavigation(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity("", true))
     }
 
     private fun initViewModel() {
@@ -186,7 +185,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun openPlace(place: Place) {
-        findNavController().navigate(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true))
+        safeNavigation(PlacesFragmentDirections.actionPlacesFragmentToCreatePlaceActivity(place.id, true))
     }
 
     private fun refreshView(count: Int) {

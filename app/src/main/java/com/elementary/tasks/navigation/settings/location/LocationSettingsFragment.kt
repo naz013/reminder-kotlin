@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.location
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding
@@ -41,7 +40,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     }
 
     private fun openPlacesScreen() {
-        findNavController().navigate(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToPlacesFragment())
+        safeNavigation(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToPlacesFragment())
     }
 
     private fun initMapStylePrefs() {
@@ -52,7 +51,7 @@ class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBi
     }
 
     private fun openMapStylesFragment() {
-        findNavController().navigate(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToMapStyleFragment())
+        safeNavigation(LocationSettingsFragmentDirections.actionLocationSettingsFragmentToMapStyleFragment())
     }
 
     private fun initMarkerStylePrefs() {

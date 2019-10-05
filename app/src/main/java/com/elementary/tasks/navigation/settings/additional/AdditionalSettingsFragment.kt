@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
@@ -68,7 +67,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment<FragmentSettingsAddition
     private fun initMessagesPrefs() {
         val mMessagesPrefs = binding.templatesPrefs
         mMessagesPrefs.setOnClickListener {
-            findNavController().navigate(AdditionalSettingsFragmentDirections.actionAdditionalSettingsFragmentToTemplatesFragment())
+            safeNavigation(AdditionalSettingsFragmentDirections.actionAdditionalSettingsFragmentToTemplatesFragment())
         }
         mMessagesPrefs.setDependentView(binding.quickSMSPrefs)
     }

@@ -10,7 +10,6 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.databinding.FragmentSettingsBinding
@@ -101,38 +100,38 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
         }
 
         binding.generalSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToGeneralSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToGeneralSettingsFragment())
         }
         binding.otherSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToOtherSettingsFragment())
         }
         binding.voiceSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToVoiceSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToVoiceSettingsFragment())
         }
         binding.notesSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNoteSettingsFragment())
         }
         binding.additionalSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAdditionalSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToAdditionalSettingsFragment())
         }
         binding.notificationSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToNotificationSettingsFragment())
         }
         binding.exportSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToExportSettingsFragment())
         }
         binding.calendarSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToCalendarSettingsFragment())
         }
         binding.birthdaysSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToBirthdaySettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToBirthdaySettingsFragment())
         }
         binding.remindersSettings.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToRemindersSettingsFragment())
         }
         binding.securitySettings.setOnClickListener { askPin() }
         binding.testsScreen.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
+            safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
         }
         binding.buySettings.setOnClickListener { showProDialog() }
         if (!Module.isPro && !SuperUtil.isAppInstalled(context!!, "com.cray.software.justreminderpro")) {
@@ -144,7 +143,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
         withContext {
             if (Module.hasLocation(it)) {
                 binding.locationSettings.setOnClickListener {
-                    findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment())
+                    safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToLocationSettingsFragment())
                 }
                 binding.locationSettings.visibility = View.VISIBLE
             } else {
@@ -173,7 +172,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
     }
 
     private fun openSecurity() {
-        findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToSecuritySettingsFragment())
+        safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToSecuritySettingsFragment())
     }
 
     override fun onSale(discount: String, expiryDate: String) {

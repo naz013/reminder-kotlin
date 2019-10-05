@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -207,7 +206,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun openGoogleTaskList(googleTaskList: GoogleTaskList) {
-        findNavController().navigate(GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(googleTaskList.listId, googleTaskList))
+        safeNavigation(GoogleTasksFragmentDirections.actionActionGoogleToTaskListFragment(googleTaskList.listId, googleTaskList))
     }
 
     private fun editTask(googleTask: GoogleTask) {

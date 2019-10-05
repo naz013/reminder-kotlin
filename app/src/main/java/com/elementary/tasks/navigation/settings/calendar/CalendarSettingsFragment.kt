@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.calendar
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -25,7 +24,7 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
         initRemindersPrefs()
         initFirstDayPrefs()
         binding.eventsImportPrefs.setOnClickListener {
-            findNavController().navigate(CalendarSettingsFragmentDirections.actionCalendarSettingsFragmentToFragmentEventsImport())
+            safeNavigation(CalendarSettingsFragmentDirections.actionCalendarSettingsFragmentToFragmentEventsImport())
         }
 
         binding.reminderColorPrefs.setDependentView(binding.reminderInCalendarPrefs)

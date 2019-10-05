@@ -9,7 +9,6 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -115,7 +114,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
 
     private fun initNotificationPrefs() {
         binding.birthdayNotificationPrefs.setOnClickListener {
-            findNavController().navigate(BirthdaySettingsFragmentDirections.actionBirthdaySettingsFragmentToBirthdayNotificationFragment())
+            safeNavigation(BirthdaySettingsFragmentDirections.actionBirthdaySettingsFragmentToBirthdayNotificationFragment())
         }
         binding.birthdayNotificationPrefs.setDependentView(binding.birthReminderPrefs)
     }

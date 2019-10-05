@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
@@ -164,10 +163,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     override fun onDateClick(date: Date) {
-        try {
-            findNavController().navigate(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date.time))
-        } catch (e: Exception) {
-        }
+        safeNavigation(CalendarFragmentDirections.actionActionCalendarToDayViewFragment(date.time))
     }
 
     override fun onDateLongClick(date: Date) {

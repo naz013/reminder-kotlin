@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
@@ -38,7 +37,7 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
         }
 
         binding.helpPrefs.setOnClickListener {
-            findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToHelpFragment())
+            safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToHelpFragment())
         }
         binding.aboutPrefs.setOnClickListener { showAboutDialog() }
         binding.ossPrefs.setOnClickListener { openOssScreen() }
@@ -117,15 +116,15 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
     }
 
     private fun openChangesScreen() {
-        findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToChangesFragment())
+        safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToChangesFragment())
     }
 
     private fun openPermissionsScreen() {
-        findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToPermissionsFragment())
+        safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToPermissionsFragment())
     }
 
     private fun openOssScreen() {
-        findNavController().navigate(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToOssFragment())
+        safeNavigation(OtherSettingsFragmentDirections.actionOtherSettingsFragmentToOssFragment())
     }
 
     private fun showPermissionDialog() {

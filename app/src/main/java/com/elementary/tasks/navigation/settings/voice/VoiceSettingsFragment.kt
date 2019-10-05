@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.voice
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding
@@ -20,10 +19,10 @@ class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>
         }
         initLanguagePrefs()
         binding.timePrefs.setOnClickListener {
-            findNavController().navigate(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment())
+            safeNavigation(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToTimeOfDayFragment())
         }
         binding.helpPrefs.setOnClickListener {
-            findNavController().navigate(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToHelpFragment2())
+            safeNavigation(VoiceSettingsFragmentDirections.actionVoiceSettingsFragmentToHelpFragment2())
         }
         initConversationPrefs()
     }

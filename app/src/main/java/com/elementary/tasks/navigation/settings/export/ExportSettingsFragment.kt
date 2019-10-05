@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
@@ -71,7 +70,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         onSyncEnd.invoke()
 
         binding.cloudsPrefs.setOnClickListener {
-            findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives())
+            safeNavigation(ExportSettingsFragmentDirections.actionExportSettingsFragmentToFragmentCloudDrives())
         }
 
         initBackupPrefs()
@@ -89,7 +88,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
         initLocalBackupPrefs()
 
         binding.backupsPrefs.setOnClickListener {
-            findNavController().navigate(ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment())
+            safeNavigation(ExportSettingsFragmentDirections.actionExportSettingsFragmentToBackupsFragment())
         }
         binding.backupsPrefs.setDependentView(binding.backupDataPrefs)
     }

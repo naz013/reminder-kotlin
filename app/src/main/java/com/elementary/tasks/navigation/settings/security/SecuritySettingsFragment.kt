@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings.security
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.FingerInitializer
 import com.elementary.tasks.core.utils.FingerprintHelper
@@ -24,7 +23,7 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
 
         binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
         binding.changePinPrefs.setOnClickListener {
-            findNavController().navigate(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment())
+            safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment())
         }
 
         initFingerPrefs()
@@ -59,9 +58,9 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
     private fun changePinPrefs() {
         val isChecked = binding.pinSwitchPrefs.isChecked
         if (isChecked) {
-            findNavController().navigate(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment())
+            safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment())
         } else {
-            findNavController().navigate(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment())
+            safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment())
         }
     }
 
