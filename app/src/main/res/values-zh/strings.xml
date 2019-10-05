@@ -749,5 +749,10 @@
     <string name="what_to_do_with_current_data">如何处理当前数据？</string>
     <string name="birthdays_on_home_for_next">下一个主屏幕上的生日</string>
     <string name="phone_calls_and_sms">电话和短信</string>
+    <string name="choose_ringtone">选择铃声</string>
+    <string name="enter_pin">输入密码</string>
+    <string name="enter_your_pin">输入您的PIN码？</string>
+    <string name="select_ringtone_for_notifications">选择通知铃声</string>
+    <string name="try_again">再试一次</string>
 
 </resources>

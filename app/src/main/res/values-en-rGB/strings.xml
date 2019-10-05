@@ -749,4 +749,9 @@
     <string name="what_to_do_with_current_data">What to do with current data?</string>
     <string name="birthdays_on_home_for_next">Birthdays on home screen for next</string>
     <string name="phone_calls_and_sms">Phone calls and SMS</string>
+    <string name="choose_ringtone">Choose ringtone</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="enter_your_pin">Enter your PIN?</string>
+    <string name="select_ringtone_for_notifications">Select ringtone for notifications</string>
+    <string name="try_again">Try again</string>
 </resources>

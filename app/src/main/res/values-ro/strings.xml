@@ -749,5 +749,10 @@
     <string name="what_to_do_with_current_data">Ce să faci cu datele actuale?</string>
     <string name="birthdays_on_home_for_next">Zile de naștere pe ecranul principal pentru următorul</string>
     <string name="phone_calls_and_sms">Apeluri telefonice și SMS</string>
+    <string name="choose_ringtone">Alegeți tonul de apel</string>
+    <string name="enter_pin">Introdu PIN</string>
+    <string name="enter_your_pin">Introduceți codul PIN?</string>
+    <string name="select_ringtone_for_notifications">Selectați ton de apel pentru notificări</string>
+    <string name="try_again">Încearcă din nou</string>
 
 </resources>

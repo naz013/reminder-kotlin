@@ -749,5 +749,10 @@
     <string name="what_to_do_with_current_data">Co dělat se současnými daty?</string>
     <string name="birthdays_on_home_for_next">Narozeniny na domovské obrazovce pro další</string>
     <string name="phone_calls_and_sms">Telefonní hovory a SMS</string>
+    <string name="choose_ringtone">Vyberte vyzváněcí tón</string>
+    <string name="enter_pin">Zadejte PIN</string>
+    <string name="enter_your_pin">Zadejte svůj PIN?</string>
+    <string name="select_ringtone_for_notifications">Vyberte vyzváněcí tón pro upozornění</string>
+    <string name="try_again">Zkus to znovu</string>
 
 </resources>

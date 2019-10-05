@@ -749,5 +749,10 @@
     <string name="what_to_do_with_current_data">Co zrobić z aktualnymi danymi?</string>
     <string name="birthdays_on_home_for_next">Urodziny na ekranie głównym na następny</string>
     <string name="phone_calls_and_sms">Połączenia telefoniczne i SMS-y</string>
+    <string name="choose_ringtone">Wybierz dzwonek</string>
+    <string name="enter_pin">Wpisz PIN</string>
+    <string name="enter_your_pin">Wprowadź kod PIN?</string>
+    <string name="select_ringtone_for_notifications">Wybierz dzwonek powiadomień</string>
+    <string name="try_again">Spróbuj ponownie</string>
 
 </resources>

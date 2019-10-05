@@ -750,5 +750,10 @@
     <string name="what_to_do_with_current_data">現在のデータをどうしますか？</string>
     <string name="birthdays_on_home_for_next">次のホーム画面での誕生日</string>
     <string name="phone_calls_and_sms">電話とSMS</string>
+    <string name="choose_ringtone">着信音を選択</string>
+    <string name="enter_pin">PINを入力してください</string>
+    <string name="enter_your_pin">PINを入力しますか？</string>
+    <string name="select_ringtone_for_notifications">通知用の着信音を選択</string>
+    <string name="try_again">再試行する</string>
 
 </resources>

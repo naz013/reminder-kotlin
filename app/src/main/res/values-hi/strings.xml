@@ -749,5 +749,10 @@
     <string name="what_to_do_with_current_data">वर्तमान डेटा के साथ क्या करना है?</string>
     <string name="birthdays_on_home_for_next">अगले दिन के लिए होम स्क्रीन पर जन्मदिन</string>
     <string name="phone_calls_and_sms">फोन कॉल और एस.एम.एस.</string>
+    <string name="choose_ringtone">रिंगटोन चुनें</string>
+    <string name="enter_pin">पिन दर्ज करें</string>
+    <string name="enter_your_pin">अपना पिन दर्ज करो?</string>
+    <string name="select_ringtone_for_notifications">सूचनाओं के लिए रिंगटोन चुनें</string>
+    <string name="try_again">पुनः प्रयास करें</string>
 
 </resources>

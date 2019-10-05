@@ -749,5 +749,10 @@
     <string name="what_to_do_with_current_data">Mevcut verilerle ne yapmalı?</string>
     <string name="birthdays_on_home_for_next">Gelecek için ana ekranda doğum günleri</string>
     <string name="phone_calls_and_sms">Telefon görüşmeleri ve SMS</string>
+    <string name="choose_ringtone">Zil sesi seç</string>
+    <string name="enter_pin">PIN girin</string>
+    <string name="enter_your_pin">PIN\'inizi girin</string>
+    <string name="select_ringtone_for_notifications">Bildirimler için zil sesi seçin</string>
+    <string name="try_again">Tekrar deneyin</string>
 
 </resources>
