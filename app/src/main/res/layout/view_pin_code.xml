@@ -72,58 +72,58 @@
         android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
         android:orientation="horizontal">
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b1"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="1" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b2"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="2" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b3"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="3" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -134,58 +134,58 @@
         android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
         android:orientation="horizontal">
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b4"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="4" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b5"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="5" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b6"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="6" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -196,58 +196,58 @@
         android:layout_marginTop="@dimen/pin_view_space_btw_digits_top"
         android:orientation="horizontal">
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b7"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="7" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b8"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="8" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b9"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:textSize="@dimen/pin_view_digit_text"
                 android:textAppearance="?textAppearanceHeadline4"
                 tools:text="9" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -269,13 +269,12 @@
             app:srcCompat="@drawable/ic_twotone_fingerprint_24px"
             app:tint="?android:textColorPrimary" />
 
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:id="@+id/b0"
             android:layout_width="@dimen/pin_digit_size"
             android:layout_height="@dimen/pin_digit_size"
             android:layout_marginStart="@dimen/pin_view_space_btw_digits"
-            android:background="?selectableItemBackground"
-            app:cardCornerRadius="@dimen/pin_view_digit_corner_radius">
+            android:background="@drawable/pin_digit_shape_selector">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/t0"
@@ -283,9 +282,10 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textAppearance="?textAppearanceHeadline4"
+                android:textSize="@dimen/pin_view_digit_text"
                 tools:text="0" />
 
-        </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bC"

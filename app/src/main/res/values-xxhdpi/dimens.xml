@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pin_digit_size">72dp</dimen>
+    <dimen name="pin_view_space_btw_digits">36dp</dimen>
+    <dimen name="pin_view_space_btw_digits_top">24dp</dimen>
+    <dimen name="pin_view_digit_corner_radius">100dp</dimen>
+    <dimen name="pin_view_digit_text">26sp</dimen>
+</resources>
