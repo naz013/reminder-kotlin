@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.bumptech.glide.Glide
 import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.Notifier
@@ -42,5 +43,18 @@ class ReminderApp : MultiDexApplication() {
         Notifier.createChannels(this)
         JobManager.create(this).addJobCreator { EventJobService() }
         AdsProvider.init(this)
+    }
+
+    override fun onTrimMemory(level: Int) {
+        if (level == TRIM_MEMORY_UI_HIDDEN){
+            Glide.get(this).clearMemory()
+        }
+        Glide.get(this).trimMemory(level)
+        super.onTrimMemory(level)
+    }
+
+    override fun onLowMemory() {
+        Glide.get(this).clearMemory()
+        super.onLowMemory()
     }
 }

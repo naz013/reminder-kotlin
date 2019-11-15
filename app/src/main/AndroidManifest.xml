@@ -86,6 +86,7 @@
         android:supportsRtl="true"
         android:theme="@style/MyTheme.DayNight"
         android:usesCleartextTraffic="true"
+        android:largeHeap="true"
         tools:replace="android:label"
         tools:targetApi="q">
 
