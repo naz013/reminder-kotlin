@@ -301,7 +301,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                         used = quota.usage, count = countFiles(), photo = about.user.photoLink
                         ?: "")
             } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (e: OutOfMemoryError) {
             }
             return null
         }
@@ -336,6 +336,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 request.pageToken = files.nextPageToken
             } while (request.pageToken != null)
         } catch (e: Exception) {
+        } catch (e: OutOfMemoryError) {
         }
         return count
     }
@@ -356,7 +357,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 service.files().delete(f.id).execute()
             }
         } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+        } catch (e: OutOfMemoryError) {
         }
     }
 
@@ -376,6 +377,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 request.pageToken = files.nextPageToken
             } while (request.pageToken != null && request.pageToken.length >= 0)
         } catch (e: java.lang.Exception) {
+        } catch (e: OutOfMemoryError) {
         }
     }
 
@@ -395,6 +397,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
                 request.pageToken = files.nextPageToken
             } while (request.pageToken != null && request.pageToken.length >= 0)
         } catch (e: java.lang.Exception) {
+        } catch (e: OutOfMemoryError) {
         }
     }
 

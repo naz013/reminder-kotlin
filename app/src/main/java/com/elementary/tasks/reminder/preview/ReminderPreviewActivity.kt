@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -431,10 +430,6 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         ViewUtils.tintMenuIcon(this, menu, 2, R.drawable.ic_twotone_file_copy_24px, isDarkMode)
         ViewUtils.tintMenuIcon(this, menu, 3, R.drawable.ic_twotone_delete_24px, isDarkMode)
 
-        if (Module.isPro && QrShareProvider.hasQrSupport()) {
-            menu.add(Menu.NONE, MENU_ITEM_IN_APP_SHARE, 100, getString(R.string.in_app_sharing))
-        }
-
         return true
     }
 
@@ -445,25 +440,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
             R.id.action_make_copy -> makeCopy()
             R.id.action_share -> shareReminder()
             R.id.action_edit -> editReminder()
-            MENU_ITEM_IN_APP_SHARE -> {
-                openShareScreen()
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun openShareScreen() {
-        reminder?.let {
-            launchDefault {
-                val data = QrShareProvider.generateEncryptedData(it)
-                withUIContext {
-                    if (data != null) {
-                        QrShareProvider.openShareScreen(this@ReminderPreviewActivity, data, QrShareProvider.TYPE_REMINDER)
-                    }
-                }
-            }
-        }
     }
 
     private fun shareReminder() {
@@ -646,6 +624,5 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     companion object {
         private const val CALL_PERM = 612
         private const val SD_PERM = 614
-        private const val MENU_ITEM_IN_APP_SHARE = 12
     }
 }

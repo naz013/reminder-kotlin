@@ -9,25 +9,6 @@
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 
     <application tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name="com.elementary.tasks.ShareActivity"
-            android:configChanges="keyboardHidden"
-            android:windowSoftInputMode="stateUnchanged" />
-        <activity
-            android:name="com.elementary.tasks.ImportActivity"
-            android:configChanges="keyboardHidden"
-            android:windowSoftInputMode="stateUnchanged" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="key"
-                    android:scheme="reminderapp" />
-            </intent-filter>
-        </activity>
         <receiver
             android:name="com.elementary.tasks.core.services.PermanentReminderReceiver"
             android:exported="false">

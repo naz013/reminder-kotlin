@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils
 
 import com.backdoor.engine.Recognizer
-import com.elementary.tasks.QrShareProvider
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.notes.preview.ImagesSingleton
 import org.koin.android.ext.koin.androidApplication
@@ -17,7 +16,6 @@ fun utilModule() = module {
     single { Language(get()) }
     single { CalendarUtils(androidApplication(), get(), get()) }
     single { providesRecognizer(get(), get()) }
-    single { QrShareProvider(get()) }
     single { CacheUtil(get()) }
     single { GlobalButtonObservable() }
     single { ImagesSingleton() }
