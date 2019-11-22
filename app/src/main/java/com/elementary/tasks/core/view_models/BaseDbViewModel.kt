@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.view_models
 
+import android.content.Context
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -39,17 +40,21 @@ open class BaseDbViewModel : ViewModel(), LifecycleObserver, KoinComponent {
         _error.postValue(error)
     }
 
-    protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String) {
-        startWork(clazz, Data.Builder().putString(key, valueTag).build(), valueTag)
+    protected fun startWork(clazz: Class<out Worker>, key: String, valueTag: String, context: Context? = null) {
+        startWork(clazz, Data.Builder().putString(key, valueTag).build(), valueTag, context)
     }
 
-    protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String) {
+    protected fun startWork(clazz: Class<out Worker>, data: Data, tag: String, context: Context? = null) {
         if (prefs.isBackupEnabled) {
             val work = OneTimeWorkRequest.Builder(clazz)
                     .setInputData(data)
                     .addTag(tag)
                     .build()
-            WorkManager.getInstance().enqueue(work)
+            if (context != null) {
+                WorkManager.getInstance(context).enqueue(work)
+            } else {
+                WorkManager.getInstance().enqueue(work)
+            }
         }
     }
 

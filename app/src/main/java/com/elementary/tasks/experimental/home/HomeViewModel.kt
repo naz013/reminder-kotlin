@@ -44,7 +44,7 @@ class HomeViewModel : BaseRemindersViewModel(), (String) -> Unit {
         launchDefault {
             appDb.birthdaysDao().delete(birthday)
             updateBirthdayPermanent()
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
             postInProgress(false)
             postCommand(Commands.DELETED)
         }

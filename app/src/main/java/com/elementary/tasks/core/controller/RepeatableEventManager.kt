@@ -37,7 +37,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
                     .setInputData(Data.Builder().putString(Constants.INTENT_JSON, Gson().toJson(googleTask)).build())
                     .addTag(reminder.uuId)
                     .build()
-            WorkManager.getInstance().enqueue(work)
+            WorkManager.getInstance(context).enqueue(work)
         }
         if (reminder.exportToCalendar) {
             if (prefs.isStockCalendarEnabled) {
@@ -62,7 +62,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
                                             .build())
                             .addTag(reminder.uuId)
                             .build()
-                    WorkManager.getInstance().enqueue(work)
+                    WorkManager.getInstance(context).enqueue(work)
                 }
             }
         }

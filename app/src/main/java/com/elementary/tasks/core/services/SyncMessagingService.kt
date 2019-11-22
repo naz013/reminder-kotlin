@@ -21,16 +21,12 @@ class SyncMessagingService : FirebaseMessagingService() {
         Timber.d("onMessageReceived: ${remoteMessage.data}")
         if (prefs.multiDeviceModeEnabled && prefs.isBackupEnabled) {
             val data = remoteMessage.data
-            if (data != null) {
-                val fileName = data["details"] ?: ""
-                when (data["type"] ?: "") {
-                    "tokens" -> LoadTokensWorker.schedule(applicationContext)
-                    "file" -> LoadFileWorker.schedule(applicationContext, fileName)
-                    "delete" -> DeleteFileWorker.schedule(applicationContext, fileName)
-                    else -> SyncDataWorker.schedule(applicationContext)
-                }
-            } else {
-                SyncDataWorker.schedule(applicationContext)
+            val fileName = data["details"] ?: ""
+            when (data["type"] ?: "") {
+                "tokens" -> LoadTokensWorker.schedule(applicationContext)
+                "file" -> LoadFileWorker.schedule(applicationContext, fileName)
+                "delete" -> DeleteFileWorker.schedule(applicationContext, fileName)
+                else -> SyncDataWorker.schedule(applicationContext)
             }
         }
     }

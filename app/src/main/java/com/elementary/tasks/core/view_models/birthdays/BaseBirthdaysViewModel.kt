@@ -21,7 +21,7 @@ abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
         launchDefault {
             appDb.birthdaysDao().delete(birthday)
             updateBirthdayPermanent()
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
             postInProgress(false)
             postCommand(Commands.DELETED)
         }
@@ -39,7 +39,7 @@ abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
             birthday.updatedAt = TimeUtil.gmtDateTime
             appDb.birthdaysDao().insert(birthday)
             updateBirthdayPermanent()
-            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
             postInProgress(false)
             postCommand(Commands.SAVED)
         }
