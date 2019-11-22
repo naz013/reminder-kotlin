@@ -1,10 +1,7 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-    <dimen name="drawable_circle_width">1dp</dimen>
-
     <dimen name="create_margin">16dp</dimen>
-    <dimen name="create_imagebutton_size">50dp</dimen>
 
     <dimen name="settings_view_size">40dp</dimen>
 
@@ -14,7 +11,6 @@
     <dimen name="dialog_toggle_size">35dp</dimen>
 
     <dimen name="grid_item_spacing">2dp</dimen>
-    <dimen name="draw_tool_width">40dp</dimen>
     <dimen name="checkbox_padding">20dp</dimen>
     <dimen name="empty_image_size">128dp</dimen>
     <dimen name="empty_animation_size">188dp</dimen>
@@ -26,7 +22,6 @@
     <dimen name="pin_digit_size">64dp</dimen>
     <dimen name="pin_view_space_btw_digits">36dp</dimen>
     <dimen name="pin_view_space_btw_digits_top">24dp</dimen>
-    <dimen name="pin_view_digit_corner_radius">100dp</dimen>
     <dimen name="pin_view_digit_text">20sp</dimen>
 
     <bool name="is_tablet">false</bool>

@@ -20,7 +20,6 @@
     <color name="color_on_background">#ffffff</color>
     <color name="color_on_surface">#ffffff</color>
     <color name="color_on_error">#000000</color>
-    <color name="color_blur">#80000000</color>
 
     <color name="color_success">#8bc34a</color>
 

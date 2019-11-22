@@ -11,16 +11,10 @@
     <string name="terrain">Terrain</string>
     <string name="hybrid">Hybrid</string>
     <string name="red">Red</string>
-    <string name="purple">Purple</string>
-    <string name="green_light">Light Green</string>
     <string name="green">Green</string>
-    <string name="blue_light">Light Blue</string>
     <string name="blue">Blue</string>
     <string name="yellow">Yellow</string>
-    <string name="orange">Orange</string>
-    <string name="cyan">Cyan</string>
     <string name="pink">Pink</string>
-    <string name="amber">Amber</string>
     <string name="action">Action</string>
     <string name="make_call">Make call</string>
     <string name="sms">Send SMS</string>
@@ -31,7 +25,6 @@
     <string name="import_string">Import</string>
     <string name="google_drive">Google Drive</string>
     <string name="dropbox">Dropbox</string>
-    <string name="skip">Skip</string>
     <string name="notes">Notes</string>
     <string name="task">Task</string>
     <string name="note">Note</string>
@@ -48,7 +41,6 @@
     <string name="infinite_vibrate">Infinite vibrate</string>
     <string name="sound_in_silent_mode">Sound in silent mode</string>
     <string name="infinite_sound">Infinite sound (repeating)</string>
-    <string name="turn_on_screen">Turn on screen</string>
     <string name="melody">Melody</string>
     <string name="melody_x">"Melody %s"</string>
     <string name="voice_notification">Notify by voice (TTS)</string>
@@ -61,7 +53,6 @@
     <string name="show_in_home_screen">Show in home screen widget</string>
     <string name="birthday_reminder">Birthday reminder</string>
     <string name="contacts">Contacts</string>
-    <string name="scan">Scan</string>
     <string name="no_events">No events</string>
     <string name="theme">Theme</string>
     <string name="calendar">Calendar</string>
@@ -192,12 +183,9 @@
     <string name="image">Image</string>
     <string name="font_style">Font style</string>
     <string name="share">Share</string>
-    <string name="sync">Sync</string>
-    <string name="filter">Filter</string>
     <string name="copy">Make copy</string>
     <string name="grid_view">Grid view</string>
     <string name="order">Order</string>
-    <string name="add_list">Add list</string>
     <string name="add_birthday">Add birthday</string>
     <string name="active_reminders">Active reminders</string>
     <string name="events">Events</string>
@@ -220,7 +208,6 @@
     <string name="skype">Skype</string>
     <string name="day_of_month">Day of month</string>
     <string name="shopping_list">Shopping list</string>
-    <string name="deleted">Deleted</string>
     <string name="radius_x_meters">"Radius %s meters"</string>
     <string name="shopping_list_is_empty">Shopping list is empty!</string>
     <string name="you_dont_select_any_day">You not select a day!</string>
@@ -228,11 +215,7 @@
     <string name="you_dont_insert_link">You don\'t insert link!</string>
     <string name="you_dont_select_place">You don\'t select place!</string>
     <string name="you_dont_insert_timer_time">You don\'t select a time for timer!</string>
-    <string name="max_day_supported">Maximum supported day - 28!</string>
-    <string name="lime">Lime</string>
-    <string name="indigo">Indigo</string>
     <string name="dark_orange">Dark orange</string>
-    <string name="dark_purple">Dark purple</string>
     <string name="teal">Dark Green</string>
     <string name="select_one_of_item">Select one of item!</string>
     <string name="sunday">Sunday</string>
@@ -268,7 +251,6 @@
     <string name="_led_notification_">- LED notification;</string>
     <string name="led_color_for_each_reminder">- LED color for each reminder;</string>
     <string name="styles_for_marker">- 16 styles for marker;</string>
-    <string name="press_again_to_exit">Press again to exit</string>
     <string name="delete_this_list">Delete this list?</string>
     <string name="delete_list">Delete list</string>
     <string name="new_task">New task</string>
@@ -287,8 +269,6 @@
     <string name="please_wait">Please wait...</string>
     <string name="no_events_found">No events found!</string>
     <string name="events_found">event(s) found</string>
-    <string name="no_files">No files</string>
-    <string name="not_music_file">Not a music file</string>
     <string name="x_minutes">"%s minutes"</string>
     <string name="x_hours">"%s hours"</string>
     <string name="last_called">Last called at</string>
@@ -296,7 +276,6 @@
     <string name="x_days">"%s days"</string>
     <string name="reminder_snoozed">Reminder snoozed</string>
     <string name="choose_application">Choose application</string>
-    <string name="notes_support">Notes support</string>
     <string name="no_messages">No messages</string>
     <string name="birthday">Birthday</string>
     <string name="permanent">Permanent</string>
@@ -365,10 +344,8 @@
     <string name="search_place">Search place...</string>
     <string name="add_all">Add all</string>
     <string name="no_places_found">Place not found!</string>
-    <string name="file_x_attached">File: %s attached</string>
     <string name="additional_reminder">Additional type of reminder - Places</string>
     <string name="add_reminder_menu">Add reminder</string>
-    <string name="x_meters">%s meters</string>
     <string name="task_summary_is_empty">Task summary is empty!</string>
     <string name="x_day">%s day</string>
     <string name="x_hour">%s hour</string>
@@ -383,11 +360,7 @@
     <string name="move_forward">Move forward</string>
     <string name="move_backward">Return back</string>
     <string name="create_task">Create task</string>
-    <string name="up">Up</string>
     <string name="could_not_launch_market">Couldn\'t launch market</string>
-    <string name="call_history">Call history</string>
-    <string name="no_contacts_found">No contacts found</string>
-    <string name="sending_message">Send message</string>
     <string name="all_permissions_are_enabled">All permissions are enabled</string>
     <string name="delete_this_reminder">Delete this reminder?</string>
 
@@ -395,7 +368,6 @@
     <string name="map">Map</string>
     <string name="no_groups">No groups</string>
     <string name="remove_exclusion">Remove exclusion</string>
-    <string name="theme_color">Theme color</string>
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
     <string name="syncing_places">Syncing places...</string>
@@ -411,15 +383,7 @@
     <string name="log_in">Log In</string>
     <string name="failed_to_login">Failed to login</string>
     <string name="open_app">Open app</string>
-    <string name="i_accept"><![CDATA[I accept <a href=\'termsopen.com\'>Privacy Policy</a>]]></string>
     <string name="privacy_policy">Privacy policy</string>
-    <string name="original">Original</string>
-    <string name="cropped">Cropped</string>
-    <string name="which_image_you_want_to_use">Which picture you want to use?</string>
-    <string name="edited">Edited</string>
-    <string name="text">Text</string>
-    <string name="add_text">Add text</string>
-    <string name="stroke_width">Stroke width</string>
     <string name="opacity">Opacity</string>
     <string name="live_conversation">Live conversation</string>
     <string name="skype_is_not_installed">Skype is not installed! Would you like to install it?</string>
@@ -429,20 +393,6 @@
     <string name="_minutes">minutes</string>
     <string name="_hours">hours</string>
     <string name="loading_events">Loading events</string>
-    <string name="scale">Scale</string>
-    <string name="figure">Element</string>
-    <string name="text_is_empty">Text is empty</string>
-    <string name="this_reminder_is_disabled">This reminder is disabled</string>
-    <string name="would_you_like_to_enable_it">Would you like to enable it?</string>
-    <string name="google_integration">Integration with Google</string>
-    <string name="location_events">Location events</string>
-    <string name="reminder_descr">Support various type of reminders (by date, weekday, day of month, timer, birthday reminder).</string>
-    <string name="notes_descr">You can create notes with multiple images. Also can edit images in notes.</string>
-    <string name="google_descr">Application support integration with Calendar and Tasks.</string>
-    <string name="location_descr">Also you can use location reminders (by address or place).</string>
-    <string name="sync_descr">And then save all data to your favourite cloud storage.</string>
-    <string name="error">Error</string>
-    <string name="on_your_device_not_installed_google_play_service_to_continue_using_application_you_must_install_google_play_services" translatable="false">On your device not installed Google Play Service. To continue using application you must install Google Play Services.</string>
     <string name="for_correct_work_of_application">For correct work of application you must grant notification permission</string>
     <string name="grant">Grant</string>
     <string name="remember_last_used_note_color">Remember last used color of note</string>
@@ -458,24 +408,14 @@
     <string name="acc_button_move_to_status_bar">Move to Status bar</string>
     <string name="acc_button_edit">Edit</string>
     <string name="acc_button_send_message">Send message</string>
-    <string name="acc_button_open_application">Open application</string>
-    <string name="acc_button_open_link_in_browser">Open link in browser</string>
-    <string name="acc_button_retry_to_send_message">Retry to send message</string>
     <string name="acc_select_number_from_contacts">Select number from contacts</string>
     <string name="acc_remove_reminder">Remove reminder</string>
     <string name="acc_select_color">Select color</string>
     <string name="acc_add_image_to_reminder">Add image to reminder</string>
     <string name="acc_add_reminder">Add reminder</string>
     <string name="acc_change_text_font_style">Change text font style</string>
-    <string name="acc_play">Play</string>
-    <string name="acc_pause">Pause</string>
     <string name="acc_stop">Stop</string>
-    <string name="acc_crop_image">Crop image</string>
-    <string name="acc_draw_on_image">Draw on the picture</string>
-    <string name="acc_next">Next</string>
     <string name="acc_add">Add</string>
-    <string name="acc_rotate_left">Rotate left</string>
-    <string name="acc_rotate_right">Rotate right</string>
     <string name="acc_select_application">Select application</string>
     <string name="acc_type_by_voice">Type text by voice</string>
     <string name="hi_how_can_i_help_you">Hi, how can I help you?</string>
@@ -514,9 +454,7 @@
     <string name="yearly">Annually</string>
     <string name="attach_file">Attach file</string>
     <string name="location_tracking_service_running">Location tracking service running</string>
-    <string name="something_went_wrong">Something went wrong</string>
     <string name="application_language">Application language</string>
-    <string name="not_a_image_file">Not an image file</string>
     <string name="cant_find_app_for_that_file_type">Can\'t find application that can open this file.</string>
     <string name="seconds_before">seconds before</string>
     <string name="minutes_before">minutes before</string>
@@ -532,12 +470,7 @@
     <string name="silver">Silver</string>
     <string name="aubergine">Aubergine</string>
     <string name="months">months</string>
-    <string name="lowest">Lowest</string>
-    <string name="low">Low</string>
-    <string name="high">High</string>
-    <string name="highest">Highest</string>
     <string name="not_selected">Not selected</string>
-    <string name="select_phone_number">Select phone number</string>
     <string name="applications_not_found">Applications not found</string>
     <string name="leaving_place">Leaving the place</string>
     <string name="entering_place">Arriving to place</string>
@@ -568,8 +501,6 @@
     <string name="play_melody">Play melody</string>
     <string name="make_call_auto">Make phone calls automatically</string>
     <string name="make_call_manually">Make phone calls manually</string>
-    <string name="send_messages_manually">Send messages manually</string>
-    <string name="send_messages_auto">Send messages automatically</string>
     <string name="open_applications_manually">Open applications manually</string>
     <string name="open_applications_auto">Open applications automatically</string>
     <string name="show_led_indication">Show LED indication</string>
@@ -603,7 +534,6 @@
     <string name="create_template">Create template</string>
     <string name="edit_template">Edit template</string>
     <string name="move_to_place">Move to place</string>
-    <string name="retry">Retry</string>
     <string name="create_group">Create group</string>
     <string name="make_default">Make default</string>
     <string name="do_not_create_reminder_for_missed_calls">Do not create reminder for missed calls</string>
@@ -611,7 +541,6 @@
     <string name="recent_places">recent places</string>
     <string name="found_places">found places</string>
     <string name="repeat_every">Repeat every</string>
-    <string name="pro" translatable="false">PRO</string>
     <string name="new_tasks_list">Create tasks list</string>
     <string name="failed_to_update_task">Failed to update task</string>
     <string name="details">Details</string>
@@ -630,7 +559,6 @@
     <string name="old_pin">Old PIN</string>
     <string name="disable_pin">Disable PIN</string>
     <string name="acc_open_attachment">Open attachment</string>
-    <string name="start_screen">Home screen</string>
     <string name="quick_buttons">Quick buttons</string>
     <string name="list_item_background">Background of list item</string>
     <string name="you_not_logged_to_google_tasks">You not logged to Google Tasks</string>
@@ -640,9 +568,6 @@
     <string name="do_not_show_in_home_screen_widget">Do not show in home screen widget</string>
     <string name="do_not_show_permanent_notification">Do not show permanent notification</string>
     <string name="do_not_show_after_calls">Do not show event creation screen after calls</string>
-    <string name="colums_in_lists">Columns in lists when horizontal</string>
-    <string name="show_one_column">Show one column</string>
-    <string name="show_two_columns">Show two columns</string>
     <string name="silent_channel">Silent channel</string>
     <string name="channel_for_silent_notifiations">Channel for silent notifications</string>
     <string name="sync_data_now">Sync data now</string>
@@ -652,12 +577,10 @@
     <string name="update_additional_parameters">Update additional parameters</string>
     <string name="allow_phone_call_and_sms_func">Allow phone call and SMS functionality</string>
     <string name="hide_that_functionality">Hide that functionality</string>
-    <string name="accent">Accent</string>
     <string name="app_not_found">Application not found</string>
     <string name="play_melody_in_silent_mode">Play melody when phone in silent mode</string>
     <string name="do_not_show_notification">Do not show notification</string>
     <string name="do_not_remind_about_birthdays">Do not remind about birthdays</string>
-    <string name="living_coral">Living Coral</string>
     <string name="with_reminder">With reminder</string>
     <string name="change_pin">Change PIN</string>
     <string name="acc_resend_message">Resend message</string>
@@ -668,13 +591,10 @@
     <string name="this_command_not_supported_on_that_screen">This command not supported on that screen</string>
     <string name="portuguese">Portuguese</string>
     <string name="found_one_reminder">Found one reminder</string>
-    <string name="clear_all_changes">Clear all changes</string>
     <string name="download">Download</string>
     <string name="from_url">Download from link</string>
     <string name="wrong_url">Wrong link</string>
     <string name="failed_to_download">Failed to download</string>
-    <string name="privacy_warming">To continue You need to accept Privacy Policy</string>
-    <string name="restore_data">Restore data</string>
     <string name="export_all_my_data">Export all my data</string>
     <string name="no_new_birthdays">No new birthdays</string>
     <string name="scan_contacts">Scan contacts</string>
@@ -691,9 +611,6 @@
     <string name="and_above">and above</string>
     <string name="allow_unlock_for_priority">Allow unlock screen only for</string>
     <string name="import_file">Import file</string>
-    <string name="white">White</string>
-    <string name="black">Black</string>
-    <string name="it_s_not_recommended_to_use_this_colors_together">It\'s not recommended to use this colors together</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">Google Play Services not found, some functionality is disabled!</string>
     <string name="none">None</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">Enable data backup to keep your reminders in safe</string>
@@ -706,17 +623,8 @@
     <string name="backup_flags">Backup settings flags</string>
     <string name="automatically_sync">Automatically sync</string>
     <string name="sync_flags">Sync flags</string>
-    <string name="exclusive_themes">Exclusive themes;</string>
     <string name="no_ads">No Advertisement;</string>
     <string name="new_reminder">New reminder</string>
-    <string name="in_app_sharing">In-App sharing</string>
-    <string name="password">Password</string>
-    <string name="key">Key</string>
-    <string name="shared_data_available_only_while_this_screen_is_open">Shared data available only while this screen is open</string>
-    <string name="failed_to_share_data">Failed to share data</string>
-    <string name="failed_to_read_data">Failed to read data</string>
-    <string name="save_and_start_automatically">Save and start automatically</string>
-    <string name="reminder_imported_success">Reminder imported successfully</string>
     <string name="light">Light</string>
     <string name="system_default">System default</string>
     <string name="set_by_battery_saver">Set by Battery Saver</string>

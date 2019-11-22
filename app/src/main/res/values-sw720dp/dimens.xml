@@ -2,7 +2,6 @@
 <resources>
 
     <dimen name="create_margin">30dp</dimen>
-    <dimen name="create_imagebutton_size">70dp</dimen>
 
     <dimen name="settings_view_size">50dp</dimen>
 

@@ -11,16 +11,10 @@
     <string name="terrain">地形</string>
     <string name="hybrid">混合</string>
     <string name="red">红</string>
-    <string name="purple">紫</string>
-    <string name="green_light">浅绿</string>
     <string name="green">绿</string>
-    <string name="blue_light">浅蓝</string>
     <string name="blue">蓝</string>
     <string name="yellow">黄</string>
-    <string name="orange">橙</string>
-    <string name="cyan">青</string>
     <string name="pink">粉红</string>
-    <string name="amber">琥珀</string>
     <string name="action">动作</string>
     <string name="make_call">拨打电话</string>
     <string name="sms">发送短信</string>
@@ -31,7 +25,6 @@
     <string name="import_string">导入</string>
     <string name="google_drive">谷歌云端硬盘</string>
     <string name="dropbox">Dropbox</string>
-    <string name="skip">跳过</string>
     <string name="notes">笔记</string>
     <string name="task">任务</string>
     <string name="note">笔记</string>
@@ -48,7 +41,6 @@
     <string name="infinite_vibrate">无限振动</string>
     <string name="sound_in_silent_mode">静音模式下响铃</string>
     <string name="infinite_sound">无限响铃(重复)</string>
-    <string name="turn_on_screen">点亮屏幕</string>
     <string name="melody">铃声</string>
     <string name="melody_x">"铃声 %s"</string>
     <string name="voice_notification">语音播报(TTS)</string>
@@ -61,7 +53,6 @@
     <string name="show_in_home_screen">在桌面小部件中显示</string>
     <string name="birthday_reminder">生日提醒</string>
     <string name="contacts">联系人</string>
-    <string name="scan">扫描</string>
     <string name="no_events">无事件</string>
     <string name="theme">主题</string>
     <string name="calendar">日历</string>
@@ -191,12 +182,9 @@
     <string name="image">图片</string>
     <string name="font_style">字体样式</string>
     <string name="share">分享</string>
-    <string name="sync">同步</string>
-    <string name="filter">过滤器</string>
     <string name="copy">复制</string>
     <string name="grid_view">网格视图</string>
     <string name="order">排序</string>
-    <string name="add_list">添加列表</string>
     <string name="add_birthday">添加生日</string>
     <string name="active_reminders">激活的提醒</string>
     <string name="events">事件</string>
@@ -219,7 +207,6 @@
     <string name="skype">Skype</string>
     <string name="day_of_month">每月</string>
     <string name="shopping_list">购物清单</string>
-    <string name="deleted">已删除</string>
     <string name="radius_x_meters">"半径 %s 米"</string>
     <string name="shopping_list_is_empty">购物清单为空！</string>
     <string name="you_dont_select_any_day">未选择日期！</string>
@@ -227,11 +214,7 @@
     <string name="you_dont_insert_link">未输入链接！</string>
     <string name="you_dont_select_place">未选择地点！</string>
     <string name="you_dont_insert_timer_time">未选择计时器的时间！</string>
-    <string name="max_day_supported">最大支持日期-28！</string>
-    <string name="lime">灰白</string>
-    <string name="indigo">紫蓝</string>
     <string name="dark_orange">深橙</string>
-    <string name="dark_purple">深紫</string>
     <string name="teal">深绿</string>
     <string name="select_one_of_item">选择一个条目！</string>
     <string name="sunday">周日</string>
@@ -267,7 +250,6 @@
     <string name="_led_notification_">- LED通知；</string>
     <string name="led_color_for_each_reminder">- 每个提醒可以单独设置LED颜色；</string>
     <string name="styles_for_marker">- 16种样式的标记；</string>
-    <string name="press_again_to_exit">再按一次退出</string>
     <string name="delete_this_list">删除此列表？</string>
     <string name="delete_list">删除列表</string>
     <string name="new_task">新建任务</string>
@@ -286,8 +268,6 @@
     <string name="please_wait">请稍等...</string>
     <string name="no_events_found">未找到事件！</string>
     <string name="events_found">找到事件</string>
-    <string name="no_files">无文件</string>
-    <string name="not_music_file">不是音乐文件</string>
     <string name="x_minutes">"%s 分钟"</string>
     <string name="x_hours">"%s 小时"</string>
     <string name="last_called">上次呼叫在</string>
@@ -295,7 +275,6 @@
     <string name="x_days">"%s 天"</string>
     <string name="reminder_snoozed">提醒已延后</string>
     <string name="choose_application">选择应用</string>
-    <string name="notes_support">笔记支持</string>
     <string name="no_messages">无信息</string>
     <string name="birthday">生日</string>
     <string name="permanent">固定</string>
@@ -364,10 +343,8 @@
     <string name="search_place">搜索地点...</string>
     <string name="add_all">添加全部</string>
     <string name="no_places_found">未找到地点！</string>
-    <string name="file_x_attached">文件： %s 已附加</string>
     <string name="additional_reminder">提醒的额外类型-地点</string>
     <string name="add_reminder_menu">添加提醒</string>
-    <string name="x_meters">%s 米</string>
     <string name="task_summary_is_empty">任务概要为空！</string>
     <string name="x_day">%s 天</string>
     <string name="x_hour">%s 小时</string>
@@ -382,11 +359,7 @@
     <string name="move_forward">前移</string>
     <string name="move_backward">退回</string>
     <string name="create_task">创建任务</string>
-    <string name="up">向上</string>
     <string name="could_not_launch_market">无法启动市场</string>
-    <string name="call_history">通话记录</string>
-    <string name="no_contacts_found">未找到联系人</string>
-    <string name="sending_message">发送信息</string>
     <string name="all_permissions_are_enabled">所有权限已启用</string>
     <string name="delete_this_reminder">删除此提醒？</string>
 
@@ -394,7 +367,6 @@
     <string name="map">地图</string>
     <string name="no_groups">无分组</string>
     <string name="remove_exclusion">移除排除时间</string>
-    <string name="theme_color">主题颜色</string>
     <string name="dark">暗</string>
     <string name="x_out_of_x" formatted="false">%d 超出 %d</string>
     <string name="syncing_places">正在同步地点...</string>
@@ -410,15 +382,7 @@
     <string name="log_in">登录</string>
     <string name="failed_to_login">登录失败</string>
     <string name="open_app">打开应用</string>
-    <string name="i_accept"><![CDATA[我接受 <a href=\'termsopen.com\'>隐私政策</a>]]></string>
     <string name="privacy_policy">隐私政策</string>
-    <string name="original">原始</string>
-    <string name="cropped">裁剪</string>
-    <string name="which_image_you_want_to_use">您想使用哪张图片？</string>
-    <string name="edited">已编辑</string>
-    <string name="text">文本</string>
-    <string name="add_text">添加文本</string>
-    <string name="stroke_width">笔画宽度</string>
     <string name="opacity">不透明度</string>
     <string name="live_conversation">实时对话</string>
     <string name="skype_is_not_installed">Skype未安装！需要安装吗？</string>
@@ -428,20 +392,6 @@
     <string name="_minutes">分钟</string>
     <string name="_hours">小时</string>
     <string name="loading_events">正在加载事件</string>
-    <string name="scale">缩放比</string>
-    <string name="figure">元素</string>
-    <string name="text_is_empty">文本为空</string>
-    <string name="this_reminder_is_disabled">此提醒已禁用</string>
-    <string name="would_you_like_to_enable_it">您想启用它吗？</string>
-    <string name="google_integration">谷歌集成</string>
-    <string name="location_events">位置事件</string>
-    <string name="reminder_descr">支持多种类型的提醒(按日期，工作日，每月，计时器，生日提醒)。</string>
-    <string name="notes_descr">您可以创建带有多张图片的笔记。也可以在笔记中编辑图片。</string>
-    <string name="google_descr">应用支持谷歌日历与谷歌任务集成。</string>
-    <string name="location_descr">您也可以使用位置提醒(按地址或地点)。</string>
-    <string name="sync_descr">然后保存全部数据到您喜爱的云存储。</string>
-    <string name="error">错误</string>
-    <string name="on_your_device_not_installed_google_play_service_to_continue_using_application_you_must_install_google_play_services" translatable="false">您的设备上未安装Google Play服务。为能继续使用应用必须安装Google Play服务。</string>
     <string name="for_correct_work_of_application">为使应用正常工作必须允许通知权限</string>
     <string name="grant">允许</string>
     <string name="remember_last_used_note_color">记住笔记上次使用的颜色</string>
@@ -457,24 +407,14 @@
     <string name="acc_button_move_to_status_bar">移动到状态栏</string>
     <string name="acc_button_edit">编辑</string>
     <string name="acc_button_send_message">发送信息</string>
-    <string name="acc_button_open_application">打开应用</string>
-    <string name="acc_button_open_link_in_browser">在浏览器中打开链接</string>
-    <string name="acc_button_retry_to_send_message">重试发送信息</string>
     <string name="acc_select_number_from_contacts">从联系人中选择号码</string>
     <string name="acc_remove_reminder">移除提醒</string>
     <string name="acc_select_color">选择颜色</string>
     <string name="acc_add_image_to_reminder">添加图片到提醒</string>
     <string name="acc_add_reminder">添加提醒</string>
     <string name="acc_change_text_font_style">更改字体样式</string>
-    <string name="acc_play">播放</string>
-    <string name="acc_pause">暂停</string>
     <string name="acc_stop">停止</string>
-    <string name="acc_crop_image">裁剪图片</string>
-    <string name="acc_draw_on_image">在图片上绘画</string>
-    <string name="acc_next">下一个</string>
     <string name="acc_add">添加</string>
-    <string name="acc_rotate_left">向左旋转</string>
-    <string name="acc_rotate_right">向右旋转</string>
     <string name="acc_select_application">选择应用</string>
     <string name="acc_type_by_voice">用语音输入文本</string>
     <string name="hi_how_can_i_help_you">您好，有什么能帮您的吗？</string>
@@ -515,9 +455,7 @@
     <string name="yearly">每年</string>
     <string name="attach_file">附加文件</string>
     <string name="location_tracking_service_running">位置跟踪服务正在运行</string>
-    <string name="something_went_wrong">出问题了</string>
     <string name="application_language">应用语言</string>
-    <string name="not_a_image_file">不是图片文件</string>
     <string name="cant_find_app_for_that_file_type">找不到能打开此文件的应用。</string>
     <string name="seconds_before">秒前</string>
     <string name="minutes_before">分钟前</string>
@@ -535,12 +473,7 @@
     <string name="disable_folding_reminder_window">禁用智能折叠提醒窗口</string>
     <string name="months">个月</string>
     <string name="app_not_found">应用程序未找到</string>
-    <string name="lowest">最低</string>
-    <string name="low">低</string>
-    <string name="high">高</string>
-    <string name="highest">最高</string>
     <string name="not_selected">未选中的</string>
-    <string name="select_phone_number">选择电话号码</string>
     <string name="applications_not_found">找不到应用程序</string>
     <string name="leaving_place">离开这个地方</string>
     <string name="entering_place">到达的地方</string>
@@ -572,8 +505,6 @@
     <string name="play_melody">播放旋律</string>
     <string name="make_call_auto">自动拨打电话</string>
     <string name="make_call_manually">手动拨打电话</string>
-    <string name="send_messages_manually">手动发送消息</string>
-    <string name="send_messages_auto">自动发送消息</string>
     <string name="open_applications_manually">手动打开应用程序</string>
     <string name="open_applications_auto">自动打开应用程序</string>
     <string name="show_led_indication">显示LED指示</string>
@@ -610,7 +541,6 @@
     <string name="create_template">创建模板</string>
     <string name="edit_template">编辑模板</string>
     <string name="move_to_place">搬到地方</string>
-    <string name="retry">重试</string>
     <string name="create_group">创建组</string>
     <string name="make_default">使默认</string>
     <string name="do_not_create_reminder_for_missed_calls">不要为未接来电创建提醒</string>
@@ -637,7 +567,6 @@
     <string name="disable_pin">禁用PIN码</string>
     <string name="acc_open_attachment">打开附件</string>
     <string name="acc_resend_message">重新发送消息</string>
-    <string name="start_screen">主屏幕</string>
     <string name="quick_buttons">快速按钮</string>
     <string name="list_item_background">列表项目的背景</string>
     <string name="you_not_logged_to_google_tasks">您尚未登录Google任务</string>
@@ -647,9 +576,6 @@
     <string name="do_not_show_in_home_screen_widget">不要在主屏幕小部件中显示</string>
     <string name="do_not_show_permanent_notification">不要显示永久通知</string>
     <string name="do_not_show_after_calls">调用后不要显示事件创建屏幕</string>
-    <string name="colums_in_lists">列表中的列是水平的</string>
-    <string name="show_one_column">显示一列</string>
-    <string name="show_two_columns">显示两列</string>
     <string name="silent_channel">沉默的渠道</string>
     <string name="channel_for_silent_notifiations">静音通知的频道</string>
     <string name="backup_my_data">备份我的数据</string>
@@ -660,18 +586,13 @@
     <string name="update_additional_parameters">更新其他参数</string>
     <string name="allow_phone_call_and_sms_func">允许通话和短信功能</string>
     <string name="hide_that_functionality">隐藏该功能</string>
-    <string name="accent">口音</string>
-    <string name="living_coral">活珊瑚</string>
     <string name="backup_data_now">立即备份数据</string>
     <string name="missed_call">未接来电</string>
     <string name="select_date_in_future">将来选择日期</string>
     <string name="portuguese">葡萄牙语</string>
-    <string name="clear_all_changes">清除所有更改</string>
     <string name="download">下载</string>
     <string name="failed_to_download">无法下载</string>
     <string name="from_url">从链接下载</string>
-    <string name="restore_data">恢复数据</string>
-    <string name="privacy_warming">要继续您需要接受隐私政策</string>
     <string name="wrong_url">错误的链接</string>
     <string name="export_all_my_data">导出我的所有数据</string>
     <string name="scan_contacts">扫描联系人</string>
@@ -689,9 +610,6 @@
     <string name="and_above">以上</string>
     <string name="allow_unlock_for_priority">仅允许解锁屏幕</string>
     <string name="import_file">导入文件</string>
-    <string name="white">白色</string>
-    <string name="black">黑色</string>
-    <string name="it_s_not_recommended_to_use_this_colors_together">不建议一起使用这些颜色</string>
     <string name="google_play_services_not_found_some_functionality_is_disabled">未找到Google Play服务，某些功能已停用！</string>
     <string name="none">没有</string>
     <string name="enable_data_backup_to_keep_your_reminders_in_safe">启用数据备份以确保您的提醒安全</string>
@@ -704,17 +622,8 @@
     <string name="backup_flags">备份设置标志</string>
     <string name="automatically_sync">自动同步</string>
     <string name="sync_flags">同步标志</string>
-    <string name="exclusive_themes">独家主题;</string>
     <string name="no_ads">没有广告;</string>
     <string name="new_reminder">新提醒</string>
-    <string name="failed_to_read_data">无法读取数据</string>
-    <string name="failed_to_share_data">无法共享数据</string>
-    <string name="in_app_sharing">内部应用分享</string>
-    <string name="key">键</string>
-    <string name="password">密码</string>
-    <string name="reminder_imported_success">提醒导入成功</string>
-    <string name="save_and_start_automatically">保存并自动启动</string>
-    <string name="shared_data_available_only_while_this_screen_is_open">仅在此屏幕打开时可用的共享数据</string>
     <string name="accept">接受</string>
     <string name="backup_attached_files_and_melodies">备份附加文件和旋律</string>
     <string name="by_continue_using_reminder_application_you_accept_privacy_policy">继续使用提醒应用程序您接受隐私政策</string>
