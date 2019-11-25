@@ -7,8 +7,8 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.Data
 import com.google.api.client.util.DateTime
@@ -43,7 +43,7 @@ class GTasks private constructor(context: Context) : KoinComponent {
             Timber.d("GTasks: user -> $user")
             val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(TasksScopes.TASKS))
             credential.selectedAccountName = user
-            tasksService = Tasks.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+            tasksService = Tasks.Builder(NetHttpTransport(), GsonFactory(), credential)
                     .setApplicationName(APPLICATION_NAME)
                     .build()
             isLogged = true
