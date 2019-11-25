@@ -37,7 +37,7 @@ class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel.allGroups.observe(this, Observer { groups ->
+        viewModel.allGroups.observe(viewLifecycleOwner, Observer { groups ->
             if (groups != null) {
                 showGroups(groups.toList())
             }

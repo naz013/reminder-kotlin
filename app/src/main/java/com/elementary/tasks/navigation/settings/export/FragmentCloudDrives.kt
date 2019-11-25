@@ -71,12 +71,12 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     override fun onStart() {
         super.onStart()
 
-        viewModel.isLoading.observe(this, Observer {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 updateProgress(it)
             }
         })
-        viewModel.isReady.observe(this, Observer { b ->
+        viewModel.isReady.observe(viewLifecycleOwner, Observer { b ->
             if (b != null && b) {
                 withContext { UpdatesHelper.updateTasksWidget(it) }
             }

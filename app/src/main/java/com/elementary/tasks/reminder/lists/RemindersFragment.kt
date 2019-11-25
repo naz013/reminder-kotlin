@@ -121,19 +121,19 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     }
 
     private fun initViewModel() {
-        viewModel.events.observe(this, Observer { reminders ->
+        viewModel.events.observe(viewLifecycleOwner, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
             }
         })
-        viewModel.error.observe(this, Observer {
+        viewModel.error.observe(viewLifecycleOwner, Observer {
             Timber.d("initViewModel: onError -> $it")
             if (it != null) {
                 remindersAdapter.notifyDataSetChanged()
                 Toast.makeText(context!!, it, Toast.LENGTH_SHORT).show()
             }
         })
-        viewModel.result.observe(this, Observer {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it == Commands.OUTDATED) {
                     remindersAdapter.notifyItemChanged(mPosition)

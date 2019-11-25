@@ -202,21 +202,21 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     }
 
     private fun initViewModel() {
-        viewModel.reminders.observe(this, Observer {
+        viewModel.reminders.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 showReminders(it)
             } else {
                 showReminders(listOf())
             }
         })
-        viewModel.birthdays.observe(this, Observer {
+        viewModel.birthdays.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 showBirthdays(it)
             } else {
                 showBirthdays(listOf())
             }
         })
-        viewModel.result.observe(this, Observer {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it == Commands.OUTDATED) {
                     remindersAdapter.notifyItemChanged(mPosition)

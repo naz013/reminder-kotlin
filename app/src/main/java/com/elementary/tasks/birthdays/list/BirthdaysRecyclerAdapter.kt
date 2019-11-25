@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.Module
 
 class BirthdaysRecyclerAdapter(private val refreshListener: () -> Unit)
     : ListAdapter<Birthday, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
@@ -35,7 +36,7 @@ class BirthdaysRecyclerAdapter(private val refreshListener: () -> Unit)
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (item?.uuId == AdsProvider.BIRTHDAY_BANNER_ID) {
+        return if (!Module.isPro && item?.uuId == AdsProvider.BIRTHDAY_BANNER_ID) {
             AdsProvider.ADS_VIEW_TYPE
         } else {
             0

@@ -356,7 +356,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
     private fun initPlacesViewModel() {
         val viewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
-        viewModel.places.observe(this, Observer { places ->
+        viewModel.places.observe(viewLifecycleOwner, Observer { places ->
             if (places != null && isPlaces) {
                 showPlaces(places)
             }

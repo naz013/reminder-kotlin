@@ -10,6 +10,7 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
@@ -157,7 +158,7 @@ class RemindersRecyclerAdapter(private var showHeader: Boolean = true,
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (item.uuId == AdsProvider.REMINDER_BANNER_ID) {
+        return if (!Module.isPro && item.uuId == AdsProvider.REMINDER_BANNER_ID) {
             AdsProvider.ADS_VIEW_TYPE
         } else {
             item.viewType

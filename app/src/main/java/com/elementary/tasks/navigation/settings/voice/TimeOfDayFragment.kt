@@ -41,22 +41,22 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
 
     override fun onStart() {
         super.onStart()
-        viewModel.morningTime.observe(this, androidx.lifecycle.Observer {
+        viewModel.morningTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 binding.morningTime.text = TimeUtil.getTime(it.toDate(), is24, prefs.appLanguage)
             }
         })
-        viewModel.dayTime.observe(this, androidx.lifecycle.Observer {
+        viewModel.dayTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 binding.dayTime.text = TimeUtil.getTime(it.toDate(), is24, prefs.appLanguage)
             }
         })
-        viewModel.eveningTime.observe(this, androidx.lifecycle.Observer {
+        viewModel.eveningTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 binding.eveningTime.text = TimeUtil.getTime(it.toDate(), is24, prefs.appLanguage)
             }
         })
-        viewModel.nightTime.observe(this, androidx.lifecycle.Observer {
+        viewModel.nightTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 binding.nightTime.text = TimeUtil.getTime(it.toDate(), is24, prefs.appLanguage)
             }

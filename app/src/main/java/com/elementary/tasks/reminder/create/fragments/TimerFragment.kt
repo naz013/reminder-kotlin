@@ -136,7 +136,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel.usedTimeList.observe(this, Observer {
+        viewModel.usedTimeList.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 timesAdapter.updateData(it)
                 if (it.isEmpty()) {

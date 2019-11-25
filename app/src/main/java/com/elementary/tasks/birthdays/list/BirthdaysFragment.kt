@@ -98,7 +98,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
     }
 
     private fun initViewModel() {
-        viewModel.birthdays.observe(this, Observer { list ->
+        viewModel.birthdays.observe(viewLifecycleOwner, Observer { list ->
             if (list != null) {
                 filterController.original = list
             }

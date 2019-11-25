@@ -220,7 +220,7 @@ object ViewUtils {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val scrollY = recyclerView.scrollY
-                    Timber.d("onScrolled: $scrollY")
+//                    Timber.d("onScrolled: $scrollY")
                     if (scrollY > 0) {
                         fabListener.invoke(false)
                     } else {

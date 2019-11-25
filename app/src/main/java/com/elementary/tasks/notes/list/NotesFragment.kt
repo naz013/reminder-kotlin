@@ -169,7 +169,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     }
 
     private fun initViewModel() {
-        viewModel.notes.observe(this, Observer { list ->
+        viewModel.notes.observe(viewLifecycleOwner, Observer { list ->
             if (list != null) {
                 Timber.d("initViewModel: $list")
                 sortController.original = list

@@ -110,12 +110,12 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     }
 
     private fun initViewModel() {
-        viewModel.events.observe(this, Observer { reminders ->
+        viewModel.events.observe(viewLifecycleOwner, Observer { reminders ->
             if (reminders != null) {
                 showData(reminders)
             }
         })
-        viewModel.result.observe(this, Observer {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 when (it) {
                     Commands.DELETED ->  Toast.makeText(context!!, R.string.trash_cleared, Toast.LENGTH_SHORT).show()

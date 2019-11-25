@@ -79,7 +79,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     }
 
     private fun initViewModel() {
-        mViewModel.events.observe(this, Observer<Pair<EventsPagerItem, List<EventModel>>> {
+        mViewModel.events.observe(viewLifecycleOwner, Observer<Pair<EventsPagerItem, List<EventModel>>> {
             val item = eventsPagerItem
             if (it != null && item != null) {
                 val foundItem = it.first

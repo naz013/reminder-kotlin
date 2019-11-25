@@ -132,17 +132,17 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
     }
 
     private fun initViewModel() {
-        viewModel.googleTaskLists.observe(this, Observer {
+        viewModel.googleTaskLists.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 showLists(it)
             }
         })
-        viewModel.allGoogleTasks.observe(this, Observer {
+        viewModel.allGoogleTasks.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 showTasks(it)
             }
         })
-        viewModel.isInProgress.observe(this, Observer {
+        viewModel.isInProgress.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 updateProgress(it)
             }

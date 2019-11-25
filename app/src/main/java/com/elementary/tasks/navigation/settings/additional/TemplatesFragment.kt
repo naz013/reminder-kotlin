@@ -94,7 +94,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel::class.java)
-        viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
+        viewModel.smsTemplates.observe(viewLifecycleOwner, Observer { smsTemplates ->
             if (smsTemplates != null) {
                 showTemplates(smsTemplates)
             }

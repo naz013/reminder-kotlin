@@ -7,8 +7,10 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.Module
 
-class TasksRecyclerAdapter(private val refreshListener: () -> Unit) : ListAdapter<GoogleTask, RecyclerView.ViewHolder>(GoogleTaskDiffCallback()) {
+class TasksRecyclerAdapter(private val refreshListener: () -> Unit) : ListAdapter<GoogleTask,
+        RecyclerView.ViewHolder>(GoogleTaskDiffCallback()) {
 
     var actionsListener: ActionsListener<GoogleTask>? = null
     var googleTaskListMap: Map<String, GoogleTaskList> = mapOf()
@@ -44,7 +46,7 @@ class TasksRecyclerAdapter(private val refreshListener: () -> Unit) : ListAdapte
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (item?.uuId == AdsProvider.GTASKS_BANNER_ID) {
+        return if (!Module.isPro && item?.uuId == AdsProvider.GTASKS_BANNER_ID) {
             AdsProvider.ADS_VIEW_TYPE
         } else {
             0

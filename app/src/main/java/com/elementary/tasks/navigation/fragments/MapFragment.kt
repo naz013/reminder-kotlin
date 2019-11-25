@@ -57,7 +57,7 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel.events.observe(this, Observer { reminders ->
+        viewModel.events.observe(viewLifecycleOwner, Observer { reminders ->
             if (reminders != null && mGoogleMap != null) {
                 showData(reminders)
             }

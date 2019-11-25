@@ -102,12 +102,12 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
     }
 
     private fun initViewModel() {
-        viewModel.places.observe(this, Observer { places ->
+        viewModel.places.observe(viewLifecycleOwner, Observer { places ->
             if (places != null) {
                 searchModifier.original = places
             }
         })
-        viewModel.result.observe(this, Observer { commands ->
+        viewModel.result.observe(viewLifecycleOwner, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> {

@@ -90,7 +90,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     }
 
     private fun initViewModel() {
-        mViewModel.events.observe(this, Observer {
+        mViewModel.events.observe(viewLifecycleOwner, Observer {
             val item = monthPagerItem
             if (it != null && item != null) {
                 val foundItem = it.first
