@@ -93,7 +93,7 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
             val out = ByteArrayOutputStream()
             service.files().get(id).executeMediaAndDownloadTo(out)
             val data = out.toString()
-            Timber.d("showContent: $id, $data")
+            if (BuildConfig.DEBUG) Timber.d("showContent: $id, $data")
         } catch (e: Exception) {
             e.printStackTrace()
         }

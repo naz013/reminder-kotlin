@@ -3,6 +3,7 @@ package com.elementary.tasks.core.controller
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import timber.log.Timber
 
 class WeeklyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
@@ -10,6 +11,7 @@ class WeeklyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
         get() = reminder.isActive
 
     override fun start(): Boolean {
+        Timber.d("start: ${reminder.eventTime}")
         if (TimeCount.isCurrent(reminder.eventTime)) {
             reminder.isActive = true
             reminder.isRemoved = false
@@ -48,8 +50,9 @@ class WeeklyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
             stop()
         } else {
             if (!TimeCount.isCurrent(reminder.eventTime)) {
-                val time = TimeCount.getNextWeekdayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) - 1000L)
+                val time = TimeCount.getNextWeekdayTime(reminder, TimeUtil.getDateTimeFromGmt(reminder.eventTime) + 1000L)
                 reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
+                reminder.startTime = TimeUtil.getGmtFromDateTime(time)
             }
             reminder.eventCount = 0
             start()
