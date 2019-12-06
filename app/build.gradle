@@ -140,8 +140,8 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.2.2'
     kapt 'androidx.room:room-compiler:2.2.2'
 
-    implementation "androidx.navigation:navigation-fragment-ktx:2.2.0-rc02"
-    implementation "androidx.navigation:navigation-ui-ktx:2.2.0-rc02"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.2.0-rc03"
+    implementation "androidx.navigation:navigation-ui-ktx:2.2.0-rc03"
 
     implementation "androidx.palette:palette-ktx:1.0.0"
 
