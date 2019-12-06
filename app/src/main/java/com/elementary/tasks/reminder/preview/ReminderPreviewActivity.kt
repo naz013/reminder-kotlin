@@ -370,6 +370,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
 
     private fun getWindowType(reminderWType: Int): String {
+        if (Module.isQ) return getString(R.string.simple)
         var windowType = prefs.reminderType
         val ignore = prefs.isIgnoreWindowType
         if (!ignore) {
