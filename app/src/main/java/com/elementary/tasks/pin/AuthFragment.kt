@@ -19,7 +19,6 @@ open class AuthFragment : Fragment() {
     }
 
     companion object {
-        const val AUTH_PIN = 0
         const val AUTH_FINGER = 1
     }
 }

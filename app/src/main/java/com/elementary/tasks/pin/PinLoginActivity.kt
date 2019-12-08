@@ -3,6 +3,9 @@ package com.elementary.tasks.pin
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -10,22 +13,34 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
 import com.elementary.tasks.experimental.NavUtil
 
-class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activity_pin_login),
-        AuthFragment.AuthCallback{
+class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activity_pin_login), AuthFragment.AuthCallback {
 
     private var isBack = false
     private var hasFinger = false
+    private lateinit var biometricPrompt: BiometricPrompt
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isBack = intent.getBooleanExtra(ARG_BACK, false)
-        hasFinger = prefs.useFingerprint && Module.isMarshmallow && Module.hasFingerprint(this)
+        hasFinger = prefs.useFingerprint && Module.isMarshmallow && Module.hasBiometric(this)
 
+        openPinLogin()
         if (hasFinger) {
+            biometricPrompt = createBiometricPrompt()
             openFingerLogin()
-        } else {
-            openPinLogin()
         }
+    }
+
+    private fun createBiometricPrompt(): BiometricPrompt {
+        val executor = ContextCompat.getMainExecutor(this)
+        val callback = object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                onSuccess()
+            }
+        }
+
+        return BiometricPrompt(this, executor, callback)
     }
 
     private fun openPinLogin() {
@@ -39,13 +54,23 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activ
     }
 
     private fun openFingerLogin() {
-        try {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, FingerFragment.newInstance(), null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commitAllowingStateLoss()
-        } catch (e: Exception) {
+        if (BiometricManager.from(this)
+                        .canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
+            val promptInfo = createPromptInfo()
+            biometricPrompt.authenticate(promptInfo)
         }
+    }
+
+    private fun createPromptInfo(): BiometricPrompt.PromptInfo {
+        return BiometricPrompt.PromptInfo.Builder()
+                .setTitle(getString(R.string.app_title))
+                .setSubtitle(getString(R.string.prompt_info_subtitle))
+                .setDescription(getString(R.string.prompt_info_description))
+                // Authenticate without requiring the user to press a "confirm"
+                // button after satisfying the biometric check
+                .setConfirmationRequired(false)
+                .setNegativeButtonText(getString(R.string.enter_your_pin))
+                .build()
     }
 
     override fun onSuccess() {
@@ -60,7 +85,7 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activ
     override fun changeScreen(auth: Int) {
         when (auth) {
             AuthFragment.AUTH_FINGER -> openFingerLogin()
-            else -> openPinLogin()
+            else -> {}
         }
     }
 

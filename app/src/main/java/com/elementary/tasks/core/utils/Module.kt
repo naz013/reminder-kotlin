@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.biometric.BiometricManager
 import com.elementary.tasks.BuildConfig
 
 object Module {
@@ -45,7 +46,7 @@ object Module {
     }
 
     fun hasCamera(context: Context): Boolean {
-        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 
     fun hasMicrophone(context: Context): Boolean {
@@ -53,8 +54,8 @@ object Module {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun hasFingerprint(context: Context): Boolean {
-        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)
+    fun hasBiometric(context: Context): Boolean {
+        return BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
     }
 
     fun hasBluetooth(context: Context): Boolean {

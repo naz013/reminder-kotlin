@@ -664,5 +664,7 @@
     <string name="try_again">Try again</string>
     <string name="enter_your_pin">Enter your PIN?</string>
     <string name="enter_pin">Enter PIN</string>
+    <string name="prompt_info_subtitle">Biometric authentication</string>
+    <string name="prompt_info_description">Proceed with biometric authentication</string>
 
 </resources>
