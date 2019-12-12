@@ -112,8 +112,8 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
             if (type.isNotEmpty()) {
                 when (type) {
                     TYPE_REMINDER -> {
-                        when {
-                            ACTION_PLAY == action -> {
+                        when (action) {
+                            ACTION_PLAY -> {
                                 val reminder = appDb.reminderDao().getById(id) ?: return
                                 increment()
                                 showReminderNotification(reminder)
@@ -121,33 +121,33 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                                     EventJobScheduler.scheduleReminderRepeat(this, id, prefs)
                                 }
                             }
-                            ACTION_STOP == action -> {
+                            ACTION_STOP -> {
                                 Notifier.hideNotification(applicationContext, notificationId)
                                 decrement(true)
                             }
                         }
                     }
                     TYPE_BIRTHDAY -> {
-                        when {
-                            ACTION_PLAY == action -> {
+                        when (action) {
+                            ACTION_PLAY -> {
                                 val birthday = appDb.birthdaysDao().getById(id) ?: return
                                 increment()
                                 showBirthdayNotification(birthday)
                             }
-                            ACTION_STOP == action -> {
+                            ACTION_STOP -> {
                                 Notifier.hideNotification(applicationContext, notificationId)
                                 decrement(true)
                             }
                         }
                     }
                     TYPE_MISSED -> {
-                        when {
-                            ACTION_PLAY == action -> {
+                        when (action) {
+                            ACTION_PLAY -> {
                                 val missedCall = appDb.missedCallsDao().getByNumber(id) ?: return
                                 increment()
                                 showMissedNotification(missedCall)
                             }
-                            ACTION_STOP == action -> {
+                            ACTION_STOP -> {
                                 Notifier.hideNotification(applicationContext, notificationId)
                                 decrement(true)
                             }
