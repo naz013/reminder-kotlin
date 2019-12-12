@@ -40,7 +40,9 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     private val themeUtil: ThemeUtil by inject()
     private val buttonObservable: GlobalButtonObservable by inject()
 
-    private var mAdapter = NotesRecyclerAdapter()
+    private val mAdapter = NotesRecyclerAdapter {
+        filterController.original = viewModel.notes.value ?: listOf()
+    }
     private var enableGrid = false
 
     private val filterController = SearchModifier(null, null)
@@ -192,7 +194,6 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     private fun initList() {
         enableGrid = prefs.isNotesGridEnabled
         binding.recyclerView.layoutManager = layoutManager()
-        mAdapter = NotesRecyclerAdapter()
         mAdapter.actionsListener = object : ActionsListener<NoteWithImages> {
             override fun onAction(view: View, position: Int, t: NoteWithImages?, actions: ListActions) {
                 when (actions) {
@@ -289,8 +290,9 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
     }
 
     override fun invoke(result: List<NoteWithImages>) {
-        Timber.d("invoke: $result")
-        mAdapter.submitList(result)
-        refreshView(result.size)
+        val newList = NoteAdsHolder.updateList(result)
+        Timber.d("invoke: $newList")
+        mAdapter.submitList(newList)
+        refreshView(newList.size)
     }
 }
