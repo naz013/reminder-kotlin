@@ -69,7 +69,7 @@ class ReminderHolder(parent: ViewGroup, hasHeader: Boolean, editable: Boolean, s
                 Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> String.format(context.getString(R.string.xM), reminder.repeatInterval.toString())
                 Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> ReminderUtils.getRepeatString(context, prefs, reminder.weekdays)
                 Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
-                else -> IntervalUtil.getInterval(context, reminder.repeatInterval)
+                else -> IntervalUtil.getInterval(reminder.repeatInterval) { StringResPatterns.getIntervalPattern(context, it) }
             }
             var text = "!!!$repeatText"
             if (reminder.isActive && !reminder.isRemoved) {

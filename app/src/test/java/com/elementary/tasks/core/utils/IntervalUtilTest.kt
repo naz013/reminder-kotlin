@@ -32,6 +32,18 @@ class IntervalUtilTest {
         assertEquals(true, IntervalUtil.isWeekday(data))
     }
 
+    @Test
+    fun getBeforeTime_shouldReturn5Hours() {
+        val millis = 5 * 1000L * 60 * 60
+        assertEquals("5h", IntervalUtil.getBeforeTime(millis) { "%sh" } )
+    }
+
+    @Test
+    fun getInterval_shouldReturn2Weeks() {
+        val millis = 6 * 1000L * 60 * 60
+        assertEquals("6h", IntervalUtil.getInterval(millis) { "%sh" } )
+    }
+
     @After
     fun tearDown() {
     }

@@ -287,7 +287,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
             binding.beforeView.hide()
         } else {
             binding.beforeView.show()
-            binding.before.text = IntervalUtil.getBeforeTime(this, reminder.remindBefore)
+            binding.before.text = IntervalUtil.getBeforeTime(reminder.remindBefore) { StringResPatterns.getBeforePattern(this, it) }
         }
     }
 
@@ -322,7 +322,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
                 Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> binding.repeat.text = String.format(getString(R.string.xM), reminder.repeatInterval.toString())
                 Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeat.text = ReminderUtils.getRepeatString(this, prefs, reminder.weekdays)
                 Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeat.text = getString(R.string.yearly)
-                else -> binding.repeat.text = IntervalUtil.getInterval(this, reminder.repeatInterval)
+                else -> binding.repeat.text = IntervalUtil.getInterval(reminder.repeatInterval) { StringResPatterns.getIntervalPattern(this, it) }
             }
             binding.repeatView.show()
         } else {

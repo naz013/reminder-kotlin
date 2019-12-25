@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.utils
 
-import android.content.Context
-import com.elementary.tasks.R
 import java.util.*
 
 object IntervalUtil {
@@ -36,27 +34,27 @@ object IntervalUtil {
         return false
     }
 
-    fun getBeforeTime(mContext: Context, millis: Long): String {
+    fun getBeforeTime(millis: Long, function: (PatternType) -> String): String {
         if (millis / TimeCount.DAY > 0L) {
             return if (millis / TimeCount.WEEK > 0L) {
-                String.format(mContext.getString(R.string.x_weeks), (millis / TimeCount.WEEK).toString())
+                String.format(function.invoke(PatternType.WEEKS), (millis / TimeCount.WEEK).toString())
             } else {
-                String.format(mContext.getString(R.string.x_days), (millis / TimeCount.DAY).toString())
+                String.format(function.invoke(PatternType.DAYS), (millis / TimeCount.DAY).toString())
             }
         } else {
             return if (millis / TimeCount.HOUR > 0L) {
-                String.format(mContext.getString(R.string.x_hours), (millis / TimeCount.HOUR).toString())
+                String.format(function.invoke(PatternType.HOURS), (millis / TimeCount.HOUR).toString())
             } else {
                 if (millis / TimeCount.MINUTE > 0L) {
-                    String.format(mContext.getString(R.string.x_minutes), (millis / TimeCount.MINUTE).toString())
+                    String.format(function.invoke(PatternType.MINUTES), (millis / TimeCount.MINUTE).toString())
                 } else {
-                    String.format(mContext.getString(R.string.x_seconds), (millis / TimeCount.SECOND).toString())
+                    String.format(function.invoke(PatternType.SECONDS), (millis / TimeCount.SECOND).toString())
                 }
             }
         }
     }
 
-    fun getInterval(mContext: Context, millis: Long): String {
+    fun getInterval(millis: Long, function: (PatternType) -> String): String {
         var code = millis
         val tmp = millis / TimeCount.MINUTE
         val interval: String
@@ -65,25 +63,29 @@ object IntervalUtil {
                 code /= TimeCount.DAY
                 interval = when (code) {
                     REPEAT_CODE_ONCE.toLong() -> "0"
-                    INTERVAL_WEEK.toLong() -> String.format(mContext.getString(R.string.xW), 1.toString())
-                    INTERVAL_TWO_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 2.toString())
-                    INTERVAL_THREE_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 3.toString())
-                    INTERVAL_FOUR_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 4.toString())
-                    else -> String.format(mContext.getString(R.string.xD), code.toString())
+                    INTERVAL_WEEK.toLong() -> String.format(function.invoke(PatternType.WEEKS), 1.toString())
+                    INTERVAL_TWO_WEEKS.toLong() -> String.format(function.invoke(PatternType.WEEKS), 2.toString())
+                    INTERVAL_THREE_WEEKS.toLong() -> String.format(function.invoke(PatternType.WEEKS), 3.toString())
+                    INTERVAL_FOUR_WEEKS.toLong() -> String.format(function.invoke(PatternType.WEEKS), 4.toString())
+                    else -> String.format(function.invoke(PatternType.DAYS), code.toString())
                 }
             }
             tmp > 100 -> return if (code % TimeCount.HOUR == 0L) {
                 code /= TimeCount.HOUR
-                String.format(mContext.getString(R.string.x_hours), code.toString())
+                String.format(function.invoke(PatternType.HOURS), code.toString())
             } else {
-                String.format(mContext.getString(R.string.x_min), tmp.toString())
+                String.format(function.invoke(PatternType.MINUTES), tmp.toString())
             }
             else -> return if (tmp == 0L) {
                 "0"
             } else {
-                String.format(mContext.getString(R.string.x_min), tmp.toString())
+                String.format(function.invoke(PatternType.MINUTES), tmp.toString())
             }
         }
         return interval
+    }
+
+    enum class PatternType {
+        SECONDS, MINUTES, HOURS, DAYS, WEEKS
     }
 }

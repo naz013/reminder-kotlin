@@ -4,6 +4,7 @@ import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.StringResPatterns
 
 abstract class RepeatableTypeFragment<B : ViewDataBinding> : TypeFragment<B>() {
 
@@ -16,7 +17,7 @@ abstract class RepeatableTypeFragment<B : ViewDataBinding> : TypeFragment<B>() {
         }
         summary += ReminderUtils.getPriorityTitle(context!!, reminder.priority) + ", "
         if (reminder.remindBefore > 0) {
-            summary += IntervalUtil.getBeforeTime(context!!, reminder.remindBefore) + ", "
+            summary += IntervalUtil.getBeforeTime(reminder.remindBefore) { StringResPatterns.getBeforePattern(context!!, it) } + ", "
         }
         return summary
     }
