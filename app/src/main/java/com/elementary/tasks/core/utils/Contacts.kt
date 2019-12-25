@@ -25,9 +25,13 @@ object Contacts {
                 val cursor = context.contentResolver.query(uri, null, null, null, null)
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
-                        val phoneNo = cursor.getString(cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER))
-                        val name = cursor.getString(cursor . getColumnIndex (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                        return Contact(name, phone = phoneNo)
+                        return try {
+                            val phoneNo = cursor.getString(cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER))
+                            val name = cursor.getString(cursor . getColumnIndex (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                            Contact(name, phone = phoneNo)
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
                     cursor.close()
                 }
