@@ -3,7 +3,7 @@
     <string name="app_name">"Anımsatıcı"</string>
     <string name="app_name_pro">"Anımsatıcı PRO"</string>
     <string name="action_settings">"Ayarlar"</string>
-    <string name="copyright">2019 © Nazar Suhovich</string>
+    <string name="copyright">2020 © Nazar Suhovich</string>
 
     <string name="cant_access_location_services">"Konumu hizmetlerine erişim alınamıyor!"</string>
     <string name="normal">"Normal"</string>

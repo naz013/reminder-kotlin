@@ -3,7 +3,7 @@
     <string name="app_name">"Reminder"</string>
     <string name="app_name_pro">"Reminder PRO"</string>
     <string name="action_settings">"Settings"</string>
-    <string name="copyright">2019 © Nazar Suhovich</string>
+    <string name="copyright">2020 © Nazar Suhovich</string>
 
     <string name="cant_access_location_services">I can not get access to the location services!</string>
     <string name="normal">Normal</string>

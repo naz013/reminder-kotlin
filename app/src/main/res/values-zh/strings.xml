@@ -3,7 +3,7 @@
     <string name="app_name">"提醒"</string>
     <string name="app_name_pro">"提醒专业版"</string>
     <string name="action_settings">"设置"</string>
-    <string name="copyright">2019 © Nazar Suhovich</string>
+    <string name="copyright">2020 © Nazar Suhovich</string>
 
     <string name="cant_access_location_services">无法访问位置服务！</string>
     <string name="normal">正常</string>
