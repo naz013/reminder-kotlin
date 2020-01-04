@@ -20,7 +20,11 @@ android {
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    dataBinding { enabled = true }
+    buildFeatures {
+        dataBinding {
+            enabled = true
+        }
+    }
     signingConfigs {
         freeApp {
             storeFile file('justreminder.jks')
