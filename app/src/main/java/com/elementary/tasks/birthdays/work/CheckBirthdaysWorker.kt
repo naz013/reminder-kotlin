@@ -55,6 +55,7 @@ class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : W
                 while (birthdayCur.moveToNext()) {
                     val birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
                     val name = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME))
+                    if (name.isNullOrEmpty()) continue
                     val id = birthdayCur.getLong(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                     val number = Contacts.getNumber(name, applicationContext)
                     val calendar = Calendar.getInstance()
