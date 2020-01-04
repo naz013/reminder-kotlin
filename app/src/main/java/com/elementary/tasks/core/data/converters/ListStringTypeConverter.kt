@@ -13,6 +13,7 @@ class ListStringTypeConverter {
 
     @TypeConverter
     fun toList(json: String): List<String> {
+        System.gc()
         return Gson().fromJson<List<String>>(json, object : TypeToken<List<String>>() {}.type)
     }
 }

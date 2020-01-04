@@ -34,6 +34,7 @@ class DataFlow<T>(private val repository: Repository<T>,
     }
 
     suspend fun backup(item: T, updateIndex: Boolean = true) {
+        System.gc()
         val fileIndex = convertible.convert(item)
         val metadata = convertible.metadata(item)
         if (fileIndex == null) {
@@ -48,6 +49,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         storage.backup(fileIndex, metadata)
         if (updateIndex) storage.saveIndex(fileIndex)
         completable?.action(item)
+        System.gc()
         Timber.d("backup: ${metadata.id}")
     }
 
@@ -56,6 +58,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         if (id.isEmpty() || fileName.isEmpty()) {
             return
         }
+        System.gc()
         val inputStream = storage.restore(fileName) ?: return
         val item = convertible.convert(inputStream) ?: return
         val localItem = repository.get(id)
@@ -66,6 +69,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         } else {
             true
         }
+        System.gc()
         Timber.d("restore: $id, $needUpdate")
         if (needUpdate) {
             repository.insert(item)
@@ -78,6 +82,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         if (id.isEmpty() || fileName.isEmpty()) {
             return
         }
+        System.gc()
         Timber.d("delete: $id")
         try {
             val t = repository.get(id)
@@ -89,6 +94,7 @@ class DataFlow<T>(private val repository: Repository<T>,
         }
         storage.delete(fileName)
         storage.removeIndex(id)
+        System.gc()
         if (notify) {
             storage.sendNotification("delete", fileName)
         }

@@ -22,6 +22,7 @@ class BulkDataFlow<T>(private val repository: Repository<T>,
             dataFlow.backup(it, false)
         }
         dataFlow.saveIndex()
+        System.gc()
     }
 
     suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {

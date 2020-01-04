@@ -164,6 +164,7 @@ object MemoryUtil {
 
     fun toStream(any: Any, outputStream: OutputStream): Boolean {
         try {
+            System.gc()
             val output64 = Base64OutputStream(outputStream, Base64.DEFAULT)
             val bufferedWriter = BufferedWriter(OutputStreamWriter(output64, StandardCharsets.UTF_8))
             val writer = JsonWriter(bufferedWriter)
@@ -182,6 +183,7 @@ object MemoryUtil {
             } catch (e: Exception) {
                 return false
             } catch (e: OutOfMemoryError) {
+                System.gc()
                 return false
             }
             writer.close()
