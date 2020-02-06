@@ -3,7 +3,7 @@
     <string name="app_name">"Promemoria"</string>
     <string name="app_name_pro">"Promemoria PRO"</string>
     <string name="action_settings">"Impostazioni"</string>
-    <string name="copyright">2020© Nazar Suhovich</string>
+    <string name="copyright">2020© Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Non posso accedere ai servizi di localizzazione!"</string>
     <string name="normal">"Normale"</string>

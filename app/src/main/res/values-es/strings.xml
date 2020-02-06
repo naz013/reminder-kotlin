@@ -3,7 +3,7 @@
     <string name="app_name">"Recordatorio"</string>
     <string name="app_name_pro">"Recordatorio PRO"</string>
     <string name="action_settings">"Ajustes"</string>
-    <string name="copyright">2020 © Nazar Suhovich</string>
+    <string name="copyright">2020 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"No puedo conseguir el acceso a los servicios de localización!"</string>
     <string name="normal">"Normal"</string>

@@ -3,7 +3,7 @@
     <string name="app_name">"Erinnerung"</string>
     <string name="app_name_pro">"Erinnerung PRO"</string>
     <string name="action_settings">"Einstellungen"</string>
-    <string name="copyright">2020© Nazar Suhovich</string>
+    <string name="copyright">2020© Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Ich kann keinen Zugriff auf die Ortungsdienste erhalten!"</string>
     <string name="normal">"Normal"</string>

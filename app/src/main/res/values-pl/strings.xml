@@ -3,7 +3,7 @@
     <string name="app_name">"Przypomnienie"</string>
     <string name="app_name_pro">"Przypomnienie PRO"</string>
     <string name="action_settings">"Ustawienia"</string>
-    <string name="copyright">2020 © Nazar Suhovich</string>
+    <string name="copyright">2020 © Nazar Sukhovych</string>
 
     <string name="cant_access_location_services">"Nie mogę uzyskać dostępu do usług lokalizacyjnych!"</string>
     <string name="normal">"Normalna"</string>

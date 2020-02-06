@@ -3,7 +3,7 @@
     <string name="app_name">"조언"</string>
     <string name="app_name_pro">"조언 PRO"</string>
     <string name="action_settings">"설정"</string>
-    <string name="copyright">"2020 © Nazar Suhovich"</string>
+    <string name="copyright">"2020 © Nazar Sukhovych"</string>
 
     <string name="cant_access_location_services">"위치 서비스에 액세스 할 수 없습니다."</string>
     <string name="normal">"표준"</string>
