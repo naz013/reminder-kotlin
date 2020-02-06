@@ -3,7 +3,7 @@ package com.elementary.tasks.navigation.settings.voice
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.toDate
@@ -24,7 +24,7 @@ class TimeOfDayFragment : BaseSettingsFragment<FragmentSettingsTimeOfDayBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TimesViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TimesViewModel::class.java)
 
         binding.nightTime.setOnClickListener(this)
         binding.eveningTime.setOnClickListener(this)

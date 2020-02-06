@@ -12,7 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.elementary.tasks.R
@@ -265,7 +265,8 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
             val criteria = Criteria()
             var location: Location? = null
             try {
-                location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false) ?: "")
+                location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false)
+                        ?: "")
             } catch (e: IllegalArgumentException) {
                 Timber.d("moveToMyLocation: ${e.message}")
             }
@@ -355,7 +356,7 @@ class AdvancedMapFragment : BaseMapFragment<FragmentMapBinding>() {
     }
 
     private fun initPlacesViewModel() {
-        val viewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(PlacesViewModel::class.java)
         viewModel.places.observe(viewLifecycleOwner, Observer { places ->
             if (places != null && isPlaces) {
                 showPlaces(places)

@@ -9,7 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -31,10 +31,10 @@ import java.util.*
 class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
 
     private val viewModel: PlaceViewModel by lazy {
-        ViewModelProviders.of(this, PlaceViewModel.Factory(getId())).get(PlaceViewModel::class.java)
+        ViewModelProvider(this, PlaceViewModel.Factory(getId())).get(PlaceViewModel::class.java)
     }
     private val stateViewModel: CreatePlaceViewModel by lazy {
-        ViewModelProviders.of(this).get(CreatePlaceViewModel::class.java)
+        ViewModelProvider(this).get(CreatePlaceViewModel::class.java)
     }
     private var mGoogleMap: AdvancedMapFragment? = null
     private var mItem: Place? = null

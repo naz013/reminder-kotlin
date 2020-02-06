@@ -17,7 +17,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
@@ -29,11 +29,11 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogSelectPaletteBinding
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
+import com.elementary.tasks.pin.PinLoginActivity
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -48,10 +48,10 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     private var isBgDark = false
 
     private val viewModel: NoteViewModel by lazy {
-        ViewModelProviders.of(this, NoteViewModel.Factory(getId())).get(NoteViewModel::class.java)
+        ViewModelProvider(this, NoteViewModel.Factory(getId())).get(NoteViewModel::class.java)
     }
     private val stateViewModel: CreateNoteViewModel by lazy {
-        ViewModelProviders.of(this).get(CreateNoteViewModel::class.java)
+        ViewModelProvider(this).get(CreateNoteViewModel::class.java)
     }
     private val photoSelectionUtil: PhotoSelectionUtil by lazy {
         PhotoSelectionUtil(this, dialogues, true, this)

@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -29,7 +29,7 @@ import com.elementary.tasks.reminder.lists.filters.SearchModifier
 class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Reminder>) -> Unit {
 
     private val viewModel: ArchiveRemindersViewModel by lazy {
-        ViewModelProviders.of(this).get(ArchiveRemindersViewModel::class.java)
+        ViewModelProvider(this).get(ArchiveRemindersViewModel::class.java)
     }
 
     private val reminderResolver = ReminderResolver(

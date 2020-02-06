@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -23,7 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
     private val viewModel: ActiveGpsRemindersViewModel by lazy {
-        ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel::class.java)
+        ViewModelProvider(this).get(ActiveGpsRemindersViewModel::class.java)
     }
     private val mAdapter = LocationPlacesAdapter()
 
@@ -69,10 +69,10 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
                 isStyles = false, isBack = false, isZoom = false, isDark = isDark)
         map.setCallback(mReadyCallback)
         map.setOnMarkerClick(mOnMarkerClick)
-        fragmentManager?.beginTransaction()
-                ?.replace(R.id.fragment_container, map)
-                ?.addToBackStack(null)
-                ?.commit()
+        parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, map)
+                .addToBackStack(null)
+                .commit()
         mGoogleMap = map
     }
 

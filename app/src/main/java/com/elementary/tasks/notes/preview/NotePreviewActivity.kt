@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ImageFile
@@ -57,7 +57,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(mId)).get(NoteViewModel::class.java)
+        viewModel = ViewModelProvider(this, NoteViewModel.Factory(mId)).get(NoteViewModel::class.java)
         viewModel.note.observe(this, Observer{ note ->
             if (note != null) {
                 showNote(note)

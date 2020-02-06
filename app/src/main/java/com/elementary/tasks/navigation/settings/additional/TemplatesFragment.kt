@@ -10,7 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
@@ -93,7 +93,7 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SmsTemplatesViewModel::class.java)
         viewModel.smsTemplates.observe(viewLifecycleOwner, Observer { smsTemplates ->
             if (smsTemplates != null) {
                 showTemplates(smsTemplates)

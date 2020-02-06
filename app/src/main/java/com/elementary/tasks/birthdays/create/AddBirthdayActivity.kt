@@ -11,7 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -29,7 +29,7 @@ import java.util.*
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout.activity_add_birthday) {
 
     private val viewModel: BirthdayViewModel by lazy {
-        ViewModelProviders.of(this, BirthdayViewModel.Factory(getId())).get(BirthdayViewModel::class.java)
+        ViewModelProvider(this, BirthdayViewModel.Factory(getId())).get(BirthdayViewModel::class.java)
     }
     private var mBirthday: Birthday? = null
 

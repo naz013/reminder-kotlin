@@ -12,7 +12,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
@@ -33,7 +33,7 @@ import java.util.*
 class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.activity_create_google_task) {
 
     private val stateViewModel: StateViewModel by lazy {
-        ViewModelProviders.of(this).get(StateViewModel::class.java)
+        ViewModelProvider(this).get(StateViewModel::class.java)
     }
     private lateinit var viewModel: GoogleTaskViewModel
 
@@ -150,7 +150,7 @@ class TaskActivity : BindingActivity<ActivityCreateGoogleTaskBinding>(R.layout.a
 
     private fun initViewModel(taskId: String, listId: String) {
         stateViewModel.listId = listId
-        viewModel = ViewModelProviders.of(this, GoogleTaskViewModel.Factory(taskId)).get(GoogleTaskViewModel::class.java)
+        viewModel = ViewModelProvider(this, GoogleTaskViewModel.Factory(taskId)).get(GoogleTaskViewModel::class.java)
         viewModel.isInProgress.observe(this, Observer { aBoolean ->
             if (aBoolean != null) {
                 updateProgress(aBoolean)

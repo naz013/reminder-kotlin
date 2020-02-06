@@ -17,7 +17,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
@@ -274,7 +274,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
 
     private fun initViewModel(id: String) {
         Timber.d("initViewModel: $id")
-        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProvider(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observeForever(mReminderObserver)
         viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {

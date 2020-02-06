@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -19,7 +19,7 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
     private val viewModel: GroupsViewModel by lazy {
-        ViewModelProviders.of(this).get(GroupsViewModel::class.java)
+        ViewModelProvider(this).get(GroupsViewModel::class.java)
     }
     private var mAdapter: GroupsRecyclerAdapter = GroupsRecyclerAdapter()
 

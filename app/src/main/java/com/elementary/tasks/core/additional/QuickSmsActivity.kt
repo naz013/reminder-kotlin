@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
@@ -30,14 +31,18 @@ class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>(R.layout.activ
         binding.messagesList.adapter = mAdapter
 
         binding.buttonSend.setOnClickListener { startSending() }
-        val name = Contacts.getNameFromNumber(number, this) ?: ""
+        val name = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+            Contacts.getNameFromNumber(number, this) ?: ""
+        } else {
+            ""
+        }
         binding.contactInfo.text = "$name\n$number"
 
         initViewModel()
     }
 
     private fun initViewModel() {
-        val viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(SmsTemplatesViewModel::class.java)
         viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
             if (smsTemplates != null) {
                 updateList(smsTemplates)

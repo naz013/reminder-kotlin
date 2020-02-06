@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -23,7 +23,7 @@ import java.util.*
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout.activity_create_group) {
 
     private val viewModel: GroupViewModel by lazy {
-        ViewModelProviders.of(this, GroupViewModel.Factory(getId())).get(GroupViewModel::class.java)
+        ViewModelProvider(this, GroupViewModel.Factory(getId())).get(GroupViewModel::class.java)
     }
     private var mItem: ReminderGroup? = null
 

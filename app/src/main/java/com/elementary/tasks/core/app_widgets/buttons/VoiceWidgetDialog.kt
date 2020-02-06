@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
@@ -17,7 +17,7 @@ import org.koin.android.ext.android.inject
 class VoiceWidgetDialog : FragmentActivity() {
 
     private val viewModel: ConversationViewModel by lazy {
-        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        ViewModelProvider(this).get(ConversationViewModel::class.java)
     }
     private val prefs: Prefs by inject()
     private val language: Language by inject()

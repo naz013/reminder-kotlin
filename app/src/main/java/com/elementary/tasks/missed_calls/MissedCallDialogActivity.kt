@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
@@ -114,7 +114,7 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
 
     private fun initViewModel() {
         val number = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-        viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(number))
+        viewModel = ViewModelProvider(this, MissedCallViewModel.Factory(number))
                 .get(MissedCallViewModel::class.java)
         viewModel.missedCall.observeForever(mMissedCallObserver)
         viewModel.result.observe(this, Observer { commands ->

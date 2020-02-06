@@ -18,7 +18,7 @@ import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
@@ -44,13 +44,13 @@ import java.util.*
 class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder), ReminderInterface {
 
     private val viewModel: ReminderViewModel by lazy {
-        ViewModelProviders.of(this, ReminderViewModel.Factory(getId())).get(ReminderViewModel::class.java)
+        ViewModelProvider(this, ReminderViewModel.Factory(getId())).get(ReminderViewModel::class.java)
     }
     private val conversationViewModel: ConversationViewModel by lazy {
-        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        ViewModelProvider(this).get(ConversationViewModel::class.java)
     }
     private val stateViewModel: StateViewModel by lazy {
-        ViewModelProviders.of(this).get(StateViewModel::class.java)
+        ViewModelProvider(this).get(StateViewModel::class.java)
     }
 
     private var fragment: TypeFragment<*>? = null

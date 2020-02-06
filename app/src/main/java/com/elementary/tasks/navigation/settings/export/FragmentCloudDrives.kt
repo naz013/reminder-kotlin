@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -34,7 +34,7 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     }
 
     private val viewModel: CloudViewModel by lazy {
-        ViewModelProviders.of(this).get(CloudViewModel::class.java)
+        ViewModelProvider(this).get(CloudViewModel::class.java)
     }
     private val mDropbox: DropboxLogin by lazy {
         DropboxLogin(activity!!, mDropboxCallback)

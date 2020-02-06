@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
@@ -18,7 +18,7 @@ import java.util.*
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activity_template) {
 
     private val viewModel: SmsTemplateViewModel by lazy {
-        ViewModelProviders.of(this, SmsTemplateViewModel.Factory(getId()))
+        ViewModelProvider(this, SmsTemplateViewModel.Factory(getId()))
                 .get(SmsTemplateViewModel::class.java)
     }
     private var mItem: SmsTemplate? = null

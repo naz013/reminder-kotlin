@@ -8,7 +8,7 @@ import android.widget.SeekBar
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
@@ -27,7 +27,7 @@ import java.util.*
 class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysSettingsBinding>(), TimePickerDialog.OnTimeSetListener {
 
     private val viewModel: BirthdaysViewModel by lazy {
-        ViewModelProviders.of(this).get(BirthdaysViewModel::class.java)
+        ViewModelProvider(this).get(BirthdaysViewModel::class.java)
     }
     private var mItemSelect: Int = 0
 
@@ -100,7 +100,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
     }
 
     private fun initViewModel() {
-        viewModel.result.observe(this, Observer { commands ->
+        viewModel.result.observe(viewLifecycleOwner, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> {

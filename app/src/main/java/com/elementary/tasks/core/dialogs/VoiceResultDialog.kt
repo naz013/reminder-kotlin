@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
@@ -20,7 +20,7 @@ class VoiceResultDialog : BaseDialog() {
 
         val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
-        val viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
+        val viewModel = ViewModelProvider(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 showReminder(reminder)

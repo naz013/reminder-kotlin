@@ -7,12 +7,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
-import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
 import com.elementary.tasks.birthdays.list.BirthdayAdsHolder
+import com.elementary.tasks.birthdays.list.BirthdaysRecyclerAdapter
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -30,7 +30,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
     private val buttonObservable: GlobalButtonObservable by inject()
     private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        ViewModelProvider(this).get(HomeViewModel::class.java)
     }
     private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true) {
         showReminders(viewModel.reminders.value ?: listOf())

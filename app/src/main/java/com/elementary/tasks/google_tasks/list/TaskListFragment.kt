@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -34,7 +34,7 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
         showTasks(viewModel.googleTasks.value ?: listOf())
     }
     private val viewModel: GoogleTaskListViewModel by lazy {
-        ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
+        ViewModelProvider(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
     }
     private var mId: String = ""
     private var googleTaskList: GoogleTaskList? = null

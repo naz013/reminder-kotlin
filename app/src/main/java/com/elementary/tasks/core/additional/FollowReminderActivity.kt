@@ -11,7 +11,7 @@ import android.widget.CompoundButton
 import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
@@ -118,7 +118,11 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.a
             binding.contactInfo.text = mNumber
         }
 
-        val photo = Contacts.getPhoto(Contacts.getIdFromNumber(mNumber, this))
+        val photo = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+            Contacts.getPhoto(Contacts.getIdFromNumber(mNumber, this))
+        } else {
+            null
+        }
         if (photo != null) {
             binding.contactPhoto.show()
             binding.contactPhoto.setImageURI(photo)
@@ -138,7 +142,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.a
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory("")).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProvider(this, ReminderViewModel.Factory("")).get(ReminderViewModel::class.java)
         viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
@@ -166,8 +170,7 @@ class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.a
     private fun initNextBusinessTime() {
         val c = Calendar.getInstance()
         c.timeInMillis = mCurrentTime
-        val currDay = c.get(Calendar.DAY_OF_WEEK)
-        when (currDay) {
+        when (c.get(Calendar.DAY_OF_WEEK)) {
             Calendar.FRIDAY -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24 * 3
             Calendar.SATURDAY -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24 * 2
             else -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24

@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -31,10 +31,10 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
 
     private val buttonObservable: GlobalButtonObservable by inject()
     private val viewModel: ConversationViewModel by lazy {
-        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        ViewModelProvider(this).get(ConversationViewModel::class.java)
     }
     private val noteViewModel: NoteViewModel by lazy {
-        ViewModelProviders.of(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
+        ViewModelProvider(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
     }
     private val mNoteView: QuickNoteCoordinator by lazy {
         binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }

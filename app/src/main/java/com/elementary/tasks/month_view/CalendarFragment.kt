@@ -7,7 +7,7 @@ import android.text.format.DateUtils
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
@@ -35,7 +35,7 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
     private var behaviour: BottomSheetBehavior<LinearLayout>? = null
     private val datePageChangeListener = DatePageChangeListener()
     private val mViewModel: MonthViewViewModel by lazy {
-        ViewModelProviders.of(this,
+        ViewModelProvider(this,
                 MonthViewViewModel.Factory(prefs.isRemindersInCalendarEnabled,
                         prefs.isFutureEventEnabled)).get(MonthViewViewModel::class.java)
     }

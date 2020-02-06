@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.backdoor.engine.Model
 import com.backdoor.engine.misc.Action
@@ -42,7 +42,7 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
 
     private val mAdapter = ConversationAdapter()
     private val viewModel: ConversationViewModel by lazy {
-        ViewModelProviders.of(this).get(ConversationViewModel::class.java)
+        ViewModelProvider(this).get(ConversationViewModel::class.java)
     }
     private var tts: TextToSpeech? = null
     private var isTtsReady = false

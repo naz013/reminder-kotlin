@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -32,7 +32,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
 
     private val buttonObservable: GlobalButtonObservable by inject()
     private val viewModel: ActiveRemindersViewModel by lazy {
-        ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
+        ViewModelProvider(this).get(ActiveRemindersViewModel::class.java)
     }
     private var mPosition: Int = 0
 

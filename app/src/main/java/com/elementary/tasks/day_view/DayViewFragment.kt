@@ -8,7 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -31,7 +31,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
     lateinit var dayPagerAdapter: DayPagerAdapter
     private val datePageChangeListener = DatePageChangeListener()
     private val mViewModel: DayViewViewModel by lazy {
-        ViewModelProviders.of(this,
+        ViewModelProvider(this,
                 DayViewViewModel.Factory(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
                 .get(DayViewViewModel::class.java)
     }

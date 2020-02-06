@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -29,7 +29,7 @@ class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
     private val backupTool: BackupTool by inject()
     private val viewModel: PlacesViewModel by lazy {
-        ViewModelProviders.of(this).get(PlacesViewModel::class.java)
+        ViewModelProvider(this).get(PlacesViewModel::class.java)
     }
 
     private val mAdapter = PlacesRecyclerAdapter()

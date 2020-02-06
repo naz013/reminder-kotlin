@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -56,7 +56,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>(R.la
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
+        viewModel = ViewModelProvider(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
         viewModel.birthday.observeForever(mBirthdayObserver)
         viewModel.result.observe(this, Observer<Commands>{ commands ->
             if (commands != null) {

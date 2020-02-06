@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -29,7 +29,7 @@ import timber.log.Timber
 class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>() {
 
     private val viewModel: GoogleTaskListsViewModel by lazy {
-        ViewModelProviders.of(this).get(GoogleTaskListsViewModel::class.java)
+        ViewModelProvider(this).get(GoogleTaskListsViewModel::class.java)
     }
     private val googleLogin: GoogleLogin by lazy {
         GoogleLogin(activity!!, prefs)

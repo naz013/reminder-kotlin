@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -28,7 +28,7 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
     private val viewModel: BirthdaysViewModel by lazy {
-        ViewModelProviders.of(this).get(BirthdaysViewModel::class.java)
+        ViewModelProvider(this).get(BirthdaysViewModel::class.java)
     }
     private val birthdayResolver = BirthdayResolver(
             dialogAction = { dialogues },
