@@ -54,7 +54,9 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:maxLength="32"
+                            android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/privacy_policy" />
 
                         <com.google.android.material.button.MaterialButton
@@ -64,6 +66,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/accept" />
 
                     </LinearLayout>
@@ -104,6 +108,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/dismiss" />
 
                         <com.google.android.material.button.MaterialButton
@@ -113,6 +119,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:maxLength="24"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/log_in" />
 
                     </LinearLayout>
