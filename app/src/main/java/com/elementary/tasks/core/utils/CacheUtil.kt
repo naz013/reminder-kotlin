@@ -83,12 +83,13 @@ class CacheUtil(val context: Context) {
 
         val cursor: Cursor? = context.contentResolver.query( uri, null, null,
                 null, null, null)
-
         val name = cursor?.use {
             if (it.moveToFirst()) {
-                val displayName: String =
-                        it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                displayName
+                try {
+                    it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)) ?: ""
+                } catch (e: Exception) {
+                    ""
+                }
             } else {
                 ""
             }
