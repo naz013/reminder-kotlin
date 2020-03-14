@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.ImageFile
@@ -44,6 +45,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     private val themeUtil: ThemeUtil by inject()
     private val backupTool: BackupTool by inject()
     private val imagesSingleton: ImagesSingleton by inject()
+    private val adsProvider = AdsProvider()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +56,23 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
         initImagesList()
         initReminderCard()
         initViewModel()
+        if (!Module.isPro) {
+            binding.adsCard.show()
+            adsProvider.showBanner(
+                    binding.adsHolder,
+                    AdsProvider.NOTE_BANNER_ID,
+                    R.layout.list_item_ads_hor
+            ) {
+                binding.adsCard.show()
+            }
+        } else {
+            binding.adsCard.show()
+        }
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this, NoteViewModel.Factory(mId)).get(NoteViewModel::class.java)
-        viewModel.note.observe(this, Observer{ note ->
+        viewModel.note.observe(this, Observer { note ->
             if (note != null) {
                 showNote(note)
             }
@@ -71,7 +85,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
                 binding.reminderContainer.visibility = View.GONE
             }
         })
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
@@ -275,7 +289,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     }
 
     private fun closeWindow() {
-        mUiHandler.post { this.finishAfterTransition() }
+        mUiHandler.post { finishAfterTransition() }
     }
 
     private fun showDeleteDialog() {
