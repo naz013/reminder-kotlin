@@ -56,11 +56,15 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
         initImagesList()
         initReminderCard()
         initViewModel()
+        loadAds()
+    }
+
+    private fun loadAds() {
         if (!Module.isPro) {
             binding.adsCard.show()
             adsProvider.showBanner(
                     binding.adsHolder,
-                    AdsProvider.NOTE_BANNER_ID,
+                    AdsProvider.NOTE_PREVIEW_BANNER_ID,
                     R.layout.list_item_ads_hor
             ) {
                 binding.adsCard.show()

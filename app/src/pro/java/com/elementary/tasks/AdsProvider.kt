@@ -17,6 +17,8 @@ class AdsProvider {
         const val NOTE_BANNER_ID = ""
         const val BIRTHDAY_BANNER_ID = ""
         const val GTASKS_BANNER_ID = ""
+        const val REMINDER_PREVIEW_BANNER_ID = ""
+        const val NOTE_PREVIEW_BANNER_ID = ""
         const val ADS_VIEW_TYPE = 100
 
         fun numberOfAds(contentSize: Int): Int {
