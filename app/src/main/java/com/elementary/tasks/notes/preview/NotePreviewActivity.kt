@@ -115,6 +115,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
 
     override fun onDestroy() {
         super.onDestroy()
+        adsProvider.destroy()
         mAdapter.actionsListener = null
     }
 

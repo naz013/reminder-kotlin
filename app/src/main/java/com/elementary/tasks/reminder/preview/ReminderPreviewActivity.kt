@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -55,6 +56,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     private val mUiHandler = Handler(Looper.getMainLooper())
     private var reminder: Reminder? = null
     private var shoppingAdapter = ShopListRecyclerAdapter()
+    private val adsProvider = AdsProvider()
 
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener {
         openFullMap()
@@ -68,6 +70,22 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
         initActionBar()
         initViews()
         initViewModel(id)
+        loadAds()
+    }
+
+    private fun loadAds() {
+        if (!Module.isPro) {
+            binding.adsCard.show()
+            adsProvider.showBanner(
+                    binding.adsHolder,
+                    AdsProvider.REMINDER_PREVIEW_BANNER_ID,
+                    R.layout.list_item_ads_hor
+            ) {
+                binding.adsCard.show()
+            }
+        } else {
+            binding.adsCard.show()
+        }
     }
 
     private fun sendSMS(reminder: Reminder) {
@@ -610,6 +628,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
     override fun onBackPressed() {
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adsProvider.destroy()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

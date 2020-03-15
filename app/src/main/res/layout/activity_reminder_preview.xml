@@ -324,6 +324,26 @@
 
                     </LinearLayout>
 
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/adsCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/material_margin"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="@dimen/material_margin"
+                        android:clipChildren="false"
+                        android:stateListAnimator="@animator/card_animator"
+                        android:visibility="gone"
+                        app:cardCornerRadius="5dp"
+                        app:contentPadding="1dp">
+
+                        <LinearLayout
+                            android:id="@+id/ads_holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </com.google.android.material.card.MaterialCardView>
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/idView"
                         android:layout_width="match_parent"
