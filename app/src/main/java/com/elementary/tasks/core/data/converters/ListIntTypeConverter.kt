@@ -12,7 +12,8 @@ class ListIntTypeConverter {
     }
 
     @TypeConverter
-    fun toList(json: String): List<Int> {
-        return Gson().fromJson<List<Int>>(json, object : TypeToken<List<Int>>() {}.type)
+    fun toList(json: String?): List<Int> {
+        if (json == null) return listOf()
+        return Gson().fromJson(json, object : TypeToken<List<Int>>() {}.type)
     }
 }
