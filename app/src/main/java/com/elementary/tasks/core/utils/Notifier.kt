@@ -62,8 +62,6 @@ object Notifier {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(CHANNEL_REMINDER, name, importance)
         channel.description = descr
-//            channel.enableLights(true)
-//            channel.enableVibration(true)
         if (Module.isQ) {
             channel.setAllowBubbles(false)
         }
@@ -108,7 +106,7 @@ object Notifier {
         }
         if (noteWithImages.images.isNotEmpty() && Module.isMarshmallow) {
             val image = noteWithImages.images[0]
-            val bitmap = BitmapFactory.decodeByteArray(image.image, 0, image.image!!.size)
+            val bitmap = BitmapFactory.decodeByteArray(image.image, 0, image.image?.size ?: 0)
             builder.setLargeIcon(bitmap)
             val s = NotificationCompat.BigPictureStyle()
             s.bigLargeIcon(bitmap)
