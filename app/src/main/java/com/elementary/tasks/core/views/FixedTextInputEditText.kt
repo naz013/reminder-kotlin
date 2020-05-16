@@ -31,7 +31,11 @@ class FixedTextInputEditText : TextInputEditText {
     }
 
     private fun getSuperHintHack(): CharSequence? {
-        val f = TextView::class.java.getDeclaredField("mHint")
+        val f = try {
+            TextView::class.java.getDeclaredField("mHint")
+        } catch (e: Exception) {
+            null
+        } ?: return null
         f.isAccessible = true
         return f.get(this) as? CharSequence
     }
