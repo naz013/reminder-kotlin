@@ -13,6 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
+import java.lang.RuntimeException
 
 class NotesWidget : AppWidgetProvider() {
 
@@ -72,8 +73,12 @@ class NotesWidget : AppWidgetProvider() {
             val adapter = Intent(context, NotesService::class.java)
             adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
             rv.setRemoteAdapter(android.R.id.list, adapter)
-            appWidgetManager.updateAppWidget(widgetID, rv)
-            appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, android.R.id.list)
+            try {
+                appWidgetManager.updateAppWidget(widgetID, rv)
+                appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, android.R.id.list)
+            } catch (e: RuntimeException) {
+
+            }
         }
     }
 }
