@@ -40,9 +40,12 @@ class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : W
     private fun checkDb(cr: ContentResolver) = launchDefault {
         var i = 0
         val projection = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
-        val cur = cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
-                ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC")
-                ?: return@launchDefault
+        val cur = try {
+            cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
+                    ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC")
+        } catch (e: Exception) {
+            null
+        } ?: return@launchDefault
         while (cur.moveToNext()) {
             val contactId = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID))
             val columns = arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE, ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.MIMETYPE, ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.Contacts._ID)
