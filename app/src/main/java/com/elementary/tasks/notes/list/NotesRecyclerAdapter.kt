@@ -14,6 +14,14 @@ class NotesRecyclerAdapter(private val refreshListener: () -> Unit)
     var actionsListener: ActionsListener<NoteWithImages>? = null
     private val adsProvider = AdsProvider()
 
+    override fun getItem(position: Int): NoteWithImages? {
+        return try {
+            super.getItem(position)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     override fun submitList(list: List<NoteWithImages>?) {
         super.submitList(list)
         notifyDataSetChanged()
@@ -32,13 +40,13 @@ class NotesRecyclerAdapter(private val refreshListener: () -> Unit)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is NoteHolder) {
-            holder.setData(getItem(position))
+            getItem(position)?.let { holder.setData(it) }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (!Module.isPro && item.getKey() == AdsProvider.NOTE_BANNER_ID) {
+        return if (!Module.isPro && item?.getKey() == AdsProvider.NOTE_BANNER_ID) {
             AdsProvider.ADS_VIEW_TYPE
         } else {
             0
