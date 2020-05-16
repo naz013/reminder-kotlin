@@ -138,8 +138,12 @@ object Contacts {
         val selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + name + "%'"
         val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
         try {
-            val c = context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                    projection, selection, null, null)
+            val c = try {
+                context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        projection, selection, null, null)
+            } catch (e: Exception) {
+                null
+            }
             if (c != null && c.moveToFirst()) {
                 number = c.getString(0)
                 c.close()
