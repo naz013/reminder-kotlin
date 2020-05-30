@@ -1,1 +1,2 @@
+include ':lib_data'
 include ':app', ':voiceengine'

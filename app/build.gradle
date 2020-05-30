@@ -4,6 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'io.fabric'
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion 29
@@ -189,6 +190,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'com.github.florent37:expansionpanel:1.2.2'
     implementation 'com.github.naz013:ColorSlider:2.0.6'
+    implementation 'com.github.naz013:android-calendar-ext:1.0.4'
     implementation 'com.airbnb.android:lottie:3.2.2'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

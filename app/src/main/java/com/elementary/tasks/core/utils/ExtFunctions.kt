@@ -311,3 +311,7 @@ fun ExclusionPickerView.bindProperty(v1: List<Int>, v2: String, v3: String, list
         listener.invoke(a1, a2, a3)
     }
 }
+
+fun <T> Calendar.map(func: (Calendar) -> T): T {
+    return func.invoke(this)
+}
