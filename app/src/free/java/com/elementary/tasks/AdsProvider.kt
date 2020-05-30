@@ -28,7 +28,7 @@ class AdsProvider {
 
     fun showBanner(viewGroup: ViewGroup, bannerId: String, @LayoutRes res: Int, failListener: (() -> Unit)? = null) {
         val adLoader = AdLoader.Builder(viewGroup.context, bannerId)
-                .forUnifiedNativeAd { ad : UnifiedNativeAd ->
+                .forUnifiedNativeAd { ad: UnifiedNativeAd ->
                     unifiedNativeAd?.destroy()
                     unifiedNativeAd = ad
                     val adView = LayoutInflater.from(viewGroup.context).inflate(res, null) as UnifiedNativeAdView

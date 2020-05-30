@@ -1,11 +1,11 @@
 package com.elementary.tasks.core.utils
 
-import android.app.AlarmManager
 import android.content.Context
 import android.text.TextUtils
 import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.github.naz013.calendarext.*
 import timber.log.Timber
 import java.util.*
 
@@ -30,17 +30,14 @@ object TimeCount {
         val hours = reminder.hours
         val fromHour = reminder.from
         val toHour = reminder.to
-        val calendar = Calendar.getInstance()
-        if (isNew) {
-            calendar.timeInMillis = System.currentTimeMillis() + reminder.after
+        val calendar = if (isNew) {
+            newCalendar(System.currentTimeMillis() + reminder.after)
         } else {
-            calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime) + reminder.repeatInterval
+            newCalendar(TimeUtil.getDateTimeFromGmt(reminder.eventTime) + reminder.repeatInterval)
         }
-        var mHour = calendar.get(Calendar.HOUR_OF_DAY)
         if (hours.isNotEmpty()) {
-            while (hours.contains(mHour)) {
+            while (hours.contains(calendar.getHourOfDay())) {
                 calendar.timeInMillis = calendar.timeInMillis + reminder.repeatInterval
-                mHour = calendar.get(Calendar.HOUR_OF_DAY)
             }
             return calendar.timeInMillis
         }
@@ -50,18 +47,18 @@ object TimeCount {
             val toDate = TimeUtil.getDate(toHour)
             if (fromDate != null && toDate != null) {
                 calendar.time = fromDate
-                var hour = calendar.get(Calendar.HOUR_OF_DAY)
-                var minute = calendar.get(Calendar.MINUTE)
+                var hour = calendar.getHourOfDay()
+                var minute = calendar.getMinute()
                 calendar.timeInMillis = System.currentTimeMillis()
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
+                calendar.setHourOfDay(hour)
+                calendar.setMinute(minute)
                 val start = calendar.timeInMillis
                 calendar.time = toDate
-                hour = calendar.get(Calendar.HOUR_OF_DAY)
-                minute = calendar.get(Calendar.MINUTE)
+                hour = calendar.getHourOfDay()
+                minute = calendar.getMinute()
                 calendar.timeInMillis = System.currentTimeMillis()
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
+                calendar.setHourOfDay(hour)
+                calendar.setMinute(minute)
                 val end = calendar.timeInMillis
                 while (isRange(eventTime, start, end)) {
                     eventTime += reminder.repeatInterval
@@ -182,41 +179,36 @@ object TimeCount {
     }
 
     fun getNextWeekdayTime(startTime: Long, weekdays: List<Int>, delay: Long): Long {
-        val cc = Calendar.getInstance()
-        cc.timeInMillis = startTime
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
+        val calendar = newCalendar(startTime).also {
+            it.dropSeconds()
+            it.dropMilliseconds()
+        }
         return if (delay > 0) {
             startTime + delay * MINUTE
         } else {
             while (true) {
-                val mDay = cc.get(Calendar.DAY_OF_WEEK)
-                if (weekdays[mDay - 1] == 1 && cc.timeInMillis > System.currentTimeMillis()) {
+                if (weekdays[calendar.getDayOfWeek() - 1] == 1 && calendar.timeInMillis > System.currentTimeMillis()) {
                     break
                 }
-                cc.timeInMillis = cc.timeInMillis + DAY
+                calendar.timeInMillis = calendar.timeInMillis + DAY
             }
-            cc.timeInMillis
+            calendar.timeInMillis
         }
     }
 
     fun getNextWeekdayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
         val weekdays = reminder.weekdays
         val beforeValue = reminder.remindBefore
-        val cc = Calendar.getInstance()
-        if (reminder.eventTime != "") {
-            cc.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-        }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
+        val calendar = (if (reminder.eventTime != "") {
+            newCalendar(TimeUtil.getDateTimeFromGmt(reminder.eventTime))
+        } else droppedCalendar())
         while (true) {
-            val mDay = cc.get(Calendar.DAY_OF_WEEK)
-            if (weekdays[mDay - 1] == 1 && cc.timeInMillis - beforeValue > fromTime) {
+            if (weekdays[calendar.getDayOfWeek() - 1] == 1 && calendar.timeInMillis - beforeValue > fromTime) {
                 break
             }
-            cc.timeInMillis = cc.timeInMillis + AlarmManager.INTERVAL_DAY
+            calendar.addMillis(DAY)
         }
-        return cc.timeInMillis
+        return calendar.timeInMillis
     }
 
     fun getNextMonthDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
@@ -225,184 +217,146 @@ object TimeCount {
 
         Timber.d("getNextMonthDayTime: $dayOfMonth, before -> $beforeValue")
 
-        val cc = Calendar.getInstance()
-        if (reminder.eventTime != "") {
-            cc.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            val hour = cc.get(Calendar.HOUR_OF_DAY)
-            val minute = cc.get(Calendar.MINUTE)
-            cc.timeInMillis = fromTime
-            cc.set(Calendar.HOUR_OF_DAY, hour)
-            cc.set(Calendar.MINUTE, minute)
-        }
         if (dayOfMonth == 0) {
             return getLastMonthDayTime(fromTime, reminder)
         } else if (dayOfMonth > 28) {
             return getSmartMonthDayTime(fromTime, reminder)
         }
 
-        cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
+        val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
+        calendar.setDayOfMonth(dayOfMonth)
         var interval = reminder.repeatInterval.toInt()
         if (interval <= 0) {
             interval = 1
         }
-        var isAfter = cc.timeInMillis - beforeValue > fromTime
-        if (cc.get(Calendar.DAY_OF_MONTH) == dayOfMonth && isAfter) {
-            cc.set(Calendar.SECOND, 0)
-            cc.set(Calendar.MILLISECOND, 0)
-            return cc.timeInMillis
+        var isAfter = calendar.timeInMillis - beforeValue > fromTime
+        if (calendar.getDayOfMonth() == dayOfMonth && isAfter) {
+            calendar.dropSeconds()
+            calendar.dropMilliseconds()
+            return calendar.timeInMillis
         }
         while (true) {
-            isAfter = cc.timeInMillis - beforeValue > fromTime
-            if (cc.get(Calendar.DAY_OF_MONTH) == dayOfMonth && isAfter) {
+            isAfter = calendar.timeInMillis - beforeValue > fromTime
+            if (calendar.getDayOfMonth() == dayOfMonth && isAfter) {
                 break
             }
-            cc.add(Calendar.MONTH, interval)
+            calendar.addMonths(interval)
         }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
-        return cc.timeInMillis
+        calendar.dropSeconds()
+        calendar.dropMilliseconds()
+        return calendar.timeInMillis
     }
 
     private fun getSmartMonthDayTime(fromTime: Long, reminder: Reminder): Long {
         val dayOfMonth = reminder.dayOfMonth
         val beforeValue = reminder.remindBefore
-
-        val cc = Calendar.getInstance()
-        if (reminder.eventTime != "") {
-            cc.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            val hour = cc.get(Calendar.HOUR_OF_DAY)
-            val minute = cc.get(Calendar.MINUTE)
-            cc.timeInMillis = fromTime
-            cc.set(Calendar.HOUR_OF_DAY, hour)
-            cc.set(Calendar.MINUTE, minute)
-        }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
+        val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
         var interval = reminder.repeatInterval.toInt()
         if (interval <= 0) {
             interval = 1
         }
-        var lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
+        var lastDay = calendar.getLastDayOfMonth()
         if (dayOfMonth <= lastDay) {
-            cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            calendar.setDayOfMonth(dayOfMonth)
         } else {
-            cc.set(Calendar.DAY_OF_MONTH, lastDay)
+            calendar.setDayOfMonth(lastDay)
         }
-        var isAfter = cc.timeInMillis - beforeValue > fromTime
+        var isAfter = calendar.timeInMillis - beforeValue > fromTime
         if (isAfter) {
-            cc.set(Calendar.SECOND, 0)
-            cc.set(Calendar.MILLISECOND, 0)
-            return cc.timeInMillis
+            calendar.dropSeconds()
+            calendar.dropMilliseconds()
+            return calendar.timeInMillis
         }
         while (true) {
-            isAfter = cc.timeInMillis - beforeValue > fromTime
+            isAfter = calendar.timeInMillis - beforeValue > fromTime
             if (isAfter) {
                 break
             }
-            cc.set(Calendar.DAY_OF_MONTH, 1)
-            cc.add(Calendar.MONTH, interval)
-            lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
+            calendar.setDayOfMonth(1)
+            calendar.addMonths(interval)
+            lastDay = calendar.getLastDayOfMonth()
             if (dayOfMonth <= lastDay) {
-                cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                calendar.setDayOfMonth(dayOfMonth)
             } else {
-                cc.set(Calendar.DAY_OF_MONTH, lastDay)
+                calendar.setDayOfMonth(lastDay)
             }
         }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
-        return cc.timeInMillis
+        calendar.dropSeconds()
+        calendar.dropMilliseconds()
+        return calendar.timeInMillis
     }
 
     private fun getLastMonthDayTime(fromTime: Long, reminder: Reminder): Long {
-        val cc = Calendar.getInstance()
-        if (reminder.eventTime != "") {
-            cc.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            val hour = cc.get(Calendar.HOUR_OF_DAY)
-            val minute = cc.get(Calendar.MINUTE)
-            cc.timeInMillis = fromTime
-            cc.set(Calendar.HOUR_OF_DAY, hour)
-            cc.set(Calendar.MINUTE, minute)
-        }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
+        val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
         var interval = reminder.repeatInterval.toInt()
         if (interval <= 0) {
             interval = 1
         }
         while (true) {
-            val lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
-            cc.set(Calendar.DAY_OF_MONTH, lastDay)
-            if (cc.timeInMillis - reminder.remindBefore > fromTime) {
+            calendar.setDayOfMonth(calendar.getLastDayOfMonth())
+            if (calendar.timeInMillis - reminder.remindBefore > fromTime) {
                 break
             }
-            cc.set(Calendar.DAY_OF_MONTH, 1)
-            cc.add(Calendar.MONTH, interval)
+            calendar.setDayOfMonth(1)
+            calendar.addMonths(interval)
         }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
-        return cc.timeInMillis
+        calendar.dropSeconds()
+        calendar.dropMilliseconds()
+        return calendar.timeInMillis
     }
 
-    fun getNextDateTime(timeLong: Long, prefs: Prefs): Array<String> {
-        val date: String
-        val time: String
-        if (timeLong == 0L) {
-            date = ""
-            time = ""
+    fun getNextDateTime(millis: Long, prefs: Prefs): Array<String> {
+        return if (millis == 0L) {
+            arrayOf("", "")
         } else {
-            val cl = Calendar.getInstance()
-            cl.timeInMillis = timeLong
-            val mTime = cl.time
-            date = TimeUtil.date(prefs.appLanguage).format(mTime)
-            time = TimeUtil.getTime(mTime, prefs.is24HourFormat, prefs.appLanguage)
+            val date = Date(millis)
+            arrayOf(
+                    TimeUtil.date(prefs.appLanguage).format(date),
+                    TimeUtil.getTime(date, prefs.is24HourFormat, prefs.appLanguage)
+            )
         }
-        return arrayOf(date, time)
     }
 
     fun getNextYearDayTime(reminder: Reminder, fromTime: Long = System.currentTimeMillis()): Long {
         val dayOfMonth = reminder.dayOfMonth
         val monthOfYear = reminder.monthOfYear
         val beforeValue = reminder.remindBefore
-        val cc = Calendar.getInstance()
-        if (reminder.eventTime != "") {
-            cc.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-            val hour = cc.get(Calendar.HOUR_OF_DAY)
-            val minute = cc.get(Calendar.MINUTE)
-            cc.timeInMillis = fromTime
-            cc.set(Calendar.HOUR_OF_DAY, hour)
-            cc.set(Calendar.MINUTE, minute)
-        }
-        cc.set(Calendar.MONTH, monthOfYear)
-        var lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
-        if (dayOfMonth <= lastDay) {
-            cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        } else {
-            cc.set(Calendar.DAY_OF_MONTH, lastDay)
-        }
-        var isAfter = cc.timeInMillis - beforeValue > fromTime
-        if (isAfter) {
-            cc.set(Calendar.SECOND, 0)
-            cc.set(Calendar.MILLISECOND, 0)
-            return cc.timeInMillis
-        }
-        while (true) {
-            isAfter = cc.timeInMillis - beforeValue > fromTime
-            if (isAfter) {
-                break
-            }
-            cc.set(Calendar.DAY_OF_MONTH, 1)
-            cc.add(Calendar.YEAR, 1)
-            lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH)
-            if (dayOfMonth <= lastDay) {
-                cc.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            } else {
-                cc.set(Calendar.DAY_OF_MONTH, lastDay)
+        val calendar = calendarFromEventTime(reminder.eventTime, fromTime)
+        calendar.setMonth(monthOfYear)
+        calendar.setDayOfMonth(with(calendar.getLastDayOfMonth()) {
+            if (dayOfMonth <= this) dayOfMonth
+            else this
+        })
+        if (calendar.timeInMillis - beforeValue <= fromTime) {
+            while (true) {
+                if (calendar.timeInMillis - beforeValue > fromTime) {
+                    break
+                }
+                calendar.setDayOfMonth(1)
+                calendar.addYear()
+                calendar.setDayOfMonth(with(calendar.getLastDayOfMonth()) {
+                    if (dayOfMonth <= this) dayOfMonth
+                    else this
+                })
             }
         }
-        cc.set(Calendar.SECOND, 0)
-        cc.set(Calendar.MILLISECOND, 0)
-        return cc.timeInMillis
+        calendar.dropSeconds()
+        calendar.dropMilliseconds()
+        return calendar.timeInMillis
+    }
+
+    private fun calendarFromEventTime(eventTime: String, fromTime: Long) =
+            newCalendar().takeIf { eventTime != "" }?.apply {
+                this.setMillis(TimeUtil.getDateTimeFromGmt(eventTime))
+                val hm = TimeUtil.HM(this.getHourOfDay(), this.getMinute())
+                this.setMillis(fromTime)
+                this.setTime(hm.hour, hm.minute)
+                this.dropSeconds()
+                this.dropMilliseconds()
+            } ?: droppedCalendar()
+
+    private fun droppedCalendar() = newCalendar().apply {
+        this.dropSeconds()
+        this.dropMilliseconds()
     }
 }

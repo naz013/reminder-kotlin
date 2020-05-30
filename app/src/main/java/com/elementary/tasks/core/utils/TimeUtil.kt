@@ -7,10 +7,10 @@ import android.content.Context
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.R
+import com.github.naz013.calendarext.*
 import hirondelle.date4j.DateTime
 import timber.log.Timber
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,71 +52,35 @@ object TimeUtil {
 
     fun getBirthdayDayMonthList(start: Long = System.currentTimeMillis(), duration: Int = 1): List<String> {
         val list = mutableListOf<String>()
-        val calendar = Calendar.getInstance()
+        val calendar = newCalendar()
         for (n in 0 until duration) {
             calendar.timeInMillis = start + (AlarmManager.INTERVAL_DAY * n)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val month = calendar.get(Calendar.MONTH)
-            list.add("$day|$month")
+            list.add("${calendar.getDayOfMonth()}|${calendar.getMonth()}")
         }
         Timber.d("getBirthdayDayMonthList: $list")
         return list
     }
 
     fun getDayStart(millis: Long = System.currentTimeMillis()): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        return getGmtFromDateTime(calendar.timeInMillis)
+        return newCalendar(millis).apply {
+            this.setHourOfDay(0)
+            this.setMinute(0)
+            this.dropSeconds()
+            this.dropMilliseconds()
+        }.map { getGmtFromDateTime(it.timeInMillis) }
     }
 
     fun getDayEnd(millis: Long = System.currentTimeMillis()): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis + AlarmManager.INTERVAL_DAY
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        return getGmtFromDateTime(calendar.timeInMillis)
+        return getDayStart(millis + AlarmManager.INTERVAL_DAY)
     }
 
     fun getPlaceDateTimeFromGmt(dateTime: String?, lang: Int = 0): DMY {
-        var date: Date
-
-        if (dateTime != null) {
-            try {
-                GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-                date = GMT_DATE_FORMAT.parse(dateTime) ?: Date()
-            } catch (e: ParseException) {
-                date = Date()
-            } catch (e: NumberFormatException) {
-                date = Date()
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                date = Date()
-            }
-        } else {
-            date = Date()
+        val date = dateTime?.toDate(GMT_DATE_FORMAT, TimeZone.getTimeZone(GMT)) ?: Date()
+        return try {
+            DMY(day(lang).format(date), month(lang).format(date), year(lang).format(date))
+        } catch (e: Exception) {
+            DMY()
         }
-
-        var day = ""
-        var month = ""
-        var year = ""
-
-        try {
-            day = day(lang).format(date)
-            month = month(lang).format(date)
-            year = year(lang).format(date)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
-        }
-        return DMY(day, month, year)
     }
 
     val gmtDateTime: String
@@ -135,34 +99,21 @@ object TimeUtil {
             FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
             val date = FIRE_DATE_FORMAT.parse(gmt) ?: return 0
             return date.time
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            return 0
         }
-        return 0
     }
 
     fun getFireFormatted(prefs: Prefs, gmt: String?): String? {
-        if (gmt.isNullOrEmpty()) return null
-        try {
-            FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            val date = FIRE_DATE_FORMAT.parse(gmt) ?: return null
-            return if (prefs.is24HourFormat) {
-                dateTime24(prefs.appLanguage).format(date)
+        return gmt?.toDate(FIRE_DATE_FORMAT, TimeZone.getTimeZone(GMT)).takeIf {
+            it != null
+        }?.let {
+            if (prefs.is24HourFormat) {
+                dateTime24(prefs.appLanguage).format(it)
             } else {
-                dateTime12(prefs.appLanguage).format(date)
+                dateTime12(prefs.appLanguage).format(it)
             }
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
         }
-        return null
     }
 
     fun showTimePicker(context: Context, is24: Boolean, hour: Int, minute: Int,
@@ -188,20 +139,8 @@ object TimeUtil {
     }
 
     fun getFutureBirthdayDate(birthdayTime: Long, fullDate: String): DateItem? {
-        var date: Date? = null
-        try {
-            date = BIRTH_DATE_FORMAT.parse(fullDate)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
-        }
-
-        if (date != null) {
-            val calendar = Calendar.getInstance()
-            calendar.time = date
+        return fullDate.toDate(BIRTH_DATE_FORMAT).let { date ->
+            val calendar = newCalendar(date)
             val bDay = calendar.get(Calendar.DAY_OF_MONTH)
             val bMonth = calendar.get(Calendar.MONTH)
             val year = calendar.get(Calendar.YEAR)
@@ -216,33 +155,26 @@ object TimeUtil {
             if (calendar.timeInMillis < System.currentTimeMillis()) {
                 calendar.add(Calendar.YEAR, 1)
             }
-            return DateItem(calendar.timeInMillis, year)
+            DateItem(calendar.timeInMillis, year)
         }
-        return null
     }
 
     fun getBirthdayTime(hour: Int, minute: Int): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(Calendar.HOUR_OF_DAY, hour)
-        calendar.set(Calendar.MINUTE, minute)
-        return TIME_24.format(calendar.time)
+        return newCalendar().apply {
+            this.setTime(hour, minute)
+        }.map { TIME_24.format(it.time) }
     }
 
     fun getBirthdayVisualTime(time: String?, is24: Boolean, lang: Int = 0): String {
-        if (time != null) {
-            try {
-                val date = TIME_24.parse(time) ?: return ""
-                return if (is24) {
-                    time24(lang).format(date)
-                } else {
-                    time12(lang).format(date)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+        return time?.toDate(TIME_24, TimeZone.getDefault()).takeIf {
+            it != null
+        }?.let {
+            if (is24) {
+                time24(lang).format(it)
+            } else {
+                time12(lang).format(it)
             }
-        }
-        return ""
+        } ?: ""
     }
 
     fun millisToEndDnd(from: String?, to: String?, current: Long): Long {
@@ -290,27 +222,21 @@ object TimeUtil {
     }
 
     private fun hourMinute(millis: Long): Pair<Int, Int> {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        return Pair(
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE)
-        )
+        return newCalendar(millis).map { Pair(it.getHourOfDay(), it.getMinute()) }
     }
 
     private fun toMillis(time24: String): Long {
         return try {
-            val calendar = Calendar.getInstance()
-            val date = TIME_24.parse(time24) ?: return 0
-            calendar.time = date
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-            calendar.timeInMillis = System.currentTimeMillis()
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            calendar.timeInMillis
+            time24.toDateWithException(TIME_24, TimeZone.getDefault()).toCalendar().let {
+                val hour = it.getHourOfDay()
+                val minute = it.getMinute()
+                it.timeInMillis = System.currentTimeMillis()
+                it.setHourOfDay(hour)
+                it.setMinute(minute)
+                it.dropSeconds()
+                it.dropMilliseconds()
+                it.timeInMillis
+            }
         } catch (e: Exception) {
             0
         }
@@ -328,23 +254,19 @@ object TimeUtil {
     }
 
     fun getBirthdayCalendar(time: String?): Calendar {
-        val calendar = Calendar.getInstance()
-        if (time != null) {
-            var millis = toMillis(time)
+        return newCalendar().takeIf { time != null }?.apply {
+            var millis = toMillis(time ?: "")
             if (millis < System.currentTimeMillis()) {
                 millis += AlarmManager.INTERVAL_DAY
             }
-            calendar.timeInMillis = millis
-        }
-        return calendar
+            this.timeInMillis = millis
+        } ?: newCalendar()
     }
 
     fun getGmtFromDateTime(date: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = date
         GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
         return try {
-            GMT_DATE_FORMAT.format(calendar.time)
+            GMT_DATE_FORMAT.format(Date(date))
         } catch (e: Exception) {
             ""
         }
@@ -697,7 +619,7 @@ object TimeUtil {
 
     data class DateItem(val millis: Long, val year: Int)
 
-    data class DMY(val day: String, val month: String, val year: String)
+    data class DMY(val day: String = "", val month: String = "", val year: String = "")
 
     data class HM(val hour: Int, val minute: Int)
 }
