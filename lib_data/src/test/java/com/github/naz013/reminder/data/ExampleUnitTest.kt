@@ -1,4 +1,4 @@
-package com.github.naz013.reminder.lib_data
+package com.github.naz013.reminder.data
 
 import org.junit.Test
 

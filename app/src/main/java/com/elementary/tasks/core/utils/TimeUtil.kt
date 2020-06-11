@@ -273,20 +273,13 @@ object TimeUtil {
     }
 
     fun getDateTimeFromGmt(dateTime: String?): Long {
-        if (dateTime.isNullOrEmpty()) {
-            return 0
-        }
-        val calendar = Calendar.getInstance()
-        try {
-            GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            val date = GMT_DATE_FORMAT.parse(dateTime) ?: return 0
-            calendar.time = date
+        if (dateTime.isNullOrEmpty()) return 0
+        return try {
+            newCalendar(dateTime.toDate(GMT_DATE_FORMAT, TimeZone.getTimeZone(GMT))).timeInMillis
         } catch (e: Exception) {
             Crashlytics.logException(e)
-            return 0
+            0
         }
-
-        return calendar.timeInMillis
     }
 
     fun isAfterDate(gmt1: String?, gmt2: String?): Boolean {
@@ -312,26 +305,16 @@ object TimeUtil {
     }
 
     fun getVoiceDateTime(date: String?, is24: Boolean, locale: Int, language: Language): String? {
-        if (TextUtils.isEmpty(date)) {
-            return null
-        }
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = getDateTimeFromGmt(date)
+        if (TextUtils.isEmpty(date)) return null
         val loc = Locale(language.getTextLanguage(locale))
         val format = if (locale == 0) {
-            if (is24) {
-                SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc)
-            } else {
-                SimpleDateFormat("EEEE, MMMM dd yyyy h:mm a", loc)
-            }
+            if (is24) SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc)
+            else SimpleDateFormat("EEEE, MMMM dd yyyy h:mm a", loc)
         } else {
-            if (is24) {
-                SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc)
-            } else {
-                SimpleDateFormat("EEEE, dd MMMM yyyy h:mm a", loc)
-            }
+            if (is24) SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc)
+            else SimpleDateFormat("EEEE, dd MMMM yyyy h:mm a", loc)
         }
-        return format.format(calendar.time)
+        return format.format(newCalendar(getDateTimeFromGmt(date)).time)
     }
 
     fun getRealDateTime(gmt: String?, delay: Int, is24: Boolean, lang: Int = 0): String {
@@ -379,15 +362,11 @@ object TimeUtil {
     }
 
     fun getSimpleDate(date: Long, lang: Int = 0): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = date
-        return simpleDate(lang).format(calendar.time)
+        return simpleDate(lang).format(newCalendar(date).time)
     }
 
     fun getDate(date: Long, lang: Int = 0): String {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = date
-        return date(lang).format(calendar.time)
+        return date(lang).format(newCalendar(date).time)
     }
 
     private fun getGoogleTaskDate(date: Date, lang: Int = 0): String {
@@ -408,24 +387,18 @@ object TimeUtil {
             TIME_24.parse(date)
         } catch (e: Exception) {
             null
-        } catch (e: java.lang.Exception) {
-            null
         }
     }
 
     fun getReadableBirthDate(dateOfBirth: String?, lang: Int = 0): String {
         if (dateOfBirth.isNullOrEmpty()) return ""
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        var date: Date? = null
-        try {
-            date = format.parse(dateOfBirth)
+        return try {
+            dateOfBirth.toDate(format).let {
+                date(lang).format(it)
+            }
         } catch (e: Exception) {
             Crashlytics.logException(e)
-        }
-
-        return if (date != null) {
-            date(lang).format(date)
-        } else {
             dateOfBirth
         }
     }
@@ -433,23 +406,7 @@ object TimeUtil {
     fun getAge(dateOfBirth: String?): Int {
         if (dateOfBirth.isNullOrEmpty()) return 0
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        var date: Date? = null
-        try {
-            date = format.parse(dateOfBirth)
-        } catch (e: Exception) {
-            Crashlytics.logException(e)
-        }
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        if (date != null) {
-            calendar.time = date
-        }
-        val yearOfBirth = calendar.get(Calendar.YEAR)
-        val calendar1 = Calendar.getInstance()
-        calendar1.timeInMillis
-        val currentYear = calendar1.get(Calendar.YEAR)
-        return currentYear - yearOfBirth
+        return newCalendar().getYear() - newCalendar(dateOfBirth.toDate(format)).getYear()
     }
 
     fun getDateTime(date: Date, is24: Boolean, lang: Int = 0): String {
@@ -473,10 +430,7 @@ object TimeUtil {
     }
 
     private fun getAge(year: Int, at: Long = System.currentTimeMillis()): Int {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = at
-        val mYear = calendar.get(Calendar.YEAR)
-        return mYear - year
+        return newCalendar(at).getYear() - year
     }
 
     fun generateAfterString(time: Long): String {
@@ -588,13 +542,9 @@ object TimeUtil {
     }
 
     fun convertDateTimeToDate(dateTime: DateTime): Date {
-        val year = dateTime.year
-        val datetimeMonth = dateTime.month
-        val day = dateTime.day
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(year, datetimeMonth - 1, day)
-        return calendar.time
+        return newCalendar().also {
+            it.setDate(dateTime.year, dateTime.month - 1, dateTime.day)
+        }.time
     }
 
     fun convertToDateTime(eventTime: Long): DateTime {
