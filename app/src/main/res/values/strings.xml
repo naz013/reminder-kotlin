@@ -666,5 +666,6 @@
     <string name="enter_pin">Enter PIN</string>
     <string name="prompt_info_subtitle">Biometric authentication</string>
     <string name="prompt_info_description">Proceed with biometric authentication</string>
+    <string name="title_feature_birthdays">Birthdays</string>
 
 </resources>
