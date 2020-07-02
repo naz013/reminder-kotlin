@@ -22,7 +22,7 @@ class HelpFragment : BaseWebViewFragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
-            override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 view.loadUrl(url)
                 return true
             }
