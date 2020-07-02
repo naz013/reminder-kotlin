@@ -9,7 +9,12 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import com.elementary.tasks.core.utils.Prefs
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
@@ -76,13 +81,11 @@ class LocationTracker(private val context: Context?, private val callback: ((lat
         task.addOnSuccessListener { mFusedLocationClient?.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper()) }
     }
 
-    override fun onLocationChanged(location: Location?) {
+    override fun onLocationChanged(location: Location) {
         Timber.d("onLocationResult: $location")
-        if (location != null) {
-            val latitude = location.latitude
-            val longitude = location.longitude
-            callback?.invoke(latitude, longitude)
-        }
+        val latitude = location.latitude
+        val longitude = location.longitude
+        callback?.invoke(latitude, longitude)
     }
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
