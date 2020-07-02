@@ -103,6 +103,7 @@ android {
     dexOptions {
         javaMaxHeapSize "2g"
     }
+    dynamicFeatures = [':feature_birthdays']
 }
 
 dependencies {
