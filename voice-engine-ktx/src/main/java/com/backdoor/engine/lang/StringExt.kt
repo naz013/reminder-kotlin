@@ -6,7 +6,9 @@ internal fun String.splitByWhitespace() = split(Worker.WHITESPACE)
 
 internal fun String.splitByWhitespaces() = split(Worker.WHITESPACES)
 
-internal fun String.toLong(def1: Long, def2: Long = 0): Long {
+internal fun String.trim() = trim { it <= ' ' }
+
+internal fun String.toRepeat(def1: Long, def2: Long = 0): Long {
   return try {
     toLong()
   } catch (e: NumberFormatException) {
