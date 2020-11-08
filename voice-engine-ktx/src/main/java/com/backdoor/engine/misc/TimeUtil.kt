@@ -9,9 +9,9 @@ import java.util.Locale
 internal object TimeUtil {
   private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
   private const val GMT = "GMT"
-  fun getGmtFromDateTime(date: LongInternal): String {
+  fun getGmtFromDateTime(date: Long): String {
     val calendar = Calendar.getInstance()
-    calendar.timeInMillis = date.value
+    calendar.timeInMillis = date
     GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
     return GMT_DATE_FORMAT.format(calendar.time)
   }

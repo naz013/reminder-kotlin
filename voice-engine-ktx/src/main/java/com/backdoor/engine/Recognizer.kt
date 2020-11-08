@@ -2,11 +2,9 @@ package com.backdoor.engine
 
 import com.backdoor.engine.lang.Worker
 import com.backdoor.engine.lang.WorkerFactory.getWorker
-import com.backdoor.engine.lang.WorkerInterface
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.ActionType
 import com.backdoor.engine.misc.Ampm
-import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.backdoor.engine.misc.LongInternal
 import com.backdoor.engine.misc.TimeUtil.getGmtFromDateTime
@@ -28,219 +26,225 @@ class Recognizer private constructor(
     LOCALE = locale
   }
 
-  fun parse(string: String): Model? {
-    var keyStr: String? = string.toLowerCase().trim { it <= ' ' }
-    keyStr = worker!!.replaceNumbers(keyStr)
-    println("parse: $keyStr, worker $worker")
-    if (worker!!.hasShowAction(keyStr!!)) {
-      val local = keyStr + ""
-      val action = worker!!.getShowAction(local)
-      if (action != null) {
-        val hasNext = worker!!.hasNextModifier(local)
-        val date: Long
-        val multi = LongInternal()
-        worker!!.getMultiplier(local, multi)
-        if (hasNext) {
-          date = System.currentTimeMillis() + multi.get()
+  fun parse(input: String): Model? {
+    return input.toLowerCase(LOCALE)
+      .let { s -> s.trim { it <= ' ' } }
+      .let { worker.replaceNumbers(it) ?: "" }
+      .also { println("parse: $it, worker $worker") }
+      .let { s ->
+        val action = worker.getAction(s)
+        val event = getEvent(s)
+        when {
+          worker.hasShowAction(s) && action != null -> createAction(s, action)
+          worker.hasNote(s) -> getNote(s)
+          worker.hasGroup(s) -> getGroup(worker.clearGroup(s))
+          worker.hasEvent(s) && event != null -> event
+          worker.hasAction(s) -> getAction(s)
+          worker.hasEmptyTrash(s) -> emptyTrash
+          worker.hasDisableReminders(s) -> disableAction
+          worker.hasAnswer(s) -> getAnswer(s)
+          else -> parseReminder(s)
+        }
+      }
+  }
+
+  private fun parseReminder(input: String): Model? {
+    return Proc(input = input)
+      .also { proc ->
+        if (worker.hasCall(proc.input)) {
+          proc.updateInput { worker.clearCall(it) }
+          proc.hasAction = true
+          proc.action = Action.CALL
+        }
+      }
+      .also { proc ->
+        if (worker.hasSender(proc.input)) {
+          proc.updateInput { worker.clearSender(it) }
+          worker.getMessageType(proc.input)?.also { action ->
+            proc.updateInput { worker.clearMessageType(it) }
+            proc.hasAction = true
+            proc.action = action
+          }
+        }
+      }
+      .also { proc ->
+        if (worker.hasRepeat(proc.input).also { proc.isRepeating = it }) {
+          proc.isEveryDay = worker.hasEveryDay(proc.input)
+          proc.updateInput { worker.clearRepeat(it) }
+          println("parse: has repeat -> $proc")
+          proc.repeatMillis = worker.getDaysRepeat(proc.input)
+          if (proc.repeatMillis != 0L) {
+            proc.updateInput { worker.clearDaysRepeat(it) }
+          }
+          if (proc.isEveryDay) {
+            proc.weekdays = listOf(1, 1, 1, 1, 1, 1, 1)
+            proc.action = when (proc.action) {
+              Action.CALL -> Action.WEEK_CALL
+              Action.MESSAGE -> Action.WEEK_SMS
+              else -> Action.WEEK
+            }
+          }
+        }
+      }
+      .also { proc ->
+        proc.hasCalendar = worker.hasCalendar(proc.input).also { b ->
+          if (b) proc.updateInput { worker.clearCalendar(it) }
+        }
+      }
+      .also { proc ->
+        proc.hasToday = worker.hasToday(proc.input).also { b ->
+          if (b) proc.updateInput { worker.clearToday(it) }
+        }
+      }
+      .also { proc ->
+        proc.hasAfterTomorrow = worker.hasAfterTomorrow(proc.input).also { b ->
+          if (b) proc.updateInput { worker.clearAfterTomorrow(it) }
+        }
+      }
+      .also { proc ->
+        proc.hasTomorrow = worker.hasTomorrow(proc.input).also { b ->
+          if (b) proc.updateInput { worker.clearTomorrow(it) }
+        }
+      }
+      .also { proc ->
+        proc.ampm = worker.getAmpm(proc.input)?.also {
+          proc.updateInput { worker.clearAmpm(it) }
+        }
+      }
+      .also { proc ->
+        if (!proc.isEveryDay) {
+          proc.weekdays = worker.getWeekDays(proc.input)
+          proc.hasWeekday = proc.weekdays.any { it == 1 }.also { b ->
+            if (b) {
+              proc.action = when (proc.action) {
+                Action.CALL -> Action.WEEK_CALL
+                Action.MESSAGE -> Action.WEEK_SMS
+                else -> Action.WEEK
+              }
+            }
+          }
+          proc.updateInput { worker.clearWeekDays(it) }
+        }
+      }
+      .also { proc ->
+        proc.hasTimer = worker.hasTimer(proc.input).also { b ->
+          if (b) {
+            proc.updateInput { worker.cleanTimer(it) }
+          }
+        }
+        worker.getMultiplier(proc.input, proc.afterTime)
+        println("parse: ${proc.afterTime}, input: ${proc.input}")
+      }
+      .also { proc ->
+        proc.updateInput { worker.getDate(it, proc.date) }
+        println("parse: date ${proc.input}")
+      }
+      .also { proc ->
+        proc.time = worker.getTime(proc.input, proc.ampm, times).also { l ->
+          if (l != 0L) proc.updateInput { worker.clearTime(it) }
+        }
+        println("parse: ${proc.input}, time ${proc.time}, date ${proc.date}")
+      }
+      .also { proc ->
+        if (proc.hasToday) {
+          println("parse: today")
+          proc.time = getTodayTime(proc.time)
+        } else if (proc.hasAfterTomorrow) {
+          println("parse: after tomorrow")
+          proc.time = getAfterTomorrowTime(proc.time)
+        } else if (proc.hasTomorrow) {
+          println("parse: tomorrow")
+          proc.time = getTomorrowTime(proc.time)
+        } else if (proc.isEveryDay) {
+          println("parse: everyday")
+          proc.time = getDayTime(proc.time, proc.weekdays)
+        } else if (proc.hasWeekday && !proc.isRepeating) {
+          println("parse: on weekday")
+          proc.time = getDayTime(proc.time, proc.weekdays)
+        } else if (proc.isRepeating) {
+          println("parse: repeating")
+          proc.time = getRepeatingTime(proc.time, proc.hasWeekday)
+        } else if (proc.hasTimer) {
+          println("parse: timer")
+          proc.time = System.currentTimeMillis() + proc.afterTime.value
+        } else if (proc.date.value != 0L || proc.time != 0L) {
+          println("parse: date/time")
+          proc.time = getDateTime(proc.date.value, proc.time)
         } else {
-          val dt = LongInternal()
-          worker!!.getDate(local, dt)
-          date = dt.get()
+          proc.skipNext = true
         }
-        val model = Model()
-        model.setAction(action)
-        model.setType(ActionType.SHOW)
-        model.setDateTime(getGmtFromDateTime(date))
-        return model
       }
-    }
-    if (worker.hasNote(keyStr)) {
-      return getNote(keyStr)
-    }
-    if (worker.hasGroup(keyStr)) {
-      keyStr = worker.clearGroup(keyStr)
-      return getGroup(keyStr)
-    }
-    if (worker.hasEvent(keyStr)) {
-      val model = getEvent(keyStr)
-      if (model != null) {
-        return model
-      }
-    }
-    if (worker.hasAction(keyStr)) {
-      return getAction(keyStr)
-    }
-    if (worker.hasEmptyTrash(keyStr)) {
-      return emptyTrash
-    }
-    if (worker.hasDisableReminders(keyStr)) {
-      return disableAction
-    }
-    if (worker.hasAnswer(keyStr)) {
-      return getAnswer(keyStr)
-    }
-    var type = Action.DATE
-    var number: String? = null
-    var hasAction = false
-    if (keyStr.hasCall()) {
-      keyStr = worker!!.clearCall(keyStr)
-      hasAction = true
-      type = Action.CALL
-    }
-    if (keyStr.hasSender()) {
-      keyStr = worker!!.clearSender(keyStr!!)
-      val actionType: Action = worker.getMessageType(keyStr)
-      if (actionType != null) {
-        hasAction = true
-        keyStr = worker!!.clearMessageType(keyStr!!)
-        type = actionType
-      }
-    }
-    var repeating: Boolean
-    var isEveryDay = false
-    var hasWeekday = false
-    var weekdays: List<Int> = ArrayList()
-    var repeat: Long = 0
-    if (keyStr.hasRepeat().also { repeating = it }) {
-      isEveryDay = keyStr.hasEveryDay()
-      keyStr = worker!!.clearRepeat(keyStr!!)
-      println("parse: has repeat -> $keyStr, isEvery $isEveryDay")
-      repeat = worker!!.getDaysRepeat(keyStr!!)
-      if (repeat != 0L) {
-        keyStr = worker!!.clearDaysRepeat(keyStr)
-      }
-      if (isEveryDay) {
-        weekdays.clear()
-        for (i in 0..6) {
-          weekdays.add(1)
+      .takeIf { !it.skipNext }
+      ?.also { proc ->
+        if (proc.hasAction && (proc.action == Action.MESSAGE || proc.action == Action.MAIL)) {
+          proc.message = worker.getMessage(proc.input)
+          proc.updateInput { worker.clearMessage(it) }
+          proc.message?.also { message ->
+            proc.updateInput { it.replace(message, "") }
+          }
         }
-        type = if (type === Action.CALL) {
-          Action.WEEK_CALL
-        } else if (type === Action.MESSAGE) {
-          Action.WEEK_SMS
+      }
+      ?.also { proc ->
+        if (proc.hasAction) {
+          contactsInterface?.findNumber(proc.input).also { output ->
+            if (output == null) {
+              proc.skipNext = true
+            } else {
+              proc.updateInput { output.output }
+              proc.number = output.number
+            }
+          }
+          if (proc.action == Action.MAIL) {
+            contactsInterface?.findEmail(proc.input).also { output ->
+              proc.number = output?.number
+              proc.updateInput { output?.output }
+            }
+          }
+          proc.skipNext = proc.number == null
+        }
+      }
+      ?.takeIf { !it.skipNext }
+      ?.also { proc ->
+        if (proc.hasAction) {
+          proc.summary = StringUtils.capitalize(proc.message)
+          if ((proc.action == Action.MESSAGE || proc.action == Action.MAIL) && proc.summary.isEmpty()) {
+            proc.skipNext = true
+          }
         } else {
-          Action.WEEK
+          proc.summary = StringUtils.capitalize(StringUtils.normalizeSpace(proc.input))
         }
       }
-    }
-    var isCalendar: Boolean
-    if (worker!!.hasCalendar(keyStr!!).also { isCalendar = it }) {
-      keyStr = worker!!.clearCalendar(keyStr)
-    }
-    var today: Boolean
-    if (worker!!.hasToday(keyStr!!).also { today = it }) {
-      keyStr = worker!!.clearToday(keyStr)
-    }
-    var afterTomorrow: Boolean
-    if (worker!!.hasAfterTomorrow(keyStr).also { afterTomorrow = it }) {
-      keyStr = worker!!.clearAfterTomorrow(keyStr)
-    }
-    var tomorrow: Boolean
-    if (worker!!.hasTomorrow(keyStr).also { tomorrow = it }) {
-      keyStr = worker!!.clearTomorrow(keyStr)
-    }
-    val ampm: Ampm = worker.getAmpm(keyStr)
-    if (ampm != null) {
-      keyStr = worker!!.clearAmpm(keyStr!!)
-    }
-    if (!isEveryDay) {
-      weekdays = worker!!.getWeekDays(keyStr!!)
-      for (day in weekdays) {
-        if (day == 1) {
-          hasWeekday = true
-          break
-        }
+      ?.takeIf { !it.skipNext }
+      ?.let {
+        Model(
+          type = it.actionType,
+          summary = it.summary,
+          dateTime = getGmtFromDateTime(it.time),
+          weekdays = it.weekdays,
+          repeatInterval = it.repeatMillis,
+          target = it.number,
+          hasCalendar = it.hasCalendar,
+          action = it.action
+        )
       }
-      keyStr = worker!!.clearWeekDays(keyStr)
-      if (hasWeekday) {
-        type = if (type === Action.CALL) {
-          Action.WEEK_CALL
-        } else if (type === Action.MESSAGE) {
-          Action.WEEK_SMS
-        } else {
-          Action.WEEK
-        }
-      }
-    }
-    var hasTimer: Boolean
-    val afterTime = LongInternal()
-    if (keyStr.isTimer().also { hasTimer = it }) {
-      keyStr = worker!!.cleanTimer(keyStr!!)
-      keyStr = worker!!.getMultiplier(keyStr!!, afterTime)
-    }
-    System.out.println("parse: " + afterTime.get().toString() + ", input " + keyStr)
-    val date = LongInternal()
-    keyStr = worker!!.getDate(keyStr!!, date)
-    println("parse: after date $keyStr")
-    var time = worker!!.getTime(keyStr!!, ampm, times)
-    if (time != 0L) {
-      keyStr = worker!!.clearTime(keyStr)
-    }
-    println("parse: $keyStr, time $time, date $date")
-    if (today) {
-      println("parse: today")
-      time = getTodayTime(time)
-    } else if (afterTomorrow) {
-      println("parse: after tomorrow")
-      time = getAfterTomorrowTime(time)
-    } else if (tomorrow) {
-      println("parse: tomorrow")
-      time = getTomorrowTime(time)
-    } else if (isEveryDay) {
-      println("parse: everyday")
-      time = getDayTime(time, weekdays)
-    } else if (hasWeekday && !repeating) {
-      println("parse: on weekday")
-      time = getDayTime(time, weekdays)
-    } else if (repeating) {
-      println("parse: repeating")
-      time = getRepeatingTime(time, hasWeekday)
-    } else if (hasTimer) {
-      println("parse: timer")
-      time = System.currentTimeMillis() + afterTime.get()
-    } else if (date.get() !== 0 || time != 0L) {
-      println("parse: date/time")
-      time = getDateTime(date.get(), time)
-    } else {
-      return null
-    }
-    var message: String? = null
-    if (hasAction && (type === Action.MESSAGE || type === Action.MAIL)) {
-      message = worker!!.getMessage(keyStr)
-      keyStr = worker!!.clearMessage(keyStr)
-      if (message != null) {
-        keyStr = keyStr!!.replace(message, "")
-      }
-    }
-    if (hasAction && contactsInterface != null) {
-      var output: ContactOutput? = contactsInterface!!.findNumber(keyStr) ?: return null
-      keyStr = output.output
-      number = output.number
-      if (type === Action.MAIL) {
-        output = contactsInterface!!.findEmail(keyStr)
-        number = output!!.number
-        keyStr = output.output
-      }
-      if (number == null) {
-        return null
-      }
-    }
-    var task = StringUtils.capitalize(StringUtils.normalizeSpace(keyStr))
-    if (hasAction) {
-      task = StringUtils.capitalize(message)
-      if ((type === Action.MESSAGE || type === Action.MAIL) && task == null) {
-        return null
+  }
+
+  private fun createAction(input: String, action: Action): Model? {
+    val hasNext = worker.hasNextModifier(input)
+    val multi = LongInternal()
+    val date = worker.getMultiplier(input, multi).let {
+      if (hasNext) {
+        System.currentTimeMillis() + multi.value
+      } else {
+        val dt = LongInternal()
+        worker.getDate(it, dt)
+        dt.value
       }
     }
     return Model(
-      type = ActionType.REMINDER,
-      summary = task,
-      dateTime = getGmtFromDateTime(LongInternal(time)),
-      weekdays = weekdays,
-      repeatInterval = repeat,
-      target = number,
-      isHasCalendar = isCalendar,
-      action = type
+      action = action,
+      type = ActionType.SHOW,
+      dateTime = getGmtFromDateTime(date)
     )
   }
 
@@ -256,19 +260,13 @@ class Recognizer private constructor(
   }
 
   private fun getDateTime(date: Long, time: Long): Long {
-    var date = date
-    var time = time
-    if (date == 0L) {
-      date = System.currentTimeMillis()
-    }
-    if (time == 0L) {
-      time = date
-    }
+    val dateMillis = date.takeIf { it != 0L } ?: System.currentTimeMillis()
+    val timeMillis = time.takeIf { it != 0L } ?: dateMillis
     val calendar = Calendar.getInstance()
-    calendar.timeInMillis = time
+    calendar.timeInMillis = timeMillis
     val hour = calendar[Calendar.HOUR_OF_DAY]
     val minute = calendar[Calendar.MINUTE]
-    calendar.timeInMillis = date
+    calendar.timeInMillis = dateMillis
     calendar[Calendar.HOUR_OF_DAY] = hour
     calendar[Calendar.MINUTE] = minute
     calendar[Calendar.SECOND] = 0
@@ -280,52 +278,48 @@ class Recognizer private constructor(
   }
 
   private fun getRepeatingTime(time: Long, hasWeekday: Boolean): Long {
-    var time = time
-    val calendar = Calendar.getInstance()
-    if (time == 0L) {
-      time = System.currentTimeMillis()
-    }
-    calendar.timeInMillis = time
-    val hour = calendar[Calendar.HOUR_OF_DAY]
-    val minute = calendar[Calendar.MINUTE]
-    calendar.timeInMillis = System.currentTimeMillis()
-    calendar[Calendar.HOUR_OF_DAY] = hour
-    calendar[Calendar.MINUTE] = minute
-    calendar[Calendar.SECOND] = 0
-    calendar[Calendar.MILLISECOND] = 0
-    if (!hasWeekday) {
-      if (calendar.timeInMillis < System.currentTimeMillis()) {
-        calendar.timeInMillis = calendar.timeInMillis + Worker.DAY
+    return (time.takeIf { it != 0L } ?: System.currentTimeMillis()).let {
+      val calendar = Calendar.getInstance()
+      calendar.timeInMillis = it
+      val hour = calendar[Calendar.HOUR_OF_DAY]
+      val minute = calendar[Calendar.MINUTE]
+      calendar.timeInMillis = System.currentTimeMillis()
+      calendar[Calendar.HOUR_OF_DAY] = hour
+      calendar[Calendar.MINUTE] = minute
+      calendar[Calendar.SECOND] = 0
+      calendar[Calendar.MILLISECOND] = 0
+      if (!hasWeekday) {
+        if (calendar.timeInMillis < System.currentTimeMillis()) {
+          calendar.timeInMillis = calendar.timeInMillis + Worker.DAY
+        }
       }
+      calendar.timeInMillis
     }
-    return calendar.timeInMillis
   }
 
   private fun getDayTime(time: Long, weekdays: List<Int>): Long {
-    var time = time
-    val calendar = Calendar.getInstance()
-    if (time == 0L) {
-      time = System.currentTimeMillis()
-    }
-    calendar.timeInMillis = time
-    val hour = calendar[Calendar.HOUR_OF_DAY]
-    val minute = calendar[Calendar.MINUTE]
-    calendar.timeInMillis = System.currentTimeMillis()
-    calendar[Calendar.HOUR_OF_DAY] = hour
-    calendar[Calendar.MINUTE] = minute
-    calendar[Calendar.SECOND] = 0
-    calendar[Calendar.MILLISECOND] = 0
-    val count = Worker.getNumberOfSelectedWeekdays(weekdays)
-    if (count == 1) {
-      while (true) {
-        val mDay = calendar[Calendar.DAY_OF_WEEK]
-        if (weekdays[mDay - 1] == 1 && calendar.timeInMillis > System.currentTimeMillis()) {
-          break
+    return (time.takeIf { it != 0L } ?: System.currentTimeMillis()).let {
+      val calendar = Calendar.getInstance()
+      calendar.timeInMillis = it
+      val hour = calendar[Calendar.HOUR_OF_DAY]
+      val minute = calendar[Calendar.MINUTE]
+      calendar.timeInMillis = System.currentTimeMillis()
+      calendar[Calendar.HOUR_OF_DAY] = hour
+      calendar[Calendar.MINUTE] = minute
+      calendar[Calendar.SECOND] = 0
+      calendar[Calendar.MILLISECOND] = 0
+      val count = Worker.getNumberOfSelectedWeekdays(weekdays)
+      if (count == 1) {
+        while (true) {
+          val mDay = calendar[Calendar.DAY_OF_WEEK]
+          if (weekdays[mDay - 1] == 1 && calendar.timeInMillis > System.currentTimeMillis()) {
+            break
+          }
+          calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
-        calendar.add(Calendar.DAY_OF_MONTH, 1)
       }
+      calendar.timeInMillis
     }
-    return calendar.timeInMillis
   }
 
   private fun getTomorrowTime(time: Long) = getTime(time, 1)
@@ -391,9 +385,7 @@ class Recognizer private constructor(
   }
 
   private fun getNote(input: String?): Model? {
-    return input?.let {
-      StringUtils.capitalize(worker.clearNote(input))
-    }?.let {
+    return input?.let { StringUtils.capitalize(worker.clearNote(input)) }?.let {
       Model(
         summary = it,
         type = ActionType.NOTE
@@ -434,7 +426,36 @@ class Recognizer private constructor(
     }
   }
 
+  private data class Proc(
+    var input: String,
+    var action: Action = Action.DATE,
+    var number: String? = null,
+    var message: String? = null,
+    var hasAction: Boolean = false,
+    var actionType: ActionType = ActionType.REMINDER,
+    var skipNext: Boolean = false,
+    var summary: String = "",
+    var isRepeating: Boolean = false,
+    var isEveryDay: Boolean = false,
+    var repeatMillis: Long = 0,
+    var weekdays: List<Int> = listOf(),
+    var hasCalendar: Boolean = false,
+    var hasToday: Boolean = false,
+    var hasAfterTomorrow: Boolean = false,
+    var hasTomorrow: Boolean = false,
+    var ampm: Ampm? = null,
+    var hasWeekday: Boolean = false,
+    var hasTimer: Boolean = false,
+    var afterTime: LongInternal = LongInternal(),
+    var date: LongInternal = LongInternal(),
+    var time: Long = 0
+  ) {
+    fun updateInput(f: (String) -> String?) {
+      input = f.invoke(input) ?: ""
+    }
+  }
+
   internal companion object {
-    var LOCALE = Locale.getDefault()
+    var LOCALE: Locale = Locale.getDefault()
   }
 }

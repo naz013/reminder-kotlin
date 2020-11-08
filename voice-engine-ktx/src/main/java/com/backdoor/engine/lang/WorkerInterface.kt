@@ -45,11 +45,11 @@ internal interface WorkerInterface {
   fun hasShowAction(input: String): Boolean
   fun getShowAction(input: String): Action?
   fun hasNextModifier(input: String): Boolean
-  fun String.hasEveryDay(): Boolean
-  fun String.toAmpm(): Ampm?
-  fun String.toMessageType(): Action?
-  fun String.hasRepeat(): Boolean
-  fun String.hasCall(): Boolean
-  fun String.isTimer(): Boolean
-  fun String.hasSender(): Boolean
+  fun hasCall(input: String): Boolean
+  fun hasSender(input: String): Boolean
+  fun hasRepeat(input: String): Boolean
+  fun hasEveryDay(input: String): Boolean
+  fun getMessageType(input: String): Action?
+  fun getAmpm(input: String): Ampm?
+  fun hasTimer(input: String): Boolean
 }
