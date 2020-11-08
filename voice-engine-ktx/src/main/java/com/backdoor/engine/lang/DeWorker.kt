@@ -65,27 +65,24 @@ internal class DeWorker : Worker() {
   }
 
   override fun getDaysRepeat(input: String) =
-    input.splitByWhitespaces()
-      .firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
+    input.splitByWhitespaces().firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
 
-  override fun clearDaysRepeat(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearDaysRepeat(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasDays(s)) {
-          try {
+          ignoreAny {
             s.toInt()
             it[index - 1] = ""
-          } catch (ignored: NumberFormatException) {
           }
           it[index] = ""
           return@forEachIndexed
         }
       }
     }.clip()
-  }
 
-  override fun clearRepeat(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearRepeat(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasRepeat(s)) {
           it[index] = ""
@@ -93,12 +90,11 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip()
-  }
 
   override fun hasTomorrow(input: String) = input.matches(".*morgen.*")
 
-  override fun clearTomorrow(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearTomorrow(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches(".*morgen.*")) {
           it[index] = ""
@@ -106,7 +102,6 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip()
-  }
 
   override fun getMessage(input: String): String {
     val sb = StringBuilder()
@@ -119,24 +114,20 @@ internal class DeWorker : Worker() {
     }
   }
 
-  override fun clearMessage(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearMessage(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches("text")) {
-          try {
-            if (it[index - 1].matches("mit")) {
-              it[index - 1] = ""
-            }
-          } catch (ignored: IndexOutOfBoundsException) {
+          ignoreAny {
+            if (it[index - 1].matches("mit")) it[index - 1] = ""
           }
           it[index] = ""
         }
       }
     }.clip()
-  }
 
-  override fun clearMessageType(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearMessageType(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (getMessageType(s) != null) {
           it[index] = ""
@@ -148,7 +139,6 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip()
-  }
 
   override fun getAmpm(input: String) = when {
     input.matches(".*morgen.*") -> Ampm.MORNING
@@ -158,16 +148,14 @@ internal class DeWorker : Worker() {
     else -> null
   }
 
-  override fun getMessageType(input: String): Action? {
-    return if (input.matches(".*nachricht.*")) Action.MESSAGE
-    else if (input.matches(".*brief.*") || input.matches(".*buchstabe.*")) Action.MAIL
-    else null
+  override fun getMessageType(input: String) = when {
+    input.matches(".*nachricht.*") -> Action.MESSAGE
+    input.matches(".*brief.*") || input.matches(".*buchstabe.*") -> Action.MAIL
+    else -> null
   }
 
-  override fun hasTimer(input: String): Boolean {
-    return input.let { " $it " }.let {
-      it.matches(".*nach.*") || it.matches(".*nach dem.*") || it.matches(".* in .*")
-    }
+  override fun hasTimer(input: String) = input.let { " $it " }.let {
+    it.matches(".*nach.*") || it.matches(".*nach dem.*") || it.matches(".* in .*")
   }
 
   override fun hasCall(input: String) = input.matches(".*anruf.*")
@@ -178,8 +166,8 @@ internal class DeWorker : Worker() {
 
   override fun hasEveryDay(input: String) = input.matches(".*täglich.*")
 
-  override fun clearAmpm(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearAmpm(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (getAmpm(s) != null) {
           it[index] = ""
@@ -187,53 +175,46 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip()
-  }
 
-  override fun getShortTime(input: String?): Date? {
-    return input?.let { s ->
-      val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
-      var date: Date? = null
-      if (matcher.find()) {
-        val time = matcher.group().trim()
-        for (format in hourFormats) {
-          try {
+  override fun getShortTime(input: String?) = input?.let { s ->
+    val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
+    var date: Date? = null
+    if (matcher.find()) {
+      val time = matcher.group().trim()
+      for (format in hourFormats) {
+        if (ignoreAny {
             date = format.parse(time)
-            if (date != null) break
-          } catch (e: Exception) {
-          }
-        }
+            date
+          } != null) break
       }
-      date
     }
+    date
   }
 
-  override fun clearTime(input: String?): String {
-    return input?.splitByWhitespaces()?.toMutableList()?.also {
+  override fun clearTime(input: String?) =
+    input?.splitByWhitespaces()?.toMutableList()?.also {
       it.forEachIndexed { i, s ->
         if (hasHours(s) != -1) {
           val index = hasHours(s)
           it[i] = ""
           var hourSuccess = false
-          try {
+          ignoreAny {
             it[i - index].toInt()
             hourSuccess = true
             it[i - index] = ""
-          } catch (e: Exception) {
           }
           if (hourSuccess) {
-            try {
+            ignoreAny {
               it[i + 1].toInt()
               it[i + 1] = ""
-            } catch (e: Exception) {
             }
           }
         }
         if (hasMinutes(s) != -1) {
           val index = hasMinutes(s)
-          try {
+          ignoreAny {
             it[i - index].toInt()
             it[i - index] = ""
-          } catch (e: Exception) {
           }
           it[i] = ""
         }
@@ -251,29 +232,26 @@ internal class DeWorker : Worker() {
       }
       sb.toString().trim().replace("um", "")
     } ?: ""
+
+  override fun getMonth(input: String?) = when {
+    input == null -> -1
+    input.contains("januar") -> 0
+    input.contains("februar") -> 1
+    input.contains("märz") -> 2
+    input.contains("april") -> 3
+    input.contains("mai") -> 4
+    input.contains("juni") -> 5
+    input.contains("juli") -> 6
+    input.contains("august") -> 7
+    input.contains("september") -> 8
+    input.contains("oktober") -> 9
+    input.contains("november") -> 10
+    input.contains("dezember") -> 11
+    else -> -1
   }
 
-  override fun getMonth(input: String?): Int {
-    return when {
-      input == null -> -1
-      input.contains("januar") -> 0
-      input.contains("februar") -> 1
-      input.contains("märz") -> 2
-      input.contains("april") -> 3
-      input.contains("mai") -> 4
-      input.contains("juni") -> 5
-      input.contains("juli") -> 6
-      input.contains("august") -> 7
-      input.contains("september") -> 8
-      input.contains("oktober") -> 9
-      input.contains("november") -> 10
-      input.contains("dezember") -> 11
-      else -> -1
-    }
-  }
-
-  override fun clearCall(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearCall(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasCall(s)) {
           it[index] = ""
@@ -281,10 +259,9 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip()
-  }
 
-  override fun cleanTimer(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun cleanTimer(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasTimer(s)) {
           it[index] = ""
@@ -292,7 +269,6 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip().trim()
-  }
 
   override fun getDate(input: String, res: LongInternal): String? {
     var mills: Long = 0
@@ -300,11 +276,9 @@ internal class DeWorker : Worker() {
       list.forEachIndexed { index, s ->
         val month = getMonth(s)
         if (month != -1) {
-          val integer = try {
+          val integer = ignoreAny({
             list[index - 1].toInt().also { list[index - 1] = "" }
-          } catch (e: Exception) {
-            1
-          }
+          }) { 1 }
           val calendar = Calendar.getInstance()
           calendar.timeInMillis = System.currentTimeMillis()
           calendar[Calendar.MONTH] = month
@@ -319,8 +293,8 @@ internal class DeWorker : Worker() {
     }
   }
 
-  override fun clearSender(input: String): String? {
-    return input.splitByWhitespaces().toMutableList().also {
+  override fun clearSender(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (hasSender(s)) {
           it[index] = ""
@@ -328,7 +302,6 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip()
-  }
 
   override fun hasNote(input: String) = input.contains("notiz")
 
@@ -340,27 +313,23 @@ internal class DeWorker : Worker() {
       input.matches(".*verändern.*"))
   }
 
-  override fun getAction(input: String) = if (input.matches(".*hilfe.*")) {
-    Action.HELP
-  } else if (input.matches(".*lautstärke.*") || input.matches(".*volumen.*")) {
-    Action.VOLUME
-  } else if (input.matches(".*einstellungen.*")) {
-    Action.SETTINGS
-  } else if (input.matches(".*bericht.*")) {
-    Action.REPORT
-  } else {
-    Action.APP
+  override fun getAction(input: String) = when {
+    input.matches(".*hilfe.*") -> Action.HELP
+    input.matches(".*lautstärke.*") || input.matches(".*volumen.*") -> Action.VOLUME
+    input.matches(".*einstellungen.*") -> Action.SETTINGS
+    input.matches(".*bericht.*") -> Action.REPORT
+    else -> Action.APP
   }
 
   override fun hasEvent(input: String) = input.startsWith("neu") ||
     input.startsWith("hinzufügen") ||
     input.startsWith("addieren")
 
-  override fun getEvent(input: String) = if (input.matches(".*geburtstag.*")) {
-    Action.BIRTHDAY
-  } else if (input.matches(".*erinnerung.*") || input.matches(".*mahnung.*")) {
-    Action.REMINDER
-  } else Action.NO_EVENT
+  override fun getEvent(input: String) = when {
+    input.matches(".*geburtstag.*") -> Action.BIRTHDAY
+    input.matches(".*erinnerung.*") || input.matches(".*mahnung.*") -> Action.REMINDER
+    else -> Action.NO_EVENT
+  }
 
   override fun hasEmptyTrash(input: String) = input.matches(".*klar trash.*")
 
@@ -370,7 +339,7 @@ internal class DeWorker : Worker() {
 
   override fun clearGroup(input: String): String {
     val sb = StringBuilder()
-    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
+    val parts: Array<String> = input.splitByWhitespaces().toTypedArray()
     var st = false
     for (s in parts) {
       if (s.matches(".*gruppe.*")) {
@@ -387,45 +356,41 @@ internal class DeWorker : Worker() {
 
   override fun hasToday(input: String) = input.matches(".*heute.*")
 
-  override fun hasAfterTomorrow(input: String): Boolean {
-    return input.matches(".*übermorgen.*") || input.matches(".*nach morgen.*")
-  }
+  override fun hasAfterTomorrow(input: String) =
+    input.matches(".*übermorgen.*") || input.matches(".*nach morgen.*")
 
-  override fun clearAfterTomorrow(input: String): String {
-    return when {
-      input.matches(".*übermorgen.*") -> {
-        input.replace("übermorgen", "")
-      }
-      input.matches(".*nach morgen.*") -> {
-        input.replace("nach morgen", "")
-      }
-      else -> {
-        input
-      }
-    }
+  override fun clearAfterTomorrow(input: String) = when {
+    input.matches(".*übermorgen.*") -> input.replace("übermorgen", "")
+    input.matches(".*nach morgen.*") -> input.replace("nach morgen", "")
+    else -> input
   }
 
   override val afterTomorrow = "übermorgen"
 
-  override fun hasHours(input: String?) =
-    if (input?.matches(".*stunde.*") == true || input?.matches("uhr.*") == true) 1 else -1
+  override fun hasHours(input: String?) = when {
+    input.matchesOrFalse(".*stunde.*") || input.matchesOrFalse("uhr.*") -> 1
+    else -> -1
+  }
 
-  override fun hasMinutes(input: String?) = if (input?.matches(".*minute.*") == true) 1 else -1
+  override fun hasMinutes(input: String?) = when {
+    input.matchesOrFalse(".*minute.*") -> 1
+    else -> -1
+  }
 
-  override fun hasSeconds(input: String?) = input?.matches(".*zweite.*") == true
+  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*zweite.*")
 
-  override fun hasDays(input: String?) = input?.matches(".*tag.*") == true
+  override fun hasDays(input: String?) = input.matchesOrFalse(".*tag.*")
 
-  override fun hasWeeks(input: String?) = input?.matches(".*woche.*") == true
+  override fun hasWeeks(input: String?) = input.matchesOrFalse(".*woche.*")
 
-  override fun hasMonth(input: String?) = input?.matches(".*monat.*") == true
+  override fun hasMonth(input: String?) = input.matchesOrFalse(".*monat.*")
 
-  override fun hasAnswer(input: String) =
-    input.let { " $it " }.matches(".* (ja|nein|kein|nicht) .*")
+  override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (ja|nein|kein|nicht) .*")
 
-  override fun getAnswer(input: String) = if (input.matches(".* ?(ja) ?.*")) {
-    Action.YES
-  } else Action.NO
+  override fun getAnswer(input: String) = when {
+    input.matches(".* ?(ja) ?.*") -> Action.YES
+    else -> Action.NO
+  }
 
   override fun findFloat(input: String?) = input?.takeIf { it.matches("halb") }
     ?.let { 0.5f } ?: -1f
@@ -454,11 +419,10 @@ internal class DeWorker : Worker() {
     "halb"
   )
 
-  override fun clearFloats(input: String?): String? {
-    return input?.let { s -> s to floats.firstOrNull { s.contains(it) } }
+  override fun clearFloats(input: String?) =
+    input?.let { s -> s to floats.firstOrNull { s.contains(it) } }
       ?.let { it.first.replace(it.second ?: "", "") }
       ?: input
-  }
 
   private fun hasNumber(input: String?) = when {
     input == null -> -1f

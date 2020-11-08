@@ -61,8 +61,7 @@ internal class EnWorker : Worker() {
   }
 
   override fun getDaysRepeat(input: String) =
-    input.splitByWhitespaces()
-      .firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
+    input.splitByWhitespaces().firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
 
   override fun clearDaysRepeat(input: String) =
     input.splitByWhitespaces()
@@ -70,10 +69,9 @@ internal class EnWorker : Worker() {
       .also {
         it.forEachIndexed { index, s ->
           if (hasDays(s)) {
-            try {
+            ignoreAny {
               s.toInt()
               it[index - 1] = ""
-            } catch (ignored: NumberFormatException) {
             }
             it[index] = ""
             return@forEachIndexed
@@ -123,11 +121,10 @@ internal class EnWorker : Worker() {
     input.splitByWhitespaces().toMutableList().also {
       it.forEachIndexed { index, s ->
         if (s.matches("text")) {
-          try {
+          ignoreAny {
             if (it[index - 1].matches("with")) {
               it[index - 1] = ""
             }
-          } catch (ignored: IndexOutOfBoundsException) {
           }
           it[index] = ""
         }
@@ -178,42 +175,38 @@ internal class EnWorker : Worker() {
       }
     }.clip()
 
-  override fun getShortTime(input: String?): Date? {
-    return input?.let { s ->
+  override fun getShortTime(input: String?) =
+    input?.let { s ->
       val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
       var date: Date? = null
       if (matcher.find()) {
         val time = matcher.group().trim()
         for (format in hourFormats) {
-          try {
-            date = format.parse(time)
-            if (date != null) break
-          } catch (e: Exception) {
-          }
+          if (ignoreAny {
+              date = format.parse(time)
+              date
+            } != null) break
         }
       }
       date
     }
-  }
 
-  override fun clearTime(input: String?): String {
-    return input?.splitByWhitespaces()?.toMutableList()?.also {
+  override fun clearTime(input: String?) =
+    input?.splitByWhitespaces()?.toMutableList()?.also {
       it.forEachIndexed { i, s ->
         if (hasHours(s) != -1) {
           val index = hasHours(s)
           it[i] = ""
-          try {
+          ignoreAny {
             it[i - index].toInt()
             it[i - index] = ""
-          } catch (e: Exception) {
           }
         }
         if (hasMinutes(s) != -1) {
           val index = hasMinutes(s)
-          try {
+          ignoreAny {
             it[i - index].toInt()
             it[i - index] = ""
-          } catch (e: Exception) {
           }
           it[i] = ""
         }
@@ -231,7 +224,6 @@ internal class EnWorker : Worker() {
       }
       sb.toString().trim()
     } ?: ""
-  }
 
   override fun getMonth(input: String?) = when {
     input == null -> -1
@@ -282,11 +274,9 @@ internal class EnWorker : Worker() {
       list.forEachIndexed { index, s ->
         val month = getMonth(s)
         if (month != -1) {
-          val integer = try {
+          val integer = ignoreAny({
             list[index - 1].toInt().also { list[index - 1] = "" }
-          } catch (e: Exception) {
-            1
-          }
+          }) { 1 }
           val calendar = Calendar.getInstance()
           calendar.timeInMillis = System.currentTimeMillis()
           calendar[Calendar.MONTH] = month
@@ -325,18 +315,12 @@ internal class EnWorker : Worker() {
       || input.matches(".*change.*"))
   }
 
-  override fun getAction(input: String): Action? {
-    return if (input.matches(".*help.*")) {
-      Action.HELP
-    } else if (input.matches(".*loudness.*") || input.matches(".*volume.*")) {
-      Action.VOLUME
-    } else if (input.matches(".*settings.*")) {
-      Action.SETTINGS
-    } else if (input.matches(".*report.*")) {
-      Action.REPORT
-    } else {
-      Action.APP
-    }
+  override fun getAction(input: String) = when {
+    input.matches(".*help.*") -> Action.HELP
+    input.matches(".*loudness.*") || input.matches(".*volume.*") -> Action.VOLUME
+    input.matches(".*settings.*") -> Action.SETTINGS
+    input.matches(".*report.*") -> Action.REPORT
+    else -> Action.APP
   }
 
   override fun hasEvent(input: String) = input.startsWith("new") ||
@@ -377,31 +361,31 @@ internal class EnWorker : Worker() {
 
   override val afterTomorrow = "after tomorrow"
 
-  override fun hasHours(input: String?): Int {
-    return if (input == null) -1
-    else if (input.matches(".*hour.*") || input.matches(".*o'clock.*")
-      || input.matches(".*am.*") || input.matches(".*pm.*")) 1
-    else -1
+  override fun hasHours(input: String?) = when {
+    input == null -> -1
+    input.matches(".*hour.*") || input.matches(".*o'clock.*") ||
+      input.matches(".*am.*") || input.matches(".*pm.*") -> 1
+    else -> -1
   }
 
-  override fun hasMinutes(input: String?): Int {
-    return if (input?.matches(".*minute.*") == true) 1 else -1
+  override fun hasMinutes(input: String?) = when {
+    input.matchesOrFalse(".*minute.*") -> 1
+    else -> -1
   }
 
-  override fun hasSeconds(input: String?) = input?.matches(".*second.*") == true
+  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*second.*")
 
-  override fun hasDays(input: String?) = input?.matches(".* day.*") == true
+  override fun hasDays(input: String?) = input.matchesOrFalse(".* day.*")
 
-  override fun hasWeeks(input: String?) = input?.matches(".*week.*") == true
+  override fun hasWeeks(input: String?) = input.matchesOrFalse(".*week.*")
 
-  override fun hasMonth(input: String?) = input?.matches(".*month.*") == true
+  override fun hasMonth(input: String?) = input.matchesOrFalse(".*month.*")
 
   override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (yes|yeah|no) .*")
 
-  override fun getAnswer(input: String): Action? {
-    return if (input.matches(".* ?(yes|yeah) ?.*")) {
-      Action.YES
-    } else Action.NO
+  override fun getAnswer(input: String) = when {
+    input.matches(".* ?(yes|yeah) ?.*") -> Action.YES
+    else -> Action.NO
   }
 
   override fun findFloat(input: String?) = input?.takeIf { it.matches("half") }

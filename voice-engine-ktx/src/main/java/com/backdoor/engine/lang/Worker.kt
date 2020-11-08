@@ -4,7 +4,6 @@ import com.backdoor.engine.Recognizer
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
 import com.backdoor.engine.misc.LongInternal
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +22,22 @@ internal abstract class Worker : WorkerInterface {
   internal fun isLeapYear(year: Int): Boolean {
     return year % 4 == 0 && year % 100 != 0 ||
       year % 4 == 0 && year % 100 == 0 && year % 400 == 0
+  }
+
+  fun <T> ignoreAny(f: () -> T): T? {
+    return try {
+      f.invoke()
+    } catch (e: Exception) {
+      null
+    }
+  }
+
+  fun <T> ignoreAny(f: () -> T, f2: () -> T): T {
+    return try {
+      f.invoke()
+    } catch (e: Exception) {
+      f2.invoke()
+    }
   }
 
   protected abstract val weekdays: List<String>
@@ -149,48 +164,35 @@ internal abstract class Worker : WorkerInterface {
       val hoursIndex = hasHours(part)
       val minutesIndex = hasMinutes(part)
       if (hoursIndex != -1) {
-        var integer: Float
+        var integer = 1f
         var hourSuccess = false
-        try {
+        ignoreAny {
           integer = parts[i - hoursIndex].toFloat()
           hourSuccess = true
           parts[i - hoursIndex] = ""
-        } catch (e: NumberFormatException) {
-          integer = 1f
-        } catch (e: ArrayIndexOutOfBoundsException) {
-          integer = 1f
         }
-        if (ampm === Ampm.EVENING) {
+        if (ampm == Ampm.EVENING) {
           integer += 12f
         }
         h = integer
         if (hourSuccess) {
-          try {
+          ignoreAny {
             m = parts[i + 1].toInt().toFloat()
             parts[i + 1] = ""
-          } catch (ignored: Exception) {
           }
         }
       }
       if (minutesIndex != -1) {
-        val integer: Float = try {
+        m = ignoreAny({
           parts[i - minutesIndex].toFloat()
-        } catch (e: NumberFormatException) {
-          0f
-        } catch (e: ArrayIndexOutOfBoundsException) {
-          0f
-        }
-        m = integer
+        }) { 0f }
       }
-      try {
-        reserveHour = parts[i].toFloat()
-      } catch (ignored: NumberFormatException) {
-      }
+      ignoreAny { reserveHour = parts[i].toFloat() }
     }
     val date = getShortTime(input)
     if (date != null) {
       calendar.time = date
-      if (ampm === Ampm.EVENING) {
+      if (ampm == Ampm.EVENING) {
         val hour = calendar[Calendar.HOUR_OF_DAY]
         calendar[Calendar.HOUR_OF_DAY] = if (hour < 12) hour + 12 else hour
       }
@@ -217,28 +219,26 @@ internal abstract class Worker : WorkerInterface {
       if (calendar.timeInMillis < System.currentTimeMillis()) {
         calendar.add(Calendar.DAY_OF_MONTH, 1)
       }
-      if (ampm === Ampm.EVENING) {
+      if (ampm == Ampm.EVENING) {
         calendar.add(Calendar.HOUR_OF_DAY, 12)
       }
     }
     if (calendar.timeInMillis == 0L && ampm != null) {
       calendar.timeInMillis = System.currentTimeMillis()
-      try {
+      ignoreAny {
         val hourFormat = hourFormat
-        if (ampm === Ampm.MORNING) {
+        if (ampm == Ampm.MORNING) {
           calendar.time = hourFormat.parse(times[0])
         }
-        if (ampm === Ampm.NOON) {
+        if (ampm == Ampm.NOON) {
           calendar.time = hourFormat.parse(times[1])
         }
-        if (ampm === Ampm.EVENING) {
+        if (ampm == Ampm.EVENING) {
           calendar.time = hourFormat.parse(times[2])
         }
-        if (ampm === Ampm.NIGHT) {
+        if (ampm == Ampm.NIGHT) {
           calendar.time = hourFormat.parse(times[3])
         }
-      } catch (e: ParseException) {
-        e.printStackTrace()
       }
     }
     return calendar.timeInMillis
