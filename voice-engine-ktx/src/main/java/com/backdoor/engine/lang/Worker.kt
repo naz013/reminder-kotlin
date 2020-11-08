@@ -51,6 +51,16 @@ internal abstract class Worker : WorkerInterface {
 
   protected abstract fun getMonth(input: String?): Int
 
+  override fun getWeekDays(input: String) =
+    input.splitByWhitespaces().forEach { part ->
+      weekdays.forEachIndexed { index, day ->
+        if (part.matches(".*$day.*")) {
+          weekdayArray[index] = 1
+          return@forEachIndexed
+        }
+      }
+    }.let { weekdayArray.toList() }
+
   override fun getMultiplier(input: String, res: LongInternal): String {
     println("getMultiplier: $input")
     return input.splitByWhitespace().toMutableList().let {

@@ -19,200 +19,145 @@ internal class PtWorker : Worker() {
 
   override fun hasCalendar(input: String) = input.matches(".*calendário.*")
 
-  override fun clearCalendar(input: String): String? {
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val string = parts[i]
-      if (string!!.matches(".*calendário.*")) {
-        parts[i] = ""
-        if (i > 0 && parts[i - 1]!!.matches("([ao])")) {
-          parts[i - 1] = ""
+  override fun clearCalendar(input: String) =
+    input.splitByWhitespaces()
+      .toMutableList()
+      .let {
+        it.forEachIndexed { index, s ->
+          if (s.matches(".*calendário.*")) {
+            it[index] = ""
+            if (index > 0 && it[index - 1].matches("([ao])")) {
+              it[index - 1] = ""
+            }
+            return@forEachIndexed
+          }
         }
-        break
+        it.clip()
       }
-    }
-    return clipStrings(parts)
-  }
-
-  override fun getWeekDays(input: String): List<Int> {
-    val array = intArrayOf(0, 0, 0, 0, 0, 0, 0)
-    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
-    val weekDays = weekdays
-    for (part in parts) {
-      for (i in weekDays.indices) {
-        val day = weekDays[i]
-        if (part.matches(".*$day.*")) {
-          array[i] = 1
-          break
-        }
-      }
-    }
-    val list: MutableList<Int> = ArrayList()
-    for (anArray in array) list.add(anArray)
-    return list
-  }
 
   override fun clearWeekDays(input: String): String {
-    var parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    val weekDays = weekdays
-    for (i in parts.indices) {
-      val part = parts[i]
-      for (day in weekDays) {
-        if (part!!.matches(".*$day.*")) {
-          parts[i] = ""
-          break
+    val sb = StringBuilder()
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        for (day in weekdays) {
+          if (s.matches(".*$day.*")) {
+            it[index] = ""
+            break
+          }
         }
       }
-    }
-    parts = clipStrings(parts).split(WHITESPACES).toTypedArray()
-    val sb = StringBuilder()
-    for (part1 in parts) {
-      val part = part1!!.trim { it <= ' ' }
+    }.clip().splitByWhitespaces().forEach { s ->
+      val part = s.trim()
       if (!part.matches("na") && !part.matches("em")) sb.append(" ").append(part)
     }
-    return sb.toString().trim { it <= ' ' }
+    return sb.toString().trim()
   }
 
-  override fun getDaysRepeat(input: String): Long {
-    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasDays(part)) {
-        val integer: Int
-        integer = try {
-          parts[i - 1].toInt()
-        } catch (e: NumberFormatException) {
-          1
-        } catch (e: ArrayIndexOutOfBoundsException) {
-          0
+  override fun getDaysRepeat(input: String) =
+    input.splitByWhitespaces().firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
+
+  override fun clearDaysRepeat(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasDays(s)) {
+          ignoreAny {
+            s.toInt()
+            it[index - 1] = ""
+          }
+          it[index] = ""
+          return@forEachIndexed
         }
-        return integer * DAY
       }
-    }
-    return 0
-  }
+    }.clip()
 
-  override fun clearDaysRepeat(input: String): String? {
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasDays(part)) {
-        try {
-          parts[i - 1]!!.toInt()
-          parts[i - 1] = ""
-        } catch (ignored: NumberFormatException) {
+  override fun hasRepeat(input: String) =
+    input.matches(".*cada.*") || input.matches(".*tod([ao])s( as)?.*") || hasEveryDay(input)
+
+  override fun hasEveryDay(input: String) = input.matches(".*diário.*")
+
+  override fun clearRepeat(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasRepeat(s)) {
+          it[index] = ""
+          return@forEachIndexed
         }
-        parts[i] = ""
-        break
       }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
-  override fun hasRepeat(input: String?): Boolean {
-    return input!!.matches(".*cada.*") || input.matches(".*tod([ao])s( as)?.*") || hasEveryDay(input)
-  }
+  override fun hasTomorrow(input: String) =
+    input.matches(".*amanh([ãa]).*") || input.matches(".*próximo dia.*")
 
-  override fun hasEveryDay(input: String?): Boolean {
-    return input!!.matches(".*diário.*")
-  }
-
-  override fun clearRepeat(input: String): String? {
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasRepeat(part)) {
-        parts[i] = ""
-        break
+  override fun clearTomorrow(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*amanh([ãa]).*") || s.matches(".*próximo dia.*")) {
+          it[index] = ""
+          return@forEachIndexed
+        }
       }
-    }
-    return clipStrings(parts)
-  }
-
-  override fun hasTomorrow(input: String): Boolean {
-    return input.matches(".*amanh([ãa]).*") || input.matches(".*próximo dia.*")
-  }
-
-  override fun clearTomorrow(input: String): String? {
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches(".*amanh([ãa]).*") || part.matches(".*próximo dia.*")) {
-        parts[i] = ""
-        break
-      }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
   override fun getMessage(input: String): String {
-    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
     val sb = StringBuilder()
     var isStart = false
-    for (part in parts) {
-      if (isStart) sb.append(" ").append(part)
-      if (part.matches("texto")) isStart = true
+    return input.splitByWhitespaces().forEach {
+      if (isStart) sb.append(" ").append(it)
+      if (it.matches("texto")) isStart = true
+    }.let {
+      sb.toString().trim()
     }
-    return sb.toString().trim { it <= ' ' }
   }
 
-  override fun clearMessage(input: String): String? {
-    var input = input
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches("texto")) {
-        try {
-          if (parts[i - 1]!!.matches("com")) {
-            parts[i - 1] = ""
+  override fun clearMessage(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches("texto")) {
+          ignoreAny {
+            if (it[index - 1].matches("com")) it[index - 1] = ""
           }
-        } catch (ignored: IndexOutOfBoundsException) {
+          it[index] = ""
         }
-        input = input.replace(part, "")
-        parts[i] = ""
       }
-    }
-    return clipStrings(parts)
+    }.clip()
+
+  override fun getMessageType(input: String) = when {
+    input.matches(".*mensagem.*") -> Action.MESSAGE
+    input.matches(".*carta.*") -> Action.MAIL
+    else -> null
   }
 
-  override fun getMessageType(input: String?): Action? {
-    if (input!!.matches(".*mensagem.*")) return Action.MESSAGE else if (input.matches(".*carta.*")) return Action.MAIL
-    return null
-  }
-
-  override fun clearMessageType(input: String): String? {
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      val type = getMessageType(part)
-      if (type != null) {
-        parts[i] = ""
-        val nextIndex = i + 1
-        if (nextIndex < parts.size && parts[nextIndex]!!.matches("para")) {
-          parts[nextIndex] = ""
+  override fun clearMessageType(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (getMessageType(s) != null) {
+          it[index] = ""
+          val nextIndex = index + 1
+          if (nextIndex < it.size && it[nextIndex].matches("para")) {
+            it[nextIndex] = ""
+          }
+          return@forEachIndexed
         }
-        break
       }
-    }
-    return clipStrings(parts)
+    }.clip()
+
+  override fun getAmpm(input: String) = when {
+    input.matches(".*(de )?manhã.*") -> Ampm.MORNING
+    input.matches(".*tarde.*") -> Ampm.EVENING
+    input.matches(".*meio-dia.*") -> Ampm.NOON
+    input.matches(".*noite.*") -> Ampm.NIGHT
+    else -> null
   }
 
-  override fun getAmpm(input: String?): Ampm? {
-    if (input!!.matches(".*(de )?manhã.*")) return Ampm.MORNING else if (input.matches(".*tarde.*")) return Ampm.EVENING else if (input.matches(".*meio-dia.*")) return Ampm.NOON else if (input.matches(".*noite.*")) return Ampm.NIGHT
-    return null
-  }
-
-  override fun clearAmpm(input: String): String? {
-    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (getAmpm(part) != null) {
-        parts[i] = ""
-        break
+  override fun clearAmpm(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (getAmpm(s) != null) {
+          it[index] = ""
+          return@forEachIndexed
+        }
       }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
   override fun getShortTime(input: String?): Date? {
     val pattern = Pattern.compile("([01]?[0-9]|2[0-3])([ :])[0-5][0-9]")
