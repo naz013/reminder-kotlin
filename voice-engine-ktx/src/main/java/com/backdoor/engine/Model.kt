@@ -11,5 +11,5 @@ data class Model(
   val type: ActionType? = null,
   val weekdays: List<Int> = listOf(),
   val action: Action = Action.NONE,
-  val isHasCalendar: Boolean = false
+  val hasCalendar: Boolean = false
 )

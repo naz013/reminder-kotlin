@@ -87,7 +87,7 @@ internal abstract class Worker : WorkerInterface {
   }
 
   override fun replaceNumbers(input: String?): String? {
-    var parts = input?.split("\\s+")?.toMutableList() ?: mutableListOf()
+    var parts = input?.splitByWhitespaces()?.toMutableList() ?: mutableListOf()
     var allNumber = 0f
     var beginIndex = -1
     for (i in parts.indices) {
@@ -127,11 +127,9 @@ internal abstract class Worker : WorkerInterface {
       }
       parts = newP.filterNotNull().toMutableList()
     }
-    println("replaceNumbers: after parts -> $parts")
-    var out: String? = clipStrings(parts)
-    out = clearFloats(out)
-    println("replaceNumbers: out -> $out")
-    return out
+    return clearFloats(parts.clip()).also {
+      println("replaceNumbers: out -> $it")
+    }
   }
 
   protected abstract fun clearFloats(input: String?): String?
@@ -268,13 +266,13 @@ internal abstract class Worker : WorkerInterface {
 
   protected abstract val afterTomorrow: String
 
-  abstract override fun String.toAmpm(): Ampm?
-  abstract override fun String.toMessageType(): Action?
-  abstract override fun String.hasRepeat(): Boolean
-  abstract override fun String.hasCall(): Boolean
-  abstract override fun String.isTimer(): Boolean
-  abstract override fun String.hasSender(): Boolean
-  abstract override fun String.hasEveryDay(): Boolean
+  abstract override fun hasCall(input: String): Boolean
+  abstract override fun hasSender(input: String): Boolean
+  abstract override fun hasRepeat(input: String): Boolean
+  abstract override fun hasEveryDay(input: String): Boolean
+  abstract override fun hasTimer(input: String): Boolean
+  abstract override fun getMessageType(input: String): Action?
+  abstract override fun getAmpm(input: String): Ampm?
 
   companion object {
     /**

@@ -2,7 +2,6 @@ package com.elementary.tasks.core.view_models.conversation
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.widget.Toast
@@ -333,7 +332,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
     val summary = model.summary ?: ""
     val repeat = model.repeatInterval
     val weekdays = model.weekdays
-    val isCalendar = model.isHasCalendar
+    val isCalendar = model.hasCalendar
     val startTime = model.dateTime
     var eventTime = TimeUtil.getDateTimeFromGmt(startTime)
     var typeT = Reminder.BY_DATE

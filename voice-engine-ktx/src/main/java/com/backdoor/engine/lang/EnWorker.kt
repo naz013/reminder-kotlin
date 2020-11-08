@@ -522,30 +522,18 @@ internal class EnWorker : Worker() {
     return number
   }
 
-  override fun hasShowAction(input: String): Boolean {
-    return input.matches(".*show.*")
+  override fun hasShowAction(input: String) = input.matches(".*show.*")
+
+  override fun getShowAction(input: String) = when {
+    input.matches(".*birthdays.*") -> Action.BIRTHDAYS
+    input.matches(".*active reminders.*") -> Action.ACTIVE_REMINDERS
+    input.matches(".*reminders.*") -> Action.REMINDERS
+    input.matches(".*events.*") -> Action.EVENTS
+    input.matches(".*notes.*") -> Action.NOTES
+    input.matches(".*groups.*") -> Action.GROUPS
+    input.matches(".*shopping lists?.*") -> Action.SHOP_LISTS
+    else -> null
   }
 
-  override fun getShowAction(input: String): Action? {
-    if (input.matches(".*birthdays.*")) {
-      return Action.BIRTHDAYS
-    } else if (input.matches(".*active reminders.*")) {
-      return Action.ACTIVE_REMINDERS
-    } else if (input.matches(".*reminders.*")) {
-      return Action.REMINDERS
-    } else if (input.matches(".*events.*")) {
-      return Action.EVENTS
-    } else if (input.matches(".*notes.*")) {
-      return Action.NOTES
-    } else if (input.matches(".*groups.*")) {
-      return Action.GROUPS
-    } else if (input.matches(".*shopping lists?.*")) {
-      return Action.SHOP_LISTS
-    }
-    return null
-  }
-
-  override fun hasNextModifier(input: String): Boolean {
-    return input.matches(".*next.*")
-  }
+  override fun hasNextModifier(input: String) = input.matches(".*next.*")
 }
