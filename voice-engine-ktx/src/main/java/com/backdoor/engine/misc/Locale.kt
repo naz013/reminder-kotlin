@@ -7,4 +7,5 @@ object Locale {
   const val DE = "de-DE"
   const val ES = "es-ES"
   const val PT = "pt-PT"
+  const val PL = "pl"
 }

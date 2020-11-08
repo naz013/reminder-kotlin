@@ -20,7 +20,7 @@ internal class PtWorker : Worker() {
   override fun hasCalendar(input: String) = input.matches(".*calendário.*")
 
   override fun clearCalendar(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val string = parts[i]
       if (string!!.matches(".*calendário.*")) {
@@ -36,7 +36,7 @@ internal class PtWorker : Worker() {
 
   override fun getWeekDays(input: String): List<Int> {
     val array = intArrayOf(0, 0, 0, 0, 0, 0, 0)
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
     val weekDays = weekdays
     for (part in parts) {
       for (i in weekDays.indices) {
@@ -53,7 +53,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearWeekDays(input: String): String {
-    var parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    var parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     val weekDays = weekdays
     for (i in parts.indices) {
       val part = parts[i]
@@ -64,7 +64,7 @@ internal class PtWorker : Worker() {
         }
       }
     }
-    parts = clipStrings(parts).split(Worker.Companion.WHITESPACES).toTypedArray()
+    parts = clipStrings(parts).split(WHITESPACES).toTypedArray()
     val sb = StringBuilder()
     for (part1 in parts) {
       val part = part1!!.trim { it <= ' ' }
@@ -74,7 +74,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun getDaysRepeat(input: String): Long {
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (hasDays(part)) {
@@ -86,14 +86,14 @@ internal class PtWorker : Worker() {
         } catch (e: ArrayIndexOutOfBoundsException) {
           0
         }
-        return integer * Worker.Companion.DAY
+        return integer * DAY
       }
     }
     return 0
   }
 
   override fun clearDaysRepeat(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (hasDays(part)) {
@@ -118,7 +118,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearRepeat(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (hasRepeat(part)) {
@@ -134,7 +134,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearTomorrow(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (part!!.matches(".*amanh([ãa]).*") || part.matches(".*próximo dia.*")) {
@@ -146,7 +146,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun getMessage(input: String): String {
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
     val sb = StringBuilder()
     var isStart = false
     for (part in parts) {
@@ -158,7 +158,7 @@ internal class PtWorker : Worker() {
 
   override fun clearMessage(input: String): String? {
     var input = input
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (part!!.matches("texto")) {
@@ -181,7 +181,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearMessageType(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       val type = getMessageType(part)
@@ -203,7 +203,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearAmpm(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (getAmpm(part) != null) {
@@ -233,7 +233,7 @@ internal class PtWorker : Worker() {
 
   override fun clearTime(input: String?): String {
     var input = input
-    var parts: Array<String?> = input!!.split(Worker.Companion.WHITESPACES).toTypedArray()
+    var parts: Array<String?> = input!!.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (hasHours(part) != -1) {
@@ -262,7 +262,7 @@ internal class PtWorker : Worker() {
       val time = matcher.group().trim { it <= ' ' }
       input = input.replace(time, "")
     }
-    parts = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    parts = input.split(WHITESPACES).toTypedArray()
     val sb = StringBuilder()
     for (part1 in parts) {
       val part = part1!!.trim { it <= ' ' }
@@ -282,7 +282,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearCall(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       if (hasCall(part)) {
@@ -300,7 +300,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun cleanTimer(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val string = parts[i]
       if (isTimer(string)) {
@@ -313,7 +313,7 @@ internal class PtWorker : Worker() {
 
   override fun getDate(input: String, res: com.backdoor.engine.misc.LongInternal): String? {
     var mills: Long = 0
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val part = parts[i]
       val month = getMonth(part)
@@ -345,7 +345,7 @@ internal class PtWorker : Worker() {
   }
 
   override fun clearSender(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String?> = input.split(WHITESPACES).toTypedArray()
     for (i in parts.indices) {
       val string = parts[i]
       if (hasSender(string)) {
@@ -415,7 +415,7 @@ internal class PtWorker : Worker() {
 
   override fun clearGroup(input: String): String {
     val sb = StringBuilder()
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String> = input.split(WHITESPACES).toTypedArray()
     var st = false
     for (s in parts) {
       if (s.matches(".*(o )?grupo.*")) {
