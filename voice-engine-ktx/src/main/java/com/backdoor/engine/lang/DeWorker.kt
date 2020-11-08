@@ -36,16 +36,6 @@ internal class DeWorker : Worker() {
         it.clip()
       }
 
-  override fun getWeekDays(input: String) =
-    input.splitByWhitespaces().forEach { part ->
-      weekdays.forEachIndexed { index, day ->
-        if (part.matches(".*$day.*")) {
-          weekdayArray[index] = 1
-          return@forEachIndexed
-        }
-      }
-    }.let { weekdayArray.toList() }
-
   override fun clearWeekDays(input: String): String {
     val sb = StringBuilder()
     input.splitByWhitespaces().toMutableList().also {
