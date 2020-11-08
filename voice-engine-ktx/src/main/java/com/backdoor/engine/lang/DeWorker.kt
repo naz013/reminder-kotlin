@@ -58,15 +58,15 @@ internal class DeWorker : Worker() {
         }
       }
     }.clip().splitByWhitespaces().forEach { s ->
-      val part = s.trim { it <= ' ' }
+      val part = s.trim()
       if (!part.matches("zum")) sb.append(" ").append(part)
     }
-    return sb.toString().trim { it <= ' ' }
+    return sb.toString().trim()
   }
 
   override fun getDaysRepeat(input: String) =
     input.splitByWhitespaces()
-      .firstOrNull { hasDays(it) }?.toLong(1) ?: 0
+      .firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
 
   override fun clearDaysRepeat(input: String): String? {
     return input.splitByWhitespaces().toMutableList().also {
@@ -115,7 +115,7 @@ internal class DeWorker : Worker() {
       if (isStart) sb.append(" ").append(it)
       if (it.matches("text")) isStart = true
     }.let {
-      sb.toString().trim { it <= ' ' }
+      sb.toString().trim()
     }
   }
 
@@ -194,7 +194,7 @@ internal class DeWorker : Worker() {
       val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
       var date: Date? = null
       if (matcher.find()) {
-        val time = matcher.group().trim { it <= ' ' }
+        val time = matcher.group().trim()
         for (format in hourFormats) {
           try {
             date = format.parse(time)
@@ -241,15 +241,15 @@ internal class DeWorker : Worker() {
     }?.clip()?.let { s ->
       val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
       if (matcher.find()) {
-        val time = matcher.group().trim { it <= ' ' }
+        val time = matcher.group().trim()
         s.replace(time, "")
       } else s
     }?.splitByWhitespaces()?.toMutableList()?.let { list ->
       val sb = StringBuilder()
       list.forEach { s ->
-        if (!s.matches("bei")) sb.append(" ").append(s.trim { it <= ' ' })
+        if (!s.matches("bei")) sb.append(" ").append(s.trim())
       }
-      sb.toString().trim { it <= ' ' }.replace("um", "")
+      sb.toString().trim().replace("um", "")
     } ?: ""
   }
 
@@ -291,7 +291,7 @@ internal class DeWorker : Worker() {
           return@forEachIndexed
         }
       }
-    }.clip().trim { it <= ' ' }
+    }.clip().trim()
   }
 
   override fun getDate(input: String, res: LongInternal): String? {
@@ -332,7 +332,7 @@ internal class DeWorker : Worker() {
 
   override fun hasNote(input: String) = input.contains("notiz")
 
-  override fun clearNote(input: String) = input.replace("notiz", "").trim { it <= ' ' }
+  override fun clearNote(input: String) = input.replace("notiz", "").trim()
 
   override fun hasAction(input: String): Boolean {
     return (input.startsWith("öffnen") || input.matches(".*hilfe.*")
@@ -382,7 +382,7 @@ internal class DeWorker : Worker() {
         sb.append(" ")
       }
     }
-    return sb.toString().trim { it <= ' ' }
+    return sb.toString().trim()
   }
 
   override fun hasToday(input: String) = input.matches(".*heute.*")
@@ -460,86 +460,84 @@ internal class DeWorker : Worker() {
       ?: input
   }
 
-  private fun hasNumber(input: String?): Float {
-    var number = -1f
-    if (input!!.contains("zero") || input.contains("null")) number = 0f
-    else if (input.matches("ein(e|es|er|s)?") || input.contains("zuerst") || input.matches("erste.*")) number = 1f
-    else if (input.contains("zwei") || input.matches("zweite.*")) number = 2f
-    else if (input.contains("drei") || input.matches("dritte.*")) number = 3f
-    else if (input.contains("vier") || input.matches("vierte.*")) number = 4f
-    else if (input.contains("fünf") || input.matches("fünfte.*")) number = 5f
-    else if (input.contains("sechs") || input.matches("sechste.*")) number = 6f
-    else if (input.contains("sieben") || input.matches("siebte.*")) number = 7f
-    else if (input.contains("acht") || input.matches("achte.*")) number = 8f
-    else if (input.contains("neun") || input.matches("neunte.*")) number = 9f
-    else if (input.contains("zehn") || input.matches("zehnte.*")) number = 10f
-    else if (input.contains("elf") || input.matches("elfte.*")) number = 11f
-    else if (input.contains("zwölf") || input.matches("zwölfte.*")) number = 12f
-    else if (input.contains("dreizehn") || input.matches("dreizehnte.*")) number = 13f
-    else if (input.contains("vierzehn") || input.matches("vierzehnte.*")) number = 14f
-    else if (input.contains("fünfzehn") || input.matches("fünfzehnte.*")) number = 15f
-    else if (input.contains("sechzehn") || input.matches("sechzehnte.*")) number = 16f
-    else if (input.contains("siebzehn") || input.matches("siebzehnte.*")) number = 17f
-    else if (input.contains("achtzehn") || input.matches("achtzehnte.*")) number = 18f
-    else if (input.contains("neunzehn") || input.matches("neunzehnte.*")) number = 19f
-    else if (input.contains("zwanzig") || input.contains("zwanzigste")) number = 20f
-    else if (input.contains("dreißig") || input.contains("dreißigste")) number = 30f
-    else if (input.contains("vierzig") || input.contains("vierzigste")) number = 40f
-    else if (input.contains("fünfzig") || input.contains("fünfzigste")) number = 50f
-    else if (input.contains("sechzig") || input.contains("sechzigste")) number = 60f
-    else if (input.contains("siebzig") || input.contains("siebzigste")) number = 70f
-    else if (input.contains("achtzig") || input.contains("achtzigste")) number = 80f
-    else if (input.contains("neunzig") || input.contains("neunzigste")) number = 90f
-    return number
+  private fun hasNumber(input: String?) = when {
+    input == null -> -1f
+    input.contains("zero") || input.contains("null") -> 0f
+    input.matches("ein(e|es|er|s)?") || input.contains("zuerst") || input.matches("erste.*") -> 1f
+    input.contains("zwei") || input.matches("zweite.*") -> 2f
+    input.contains("drei") || input.matches("dritte.*") -> 3f
+    input.contains("vier") || input.matches("vierte.*") -> 4f
+    input.contains("fünf") || input.matches("fünfte.*") -> 5f
+    input.contains("sechs") || input.matches("sechste.*") -> 6f
+    input.contains("sieben") || input.matches("siebte.*") -> 7f
+    input.contains("acht") || input.matches("achte.*") -> 8f
+    input.contains("neun") || input.matches("neunte.*") -> 9f
+    input.contains("zehn") || input.matches("zehnte.*") -> 10f
+    input.contains("elf") || input.matches("elfte.*") -> 11f
+    input.contains("zwölf") || input.matches("zwölfte.*") -> 12f
+    input.contains("dreizehn") || input.matches("dreizehnte.*") -> 13f
+    input.contains("vierzehn") || input.matches("vierzehnte.*") -> 14f
+    input.contains("fünfzehn") || input.matches("fünfzehnte.*") -> 15f
+    input.contains("sechzehn") || input.matches("sechzehnte.*") -> 16f
+    input.contains("siebzehn") || input.matches("siebzehnte.*") -> 17f
+    input.contains("achtzehn") || input.matches("achtzehnte.*") -> 18f
+    input.contains("neunzehn") || input.matches("neunzehnte.*") -> 19f
+    input.contains("zwanzig") || input.contains("zwanzigste") -> 20f
+    input.contains("dreißig") || input.contains("dreißigste") -> 30f
+    input.contains("vierzig") || input.contains("vierzigste") -> 40f
+    input.contains("fünfzig") || input.contains("fünfzigste") -> 50f
+    input.contains("sechzig") || input.contains("sechzigste") -> 60f
+    input.contains("siebzig") || input.contains("siebzigste") -> 70f
+    input.contains("achtzig") || input.contains("achtzigste") -> 80f
+    input.contains("neunzig") || input.contains("neunzigste") -> 90f
+    else -> -1f
   }
 
-  override fun findNumber(input: String?): Float {
-    if (input == null) return -1f
-    return if (input.matches("zero") || input.matches("null")) 0f
-    else if (input.matches("ein(e|es|er|s)?") || input.matches("zuerst") || input.matches("erste.*")) 1f
-    else if (input.matches("zwei") || input.matches("zweite.*")) 2f
-    else if (input.matches("drei") || input.matches("dritte.*")) 3f
-    else if (input.matches("vier") || input.matches("vierte.*")) 4f
-    else if (input.matches("fünf") || input.matches("fünfte.*")) 5f
-    else if (input.matches("sechs") || input.matches("sechste.*")) 6f
-    else if (input.matches("sieben") || input.matches("siebte.*")) 7f
-    else if (input.matches("acht") || input.matches("achte.*")) 8f
-    else if (input.matches("neun") || input.matches("neunte.*")) 9f
-    else if (input.matches("zehn") || input.matches("zehnte.*")) 10f
-    else if (input.matches("elf") || input.matches("elfte.*")) 11f
-    else if (input.matches("zwölf") || input.matches("zwölfte.*")) 12f
-    else if (input.matches("dreizehn") || input.matches("dreizehnte.*")) 13f
-    else if (input.matches("vierzehn") || input.matches("vierzehnte.*")) 14f
-    else if (input.matches("fünfzehn") || input.matches("fünfzehnte.*")) 15f
-    else if (input.matches("sechzehn") || input.matches("sechzehnte.*")) 16f
-    else if (input.matches("siebzehn") || input.matches("siebzehnte.*")) 17f
-    else if (input.matches("achtzehn") || input.matches("achtzehnte.*")) 18f
-    else if (input.matches("neunzehn") || input.matches("neunzehnte.*")) 19f
-    else if (input.matches("zwanzig") || input.matches("zwanzigste")) 20f
-    else if (input.matches("dreißig") || input.matches("dreißigste")) 30f
-    else if (input.matches("vierzig") || input.matches("vierzigste")) 40f
-    else if (input.matches("fünfzig") || input.matches("fünfzigste")) 50f
-    else if (input.matches("sechzig") || input.matches("sechzigste")) 60f
-    else if (input.matches("siebzig") || input.matches("siebzigste")) 70f
-    else if (input.matches("achtzig") || input.matches("achtzigste")) 80f
-    else if (input.matches("neunzig") || input.matches("neunzigste")) 90f
-    else -1f
+  override fun findNumber(input: String?) = when {
+    input == null -> -1f
+    input.matches("zero") || input.matches("null") -> 0f
+    input.matches("ein(e|es|er|s)?") || input.matches("zuerst") || input.matches("erste.*") -> 1f
+    input.matches("zwei") || input.matches("zweite.*") -> 2f
+    input.matches("drei") || input.matches("dritte.*") -> 3f
+    input.matches("vier") || input.matches("vierte.*") -> 4f
+    input.matches("fünf") || input.matches("fünfte.*") -> 5f
+    input.matches("sechs") || input.matches("sechste.*") -> 6f
+    input.matches("sieben") || input.matches("siebte.*") -> 7f
+    input.matches("acht") || input.matches("achte.*") -> 8f
+    input.matches("neun") || input.matches("neunte.*") -> 9f
+    input.matches("zehn") || input.matches("zehnte.*") -> 10f
+    input.matches("elf") || input.matches("elfte.*") -> 11f
+    input.matches("zwölf") || input.matches("zwölfte.*") -> 12f
+    input.matches("dreizehn") || input.matches("dreizehnte.*") -> 13f
+    input.matches("vierzehn") || input.matches("vierzehnte.*") -> 14f
+    input.matches("fünfzehn") || input.matches("fünfzehnte.*") -> 15f
+    input.matches("sechzehn") || input.matches("sechzehnte.*") -> 16f
+    input.matches("siebzehn") || input.matches("siebzehnte.*") -> 17f
+    input.matches("achtzehn") || input.matches("achtzehnte.*") -> 18f
+    input.matches("neunzehn") || input.matches("neunzehnte.*") -> 19f
+    input.matches("zwanzig") || input.matches("zwanzigste") -> 20f
+    input.matches("dreißig") || input.matches("dreißigste") -> 30f
+    input.matches("vierzig") || input.matches("vierzigste") -> 40f
+    input.matches("fünfzig") || input.matches("fünfzigste") -> 50f
+    input.matches("sechzig") || input.matches("sechzigste") -> 60f
+    input.matches("siebzig") || input.matches("siebzigste") -> 70f
+    input.matches("achtzig") || input.matches("achtzigste") -> 80f
+    input.matches("neunzig") || input.matches("neunzigste") -> 90f
+    else -> -1f
   }
 
   override fun hasShowAction(input: String) =
     input.matches(".*show.*") || input.matches(".*zeigen.*")
 
-  override fun getShowAction(input: String): Action? {
-    return when {
-      input.matches(".*geburtstage.*") -> Action.BIRTHDAYS
-      input.matches(".*aktive erinnerungen.*") -> Action.ACTIVE_REMINDERS
-      input.matches(".*erinnerungen.*") -> Action.REMINDERS
-      input.matches(".*veranstaltungen.*") -> Action.EVENTS
-      input.matches(".*notizen.*") -> Action.NOTES
-      input.matches(".*gruppen.*") -> Action.GROUPS
-      input.matches(".*einkaufslisten?.*") -> Action.SHOP_LISTS
-      else -> Action.NONE
-    }
+  override fun getShowAction(input: String) = when {
+    input.matches(".*geburtstage.*") -> Action.BIRTHDAYS
+    input.matches(".*aktive erinnerungen.*") -> Action.ACTIVE_REMINDERS
+    input.matches(".*erinnerungen.*") -> Action.REMINDERS
+    input.matches(".*veranstaltungen.*") -> Action.EVENTS
+    input.matches(".*notizen.*") -> Action.NOTES
+    input.matches(".*gruppen.*") -> Action.GROUPS
+    input.matches(".*einkaufslisten?.*") -> Action.SHOP_LISTS
+    else -> Action.NONE
   }
 
   override fun hasNextModifier(input: String) = input.matches(".*nächste.*")

@@ -256,7 +256,7 @@ internal abstract class Worker : WorkerInterface {
       pair.second.forEach {
         s = s.replace(it, "")
       }
-      s.trim { it <= ' ' }
+      s.trim()
     } ?: input
   }
 
