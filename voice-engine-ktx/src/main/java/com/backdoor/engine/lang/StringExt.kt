@@ -2,6 +2,8 @@ package com.backdoor.engine.lang
 
 internal fun String.matches(s: String) = matches(s.toRegex())
 
+internal fun String?.matchesOrFalse(s: String) = this?.matches(s.toRegex()) ?: false
+
 internal fun String.splitByWhitespace() = split(Worker.WHITESPACE)
 
 internal fun String.splitByWhitespaces() = split(Worker.WHITESPACES)
