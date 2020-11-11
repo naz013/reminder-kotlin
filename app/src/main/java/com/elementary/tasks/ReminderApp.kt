@@ -5,12 +5,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.bumptech.glide.Glide
-import com.crashlytics.android.Crashlytics
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.utilModule
 import com.evernote.android.job.JobManager
-import io.fabric.sdk.android.Fabric
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
@@ -29,7 +27,6 @@ class ReminderApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-        Fabric.with(this, Crashlytics())
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         val logger = object : Logger(level = Level.DEBUG) {
             override fun log(level: Level, msg: MESSAGE) {
