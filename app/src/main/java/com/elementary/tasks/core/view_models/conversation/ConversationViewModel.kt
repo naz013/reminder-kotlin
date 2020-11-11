@@ -17,11 +17,22 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.data.models.*
+import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.PrefsConstants
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
 import com.elementary.tasks.experimental.BottomNavActivity
@@ -100,8 +111,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
   }
 
   private fun addRemindersToList(container: Container<*>) {
-    val reversed = ArrayList((container as Container<Reminder>).list)
-    reversed.reverse()
+    val reversed = ArrayList((container as Container<Reminder>).list).reversed()
     for (item in reversed) {
       if (item.viewType == Reminder.REMINDER) {
         mReplies.add(0, Reply(Reply.REMINDER, item))
@@ -246,25 +256,25 @@ class ConversationViewModel : BaseRemindersViewModel() {
         val types = model.type
         if (types == ActionType.ACTION && isWidget) {
           when (model.action) {
-              Action.APP -> context.startActivity(Intent(context, SplashScreenActivity::class.java))
-              Action.HELP -> context.startActivity(Intent(context, VoiceHelpActivity::class.java)
+            Action.APP -> context.startActivity(Intent(context, SplashScreenActivity::class.java))
+            Action.HELP -> context.startActivity(Intent(context, VoiceHelpActivity::class.java)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
+            Action.BIRTHDAY -> AddBirthdayActivity.openLogged(context)
+            Action.REMINDER -> CreateReminderActivity.openLogged(context)
+            Action.VOLUME -> context.startActivity(Intent(context, VolumeDialog::class.java)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
+            Action.TRASH -> emptyTrash(true)
+            Action.DISABLE -> disableAllReminders(true)
+            Action.SETTINGS -> {
+              val activityIntent = Intent(context, BottomNavActivity::class.java)
+              activityIntent.action = Intent.ACTION_VIEW
+              activityIntent.putExtra(BottomNavActivity.ARG_DEST, BottomNavActivity.Companion.Dest.SETTINGS)
+              context.startActivity(activityIntent)
+            }
+            Action.REPORT -> {
+              context.startActivity(Intent(context, SendFeedbackActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-              Action.BIRTHDAY -> AddBirthdayActivity.openLogged(context)
-              Action.REMINDER -> CreateReminderActivity.openLogged(context)
-              Action.VOLUME -> context.startActivity(Intent(context, VolumeDialog::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-              Action.TRASH -> emptyTrash(true)
-              Action.DISABLE -> disableAllReminders(true)
-              Action.SETTINGS -> {
-                  val activityIntent = Intent(context, BottomNavActivity::class.java)
-                  activityIntent.action = Intent.ACTION_VIEW
-                  activityIntent.putExtra(BottomNavActivity.ARG_DEST, BottomNavActivity.Companion.Dest.SETTINGS)
-                  context.startActivity(activityIntent)
-              }
-              Action.REPORT -> {
-                  context.startActivity(Intent(context, SendFeedbackActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-              }
+            }
             else -> {
             }
           }
@@ -441,13 +451,13 @@ class ConversationViewModel : BaseRemindersViewModel() {
 
   inner class ContactHelper : ContactsInterface {
 
-    override fun findEmail(s: String?): ContactOutput? {
-      var input = s
-      if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+    override fun findEmail(input: String?): ContactOutput? {
+      if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || input == null) {
         return null
       }
+      var s: String = input
       var number: String? = null
-      val parts = input.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+      val parts = s.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
       for (part in parts) {
         var res = part
         while (part.length > 1) {
@@ -464,20 +474,20 @@ class ConversationViewModel : BaseRemindersViewModel() {
           res = part.substring(0, part.length - 2)
         }
         if (number != null) {
-          input = input.replace(res, "")
+          s = s.replace(res, "")
           break
         }
       }
-      return ContactOutput(input, number)
+      return ContactOutput(s, number ?: "")
     }
 
-    override fun findNumber(s: String?): ContactOutput? {
-      var input = s
-      if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+    override fun findNumber(input: String?): ContactOutput? {
+      if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS) || input == null) {
         return null
       }
+      var s: String = input
       var number: String? = null
-      val parts = input.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+      val parts = s.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
       for (part in parts) {
         var res = part
         while (part.length > 1) {
@@ -495,11 +505,11 @@ class ConversationViewModel : BaseRemindersViewModel() {
           res = part.substring(0, part.length - 1)
         }
         if (number != null) {
-          input = input.replace(res, "")
+          s = s.replace(res, "")
           break
         }
       }
-      return ContactOutput(input.trim { it <= ' ' }, number)
+      return ContactOutput(s.trim(), number ?: "")
     }
   }
 }
