@@ -9,163 +9,161 @@ import com.elementary.tasks.core.utils.hoursAfter
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import org.koin.core.KoinComponent
 import timber.log.Timber
 import java.io.InputStream
 
+class TokenDataFile {
 
-class TokenDataFile : KoinComponent {
+  private val devices: MutableList<DeviceToken> = mutableListOf()
+  private var lastUpdateTime = 0L
+  var isLoading = false
+  var isLoaded = false
+    private set
 
-    private val devices: MutableList<DeviceToken> = mutableListOf()
-    private var lastUpdateTime = 0L
-    var isLoading = false
-    var isLoaded = false
-        private set
+  fun isOld(): Boolean = (System.currentTimeMillis() - lastUpdateTime).hoursAfter() > 1
 
-    fun isOld(): Boolean = (System.currentTimeMillis() - lastUpdateTime).hoursAfter() > 1
+  fun isEmpty(): Boolean = devices.isEmpty()
 
-    fun isEmpty(): Boolean = devices.isEmpty()
-
-    fun parse(stream: InputStream) {
-        Timber.d("parse: $stream")
-        try {
-            val tokens = MemoryUtil.fromStreamNoDecrypt(stream, Tokens::class.java)
-            if (tokens != null) {
-                val oldTokens = this.devices.toList()
-                val newTokens = mergeTokens(tokens.tokens, oldTokens)
-                if (oldTokens != newTokens) {
-                    this.devices.clear()
-                    this.devices.addAll(newTokens)
-                }
-                lastUpdateTime = System.currentTimeMillis()
-            }
-        } catch (e: Exception) {
+  fun parse(stream: InputStream) {
+    Timber.d("parse: $stream")
+    try {
+      val tokens = MemoryUtil.fromStreamNoDecrypt(stream, Tokens::class.java)
+      if (tokens != null) {
+        val oldTokens = this.devices.toList()
+        val newTokens = mergeTokens(tokens.tokens, oldTokens)
+        if (oldTokens != newTokens) {
+          this.devices.clear()
+          this.devices.addAll(newTokens)
         }
-        isLoaded = true
-        isLoading = false
+        lastUpdateTime = System.currentTimeMillis()
+      }
+    } catch (e: Exception) {
     }
+    isLoaded = true
+    isLoading = false
+  }
 
-    private fun mergeTokens(newTokens: List<DeviceToken>, oldTokens: List<DeviceToken>): List<DeviceToken> {
-        Timber.d("mergeTokens: $oldTokens, NEW $newTokens")
-        val list = mutableListOf<DeviceToken>()
-        for (token in newTokens) {
-            list.add(selectToken(token, oldTokens))
-        }
-        for (token in oldTokens) {
-            if (!containsToken(token, list)) {
-                list.add(token)
-            }
-        }
-        return list
+  private fun mergeTokens(newTokens: List<DeviceToken>, oldTokens: List<DeviceToken>): List<DeviceToken> {
+    Timber.d("mergeTokens: $oldTokens, NEW $newTokens")
+    val list = mutableListOf<DeviceToken>()
+    for (token in newTokens) {
+      list.add(selectToken(token, oldTokens))
     }
-
-    private fun containsToken(token: DeviceToken, list: List<DeviceToken>): Boolean {
-        for (t in list) {
-            if (t.model == token.model) {
-                return true
-            }
-        }
-        return false
+    for (token in oldTokens) {
+      if (!containsToken(token, list)) {
+        list.add(token)
+      }
     }
+    return list
+  }
 
-    private fun selectToken(token: DeviceToken, list: List<DeviceToken>): DeviceToken {
-        for (t in list) {
-            if (t.model == token.model && TimeUtil.isAfterDate(t.updatedAt, token.updatedAt)) {
-                return t
-            }
-        }
-        return token
-    }
-
-    fun toJson(): String? {
-        val json = Gson().toJson(Tokens(removeOldTokens(this.devices.toList())))
-        Timber.d("toJson: $json")
-        return json
-    }
-
-    fun notifyDevices(type: String = "sync", details: String = "") {
-        val filtered = removeOldTokens(this.devices.toList())
-        val withoutMe = filtered.filter { it.model != myDevice() }.map { it.token }
-        if (withoutMe.isEmpty()) {
-            Timber.d("notifyDevices: NO DEVICES")
-            return
-        }
-        val notification = Notification(withoutMe.toList(), type, myDevice(), TimeUtil.gmtDateTime, details)
-        Timber.d("notifyDevices: $notification")
-        val database = FirebaseDatabase.getInstance()
-        database.reference.child("notifications")
-                .setValue(notification)
-                .addOnSuccessListener { Timber.d("notifyDevices: FD WRITE SUCCESS") }
-                .addOnFailureListener { Timber.d("notifyDevices: FD WRITE ERROR: ${it.message}") }
-    }
-
-    fun addDevice(token: String): Boolean {
-        val filtered = removeOldTokens(this.devices.toList())
-        var currentDevice = findCurrent(filtered)
-        if (currentDevice == null) {
-            currentDevice = DeviceToken(myDevice(), TimeUtil.gmtDateTime, token)
-        } else {
-            if (TimeUtil.getDateTimeFromGmt(currentDevice.updatedAt).hoursAfter() < 12) {
-                return false
-            }
-        }
-        currentDevice.token = token
-        val withoutMe = filtered.filter { it.model != myDevice() }
-        this.devices.clear()
-        this.devices.addAll(withoutMe)
-        this.devices.add(currentDevice)
+  private fun containsToken(token: DeviceToken, list: List<DeviceToken>): Boolean {
+    for (t in list) {
+      if (t.model == token.model) {
         return true
+      }
     }
+    return false
+  }
 
-    private fun findCurrent(list: List<DeviceToken>): DeviceToken? {
-        if (list.isEmpty()) return null
-        for (d in list) {
-            if (d.model == myDevice()) {
-                return d
-            }
-        }
-        return null
+  private fun selectToken(token: DeviceToken, list: List<DeviceToken>): DeviceToken {
+    for (t in list) {
+      if (t.model == token.model && TimeUtil.isAfterDate(t.updatedAt, token.updatedAt)) {
+        return t
+      }
     }
+    return token
+  }
 
-    private fun removeOldTokens(list: List<DeviceToken?>): List<DeviceToken> {
-        return list.filterNotNull().filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
+  fun toJson(): String? {
+    val json = Gson().toJson(Tokens(removeOldTokens(this.devices.toList())))
+    Timber.d("toJson: $json")
+    return json
+  }
+
+  fun notifyDevices(type: String = "sync", details: String = "") {
+    val filtered = removeOldTokens(this.devices.toList())
+    val withoutMe = filtered.filter { it.model != myDevice() }.map { it.token }
+    if (withoutMe.isEmpty()) {
+      Timber.d("notifyDevices: NO DEVICES")
+      return
     }
+    val notification = Notification(withoutMe.toList(), type, myDevice(), TimeUtil.gmtDateTime, details)
+    Timber.d("notifyDevices: $notification")
+    val database = FirebaseDatabase.getInstance()
+    database.reference.child("notifications")
+      .setValue(notification)
+      .addOnSuccessListener { Timber.d("notifyDevices: FD WRITE SUCCESS") }
+      .addOnFailureListener { Timber.d("notifyDevices: FD WRITE ERROR: ${it.message}") }
+  }
 
-    private fun myDevice(): String {
-        return Build.MANUFACTURER + " " + Build.MODEL
+  fun addDevice(token: String): Boolean {
+    val filtered = removeOldTokens(this.devices.toList())
+    var currentDevice = findCurrent(filtered)
+    if (currentDevice == null) {
+      currentDevice = DeviceToken(myDevice(), TimeUtil.gmtDateTime, token)
+    } else {
+      if (TimeUtil.getDateTimeFromGmt(currentDevice.updatedAt).hoursAfter() < 12) {
+        return false
+      }
     }
+    currentDevice.token = token
+    val withoutMe = filtered.filter { it.model != myDevice() }
+    this.devices.clear()
+    this.devices.addAll(withoutMe)
+    this.devices.add(currentDevice)
+    return true
+  }
 
-    @Keep
-    data class Notification(
-            @SerializedName("tokens")
-            var tokens: List<String> = listOf(),
-            @SerializedName("type")
-            var type: String = "",
-            @SerializedName("sender")
-            var sender: String = "",
-            @SerializedName("createdAt")
-            var createdAt: String = "",
-            @SerializedName("details")
-            var details: String = ""
-    )
-
-    @Keep
-    data class DeviceToken(
-            @SerializedName("model")
-            var model: String = "",
-            @SerializedName("updatedAt")
-            var updatedAt: String = "",
-            @SerializedName("token")
-            var token: String = ""
-    )
-
-    @Keep
-    data class Tokens(
-            @SerializedName("tokens")
-            var tokens: List<DeviceToken> = listOf()
-    )
-
-    companion object {
-        const val FILE_NAME = "tokens.json"
+  private fun findCurrent(list: List<DeviceToken>): DeviceToken? {
+    if (list.isEmpty()) return null
+    for (d in list) {
+      if (d.model == myDevice()) {
+        return d
+      }
     }
+    return null
+  }
+
+  private fun removeOldTokens(list: List<DeviceToken?>): List<DeviceToken> {
+    return list.filterNotNull().filter { TimeUtil.getDateTimeFromGmt(it.updatedAt).daysAfter() < 30 }
+  }
+
+  private fun myDevice(): String {
+    return Build.MANUFACTURER + " " + Build.MODEL
+  }
+
+  @Keep
+  data class Notification(
+    @SerializedName("tokens")
+    var tokens: List<String> = listOf(),
+    @SerializedName("type")
+    var type: String = "",
+    @SerializedName("sender")
+    var sender: String = "",
+    @SerializedName("createdAt")
+    var createdAt: String = "",
+    @SerializedName("details")
+    var details: String = ""
+  )
+
+  @Keep
+  data class DeviceToken(
+    @SerializedName("model")
+    var model: String = "",
+    @SerializedName("updatedAt")
+    var updatedAt: String = "",
+    @SerializedName("token")
+    var token: String = ""
+  )
+
+  @Keep
+  data class Tokens(
+    @SerializedName("tokens")
+    var tokens: List<DeviceToken> = listOf()
+  )
+
+  companion object {
+    const val FILE_NAME = "tokens.json"
+  }
 }

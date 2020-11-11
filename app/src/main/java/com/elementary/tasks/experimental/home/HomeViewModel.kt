@@ -8,58 +8,60 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
-import org.koin.core.inject
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.inject
 import timber.log.Timber
 
+@KoinApiExtension
 class HomeViewModel : BaseRemindersViewModel(), (String) -> Unit {
 
-    private val context: Context by inject()
+  private val context: Context by inject()
 
-    private val _reminders = mutableLiveDataOf<List<Reminder>>()
-    private var liveData: LiveData<List<Reminder>>? = null
-    val reminders: LiveData<List<Reminder>> = _reminders
-    val birthdays = appDb.birthdaysDao().findAll(TimeUtil.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1))
+  private val _reminders = mutableLiveDataOf<List<Reminder>>()
+  private var liveData: LiveData<List<Reminder>>? = null
+  val reminders: LiveData<List<Reminder>> = _reminders
+  val birthdays = appDb.birthdaysDao().findAll(TimeUtil.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1))
 
-    init {
-        prefs.addObserver(PrefsConstants.SHOW_PERMANENT_REMINDERS, this)
-        initReminders()
+  init {
+    prefs.addObserver(PrefsConstants.SHOW_PERMANENT_REMINDERS, this)
+    initReminders()
+  }
+
+  private fun initReminders() {
+    val remindersLiveData = if (prefs.showPermanentOnHome) {
+      appDb.reminderDao().loadAllTypesInRangeWithPermanent(fromTime = TimeUtil.getDayStart(),
+        toTime = TimeUtil.getDayEnd())
+    } else {
+      appDb.reminderDao().loadAllTypesInRange(fromTime = TimeUtil.getDayStart(),
+        toTime = TimeUtil.getDayEnd())
     }
-
-    private fun initReminders() {
-        val remindersLiveData = if (prefs.showPermanentOnHome) {
-            appDb.reminderDao().loadAllTypesInRangeWithPermanent(fromTime = TimeUtil.getDayStart(),
-                    toTime = TimeUtil.getDayEnd())
-        } else {
-            appDb.reminderDao().loadAllTypesInRange(fromTime = TimeUtil.getDayStart(),
-                    toTime = TimeUtil.getDayEnd())
-        }
-        remindersLiveData.observeForever {
-            _reminders.postValue(it)
-        }
-        liveData = remindersLiveData
+    remindersLiveData.observeForever {
+      _reminders.postValue(it)
     }
+    liveData = remindersLiveData
+  }
 
-    fun deleteBirthday(birthday: Birthday) {
-        postInProgress(true)
-        launchDefault {
-            appDb.birthdaysDao().delete(birthday)
-            updateBirthdayPermanent()
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
-            postInProgress(false)
-            postCommand(Commands.DELETED)
-        }
+  fun deleteBirthday(birthday: Birthday) {
+    postInProgress(true)
+    launchDefault {
+      appDb.birthdaysDao().delete(birthday)
+      updateBirthdayPermanent()
+      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
     }
+  }
 
-    private fun updateBirthdayPermanent() {
-        if (prefs.isBirthdayPermanentEnabled) {
-            Notifier.showBirthdayPermanent(context, prefs)
-        }
+  private fun updateBirthdayPermanent() {
+    if (prefs.isBirthdayPermanentEnabled) {
+      Notifier.showBirthdayPermanent(context, prefs)
     }
+  }
 
-    override fun invoke(p1: String) {
-        Timber.d("invoke: $p1")
-        if (p1 == PrefsConstants.SHOW_PERMANENT_REMINDERS) {
-            initReminders()
-        }
+  override fun invoke(p1: String) {
+    Timber.d("invoke: $p1")
+    if (p1 == PrefsConstants.SHOW_PERMANENT_REMINDERS) {
+      initReminders()
     }
+  }
 }
