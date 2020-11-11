@@ -2,6 +2,7 @@ package com.backdoor.engine.lang
 
 import com.backdoor.engine.misc.Action
 import com.backdoor.engine.misc.Ampm
+import com.backdoor.engine.misc.LongInternal
 import java.util.*
 import java.util.regex.Pattern
 
@@ -16,311 +17,252 @@ internal class RuWorker : Worker() {
     "суббот"
   )
 
-  override fun hasCalendar(input: String): Boolean {
-    return input.matches(".*календарь.*")
-  }
+  override fun hasCalendar(input: String) = input.matches(".*календарь.*")
 
-  override fun clearCalendar(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches(".*календарь.*")) {
-        parts[i] = ""
-        break
+  override fun clearCalendar(input: String) =
+    input.splitByWhitespaces()
+      .toMutableList()
+      .let {
+        it.forEachIndexed { index, s ->
+          if (s.matches(".*календарь.*")) {
+            it[index] = ""
+            return@forEachIndexed
+          }
+        }
+        it.clip()
       }
-    }
-    return clipStrings(parts)
-  }
 
   override fun clearWeekDays(input: String): String {
-    var parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    val weekDays = weekdays
-    for (i in parts.indices) {
-      val part = parts[i]
-      for (day in weekDays) {
-        if (part!!.matches(".*$day.*")) {
-          parts[i] = ""
-          break
+    val sb = StringBuilder()
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        for (day in weekdays) {
+          if (s.matches(".*$day.*")) {
+            it[index] = ""
+            break
+          }
         }
       }
-    }
-    parts = clipStrings(parts).split(Worker.Companion.WHITESPACES).toTypedArray()
-    val sb = StringBuilder()
-    for (i in parts.indices) {
-      val part = parts[i]!!.trim { it <= ' ' }
+    }.clip().splitByWhitespaces().forEach { s ->
+      val part = s.trim()
       if (!part.matches("в")) sb.append(" ").append(part)
     }
-    return sb.toString().trim { it <= ' ' }
+    return sb.toString().trim()
   }
 
-  override fun getDaysRepeat(input: String): Long {
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasDays(part)) {
-        val integer: Int
-        integer = try {
-          parts[i - 1].toInt()
-        } catch (e: NumberFormatException) {
-          1
-        } catch (e: ArrayIndexOutOfBoundsException) {
-          0
+  override fun getDaysRepeat(input: String) =
+    input.splitByWhitespaces().firstOrNull { hasDays(it) }?.toRepeat(1) ?: 0
+
+  override fun clearDaysRepeat(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasDays(s)) {
+          ignoreAny {
+            s.toInt()
+            it[index - 1] = ""
+          }
+          it[index] = ""
+          return@forEachIndexed
         }
-        return integer * Worker.Companion.DAY
       }
-    }
-    return 0
-  }
+    }.clip()
 
-  override fun clearDaysRepeat(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasDays(part)) {
-        try {
-          parts[i - 1]!!.toInt()
-          parts[i - 1] = ""
-        } catch (ignored: NumberFormatException) {
+  override fun hasRepeat(input: String) = input.matches(".*кажд.*") || hasEveryDay(input)
+
+  override fun hasEveryDay(input: String) = input.matches(".*ежедневн.*")
+
+  override fun clearRepeat(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasRepeat(s)) {
+          it[index] = ""
+          return@forEachIndexed
         }
-        parts[i] = ""
-        break
       }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
-  override fun hasRepeat(input: String?): Boolean {
-    return input!!.matches(".*кажд.*") || hasEveryDay(input)
-  }
+  override fun hasTomorrow(input: String) = input.matches(".*завтра.*")
 
-  override fun hasEveryDay(input: String?): Boolean {
-    return input!!.matches(".*ежедневн.*")
-  }
-
-  override fun clearRepeat(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasRepeat(part)) {
-        parts[i] = ""
-        break
+  override fun clearTomorrow(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches(".*завтра.*")) {
+          it[index] = ""
+          return@forEachIndexed
+        }
       }
-    }
-    return clipStrings(parts)
-  }
-
-  override fun hasTomorrow(input: String): Boolean {
-    return input.matches(".*завтра.*")
-  }
-
-  override fun clearTomorrow(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches(".*завтра.*")) {
-        parts[i] = ""
-        break
-      }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
   override fun getMessage(input: String): String {
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
     val sb = StringBuilder()
     var isStart = false
-    for (part in parts) {
-      if (isStart) sb.append(" ").append(part)
-      if (part.matches("текст(ом)?")) isStart = true
+    return input.splitByWhitespaces().forEach {
+      if (isStart) sb.append(" ").append(it)
+      if (it.matches("текст(ом)?")) isStart = true
+    }.let {
+      sb.toString().trim()
     }
-    return sb.toString().trim { it <= ' ' }
   }
 
-  override fun clearMessage(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches("текст(ом)?")) {
-        try {
-          if (parts[i - 1]!!.matches("с")) {
-            parts[i - 1] = ""
+  override fun clearMessage(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (s.matches("текст(ом)?")) {
+          ignoreAny {
+            if (it[index - 1].matches("с")) it[index - 1] = ""
           }
-        } catch (ignored: IndexOutOfBoundsException) {
+          it[index] = ""
         }
-        parts[i] = ""
       }
-    }
-    return clipStrings(parts)
+    }.clip()
+
+  override fun getMessageType(input: String) = when {
+    input.matches(".*сообщение.*") -> Action.MESSAGE
+    input.matches(".*письмо?.*") -> Action.MAIL
+    else -> null
   }
 
-  override fun getMessageType(input: String?): Action? {
-    if (input!!.matches(".*сообщение.*")) return Action.MESSAGE
-    return if (input.matches(".*письмо?.*")) Action.MAIL else null
-  }
-
-  override fun clearMessageType(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      val type = getMessageType(part)
-      if (type != null) {
-        parts[i] = ""
-        break
+  override fun clearMessageType(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (getMessageType(s) != null) {
+          it[index] = ""
+          return@forEachIndexed
+        }
       }
-    }
-    return clipStrings(parts)
+    }.clip()
+
+  override fun getAmpm(input: String) = when {
+    input.matches(".*утр(а|ом)?.*") -> Ampm.MORNING
+    input.matches(".*вечер.*") -> Ampm.EVENING
+    input.matches(".*днем.*") -> Ampm.NOON
+    input.matches(".*ночью.*") -> Ampm.NIGHT
+    else -> null
   }
 
-  override fun getAmpm(input: String?): Ampm? {
-    if (input!!.matches(".*утр(а|ом)?.*")) return Ampm.MORNING
-    if (input.matches(".*вечер.*")) return Ampm.EVENING
-    if (input.matches(".*днем.*")) return Ampm.NOON
-    return if (input.matches(".*ночью.*")) Ampm.NIGHT else null
-  }
-
-  override fun clearAmpm(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (getAmpm(part) != null) {
-        parts[i] = ""
-        break
+  override fun clearAmpm(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (getAmpm(s) != null) {
+          it[index] = ""
+          return@forEachIndexed
+        }
       }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
-  override fun getShortTime(input: String?): Date? {
-    val pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]")
-    val matcher = pattern.matcher(input)
+  override fun getShortTime(input: String?) = input?.let { s ->
+    val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
+    var date: Date? = null
     if (matcher.find()) {
-      val time = matcher.group().trim { it <= ' ' }
+      val time = matcher.group().trim()
       for (format in hourFormats) {
-        var date: Date?
-        try {
-          date = format!!.parse(time)
-          if (date != null) return date
-        } catch (ignored: Exception) {
+        if (ignoreAny {
+            date = format.parse(time)
+            date
+          } != null) break
+      }
+    }
+    date
+  }
+
+  override fun clearTime(input: String?) =
+    input?.splitByWhitespaces()?.toMutableList()?.also {
+      it.forEachIndexed { i, s ->
+        if (hasHours(s) != -1) {
+          val index = hasHours(s)
+          it[i] = ""
+          var hourSuccess = false
+          ignoreAny {
+            it[i - index].toInt()
+            hourSuccess = true
+            it[i - index] = ""
+          }
+          if (hourSuccess) {
+            ignoreAny {
+              it[i + 1].toInt()
+              it[i + 1] = ""
+            }
+          }
+        }
+        if (hasMinutes(s) != -1) {
+          val index = hasMinutes(s)
+          ignoreAny {
+            it[i - index].toInt()
+            it[i - index] = ""
+          }
+          it[i] = ""
         }
       }
-    }
-    return null
+    }?.clip()?.let { s ->
+      val matcher = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]").matcher(s)
+      if (matcher.find()) {
+        val time = matcher.group().trim()
+        s.replace(time, "")
+      } else s
+    }?.splitByWhitespaces()?.toMutableList()?.let { list ->
+      val sb = StringBuilder()
+      list.forEach { s ->
+        if (!s.matches("в")) sb.append(" ").append(s.trim())
+      }
+      sb.toString().trim()
+    } ?: ""
+
+  override fun getMonth(input: String?) = when {
+    input == null -> -1
+    input.contains("январь") || input.contains("января") -> 0
+    input.contains("февраль") || input.contains("февраля") -> 1
+    input.contains("март") || input.contains("марта") -> 2
+    input.contains("апрель") || input.contains("апреля") -> 3
+    input.contains("май") || input.contains("мая") -> 4
+    input.contains("июнь") || input.contains("июня") -> 5
+    input.contains("июль") || input.contains("июля") -> 6
+    input.contains("август") || input.contains("августа") -> 7
+    input.contains("сентябрь") || input.contains("сентября") -> 8
+    input.contains("октябрь") || input.contains("октября") -> 9
+    input.contains("ноябрь") || input.contains("ноября") -> 10
+    input.contains("декабрь") || input.contains("декабря") -> 11
+    else -> -1
   }
 
-  override fun clearTime(input: String?): String {
-    var input = input
-    var parts: Array<String?> = input!!.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (hasHours(part) != -1) {
-        val index = hasHours(part)
-        parts[i] = ""
-        try {
-          parts[i - index]!!.toInt()
-          parts[i - index] = ""
-        } catch (ignored: Exception) {
+  override fun hasCall(input: String) = input.matches(".*звонить.*")
+
+  override fun clearCall(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasCall(s)) {
+          it[index] = ""
+          return@forEachIndexed
         }
       }
-      if (hasMinutes(part) != -1) {
-        val index = hasMinutes(part)
-        try {
-          parts[i - index]!!.toInt()
-          parts[i - index] = ""
-        } catch (e: Exception) {
+    }.clip()
+
+  override fun hasTimer(input: String) = input.matches(".*через.*")
+
+  override fun cleanTimer(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasTimer(s)) {
+          it[index] = ""
+          return@forEachIndexed
         }
-        parts[i] = ""
       }
-    }
-    val pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]")
-    input = clipStrings(parts)
-    val matcher = pattern.matcher(input)
-    if (matcher.find()) {
-      val time = matcher.group().trim { it <= ' ' }
-      input = input.replace(time, "")
-    }
-    parts = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    val sb = StringBuilder()
-    for (i in parts.indices) {
-      val part = parts[i]!!.trim { it <= ' ' }
-      if (!part.matches("в")) sb.append(" ").append(part)
-    }
-    return sb.toString().trim { it <= ' ' }
-  }
+    }.clip().trim()
 
-  override fun getMonth(input: String?): Int {
-    var res = -1
-    if (input!!.contains("январь") || input.contains("января")) res = 0
-    if (input.contains("февраль") || input.contains("февраля")) res = 1
-    if (input.contains("март") || input.contains("марта")) res = 2
-    if (input.contains("апрель") || input.contains("апреля")) res = 3
-    if (input.contains("май") || input.contains("мая")) res = 4
-    if (input.contains("июнь") || input.contains("июня")) res = 5
-    if (input.contains("июль") || input.contains("июля")) res = 6
-    if (input.contains("август") || input.contains("августа")) res = 7
-    if (input.contains("сентябрь") || input.contains("сентября")) res = 8
-    if (input.contains("октябрь") || input.contains("октября")) res = 9
-    if (input.contains("ноябрь") || input.contains("ноября")) res = 10
-    if (input.contains("декабрь") || input.contains("декабря")) res = 11
-    return res
-  }
+  override fun hasSender(input: String) = input.matches(".*отправ.*")
 
-  override fun hasCall(input: String?): Boolean {
-    return input!!.matches(".*звонить.*")
-  }
-
-  override fun clearCall(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches(".*звонить.*")) {
-        parts[i] = ""
-        break
+  override fun clearSender(input: String) =
+    input.splitByWhitespaces().toMutableList().also {
+      it.forEachIndexed { index, s ->
+        if (hasSender(s)) {
+          it[index] = ""
+          return@forEachIndexed
+        }
       }
-    }
-    return clipStrings(parts)
-  }
+    }.clip()
 
-  override fun isTimer(input: String?): Boolean {
-    return input!!.matches(".*через.*")
-  }
+  override fun hasNote(input: String) = input.contains("заметка")
 
-  override fun cleanTimer(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (isTimer(part)) {
-        parts[i] = ""
-        break
-      }
-    }
-    return clipStrings(parts)
-  }
-
-  override fun hasSender(input: String?): Boolean {
-    return input!!.matches(".*отправ.*")
-  }
-
-  override fun clearSender(input: String): String? {
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      if (part!!.matches(".*отправ.*")) {
-        parts[i] = ""
-        break
-      }
-    }
-    return clipStrings(parts)
-  }
-
-  override fun hasNote(input: String): Boolean {
-    return input.contains("заметка")
-  }
-
-  override fun clearNote(input: String): String {
-    var input = input
-    input = input.replace("заметка", "")
-    return input.trim { it <= ' ' }
-  }
+  override fun clearNote(input: String) = input.replace("заметка", "").trim()
 
   override fun hasAction(input: String): Boolean {
     return (input.startsWith("открыть") || input.matches(".*помощь.*") ||
@@ -328,47 +270,34 @@ internal class RuWorker : Worker() {
       || input.matches(".*сообщить.*"))
   }
 
-  override fun getAction(input: String): Action? {
-    return if (input.matches(".*помощь.*")) {
-      Action.HELP
-    } else if (input.matches(".*громкость.*")) {
-      Action.VOLUME
-    } else if (input.matches(".*настройки.*")) {
-      Action.SETTINGS
-    } else if (input.matches(".*сообщить.*")) {
-      Action.REPORT
-    } else {
-      Action.APP
-    }
+  override fun getAction(input: String) = when {
+    input.matches(".*помощь.*") -> Action.HELP
+    input.matches(".*громкость.*") -> Action.VOLUME
+    input.matches(".*настройки.*") -> Action.SETTINGS
+    input.matches(".*сообщить.*") -> Action.REPORT
+    else -> Action.APP
   }
 
-  override fun hasEvent(input: String): Boolean {
-    return input.startsWith("добавить") || input.matches("ново?е?ы?й?.*")
+  override fun hasEvent(input: String) =
+    input.startsWith("добавить") || input.matches("ново?е?ы?й?.*")
+
+  override fun getEvent(input: String) = when {
+    input.matches(".*день рождения.*") -> Action.BIRTHDAY
+    input.matches(".*напоминан.*") -> Action.REMINDER
+    else -> Action.NO_EVENT
   }
 
-  override fun getEvent(input: String): Action? {
-    return if (input.matches(".*день рождения.*")) {
-      Action.BIRTHDAY
-    } else if (input.matches(".*напоминан.*")) {
-      Action.REMINDER
-    } else Action.NO_EVENT
-  }
+  override fun hasEmptyTrash(input: String) = input.matches(".*очисти(ть)? корзин.*")
 
-  override fun hasEmptyTrash(input: String): Boolean {
-    return input.matches(".*очисти(ть)? корзин.*")
-  }
+  override fun hasDisableReminders(input: String) =
+    input.matches(".*выключи (все)? ?напоминания.*") ||
+      input.matches(".*отключи(ть)? (все)? ?напоминания.*")
 
-  override fun hasDisableReminders(input: String): Boolean {
-    return input.matches(".*выключи (все)? ?напоминания.*") || input.matches(".*отключи(ть)? (все)? ?напоминания.*")
-  }
-
-  override fun hasGroup(input: String): Boolean {
-    return input.matches(".*добавь группу.*")
-  }
+  override fun hasGroup(input: String) = input.matches(".*добавь группу.*")
 
   override fun clearGroup(input: String): String {
     val sb = StringBuilder()
-    val parts: Array<String> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
+    val parts: Array<String> = input.splitByWhitespaces().toTypedArray()
     var st = false
     for (s in parts) {
       if (s.matches(".*групп.*")) {
@@ -380,199 +309,162 @@ internal class RuWorker : Worker() {
         sb.append(" ")
       }
     }
-    return sb.toString().trim { it <= ' ' }
+    return sb.toString().trim()
   }
 
-  override fun hasToday(input: String): Boolean {
-    return input.matches(".*сегодн.*")
+  override fun hasToday(input: String) = input.matches(".*сегодн.*")
+
+  override fun hasAfterTomorrow(input: String) = input.matches(".*послезавтр.*")
+
+  override val afterTomorrow = "послезавтра"
+
+  override fun hasHours(input: String?) = when {
+    input.matchesOrFalse(".*час.*") -> 1
+    else -> -1
   }
 
-  override fun hasAfterTomorrow(input: String): Boolean {
-    return input.matches(".*послезавтр.*")
+  override fun hasMinutes(input: String?) = when {
+    input.matchesOrFalse(".*минуту?.*") -> 1
+    else -> -1
   }
 
-  protected override val afterTomorrow: String
-    protected get() = "послезавтра"
+  override fun hasSeconds(input: String?) = input.matchesOrFalse(".*секунд.*")
 
-  override fun hasHours(input: String?): Int {
-    return if (input!!.matches(".*час.*")) 1 else -1
-  }
+  override fun hasDays(input: String?) = input.matchesOrFalse(".*дня.*") ||
+    input.matchesOrFalse(".*дней.*") || input.matchesOrFalse(".*день.*")
 
-  override fun hasMinutes(input: String?): Int {
-    return if (input!!.matches(".*минуту?.*")) 1 else -1
-  }
+  override fun hasWeeks(input: String?) = input.matchesOrFalse(".*недел.*")
 
-  override fun hasSeconds(input: String?): Boolean {
-    return input!!.matches(".*секунд.*")
-  }
+  override fun hasMonth(input: String?) = input.matchesOrFalse(".*месяц.*")
 
-  override fun hasDays(input: String?): Boolean {
-    return input!!.matches(".*дня.*") || input.matches(".*дней.*") || input.matches(".*день.*")
-  }
+  override fun hasAnswer(input: String) = input.let { " $it " }.matches(".* (да|нет) .*")
 
-  override fun hasWeeks(input: String?): Boolean {
-    return input!!.matches(".*недел.*")
-  }
-
-  override fun hasMonth(input: String?): Boolean {
-    return input!!.matches(".*месяц.*")
-  }
-
-  override fun hasAnswer(input: String): Boolean {
-    var input = input
-    input = " $input "
-    return input.matches(".* (да|нет) .*")
-  }
-
-  override fun getDate(input: String, res: com.backdoor.engine.misc.LongInternal): String? {
+  override fun getDate(input: String, res: LongInternal): String? {
     var mills: Long = 0
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val part = parts[i]
-      val month = getMonth(part)
-      if (month != -1) {
-        var integer: Int
-        try {
-          integer = parts[i - 1]!!.toInt()
-          parts[i - 1] = ""
-        } catch (e: NumberFormatException) {
-          integer = 1
-        } catch (e: IndexOutOfBoundsException) {
-          integer = 1
+    return input.splitByWhitespaces().toMutableList().also { list ->
+      list.forEachIndexed { index, s ->
+        val month = getMonth(s)
+        if (month != -1) {
+          val integer = ignoreAny({
+            list[index - 1].toInt().also { list[index - 1] = "" }
+          }) { 1 }
+          val calendar = Calendar.getInstance()
+          calendar.timeInMillis = System.currentTimeMillis()
+          calendar[Calendar.MONTH] = month
+          calendar[Calendar.DAY_OF_MONTH] = integer
+          mills = calendar.timeInMillis
+          list[index] = ""
+          return@forEachIndexed
         }
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar[Calendar.MONTH] = month
-        calendar[Calendar.DAY_OF_MONTH] = integer
-        mills = calendar.timeInMillis
-        parts[i] = ""
-        break
       }
+    }.clip().also {
+      res.value = mills
     }
-    res.set(mills)
-    return clipStrings(parts)
   }
 
-  override fun getAnswer(input: String): Action? {
-    return if (input.matches(".* ?да ?.*")) {
-      Action.YES
-    } else Action.NO
+  override fun getAnswer(input: String) = when {
+    input.matches(".* ?да ?.*") -> Action.YES
+    else -> Action.NO
   }
 
-  override fun findFloat(input: String?): Float {
-    if (input!!.contains("полтор")) {
-      return 1.5f
-    }
-    if (input.contains("половин") || input.contains("пол")) {
-      println("findFloat: $input")
-      return 0.5f
-    }
-    return (-1).toFloat()
+  override fun findFloat(input: String?) = when {
+    input == null -> -1f
+    input.contains("полтор") -> 1.5f
+    input.contains("половин") || input.contains("пол") -> 0.5f
+    else -> -1f
   }
 
   override fun clearFloats(input: String?): String? {
-    var input = input
-    if (input!!.contains("с половиной")) {
-      input = input.replace("с половиной", "")
-    }
-    val parts: Array<String?> = input.split(Worker.Companion.WHITESPACES).toTypedArray()
-    for (i in parts.indices) {
-      val s = parts[i]
-      if (s!!.contains("полтор") || s.matches("половин*.")) {
-        parts[i] = ""
+    if (input == null) return null
+    return input.replace("с половиной", "")
+      .splitByWhitespaces()
+      .toMutableList()
+      .also {
+        it.forEachIndexed { index, s ->
+          if (s.contains("полтор") || s.matches("половин*.")) {
+            it[index] = ""
+            return@forEachIndexed
+          }
+        }
+      }.clip().let {
+        if (it.contains(" пол")) {
+          it.replace("пол", "")
+        } else it
       }
-    }
-    input = clipStrings(parts)
-    if (input.contains(" пол")) {
-      input = input.replace("пол", "")
-    }
-    return input
   }
 
-  override fun findNumber(input: String?): Float {
-    var number = -1f
-    if (input!!.matches("ноль")) number = 0f
-    if (input.matches("один") || input.matches("одну") || input.matches("одна")) number = 1f
-    if (input.matches("два") || input.matches("две")) number = 2f
-    if (input.matches("три")) number = 3f
-    if (input.matches("четыре")) number = 4f
-    if (input.matches("пять")) number = 5f
-    if (input.matches("шесть")) number = 6f
-    if (input.matches("семь")) number = 7f
-    if (input.matches("восемь")) number = 8f
-    if (input.matches("девять")) number = 9f
-    if (input.matches("десять")) number = 10f
-    if (input.matches("одиннадцать")) number = 11f
-    if (input.matches("двенадцать")) number = 12f
-    if (input.matches("тринадцать")) number = 13f
-    if (input.matches("четырнадцать")) number = 14f
-    if (input.matches("пятнадцать")) number = 15f
-    if (input.matches("шестнадцать")) number = 16f
-    if (input.matches("семнадцать")) number = 17f
-    if (input.matches("восемнадцать")) number = 18f
-    if (input.matches("девятнадцать")) number = 19f
-    if (input.matches("двадцать")) number = 20f
-    if (input.matches("тридцать")) number = 30f
-    if (input.matches("сорок")) number = 40f
-    if (input.matches("пятьдесят")) number = 50f
-    if (input.matches("шестьдесят")) number = 60f
-    if (input.matches("семьдесят")) number = 70f
-    if (input.matches("восемьдесят")) number = 80f
-    if (input.matches("девяносто")) number = 90f
-    if (input.matches("первого")) number = 1f
-    if (input.matches("второго")) number = 2f
-    if (input.matches("третьего")) number = 3f
-    if (input.matches("четвертого")) number = 4f
-    if (input.matches("пятого")) number = 5f
-    if (input.matches("шестого")) number = 6f
-    if (input.matches("седьмого")) number = 7f
-    if (input.matches("восьмого")) number = 8f
-    if (input.matches("девятого")) number = 9f
-    if (input.matches("десятого")) number = 10f
-    if (input.matches("одиннадцатого")) number = 11f
-    if (input.matches("двенадцатого")) number = 12f
-    if (input.matches("тринадцатого")) number = 13f
-    if (input.matches("четырнадцатого")) number = 14f
-    if (input.matches("пятнадцатого")) number = 15f
-    if (input.matches("шестнадцатого")) number = 16f
-    if (input.matches("семнадцатого")) number = 17f
-    if (input.matches("восемнадцатого")) number = 18f
-    if (input.matches("девятнадцатого")) number = 19f
-    if (input.matches("двадцатого")) number = 20f
-    if (input.matches("тридцатого")) number = 30f
-    if (input.matches("сорокового")) number = 40f
-    if (input.matches("пятидесятого")) number = 50f
-    if (input.matches("шестидесятого")) number = 60f
-    if (input.matches("семидесятого")) number = 70f
-    if (input.matches("восьмидесятого")) number = 80f
-    if (input.matches("девяностого")) number = 90f
-    return number
+  override fun findNumber(input: String?) = when {
+    input == null -> -1f
+    input.matches("ноль") -> 0f
+    input.matches("один") || input.matches("одну") || input.matches("одна") -> 1f
+    input.matches("два") || input.matches("две") -> 2f
+    input.matches("три") -> 3f
+    input.matches("четыре") -> 4f
+    input.matches("пять") -> 5f
+    input.matches("шесть") -> 6f
+    input.matches("семь") -> 7f
+    input.matches("восемь") -> 8f
+    input.matches("девять") -> 9f
+    input.matches("десять") -> 10f
+    input.matches("одиннадцать") -> 11f
+    input.matches("двенадцать") -> 12f
+    input.matches("тринадцать") -> 13f
+    input.matches("четырнадцать") -> 14f
+    input.matches("пятнадцать") -> 15f
+    input.matches("шестнадцать") -> 16f
+    input.matches("семнадцать") -> 17f
+    input.matches("восемнадцать") -> 18f
+    input.matches("девятнадцать") -> 19f
+    input.matches("двадцать") -> 20f
+    input.matches("тридцать") -> 30f
+    input.matches("сорок") -> 40f
+    input.matches("пятьдесят") -> 50f
+    input.matches("шестьдесят") -> 60f
+    input.matches("семьдесят") -> 70f
+    input.matches("восемьдесят") -> 80f
+    input.matches("девяносто") -> 90f
+    input.matches("первого") -> 1f
+    input.matches("второго") -> 2f
+    input.matches("третьего") -> 3f
+    input.matches("четвертого") -> 4f
+    input.matches("пятого") -> 5f
+    input.matches("шестого") -> 6f
+    input.matches("седьмого") -> 7f
+    input.matches("восьмого") -> 8f
+    input.matches("девятого") -> 9f
+    input.matches("десятого") -> 10f
+    input.matches("одиннадцатого") -> 11f
+    input.matches("двенадцатого") -> 12f
+    input.matches("тринадцатого") -> 13f
+    input.matches("четырнадцатого") -> 14f
+    input.matches("пятнадцатого") -> 15f
+    input.matches("шестнадцатого") -> 16f
+    input.matches("семнадцатого") -> 17f
+    input.matches("восемнадцатого") -> 18f
+    input.matches("девятнадцатого") -> 19f
+    input.matches("двадцатого") -> 20f
+    input.matches("тридцатого") -> 30f
+    input.matches("сорокового") -> 40f
+    input.matches("пятидесятого") -> 50f
+    input.matches("шестидесятого") -> 60f
+    input.matches("семидесятого") -> 70f
+    input.matches("восьмидесятого") -> 80f
+    input.matches("девяностого") -> 90f
+    else -> -1f
   }
 
-  override fun hasShowAction(input: String): Boolean {
-    return input.matches(".*пока(зать|жы?)?.*")
+  override fun hasShowAction(input: String) = input.matches(".*пока(зать|жы?)?.*")
+
+  override fun getShowAction(input: String) = when {
+    input.matches(".*рожден.*") -> Action.BIRTHDAYS
+    input.matches(".*активные напомин.*") -> Action.ACTIVE_REMINDERS
+    input.matches(".*напомин.*") -> Action.REMINDERS
+    input.matches(".*события.*") -> Action.EVENTS
+    input.matches(".*заметки.*") -> Action.NOTES
+    input.matches(".*группы.*") -> Action.GROUPS
+    input.matches(".*списо?ки? покуп.*") -> Action.SHOP_LISTS
+    else -> null
   }
 
-  override fun getShowAction(input: String): Action? {
-    if (input.matches(".*рожден.*")) {
-      return Action.BIRTHDAYS
-    } else if (input.matches(".*активные напомин.*")) {
-      return Action.ACTIVE_REMINDERS
-    } else if (input.matches(".*напомин.*")) {
-      return Action.REMINDERS
-    } else if (input.matches(".*события.*")) {
-      return Action.EVENTS
-    } else if (input.matches(".*заметки.*")) {
-      return Action.NOTES
-    } else if (input.matches(".*группы.*")) {
-      return Action.GROUPS
-    } else if (input.matches(".*списо?ки? покуп.*")) {
-      return Action.SHOP_LISTS
-    }
-    return null
-  }
-
-  override fun hasNextModifier(input: String): Boolean {
-    return input.matches(".*следу.*")
-  }
+  override fun hasNextModifier(input: String) = input.matches(".*следу.*")
 }

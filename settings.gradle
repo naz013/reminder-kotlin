@@ -1,2 +1,2 @@
-include ':app', ':voiceengine'
+include ':app'
 include ':voice-engine-ktx'
