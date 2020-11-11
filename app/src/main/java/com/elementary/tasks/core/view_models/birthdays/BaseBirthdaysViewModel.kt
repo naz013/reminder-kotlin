@@ -10,38 +10,40 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
-import org.koin.core.inject
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.inject
 
+@KoinApiExtension
 abstract class BaseBirthdaysViewModel : BaseDbViewModel() {
 
-    private val context: Context by inject()
+  private val context: Context by inject()
 
-    fun deleteBirthday(birthday: Birthday) {
-        postInProgress(true)
-        launchDefault {
-            appDb.birthdaysDao().delete(birthday)
-            updateBirthdayPermanent()
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
-            postInProgress(false)
-            postCommand(Commands.DELETED)
-        }
+  fun deleteBirthday(birthday: Birthday) {
+    postInProgress(true)
+    launchDefault {
+      appDb.birthdaysDao().delete(birthday)
+      updateBirthdayPermanent()
+      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
     }
+  }
 
-    protected fun updateBirthdayPermanent() {
-        if (prefs.isBirthdayPermanentEnabled) {
-            Notifier.showBirthdayPermanent(context, prefs)
-        }
+  protected fun updateBirthdayPermanent() {
+    if (prefs.isBirthdayPermanentEnabled) {
+      Notifier.showBirthdayPermanent(context, prefs)
     }
+  }
 
-    fun saveBirthday(birthday: Birthday) {
-        postInProgress(true)
-        launchDefault {
-            birthday.updatedAt = TimeUtil.gmtDateTime
-            appDb.birthdaysDao().insert(birthday)
-            updateBirthdayPermanent()
-            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
-            postInProgress(false)
-            postCommand(Commands.SAVED)
-        }
+  fun saveBirthday(birthday: Birthday) {
+    postInProgress(true)
+    launchDefault {
+      birthday.updatedAt = TimeUtil.gmtDateTime
+      appDb.birthdaysDao().insert(birthday)
+      updateBirthdayPermanent()
+      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId, context)
+      postInProgress(false)
+      postCommand(Commands.SAVED)
     }
+  }
 }
