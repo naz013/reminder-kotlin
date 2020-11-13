@@ -20,83 +20,83 @@ import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 
 class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>(R.layout.activity_quick_sms) {
 
-    private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
-    private var number: String = ""
+  private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
+  private var number: String = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        number = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    number = intent.getStringExtra(Constants.SELECTED_CONTACT_NUMBER) ?: ""
 
-        binding.messagesList.layoutManager = LinearLayoutManager(this)
-        binding.messagesList.adapter = mAdapter
+    binding.messagesList.layoutManager = LinearLayoutManager(this)
+    binding.messagesList.adapter = mAdapter
 
-        binding.buttonSend.setOnClickListener { startSending() }
-        val name = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
-            Contacts.getNameFromNumber(number, this) ?: ""
-        } else {
-            ""
+    binding.buttonSend.setOnClickListener { startSending() }
+    val name = if (Permissions.checkPermission(this, Permissions.READ_CONTACTS)) {
+      Contacts.getNameFromNumber(number, this) ?: ""
+    } else {
+      ""
+    }
+    binding.contactInfo.text = "$name\n$number"
+
+    initViewModel()
+  }
+
+  private fun initViewModel() {
+    val viewModel = ViewModelProvider(this).get(SmsTemplatesViewModel::class.java)
+    viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
+        if (smsTemplates != null) {
+            updateList(smsTemplates)
         }
-        binding.contactInfo.text = "$name\n$number"
+    })
+  }
 
-        initViewModel()
+  private fun updateList(smsTemplates: List<SmsTemplate>) {
+    mAdapter.setData(smsTemplates)
+    if (mAdapter.itemCount > 0) {
+      mAdapter.selectItem(0)
     }
+  }
 
-    private fun initViewModel() {
-        val viewModel = ViewModelProvider(this).get(SmsTemplatesViewModel::class.java)
-        viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
-            if (smsTemplates != null) {
-                updateList(smsTemplates)
-            }
-        })
+  private fun startSending() {
+    val position = mAdapter.selectedPosition
+    val item = mAdapter.getItem(position)
+    if (item != null) {
+      sendSMS(number, item.title)
+    } else {
+      sendError()
     }
+  }
 
-    private fun updateList(smsTemplates: List<SmsTemplate>) {
-        mAdapter.setData(smsTemplates)
-        if (mAdapter.itemCount > 0) {
-            mAdapter.selectItem(0)
-        }
+  private fun removeFlags() {
+    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+      or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+      or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+      or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+    finish()
+  }
+
+  private fun sendSMS(number: String?, message: String?) {
+    if (number != null) {
+      TelephonyUtil.sendSms(this, number, message)
+    } else {
+      sendError()
     }
+  }
 
-    private fun startSending() {
-        val position = mAdapter.selectedPosition
-        val item = mAdapter.getItem(position)
-        if (item != null) {
-            sendSMS(number, item.title)
-        } else {
-            sendError()
-        }
+  private fun sendError() {
+    Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
+  }
+
+  override fun onBackPressed() {
+    removeFlags()
+  }
+
+  companion object {
+
+    fun openScreen(context: Context, number: String) {
+      context.startActivity(Intent(context, QuickSmsActivity::class.java)
+        .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
-
-    private fun removeFlags() {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-        finish()
-    }
-
-    private fun sendSMS(number: String?, message: String?) {
-        if (number != null) {
-            TelephonyUtil.sendSms(this, number, message)
-        } else {
-            sendError()
-        }
-    }
-
-    private fun sendError() {
-        Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onBackPressed() {
-        removeFlags()
-    }
-
-    companion object {
-
-        fun openScreen(context: Context, number: String) {
-            context.startActivity(Intent(context, QuickSmsActivity::class.java)
-                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        }
-    }
+  }
 }

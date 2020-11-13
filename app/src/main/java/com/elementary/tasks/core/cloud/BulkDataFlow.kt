@@ -10,40 +10,42 @@ import com.elementary.tasks.core.cloud.storages.Storage
 import kotlinx.coroutines.channels.consumeEach
 import timber.log.Timber
 
-class BulkDataFlow<T>(private val repository: Repository<T>,
-                      private val convertible: Convertible<T>,
-                      private val storage: Storage,
-                      private val completable: Completable<T>? = null) {
+class BulkDataFlow<T>(
+  private val repository: Repository<T>,
+  private val convertible: Convertible<T>,
+  private val storage: Storage,
+  private val completable: Completable<T>? = null
+) {
 
-    private val dataFlow = DataFlow(repository, convertible, storage, completable)
+  private val dataFlow = DataFlow(repository, convertible, storage, completable)
 
-    suspend fun backup() {
-        repository.all().forEach {
-            dataFlow.backup(it, false)
-        }
-        dataFlow.saveIndex()
-        System.gc()
+  suspend fun backup() {
+    repository.all().forEach {
+      dataFlow.backup(it, false)
     }
+    dataFlow.saveIndex()
+    System.gc()
+  }
 
-    suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {
-        storage.restoreAll(dataFlow.getFileExt(indexTypes), deleteFile).consumeEach {
-            val item = convertible.convert(it) ?: return
-            Timber.d("restore: $item")
-            repository.insert(item)
-            completable?.action(item)
-        }
+  suspend fun restore(indexTypes: IndexTypes, deleteFile: Boolean) {
+    storage.restoreAll(dataFlow.getFileExt(indexTypes), deleteFile).consumeEach {
+      val item = convertible.convert(it) ?: return
+      Timber.d("restore: $item")
+      repository.insert(item)
+      completable?.action(item)
     }
+  }
 
-    companion object {
-        suspend fun fullBackup(context: Context) {
-            val storage = CompositeStorage(DataFlow.availableStorageList(context))
-            BulkDataFlow(GroupRepository(), GroupConverter(), storage, null).backup()
-            BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable()).backup()
-            BulkDataFlow(NoteRepository(), NoteConverter(), storage, null).backup()
-            BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null).backup()
-            BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null).backup()
-            BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null).backup()
-            BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null).backup()
-        }
+  companion object {
+    suspend fun fullBackup(context: Context) {
+      val storage = CompositeStorage(DataFlow.availableStorageList(context))
+      BulkDataFlow(GroupRepository(), GroupConverter(), storage, null).backup()
+      BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable()).backup()
+      BulkDataFlow(NoteRepository(), NoteConverter(), storage, null).backup()
+      BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null).backup()
+      BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null).backup()
+      BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null).backup()
+      BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null).backup()
     }
+  }
 }

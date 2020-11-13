@@ -8,13 +8,13 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 class PermissionsFragment : BaseSettingsFragment<FragmentSettingsWebViewBinding>() {
 
-    override fun layoutRes(): Int = R.layout.fragment_settings_web_view
+  override fun layoutRes(): Int = R.layout.fragment_settings_web_view
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val url = "file:///android_asset/files/permissions.html"
-        binding.webView.loadUrl(url)
-    }
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    val url = "file:///android_asset/files/permissions.html"
+    binding.webView.loadUrl(url)
+  }
 
-    override fun getTitle(): String = getString(R.string.permissions)
+  override fun getTitle(): String = getString(R.string.permissions)
 }

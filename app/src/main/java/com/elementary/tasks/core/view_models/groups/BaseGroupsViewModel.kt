@@ -9,15 +9,15 @@ import com.elementary.tasks.groups.work.DeleteBackupWorker
 
 abstract class BaseGroupsViewModel : BaseDbViewModel() {
 
-    val allGroups = appDb.reminderGroupDao().loadAll()
+  val allGroups = appDb.reminderGroupDao().loadAll()
 
-    fun deleteGroup(reminderGroup: ReminderGroup) {
-        postInProgress(true)
-        launchDefault {
-            appDb.reminderGroupDao().delete(reminderGroup)
-            postInProgress(false)
-            postCommand(Commands.DELETED)
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
-        }
+  fun deleteGroup(reminderGroup: ReminderGroup) {
+    postInProgress(true)
+    launchDefault {
+      appDb.reminderGroupDao().delete(reminderGroup)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
+      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
     }
+  }
 }

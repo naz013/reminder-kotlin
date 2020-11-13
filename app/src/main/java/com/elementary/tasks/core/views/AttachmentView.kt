@@ -9,7 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.views.AttachmentViewBinding
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.CacheUtil
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.UriUtil
+import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.show
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -19,196 +19,196 @@ import timber.log.Timber
 
 class PlacesTypeFragment : RadiusTypeFragment<FragmentReminderPlaceBinding>() {
 
-    private var mPlacesMap: PlacesMapFragment? = null
-    private val mListener = object : MapListener {
-        override fun placeChanged(place: LatLng, address: String) {
-        }
-
-        override fun onZoomClick(isFull: Boolean) {
-            iFace.setFullScreenMode(isFull)
-        }
-
-        override fun onBackClick() {
-            if (!isTablet()) {
-                val map = mPlacesMap ?: return
-                if (map.isFullscreen) {
-                    map.isFullscreen = false
-                    iFace.setFullScreenMode(false)
-                }
-                if (binding.mapContainer.visibility == View.VISIBLE) {
-                    ViewUtils.fadeOutAnimation(binding.mapContainer)
-                    ViewUtils.fadeInAnimation(binding.scrollView)
-                }
-            }
-        }
+  private var mPlacesMap: PlacesMapFragment? = null
+  private val mListener = object : MapListener {
+    override fun placeChanged(place: LatLng, address: String) {
     }
 
-    override fun recreateMarker() {
-        mPlacesMap?.recreateMarker()
+    override fun onZoomClick(isFull: Boolean) {
+      iFace.setFullScreenMode(isFull)
     }
 
-    override fun prepare(): Reminder? {
-        if (!Permissions.ensureForeground(activity!!, REQ_FOREGROUND)) {
-            return null
+    override fun onBackClick() {
+      if (!isTablet()) {
+        val map = mPlacesMap ?: return
+        if (map.isFullscreen) {
+          map.isFullscreen = false
+          iFace.setFullScreenMode(false)
         }
-        if (!Permissions.ensureBackgroundLocation(activity!!, REQ_BG_LOCATION)) {
-            return null
+        if (binding.mapContainer.visibility == View.VISIBLE) {
+          ViewUtils.fadeOutAnimation(binding.mapContainer)
+          ViewUtils.fadeInAnimation(binding.scrollView)
         }
-        val reminder = super.prepare() ?: return null
-        val map = mPlacesMap ?: return null
-        var type = Reminder.BY_PLACES
-        val places = map.places
-        if (places.isEmpty()) {
-            iFace.showSnackbar(getString(R.string.you_dont_select_place))
-            return null
-        }
-        if (TextUtils.isEmpty(reminder.summary)) {
-            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
-            binding.taskLayout.isErrorEnabled = true
-            map.invokeBack()
-            return null
-        }
-        var number = ""
-        if (binding.actionView.hasAction()) {
-            number = binding.actionView.number
-            if (TextUtils.isEmpty(number)) {
-                iFace.showSnackbar(getString(R.string.you_dont_insert_number))
-                return null
-            }
-            type = if (binding.actionView.type == ActionView.TYPE_CALL) {
-                Reminder.BY_PLACES_CALL
-            } else {
-                Reminder.BY_PLACES_SMS
-            }
-        }
+      }
+    }
+  }
 
-        reminder.places = places
-        reminder.target = number
-        reminder.type = type
-        reminder.exportToCalendar = false
-        reminder.exportToTasks = false
-        reminder.hasReminder = binding.attackDelay.isChecked
-        reminder.after = 0L
-        reminder.delay = 0
-        reminder.eventCount = 0
-        reminder.repeatInterval = 0
-        if (binding.attackDelay.isChecked) {
-            val startTime = binding.dateView.dateTime
-            reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
-            reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-        } else {
-            reminder.eventTime = ""
-            reminder.startTime = ""
-        }
-        return reminder
+  override fun recreateMarker() {
+    mPlacesMap?.recreateMarker()
+  }
+
+  override fun prepare(): Reminder? {
+    if (!Permissions.ensureForeground(requireActivity(), REQ_FOREGROUND)) {
+      return null
+    }
+    if (!Permissions.ensureBackgroundLocation(requireActivity(), REQ_BG_LOCATION)) {
+      return null
+    }
+    val reminder = super.prepare() ?: return null
+    val map = mPlacesMap ?: return null
+    var type = Reminder.BY_PLACES
+    val places = map.places
+    if (places.isEmpty()) {
+      iFace.showSnackbar(getString(R.string.you_dont_select_place))
+      return null
+    }
+    if (TextUtils.isEmpty(reminder.summary)) {
+      binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+      binding.taskLayout.isErrorEnabled = true
+      map.invokeBack()
+      return null
+    }
+    var number = ""
+    if (binding.actionView.hasAction()) {
+      number = binding.actionView.number
+      if (TextUtils.isEmpty(number)) {
+        iFace.showSnackbar(getString(R.string.you_dont_insert_number))
+        return null
+      }
+      type = if (binding.actionView.type == ActionView.TYPE_CALL) {
+        Reminder.BY_PLACES_CALL
+      } else {
+        Reminder.BY_PLACES_SMS
+      }
     }
 
-    override fun layoutRes(): Int = R.layout.fragment_reminder_place
+    reminder.places = places
+    reminder.target = number
+    reminder.type = type
+    reminder.exportToCalendar = false
+    reminder.exportToTasks = false
+    reminder.hasReminder = binding.attackDelay.isChecked
+    reminder.after = 0L
+    reminder.delay = 0
+    reminder.eventCount = 0
+    reminder.repeatInterval = 0
+    if (binding.attackDelay.isChecked) {
+      val startTime = binding.dateView.dateTime
+      reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
+      reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
+      Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+    } else {
+      reminder.eventTime = ""
+      reminder.startTime = ""
+    }
+    return reminder
+  }
 
-    override fun provideViews() {
-        setViews(
-                scrollView = binding.scrollView,
-                expansionLayout = binding.moreLayout,
-                ledPickerView = binding.ledView,
-                extraView = binding.tuneExtraView,
-                melodyView = binding.melodyView,
-                attachmentView = binding.attachmentView,
-                groupView = binding.groupView,
-                summaryView = binding.taskSummary,
-                dateTimeView = binding.dateView,
-                loudnessPickerView = binding.loudnessView,
-                priorityPickerView = binding.priorityView,
-                windowTypeView = binding.windowTypeView,
-                actionView = binding.actionView
-        )
+  override fun layoutRes(): Int = R.layout.fragment_reminder_place
+
+  override fun provideViews() {
+    setViews(
+      scrollView = binding.scrollView,
+      expansionLayout = binding.moreLayout,
+      ledPickerView = binding.ledView,
+      extraView = binding.tuneExtraView,
+      melodyView = binding.melodyView,
+      attachmentView = binding.attachmentView,
+      groupView = binding.groupView,
+      summaryView = binding.taskSummary,
+      dateTimeView = binding.dateView,
+      loudnessPickerView = binding.loudnessView,
+      priorityPickerView = binding.priorityView,
+      windowTypeView = binding.windowTypeView,
+      actionView = binding.actionView
+    )
+  }
+
+  override fun onNewHeader(newHeader: String) {
+    binding.cardSummary.text = newHeader
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    if (!isTablet()) {
+      binding.mapContainer.visibility = View.GONE
+      binding.mapButton.visibility = View.VISIBLE
+    } else {
+      binding.mapContainer.visibility = View.VISIBLE
+      binding.mapButton.visibility = View.GONE
     }
 
-    override fun onNewHeader(newHeader: String) {
-        binding.cardSummary.text = newHeader
-    }
+    val placesMap = PlacesMapFragment()
+    placesMap.setListener(mListener)
+    placesMap.setCallback(object : MapCallback {
+      override fun onMapReady() {
+        mPlacesMap?.selectMarkers(iFace.state.reminder.places)
+      }
+    })
+    placesMap.markerRadius = prefs.radius
+    placesMap.setMarkerStyle(prefs.markerStyle)
+    fragmentManager?.beginTransaction()
+      ?.replace(binding.mapFrame.id, placesMap)
+      ?.addToBackStack(null)
+      ?.commit()
+    this.mPlacesMap = placesMap
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (!isTablet()) {
-            binding.mapContainer.visibility = View.GONE
-            binding.mapButton.visibility = View.VISIBLE
-        } else {
-            binding.mapContainer.visibility = View.VISIBLE
-            binding.mapButton.visibility = View.GONE
-        }
+    binding.tuneExtraView.hasAutoExtra = false
 
-        val placesMap = PlacesMapFragment()
-        placesMap.setListener(mListener)
-        placesMap.setCallback(object : MapCallback {
-            override fun onMapReady() {
-                mPlacesMap?.selectMarkers(iFace.state.reminder.places)
-            }
-        })
-        placesMap.markerRadius = prefs.radius
-        placesMap.setMarkerStyle(prefs.markerStyle)
-        fragmentManager?.beginTransaction()
-                ?.replace(binding.mapFrame.id, placesMap)
-                ?.addToBackStack(null)
-                ?.commit()
-        this.mPlacesMap = placesMap
-
-        binding.tuneExtraView.hasAutoExtra = false
-
+    binding.delayLayout.visibility = View.GONE
+    binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
+      iFace.state.isDelayAdded = isChecked
+      if (isChecked) {
+        binding.delayLayout.visibility = View.VISIBLE
+      } else {
         binding.delayLayout.visibility = View.GONE
-        binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
-            iFace.state.isDelayAdded = isChecked
-            if (isChecked) {
-                binding.delayLayout.visibility = View.VISIBLE
-            } else {
-                binding.delayLayout.visibility = View.GONE
-            }
-        }
-        binding.attackDelay.isChecked = iFace.state.isDelayAdded
-        binding.mapButton.setOnClickListener { toggleMap() }
-        editReminder()
+      }
     }
+    binding.attackDelay.isChecked = iFace.state.isDelayAdded
+    binding.mapButton.setOnClickListener { toggleMap() }
+    editReminder()
+  }
 
-    override fun updateActions() {
-        if (binding.actionView.hasAction()) {
-            if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
-                binding.tuneExtraView.hasAutoExtra = false
-            } else {
-                binding.tuneExtraView.hasAutoExtra = true
-                binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
-            }
-        } else {
-            binding.tuneExtraView.hasAutoExtra = false
-        }
+  override fun updateActions() {
+    if (binding.actionView.hasAction()) {
+      if (binding.actionView.type == ActionView.TYPE_MESSAGE) {
+        binding.tuneExtraView.hasAutoExtra = false
+      } else {
+        binding.tuneExtraView.hasAutoExtra = true
+        binding.tuneExtraView.hint = getString(R.string.enable_making_phone_calls_automatically)
+      }
+    } else {
+      binding.tuneExtraView.hasAutoExtra = false
     }
+  }
 
-    private fun toggleMap() {
-        if (!isTablet()) {
-            if (binding.mapContainer.isVisible()) {
-                ViewUtils.fadeOutAnimation(binding.mapContainer)
-                ViewUtils.fadeInAnimation(binding.scrollView)
-            } else {
-                ViewUtils.fadeOutAnimation(binding.scrollView)
-                ViewUtils.fadeInAnimation(binding.mapContainer)
-            }
-        }
+  private fun toggleMap() {
+    if (!isTablet()) {
+      if (binding.mapContainer.isVisible()) {
+        ViewUtils.fadeOutAnimation(binding.mapContainer)
+        ViewUtils.fadeInAnimation(binding.scrollView)
+      } else {
+        ViewUtils.fadeOutAnimation(binding.scrollView)
+        ViewUtils.fadeInAnimation(binding.mapContainer)
+      }
     }
+  }
 
-    override fun onBackPressed(): Boolean {
-        return mPlacesMap == null || mPlacesMap!!.onBackPressed()
-    }
+  override fun onBackPressed(): Boolean {
+    return mPlacesMap == null || mPlacesMap!!.onBackPressed()
+  }
 
-    private fun editReminder() {
-        val reminder = iFace.state.reminder
-        Timber.d("editReminder: %s", reminder)
-        if (reminder.eventTime != "" && reminder.hasReminder) {
-            binding.dateView.setDateTime(reminder.eventTime)
-            binding.attackDelay.isChecked = true
-        }
+  private fun editReminder() {
+    val reminder = iFace.state.reminder
+    Timber.d("editReminder: %s", reminder)
+    if (reminder.eventTime != "" && reminder.hasReminder) {
+      binding.dateView.setDateTime(reminder.eventTime)
+      binding.attackDelay.isChecked = true
     }
+  }
 
-    companion object {
-        const val REQ_FOREGROUND = 2121
-        const val REQ_BG_LOCATION = 2122
-    }
+  companion object {
+    const val REQ_FOREGROUND = 2121
+    const val REQ_BG_LOCATION = 2122
+  }
 }

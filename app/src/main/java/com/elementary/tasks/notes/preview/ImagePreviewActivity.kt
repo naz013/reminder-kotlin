@@ -14,72 +14,72 @@ import java.util.*
 
 class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>(R.layout.activity_image_preview) {
 
-    private val imagesSingleton: ImagesSingleton by inject()
+  private val imagesSingleton: ImagesSingleton by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActionBar()
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    initActionBar()
 
-        showImages()
+    showImages()
+  }
+
+  private fun showImages() {
+    val images = imagesSingleton.getCurrent()
+    if (images.isNotEmpty()) {
+      initViewPager(images)
     }
+  }
 
-    private fun showImages() {
-        val images = imagesSingleton.getCurrent()
-        if (images.isNotEmpty()) {
-            initViewPager(images)
-        }
+  private fun setPhotoPosition() {
+    val position = intent.getIntExtra(Constants.INTENT_POSITION, -1)
+    if (position != -1)
+      binding.photoPager.currentItem = position
+  }
+
+  private fun initViewPager(images: List<ImageFile>) {
+    binding.photoPager.adapter = PhotoPagerAdapter(images)
+    binding.photoPager.pageMargin = 5
+    binding.photoPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+      override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+      }
+
+      override fun onPageSelected(position: Int) {
+        setToolbarTitle(position)
+      }
+
+      override fun onPageScrollStateChanged(state: Int) {
+
+      }
+    })
+    setToolbarTitle(binding.photoPager.currentItem)
+    setPhotoPosition()
+  }
+
+  private fun setToolbarTitle(position: Int) {
+    binding.toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x),
+      position + 1, imagesSingleton.getCurrent().size)
+  }
+
+  private fun initActionBar() {
+    setSupportActionBar(binding.toolbar)
+    supportActionBar?.setDisplayShowTitleEnabled(false)
+    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+    binding.toolbar.title = ""
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      android.R.id.home -> {
+        finish()
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
     }
+  }
 
-    private fun setPhotoPosition() {
-        val position = intent.getIntExtra(Constants.INTENT_POSITION, -1)
-        if (position != -1)
-            binding.photoPager.currentItem = position
-    }
-
-    private fun initViewPager(images: List<ImageFile>) {
-        binding.photoPager.adapter = PhotoPagerAdapter(images)
-        binding.photoPager.pageMargin = 5
-        binding.photoPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                setToolbarTitle(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
-        setToolbarTitle(binding.photoPager.currentItem)
-        setPhotoPosition()
-    }
-
-    private fun setToolbarTitle(position: Int) {
-        binding.toolbar.title = String.format(Locale.getDefault(), getString(R.string.x_out_of_x),
-                position + 1, imagesSingleton.getCurrent().size)
-    }
-
-    private fun initActionBar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
-        binding.toolbar.title = ""
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onDestroy() {
-        imagesSingleton.clear()
-        super.onDestroy()
-    }
+  override fun onDestroy() {
+    imagesSingleton.clear()
+    super.onDestroy()
+  }
 }

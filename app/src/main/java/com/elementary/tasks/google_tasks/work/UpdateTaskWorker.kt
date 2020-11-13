@@ -10,25 +10,28 @@ import com.elementary.tasks.core.utils.launchIo
 import com.google.gson.Gson
 import java.io.IOException
 
-class UpdateTaskWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class UpdateTaskWorker(
+  context: Context,
+  workerParams: WorkerParameters
+) : Worker(context, workerParams) {
 
-    override fun doWork(): Result {
-        val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
-        val status = inputData.getString(Constants.INTENT_STATUS) ?: GTasks.TASKS_NEED_ACTION
-        if (json.isNotEmpty()) {
-            val googleTask = Gson().fromJson<GoogleTask>(json, GoogleTask::class.java)
-            if (googleTask != null) {
-                val google = GTasks.getInstance(applicationContext)
-                launchIo {
-                    if (google != null) {
-                        try {
-                            google.updateTaskStatus(status, googleTask)
-                        } catch (e: IOException) {
-                        }
-                    }
-                }
+  override fun doWork(): Result {
+    val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
+    val status = inputData.getString(Constants.INTENT_STATUS) ?: GTasks.TASKS_NEED_ACTION
+    if (json.isNotEmpty()) {
+      val googleTask = Gson().fromJson(json, GoogleTask::class.java)
+      if (googleTask != null) {
+        val google = GTasks.getInstance(applicationContext)
+        launchIo {
+          if (google != null) {
+            try {
+              google.updateTaskStatus(status, googleTask)
+            } catch (e: IOException) {
             }
+          }
         }
-        return Result.success()
+      }
     }
+    return Result.success()
+  }
 }

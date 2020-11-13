@@ -14,114 +14,114 @@ import timber.log.Timber
 
 class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
 
-    override fun prepare(): Reminder? {
-        val reminder = iFace.state.reminder
-        if (!SuperUtil.isSkypeClientInstalled(context!!)) {
-            showInstallSkypeDialog()
-            return null
-        }
-        if (TextUtils.isEmpty(reminder.summary)) {
-            binding.taskLayout.error = getString(R.string.task_summary_is_empty)
-            binding.taskLayout.isErrorEnabled = true
-            return null
-        }
-        val number = binding.skypeContact.text.toString().trim()
-        if (TextUtils.isEmpty(number)) {
-            iFace.showSnackbar(getString(R.string.you_dont_insert_number))
-            return null
-        }
-        val type = getType(binding.skypeGroup.checkedRadioButtonId)
-        val startTime = binding.dateView.dateTime
-        Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-        if (!TimeCount.isCurrent(startTime)) {
-            iFace.showSnackbar(getString(R.string.reminder_is_outdated))
-            return null
-        }
-        if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
-            iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
-            return null
-        }
-        val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminder.target = number
-        reminder.type = type
-        reminder.eventTime = gmtTime
-        reminder.startTime = gmtTime
-        reminder.after = 0L
-        reminder.dayOfMonth = 0
-        reminder.delay = 0
-        reminder.eventCount = 0
-        return reminder
+  override fun prepare(): Reminder? {
+    val reminder = iFace.state.reminder
+    if (!SuperUtil.isSkypeClientInstalled(requireContext())) {
+      showInstallSkypeDialog()
+      return null
     }
-
-    private fun showInstallSkypeDialog() {
-        val builder = dialogues.getMaterialDialog(context!!)
-        builder.setMessage(R.string.skype_is_not_installed)
-        builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-            SuperUtil.installSkype(context!!)
-        }
-        builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
-        builder.create().show()
+    if (TextUtils.isEmpty(reminder.summary)) {
+      binding.taskLayout.error = getString(R.string.task_summary_is_empty)
+      binding.taskLayout.isErrorEnabled = true
+      return null
     }
-
-    override fun layoutRes(): Int = R.layout.fragment_reminder_skype
-
-    override fun provideViews() {
-        setViews(
-                scrollView = binding.scrollView,
-                expansionLayout = binding.moreLayout,
-                ledPickerView = binding.ledView,
-                calendarCheck = binding.exportToCalendar,
-                tasksCheck = binding.exportToTasks,
-                extraView = binding.tuneExtraView,
-                melodyView = binding.melodyView,
-                attachmentView = binding.attachmentView,
-                groupView = binding.groupView,
-                summaryView = binding.taskSummary,
-                beforePickerView = binding.beforeView,
-                dateTimeView = binding.dateView,
-                loudnessPickerView = binding.loudnessView,
-                priorityPickerView = binding.priorityView,
-                repeatLimitView = binding.repeatLimitView,
-                repeatView = binding.repeatView,
-                windowTypeView = binding.windowTypeView,
-                calendarPicker = binding.calendarPicker
-        )
+    val number = binding.skypeContact.text.toString().trim()
+    if (TextUtils.isEmpty(number)) {
+      iFace.showSnackbar(getString(R.string.you_dont_insert_number))
+      return null
     }
-
-    override fun onNewHeader(newHeader: String) {
-        binding.cardSummary.text = newHeader
+    val type = getType(binding.skypeGroup.checkedRadioButtonId)
+    val startTime = binding.dateView.dateTime
+    Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+    if (!TimeCount.isCurrent(startTime)) {
+      iFace.showSnackbar(getString(R.string.reminder_is_outdated))
+      return null
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.tuneExtraView.hasAutoExtra = false
-        binding.skypeContact.onChanged {
-            iFace.state.skypeContact = it
-        }
-        binding.skypeContact.setText(iFace.state.skypeContact)
-        editReminder()
+    if (reminder.remindBefore > 0 && startTime - reminder.remindBefore < System.currentTimeMillis()) {
+      iFace.showSnackbar(getString(R.string.invalid_remind_before_parameter))
+      return null
     }
+    val gmtTime = TimeUtil.getGmtFromDateTime(startTime)
+    reminder.target = number
+    reminder.type = type
+    reminder.eventTime = gmtTime
+    reminder.startTime = gmtTime
+    reminder.after = 0L
+    reminder.dayOfMonth = 0
+    reminder.delay = 0
+    reminder.eventCount = 0
+    return reminder
+  }
 
-    private fun getType(checkedId: Int): Int {
-        var type = Reminder.BY_SKYPE_CALL
-        when (checkedId) {
-            R.id.skypeCall -> type = Reminder.BY_SKYPE_CALL
-            R.id.skypeChat -> type = Reminder.BY_SKYPE
-            R.id.skypeVideo -> type = Reminder.BY_SKYPE_VIDEO
-        }
-        return type
+  private fun showInstallSkypeDialog() {
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setMessage(R.string.skype_is_not_installed)
+    builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
+      dialogInterface.dismiss()
+      SuperUtil.installSkype(requireContext())
     }
+    builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
+    builder.create().show()
+  }
 
-    private fun editReminder() {
-        val reminder = iFace.state.reminder
-        when (reminder.type) {
-            Reminder.BY_SKYPE_CALL -> binding.skypeCall.isChecked = true
-            Reminder.BY_SKYPE_VIDEO -> binding.skypeVideo.isChecked = true
-            Reminder.BY_SKYPE -> binding.skypeChat.isChecked = true
-        }
-        if (reminder.target != "") {
-            binding.skypeContact.setText(reminder.target)
-        }
+  override fun layoutRes(): Int = R.layout.fragment_reminder_skype
+
+  override fun provideViews() {
+    setViews(
+      scrollView = binding.scrollView,
+      expansionLayout = binding.moreLayout,
+      ledPickerView = binding.ledView,
+      calendarCheck = binding.exportToCalendar,
+      tasksCheck = binding.exportToTasks,
+      extraView = binding.tuneExtraView,
+      melodyView = binding.melodyView,
+      attachmentView = binding.attachmentView,
+      groupView = binding.groupView,
+      summaryView = binding.taskSummary,
+      beforePickerView = binding.beforeView,
+      dateTimeView = binding.dateView,
+      loudnessPickerView = binding.loudnessView,
+      priorityPickerView = binding.priorityView,
+      repeatLimitView = binding.repeatLimitView,
+      repeatView = binding.repeatView,
+      windowTypeView = binding.windowTypeView,
+      calendarPicker = binding.calendarPicker
+    )
+  }
+
+  override fun onNewHeader(newHeader: String) {
+    binding.cardSummary.text = newHeader
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    binding.tuneExtraView.hasAutoExtra = false
+    binding.skypeContact.onChanged {
+      iFace.state.skypeContact = it
     }
+    binding.skypeContact.setText(iFace.state.skypeContact)
+    editReminder()
+  }
+
+  private fun getType(checkedId: Int): Int {
+    var type = Reminder.BY_SKYPE_CALL
+    when (checkedId) {
+      R.id.skypeCall -> type = Reminder.BY_SKYPE_CALL
+      R.id.skypeChat -> type = Reminder.BY_SKYPE
+      R.id.skypeVideo -> type = Reminder.BY_SKYPE_VIDEO
+    }
+    return type
+  }
+
+  private fun editReminder() {
+    val reminder = iFace.state.reminder
+    when (reminder.type) {
+      Reminder.BY_SKYPE_CALL -> binding.skypeCall.isChecked = true
+      Reminder.BY_SKYPE_VIDEO -> binding.skypeVideo.isChecked = true
+      Reminder.BY_SKYPE -> binding.skypeChat.isChecked = true
+    }
+    if (reminder.target != "") {
+      binding.skypeContact.setText(reminder.target)
+    }
+  }
 }

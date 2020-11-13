@@ -235,11 +235,11 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
       if (prefs.multiDeviceModeEnabled) {
         FirebaseInstanceId.getInstance().instanceId
           .addOnCompleteListener(OnCompleteListener { task ->
-              if (!task.isSuccessful) {
-                  return@OnCompleteListener
-              }
-              val token = task.result?.token
-              updateToken(token)
+            if (!task.isSuccessful) {
+              return@OnCompleteListener
+            }
+            val token = task.result?.token
+            updateToken(token)
           })
       }
     }

@@ -5,10 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 class PlacesResponse {
 
-    @SerializedName("results")
-    @Expose
-    var results: List<Place> = listOf()
-    @SerializedName("status")
-    @Expose
-    var status: String = ""
+  @SerializedName("results")
+  @Expose
+  var results: List<Place> = listOf()
+
+  @SerializedName("status")
+  @Expose
+  var status: String = ""
 }

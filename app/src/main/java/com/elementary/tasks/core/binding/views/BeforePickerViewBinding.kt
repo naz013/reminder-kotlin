@@ -7,7 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.Binding
 
 class BeforePickerViewBinding(view: View) : Binding(view) {
-    val beforeTypeView: Spinner by bindView(R.id.beforeTypeView)
-    val beforeValueView: EditText by bindView(R.id.beforeValueView)
-    val hintIcon: View by bindView(R.id.hintIcon)
+  val beforeTypeView: Spinner by bindView(R.id.beforeTypeView)
+  val beforeValueView: EditText by bindView(R.id.beforeValueView)
+  val hintIcon: View by bindView(R.id.hintIcon)
 }

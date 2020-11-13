@@ -8,15 +8,15 @@ import retrofit2.http.Url
 
 interface PlacesApi {
 
-    @GET("nearbysearch/json?")
-    fun getNearbyPlaces(@QueryMap params: Map<String, String>): Call<PlacesResponse>
+  @GET("nearbysearch/json?")
+  fun getNearbyPlaces(@QueryMap params: Map<String, String>): Call<PlacesResponse>
 
-    @GET
-    fun getPlaces(@Url url: String): Call<PlacesResponse>
+  @GET
+  fun getPlaces(@Url url: String): Call<PlacesResponse>
 
-    companion object {
-        const val OK = 200
+  companion object {
+    const val OK = 200
 
-        const val BASE_URL = "https://maps.googleapis.com/maps/api/place/"
-    }
+    const val BASE_URL = "https://maps.googleapis.com/maps/api/place/"
+  }
 }

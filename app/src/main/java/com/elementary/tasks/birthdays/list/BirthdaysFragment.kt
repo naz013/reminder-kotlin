@@ -27,121 +27,121 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
-    private val viewModel: BirthdaysViewModel by lazy {
-        ViewModelProvider(this).get(BirthdaysViewModel::class.java)
+  private val viewModel: BirthdaysViewModel by lazy {
+    ViewModelProvider(this).get(BirthdaysViewModel::class.java)
+  }
+  private val birthdayResolver = BirthdayResolver(
+    dialogAction = { dialogues },
+    deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
+  )
+
+  private val mAdapter = BirthdaysRecyclerAdapter {
+    filterController.original = viewModel.birthdays.value ?: listOf()
+  }
+  private var mSearchView: SearchView? = null
+  private var mSearchMenu: MenuItem? = null
+
+  private val sortModifier = SortModifier(null, null, prefs)
+  private val filterController = SearchModifier(sortModifier, this)
+
+  private val queryTextListener = object : SearchView.OnQueryTextListener {
+    override fun onQueryTextSubmit(query: String): Boolean {
+      filterController.setSearchValue(query)
+      if (mSearchMenu != null) {
+        mSearchMenu?.collapseActionView()
+      }
+      return false
     }
-    private val birthdayResolver = BirthdayResolver(
-            dialogAction = { dialogues },
-            deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
-    )
 
-    private val mAdapter = BirthdaysRecyclerAdapter {
-        filterController.original = viewModel.birthdays.value ?: listOf()
+    override fun onQueryTextChange(newText: String): Boolean {
+      filterController.setSearchValue(newText)
+      return false
     }
-    private var mSearchView: SearchView? = null
-    private var mSearchMenu: MenuItem? = null
+  }
+  private val mSearchCloseListener = { false }
 
-    private val sortModifier = SortModifier(null, null)
-    private val filterController = SearchModifier(sortModifier, this)
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    setHasOptionsMenu(true)
+  }
 
-    private val queryTextListener = object : SearchView.OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String): Boolean {
-            filterController.setSearchValue(query)
-            if (mSearchMenu != null) {
-                mSearchMenu?.collapseActionView()
-            }
-            return false
+  override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    inflater.inflate(R.menu.fragment_active_menu, menu)
+
+    mSearchMenu = menu.findItem(R.id.action_search)
+    val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+    mSearchMenu?.let { searchMenu ->
+      mSearchView = searchMenu.actionView as SearchView?
+      val activity = activity
+      mSearchView?.let { searchView ->
+        if (searchManager != null && activity != null) {
+          searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
         }
+        searchView.setOnQueryTextListener(queryTextListener)
+        searchView.setOnCloseListener(mSearchCloseListener)
+      }
+    }
+    super.onCreateOptionsMenu(menu, inflater)
+  }
 
-        override fun onQueryTextChange(newText: String): Boolean {
-            filterController.setSearchValue(newText)
-            return false
+  override fun layoutRes(): Int = R.layout.fragment_birthdays
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    binding.fab.setOnClickListener { addPlace() }
+    initList()
+    initViewModel()
+  }
+
+  private fun addPlace() {
+    withContext { AddBirthdayActivity.openLogged(it) }
+  }
+
+  private fun initViewModel() {
+    viewModel.birthdays.observe(viewLifecycleOwner, Observer { list ->
+        if (list != null) {
+            filterController.original = list
         }
+    })
+  }
+
+  override fun getTitle(): String = getString(R.string.birthdays)
+
+  private fun initList() {
+    if (resources.getBoolean(R.bool.is_tablet)) {
+      binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
+        StaggeredGridLayoutManager.VERTICAL)
+    } else {
+      binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }
-    private val mSearchCloseListener = { false }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.fragment_active_menu, menu)
-
-        mSearchMenu = menu.findItem(R.id.action_search)
-        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-        mSearchMenu?.let { searchMenu ->
-            mSearchView = searchMenu.actionView as SearchView?
-            val activity = activity
-            mSearchView?.let { searchView ->
-                if (searchManager != null && activity != null) {
-                    searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
-                }
-                searchView.setOnQueryTextListener(queryTextListener)
-                searchView.setOnCloseListener(mSearchCloseListener)
-            }
+    mAdapter.actionsListener = object : ActionsListener<Birthday> {
+      override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
+        if (t != null) {
+          birthdayResolver.resolveAction(view, t, actions)
         }
-        super.onCreateOptionsMenu(menu, inflater)
+      }
     }
-
-    override fun layoutRes(): Int = R.layout.fragment_birthdays
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.fab.setOnClickListener { addPlace() }
-        initList()
-        initViewModel()
+    binding.recyclerView.adapter = mAdapter
+    ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
+      if (it) binding.fab.show()
+      else binding.fab.hide()
     }
+    refreshView(0)
+  }
 
-    private fun addPlace() {
-        withContext { AddBirthdayActivity.openLogged(it) }
+  private fun refreshView(count: Int) {
+    if (count == 0) {
+      binding.emptyItem.visibility = View.VISIBLE
+    } else {
+      binding.emptyItem.visibility = View.GONE
     }
+  }
 
-    private fun initViewModel() {
-        viewModel.birthdays.observe(viewLifecycleOwner, Observer { list ->
-            if (list != null) {
-                filterController.original = list
-            }
-        })
-    }
-
-    override fun getTitle(): String = getString(R.string.birthdays)
-
-    private fun initList() {
-        if (resources.getBoolean(R.bool.is_tablet)) {
-            binding.recyclerView.layoutManager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_of_cols),
-                    StaggeredGridLayoutManager.VERTICAL)
-        } else {
-            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        }
-
-        mAdapter.actionsListener = object : ActionsListener<Birthday> {
-            override fun onAction(view: View, position: Int, t: Birthday?, actions: ListActions) {
-                if (t != null) {
-                    birthdayResolver.resolveAction(view, t, actions)
-                }
-            }
-        }
-        binding.recyclerView.adapter = mAdapter
-        ViewUtils.listenScrollableView(binding.recyclerView, { setToolbarAlpha(toAlpha(it.toFloat())) }) {
-            if (it) binding.fab.show()
-            else binding.fab.hide()
-        }
-        refreshView(0)
-    }
-
-    private fun refreshView(count: Int) {
-        if (count == 0) {
-            binding.emptyItem.visibility = View.VISIBLE
-        } else {
-            binding.emptyItem.visibility = View.GONE
-        }
-    }
-
-    override fun invoke(result: List<Birthday>) {
-        val newList = BirthdayAdsHolder.updateList(result)
-        mAdapter.submitList(newList)
-        binding.recyclerView.smoothScrollToPosition(0)
-        refreshView(newList.size)
-    }
+  override fun invoke(result: List<Birthday>) {
+    val newList = BirthdayAdsHolder.updateList(result)
+    mAdapter.submitList(newList)
+    binding.recyclerView.smoothScrollToPosition(0)
+    refreshView(newList.size)
+  }
 }

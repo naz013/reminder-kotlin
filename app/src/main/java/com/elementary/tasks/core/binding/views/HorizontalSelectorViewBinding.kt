@@ -7,7 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.Binding
 
 class HorizontalSelectorViewBinding(view: View) : Binding(view) {
-    val leftButton: ImageView by bindView(R.id.leftButton)
-    val rightButton: ImageView by bindView(R.id.rightButton)
-    val text1: TextView by bindView(R.id.text1)
+  val leftButton: ImageView by bindView(R.id.leftButton)
+  val rightButton: ImageView by bindView(R.id.rightButton)
+  val text1: TextView by bindView(R.id.text1)
 }

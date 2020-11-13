@@ -16,76 +16,76 @@ import java.io.ObjectOutputStream
 
 class SettingsConverter : Convertible<SettingsModel> {
 
-    override fun metadata(t: SettingsModel): Metadata {
-        return Metadata(
-                "app",
-                FileConfig.FILE_NAME_SETTINGS,
-                FileConfig.FILE_NAME_SETTINGS_EXT,
-                TimeUtil.gmtDateTime,
-                "Settings Backup"
-        )
-    }
+  override fun metadata(t: SettingsModel): Metadata {
+    return Metadata(
+      "app",
+      FileConfig.FILE_NAME_SETTINGS,
+      FileConfig.FILE_NAME_SETTINGS_EXT,
+      TimeUtil.gmtDateTime,
+      "Settings Backup"
+    )
+  }
 
-    override fun convert(t: SettingsModel): FileIndex? {
-        return try {
-            var output: ObjectOutputStream? = null
-            val outputBytes = CopyByteArrayStream()
-            try {
-                output = ObjectOutputStream(outputBytes)
-                val list = t.data
-                if (list.containsKey(PrefsConstants.DRIVE_USER)) {
-                    list.remove(PrefsConstants.DRIVE_USER)
-                }
-                if (list.containsKey(PrefsConstants.TASKS_USER)) {
-                    list.remove(PrefsConstants.TASKS_USER)
-                }
-                output.writeObject(list)
-                FileIndex().apply {
-                    this.stream = outputBytes
-                    this.ext = FileConfig.FILE_NAME_SETTINGS_EXT
-                    this.id = "app"
-                    this.updatedAt = TimeUtil.gmtDateTime
-                    this.type = IndexTypes.TYPE_SETTINGS
-                    this.readyToBackup = true
-                }
-            } catch (e: IOException) {
-                null
-            } finally {
-                try {
-                    if (output != null) {
-                        output.flush()
-                        output.close()
-                    }
-                } catch (ex: IOException) {
-                    ex.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            null
+  override fun convert(t: SettingsModel): FileIndex? {
+    return try {
+      var output: ObjectOutputStream? = null
+      val outputBytes = CopyByteArrayStream()
+      try {
+        output = ObjectOutputStream(outputBytes)
+        val list = t.data
+        if (list.containsKey(PrefsConstants.DRIVE_USER)) {
+          list.remove(PrefsConstants.DRIVE_USER)
         }
+        if (list.containsKey(PrefsConstants.TASKS_USER)) {
+          list.remove(PrefsConstants.TASKS_USER)
+        }
+        output.writeObject(list)
+        FileIndex().apply {
+          this.stream = outputBytes
+          this.ext = FileConfig.FILE_NAME_SETTINGS_EXT
+          this.id = "app"
+          this.updatedAt = TimeUtil.gmtDateTime
+          this.type = IndexTypes.TYPE_SETTINGS
+          this.readyToBackup = true
+        }
+      } catch (e: IOException) {
+        null
+      } finally {
+        try {
+          if (output != null) {
+            output.flush()
+            output.close()
+          }
+        } catch (ex: IOException) {
+          ex.printStackTrace()
+        }
+      }
+    } catch (e: Exception) {
+      Timber.e(e)
+      null
     }
+  }
 
-    override fun convert(stream: InputStream): SettingsModel? {
-        return try {
-            var input: ObjectInputStream? = null
-            try {
-                input = ObjectInputStream(Base64InputStream(stream, Base64.DEFAULT))
-                val entries = input.readObject() as MutableMap<String, *>
-                SettingsModel(entries)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            } finally {
-                try {
-                    input?.close()
-                } catch (ex: IOException) {
-                    ex.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            null
+  override fun convert(stream: InputStream): SettingsModel? {
+    return try {
+      var input: ObjectInputStream? = null
+      try {
+        input = ObjectInputStream(Base64InputStream(stream, Base64.DEFAULT))
+        val entries = input.readObject() as MutableMap<String, *>
+        SettingsModel(entries)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        null
+      } finally {
+        try {
+          input?.close()
+        } catch (ex: IOException) {
+          ex.printStackTrace()
         }
+      }
+    } catch (e: Exception) {
+      Timber.e(e)
+      null
     }
+  }
 }

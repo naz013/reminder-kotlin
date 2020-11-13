@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
@@ -21,112 +20,113 @@ import com.elementary.tasks.databinding.ActivityApplicationListBinding
 
 class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>(R.layout.activity_application_list) {
 
-    private val viewModel: SelectApplicationViewModel by lazy {
-        ViewModelProvider(this).get(SelectApplicationViewModel::class.java)
+  private val viewModel: SelectApplicationViewModel by lazy {
+    ViewModelProvider(this).get(SelectApplicationViewModel::class.java)
+  }
+  private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
+  private val searchModifier = object : SearchModifier<ApplicationItem>(
+    null, {
+      adapter.submitList(it)
+      binding.contactsList.smoothScrollToPosition(0)
+      refreshView(it.size)
+  }) {
+    override fun filter(v: ApplicationItem): Boolean {
+      return searchValue.isEmpty() || (v.name
+        ?: "").toLowerCase().contains(searchValue.toLowerCase())
     }
-    private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
-    private val searchModifier = object : SearchModifier<ApplicationItem>(null, {
-        adapter.submitList(it)
-        binding.contactsList.smoothScrollToPosition(0)
-        refreshView(it.size)
-    }) {
-        override fun filter(v: ApplicationItem): Boolean {
-            return searchValue.isEmpty() || (v.name
-                    ?: "").toLowerCase().contains(searchValue.toLowerCase())
-        }
-    }
+  }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.packageManager = packageManager
-        viewModel.loadApps()
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    viewModel.packageManager = packageManager
+    viewModel.loadApps()
 
-        binding.loaderView.visibility = View.GONE
-        initActionBar()
-        initSearchView()
-        initRecyclerView()
-    }
+    binding.loaderView.visibility = View.GONE
+    initActionBar()
+    initSearchView()
+    initRecyclerView()
+  }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.applications.observe(this, Observer { applications ->
-            applications?.let { searchModifier.original = it }
-        })
-        viewModel.isLoading.observe(this, Observer { isLoading ->
-            isLoading?.let {
-                if (it) {
-                    showProgress()
-                } else {
-                    hideProgress()
-                }
-            }
-        })
-    }
-
-    private fun hideProgress() {
-        binding.loaderView.visibility = View.GONE
-    }
-
-    private fun showProgress() {
-        binding.loaderView.visibility = View.VISIBLE
-    }
-
-    private fun initRecyclerView() {
-        adapter.actionsListener = object : ActionsListener<ApplicationItem> {
-            override fun onAction(view: View, position: Int, t: ApplicationItem?, actions: ListActions) {
-                if (t != null) {
-                    val intent = Intent()
-                    intent.putExtra(Constants.SELECTED_APPLICATION, t.packageName)
-                    setResult(RESULT_OK, intent)
-                    finish()
-                }
+  override fun onStart() {
+    super.onStart()
+    viewModel.applications.observe(this, { applications ->
+        applications?.let { searchModifier.original = it }
+    })
+    viewModel.isLoading.observe(this, { isLoading ->
+        isLoading?.let {
+            if (it) {
+                showProgress()
+            } else {
+                hideProgress()
             }
         }
-        binding.contactsList.layoutManager = LinearLayoutManager(this)
-        binding.contactsList.adapter = adapter
-        binding.contactsList.isNestedScrollingEnabled = false
-        ViewUtils.listenScrollableView(binding.scroller) {
-            binding.toolbarView.isSelected = it > 0
+    })
+  }
+
+  private fun hideProgress() {
+    binding.loaderView.visibility = View.GONE
+  }
+
+  private fun showProgress() {
+    binding.loaderView.visibility = View.VISIBLE
+  }
+
+  private fun initRecyclerView() {
+    adapter.actionsListener = object : ActionsListener<ApplicationItem> {
+      override fun onAction(view: View, position: Int, t: ApplicationItem?, actions: ListActions) {
+        if (t != null) {
+          val intent = Intent()
+          intent.putExtra(Constants.SELECTED_APPLICATION, t.packageName)
+          setResult(RESULT_OK, intent)
+          finish()
         }
+      }
     }
-
-    private fun initSearchView() {
-        binding.searchField.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                searchModifier.setSearchValue(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable) {
-            }
-        })
+    binding.contactsList.layoutManager = LinearLayoutManager(this)
+    binding.contactsList.adapter = adapter
+    binding.contactsList.isNestedScrollingEnabled = false
+    ViewUtils.listenScrollableView(binding.scroller) {
+      binding.toolbarView.isSelected = it > 0
     }
+  }
 
-    private fun initActionBar() {
-        binding.backButton.setOnClickListener { onBackPressed() }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
-    }
-
-    private fun refreshView(count: Int) {
-        if (count > 0) {
-            binding.emptyItem.visibility = View.GONE
-            binding.scroller.visibility = View.VISIBLE
-        } else {
-            binding.scroller.visibility = View.GONE
-            binding.emptyItem.visibility = View.VISIBLE
+  private fun initSearchView() {
+    binding.searchField.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         }
-    }
 
-    override fun onBackPressed() {
-        val intent = Intent()
-        setResult(RESULT_CANCELED, intent)
-        finish()
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            searchModifier.setSearchValue(s.toString())
+        }
+
+        override fun afterTextChanged(s: Editable) {
+        }
+    })
+  }
+
+  private fun initActionBar() {
+    binding.backButton.setOnClickListener { onBackPressed() }
+  }
+
+  override fun onPause() {
+    super.onPause()
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    imm?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
+  }
+
+  private fun refreshView(count: Int) {
+    if (count > 0) {
+      binding.emptyItem.visibility = View.GONE
+      binding.scroller.visibility = View.VISIBLE
+    } else {
+      binding.scroller.visibility = View.GONE
+      binding.emptyItem.visibility = View.VISIBLE
     }
+  }
+
+  override fun onBackPressed() {
+    val intent = Intent()
+    setResult(RESULT_CANCELED, intent)
+    finish()
+  }
 }

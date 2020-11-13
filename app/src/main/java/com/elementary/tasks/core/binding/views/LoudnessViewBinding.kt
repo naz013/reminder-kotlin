@@ -7,7 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.Binding
 
 class LoudnessViewBinding(view: View) : Binding(view) {
-    val hintIcon: View by bindView(R.id.hintIcon)
-    val labelView: TextView by bindView(R.id.labelView)
-    val sliderView: SeekBar by bindView(R.id.sliderView)
+  val hintIcon: View by bindView(R.id.hintIcon)
+  val labelView: TextView by bindView(R.id.labelView)
+  val sliderView: SeekBar by bindView(R.id.sliderView)
 }

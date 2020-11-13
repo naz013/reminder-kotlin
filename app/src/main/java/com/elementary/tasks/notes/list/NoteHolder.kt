@@ -15,7 +15,12 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.AssetsUtil
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton

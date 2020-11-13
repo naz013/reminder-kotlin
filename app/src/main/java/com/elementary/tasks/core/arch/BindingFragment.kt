@@ -12,29 +12,29 @@ import androidx.fragment.app.Fragment
 
 abstract class BindingFragment<B : ViewDataBinding> : Fragment() {
 
-    lateinit var binding: B
+  lateinit var binding: B
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val res = layoutRes()
-        val view =  if (res != 0) {
-            inflater.inflate(layoutRes(), container, false)
-        } else {
-            super.onCreateView(inflater, container, savedInstanceState)
-        }
-        if (view != null) {
-            binding = DataBindingUtil.bind(view)!!
-        }
-        return view
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    val res = layoutRes()
+    val view = if (res != 0) {
+      inflater.inflate(layoutRes(), container, false)
+    } else {
+      super.onCreateView(inflater, container, savedInstanceState)
     }
-
-    protected fun string(@StringRes res: Int): String {
-        return if (context != null && isAdded) {
-            getString(res)
-        } else {
-            ""
-        }
+    if (view != null) {
+      binding = DataBindingUtil.bind(view)!!
     }
+    return view
+  }
 
-    @LayoutRes
-    open fun layoutRes(): Int = 0
+  protected fun string(@StringRes res: Int): String {
+    return if (context != null && isAdded) {
+      getString(res)
+    } else {
+      ""
+    }
+  }
+
+  @LayoutRes
+  open fun layoutRes(): Int = 0
 }

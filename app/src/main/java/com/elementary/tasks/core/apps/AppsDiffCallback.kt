@@ -4,11 +4,11 @@ import androidx.recyclerview.widget.DiffUtil
 
 class AppsDiffCallback : DiffUtil.ItemCallback<ApplicationItem>() {
 
-    override fun areContentsTheSame(oldItem: ApplicationItem, newItem: ApplicationItem): Boolean {
-        return oldItem == newItem
-    }
+  override fun areContentsTheSame(oldItem: ApplicationItem, newItem: ApplicationItem): Boolean {
+    return oldItem == newItem
+  }
 
-    override fun areItemsTheSame(oldItem: ApplicationItem, newItem: ApplicationItem): Boolean {
-        return oldItem.packageName == newItem.packageName
-    }
+  override fun areItemsTheSame(oldItem: ApplicationItem, newItem: ApplicationItem): Boolean {
+    return oldItem.packageName == newItem.packageName
+  }
 }

@@ -13,49 +13,49 @@ import java.lang.ref.WeakReference
 
 class NoteConverter : Convertible<NoteWithImages> {
 
-    override fun metadata(t: NoteWithImages): Metadata {
-        return Metadata(
-                t.getKey(),
-                t.getKey() + FileConfig.FILE_NAME_NOTE,
-                FileConfig.FILE_NAME_NOTE,
-                t.getGmtTime(),
-                "Place Backup"
-        )
-    }
+  override fun metadata(t: NoteWithImages): Metadata {
+    return Metadata(
+      t.getKey(),
+      t.getKey() + FileConfig.FILE_NAME_NOTE,
+      FileConfig.FILE_NAME_NOTE,
+      t.getGmtTime(),
+      "Place Backup"
+    )
+  }
 
-    override fun convert(t: NoteWithImages): FileIndex? {
-        return try {
-            val stream = CopyByteArrayStream()
-            MemoryUtil.toStream(t, stream)
-            FileIndex().apply {
-                this.stream = stream
-                this.ext = FileConfig.FILE_NAME_NOTE
-                this.id = t.getKey()
-                this.updatedAt = t.getGmtTime()
-                this.type = IndexTypes.TYPE_NOTE
-                this.readyToBackup = true
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-            null
-        }
+  override fun convert(t: NoteWithImages): FileIndex? {
+    return try {
+      val stream = CopyByteArrayStream()
+      MemoryUtil.toStream(t, stream)
+      FileIndex().apply {
+        this.stream = stream
+        this.ext = FileConfig.FILE_NAME_NOTE
+        this.id = t.getKey()
+        this.updatedAt = t.getGmtTime()
+        this.type = IndexTypes.TYPE_NOTE
+        this.readyToBackup = true
+      }
+    } catch (e: Exception) {
+      Timber.e(e)
+      null
     }
+  }
 
-    override fun convert(stream: InputStream): NoteWithImages? {
-        return try {
-            val weakNote = WeakReference(MemoryUtil.fromStream(stream, OldNote::class.java))
-            stream.close()
-            val oldNote = weakNote.get() ?: return null
-            val noteWithImages = NoteWithImages()
-            oldNote.images.forEach {
-                it.noteId = oldNote.key
-            }
-            noteWithImages.note = Note(oldNote)
-            noteWithImages.images = oldNote.images
-            return noteWithImages
-        } catch (e: Exception) {
-            Timber.e(e)
-            null
-        }
+  override fun convert(stream: InputStream): NoteWithImages? {
+    return try {
+      val weakNote = WeakReference(MemoryUtil.fromStream(stream, OldNote::class.java))
+      stream.close()
+      val oldNote = weakNote.get() ?: return null
+      val noteWithImages = NoteWithImages()
+      oldNote.images.forEach {
+        it.noteId = oldNote.key
+      }
+      noteWithImages.note = Note(oldNote)
+      noteWithImages.images = oldNote.images
+      return noteWithImages
+    } catch (e: Exception) {
+      Timber.e(e)
+      null
     }
+  }
 }

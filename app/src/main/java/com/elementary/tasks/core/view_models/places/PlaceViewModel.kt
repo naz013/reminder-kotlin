@@ -11,32 +11,32 @@ import kotlinx.coroutines.runBlocking
 
 class PlaceViewModel private constructor(key: String) : BasePlacesViewModel() {
 
-    var place = appDb.placesDao().loadByKey(key)
-    var hasSameInDb: Boolean = false
+  var place = appDb.placesDao().loadByKey(key)
+  var hasSameInDb: Boolean = false
 
-    fun savePlace(place: Place) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
-                appDb.placesDao().insert(place)
-            }
-            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
-            postInProgress(false)
-            postCommand(Commands.SAVED)
-        }
+  fun savePlace(place: Place) {
+    postInProgress(true)
+    launchDefault {
+      runBlocking {
+        appDb.placesDao().insert(place)
+      }
+      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, place.id)
+      postInProgress(false)
+      postCommand(Commands.SAVED)
     }
+  }
 
-    fun findSame(id: String) {
-        launchDefault {
-            val place = appDb.placesDao().getByKey(id)
-            hasSameInDb = place != null
-        }
+  fun findSame(id: String) {
+    launchDefault {
+      val place = appDb.placesDao().getByKey(id)
+      hasSameInDb = place != null
     }
+  }
 
-    class Factory(private val key: String) : ViewModelProvider.NewInstanceFactory() {
+  class Factory(private val key: String) : ViewModelProvider.NewInstanceFactory() {
 
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PlaceViewModel(key) as T
-        }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+      return PlaceViewModel(key) as T
     }
+  }
 }

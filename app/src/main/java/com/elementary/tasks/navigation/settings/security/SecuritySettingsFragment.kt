@@ -13,118 +13,118 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBinding>() {
 
-    private lateinit var biometricPrompt: BiometricPrompt
+  private lateinit var biometricPrompt: BiometricPrompt
 
-    override fun layoutRes(): Int = R.layout.fragment_settings_security
+  override fun layoutRes(): Int = R.layout.fragment_settings_security
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        ViewUtils.listenScrollableView(binding.scrollView) {
-            setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
-        }
-
-        binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
-        binding.changePinPrefs.setOnClickListener {
-            safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment())
-        }
-
-        biometricPrompt = createBiometricPrompt()
-
-        initFingerPrefs()
-        initPhonePrefs()
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    ViewUtils.listenScrollableView(binding.scrollView) {
+      setToolbarAlpha(toAlpha(it.toFloat(), NESTED_SCROLL_MAX))
     }
 
-    private fun createBiometricPrompt(): BiometricPrompt {
-        val executor = ContextCompat.getMainExecutor(context!!)
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                setFinger(!binding.fingerprintSwitchPrefs.isChecked)
-            }
-        }
-
-        return BiometricPrompt(this, executor, callback)
+    binding.changePinPrefs.setDependentView(binding.pinSwitchPrefs)
+    binding.changePinPrefs.setOnClickListener {
+      safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToChangePinFragment())
     }
 
-    private fun initPhonePrefs() {
-        withContext {
-            if (Module.hasTelephony(it)) {
-                binding.telephonyPrefs.isEnabled = true
-                binding.telephonyPrefs.setOnClickListener { changePhonePrefs() }
-                binding.telephonyPrefs.isChecked = prefs.isTelephonyEnabled
-            } else {
-                prefs.isTelephonyEnabled = false
-                binding.telephonyPrefs.isChecked = false
-                binding.telephonyPrefs.isEnabled = false
-            }
-        }
+    biometricPrompt = createBiometricPrompt()
+
+    initFingerPrefs()
+    initPhonePrefs()
+  }
+
+  private fun createBiometricPrompt(): BiometricPrompt {
+    val executor = ContextCompat.getMainExecutor(context!!)
+    val callback = object : BiometricPrompt.AuthenticationCallback() {
+      override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+        super.onAuthenticationSucceeded(result)
+        setFinger(!binding.fingerprintSwitchPrefs.isChecked)
+      }
     }
 
-    private fun changePhonePrefs() {
-        val isChecked = binding.telephonyPrefs.isChecked
-        binding.telephonyPrefs.isChecked = !isChecked
-        prefs.isTelephonyEnabled = !isChecked
+    return BiometricPrompt(this, executor, callback)
+  }
+
+  private fun initPhonePrefs() {
+    withContext {
+      if (Module.hasTelephony(it)) {
+        binding.telephonyPrefs.isEnabled = true
+        binding.telephonyPrefs.setOnClickListener { changePhonePrefs() }
+        binding.telephonyPrefs.isChecked = prefs.isTelephonyEnabled
+      } else {
+        prefs.isTelephonyEnabled = false
+        binding.telephonyPrefs.isChecked = false
+        binding.telephonyPrefs.isEnabled = false
+      }
     }
+  }
 
-    private fun initPinPrefs() {
-        binding.pinSwitchPrefs.setOnClickListener { changePinPrefs() }
-        binding.pinSwitchPrefs.isChecked = prefs.hasPinCode
+  private fun changePhonePrefs() {
+    val isChecked = binding.telephonyPrefs.isChecked
+    binding.telephonyPrefs.isChecked = !isChecked
+    prefs.isTelephonyEnabled = !isChecked
+  }
+
+  private fun initPinPrefs() {
+    binding.pinSwitchPrefs.setOnClickListener { changePinPrefs() }
+    binding.pinSwitchPrefs.isChecked = prefs.hasPinCode
+  }
+
+  private fun changePinPrefs() {
+    val isChecked = binding.pinSwitchPrefs.isChecked
+    if (isChecked) {
+      safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment())
+    } else {
+      safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment())
     }
+  }
 
-    private fun changePinPrefs() {
-        val isChecked = binding.pinSwitchPrefs.isChecked
-        if (isChecked) {
-            safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToDisablePinFragment())
-        } else {
-            safeNavigation(SecuritySettingsFragmentDirections.actionSecuritySettingsFragmentToAddPinFragment())
-        }
+  private fun initFingerPrefs() {
+    binding.fingerprintSwitchPrefs.setOnClickListener { changeFingerPrefs() }
+    binding.fingerprintSwitchPrefs.setDependentView(binding.pinSwitchPrefs)
+    binding.fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
+
+    withContext {
+      if (BiometricManager.from(it).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
+        binding.fingerprintSwitchPrefs.visibility = View.VISIBLE
+      } else {
+        binding.fingerprintSwitchPrefs.visibility = View.GONE
+      }
     }
+  }
 
-    private fun initFingerPrefs() {
-        binding.fingerprintSwitchPrefs.setOnClickListener { changeFingerPrefs() }
-        binding.fingerprintSwitchPrefs.setDependentView(binding.pinSwitchPrefs)
-        binding.fingerprintSwitchPrefs.isChecked = prefs.useFingerprint
+  private fun setFinger(enabled: Boolean) {
+    binding.fingerprintSwitchPrefs.isChecked = enabled
+    prefs.useFingerprint = enabled
+  }
 
-        withContext {
-            if (BiometricManager.from(it).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
-                binding.fingerprintSwitchPrefs.visibility = View.VISIBLE
-            } else {
-                binding.fingerprintSwitchPrefs.visibility = View.GONE
-            }
-        }
+  private fun changeFingerPrefs() {
+    withContext {
+      if (BiometricManager.from(it)
+          .canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
+        val promptInfo = createPromptInfo()
+        biometricPrompt.authenticate(promptInfo)
+      }
     }
+  }
 
-    private fun setFinger(enabled: Boolean) {
-        binding.fingerprintSwitchPrefs.isChecked = enabled
-        prefs.useFingerprint = enabled
-    }
+  private fun createPromptInfo(): BiometricPrompt.PromptInfo {
+    return BiometricPrompt.PromptInfo.Builder()
+      .setTitle(getString(R.string.app_title))
+      .setSubtitle(getString(R.string.prompt_info_subtitle))
+      .setDescription(getString(R.string.prompt_info_description))
+      // Authenticate without requiring the user to press a "confirm"
+      // button after satisfying the biometric check
+      .setConfirmationRequired(false)
+      .setNegativeButtonText(getString(R.string.cancel))
+      .build()
+  }
 
-    private fun changeFingerPrefs() {
-        withContext {
-            if (BiometricManager.from(it)
-                            .canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS) {
-                val promptInfo = createPromptInfo()
-                biometricPrompt.authenticate(promptInfo)
-            }
-        }
-    }
+  override fun onBackStackResume() {
+    super.onBackStackResume()
+    initPinPrefs()
+  }
 
-    private fun createPromptInfo(): BiometricPrompt.PromptInfo {
-        return BiometricPrompt.PromptInfo.Builder()
-                .setTitle(getString(R.string.app_title))
-                .setSubtitle(getString(R.string.prompt_info_subtitle))
-                .setDescription(getString(R.string.prompt_info_description))
-                // Authenticate without requiring the user to press a "confirm"
-                // button after satisfying the biometric check
-                .setConfirmationRequired(false)
-                .setNegativeButtonText(getString(R.string.cancel))
-                .build()
-    }
-
-    override fun onBackStackResume() {
-        super.onBackStackResume()
-        initPinPrefs()
-    }
-
-    override fun getTitle(): String = getString(R.string.security)
+  override fun getTitle(): String = getString(R.string.security)
 }

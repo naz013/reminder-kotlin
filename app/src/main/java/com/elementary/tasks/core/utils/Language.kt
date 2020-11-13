@@ -22,17 +22,17 @@ class Language(private val prefs: Prefs) {
     } else {
       prefs.ttsLocale
     })) {
-        ENGLISH -> res = Locale.ENGLISH
-        FRENCH -> res = Locale.FRENCH
-        GERMAN -> res = Locale.GERMAN
-        JAPANESE -> res = Locale.JAPANESE
-        ITALIAN -> res = Locale.ITALIAN
-        KOREAN -> res = Locale.KOREAN
-        POLISH -> res = Locale("pl", "")
-        RUSSIAN -> res = Locale("ru", "")
-        SPANISH -> res = Locale("es", "")
-        UKRAINIAN -> res = Locale("uk", "")
-        PORTUGUESE -> res = Locale("pt", "")
+      ENGLISH -> res = Locale.ENGLISH
+      FRENCH -> res = Locale.FRENCH
+      GERMAN -> res = Locale.GERMAN
+      JAPANESE -> res = Locale.JAPANESE
+      ITALIAN -> res = Locale.ITALIAN
+      KOREAN -> res = Locale.KOREAN
+      POLISH -> res = Locale("pl", "")
+      RUSSIAN -> res = Locale("ru", "")
+      SPANISH -> res = Locale("es", "")
+      UKRAINIAN -> res = Locale("uk", "")
+      PORTUGUESE -> res = Locale("pt", "")
     }
     return res
   }
@@ -82,66 +82,66 @@ class Language(private val prefs: Prefs) {
     context.getString(R.string.ukrainian) + " (" + UK + ")",
     context.getString(R.string.german) + " (" + DE + ") (BETA)",
     context.getString(R.string.spanish) + " (" + ES + ") (BETA)",
-    context.getString(R.string.portuguese) + " (" + PT + ") (BETA)",
-    context.getString(R.string.polish) + " (" + PL + ") (BETA)"
+    context.getString(R.string.portuguese) + " (" + PT + ") (BETA)"
+//    context.getString(R.string.polish) + " (" + PL + ") (BETA)"
   )
 
   fun getTextLanguage(code: Int) = when (code) {
-      0 -> ENGLISH
-      1 -> RUSSIAN
-      2 -> UKRAINIAN
-      3 -> GERMAN
-      4 -> SPANISH
-      5 -> PORTUGUESE
-      6 -> POLISH
+    0 -> ENGLISH
+    1 -> RUSSIAN
+    2 -> UKRAINIAN
+    3 -> GERMAN
+    4 -> SPANISH
+    5 -> PORTUGUESE
+    6 -> POLISH
     else -> ENGLISH
   }
 
   fun getLanguage(code: Int) = when (code) {
-      0 -> EN
-      1 -> RU
-      2 -> UK
-      3 -> DE
-      4 -> ES
-      5 -> PT
-      6 -> PL
+    0 -> EN
+    1 -> RU
+    2 -> UK
+    3 -> DE
+    4 -> ES
+    5 -> PT
+    6 -> PL
     else -> EN
   }
 
   fun getVoiceLocale(code: Int): Locale = when (code) {
-      0 -> Locale.ENGLISH
-      1 -> Locale("ru", "")
-      2 -> Locale("uk", "")
-      3 -> Locale.GERMAN
-      4 -> Locale("es", "")
-      5 -> Locale("pt", "")
-      6 -> Locale("pl", "")
+    0 -> Locale.ENGLISH
+    1 -> Locale("ru", "")
+    2 -> Locale("uk", "")
+    3 -> Locale.GERMAN
+    4 -> Locale("es", "")
+    5 -> Locale("pt", "")
+    6 -> Locale("pl", "")
     else -> Locale.ENGLISH
   }
 
   fun getVoiceLanguage(code: Int) = when (code) {
-      0 -> com.backdoor.engine.misc.Locale.EN
-      1 -> com.backdoor.engine.misc.Locale.RU
-      2 -> com.backdoor.engine.misc.Locale.UK
-      3 -> com.backdoor.engine.misc.Locale.DE
-      4 -> com.backdoor.engine.misc.Locale.ES
-      5 -> com.backdoor.engine.misc.Locale.PT
-      6 -> com.backdoor.engine.misc.Locale.PL
+    0 -> com.backdoor.engine.misc.Locale.EN
+    1 -> com.backdoor.engine.misc.Locale.RU
+    2 -> com.backdoor.engine.misc.Locale.UK
+    3 -> com.backdoor.engine.misc.Locale.DE
+    4 -> com.backdoor.engine.misc.Locale.ES
+    5 -> com.backdoor.engine.misc.Locale.PT
+    6 -> com.backdoor.engine.misc.Locale.PL
     else -> com.backdoor.engine.misc.Locale.EN
   }
 
   fun getLocaleByPosition(position: Int) = when (position) {
-      0 -> ENGLISH
-      1 -> FRENCH
-      2 -> GERMAN
-      3 -> ITALIAN
-      4 -> JAPANESE
-      5 -> KOREAN
-      6 -> POLISH
-      7 -> RUSSIAN
-      8 -> SPANISH
-      9 -> PORTUGUESE
-      10 -> UKRAINIAN
+    0 -> ENGLISH
+    1 -> FRENCH
+    2 -> GERMAN
+    3 -> ITALIAN
+    4 -> JAPANESE
+    5 -> KOREAN
+    6 -> POLISH
+    7 -> RUSSIAN
+    8 -> SPANISH
+    9 -> PORTUGUESE
+    10 -> UKRAINIAN
     else -> ENGLISH
   }
 
@@ -204,23 +204,23 @@ class Language(private val prefs: Prefs) {
 
     fun getScreenLanguage(code: Int): Locale {
       return when (code) {
-          0 -> Locale.getDefault()
-          1 -> Locale.ENGLISH
-          2 -> Locale.GERMAN
-          3 -> Locale("es", "")
-          4 -> Locale.FRENCH
-          5 -> Locale.ITALIAN
-          6 -> Locale("pt", "")
-          7 -> Locale("pl", "")
-          8 -> Locale("cs", "")
-          9 -> Locale("ro", "")
-          10 -> Locale("tr", "")
-          11 -> Locale("uk", "")
-          12 -> Locale("ru", "")
-          13 -> Locale.JAPANESE
-          14 -> Locale.CHINESE
-          15 -> Locale("hi", "")
-          16 -> Locale.KOREAN
+        0 -> Locale.getDefault()
+        1 -> Locale.ENGLISH
+        2 -> Locale.GERMAN
+        3 -> Locale("es", "")
+        4 -> Locale.FRENCH
+        5 -> Locale.ITALIAN
+        6 -> Locale("pt", "")
+        7 -> Locale("pl", "")
+        8 -> Locale("cs", "")
+        9 -> Locale("ro", "")
+        10 -> Locale("tr", "")
+        11 -> Locale("uk", "")
+        12 -> Locale("ru", "")
+        13 -> Locale.JAPANESE
+        14 -> Locale.CHINESE
+        15 -> Locale("hi", "")
+        16 -> Locale.KOREAN
         else -> Locale.getDefault()
       }
     }

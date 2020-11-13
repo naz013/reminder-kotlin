@@ -11,40 +11,40 @@ import kotlinx.coroutines.runBlocking
 
 class GroupViewModel private constructor(id: String) : BaseGroupsViewModel() {
 
-    val reminderGroup = appDb.reminderGroupDao().loadById(id)
-    var isEdited = false
-    var hasSameInDb: Boolean = false
-    var isFromFile: Boolean = false
-    var isLogged = false
+  val reminderGroup = appDb.reminderGroupDao().loadById(id)
+  var isEdited = false
+  var hasSameInDb: Boolean = false
+  var isFromFile: Boolean = false
+  var isLogged = false
 
-    fun findSame(id: String) {
-        launchDefault {
-            val group = appDb.reminderGroupDao().getById(id)
-            hasSameInDb = group != null
-        }
+  fun findSame(id: String) {
+    launchDefault {
+      val group = appDb.reminderGroupDao().getById(id)
+      hasSameInDb = group != null
     }
+  }
 
-    fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
-                if (!wasDefault && reminderGroup.isDefaultGroup) {
-                    val groups = appDb.reminderGroupDao().all()
-                    for (g in groups) g.isDefaultGroup = false
-                    appDb.reminderGroupDao().insertAll(groups)
-                }
-                appDb.reminderGroupDao().insert(reminderGroup)
-            }
-            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
-            postInProgress(false)
-            postCommand(Commands.SAVED)
+  fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
+    postInProgress(true)
+    launchDefault {
+      runBlocking {
+        if (!wasDefault && reminderGroup.isDefaultGroup) {
+          val groups = appDb.reminderGroupDao().all()
+          for (g in groups) g.isDefaultGroup = false
+          appDb.reminderGroupDao().insertAll(groups)
         }
+        appDb.reminderGroupDao().insert(reminderGroup)
+      }
+      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
+      postInProgress(false)
+      postCommand(Commands.SAVED)
     }
+  }
 
-    class Factory(private val id: String) : ViewModelProvider.NewInstanceFactory() {
+  class Factory(private val id: String) : ViewModelProvider.NewInstanceFactory() {
 
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return GroupViewModel(id) as T
-        }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+      return GroupViewModel(id) as T
     }
+  }
 }

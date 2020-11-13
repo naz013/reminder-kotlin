@@ -41,50 +41,50 @@ class CallReceiver : BaseBroadcast() {
         return
       }
       when (state) {
-          TelephonyManager.CALL_STATE_RINGING -> {
-              prevState = state
-              startCallTime = System.currentTimeMillis()
-          }
-          TelephonyManager.CALL_STATE_OFFHOOK -> prevState = state
-          TelephonyManager.CALL_STATE_IDLE -> {
-              if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
-                  prevState = state
-                  val isFollow = prefs.isFollowReminderEnabled
-                  if (prefs.isTelephonyAllowed && mIncomingNumber != null && isFollow) {
-                      val number = mIncomingNumber
-                      if (number != null) {
-                          FollowReminderActivity.mockScreen(context, number, startCallTime)
-                      }
-                  }
-              } else if (prevState == TelephonyManager.CALL_STATE_RINGING) {
-                  prevState = state
-                  val currTime = System.currentTimeMillis()
-                  if (currTime - startCallTime >= 1000 * 10) {
-                      val number = mIncomingNumber
-                      Timber.d("onCallStateChanged: is missed $number")
-                      if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && number != null) {
-                          var missedCall = appDb.missedCallsDao().getByNumber(number)
-                          if (missedCall != null) {
-                              EventJobScheduler.cancelMissedCall(missedCall.number)
-                          } else {
-                              missedCall = MissedCall()
-                          }
-                          missedCall.dateTime = currTime
-                          missedCall.number = number
-                          appDb.missedCallsDao().insert(missedCall)
-                          EventJobScheduler.scheduleMissedCall(prefs, missedCall.number)
-                      }
-                  } else {
-                      Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
-                      if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
-                          val number = mIncomingNumber
-                          if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
-                              QuickSmsActivity.openScreen(context, number)
-                          }
-                      }
-                  }
+        TelephonyManager.CALL_STATE_RINGING -> {
+          prevState = state
+          startCallTime = System.currentTimeMillis()
+        }
+        TelephonyManager.CALL_STATE_OFFHOOK -> prevState = state
+        TelephonyManager.CALL_STATE_IDLE -> {
+          if (prevState == TelephonyManager.CALL_STATE_OFFHOOK) {
+            prevState = state
+            val isFollow = prefs.isFollowReminderEnabled
+            if (prefs.isTelephonyAllowed && mIncomingNumber != null && isFollow) {
+              val number = mIncomingNumber
+              if (number != null) {
+                FollowReminderActivity.mockScreen(context, number, startCallTime)
               }
+            }
+          } else if (prevState == TelephonyManager.CALL_STATE_RINGING) {
+            prevState = state
+            val currTime = System.currentTimeMillis()
+            if (currTime - startCallTime >= 1000 * 10) {
+              val number = mIncomingNumber
+              Timber.d("onCallStateChanged: is missed $number")
+              if (prefs.isTelephonyAllowed && prefs.isMissedReminderEnabled && number != null) {
+                var missedCall = appDb.missedCallsDao().getByNumber(number)
+                if (missedCall != null) {
+                  EventJobScheduler.cancelMissedCall(missedCall.number)
+                } else {
+                  missedCall = MissedCall()
+                }
+                missedCall.dateTime = currTime
+                missedCall.number = number
+                appDb.missedCallsDao().insert(missedCall)
+                EventJobScheduler.scheduleMissedCall(prefs, missedCall.number)
+              }
+            } else {
+              Timber.d("onCallStateChanged: is quickSms $mIncomingNumber")
+              if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
+                val number = mIncomingNumber
+                if (prefs.isTelephonyAllowed && number != null && appDb.smsTemplatesDao().all().isNotEmpty()) {
+                  QuickSmsActivity.openScreen(context, number)
+                }
+              }
+            }
           }
+        }
       }
     }
   }

@@ -6,6 +6,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.Binding
 
 class DateTimeViewBinding(view: View) : Binding(view) {
-    val dateField: TextView by bindView(R.id.dateField)
-    val timeField: TextView by bindView(R.id.timeField)
+  val dateField: TextView by bindView(R.id.dateField)
+  val timeField: TextView by bindView(R.id.timeField)
 }

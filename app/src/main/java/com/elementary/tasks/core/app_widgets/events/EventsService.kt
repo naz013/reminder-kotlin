@@ -4,7 +4,7 @@ import android.content.Intent
 import android.widget.RemoteViewsService
 
 class EventsService : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return EventsFactory(applicationContext, intent)
-    }
+  override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+    return EventsFactory(applicationContext, intent)
+  }
 }

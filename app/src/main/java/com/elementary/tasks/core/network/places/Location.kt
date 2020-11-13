@@ -5,10 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 class Location {
 
-    @SerializedName("lat")
-    @Expose
-    var lat: Double = 0.toDouble()
-    @SerializedName("lng")
-    @Expose
-    var lng: Double = 0.toDouble()
+  @SerializedName("lat")
+  @Expose
+  var lat: Double = 0.toDouble()
+
+  @SerializedName("lng")
+  @Expose
+  var lng: Double = 0.toDouble()
 }
