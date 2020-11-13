@@ -6,7 +6,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.Binding
 
 class AttachmentViewBinding(view: View) : Binding(view) {
-    val removeButton: View by bindView(R.id.removeButton)
-    val text: TextView by bindView(R.id.text)
-    val hintIcon: View by bindView(R.id.hintIcon)
+  val removeButton: View by bindView(R.id.removeButton)
+  val text: TextView by bindView(R.id.text)
+  val hintIcon: View by bindView(R.id.hintIcon)
 }

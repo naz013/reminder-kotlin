@@ -26,61 +26,61 @@ import com.elementary.tasks.core.data.models.*
 ], version = 5, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
-    abstract fun reminderDao(): ReminderDao
-    abstract fun reminderGroupDao(): ReminderGroupDao
-    abstract fun missedCallsDao(): MissedCallsDao
-    abstract fun smsTemplatesDao(): SmsTemplatesDao
-    abstract fun placesDao(): PlacesDao
-    abstract fun calendarEventsDao(): CalendarEventsDao
-    abstract fun notesDao(): NotesDao
-    abstract fun birthdaysDao(): BirthdaysDao
-    abstract fun googleTaskListsDao(): GoogleTaskListsDao
-    abstract fun googleTasksDao(): GoogleTasksDao
-    abstract fun usedTimeDao(): UsedTimeDao
+  abstract fun reminderDao(): ReminderDao
+  abstract fun reminderGroupDao(): ReminderGroupDao
+  abstract fun missedCallsDao(): MissedCallsDao
+  abstract fun smsTemplatesDao(): SmsTemplatesDao
+  abstract fun placesDao(): PlacesDao
+  abstract fun calendarEventsDao(): CalendarEventsDao
+  abstract fun notesDao(): NotesDao
+  abstract fun birthdaysDao(): BirthdaysDao
+  abstract fun googleTaskListsDao(): GoogleTaskListsDao
+  abstract fun googleTasksDao(): GoogleTasksDao
+  abstract fun usedTimeDao(): UsedTimeDao
 //    abstract fun reminderChainDao(): ReminderChainDao
 
-    companion object {
+  companion object {
 
-        private var INSTANCE: AppDb? = null
+    private var INSTANCE: AppDb? = null
 
-        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                try {
-                    database.execSQL("DROP INDEX index_UsedTime_id")
-                } catch (e: Exception) {
-                }
-            }
+    private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+      override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+          database.execSQL("DROP INDEX index_UsedTime_id")
+        } catch (e: Exception) {
         }
-        private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                try {
-                    database.execSQL("DROP INDEX index_UsedTime_timeMills")
-                } catch (e: Exception) {
-                }
-                try {
-                    database.execSQL("DROP INDEX index_UsedTime_timeString")
-                } catch (e: Exception) {
-                }
-            }
+      }
+    }
+    private val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+      override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+          database.execSQL("DROP INDEX index_UsedTime_timeMills")
+        } catch (e: Exception) {
         }
-        private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                try {
-                    database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
-                } catch (e: Exception) {
-                }
-                try {
-                    database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
-                } catch (e: Exception) {
-                }
-                try {
-                    database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
-                } catch (e: Exception) {
-                }
-                try {
-                    database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
-                } catch (e: Exception) {
-                }
+        try {
+          database.execSQL("DROP INDEX index_UsedTime_timeString")
+        } catch (e: Exception) {
+        }
+      }
+    }
+    private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+      override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+          database.execSQL("ALTER TABLE Birthday ADD COLUMN updatedAt TEXT")
+        } catch (e: Exception) {
+        }
+        try {
+          database.execSQL("ALTER TABLE Note ADD COLUMN updatedAt TEXT")
+        } catch (e: Exception) {
+        }
+        try {
+          database.execSQL("ALTER TABLE Reminder ADD COLUMN eventState INTEGER DEFAULT 10 NOT NULL")
+        } catch (e: Exception) {
+        }
+        try {
+          database.execSQL("ALTER TABLE Reminder ADD COLUMN updatedAt TEXT")
+        } catch (e: Exception) {
+        }
 
 //                database.execSQL("""CREATE TABLE IF NOT EXISTS ReminderChain (uuId TEXT NOT NULL,
 //                        previousId TEXT NOT NULL,
@@ -88,36 +88,36 @@ abstract class AppDb : RoomDatabase() {
 //                        gmtTime TEXT NOT NULL,
 //                        activationType INTEGER DEFAULT 0 NOT NULL,
 //                        PRIMARY KEY(uuId))""")
-            }
-        }
-        private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                try {
-                    database.execSQL("ALTER TABLE Reminder ADD COLUMN calendarId INTEGER DEFAULT 0 NOT NULL")
-                } catch (e: Exception) {
-                }
-            }
-        }
-
-        fun getAppDatabase(context: Context): AppDb {
-            var instance = INSTANCE
-            if (instance == null) {
-                instance = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "app_db")
-                        .addMigrations(
-                                MIGRATION_1_2,
-                                MIGRATION_2_3,
-                                MIGRATION_3_4,
-                                MIGRATION_4_5
-                        )
-                        .allowMainThreadQueries()
-                        .build()
-            }
-            INSTANCE = instance
-            return instance
-        }
-
-        fun destroyInstance() {
-            INSTANCE = null
-        }
+      }
     }
+    private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+      override fun migrate(database: SupportSQLiteDatabase) {
+        try {
+          database.execSQL("ALTER TABLE Reminder ADD COLUMN calendarId INTEGER DEFAULT 0 NOT NULL")
+        } catch (e: Exception) {
+        }
+      }
+    }
+
+    fun getAppDatabase(context: Context): AppDb {
+      var instance = INSTANCE
+      if (instance == null) {
+        instance = Room.databaseBuilder(context.applicationContext, AppDb::class.java, "app_db")
+          .addMigrations(
+            MIGRATION_1_2,
+            MIGRATION_2_3,
+            MIGRATION_3_4,
+            MIGRATION_4_5
+          )
+          .allowMainThreadQueries()
+          .build()
+      }
+      INSTANCE = instance
+      return instance
+    }
+
+    fun destroyInstance() {
+      INSTANCE = null
+    }
+  }
 }

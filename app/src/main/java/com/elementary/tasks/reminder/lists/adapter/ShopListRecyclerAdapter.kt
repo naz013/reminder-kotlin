@@ -11,105 +11,105 @@ import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.databinding.ListItemShopTaskBinding
 
 class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {
-    private var mDataList: MutableList<ShopItem> = mutableListOf()
-    private var onBind: Boolean = false
-    var listener: ActionListener? = null
+  private var mDataList: MutableList<ShopItem> = mutableListOf()
+  private var onBind: Boolean = false
+  var listener: ActionListener? = null
 
-    var data: List<ShopItem>
-        get() = mDataList
-        set(list) {
-            this.mDataList.clear()
-            this.mDataList.addAll(list)
-            mDataList.sortWith(Comparator { item, t1 -> t1.createTime.compareTo(item.createTime) })
-            sort(mDataList)
-            notifyDataSetChanged()
+  var data: List<ShopItem>
+    get() = mDataList
+    set(list) {
+      this.mDataList.clear()
+      this.mDataList.addAll(list)
+      mDataList.sortWith { item, t1 -> t1.createTime.compareTo(item.createTime) }
+      sort(mDataList)
+      notifyDataSetChanged()
+    }
+
+  fun delete(position: Int) {
+    mDataList.removeAt(position)
+    notifyItemRemoved(position)
+    notifyItemRangeChanged(0, mDataList.size)
+  }
+
+  fun addItem(item: ShopItem) {
+    mDataList.add(0, item)
+    notifyItemInserted(0)
+    notifyItemRangeChanged(0, mDataList.size)
+  }
+
+  fun updateData() {
+    mDataList.sortWith { item, t1 -> t1.createTime.compareTo(item.createTime) }
+    sort(mDataList)
+    notifyDataSetChanged()
+  }
+
+  private fun sort(list: MutableList<ShopItem>) {
+    val pos = -1
+    for (i in list.indices) {
+      val item = list[i]
+      if (!item.isChecked && i > pos + 1) {
+        list.removeAt(i)
+        list.add(pos + 1, item)
+      }
+    }
+  }
+
+  fun getItem(position: Int): ShopItem {
+    return mDataList[position]
+  }
+
+  inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemShopTaskBinding>(parent, R.layout.list_item_shop_task) {
+
+    init {
+      binding.clearButton.setOnClickListener {
+        listener?.onItemDelete(adapterPosition)
+      }
+      binding.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
+        if (!onBind && listener != null) {
+          listener?.onItemCheck(adapterPosition, isChecked1)
         }
-
-    fun delete(position: Int) {
-        mDataList.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(0, mDataList.size)
+      }
     }
 
-    fun addItem(item: ShopItem) {
-        mDataList.add(0, item)
-        notifyItemInserted(0)
-        notifyItemRangeChanged(0, mDataList.size)
+    fun bind(item: ShopItem) {
+      val title = item.summary
+      if (item.isChecked) {
+        binding.shopText.paintFlags = binding.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+      } else {
+        binding.shopText.paintFlags = binding.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+      }
+      binding.itemCheck.isChecked = item.isChecked
+      binding.shopText.text = title
+      if (listener == null) {
+        binding.clearButton.visibility = View.GONE
+        binding.itemCheck.isEnabled = false
+        binding.shopText.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
+      } else {
+        binding.itemCheck.visibility = View.VISIBLE
+        binding.clearButton.visibility = View.VISIBLE
+      }
     }
+  }
 
-    fun updateData() {
-        mDataList.sortWith(Comparator { item, t1 -> t1.createTime.compareTo(item.createTime) })
-        sort(mDataList)
-        notifyDataSetChanged()
-    }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    return ViewHolder(parent)
+  }
 
-    private fun sort(list: MutableList<ShopItem>) {
-        val pos = -1
-        for (i in list.indices) {
-            val item = list[i]
-            if (!item.isChecked && i > pos + 1) {
-                list.removeAt(i)
-                list.add(pos + 1, item)
-            }
-        }
-    }
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    onBind = true
+    val item = mDataList[position]
+    holder.bind(item)
+    onBind = false
+  }
 
-    fun getItem(position: Int): ShopItem {
-        return mDataList[position]
-    }
+  override fun getItemCount(): Int {
+    return mDataList.size
+  }
 
-    inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemShopTaskBinding>(parent, R.layout.list_item_shop_task) {
+  interface ActionListener {
 
-        init {
-            binding.clearButton.setOnClickListener {
-                listener?.onItemDelete(adapterPosition)
-            }
-            binding.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
-                if (!onBind && listener != null) {
-                    listener?.onItemCheck(adapterPosition, isChecked1)
-                }
-            }
-        }
+    fun onItemCheck(position: Int, isChecked: Boolean)
 
-        fun bind(item: ShopItem) {
-            val title = item.summary
-            if (item.isChecked) {
-                binding.shopText.paintFlags = binding.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                binding.shopText.paintFlags = binding.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            }
-            binding.itemCheck.isChecked = item.isChecked
-            binding.shopText.text = title
-            if (listener == null) {
-                binding.clearButton.visibility = View.GONE
-                binding.itemCheck.isEnabled = false
-                binding.shopText.setTextColor(ContextCompat.getColor(itemView.context, R.color.pureBlack))
-            } else {
-                binding.itemCheck.visibility = View.VISIBLE
-                binding.clearButton.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        onBind = true
-        val item = mDataList[position]
-        holder.bind(item)
-        onBind = false
-    }
-
-    override fun getItemCount(): Int {
-        return mDataList.size
-    }
-
-    interface ActionListener {
-
-        fun onItemCheck(position: Int, isChecked: Boolean)
-
-        fun onItemDelete(position: Int)
-    }
+    fun onItemDelete(position: Int)
+  }
 }

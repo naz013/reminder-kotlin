@@ -13,40 +13,40 @@ import java.util.*
 @Entity
 @Parcelize
 data class ImageFile(
-        @SerializedName("image")
-        @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-        var image: ByteArray? = null,
-        @SerializedName("noteId")
-        var noteId: String = "",
-        @Transient
-        @Ignore
-        var state: DecodeImages.State = DecodeImages.State.Ready,
-        @Transient
-        @Ignore
-        var uuid: String = UUID.randomUUID().toString(),
-        @PrimaryKey(autoGenerate = true)
-        var id: Int = 0
+  @SerializedName("image")
+  @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+  var image: ByteArray? = null,
+  @SerializedName("noteId")
+  var noteId: String = "",
+  @Transient
+  @Ignore
+  var state: DecodeImages.State = DecodeImages.State.Ready,
+  @Transient
+  @Ignore
+  var uuid: String = UUID.randomUUID().toString(),
+  @PrimaryKey(autoGenerate = true)
+  var id: Int = 0
 ) : Parcelable {
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
 
-        other as ImageFile
+    other as ImageFile
 
-        if (!Arrays.equals(image, other.image)) return false
-        if (id != other.id) return false
+    if (!Arrays.equals(image, other.image)) return false
+    if (id != other.id) return false
 
-        return true
-    }
+    return true
+  }
 
-    override fun hashCode(): Int {
-        var result = image?.let { Arrays.hashCode(it) } ?: 0
-        result = 31 * result + id.hashCode()
-        return result
-    }
+  override fun hashCode(): Int {
+    var result = image?.let { Arrays.hashCode(it) } ?: 0
+    result = 31 * result + id.hashCode()
+    return result
+  }
 
-    override fun toString(): String {
-        return "ImageFile(noteId='$noteId', id=$id)"
-    }
+  override fun toString(): String {
+    return "ImageFile(noteId='$noteId', id=$id)"
+  }
 }

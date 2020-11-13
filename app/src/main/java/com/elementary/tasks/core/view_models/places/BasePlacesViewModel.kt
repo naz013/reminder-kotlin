@@ -9,13 +9,13 @@ import com.elementary.tasks.places.work.DeleteBackupWorker
 
 abstract class BasePlacesViewModel : BaseDbViewModel() {
 
-    fun deletePlace(place: Place) {
-        postInProgress(true)
-        launchDefault {
-            appDb.placesDao().delete(place)
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
-            postInProgress(false)
-            postCommand(Commands.DELETED)
-        }
+  fun deletePlace(place: Place) {
+    postInProgress(true)
+    launchDefault {
+      appDb.placesDao().delete(place)
+      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, place.id)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
     }
+  }
 }

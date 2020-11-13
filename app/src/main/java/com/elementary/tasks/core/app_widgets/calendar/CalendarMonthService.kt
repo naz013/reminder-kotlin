@@ -4,7 +4,7 @@ import android.content.Intent
 import android.widget.RemoteViewsService
 
 class CalendarMonthService : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return CalendarMonthFactory(applicationContext, intent)
-    }
+  override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+    return CalendarMonthFactory(applicationContext, intent)
+  }
 }

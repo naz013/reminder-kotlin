@@ -10,15 +10,15 @@ import kotlinx.coroutines.runBlocking
 
 abstract class BaseSmsTemplatesViewModel : BaseDbViewModel() {
 
-    fun deleteSmsTemplate(smsTemplate: SmsTemplate) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
-                appDb.smsTemplatesDao().delete(smsTemplate)
-            }
-            startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
-            postInProgress(false)
-            postCommand(Commands.DELETED)
-        }
+  fun deleteSmsTemplate(smsTemplate: SmsTemplate) {
+    postInProgress(true)
+    launchDefault {
+      runBlocking {
+        appDb.smsTemplatesDao().delete(smsTemplate)
+      }
+      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
+      postInProgress(false)
+      postCommand(Commands.DELETED)
     }
+  }
 }

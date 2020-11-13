@@ -18,129 +18,129 @@ import timber.log.Timber
 
 class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
 
-    private val mAdapter = ShopListRecyclerAdapter()
-    private val mActionListener = object : ShopListRecyclerAdapter.ActionListener {
-        override fun onItemCheck(position: Int, isChecked: Boolean) {
-            val item = mAdapter.getItem(position)
-            item.isChecked = !item.isChecked
-            mAdapter.updateData()
-            iFace.state.shopItems = mAdapter.data
-        }
-
-        override fun onItemDelete(position: Int) {
-            mAdapter.delete(position)
-            iFace.state.shopItems = mAdapter.data
-        }
+  private val mAdapter = ShopListRecyclerAdapter()
+  private val mActionListener = object : ShopListRecyclerAdapter.ActionListener {
+    override fun onItemCheck(position: Int, isChecked: Boolean) {
+      val item = mAdapter.getItem(position)
+      item.isChecked = !item.isChecked
+      mAdapter.updateData()
+      iFace.state.shopItems = mAdapter.data
     }
 
-    override fun prepare(): Reminder? {
-        if (mAdapter.itemCount == 0) {
-            iFace.showSnackbar(getString(R.string.shopping_list_is_empty))
-            return null
-        }
-        val reminder = iFace.state.reminder
-        reminder.shoppings = mAdapter.data
-        reminder.target = ""
-        reminder.type = Reminder.BY_DATE_SHOP
-        reminder.repeatInterval = 0
-        reminder.exportToCalendar = false
-        reminder.exportToTasks = false
-        reminder.hasReminder = binding.attackDelay.isChecked
-        reminder.after = 0L
-        reminder.dayOfMonth = 0
-        reminder.delay = 0
-        reminder.eventCount = 0
-        if (binding.attackDelay.isChecked) {
-            val startTime = binding.dateView.dateTime
-            val time = TimeUtil.getGmtFromDateTime(startTime)
-            Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
-            if (!TimeCount.isCurrent(time)) {
-                Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
-                return null
-            }
-            reminder.startTime = time
-            reminder.eventTime = time
-        } else {
-            reminder.eventTime = ""
-            reminder.startTime = ""
-        }
-        return reminder
+    override fun onItemDelete(position: Int) {
+      mAdapter.delete(position)
+      iFace.state.shopItems = mAdapter.data
     }
+  }
 
-    override fun layoutRes(): Int = R.layout.fragment_reminder_shop
-
-    override fun provideViews() {
-        setViews(
-                scrollView = binding.scrollView,
-                expansionLayout = binding.moreLayout,
-                ledPickerView = binding.ledView,
-                extraView = binding.tuneExtraView,
-                melodyView = binding.melodyView,
-                attachmentView = binding.attachmentView,
-                groupView = binding.groupView,
-                summaryView = binding.taskSummary,
-                dateTimeView = binding.dateView,
-                loudnessPickerView = binding.loudnessView,
-                priorityPickerView = binding.priorityView,
-                windowTypeView = binding.windowTypeView
-        )
+  override fun prepare(): Reminder? {
+    if (mAdapter.itemCount == 0) {
+      iFace.showSnackbar(getString(R.string.shopping_list_is_empty))
+      return null
     }
-
-    override fun onNewHeader(newHeader: String) {
-        binding.cardSummary.text = newHeader
+    val reminder = iFace.state.reminder
+    reminder.shoppings = mAdapter.data
+    reminder.target = ""
+    reminder.type = Reminder.BY_DATE_SHOP
+    reminder.repeatInterval = 0
+    reminder.exportToCalendar = false
+    reminder.exportToTasks = false
+    reminder.hasReminder = binding.attackDelay.isChecked
+    reminder.after = 0L
+    reminder.dayOfMonth = 0
+    reminder.delay = 0
+    reminder.eventCount = 0
+    if (binding.attackDelay.isChecked) {
+      val startTime = binding.dateView.dateTime
+      val time = TimeUtil.getGmtFromDateTime(startTime)
+      Timber.d("EVENT_TIME %s", TimeUtil.getFullDateTime(startTime, true))
+      if (!TimeCount.isCurrent(time)) {
+        Toast.makeText(context, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
+        return null
+      }
+      reminder.startTime = time
+      reminder.eventTime = time
+    } else {
+      reminder.eventTime = ""
+      reminder.startTime = ""
     }
+    return reminder
+  }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.tuneExtraView.hasAutoExtra = false
+  override fun layoutRes(): Int = R.layout.fragment_reminder_shop
 
-        binding.todoList.layoutManager = LinearLayoutManager(context)
-        mAdapter.listener = mActionListener
-        binding.todoList.adapter = mAdapter
-        binding.shopEdit.setOnEditorActionListener { _, actionId, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
-                addNewItem()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-        binding.addButton.setOnClickListener { addNewItem() }
+  override fun provideViews() {
+    setViews(
+      scrollView = binding.scrollView,
+      expansionLayout = binding.moreLayout,
+      ledPickerView = binding.ledView,
+      extraView = binding.tuneExtraView,
+      melodyView = binding.melodyView,
+      attachmentView = binding.attachmentView,
+      groupView = binding.groupView,
+      summaryView = binding.taskSummary,
+      dateTimeView = binding.dateView,
+      loudnessPickerView = binding.loudnessView,
+      priorityPickerView = binding.priorityView,
+      windowTypeView = binding.windowTypeView
+    )
+  }
 
-        binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
-            iFace.state.isDelayAdded = isChecked
-            if (isChecked) {
-                binding.delayLayout.visibility = View.VISIBLE
-            } else {
-                binding.delayLayout.visibility = View.GONE
-            }
-        }
+  override fun onNewHeader(newHeader: String) {
+    binding.cardSummary.text = newHeader
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    binding.tuneExtraView.hasAutoExtra = false
+
+    binding.todoList.layoutManager = LinearLayoutManager(context)
+    mAdapter.listener = mActionListener
+    binding.todoList.adapter = mAdapter
+    binding.shopEdit.setOnEditorActionListener { _, actionId, event ->
+      if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
+        addNewItem()
+        return@setOnEditorActionListener true
+      }
+      false
+    }
+    binding.addButton.setOnClickListener { addNewItem() }
+
+    binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
+      iFace.state.isDelayAdded = isChecked
+      if (isChecked) {
+        binding.delayLayout.visibility = View.VISIBLE
+      } else {
         binding.delayLayout.visibility = View.GONE
-        binding.attackDelay.isChecked = iFace.state.isDelayAdded
-
-        editReminder()
+      }
     }
+    binding.delayLayout.visibility = View.GONE
+    binding.attackDelay.isChecked = iFace.state.isDelayAdded
 
-    private fun addNewItem() {
-        val task = binding.shopEdit.text.toString().trim()
-        if (task == "") {
-            binding.shopLayout.error = getString(R.string.must_be_not_empty)
-            binding.shopLayout.isErrorEnabled = true
-            return
-        }
-        mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
-        binding.shopEdit.setText("")
-        iFace.state.shopItems = mAdapter.data
-    }
+    editReminder()
+  }
 
-    private fun editReminder() {
-        val reminder = iFace.state.reminder
-        if (!iFace.state.isShopItemsEdited) {
-            mAdapter.data = reminder.shoppings
-            iFace.state.isShopItemsEdited = true
-            iFace.state.shopItems = reminder.shoppings
-            binding.attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
-        } else {
-            mAdapter.data = iFace.state.shopItems
-        }
+  private fun addNewItem() {
+    val task = binding.shopEdit.text.toString().trim()
+    if (task == "") {
+      binding.shopLayout.error = getString(R.string.must_be_not_empty)
+      binding.shopLayout.isErrorEnabled = true
+      return
     }
+    mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
+    binding.shopEdit.setText("")
+    iFace.state.shopItems = mAdapter.data
+  }
+
+  private fun editReminder() {
+    val reminder = iFace.state.reminder
+    if (!iFace.state.isShopItemsEdited) {
+      mAdapter.data = reminder.shoppings
+      iFace.state.isShopItemsEdited = true
+      iFace.state.shopItems = reminder.shoppings
+      binding.attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
+    } else {
+      mAdapter.data = iFace.state.shopItems
+    }
+  }
 }

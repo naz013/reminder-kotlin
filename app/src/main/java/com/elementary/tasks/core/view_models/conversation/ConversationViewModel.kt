@@ -339,7 +339,7 @@ class ConversationViewModel : BaseRemindersViewModel() {
   fun createReminder(model: Model): Reminder {
     val action = model.action
     val number = model.target ?: ""
-    val summary = model.summary ?: ""
+    val summary = model.summary
     val repeat = model.repeatInterval
     val weekdays = model.weekdays
     val isCalendar = model.hasCalendar

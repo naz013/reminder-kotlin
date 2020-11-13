@@ -30,7 +30,9 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
     notifyDataSetChanged()
   }
 
-  inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemLocationBinding>(parent, R.layout.list_item_location) {
+  inner class ViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemLocationBinding>(parent, R.layout.list_item_location) {
     fun bind(item: Reminder) {
       val place = item.places[0]
       var name = place.name

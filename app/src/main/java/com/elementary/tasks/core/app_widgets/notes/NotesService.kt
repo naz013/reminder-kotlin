@@ -4,7 +4,7 @@ import android.content.Intent
 import android.widget.RemoteViewsService
 
 class NotesService : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return NotesFactory(applicationContext)
-    }
+  override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+    return NotesFactory(applicationContext)
+  }
 }

@@ -196,11 +196,11 @@ class Dropbox : Storage(), KoinComponent {
       if (prefs.multiDeviceModeEnabled) {
         FirebaseInstanceId.getInstance().instanceId
           .addOnCompleteListener(OnCompleteListener { task ->
-              if (!task.isSuccessful) {
-                  return@OnCompleteListener
-              }
-              val token = task.result?.token
-              updateToken(token)
+            if (!task.isSuccessful) {
+              return@OnCompleteListener
+            }
+            val token = task.result?.token
+            updateToken(token)
           })
       }
     }
@@ -255,13 +255,13 @@ class Dropbox : Storage(), KoinComponent {
 
   private fun folderFromExt(ext: String): String {
     return when (ext) {
-        FileConfig.FILE_NAME_NOTE -> noteFolder
-        FileConfig.FILE_NAME_GROUP -> groupFolder
-        FileConfig.FILE_NAME_BIRTHDAY -> birthFolder
-        FileConfig.FILE_NAME_PLACE -> placeFolder
-        FileConfig.FILE_NAME_TEMPLATE -> templateFolder
-        FileConfig.FILE_NAME_SETTINGS_EXT -> settingsFolder
-        FileConfig.FILE_NAME_JSON -> rootFolder
+      FileConfig.FILE_NAME_NOTE -> noteFolder
+      FileConfig.FILE_NAME_GROUP -> groupFolder
+      FileConfig.FILE_NAME_BIRTHDAY -> birthFolder
+      FileConfig.FILE_NAME_PLACE -> placeFolder
+      FileConfig.FILE_NAME_TEMPLATE -> templateFolder
+      FileConfig.FILE_NAME_SETTINGS_EXT -> settingsFolder
+      FileConfig.FILE_NAME_JSON -> rootFolder
       else -> reminderFolder
     }
   }

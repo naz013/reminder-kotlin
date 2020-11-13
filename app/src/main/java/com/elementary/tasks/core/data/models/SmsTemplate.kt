@@ -12,13 +12,13 @@ import java.util.*
 @Keep
 @Parcelize
 data class SmsTemplate(
-        @SerializedName("title")
-        var title: String = "",
-        @SerializedName("key")
-        @PrimaryKey
-        var key: String = UUID.randomUUID().toString(),
-        @SerializedName("date")
-        var date: String = "",
-        @Transient
-        var isSelected: Boolean = false
+  @SerializedName("title")
+  var title: String = "",
+  @SerializedName("key")
+  @PrimaryKey
+  var key: String = UUID.randomUUID().toString(),
+  @SerializedName("date")
+  var date: String = "",
+  @Transient
+  var isSelected: Boolean = false
 ) : Parcelable

@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class EventsPagerItem(
-        var day: Int,
-        var month: Int,
-        var year: Int,
-        var isToday: Boolean = false
+  var day: Int,
+  var month: Int,
+  var year: Int,
+  var isToday: Boolean = false
 ) : Parcelable

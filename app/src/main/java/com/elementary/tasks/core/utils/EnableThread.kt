@@ -7,16 +7,16 @@ import com.elementary.tasks.core.data.models.Reminder
 
 object EnableThread {
 
-    fun run(context: Context) {
-        launchDefault {
-            val items: List<Reminder> = try {
-                AppDb.getAppDatabase(context).reminderDao().getAll(active = true, removed = false)
-            } catch (e: Exception) {
-                listOf()
-            }
-            for (item in items) {
-                EventControlFactory.getController(item).start()
-            }
-        }
+  fun run(context: Context) {
+    launchDefault {
+      val items: List<Reminder> = try {
+        AppDb.getAppDatabase(context).reminderDao().getAll(active = true, removed = false)
+      } catch (e: Exception) {
+        listOf()
+      }
+      for (item in items) {
+        EventControlFactory.getController(item).start()
+      }
     }
+  }
 }

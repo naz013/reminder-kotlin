@@ -13,42 +13,44 @@ import java.util.*
 
 internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHolder>() {
 
-    var data: List<SmsTemplate> = ArrayList()
-        set(list) {
-            field = list
-            notifyDataSetChanged()
-        }
-    var actionsListener: ActionsListener<SmsTemplate>? = null
+  var data: List<SmsTemplate> = ArrayList()
+    set(list) {
+      field = list
+      notifyDataSetChanged()
+    }
+  var actionsListener: ActionsListener<SmsTemplate>? = null
 
-    override fun getItemCount(): Int {
-        return data.size
+  override fun getItemCount(): Int {
+    return data.size
+  }
+
+  fun getItem(position: Int): SmsTemplate {
+    return data[position]
+  }
+
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    return ViewHolder(parent)
+  }
+
+  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    holder.bind(getItem(position))
+  }
+
+  internal inner class ViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemMessageBinding>(parent, R.layout.list_item_message) {
+    fun bind(item: SmsTemplate) {
+      binding.messageView.text = item.title
     }
 
-    fun getItem(position: Int): SmsTemplate {
-        return data[position]
+    init {
+      binding.buttonMore.visibility = View.VISIBLE
+      binding.clickView.setOnClickListener {
+        actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
+      }
+      binding.buttonMore.setOnClickListener {
+        actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
+      }
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-
-    internal inner class ViewHolder(parent: ViewGroup) : HolderBinding<ListItemMessageBinding>(parent, R.layout.list_item_message) {
-        fun bind(item: SmsTemplate) {
-            binding.messageView.text = item.title
-        }
-
-        init {
-            binding.buttonMore.visibility = View.VISIBLE
-            binding.clickView.setOnClickListener {
-                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
-            }
-            binding.buttonMore.setOnClickListener {
-                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-            }
-        }
-    }
+  }
 }

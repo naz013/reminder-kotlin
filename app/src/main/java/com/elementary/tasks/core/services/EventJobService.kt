@@ -7,8 +7,16 @@ import androidx.core.content.ContextCompat
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.TimeUtil.BIRTH_FORMAT
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.work.BackupDataWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
@@ -30,11 +38,11 @@ class EventJobService : Job(), KoinComponent {
     Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
     val bundle = params.extras
     when (params.tag) {
-        EventJobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
-        EventJobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
-        EventJobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
-        EventJobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
-        EventJobScheduler.EVENT_CHECK -> eventsCheckAction()
+      EventJobScheduler.EVENT_BIRTHDAY -> birthdayAction(context)
+      EventJobScheduler.EVENT_BIRTHDAY_PERMANENT -> birthdayPermanentAction()
+      EventJobScheduler.EVENT_AUTO_SYNC -> autoSyncAction()
+      EventJobScheduler.EVENT_AUTO_BACKUP -> autoBackupAction()
+      EventJobScheduler.EVENT_CHECK -> eventsCheckAction()
       else -> {
         when {
           bundle.getBoolean(EventJobScheduler.ARG_MISSED, false) -> missedCallAction(params)

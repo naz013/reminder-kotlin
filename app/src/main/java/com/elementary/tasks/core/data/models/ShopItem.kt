@@ -10,14 +10,14 @@ import java.util.*
 @Keep
 @Parcelize
 data class ShopItem(
-        @SerializedName("summary")
-        var summary: String = "",
-        @SerializedName("isDeleted")
-        var isDeleted: Boolean = false,
-        @SerializedName("checked")
-        var isChecked: Boolean = false,
-        @SerializedName("uuId")
-        var uuId: String = UUID.randomUUID().toString(),
-        @SerializedName("createTime")
-        var createTime: String = TimeUtil.gmtDateTime
+  @SerializedName("summary")
+  var summary: String = "",
+  @SerializedName("isDeleted")
+  var isDeleted: Boolean = false,
+  @SerializedName("checked")
+  var isChecked: Boolean = false,
+  @SerializedName("uuId")
+  var uuId: String = UUID.randomUUID().toString(),
+  @SerializedName("createTime")
+  var createTime: String = TimeUtil.gmtDateTime
 ) : Parcelable

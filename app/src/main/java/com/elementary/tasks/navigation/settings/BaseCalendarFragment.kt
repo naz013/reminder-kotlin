@@ -6,5 +6,5 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseSettingsFragment<B>() {
 
-    protected val calendarUtils: CalendarUtils by inject()
+  protected val calendarUtils: CalendarUtils by inject()
 }

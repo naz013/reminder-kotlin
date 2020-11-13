@@ -12,49 +12,49 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 
 class GroupView : LinearLayout {
 
-    private lateinit var binding: GroupViewBinding
-    var onGroupUpdateListener: ((group: ReminderGroup) -> Unit)? = null
-    var onGroupSelectListener: (() -> Unit)? = null
-    var reminderGroup: ReminderGroup? = null
-        set(value) {
-            if (value != null && value.groupUuId != "") {
-                field = value
-                binding.text.text = value.groupTitle
-                onGroupUpdateListener?.invoke(value)
-            } else {
-                noGroup()
-            }
-        }
-
-    constructor(context: Context) : super(context) {
-        init(context)
+  private lateinit var binding: GroupViewBinding
+  var onGroupUpdateListener: ((group: ReminderGroup) -> Unit)? = null
+  var onGroupSelectListener: (() -> Unit)? = null
+  var reminderGroup: ReminderGroup? = null
+    set(value) {
+      if (value != null && value.groupUuId != "") {
+        field = value
+        binding.text.text = value.groupTitle
+        onGroupUpdateListener?.invoke(value)
+      } else {
+        noGroup()
+      }
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context)
-    }
+  constructor(context: Context) : super(context) {
+    init(context)
+  }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context)
-    }
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    init(context)
+  }
 
-    private fun noGroup() {
-        binding.text.text = context.getString(R.string.not_selected)
-    }
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    init(context)
+  }
 
-    private fun init(context: Context) {
-        View.inflate(context, R.layout.view_group, this)
-        orientation = VERTICAL
-        binding = GroupViewBinding(this)
+  private fun noGroup() {
+    binding.text.text = context.getString(R.string.not_selected)
+  }
 
-        binding.text.setOnClickListener {
-            onGroupSelectListener?.invoke()
-        }
-        binding.hintIcon.setOnLongClickListener {
-            Toast.makeText(context, context.getString(R.string.change_group), Toast.LENGTH_SHORT).show()
-            return@setOnLongClickListener true
-        }
-        TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.change_group))
-        reminderGroup = null
+  private fun init(context: Context) {
+    View.inflate(context, R.layout.view_group, this)
+    orientation = VERTICAL
+    binding = GroupViewBinding(this)
+
+    binding.text.setOnClickListener {
+      onGroupSelectListener?.invoke()
     }
+    binding.hintIcon.setOnLongClickListener {
+      Toast.makeText(context, context.getString(R.string.change_group), Toast.LENGTH_SHORT).show()
+      return@setOnLongClickListener true
+    }
+    TooltipCompat.setTooltipText(binding.hintIcon, context.getString(R.string.change_group))
+    reminderGroup = null
+  }
 }

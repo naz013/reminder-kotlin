@@ -10,22 +10,22 @@ import kotlinx.coroutines.runBlocking
 
 class ArchiveRemindersViewModel : BaseRemindersViewModel() {
 
-    val events = appDb.reminderDao().loadNotRemoved(true)
+  val events = appDb.reminderDao().loadNotRemoved(true)
 
-    fun deleteAll(data: List<Reminder>) {
-        postInProgress(true)
-        launchDefault {
-            runBlocking {
-                data.forEach {
-                    EventControlFactory.getController(it).stop()
-                }
-                appDb.reminderDao().deleteAll(data)
-            }
-            data.forEach {
-                startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
-            }
-            postInProgress(false)
-            postCommand(Commands.DELETED)
+  fun deleteAll(data: List<Reminder>) {
+    postInProgress(true)
+    launchDefault {
+      runBlocking {
+        data.forEach {
+          EventControlFactory.getController(it).stop()
         }
+        appDb.reminderDao().deleteAll(data)
+      }
+      data.forEach {
+        startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, it.uuId)
+      }
+      postInProgress(false)
+      postCommand(Commands.DELETED)
     }
+  }
 }

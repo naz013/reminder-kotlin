@@ -1,7 +1,13 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.Typeface
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -310,10 +316,10 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
   override fun onTouch(view: View, motionEvent: MotionEvent?): Boolean {
     if (motionEvent == null) return true
     when (motionEvent.action) {
-        MotionEvent.ACTION_DOWN -> performTouch(motionEvent)
-        MotionEvent.ACTION_UP -> performAction(motionEvent)
-        MotionEvent.ACTION_CANCEL -> cancelTouch()
-        MotionEvent.ACTION_MOVE -> performMove(motionEvent)
+      MotionEvent.ACTION_DOWN -> performTouch(motionEvent)
+      MotionEvent.ACTION_UP -> performAction(motionEvent)
+      MotionEvent.ACTION_CANCEL -> cancelTouch()
+      MotionEvent.ACTION_MOVE -> performMove(motionEvent)
     }
     return true
   }

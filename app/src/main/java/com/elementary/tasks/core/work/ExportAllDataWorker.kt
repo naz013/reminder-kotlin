@@ -10,32 +10,32 @@ import java.io.File
 
 object ExportAllDataWorker {
 
-    private var mJob: Job? = null
-    var onEnd: ((File?) -> Unit)? = null
-    var listener: ((Boolean) -> Unit)? = null
-        set(value) {
-            field = value
-            Timber.d("ExportAllDataWorker: $mJob")
-            value?.invoke(mJob != null)
-        }
-
-    fun export(context: Context, backupTool: BackupTool) {
-        mJob?.cancel()
-        launchSync(context, backupTool)
+  private var mJob: Job? = null
+  var onEnd: ((File?) -> Unit)? = null
+  var listener: ((Boolean) -> Unit)? = null
+    set(value) {
+      field = value
+      Timber.d("ExportAllDataWorker: $mJob")
+      value?.invoke(mJob != null)
     }
 
-    fun unsubscribe() {
-        onEnd = null
-        listener = null
-    }
+  fun export(context: Context, backupTool: BackupTool) {
+    mJob?.cancel()
+    launchSync(context, backupTool)
+  }
 
-    private fun launchSync(context: Context, backupTool: BackupTool) {
-        mJob = launchIo {
-            val file = backupTool.exportAll(context)
-            withUIContext {
-                onEnd?.invoke(file)
-            }
-            mJob = null
-        }
+  fun unsubscribe() {
+    onEnd = null
+    listener = null
+  }
+
+  private fun launchSync(context: Context, backupTool: BackupTool) {
+    mJob = launchIo {
+      val file = backupTool.exportAll(context)
+      withUIContext {
+        onEnd?.invoke(file)
+      }
+      mJob = null
     }
+  }
 }

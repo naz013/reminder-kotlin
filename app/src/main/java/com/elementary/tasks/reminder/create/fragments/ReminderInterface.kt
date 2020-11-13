@@ -5,30 +5,17 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.reminder.create.StateViewModel
 
 interface ReminderInterface {
-
-    val defGroup: ReminderGroup?
-
-    var canExportToTasks: Boolean
-
-    var canExportToCalendar: Boolean
-
-    val state: StateViewModel
-
-    fun isTablet(): Boolean
-
-    fun selectMelody()
-
-    fun attachFile()
-
-    fun selectGroup()
-
-    fun showSnackbar(title: String)
-
-    fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener)
-
-    fun setFullScreenMode(b: Boolean)
-
-    fun updateScroll(y: Int)
-
-    fun setFragment(typeFragment: TypeFragment<*>?)
+  val defGroup: ReminderGroup?
+  var canExportToTasks: Boolean
+  var canExportToCalendar: Boolean
+  val state: StateViewModel
+  fun isTablet(): Boolean
+  fun selectMelody()
+  fun attachFile()
+  fun selectGroup()
+  fun showSnackbar(title: String)
+  fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener)
+  fun setFullScreenMode(b: Boolean)
+  fun updateScroll(y: Int)
+  fun setFragment(typeFragment: TypeFragment<*>?)
 }

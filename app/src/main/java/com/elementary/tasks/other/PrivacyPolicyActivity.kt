@@ -16,44 +16,44 @@ import com.elementary.tasks.databinding.ActivityPrivacyPolicyBinding
 
 class PrivacyPolicyActivity : BindingActivity<ActivityPrivacyPolicyBinding>(R.layout.activity_privacy_policy) {
 
-    private val url = Constants.WEB_URL + "privacy-policy"
+  private val url = Constants.WEB_URL + "privacy-policy"
 
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActionBar()
+  @SuppressLint("SetJavaScriptEnabled")
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    initActionBar()
 
-        binding.webView.settings.javaScriptEnabled = true
-        binding.webView.webViewClient = object : WebViewClient() {
-            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
+    binding.webView.settings.javaScriptEnabled = true
+    binding.webView.webViewClient = object : WebViewClient() {
+      override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
-            override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
-                return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                    true
-                } else {
-                    false
-                }
-            }
+      override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
+        return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
+          startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+          true
+        } else {
+          false
         }
-        binding.webView.webChromeClient = WebChromeClient()
-        binding.webView.loadUrl(url)
+      }
     }
+    binding.webView.webChromeClient = WebChromeClient()
+    binding.webView.loadUrl(url)
+  }
 
-    private fun initActionBar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
-        binding.toolbar.title = getString(R.string.privacy_policy)
-    }
+  private fun initActionBar() {
+    setSupportActionBar(binding.toolbar)
+    supportActionBar?.setDisplayShowTitleEnabled(false)
+    binding.toolbar.navigationIcon = ViewUtils.backIcon(this, isDarkMode)
+    binding.toolbar.title = getString(R.string.privacy_policy)
+  }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-               return true
-            }
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    when (item.itemId) {
+        android.R.id.home -> {
+            finish()
+            return true
         }
-        return super.onOptionsItemSelected(item)
     }
+    return super.onOptionsItemSelected(item)
+  }
 }

@@ -16,147 +16,147 @@ import com.elementary.tasks.core.utils.show
 
 class ActionView : LinearLayout, TextWatcher {
 
-    private var mImm: InputMethodManager? = null
-    private var mActivity: Activity? = null
-    private var listener: OnActionListener? = null
-    private lateinit var binding: ActionViewBinding
+  private var mImm: InputMethodManager? = null
+  private var mActivity: Activity? = null
+  private var listener: OnActionListener? = null
+  private lateinit var binding: ActionViewBinding
 
-    var type: Int
-        get() = if (hasAction()) {
-            if (binding.callAction.isChecked) {
-                TYPE_CALL
-            } else {
-                TYPE_MESSAGE
-            }
-        } else {
-            0
-        }
-        set(type) = if (type == TYPE_CALL) {
-            binding.callAction.isChecked = true
-        } else {
-            binding.messageAction.isChecked = true
-        }
-
-    var number: String
-        get() = binding.numberView.text.toString().trim()
-        set(number) = binding.numberView.setText(number)
-
-    constructor(context: Context) : super(context) {
-        init(context)
+  var type: Int
+    get() = if (hasAction()) {
+      if (binding.callAction.isChecked) {
+        TYPE_CALL
+      } else {
+        TYPE_MESSAGE
+      }
+    } else {
+      0
+    }
+    set(type) = if (type == TYPE_CALL) {
+      binding.callAction.isChecked = true
+    } else {
+      binding.messageAction.isChecked = true
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context)
+  var number: String
+    get() = binding.numberView.text.toString().trim()
+    set(number) = binding.numberView.setText(number)
+
+  constructor(context: Context) : super(context) {
+    init(context)
+  }
+
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    init(context)
+  }
+
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    init(context)
+  }
+
+  private fun init(context: Context) {
+    View.inflate(context, R.layout.view_action, this)
+    orientation = VERTICAL
+    binding = ActionViewBinding(this)
+
+    binding.actionBlock.hide()
+
+    binding.numberView.isFocusableInTouchMode = true
+    binding.numberView.setOnFocusChangeListener { _, hasFocus ->
+      mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+      if (!hasFocus) {
+        mImm?.hideSoftInputFromWindow(binding.numberView.windowToken, 0)
+      } else {
+        mImm?.showSoftInput(binding.numberView, 0)
+      }
     }
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context)
+    binding.numberView.setOnClickListener {
+      mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+      if (mImm?.isActive(binding.numberView) == false) {
+        mImm?.showSoftInput(binding.numberView, 0)
+      }
     }
-
-    private fun init(context: Context) {
-        View.inflate(context, R.layout.view_action, this)
-        orientation = VERTICAL
-        binding = ActionViewBinding(this)
-
+    binding.numberView.addTextChangedListener(this)
+    binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
+    binding.callAction.isChecked = true
+    binding.actionCheck.setOnCheckedChangeListener { _, b ->
+      if (!Permissions.checkPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
+        binding.actionCheck.isChecked = false
+        return@setOnCheckedChangeListener
+      }
+      if (b) {
+        openAction()
+      } else {
         binding.actionBlock.hide()
-
-        binding.numberView.isFocusableInTouchMode = true
-        binding.numberView.setOnFocusChangeListener { _, hasFocus ->
-            mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            if (!hasFocus) {
-                mImm?.hideSoftInputFromWindow(binding.numberView.windowToken, 0)
-            } else {
-                mImm?.showSoftInput(binding.numberView, 0)
-            }
-        }
-        binding.numberView.setOnClickListener {
-            mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            if (mImm?.isActive(binding.numberView) == false) {
-                mImm?.showSoftInput(binding.numberView, 0)
-            }
-        }
-        binding.numberView.addTextChangedListener(this)
-        binding.radioGroup.setOnCheckedChangeListener { _, i -> buttonClick(i) }
-        binding.callAction.isChecked = true
-        binding.actionCheck.setOnCheckedChangeListener { _, b ->
-            if (!Permissions.checkPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)) {
-                binding.actionCheck.isChecked = false
-                return@setOnCheckedChangeListener
-            }
-            if (b) {
-                openAction()
-            } else {
-                binding.actionBlock.hide()
-            }
-            listener?.onStateChanged(hasAction(), type, number)
-        }
-        if (binding.actionCheck.isChecked) {
-            openAction()
-        }
+      }
+      listener?.onStateChanged(hasAction(), type, number)
     }
-
-    private fun openAction() {
-        binding.actionBlock.show()
-        refreshState()
+    if (binding.actionCheck.isChecked) {
+      openAction()
     }
+  }
 
-    private fun refreshState() {
-        buttonClick(binding.radioGroup.checkedRadioButtonId)
-    }
+  private fun openAction() {
+    binding.actionBlock.show()
+    refreshState()
+  }
 
-    private fun buttonClick(i: Int) {
-        when (i) {
-            R.id.callAction -> listener?.onStateChanged(hasAction(), type, number)
-            R.id.messageAction -> listener?.onStateChanged(hasAction(), type, number)
-        }
-    }
+  private fun refreshState() {
+    buttonClick(binding.radioGroup.checkedRadioButtonId)
+  }
 
-    fun setActivity(activity: Activity) {
-        this.mActivity = activity
+  private fun buttonClick(i: Int) {
+    when (i) {
+      R.id.callAction -> listener?.onStateChanged(hasAction(), type, number)
+      R.id.messageAction -> listener?.onStateChanged(hasAction(), type, number)
     }
+  }
 
-    fun setContactClickListener(contactClickListener: OnClickListener) {
-        binding.selectNumber.setOnClickListener(contactClickListener)
-    }
+  fun setActivity(activity: Activity) {
+    this.mActivity = activity
+  }
 
-    fun setListener(listener: OnActionListener) {
-        this.listener = listener
-    }
+  fun setContactClickListener(contactClickListener: OnClickListener) {
+    binding.selectNumber.setOnClickListener(contactClickListener)
+  }
 
-    fun hasAction(): Boolean {
-        return binding.actionCheck.isChecked
-    }
+  fun setListener(listener: OnActionListener) {
+    this.listener = listener
+  }
 
-    fun setAction(action: Boolean) {
-        binding.actionCheck.isChecked = action
-    }
+  fun hasAction(): Boolean {
+    return binding.actionCheck.isChecked
+  }
 
-    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
-        when (requestCode) {
-            REQ_CONTACTS -> if (Permissions.checkPermission(grantResults)) {
-                binding.actionCheck.isChecked = true
-                binding.numberView.reloadContacts()
-            }
-        }
-    }
+  fun setAction(action: Boolean) {
+    binding.actionCheck.isChecked = action
+  }
 
-    override fun afterTextChanged(s: Editable?) {
+  fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
+    when (requestCode) {
+      REQ_CONTACTS -> if (Permissions.checkPermission(grantResults)) {
+        binding.actionCheck.isChecked = true
+        binding.numberView.reloadContacts()
+      }
     }
+  }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
+  override fun afterTextChanged(s: Editable?) {
+  }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        listener?.onStateChanged(hasAction(), type, number)
-    }
+  override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+  }
 
-    interface OnActionListener {
-        fun onStateChanged(hasAction: Boolean, type: Int, phone: String)
-    }
+  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    listener?.onStateChanged(hasAction(), type, number)
+  }
 
-    companion object {
-        const val TYPE_CALL = 1
-        const val TYPE_MESSAGE = 2
-        private const val REQ_CONTACTS = 32564
-    }
+  interface OnActionListener {
+    fun onStateChanged(hasAction: Boolean, type: Int, phone: String)
+  }
+
+  companion object {
+    const val TYPE_CALL = 1
+    const val TYPE_MESSAGE = 2
+    private const val REQ_CONTACTS = 32564
+  }
 }

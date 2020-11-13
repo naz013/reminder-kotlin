@@ -9,11 +9,11 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseDialog : FragmentActivity() {
 
-    protected val dialogues: Dialogues by inject()
-    protected val prefs: Prefs by inject()
+  protected val dialogues: Dialogues by inject()
+  protected val prefs: Prefs by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    AppCompatDelegate.setDefaultNightMode(prefs.nightMode)
+  }
 }

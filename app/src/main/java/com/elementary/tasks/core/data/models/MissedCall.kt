@@ -7,8 +7,8 @@ import java.util.*
 
 @Entity
 data class MissedCall(
-        @PrimaryKey
-        var number: String = "",
-        var dateTime: Long = 0,
-        var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE)
+  @PrimaryKey
+  var number: String = "",
+  var dateTime: Long = 0,
+  var uniqueId: Int = Random().nextInt(Integer.MAX_VALUE)
 ) : Serializable

@@ -7,21 +7,21 @@ import com.elementary.tasks.day_view.day.EventsListFragment
 
 class DayPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    var fragments: MutableList<EventsListFragment> = mutableListOf()
-        get() {
-            if (field.isEmpty()) {
-                for (i in 0 until count) {
-                    field.add(EventsListFragment())
-                }
-            }
-            return field
+  var fragments: MutableList<EventsListFragment> = mutableListOf()
+    get() {
+      if (field.isEmpty()) {
+        for (i in 0 until count) {
+          field.add(EventsListFragment())
         }
-
-    override fun getItem(position: Int): Fragment {
-        return fragments[position]
+      }
+      return field
     }
 
-    override fun getCount(): Int {
-        return 4
-    }
+  override fun getItem(position: Int): Fragment {
+    return fragments[position]
+  }
+
+  override fun getCount(): Int {
+    return 4
+  }
 }

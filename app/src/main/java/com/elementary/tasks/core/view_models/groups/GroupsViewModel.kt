@@ -8,13 +8,13 @@ import com.elementary.tasks.groups.work.SingleBackupWorker
 
 class GroupsViewModel : BaseGroupsViewModel() {
 
-    fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
-        postInProgress(true)
-        launchDefault {
-            reminderGroup.groupColor = color
-            appDb.reminderGroupDao().insert(reminderGroup)
-            startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
-            withUIContext { postInProgress(false) }
-        }
+  fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
+    postInProgress(true)
+    launchDefault {
+      reminderGroup.groupColor = color
+      appDb.reminderGroupDao().insert(reminderGroup)
+      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
+      withUIContext { postInProgress(false) }
     }
+  }
 }

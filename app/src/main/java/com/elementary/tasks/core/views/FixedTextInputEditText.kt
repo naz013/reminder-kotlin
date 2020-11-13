@@ -11,40 +11,40 @@ import java.util.*
 
 class FixedTextInputEditText : TextInputEditText {
 
-    constructor(context: Context) : super(context)
+  constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    override fun getHint(): CharSequence? {
-        return if (isMeizu()) getSuperHintHack()
-        else super.getHint()
+  override fun getHint(): CharSequence? {
+    return if (isMeizu()) getSuperHintHack()
+    else super.getHint()
+  }
+
+  private fun isMeizu(): Boolean {
+    val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
+    if (manufacturer.contains("meizu")) {
+      return true
     }
+    return false
+  }
 
-    private fun isMeizu(): Boolean {
-        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.US)
-        if (manufacturer.contains("meizu")) {
-            return true
-        }
-        return false
-    }
+  private fun getSuperHintHack(): CharSequence? {
+    val f = try {
+      TextView::class.java.getDeclaredField("mHint")
+    } catch (e: Exception) {
+      null
+    } ?: return null
+    f.isAccessible = true
+    return f.get(this) as? CharSequence
+  }
 
-    private fun getSuperHintHack(): CharSequence? {
-        val f = try {
-            TextView::class.java.getDeclaredField("mHint")
-        } catch (e: Exception) {
-            null
-        } ?: return null
-        f.isAccessible = true
-        return f.get(this) as? CharSequence
+  override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
+    return if (isMeizu()) {
+      null
+    } else {
+      super.onCreateInputConnection(outAttrs)
     }
-
-    override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
-        return if (isMeizu()) {
-            null
-        } else {
-            super.onCreateInputConnection(outAttrs)
-        }
-    }
+  }
 }

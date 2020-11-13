@@ -6,21 +6,21 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 class MonthPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    var fragments: MutableList<MonthFragment> = mutableListOf()
-        get() {
-            if (field.isEmpty()) {
-                for (i in 0 until count) {
-                    field.add(MonthFragment())
-                }
-            }
-            return field
+  var fragments: MutableList<MonthFragment> = mutableListOf()
+    get() {
+      if (field.isEmpty()) {
+        for (i in 0 until count) {
+          field.add(MonthFragment())
         }
-
-    override fun getItem(position: Int): Fragment {
-        return fragments[position]
+      }
+      return field
     }
 
-    override fun getCount(): Int {
-        return 4
-    }
+  override fun getItem(position: Int): Fragment {
+    return fragments[position]
+  }
+
+  override fun getCount(): Int {
+    return 4
+  }
 }

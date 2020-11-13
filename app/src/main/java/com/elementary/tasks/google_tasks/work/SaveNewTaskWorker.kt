@@ -10,24 +10,27 @@ import com.elementary.tasks.core.utils.launchIo
 import com.google.gson.Gson
 import java.io.IOException
 
-class SaveNewTaskWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class SaveNewTaskWorker(
+  context: Context,
+  workerParams: WorkerParameters
+) : Worker(context, workerParams) {
 
-    override fun doWork(): Result {
-        val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
-        if (json.isNotEmpty()) {
-            val googleTask = Gson().fromJson<GoogleTask>(json, GoogleTask::class.java)
-            if (googleTask != null) {
-                val google = GTasks.getInstance(applicationContext)
-                launchIo {
-                    if (google != null) {
-                        try {
-                            google.insertTask(googleTask)
-                        } catch (e: IOException) {
-                        }
-                    }
-                }
+  override fun doWork(): Result {
+    val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
+    if (json.isNotEmpty()) {
+      val googleTask = Gson().fromJson(json, GoogleTask::class.java)
+      if (googleTask != null) {
+        val google = GTasks.getInstance(applicationContext)
+        launchIo {
+          if (google != null) {
+            try {
+              google.insertTask(googleTask)
+            } catch (e: IOException) {
             }
+          }
         }
-        return Result.success()
+      }
     }
+    return Result.success()
+  }
 }

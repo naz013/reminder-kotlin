@@ -47,16 +47,16 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Koi
     this.data.addAll(list)
     diffResult.dispatchUpdatesTo(this)
     handler.postDelayed({
-        if (!list.isNullOrEmpty()) {
-            try {
-                if (oldSize == list.size) {
-                    notifyItemChanged(0)
-                } else {
-                    notifyDataSetChanged()
-                }
-            } catch (e: Exception) {
-            }
+      if (!list.isNullOrEmpty()) {
+        try {
+          if (oldSize == list.size) {
+            notifyItemChanged(0)
+          } else {
+            notifyDataSetChanged()
+          }
+        } catch (e: Exception) {
         }
+      }
     }, 250)
   }
 
@@ -68,14 +68,14 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Koi
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-        Reply.REPLY -> VoiceHolder(parent)
-        Reply.RESPONSE -> VoiceResponseHolder(parent)
-        Reply.REMINDER -> ReminderHolder(parent, hasHeader = false, editable = false, showMore = false)
-        Reply.NOTE -> NoteHolder(parent, null)
-        Reply.GROUP -> GroupHolder(parent, null)
-        Reply.SHOW_MORE -> ShowMoreHolder(parent)
-        Reply.BIRTHDAY -> BirthdayHolder(parent, false)
-        Reply.SHOPPING -> ShoppingHolder(parent, editable = false, showMore = false)
+      Reply.REPLY -> VoiceHolder(parent)
+      Reply.RESPONSE -> VoiceResponseHolder(parent)
+      Reply.REMINDER -> ReminderHolder(parent, hasHeader = false, editable = false, showMore = false)
+      Reply.NOTE -> NoteHolder(parent, null)
+      Reply.GROUP -> GroupHolder(parent, null)
+      Reply.SHOW_MORE -> ShowMoreHolder(parent)
+      Reply.BIRTHDAY -> BirthdayHolder(parent, false)
+      Reply.SHOPPING -> ShoppingHolder(parent, editable = false, showMore = false)
       else -> AskHolder(parent)
     }
   }

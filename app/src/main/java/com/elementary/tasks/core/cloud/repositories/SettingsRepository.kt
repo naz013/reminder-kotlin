@@ -21,11 +21,11 @@ class SettingsRepository : DatabaseRepository<SettingsModel>() {
       val entries = t.data
       for ((key, v) in entries) {
         when (v) {
-            is Boolean -> prefEdit.putBoolean(key, v)
-            is Float -> prefEdit.putFloat(key, v)
-            is Int -> prefEdit.putInt(key, v)
-            is Long -> prefEdit.putLong(key, v)
-            is String -> prefEdit.putString(key, v)
+          is Boolean -> prefEdit.putBoolean(key, v)
+          is Float -> prefEdit.putFloat(key, v)
+          is Int -> prefEdit.putInt(key, v)
+          is Long -> prefEdit.putLong(key, v)
+          is String -> prefEdit.putString(key, v)
         }
       }
       prefEdit.apply()
