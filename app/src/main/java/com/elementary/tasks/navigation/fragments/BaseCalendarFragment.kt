@@ -135,7 +135,7 @@ abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragmen
   }
 
   private fun showList(listView: RecyclerView, emptyView: View, res: List<EventModel>) {
-    val adapter = CalendarEventsAdapter()
+    val adapter = CalendarEventsAdapter(prefs)
     adapter.setEventListener(object : ActionsListener<EventModel> {
       override fun onAction(view: View, position: Int, t: EventModel?, actions: ListActions) {
         if (t != null) {

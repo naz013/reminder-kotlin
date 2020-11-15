@@ -15,7 +15,7 @@ import timber.log.Timber
 class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     if (!SuperUtil.isSkypeClientInstalled(requireContext())) {
       showInstallSkypeDialog()
       return null
@@ -97,9 +97,9 @@ class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
     super.onViewCreated(view, savedInstanceState)
     binding.tuneExtraView.hasAutoExtra = false
     binding.skypeContact.onChanged {
-      iFace.state.skypeContact = it
+      iFace.reminderState.skypeContact = it
     }
-    binding.skypeContact.setText(iFace.state.skypeContact)
+    binding.skypeContact.setText(iFace.reminderState.skypeContact)
     editReminder()
   }
 
@@ -114,7 +114,7 @@ class SkypeFragment : RepeatableTypeFragment<FragmentReminderSkypeBinding>() {
   }
 
   private fun editReminder() {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     when (reminder.type) {
       Reminder.BY_SKYPE_CALL -> binding.skypeCall.isChecked = true
       Reminder.BY_SKYPE_VIDEO -> binding.skypeVideo.isChecked = true

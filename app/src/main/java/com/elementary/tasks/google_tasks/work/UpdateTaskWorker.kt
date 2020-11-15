@@ -12,7 +12,8 @@ import java.io.IOException
 
 class UpdateTaskWorker(
   context: Context,
-  workerParams: WorkerParameters
+  workerParams: WorkerParameters,
+  private val gTasks: GTasks
 ) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
@@ -20,14 +21,11 @@ class UpdateTaskWorker(
     val status = inputData.getString(Constants.INTENT_STATUS) ?: GTasks.TASKS_NEED_ACTION
     if (json.isNotEmpty()) {
       val googleTask = Gson().fromJson(json, GoogleTask::class.java)
-      if (googleTask != null) {
-        val google = GTasks.getInstance(applicationContext)
+      if (googleTask != null && gTasks.isLogged) {
         launchIo {
-          if (google != null) {
-            try {
-              google.updateTaskStatus(status, googleTask)
-            } catch (e: IOException) {
-            }
+          try {
+            gTasks.updateTaskStatus(status, googleTask)
+          } catch (e: IOException) {
           }
         }
       }

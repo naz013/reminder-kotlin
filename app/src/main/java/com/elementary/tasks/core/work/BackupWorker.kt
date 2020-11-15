@@ -3,29 +3,17 @@ package com.elementary.tasks.core.work
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.BulkDataFlow
-import com.elementary.tasks.core.cloud.DataFlow
-import com.elementary.tasks.core.cloud.completables.ReminderCompletable
-import com.elementary.tasks.core.cloud.converters.BirthdayConverter
-import com.elementary.tasks.core.cloud.converters.GroupConverter
-import com.elementary.tasks.core.cloud.converters.NoteConverter
-import com.elementary.tasks.core.cloud.converters.PlaceConverter
-import com.elementary.tasks.core.cloud.converters.ReminderConverter
-import com.elementary.tasks.core.cloud.converters.SettingsConverter
-import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.BirthdayRepository
-import com.elementary.tasks.core.cloud.repositories.GroupRepository
-import com.elementary.tasks.core.cloud.repositories.NoteRepository
-import com.elementary.tasks.core.cloud.repositories.PlaceRepository
-import com.elementary.tasks.core.cloud.repositories.ReminderRepository
-import com.elementary.tasks.core.cloud.repositories.SettingsRepository
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job
 import timber.log.Timber
 
-object BackupWorker {
+class BackupWorker(
+  private val syncManagers: SyncManagers,
+  private val context: Context
+) {
 
   private var mJob: Job? = null
   private var mLastMsg: String? = null
@@ -45,9 +33,9 @@ object BackupWorker {
       value?.invoke(mJob != null)
     }
 
-  fun backup(context: Context) {
+  fun backup() {
     mJob?.cancel()
-    launchSync(context)
+    launchSync()
   }
 
   fun unsubscribe() {
@@ -56,28 +44,63 @@ object BackupWorker {
     progress = null
   }
 
-  private fun launchSync(context: Context) {
-    val storage = CompositeStorage(DataFlow.availableStorageList(context))
+  private fun launchSync() {
+    val storage = CompositeStorage(syncManagers.storageManager)
 
     mJob = launchIo {
       notifyMsg(context.getString(R.string.syncing_groups))
-      BulkDataFlow(GroupRepository(), GroupConverter(), storage, null).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.groupRepository,
+        syncManagers.converterManager.groupConverter,
+        storage,
+        completable = null
+      ).backup()
 
       notifyMsg(context.getString(R.string.syncing_reminders))
-      BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable()).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.reminderRepository,
+        syncManagers.converterManager.reminderConverter,
+        storage,
+        syncManagers.completableManager.reminderCompletable
+      ).backup()
 
       notifyMsg(context.getString(R.string.syncing_notes))
-      BulkDataFlow(NoteRepository(), NoteConverter(), storage, null).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.noteRepository,
+        syncManagers.converterManager.noteConverter,
+        storage,
+        completable = null
+      ).backup()
 
       notifyMsg(context.getString(R.string.syncing_birthdays))
-      BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.birthdayRepository,
+        syncManagers.converterManager.birthdayConverter,
+        storage,
+        completable = null
+      ).backup()
 
       notifyMsg(context.getString(R.string.syncing_places))
-      BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.placeRepository,
+        syncManagers.converterManager.placeConverter,
+        storage,
+        completable = null
+      ).backup()
 
       notifyMsg(context.getString(R.string.syncing_templates))
-      BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null).backup()
-      BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.templateRepository,
+        syncManagers.converterManager.templateConverter,
+        storage,
+        completable = null
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.converterManager.settingsConverter,
+        storage,
+        completable = null
+      ).backup()
 
       withUIContext {
         onEnd?.invoke()

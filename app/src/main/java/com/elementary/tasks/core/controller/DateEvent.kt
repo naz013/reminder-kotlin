@@ -1,10 +1,20 @@
 package com.elementary.tasks.core.controller
 
+import android.content.Context
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 
-class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
+class DateEvent(
+  reminder: Reminder,
+  appDb: AppDb,
+  prefs: Prefs,
+  calendarUtils: CalendarUtils,
+  context: Context
+) : RepeatableEventManager(reminder, appDb, prefs, calendarUtils, context) {
 
   override val isActive: Boolean
     get() = reminder.isActive

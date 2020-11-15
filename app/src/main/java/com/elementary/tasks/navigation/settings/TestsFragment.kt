@@ -31,10 +31,10 @@ class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
     binding.reminderDialogWindow.setOnClickListener { openReminderScreen() }
     binding.missedCallWindow.setOnClickListener { openMissedScreen() }
 
-    binding.quickSmsWindow.setOnClickListener { QuickSmsActivity.openScreen(context!!, "2454548") }
+    binding.quickSmsWindow.setOnClickListener { QuickSmsActivity.openScreen(requireContext(), "2454548") }
 
     binding.afterCallWindow.setOnClickListener {
-      FollowReminderActivity.mockScreen(context!!, "2454548", System.currentTimeMillis())
+      FollowReminderActivity.mockScreen(requireContext(), "2454548", System.currentTimeMillis())
     }
   }
 

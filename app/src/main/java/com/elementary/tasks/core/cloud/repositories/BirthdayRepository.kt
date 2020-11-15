@@ -1,8 +1,9 @@
 package com.elementary.tasks.core.cloud.repositories
 
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 
-class BirthdayRepository : DatabaseRepository<Birthday>() {
+class BirthdayRepository(appDb: AppDb) : DatabaseRepository<Birthday>(appDb) {
   override suspend fun get(id: String): Birthday? {
     return appDb.birthdaysDao().getById(id)
   }

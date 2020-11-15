@@ -38,8 +38,8 @@ import java.util.*
 
 class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotificationBinding>() {
 
-  private val cacheUtil: CacheUtil by inject()
-  private val soundStackHolder: SoundStackHolder by inject()
+  private val cacheUtil by inject<CacheUtil>()
+  private val soundStackHolder by inject<SoundStackHolder>()
 
   private var mItemSelect: Int = 0
 
@@ -425,12 +425,10 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
   }
 
   private fun changeIncreasePrefs() {
-    withContext {
-      if (SuperUtil.hasVolumePermission(it)) {
-        changeIncrease()
-      } else {
-        openNotificationsSettings()
-      }
+    if (SuperUtil.hasVolumePermission(requireContext())) {
+      changeIncrease()
+    } else {
+      openNotificationsSettings()
     }
   }
 
@@ -610,23 +608,23 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
       }
     }
     binding.chooseSoundPrefs.setViewResource(R.drawable.ic_twotone_play_circle_filled_24px)
-    binding.chooseSoundPrefs.setCustomViewClickListener(View.OnClickListener {
+    binding.chooseSoundPrefs.setCustomViewClickListener {
       if (soundStackHolder.sound?.isPlaying == true) {
         soundStackHolder.sound?.stop(true)
       } else {
-        val melody = ReminderUtils.getSound(context!!, prefs, prefs.melodyFile)
+        val melody = ReminderUtils.getSound(requireContext(), prefs, prefs.melodyFile)
         if (melody.melodyType == ReminderUtils.MelodyType.RINGTONE) {
           soundStackHolder.sound?.playRingtone(melody.uri)
         } else {
           soundStackHolder.sound?.playAlarm(melody.uri, false)
         }
       }
-    })
+    }
   }
 
   private fun iconTintColor(): Int {
-    return if (isDark) ContextCompat.getColor(context!!, R.color.pureWhite)
-    else ContextCompat.getColor(context!!, R.color.pureBlack)
+    return if (isDark) ContextCompat.getColor(requireContext(), R.color.pureWhite)
+    else ContextCompat.getColor(requireContext(), R.color.pureBlack)
   }
 
   private fun showMelody() {
@@ -851,7 +849,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     val isChecked = binding.statusIconPrefs.isChecked
     binding.statusIconPrefs.isChecked = !isChecked
     prefs.isSbIconEnabled = !isChecked
-    Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
+    Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_SHOW)
   }
 
   private fun initSbIconPrefs() {
@@ -865,9 +863,9 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     binding.permanentNotificationPrefs.isChecked = !isChecked
     prefs.isSbNotificationEnabled = !isChecked
     if (prefs.isSbNotificationEnabled) {
-      Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
+      Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_SHOW)
     } else {
-      Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_HIDE)
+      Notifier.updateReminderPermanent(requireContext(), PermanentReminderReceiver.ACTION_HIDE)
     }
   }
 
@@ -945,8 +943,8 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         binding.bgImagePrefs.setViewResource(R.drawable.widget_preview_bg)
       } else {
         val imageFile = File(prefs.screenImage)
-        if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL) && imageFile.exists()) {
-          Glide.with(context!!)
+        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL) && imageFile.exists()) {
+          Glide.with(requireContext())
             .load(imageFile)
             .override(200, 200)
             .centerCrop()
@@ -972,7 +970,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       MELODY_CODE -> if (resultCode == Activity.RESULT_OK) {
-        if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL)) {
           val filePath = cacheUtil.cacheFile(data)
           if (filePath != null) {
             val file = File(filePath)
@@ -991,7 +989,7 @@ class NotificationSettingsFragment : BaseSettingsFragment<FragmentSettingsNotifi
         }
       }
       Constants.ACTION_REQUEST_GALLERY -> if (resultCode == Activity.RESULT_OK) {
-        if (Permissions.checkPermission(context!!, Permissions.READ_EXTERNAL)) {
+        if (Permissions.checkPermission(requireContext(), Permissions.READ_EXTERNAL)) {
           val filePath = cacheUtil.cacheFile(data)
           if (filePath != null) {
             val file = File(filePath)

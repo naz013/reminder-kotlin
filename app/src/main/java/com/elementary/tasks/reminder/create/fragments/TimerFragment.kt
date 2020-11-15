@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
@@ -21,17 +20,16 @@ import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.core.views.TimerPickerView
 import com.elementary.tasks.databinding.FragmentReminderTimerBinding
 import com.elementary.tasks.databinding.ListItemUsedTimeBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
   private val timesAdapter = TimesAdapter()
-  private val viewModel: UsedTimeViewModel by lazy {
-    ViewModelProvider(this).get(UsedTimeViewModel::class.java)
-  }
+  private val viewModel by viewModel<UsedTimeViewModel>()
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     val after = binding.timerPickerView.timerValue
     if (after == 0L) {
       iFace.showSnackbar(getString(R.string.you_dont_insert_timer_time))
@@ -120,18 +118,18 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
 
     binding.timerPickerView.setListener(object : TimerPickerView.TimerListener {
       override fun onTimerChange(time: Long) {
-        iFace.state.reminder.after = time
+        iFace.reminderState.reminder.after = time
       }
     })
 
     binding.exclusionView.dialogues = dialogues
     binding.exclusionView.prefs = prefs
 
-    binding.exclusionView.bindProperty(iFace.state.reminder.hours, iFace.state.reminder.from,
-      iFace.state.reminder.to) { hours, from, to ->
-      iFace.state.reminder.hours = hours
-      iFace.state.reminder.from = from
-      iFace.state.reminder.to = to
+    binding.exclusionView.bindProperty(iFace.reminderState.reminder.hours, iFace.reminderState.reminder.from,
+      iFace.reminderState.reminder.to) { hours, from, to ->
+      iFace.reminderState.reminder.hours = hours
+      iFace.reminderState.reminder.from = from
+      iFace.reminderState.reminder.to = to
     }
 
     editReminder()
@@ -175,7 +173,7 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
   }
 
   private fun editReminder() {
-    binding.timerPickerView.timerValue = iFace.state.reminder.after
+    binding.timerPickerView.timerValue = iFace.reminderState.reminder.after
   }
 
   inner class TimesAdapter : RecyclerView.Adapter<TimesAdapter.TimeHolder>() {
@@ -193,16 +191,13 @@ class TimerFragment : RepeatableTypeFragment<FragmentReminderTimerBinding>() {
       holder.bind(data[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeHolder {
-      return TimeHolder(parent)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TimeHolder(parent)
 
-    override fun getItemCount(): Int {
-      return data.size
-    }
+    override fun getItemCount() = data.size
 
-    inner class TimeHolder(viewGroup: ViewGroup) :
-      HolderBinding<ListItemUsedTimeBinding>(viewGroup, R.layout.list_item_used_time) {
+    inner class TimeHolder(
+      viewGroup: ViewGroup
+    ) : HolderBinding<ListItemUsedTimeBinding>(viewGroup, R.layout.list_item_used_time) {
 
       init {
         binding.chipItem.setOnClickListener {

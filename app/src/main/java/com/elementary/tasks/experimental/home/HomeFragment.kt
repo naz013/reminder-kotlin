@@ -6,8 +6,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
@@ -32,17 +30,16 @@ import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
-  private val buttonObservable: GlobalButtonObservable by inject()
-  private val viewModel: HomeViewModel by lazy {
-    ViewModelProvider(this).get(HomeViewModel::class.java)
-  }
-  private val remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = true) {
+  private val buttonObservable by inject<GlobalButtonObservable>()
+  private val viewModel by viewModel<HomeViewModel>()
+  private val remindersAdapter = RemindersRecyclerAdapter(prefs, showHeader = false, isEditable = true) {
     showReminders(viewModel.reminders.value ?: listOf())
   }
-  private val birthdaysAdapter = BirthdaysRecyclerAdapter {
+  private val birthdaysAdapter = BirthdaysRecyclerAdapter(prefs) {
     showBirthdays(viewModel.birthdays.value ?: listOf())
   }
   private var mPosition: Int = 0
@@ -209,21 +206,21 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
   }
 
   private fun initViewModel() {
-    viewModel.reminders.observe(viewLifecycleOwner, Observer {
+    viewModel.reminders.observe(viewLifecycleOwner, {
       if (it != null) {
         showReminders(it)
       } else {
         showReminders(listOf())
       }
     })
-    viewModel.birthdays.observe(viewLifecycleOwner, Observer {
+    viewModel.birthdays.observe(viewLifecycleOwner, {
       if (it != null) {
         showBirthdays(it)
       } else {
         showBirthdays(listOf())
       }
     })
-    viewModel.result.observe(viewLifecycleOwner, Observer {
+    viewModel.result.observe(viewLifecycleOwner, {
       if (it != null) {
         if (it == Commands.OUTDATED) {
           remindersAdapter.notifyItemChanged(mPosition)

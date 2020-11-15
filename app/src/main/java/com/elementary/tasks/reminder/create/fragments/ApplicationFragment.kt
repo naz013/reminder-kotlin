@@ -29,7 +29,7 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
       val packageManager = requireContext().packageManager
       var applicationInfo: ApplicationInfo? = null
       try {
-        applicationInfo = packageManager.getApplicationInfo(iFace.state.app, 0)
+        applicationInfo = packageManager.getApplicationInfo(iFace.reminderState.app, 0)
       } catch (ignored: Exception) {
       }
       return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else "???") as String
@@ -38,9 +38,9 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
   override fun prepare(): Reminder? {
     val type = type
     var number: String
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-      number = iFace.state.app
+      number = iFace.reminderState.app
       if (TextUtils.isEmpty(number)) {
         iFace.showSnackbar(getString(R.string.you_dont_select_application))
         return null
@@ -111,16 +111,17 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     binding.tuneExtraView.hint = getString(R.string.enable_launching_application_automatically)
 
     binding.pickApplication.setOnClickListener {
-      activity?.startActivityForResult(Intent(activity, SelectApplicationActivity::class.java), Constants.REQUEST_CODE_APPLICATION)
+      activity?.startActivityForResult(Intent(activity, SelectApplicationActivity::class.java),
+        Constants.REQUEST_CODE_APPLICATION)
     }
     binding.urlLayout.visibility = View.GONE
-    binding.urlField.setText(iFace.state.link)
+    binding.urlField.setText(iFace.reminderState.link)
     binding.urlField.onChanged {
-      iFace.state.link = it
-      iFace.state.isAppSaved = true
+      iFace.reminderState.link = it
+      iFace.reminderState.isAppSaved = true
     }
     binding.application.setOnCheckedChangeListener { _, b ->
-      iFace.state.isLink = !b
+      iFace.reminderState.isLink = !b
       if (!b) {
         binding.applicationLayout.visibility = View.GONE
         binding.urlLayout.visibility = View.VISIBLE
@@ -133,35 +134,35 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
   }
 
   private fun editReminder() {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     if (reminder.target != "") {
-      if (!iFace.state.isLink && Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
+      if (!iFace.reminderState.isLink && Reminder.isSame(reminder.type, Reminder.BY_DATE_APP)) {
         binding.application.isChecked = true
-        iFace.state.app = reminder.target
-        iFace.state.isLink = false
+        iFace.reminderState.app = reminder.target
+        iFace.reminderState.isLink = false
         binding.applicationName.text = appName
       } else {
         binding.browser.isChecked = true
-        iFace.state.link = reminder.target
-        iFace.state.isLink = true
+        iFace.reminderState.link = reminder.target
+        iFace.reminderState.isLink = true
         binding.urlField.setText(reminder.target)
       }
     }
-    if (iFace.state.isAppSaved) {
-      if (!iFace.state.isLink) {
+    if (iFace.reminderState.isAppSaved) {
+      if (!iFace.reminderState.isLink) {
         binding.application.isChecked = true
         binding.applicationName.text = appName
       } else {
         binding.browser.isChecked = true
-        binding.urlField.setText(iFace.state.link)
+        binding.urlField.setText(iFace.reminderState.link)
       }
     }
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
-      iFace.state.app = data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
-      iFace.state.isAppSaved = true
+      iFace.reminderState.app = data?.getStringExtra(Constants.SELECTED_APPLICATION) ?: ""
+      iFace.reminderState.isAppSaved = true
       binding.applicationName.text = appName
     }
   }

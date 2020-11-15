@@ -19,15 +19,15 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     get() {
       val calendar = Calendar.getInstance()
       calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-      calendar.set(Calendar.MINUTE, iFace.state.minute)
+      calendar.set(Calendar.HOUR_OF_DAY, iFace.reminderState.hour)
+      calendar.set(Calendar.MINUTE, iFace.reminderState.minute)
       calendar.set(Calendar.SECOND, 0)
       calendar.set(Calendar.MILLISECOND, 0)
       return calendar.timeInMillis
     }
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     var type = Reminder.BY_DAY_OF_YEAR
     val isAction = binding.actionView.hasAction()
     if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -51,8 +51,8 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     reminder.weekdays = listOf()
     reminder.target = number
     reminder.type = type
-    reminder.dayOfMonth = iFace.state.day
-    reminder.monthOfYear = iFace.state.month
+    reminder.dayOfMonth = iFace.reminderState.day
+    reminder.monthOfYear = iFace.reminderState.month
     reminder.after = 0L
     reminder.delay = 0
     reminder.eventCount = 0
@@ -112,24 +112,24 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
     binding.dateView.setDateFormat(TimeUtil.simpleDate(prefs.appLanguage))
     binding.dateView.setEventListener(object : DateTimeView.OnSelectListener {
       override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
-        iFace.state.day = day
-        iFace.state.month = month
-        iFace.state.year = year
+        iFace.reminderState.day = day
+        iFace.reminderState.month = month
+        iFace.reminderState.year = year
       }
 
       override fun onTimeSelect(mills: Long, hour: Int, minute: Int) {
-        iFace.state.hour = hour
-        iFace.state.minute = minute
+        iFace.reminderState.hour = hour
+        iFace.reminderState.minute = minute
       }
     })
 
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()
-    calendar.set(Calendar.DAY_OF_MONTH, iFace.state.day)
-    calendar.set(Calendar.MONTH, iFace.state.month)
-    calendar.set(Calendar.YEAR, iFace.state.year)
-    calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-    calendar.set(Calendar.MINUTE, iFace.state.minute)
+    calendar.set(Calendar.DAY_OF_MONTH, iFace.reminderState.day)
+    calendar.set(Calendar.MONTH, iFace.reminderState.month)
+    calendar.set(Calendar.YEAR, iFace.reminderState.year)
+    calendar.set(Calendar.HOUR_OF_DAY, iFace.reminderState.hour)
+    calendar.set(Calendar.MINUTE, iFace.reminderState.minute)
     binding.dateView.dateTime = calendar.timeInMillis
     editReminder()
   }
@@ -150,19 +150,19 @@ class YearFragment : RepeatableTypeFragment<FragmentReminderYearBinding>() {
   private fun updateDateTime(reminder: Reminder) {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-    iFace.state.hour = calendar.get(Calendar.HOUR_OF_DAY)
-    iFace.state.minute = calendar.get(Calendar.MINUTE)
+    iFace.reminderState.hour = calendar.get(Calendar.HOUR_OF_DAY)
+    iFace.reminderState.minute = calendar.get(Calendar.MINUTE)
     calendar.timeInMillis = System.currentTimeMillis()
     calendar.set(Calendar.DAY_OF_MONTH, reminder.dayOfMonth)
     calendar.set(Calendar.MONTH, reminder.monthOfYear)
-    calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-    calendar.set(Calendar.MINUTE, iFace.state.minute)
+    calendar.set(Calendar.HOUR_OF_DAY, iFace.reminderState.hour)
+    calendar.set(Calendar.MINUTE, iFace.reminderState.minute)
     binding.dateView.dateTime = calendar.timeInMillis
-    iFace.state.day = reminder.dayOfMonth
-    iFace.state.month = reminder.monthOfYear
+    iFace.reminderState.day = reminder.dayOfMonth
+    iFace.reminderState.month = reminder.monthOfYear
   }
 
   private fun editReminder() {
-    updateDateTime(iFace.state.reminder)
+    updateDateTime(iFace.reminderState.reminder)
   }
 }

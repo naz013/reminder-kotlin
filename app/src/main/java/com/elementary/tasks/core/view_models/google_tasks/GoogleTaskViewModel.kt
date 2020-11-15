@@ -1,20 +1,27 @@
 package com.elementary.tasks.core.view_models.google_tasks
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
-class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
+class GoogleTaskViewModel(
+  id: String,
+  appDb: AppDb,
+  prefs: Prefs,
+  context: Context,
+  gTasks: GTasks,
+  private val eventControlFactory: EventControlFactory
+) : BaseTaskListsViewModel(appDb, prefs, context, gTasks) {
 
   val googleTask = appDb.googleTasksDao().loadById(id)
   val defaultTaskList = appDb.googleTaskListsDao().loadDefault()
@@ -36,18 +43,16 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
     Timber.d("saveReminder: $reminder")
     if (reminder != null) {
       launchDefault {
-        runBlocking {
-          val group = appDb.reminderGroupDao().defaultGroup()
-          if (group != null) {
-            reminder.groupColor = group.groupColor
-            reminder.groupTitle = group.groupTitle
-            reminder.groupUuId = group.groupUuId
-            appDb.reminderDao().insert(reminder)
-          }
+        val group = appDb.reminderGroupDao().defaultGroup()
+        if (group != null) {
+          reminder.groupColor = group.groupColor
+          reminder.groupTitle = group.groupTitle
+          reminder.groupUuId = group.groupUuId
+          appDb.reminderDao().insert(reminder)
         }
         if (reminder.groupUuId != "") {
-          EventControlFactory.getController(reminder).start()
-          startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
+          eventControlFactory.getController(reminder).start()
+          startWork(com.elementary.tasks.reminder.work.ReminderSingleBackupWorker::class.java,
             Constants.INTENT_ID, reminder.uuId)
         }
       }
@@ -55,15 +60,14 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
   }
 
   fun deleteGoogleTask(googleTask: GoogleTask) {
-    val google = GTasks.getInstance(context)
-    if (google == null) {
+    if (!gTasks.isLogged) {
       postCommand(Commands.FAILED)
       return
     }
     postInProgress(true)
     launchDefault {
       try {
-        google.deleteTask(googleTask)
+        gTasks.deleteTask(googleTask)
         appDb.googleTasksDao().delete(googleTask)
         postInProgress(false)
         postCommand(Commands.DELETED)
@@ -75,15 +79,14 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
   }
 
   fun newGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
-    val google = GTasks.getInstance(context)
-    if (google == null) {
+    if (!gTasks.isLogged) {
       postCommand(Commands.FAILED)
       return
     }
     postInProgress(true)
     launchDefault {
       try {
-        google.insertTask(googleTask)
+        gTasks.insertTask(googleTask)
         saveReminder(reminder)
         postInProgress(false)
         postCommand(Commands.SAVED)
@@ -95,8 +98,7 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
   }
 
   fun updateGoogleTask(googleTask: GoogleTask, reminder: Reminder?) {
-    val google = GTasks.getInstance(context)
-    if (google == null) {
+    if (!gTasks.isLogged) {
       postCommand(Commands.FAILED)
       return
     }
@@ -104,7 +106,7 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
     launchDefault {
       appDb.googleTasksDao().insert(googleTask)
       try {
-        google.updateTask(googleTask)
+        gTasks.updateTask(googleTask)
         saveReminder(reminder)
         postInProgress(false)
         postCommand(Commands.SAVED)
@@ -116,8 +118,7 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
   }
 
   fun updateAndMoveGoogleTask(googleTask: GoogleTask, oldListId: String, reminder: Reminder?) {
-    val google = GTasks.getInstance(context)
-    if (google == null) {
+    if (!gTasks.isLogged) {
       postCommand(Commands.FAILED)
       return
     }
@@ -125,8 +126,8 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
     launchDefault {
       appDb.googleTasksDao().insert(googleTask)
       try {
-        google.updateTask(googleTask)
-        google.moveTask(googleTask, oldListId)
+        gTasks.updateTask(googleTask)
+        gTasks.moveTask(googleTask, oldListId)
         saveReminder(reminder)
         postInProgress(false)
         postCommand(Commands.SAVED)
@@ -138,24 +139,16 @@ class GoogleTaskViewModel(id: String) : BaseTaskListsViewModel() {
   }
 
   fun moveGoogleTask(googleTask: GoogleTask, oldListId: String) {
-    val google = GTasks.getInstance(context)
-    if (google == null) {
+    if (!gTasks.isLogged) {
       postCommand(Commands.FAILED)
       return
     }
     postInProgress(true)
     launchDefault {
       appDb.googleTasksDao().insert(googleTask)
-      google.moveTask(googleTask, oldListId)
+      gTasks.moveTask(googleTask, oldListId)
       postInProgress(false)
       postCommand(Commands.SAVED)
-    }
-  }
-
-  class Factory(private val id: String) : ViewModelProvider.NewInstanceFactory() {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return GoogleTaskViewModel(id) as T
     }
   }
 }

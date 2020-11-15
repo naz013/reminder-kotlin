@@ -17,18 +17,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.Events
-import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.dp2px
 import hirondelle.date4j.DateTime
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*
 
-@KoinApiExtension
 class MonthView : View, View.OnTouchListener, KoinComponent {
 
   private var mYear: Int = 0
@@ -107,7 +105,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
 
     this.borderPaint = Paint()
     this.borderPaint.style = Paint.Style.STROKE
-    this.borderPaint.strokeWidth = MeasureUtils.dp2px(context, 1).toFloat()
+    this.borderPaint.strokeWidth = dp2px(1).toFloat()
 
     this.touchPaint = Paint()
     this.touchPaint.isAntiAlias = true
@@ -286,7 +284,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
   }
 
   private fun drawRectText(text: String, canvas: Canvas, r: Rect, color: Int, position: Int, typeface: Typeface?) {
-    paint.textSize = MeasureUtils.dp2px(context, 16).toFloat()
+    paint.textSize = dp2px(16).toFloat()
     paint.textAlign = Paint.Align.CENTER
     paint.alpha = 100
     paint.color = color

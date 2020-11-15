@@ -16,13 +16,11 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.text.DateFormat
 import java.util.*
 
-@KoinApiExtension
 class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener,
   TimePickerDialog.OnTimeSetListener, KoinComponent {
 

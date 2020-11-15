@@ -2,13 +2,10 @@ package com.elementary.tasks.core.cloud.repositories
 
 import com.elementary.tasks.core.data.models.SettingsModel
 import com.elementary.tasks.core.utils.Prefs
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.inject
 
-@KoinApiExtension
-class SettingsRepository : DatabaseRepository<SettingsModel>() {
-
-  private val prefs: Prefs by inject()
+class SettingsRepository(
+  private val prefs: Prefs
+) : Repository<SettingsModel> {
 
   override suspend fun get(id: String): SettingsModel? {
     val list = prefs.all()

@@ -7,9 +7,12 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Prefs
 
-class BirthdaysRecyclerAdapter(private val refreshListener: () -> Unit)
-  : ListAdapter<Birthday, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
+class BirthdaysRecyclerAdapter(
+  private val prefs: Prefs,
+  private val refreshListener: () -> Unit
+) : ListAdapter<Birthday, RecyclerView.ViewHolder>(BirthdayDiffCallback()) {
 
   var actionsListener: ActionsListener<Birthday>? = null
   private val adsProvider = AdsProvider()
@@ -21,8 +24,8 @@ class BirthdaysRecyclerAdapter(private val refreshListener: () -> Unit)
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-        AdsProvider.ADS_VIEW_TYPE -> BirthdayAdsHolder(parent, adsProvider, refreshListener)
-      else -> BirthdayHolder(parent) { view, i, listActions ->
+        AdsProvider.ADS_VIEW_TYPE -> BirthdayAdsHolder(parent, prefs, adsProvider, refreshListener)
+      else -> BirthdayHolder(parent, prefs) { view, i, listActions ->
         actionsListener?.onAction(view, i, getItem(i), listActions)
       }
     }

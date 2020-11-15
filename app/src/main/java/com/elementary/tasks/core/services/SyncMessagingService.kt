@@ -9,16 +9,15 @@ import com.elementary.tasks.core.work.LoadTokensWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.get
 import timber.log.Timber
 
 class SyncMessagingService : FirebaseMessagingService() {
 
-  private val prefs: Prefs by inject()
-
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
     super.onMessageReceived(remoteMessage)
     Timber.d("onMessageReceived: ${remoteMessage.data}")
+    val prefs = get<Prefs>()
     if (prefs.multiDeviceModeEnabled && prefs.isBackupEnabled) {
       val data = remoteMessage.data
       val fileName = data["details"] ?: ""
@@ -33,10 +32,12 @@ class SyncMessagingService : FirebaseMessagingService() {
 
   override fun onNewToken(token: String) {
     super.onNewToken(token)
-    val dropbox = Dropbox()
-    if (dropbox.isLinked) {
-      dropbox.updateToken(token)
-    }
-    GDrive.getInstance(applicationContext)?.updateToken(token)
+    get<Dropbox>()
+      .takeIf { it.isLinked }
+      ?.also { it.updateToken(token) }
+
+    get<GDrive>()
+      .takeIf { it.isLogged }
+      ?.also { it.updateToken(token) }
   }
 }

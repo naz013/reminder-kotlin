@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import android.widget.LinearLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
@@ -24,6 +23,8 @@ import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import hirondelle.date4j.DateTime
 import org.apache.commons.lang3.StringUtils
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,10 +34,8 @@ class CalendarFragment : BaseCalendarFragment<FragmentFlextCalBinding>(), MonthC
   private lateinit var dayPagerAdapter: MonthPagerAdapter
   private var behaviour: BottomSheetBehavior<LinearLayout>? = null
   private val datePageChangeListener = DatePageChangeListener()
-  private val mViewModel: MonthViewViewModel by lazy {
-    ViewModelProvider(this,
-      MonthViewViewModel.Factory(prefs.isRemindersInCalendarEnabled,
-        prefs.isFutureEventEnabled)).get(MonthViewViewModel::class.java)
+  private val mViewModel by viewModel<MonthViewViewModel> {
+    parametersOf(prefs.isRemindersInCalendarEnabled, prefs.isFutureEventEnabled, 0L)
   }
   private var monthPagerItem: MonthPagerItem? = null
   private var listener: ((MonthPagerItem, List<EventModel>) -> Unit)? = null

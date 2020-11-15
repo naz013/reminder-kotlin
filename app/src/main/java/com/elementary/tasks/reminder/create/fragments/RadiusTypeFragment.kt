@@ -8,7 +8,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 abstract class RadiusTypeFragment<B : ViewDataBinding> : TypeFragment<B>() {
 
   override fun getSummary(): String {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
 
     var summary = ""
 
@@ -29,6 +29,6 @@ abstract class RadiusTypeFragment<B : ViewDataBinding> : TypeFragment<B>() {
       SuperUtil.showLocationAlert(requireContext(), iFace)
       return null
     }
-    return iFace.state.reminder
+    return iFace.reminderState.reminder
   }
 }

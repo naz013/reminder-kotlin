@@ -26,7 +26,12 @@ class AdsProvider {
     wasError = false
   }
 
-  fun showBanner(viewGroup: ViewGroup, bannerId: String, @LayoutRes res: Int, failListener: (() -> Unit)? = null) {
+  fun showBanner(
+    viewGroup: ViewGroup,
+    bannerId: String,
+    @LayoutRes res: Int,
+    failListener: (() -> Unit)? = null
+  ) {
     val adLoader = AdLoader.Builder(viewGroup.context, bannerId)
       .forUnifiedNativeAd { ad: UnifiedNativeAd ->
         unifiedNativeAd?.destroy()
@@ -37,11 +42,11 @@ class AdsProvider {
         viewGroup.addView(adView)
       }
       .withAdListener(object : AdListener() {
-          override fun onAdFailedToLoad(errorCode: Int) {
-              Timber.d("onAdFailedToLoad: $errorCode")
-              wasError = true
-              failListener?.invoke()
-          }
+        override fun onAdFailedToLoad(errorCode: Int) {
+          Timber.d("onAdFailedToLoad: $errorCode")
+          wasError = true
+          failListener?.invoke()
+        }
       })
       .withNativeAdOptions(NativeAdOptions.Builder()
         .setRequestMultipleImages(false)

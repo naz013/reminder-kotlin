@@ -3,14 +3,14 @@ package com.elementary.tasks.core.view_models.day_view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.elementary.tasks.birthdays.work.DeleteBackupWorker
+import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -18,14 +18,18 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.day_view.DayViewProvider
 import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.day_view.day.EventModel
-import com.elementary.tasks.reminder.work.SingleBackupWorker
+import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.util.*
 
-class DayViewViewModel private constructor(private val calculateFuture: Boolean,
-                                           private val birthTime: Long = 0) : BaseDbViewModel() {
+class DayViewViewModel(
+  private val calculateFuture: Boolean,
+  private val birthTime: Long = 0,
+  private val eventControlFactory: EventControlFactory,
+  appDb: AppDb,
+  prefs: Prefs
+) : BaseDbViewModel(appDb, prefs) {
 
   private var liveData: DayViewLiveData
 
@@ -61,7 +65,7 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
       appDb.reminderDao().insert(reminder)
       postInProgress(false)
       postCommand(Commands.SAVED)
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
     }
   }
 
@@ -71,43 +75,39 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
       appDb.birthdaysDao().delete(birthday)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
+      startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
     }
   }
 
   fun moveToTrash(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        val fromDb = appDb.reminderDao().getById(reminder.uuId)
-        if (fromDb != null) {
-          fromDb.isRemoved = true
-          EventControlFactory.getController(fromDb).stop()
-          appDb.reminderDao().insert(fromDb)
-        }
+      val fromDb = appDb.reminderDao().getById(reminder.uuId)
+      if (fromDb != null) {
+        fromDb.isRemoved = true
+        eventControlFactory.getController(fromDb).stop()
+        appDb.reminderDao().insert(fromDb)
       }
       postInProgress(false)
       postCommand(Commands.DELETED)
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
     }
   }
 
   fun skip(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        val fromDb = appDb.reminderDao().getById(reminder.uuId)
-        if (fromDb != null) {
-          EventControlFactory.getController(fromDb).skip()
-        }
+      val fromDb = appDb.reminderDao().getById(reminder.uuId)
+      if (fromDb != null) {
+        eventControlFactory.getController(fromDb).skip()
       }
       postInProgress(false)
       postCommand(Commands.DELETED)
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
     }
   }
 
-  private inner class DayViewLiveData() : LiveData<Pair<EventsPagerItem, List<EventModel>>>() {
+  private inner class DayViewLiveData : LiveData<Pair<EventsPagerItem, List<EventModel>>>() {
 
     private val reminderData = ArrayList<EventModel>()
     private val birthdayData = ArrayList<EventModel>()
@@ -210,15 +210,6 @@ class DayViewViewModel private constructor(private val calculateFuture: Boolean,
           withUIContext { notifyObserver(eventsPagerItem, sorted) }
         }
       }
-    }
-  }
-
-  class Factory(private val calculateFuture: Boolean,
-                private val birthTime: Long = 0) : ViewModelProvider.NewInstanceFactory() {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return DayViewViewModel(calculateFuture, birthTime) as T
     }
   }
 }

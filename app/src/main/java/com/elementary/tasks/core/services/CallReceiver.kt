@@ -8,11 +8,9 @@ import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.inject
 import timber.log.Timber
 
-@KoinApiExtension
 class CallReceiver : BaseBroadcast() {
 
   private val appDb: AppDb by inject()

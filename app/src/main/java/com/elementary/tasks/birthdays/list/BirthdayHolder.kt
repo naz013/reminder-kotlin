@@ -7,20 +7,19 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.databinding.ListItemBirthdayBinding
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-@KoinApiExtension
 class BirthdayHolder(
   parent: ViewGroup,
+  private val prefs: Prefs,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday), KoinComponent {
-
-  private val prefs: Prefs by inject()
+) : HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday) {
 
   init {
     if (showMore) {

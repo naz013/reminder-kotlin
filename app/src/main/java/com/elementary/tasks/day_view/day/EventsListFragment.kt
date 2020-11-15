@@ -18,13 +18,14 @@ import com.elementary.tasks.databinding.FragmentEventsListBinding
 import com.elementary.tasks.day_view.EventsPagerItem
 import com.elementary.tasks.reminder.ReminderResolver
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
 
-  private var callback: DayCallback? = null
-  private val mAdapter = CalendarEventsAdapter()
+  private val dialogues by inject<Dialogues>()
+  private val mAdapter = CalendarEventsAdapter(get())
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
     deleteAction = { birthday -> callback?.getViewModel()?.deleteBirthday(birthday) }
@@ -38,7 +39,7 @@ class EventsListFragment : BindingFragment<FragmentEventsListBinding>() {
     allGroups = { callback?.getViewModel()?.groups ?: listOf() }
   )
   private var mItem: EventsPagerItem? = null
-  private val dialogues: Dialogues by inject()
+  private var callback: DayCallback? = null
 
   fun getModel(): EventsPagerItem? = mItem
 

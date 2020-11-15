@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.export
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -38,8 +37,13 @@ import java.util.*
 
 class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBinding>() {
 
-  private val backupTool: BackupTool by inject()
-  private val cacheUtil: CacheUtil by inject()
+  private val backupTool by inject<BackupTool>()
+  private val cacheUtil by inject<CacheUtil>()
+  private val syncWorker by inject<SyncWorker>()
+  private val backupWorker by inject<BackupWorker>()
+  private val exportAllDataWorker by inject<ExportAllDataWorker>()
+  private val dropbox by inject<Dropbox>()
+  private val gDrive by inject<GDrive>()
 
   private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
   private var mItemSelect: Int = 0
@@ -115,9 +119,9 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
 
   override fun onDestroy() {
     super.onDestroy()
-    SyncWorker.unsubscribe()
-    BackupWorker.unsubscribe()
-    ExportAllDataWorker.unsubscribe()
+    syncWorker.unsubscribe()
+    backupWorker.unsubscribe()
+    exportAllDataWorker.unsubscribe()
   }
 
   private fun initImportButton() {
@@ -131,32 +135,28 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showImportDialog() {
-    withContext {
-      dialogues.getMaterialDialog(it)
-        .setMessage(R.string.what_to_do_with_current_data)
-        .setPositiveButton(R.string.keep) { dialogInterface, _ ->
-          dialogInterface.dismiss()
-          keepOldData = true
-          pickFile()
-        }
-        .setNegativeButton(R.string.replace) { dialogInterface, _ ->
-          dialogInterface.dismiss()
-          keepOldData = false
-          pickFile()
-        }
-        .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
-          dialogInterface.dismiss()
-        }
-        .create()
-        .show()
-    }
+    dialogues.getMaterialDialog(requireContext())
+      .setMessage(R.string.what_to_do_with_current_data)
+      .setPositiveButton(R.string.keep) { dialogInterface, _ ->
+        dialogInterface.dismiss()
+        keepOldData = true
+        pickFile()
+      }
+      .setNegativeButton(R.string.replace) { dialogInterface, _ ->
+        dialogInterface.dismiss()
+        keepOldData = false
+        pickFile()
+      }
+      .setNeutralButton(R.string.cancel) { dialogInterface, _ ->
+        dialogInterface.dismiss()
+      }
+      .create()
+      .show()
   }
 
   private fun pickFile() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_PICK_RBAK, Permissions.READ_EXTERNAL)) {
-        cacheUtil.pickFile(it, REQ_PICK_RBAK)
-      }
+    if (Permissions.checkPermission(requireActivity(), PERM_PICK_RBAK, Permissions.READ_EXTERNAL)) {
+      cacheUtil.pickFile(requireActivity(), REQ_PICK_RBAK)
     }
   }
 
@@ -213,13 +213,8 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
             return@OnCompleteListener
           }
           val token = task.result?.token
-          withContext {
-            val dropbox = Dropbox()
-            if (dropbox.isLinked) {
-              dropbox.updateToken(token)
-            }
-            GDrive.getInstance(it)?.updateToken(token)
-          }
+          dropbox.updateToken(token).takeIf { dropbox.isLinked }
+          gDrive.updateToken(token).takeIf { gDrive.isLogged }
         })
     }
   }
@@ -276,20 +271,19 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       binding.syncButton.isEnabled = true
       binding.syncButton.visibility = View.VISIBLE
       binding.syncButton.setOnClickListener { syncClick() }
-      SyncWorker.listener = onProgress
-      SyncWorker.onEnd = onSyncEnd
-      SyncWorker.progress = onMessage
+      syncWorker.listener = onProgress
+      syncWorker.onEnd = onSyncEnd
+      syncWorker.progress = onMessage
     } else {
       binding.syncButton.visibility = View.GONE
     }
   }
 
   private fun syncClick() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_SYNC, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-        onProgress.invoke(true)
-        SyncWorker.sync(it)
-      }
+    if (Permissions.checkPermission(requireActivity(), PERM_SYNC,
+        Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+      onProgress.invoke(true)
+      syncWorker.sync()
     }
   }
 
@@ -298,23 +292,22 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       binding.exportButton.isEnabled = true
       binding.exportButton.visibility = View.VISIBLE
       binding.exportButton.setOnClickListener { exportClick() }
-      ExportAllDataWorker.onEnd = { file ->
+      exportAllDataWorker.onEnd = { file ->
         if (file != null) {
-          withContext { TelephonyUtil.sendFile(file, it) }
+          TelephonyUtil.sendFile(file, requireContext())
         }
       }
-      BackupWorker.listener = onProgress
+      backupWorker.listener = onProgress
     } else {
       binding.exportButton.visibility = View.GONE
     }
   }
 
   private fun exportClick() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_EXPORT, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-        onProgress.invoke(true)
-        ExportAllDataWorker.export(it, backupTool)
-      }
+    if (Permissions.checkPermission(requireActivity(), PERM_EXPORT,
+        Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+      onProgress.invoke(true)
+      exportAllDataWorker.export()
     }
   }
 
@@ -323,20 +316,19 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       binding.backupButton.isEnabled = true
       binding.backupButton.visibility = View.VISIBLE
       binding.backupButton.setOnClickListener { backupClick() }
-      BackupWorker.listener = onProgress
-      BackupWorker.onEnd = onSyncEnd
-      BackupWorker.progress = onMessage
+      backupWorker.listener = onProgress
+      backupWorker.onEnd = onSyncEnd
+      backupWorker.progress = onMessage
     } else {
       binding.backupButton.visibility = View.GONE
     }
   }
 
   private fun backupClick() {
-    withActivity {
-      if (Permissions.checkPermission(it, PERM_BACKUP, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-        onProgress.invoke(true)
-        BackupWorker.backup(it)
-      }
+    if (Permissions.checkPermission(requireActivity(), PERM_BACKUP,
+        Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+      onProgress.invoke(true)
+      backupWorker.backup()
     }
   }
 
@@ -356,30 +348,26 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showCleanDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setCancelable(true)
-      builder.setTitle(getString(R.string.clean))
-      builder.setNeutralButton(R.string.local) { _, _ ->
-        MemoryUtil.parent?.let { dir ->
-          deleteRecursive(dir)
-        }
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setCancelable(true)
+    builder.setTitle(getString(R.string.clean))
+    builder.setNeutralButton(R.string.local) { _, _ ->
+      MemoryUtil.parent?.let { dir ->
+        deleteRecursive(dir)
       }
-      builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
-      builder.setPositiveButton(R.string.all) { _, _ ->
-        removeAllData(it)
-      }
-      builder.create().show()
     }
+    builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+    builder.setPositiveButton(R.string.all) { _, _ -> removeAllData() }
+    builder.create().show()
   }
 
-  private fun removeAllData(context: Context) {
+  private fun removeAllData() {
     MemoryUtil.parent?.let {
       deleteRecursive(it)
     }
     launchDefault {
-      GDrive.getInstance(context)?.clean()
-      Dropbox().cleanFolder()
+      gDrive.clean()
+      dropbox.cleanFolder()
     }
   }
 
@@ -423,22 +411,20 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showFlagsDialog(title: String, current: Array<String>, onSelect: (Array<String>) -> Unit) {
-    withContext { context ->
-      val builder = dialogues.getMaterialDialog(context)
-      builder.setTitle(title)
-      val syncFlags = syncFlags(current)
-      builder.setMultiChoiceItems(syncFlags.map { it.title }.toTypedArray(), checkStates(syncFlags)) { _, which, isChecked ->
-        syncFlags[which].isChecked = isChecked
-      }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        dialog.dismiss()
-        onSelect.invoke(syncFlags.filter { it.isChecked }.map { it.key }.toTypedArray())
-      }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setTitle(title)
+    val syncFlags = syncFlags(current)
+    builder.setMultiChoiceItems(syncFlags.map { it.title }.toTypedArray(), checkStates(syncFlags)) { _, which, isChecked ->
+      syncFlags[which].isChecked = isChecked
     }
+    builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+      dialog.dismiss()
+      onSelect.invoke(syncFlags.filter { it.isChecked }.map { it.key }.toTypedArray())
+    }
+    builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+      dialog.dismiss()
+    }
+    builder.create().show()
   }
 
   private fun checkStates(syncFlags: Array<SyncFlag>): BooleanArray {
@@ -459,19 +445,17 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showIntervalDialog(title: String, current: Int, onSelect: (Int) -> Unit) {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(title)
-      builder.setSingleChoiceItems(syncStates(), positionFromState(current)) { _, item -> mItemSelect = item }
-      builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-        dialog.dismiss()
-        onSelect.invoke(mItemSelect)
-      }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      builder.create().show()
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setTitle(title)
+    builder.setSingleChoiceItems(syncStates(), positionFromState(current)) { _, item -> mItemSelect = item }
+    builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+      dialog.dismiss()
+      onSelect.invoke(mItemSelect)
     }
+    builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+      dialog.dismiss()
+    }
+    builder.create().show()
   }
 
   private fun stateFromPosition(position: Int): Int {
@@ -526,57 +510,54 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
   }
 
   private fun showEventDurationDialog() {
-    withActivity {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setTitle(R.string.event_duration)
-      val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
-      b.seekBar.max = 120
-      b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-          b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), progress.toString())
-        }
-
-        override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-
-        }
-      })
-      val duration = prefs.calendarEventDuration
-      b.seekBar.progress = duration
-      b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), duration.toString())
-      builder.setView(b.root)
-      builder.setPositiveButton(R.string.ok) { _, _ ->
-        prefs.calendarEventDuration = b.seekBar.progress
-        showEventDuration()
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setTitle(R.string.event_duration)
+    val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+    b.seekBar.max = 120
+    b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+        b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), progress.toString())
       }
-      builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-      val dialog = builder.create()
-      dialog.show()
-      Dialogues.setFullWidthDialog(dialog, it)
+
+      override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+      }
+
+      override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+      }
+    })
+    val duration = prefs.calendarEventDuration
+    b.seekBar.progress = duration
+    b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), duration.toString())
+    builder.setView(b.root)
+    builder.setPositiveButton(R.string.ok) { _, _ ->
+      prefs.calendarEventDuration = b.seekBar.progress
+      showEventDuration()
     }
+    builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+    val dialog = builder.create()
+    dialog.show()
+    Dialogues.setFullWidthDialog(dialog, requireActivity())
   }
 
   private fun changeExportToCalendarPrefs() {
-    withActivity {
-      if (!Permissions.checkPermission(it, CALENDAR_CODE, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-        return@withActivity
-      }
-      val isChecked = binding.exportToCalendarPrefs.isChecked
-      binding.exportToCalendarPrefs.isChecked = !isChecked
-      prefs.isCalendarEnabled = !isChecked
-      if (binding.exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
-        prefs.isCalendarEnabled = false
-        binding.exportToCalendarPrefs.isChecked = false
-      }
+    if (!Permissions.checkPermission(requireActivity(), CALENDAR_CODE,
+        Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+      return
+    }
+    val isChecked = binding.exportToCalendarPrefs.isChecked
+    binding.exportToCalendarPrefs.isChecked = !isChecked
+    prefs.isCalendarEnabled = !isChecked
+    if (binding.exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
+      prefs.isCalendarEnabled = false
+      binding.exportToCalendarPrefs.isChecked = false
     }
   }
 
   private fun showSelectCalendarDialog(): Boolean {
-    val activity = activity ?: return false
-    if (!Permissions.checkPermission(activity, CALENDAR_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+    if (!Permissions.checkPermission(requireActivity(), CALENDAR_PERM,
+        Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
       return false
     }
     mDataList.clear()
@@ -585,7 +566,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
       return false
     }
     val names = mDataList.map { it.name }.toTypedArray()
-    val builder = dialogues.getMaterialDialog(activity)
+    val builder = dialogues.getMaterialDialog(requireContext())
     builder.setTitle(R.string.choose_calendar)
     mItemSelect = currentPosition
     builder.setSingleChoiceItems(names, mItemSelect) { _, i ->

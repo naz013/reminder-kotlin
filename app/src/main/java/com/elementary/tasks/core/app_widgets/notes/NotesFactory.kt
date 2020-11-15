@@ -12,19 +12,15 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
-@KoinApiExtension
 class NotesFactory(
-  private val mContext: Context
-) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+  private val context: Context,
+  private val appDb: AppDb,
+  private val themeUtil: ThemeUtil
+) : RemoteViewsService.RemoteViewsFactory {
 
   private val notes = ArrayList<NoteWithImages>()
-  private val themeUtil: ThemeUtil by inject()
-  private val appDb: AppDb by inject()
 
   override fun onCreate() {
     notes.clear()
@@ -52,18 +48,18 @@ class NotesFactory(
   }
 
   override fun getViewAt(i: Int): RemoteViews {
-    val rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_note)
+    val rv = RemoteViews(context.packageName, R.layout.list_item_widget_note)
     val note = getItem(i)
     if (note == null) {
-      rv.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load))
+      rv.setTextViewText(R.id.note, context.getString(R.string.failed_to_load))
       return rv
     }
     rv.setInt(R.id.noteBackground, "setBackgroundColor",
       themeUtil.getNoteLightColor(note.getColor(), note.getOpacity(), note.getPalette()))
     if (ThemeUtil.isAlmostTransparent(note.getOpacity())) {
-      rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureWhite))
+      rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureWhite))
     } else {
-      rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureBlack))
+      rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureBlack))
     }
 
     if (note.images.isNotEmpty()) {

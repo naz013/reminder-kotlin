@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -24,12 +23,11 @@ import com.elementary.tasks.reminder.ReminderResolver
 import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Reminder>) -> Unit {
 
-  private val viewModel: ArchiveRemindersViewModel by lazy {
-    ViewModelProvider(this).get(ArchiveRemindersViewModel::class.java)
-  }
+  private val viewModel by viewModel<ArchiveRemindersViewModel>()
 
   private val reminderResolver = ReminderResolver(
     dialogAction = { return@ReminderResolver dialogues },
@@ -40,10 +38,10 @@ class ArchiveFragment : BaseNavigationFragment<FragmentTrashBinding>(), (List<Re
     allGroups = { return@ReminderResolver viewModel.groups }
   )
 
-  private var remindersAdapter = RemindersRecyclerAdapter(showHeader = false, isEditable = false) {
+  private var remindersAdapter = RemindersRecyclerAdapter(prefs, showHeader = false, isEditable = false) {
     showData(viewModel.events.value ?: listOf())
   }
-  private val searchModifier = SearchModifier(null, this)
+  private val searchModifier = SearchModifier(modifier = null, callback = this)
 
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null

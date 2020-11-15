@@ -13,6 +13,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.CenteredImageSpan
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeCount
@@ -25,10 +26,11 @@ import com.elementary.tasks.databinding.ListItemShopItemBinding
 
 class ShoppingHolder(
   parent: ViewGroup,
+  prefs: Prefs,
   val editable: Boolean,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder) {
+) : BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder, prefs) {
 
   val listHeader: TextView = binding.listHeader
 

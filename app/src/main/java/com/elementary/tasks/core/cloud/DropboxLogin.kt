@@ -13,9 +13,11 @@ import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.utils.Module
 import timber.log.Timber
 
-class DropboxLogin(private val mContext: Activity, private val mCallback: LoginCallback) {
-
-  private val mDropbox: Dropbox = Dropbox()
+class DropboxLogin(
+  private val activity: Activity,
+  private val dropbox: Dropbox,
+  private val callback: LoginCallback
+) {
 
   fun login() {
     var isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO)
@@ -23,36 +25,36 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: LoginC
     if (isIn) {
       checkDialog().show()
     } else {
-      performDropboxLinking(mContext)
+      performDropboxLinking(activity)
     }
   }
 
   private fun performDropboxLinking(context: Context) {
-    if (mDropbox.isLinked) {
-      if (mDropbox.unlink()) {
-        mCallback.onSuccess(false)
+    if (dropbox.isLinked) {
+      if (dropbox.unlink()) {
+        callback.onSuccess(false)
       }
     } else {
-      mDropbox.startLink(context)
+      dropbox.startLink(context)
     }
   }
 
   fun checkDropboxStatus() {
-    Timber.d("checkDropboxStatus: ${mDropbox.isLinked}")
-    if (mDropbox.isLinked) {
-      mCallback.onSuccess(true)
+    Timber.d("checkDropboxStatus: ${dropbox.isLinked}")
+    if (dropbox.isLinked) {
+      callback.onSuccess(true)
     } else {
-      mDropbox.startSession()
-      if (mDropbox.isLinked) {
-        mCallback.onSuccess(true)
+      dropbox.startSession()
+      if (dropbox.isLinked) {
+        callback.onSuccess(true)
       } else {
-        mCallback.onSuccess(false)
+        callback.onSuccess(false)
       }
     }
   }
 
   private fun isAppInstalled(packageName: String): Boolean {
-    val pm = mContext.packageManager
+    val pm = activity.packageManager
     return try {
       pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
       true
@@ -62,11 +64,11 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: LoginC
   }
 
   private fun checkDialog(): Dialog {
-    return AlertDialog.Builder(mContext)
-      .setMessage(mContext.getString(R.string.other_version_detected))
-      .setPositiveButton(mContext.getString(R.string.open)) { _, _ -> openApp() }
-      .setNegativeButton(mContext.getString(R.string.delete)) { _, _ -> deleteApp() }
-      .setNeutralButton(mContext.getString(R.string.cancel)) { dialogInterface, _ -> dialogInterface.dismiss() }
+    return AlertDialog.Builder(activity)
+      .setMessage(activity.getString(R.string.other_version_detected))
+      .setPositiveButton(activity.getString(R.string.open)) { _, _ -> openApp() }
+      .setNegativeButton(activity.getString(R.string.delete)) { _, _ -> deleteApp() }
+      .setNeutralButton(activity.getString(R.string.cancel)) { dialogInterface, _ -> dialogInterface.dismiss() }
       .setCancelable(true)
       .create()
   }
@@ -78,19 +80,19 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: LoginC
     } else {
       intent.data = Uri.parse("package:$MARKET_APP_JUSTREMINDER_PRO")
     }
-    mContext.startActivity(intent)
+    activity.startActivity(intent)
   }
 
   private fun openApp() {
     val i: Intent?
-    val manager = mContext.packageManager
+    val manager = activity.packageManager
     i = if (Module.isPro) {
       manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
     } else {
       manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)
     }
     i?.addCategory(Intent.CATEGORY_LAUNCHER)
-    mContext.startActivity(i)
+    activity.startActivity(i)
   }
 
   interface LoginCallback {

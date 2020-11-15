@@ -17,6 +17,8 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
@@ -25,9 +27,11 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.dialogs.VoiceHelpActivity
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
+import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.PrefsConstants
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -40,11 +44,18 @@ import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
 import com.elementary.tasks.voice.Reply
-import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.*
 
-class ConversationViewModel : BaseRemindersViewModel() {
+class ConversationViewModel(
+  appDb: AppDb,
+  prefs: Prefs,
+  calendarUtils: CalendarUtils,
+  eventControlFactory: EventControlFactory,
+  private val recognizer: Recognizer,
+  private val language: Language,
+  private val context: Context
+) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory) {
 
   private var _shoppingLists = MutableLiveData<List<Reminder>>()
   var shoppingLists: LiveData<List<Reminder>> = _shoppingLists
@@ -66,10 +77,6 @@ class ConversationViewModel : BaseRemindersViewModel() {
   private val mReplies = mutableListOf<Reply>()
   private var hasPartial = false
 
-  private val recognizer: Recognizer by inject()
-  private val language: Language by inject()
-  private val context: Context by inject()
-
   init {
     clearConversation()
   }
@@ -78,27 +85,27 @@ class ConversationViewModel : BaseRemindersViewModel() {
     val reply = mReplies[position]
     val container = reply.content as Container<*>
     Timber.d("addMoreItemsToList: $container")
-    when {
-      container.type is ReminderGroup -> {
+    when (container.type) {
+      is ReminderGroup -> {
         mReplies.removeAt(position)
         for (item in container.list) {
           mReplies.add(0, Reply(Reply.GROUP, item))
         }
         _replies.postValue(mReplies)
       }
-      container.type is NoteWithImages -> {
+      is NoteWithImages -> {
         mReplies.removeAt(position)
         for (item in container.list) {
           mReplies.add(0, Reply(Reply.NOTE, item))
         }
         _replies.postValue(mReplies)
       }
-      container.type is Reminder -> {
+      is Reminder -> {
         mReplies.removeAt(position)
         addRemindersToList(container)
         _replies.postValue(mReplies)
       }
-      container.type is Birthday -> {
+      is Birthday -> {
         mReplies.removeAt(position)
         val reversed = ArrayList(container.list)
         reversed.reverse()

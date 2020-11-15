@@ -1,13 +1,18 @@
 package com.elementary.tasks.core.view_models.groups
 
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.groups.work.DeleteBackupWorker
+import com.elementary.tasks.groups.work.GroupDeleteBackupWorker
 
-abstract class BaseGroupsViewModel : BaseDbViewModel() {
+abstract class BaseGroupsViewModel(
+  appDb: AppDb,
+  prefs: Prefs
+) : BaseDbViewModel(appDb, prefs) {
 
   val allGroups = appDb.reminderGroupDao().loadAll()
 
@@ -17,7 +22,7 @@ abstract class BaseGroupsViewModel : BaseDbViewModel() {
       appDb.reminderGroupDao().delete(reminderGroup)
       postInProgress(false)
       postCommand(Commands.DELETED)
-      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
+      startWork(GroupDeleteBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
     }
   }
 }

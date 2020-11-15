@@ -17,19 +17,16 @@ import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
 import com.google.api.services.tasks.model.TaskLists
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.*
 
-@KoinApiExtension
-class GTasks private constructor(context: Context) : KoinComponent {
+class GTasks(
+  context: Context,
+  private val appDb: AppDb,
+  private val prefs: Prefs
+) {
 
   private var tasksService: Tasks? = null
-
-  private val appDb: AppDb by inject()
-  private val prefs: Prefs by inject()
 
   var statusObserver: ((Boolean) -> Unit)? = null
   var isLogged: Boolean = false
@@ -61,7 +58,6 @@ class GTasks private constructor(context: Context) : KoinComponent {
     tasksService = null
     isLogged = false
     statusObserver?.invoke(false)
-    instance = null
   }
 
   fun taskLists(): TaskLists? {
@@ -238,18 +234,8 @@ class GTasks private constructor(context: Context) : KoinComponent {
   }
 
   companion object {
-
     const val TASKS_NEED_ACTION = "needsAction"
     const val TASKS_COMPLETE = "completed"
     private const val APPLICATION_NAME = "Reminder/7.0"
-
-    private var instance: GTasks? = null
-
-    fun getInstance(context: Context): GTasks? {
-      if (instance == null) {
-        instance = GTasks(context)
-      }
-      return instance
-    }
   }
 }

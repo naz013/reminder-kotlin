@@ -7,20 +7,22 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.pin.PinLoginActivity
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class VoiceWidgetDialog : FragmentActivity() {
 
-  private val viewModel: ConversationViewModel by lazy {
-    ViewModelProvider(this).get(ConversationViewModel::class.java)
-  }
-  private val prefs: Prefs by inject()
-  private val language: Language by inject()
+  private val viewModel by viewModel<ConversationViewModel>()
+  private val prefs by inject<Prefs>()
+  private val language by inject<Language>()
   private var mIsLogged = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,13 @@ class VoiceWidgetDialog : FragmentActivity() {
   }
 
   private fun startVoiceRecognitionActivity() {
-    SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true, prefs, language)
+    SuperUtil.startVoiceRecognitionActivity(
+      this,
+      VOICE_RECOGNITION_REQUEST_CODE,
+      true,
+      prefs,
+      language
+    )
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

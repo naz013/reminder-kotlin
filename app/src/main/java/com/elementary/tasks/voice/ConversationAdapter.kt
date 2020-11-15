@@ -13,25 +13,28 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemAskBinding
 import com.elementary.tasks.databinding.ListItemShowReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
 import com.elementary.tasks.databinding.ListItemSimpleResponseBinding
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
+import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-@KoinApiExtension
-class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), KoinComponent {
+class ConversationAdapter(
+  private val language: Language,
+  private val prefs: Prefs,
+  private val themeUtil: ThemeUtil,
+  private val imagesSingleton: ImagesSingleton
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private val data = mutableListOf<Reply>()
   var showMore: ((Int) -> Unit)? = null
-  private val language: Language by inject()
   private val handler = Handler(Looper.getMainLooper())
 
   fun submitList(list: List<Reply>?) {
@@ -70,12 +73,12 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Koi
     return when (viewType) {
       Reply.REPLY -> VoiceHolder(parent)
       Reply.RESPONSE -> VoiceResponseHolder(parent)
-      Reply.REMINDER -> ReminderHolder(parent, hasHeader = false, editable = false, showMore = false)
-      Reply.NOTE -> NoteHolder(parent, null)
+      Reply.REMINDER -> ReminderHolder(parent, prefs, hasHeader = false, editable = false, showMore = false)
+      Reply.NOTE -> NoteHolder(parent, prefs, themeUtil, imagesSingleton, null)
       Reply.GROUP -> GroupHolder(parent, null)
       Reply.SHOW_MORE -> ShowMoreHolder(parent)
-      Reply.BIRTHDAY -> BirthdayHolder(parent, false)
-      Reply.SHOPPING -> ShoppingHolder(parent, editable = false, showMore = false)
+      Reply.BIRTHDAY -> BirthdayHolder(parent, prefs, false)
+      Reply.SHOPPING -> ShoppingHolder(parent, prefs, editable = false, showMore = false)
       else -> AskHolder(parent)
     }
   }

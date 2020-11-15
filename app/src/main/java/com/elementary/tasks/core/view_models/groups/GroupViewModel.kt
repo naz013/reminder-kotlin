@@ -1,15 +1,18 @@
 package com.elementary.tasks.core.view_models.groups
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.groups.work.SingleBackupWorker
-import kotlinx.coroutines.runBlocking
+import com.elementary.tasks.groups.work.GroupSingleBackupWorker
 
-class GroupViewModel private constructor(id: String) : BaseGroupsViewModel() {
+class GroupViewModel(
+  id: String,
+  appDb: AppDb,
+  prefs: Prefs
+) : BaseGroupsViewModel(appDb, prefs) {
 
   val reminderGroup = appDb.reminderGroupDao().loadById(id)
   var isEdited = false
@@ -27,24 +30,15 @@ class GroupViewModel private constructor(id: String) : BaseGroupsViewModel() {
   fun saveGroup(reminderGroup: ReminderGroup, wasDefault: Boolean) {
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        if (!wasDefault && reminderGroup.isDefaultGroup) {
-          val groups = appDb.reminderGroupDao().all()
-          for (g in groups) g.isDefaultGroup = false
-          appDb.reminderGroupDao().insertAll(groups)
-        }
-        appDb.reminderGroupDao().insert(reminderGroup)
+      if (!wasDefault && reminderGroup.isDefaultGroup) {
+        val groups = appDb.reminderGroupDao().all()
+        for (g in groups) g.isDefaultGroup = false
+        appDb.reminderGroupDao().insertAll(groups)
       }
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
+      appDb.reminderGroupDao().insert(reminderGroup)
+      startWork(GroupSingleBackupWorker::class.java, Constants.INTENT_ID, reminderGroup.groupUuId)
       postInProgress(false)
       postCommand(Commands.SAVED)
-    }
-  }
-
-  class Factory(private val id: String) : ViewModelProvider.NewInstanceFactory() {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return GroupViewModel(id) as T
     }
   }
 }

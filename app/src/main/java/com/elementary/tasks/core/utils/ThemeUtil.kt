@@ -14,7 +14,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import timber.log.Timber
 
-class ThemeUtil(private val context: Context, private val prefs: Prefs) {
+class ThemeUtil(
+  private val context: Context,
+  private val prefs: Prefs
+) {
 
   val isDark: Boolean
     get() {

@@ -6,13 +6,15 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.NoteWithImages
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.databinding.ListItemNoteAdsBinding
 
 class NoteAdsHolder(
   parent: ViewGroup,
   adsProvider: AdsProvider,
+  prefs: Prefs,
   failListener: () -> Unit
-) : BaseHolder<ListItemNoteAdsBinding>(parent, R.layout.list_item_note_ads) {
+) : BaseHolder<ListItemNoteAdsBinding>(parent, R.layout.list_item_note_ads, prefs) {
 
   init {
     adsProvider.showBanner(

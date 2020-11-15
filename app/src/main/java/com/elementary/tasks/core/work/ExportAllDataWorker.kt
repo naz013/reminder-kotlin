@@ -8,7 +8,10 @@ import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.File
 
-object ExportAllDataWorker {
+class ExportAllDataWorker(
+  private val context: Context,
+  private val backupTool: BackupTool
+) {
 
   private var mJob: Job? = null
   var onEnd: ((File?) -> Unit)? = null
@@ -19,9 +22,9 @@ object ExportAllDataWorker {
       value?.invoke(mJob != null)
     }
 
-  fun export(context: Context, backupTool: BackupTool) {
+  fun export() {
     mJob?.cancel()
-    launchSync(context, backupTool)
+    launchSync()
   }
 
   fun unsubscribe() {
@@ -29,7 +32,7 @@ object ExportAllDataWorker {
     listener = null
   }
 
-  private fun launchSync(context: Context, backupTool: BackupTool) {
+  private fun launchSync() {
     mJob = launchIo {
       val file = backupTool.exportAll(context)
       withUIContext {

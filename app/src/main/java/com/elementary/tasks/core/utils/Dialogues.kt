@@ -194,7 +194,7 @@ class Dialogues {
       if (activity == null) return
       val window = dialog.window
       window?.setGravity(Gravity.CENTER)
-      window?.setLayout((MeasureUtils.dp2px(activity, 380)), ViewGroup.LayoutParams.WRAP_CONTENT)
+      window?.setLayout((activity.dp2px(380)), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
   }
 }

@@ -8,21 +8,24 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.DataFlow
-import com.elementary.tasks.core.cloud.converters.SettingsConverter
-import com.elementary.tasks.core.cloud.repositories.SettingsRepository
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
 
 class BackupSettingsWorker(
+  private val syncManagers: SyncManagers,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
     launchIo {
-      DataFlow(SettingsRepository(), SettingsConverter(),
-        CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
-        .backup("")
+      DataFlow(
+        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.converterManager.settingsConverter,
+        CompositeStorage(syncManagers.storageManager),
+        completable = null
+      ).backup("")
     }
     return Result.success()
   }
@@ -30,7 +33,7 @@ class BackupSettingsWorker(
   companion object {
     private const val TAG = "BackupSettingsWorker"
 
-    fun schedule() {
+    fun schedule(context: Context) {
       val work = OneTimeWorkRequest.Builder(BackupSettingsWorker::class.java)
         .addTag(TAG)
         .setConstraints(Constraints.Builder()
@@ -38,7 +41,7 @@ class BackupSettingsWorker(
           .setRequiresBatteryNotLow(true)
           .build())
         .build()
-      WorkManager.getInstance().enqueue(work)
+      WorkManager.getInstance(context).enqueue(work)
     }
   }
 }

@@ -5,17 +5,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import timber.log.Timber
 
-class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel() {
+class ReminderViewModel(
+  id: String,
+  appDb: AppDb,
+  prefs: Prefs,
+  calendarUtils: CalendarUtils,
+  eventControlFactory: EventControlFactory
+) : BaseRemindersViewModel(appDb, prefs, calendarUtils, eventControlFactory) {
 
   private val _note = MutableLiveData<NoteWithImages>()
   val note: LiveData<NoteWithImages> = _note
@@ -79,12 +86,5 @@ class ReminderViewModel private constructor(id: String) : BaseRemindersViewModel
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   fun onDestroy() {
     reminder.removeObserver(mObserver)
-  }
-
-  class Factory(private val id: String) : ViewModelProvider.NewInstanceFactory() {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return ReminderViewModel(id) as T
-    }
   }
 }

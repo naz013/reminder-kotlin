@@ -19,9 +19,13 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.reminder.preview.ReminderDialog29Activity
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class ReminderActionReceiver : BaseBroadcast() {
+
+  private val appDb by inject<AppDb>()
+  private val eventControlFactory by inject<EventControlFactory>()
 
   override fun onReceive(context: Context, intent: Intent?) {
     if (intent != null) {
@@ -43,16 +47,16 @@ class ReminderActionReceiver : BaseBroadcast() {
 
   private fun snoozeReminder(context: Context, id: String) {
     launchDefault {
-      val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id)
+      val reminder = appDb.reminderDao().getById(id)
       if (reminder != null) {
-        EventControlFactory.getController(reminder).setDelay(prefs.snoozeTime)
+        eventControlFactory.getController(reminder).setDelay(prefs.snoozeTime)
         endService(context, reminder.uniqueId)
       }
     }
   }
 
   private fun showReminder(context: Context, id: String) {
-    val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
+    val reminder = appDb.reminderDao().getById(id) ?: return
     sendCloseBroadcast(context, id)
     if (Module.isQ) {
       val intent = ReminderDialog29Activity.getLaunchIntent(context, id)
@@ -69,8 +73,8 @@ class ReminderActionReceiver : BaseBroadcast() {
 
   private fun hidePermanent(context: Context, id: String) {
     EventJobScheduler.cancelReminder(id)
-    val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
-    EventControlFactory.getController(reminder).next()
+    val reminder = appDb.reminderDao().getById(id) ?: return
+    eventControlFactory.getController(reminder).next()
     ContextCompat.startForegroundService(context,
       EventOperationalService.getIntent(context, reminder.uuId,
         EventOperationalService.TYPE_REMINDER,
@@ -93,7 +97,7 @@ class ReminderActionReceiver : BaseBroadcast() {
     launchDefault {
       var windowType = prefs.reminderType
       val ignore = prefs.isIgnoreWindowType
-      val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return@launchDefault
+      val reminder = appDb.reminderDao().getById(id) ?: return@launchDefault
       if (!ignore) {
         windowType = reminder.windowType
       }

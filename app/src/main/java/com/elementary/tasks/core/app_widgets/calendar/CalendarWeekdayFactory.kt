@@ -11,21 +11,18 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import hirondelle.date4j.DateTime
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarWeekdayFactory(
-  private val mContext: Context,
-  intent: Intent
-) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+  private val context: Context,
+  intent: Intent,
+  private val prefs: Prefs
+) : RemoteViewsService.RemoteViewsFactory {
 
   private val mWeekdaysList = ArrayList<String>()
   private val mWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
   private val startDayOfWeek = SUNDAY
-
-  private val prefs: Prefs by inject()
 
   override fun onCreate() {
     mWeekdaysList.clear()
@@ -56,15 +53,15 @@ class CalendarWeekdayFactory(
   }
 
   override fun getViewAt(i: Int): RemoteViews {
-    val sp = mContext.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+    val sp = context.getSharedPreferences(CalendarWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
     val bgColor = sp.getInt(CalendarWidgetConfigActivity.WIDGET_BG + mWidgetId, 0)
     val textColor = if (WidgetUtils.isDarkBg(bgColor)) {
-      ContextCompat.getColor(mContext, R.color.pureWhite)
+      ContextCompat.getColor(context, R.color.pureWhite)
     } else {
-      ContextCompat.getColor(mContext, R.color.pureBlack)
+      ContextCompat.getColor(context, R.color.pureBlack)
     }
 
-    val rv = RemoteViews(mContext.packageName, R.layout.list_item_weekday_grid)
+    val rv = RemoteViews(context.packageName, R.layout.list_item_weekday_grid)
     rv.setTextViewText(R.id.textView1, mWeekdaysList[i])
     rv.setTextColor(R.id.textView1, textColor)
     return rv

@@ -16,22 +16,18 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.google_tasks.create.TasksConstants
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
-@KoinApiExtension
 class TasksFactory(
-  private val mContext: Context,
-  intent: Intent
-) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+  private val context: Context,
+  intent: Intent,
+  private val appDb: AppDb
+) : RemoteViewsService.RemoteViewsFactory {
 
   private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
     AppWidgetManager.INVALID_APPWIDGET_ID)
 
-  private val appDb: AppDb by inject()
   private val mData = mutableListOf<GoogleTask>()
   private val map = mutableMapOf<String, Int>()
 
@@ -60,14 +56,14 @@ class TasksFactory(
   }
 
   override fun getViewAt(i: Int): RemoteViews {
-    val sp = mContext.getSharedPreferences(TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
-    val rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_google_task)
+    val sp = context.getSharedPreferences(TasksWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+    val rv = RemoteViews(context.packageName, R.layout.list_item_widget_google_task)
 
     rv.setTextViewText(R.id.note, "")
     rv.setTextViewText(R.id.taskDate, "")
 
     if (i >= count) {
-      rv.setTextViewText(R.id.task, mContext.getString(R.string.failed_to_load))
+      rv.setTextViewText(R.id.task, context.getString(R.string.failed_to_load))
       return rv
     }
     val itemBgColor = sp.getInt(TasksWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
@@ -75,26 +71,26 @@ class TasksFactory(
     rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
 
     if (WidgetUtils.isDarkBg(itemBgColor)) {
-      rv.setTextColor(R.id.task, ContextCompat.getColor(mContext, R.color.pureWhite))
-      rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureWhite))
-      rv.setTextColor(R.id.taskDate, ContextCompat.getColor(mContext, R.color.pureWhite))
+      rv.setTextColor(R.id.task, ContextCompat.getColor(context, R.color.pureWhite))
+      rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureWhite))
+      rv.setTextColor(R.id.taskDate, ContextCompat.getColor(context, R.color.pureWhite))
     } else {
-      rv.setTextColor(R.id.task, ContextCompat.getColor(mContext, R.color.pureBlack))
-      rv.setTextColor(R.id.note, ContextCompat.getColor(mContext, R.color.pureBlack))
-      rv.setTextColor(R.id.taskDate, ContextCompat.getColor(mContext, R.color.pureBlack))
+      rv.setTextColor(R.id.task, ContextCompat.getColor(context, R.color.pureBlack))
+      rv.setTextColor(R.id.note, ContextCompat.getColor(context, R.color.pureBlack))
+      rv.setTextColor(R.id.taskDate, ContextCompat.getColor(context, R.color.pureBlack))
     }
 
     val task = mData[i]
     val listColor = if (map.containsKey(task.listId)) {
-      ThemeUtil.themedColor(mContext, map[task.listId] ?: 0)
+      ThemeUtil.themedColor(context, map[task.listId] ?: 0)
     } else {
-      ThemeUtil.themedColor(mContext, 0)
+      ThemeUtil.themedColor(context, 0)
     }
 
     val icon = if (task.status == GTasks.TASKS_COMPLETE) {
-      ViewUtils.createIcon(mContext, R.drawable.ic_check, listColor)
+      ViewUtils.createIcon(context, R.drawable.ic_check, listColor)
     } else {
-      ViewUtils.createIcon(mContext, R.drawable.ic_empty_circle, listColor)
+      ViewUtils.createIcon(context, R.drawable.ic_empty_circle, listColor)
     }
     rv.setImageViewBitmap(R.id.statusIcon, icon)
 

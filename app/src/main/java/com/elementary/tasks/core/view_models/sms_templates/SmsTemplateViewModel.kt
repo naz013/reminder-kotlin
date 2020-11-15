@@ -1,15 +1,18 @@
 package com.elementary.tasks.core.view_models.sms_templates
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.navigation.settings.additional.work.SingleBackupWorker
-import kotlinx.coroutines.runBlocking
+import com.elementary.tasks.navigation.settings.additional.work.TemplateSingleBackupWorker
 
-class SmsTemplateViewModel private constructor(key: String) : BaseSmsTemplatesViewModel() {
+class SmsTemplateViewModel(
+  key: String,
+  appDb: AppDb,
+  prefs: Prefs
+) : BaseSmsTemplatesViewModel(appDb, prefs) {
 
   val smsTemplate = appDb.smsTemplatesDao().loadByKey(key)
   var isEdited = false
@@ -26,19 +29,10 @@ class SmsTemplateViewModel private constructor(key: String) : BaseSmsTemplatesVi
   fun saveTemplate(smsTemplate: SmsTemplate) {
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        appDb.smsTemplatesDao().insert(smsTemplate)
-      }
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
+      appDb.smsTemplatesDao().insert(smsTemplate)
+      startWork(TemplateSingleBackupWorker::class.java, Constants.INTENT_ID, smsTemplate.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
-    }
-  }
-
-  class Factory(private val key: String) : ViewModelProvider.NewInstanceFactory() {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return SmsTemplateViewModel(key) as T
     }
   }
 }

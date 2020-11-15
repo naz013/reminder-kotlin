@@ -3,8 +3,6 @@ package com.elementary.tasks.navigation.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -12,20 +10,20 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
 
-  private val viewModel: ActiveGpsRemindersViewModel by lazy {
-    ViewModelProvider(this).get(ActiveGpsRemindersViewModel::class.java)
-  }
-  private val mAdapter = LocationPlacesAdapter()
+  private val viewModel by viewModel<ActiveGpsRemindersViewModel>()
+  private val mAdapter = LocationPlacesAdapter(get())
 
   private var mGoogleMap: AdvancedMapFragment? = null
   private var behaviour: BottomSheetBehavior<LinearLayout>? = null
@@ -37,12 +35,11 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
   private val mReadyCallback = object : MapCallback {
     override fun onMapReady() {
       mGoogleMap?.setSearchEnabled(false)
-      val data = viewModel.events.value
-      if (data != null) showData(data)
+      viewModel.events.value?.also { showData(it) }
     }
   }
   private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
-    mGoogleMap?.moveCamera(marker.position, 0, 0, 0, MeasureUtils.dp2px(requireContext(), 192))
+    mGoogleMap?.moveCamera(marker.position, 0, 0, 0, dp2px(192))
     false
   }
 
@@ -57,7 +54,7 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
   }
 
   private fun initViewModel() {
-    viewModel.events.observe(viewLifecycleOwner, Observer { reminders ->
+    viewModel.events.observe(viewLifecycleOwner, { reminders ->
       if (reminders != null && mGoogleMap != null) {
         showData(reminders)
       }
@@ -106,7 +103,13 @@ class MapFragment : BaseNavigationFragment<FragmentEventsMapBinding>() {
     }
     clickedPosition = position
     val place = reminder.places[pointer]
-    mGoogleMap?.moveCamera(LatLng(place.latitude, place.longitude), 0, 0, 0, MeasureUtils.dp2px(requireContext(), 192))
+    mGoogleMap?.moveCamera(
+      LatLng(place.latitude, place.longitude),
+      0,
+      0,
+      0,
+      dp2px(192)
+    )
   }
 
   override fun getTitle(): String = getString(R.string.map)

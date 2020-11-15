@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -40,29 +39,29 @@ import com.elementary.tasks.notes.list.ImagesGridAdapter
 import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.io.File
 
 class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout.activity_note_preview) {
 
   private var mNote: NoteWithImages? = null
   private var mReminder: Reminder? = null
-  private var mId: String = ""
   private var isBgDark = false
 
   private val mAdapter = ImagesGridAdapter()
-  private lateinit var viewModel: NoteViewModel
+  private val viewModel by viewModel<NoteViewModel> { parametersOf(getId()) }
 
   private val mUiHandler = Handler(Looper.getMainLooper())
 
-  private val themeUtil: ThemeUtil by inject()
-  private val backupTool: BackupTool by inject()
-  private val imagesSingleton: ImagesSingleton by inject()
+  private val themeUtil by inject<ThemeUtil>()
+  private val backupTool by inject<BackupTool>()
+  private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     isBgDark = isDarkMode
-    mId = intent.getStringExtra(Constants.INTENT_ID) ?: ""
     initActionBar()
     updateTextColors()
     initImagesList()
@@ -86,8 +85,9 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     }
   }
 
+  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
   private fun initViewModel() {
-    viewModel = ViewModelProvider(this, NoteViewModel.Factory(mId)).get(NoteViewModel::class.java)
     viewModel.note.observe(this, { note ->
       if (note != null) {
         showNote(note)

@@ -15,16 +15,13 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-@KoinApiExtension
 class LocationTracker(
+  private val prefs: Prefs,
   private val context: Context?,
   private val callback: ((lat: Double, lng: Double) -> Unit)?
-) : LocationListener, KoinComponent {
+) : LocationListener {
 
   private var mLocationManager: LocationManager? = null
   private var mFusedLocationClient: FusedLocationProviderClient? = null
@@ -39,8 +36,6 @@ class LocationTracker(
       }
     }
   }
-
-  private val prefs: Prefs by inject()
 
   init {
     updateListener()

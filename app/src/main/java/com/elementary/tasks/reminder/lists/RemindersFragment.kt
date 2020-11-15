@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
@@ -29,14 +28,13 @@ import com.elementary.tasks.reminder.lists.adapter.ReminderAdsHolder
 import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.SearchModifier
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (List<Reminder>) -> Unit {
 
-  private val buttonObservable: GlobalButtonObservable by inject()
-  private val viewModel: ActiveRemindersViewModel by lazy {
-    ViewModelProvider(this).get(ActiveRemindersViewModel::class.java)
-  }
+  private val buttonObservable by inject<GlobalButtonObservable>()
+  private val viewModel by viewModel<ActiveRemindersViewModel>()
   private var mPosition: Int = 0
 
   private val reminderResolver = ReminderResolver(
@@ -56,7 +54,7 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     allGroups = { return@ReminderResolver viewModel.groups }
   )
 
-  private val remindersAdapter = RemindersRecyclerAdapter(showHeader = true, isEditable = true) {
+  private val remindersAdapter = RemindersRecyclerAdapter(prefs, showHeader = true, isEditable = true) {
     showData(viewModel.events.value ?: listOf())
   }
   private val searchModifier = SearchModifier(null, this)

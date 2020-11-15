@@ -2,9 +2,13 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.AlarmManager
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
+import android.view.Display
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.IdRes
@@ -45,6 +49,22 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
+fun Context.dp2px(dp: Int): Int {
+  val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager?
+  var display: Display? = null
+  if (wm != null) {
+    display = wm.defaultDisplay
+  }
+
+  val displaymetrics = DisplayMetrics()
+  display?.getMetrics(displaymetrics)
+  return (dp * displaymetrics.density + 0.5f).toInt()
+}
+
+fun View.dp2px(dp: Int) = context.dp2px(dp)
+
+fun Fragment.dp2px(dp: Int) = requireContext().dp2px(dp)
+
 fun Activity.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(this, message, duration).show()
 }
@@ -54,11 +74,11 @@ fun Activity.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) 
 }
 
 fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-  Toast.makeText(context!!, message, duration).show()
+  Toast.makeText(requireContext(), message, duration).show()
 }
 
 fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
-  Toast.makeText(context!!, message, duration).show()
+  Toast.makeText(requireContext(), message, duration).show()
 }
 
 fun <T> ViewModel.mutableLiveDataOf() = MutableLiveData<T>()
@@ -75,13 +95,13 @@ fun File.copyInputStreamToFile(inputStream: InputStream) {
 
 fun <ViewT : View> View.bindView(@IdRes idRes: Int): Lazy<ViewT> {
   return lazyUnSynchronized {
-    findViewById<ViewT>(idRes)
+    findViewById(idRes)
   }
 }
 
 fun <ViewT : View> Activity.bindView(@IdRes idRes: Int): Lazy<ViewT> {
   return lazyUnSynchronized {
-    findViewById<ViewT>(idRes)
+    findViewById(idRes)
   }
 }
 

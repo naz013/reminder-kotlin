@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
+import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
@@ -18,9 +18,23 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.databinding.FragmentSettingsCloudDrivesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBinding>() {
+
+  private val dropbox by inject<Dropbox>()
+  private val gTasks by inject<GTasks>()
+  private val gDrive by inject<GDrive>()
+
+  private val viewModel by viewModel<CloudViewModel>()
+  private val mDropbox: DropboxLogin by lazy {
+    DropboxLogin(requireActivity(), dropbox, mDropboxCallback)
+  }
+  private val mGoogleLogin: GoogleLogin by lazy {
+    GoogleLogin(requireActivity(), prefs, gDrive, gTasks)
+  }
 
   private val mDropboxCallback = object : DropboxLogin.LoginCallback {
     override fun onSuccess(b: Boolean) {
@@ -30,16 +44,6 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
         binding.linkDropbox.text = getString(R.string.connect)
       }
     }
-  }
-
-  private val viewModel: CloudViewModel by lazy {
-    ViewModelProvider(this).get(CloudViewModel::class.java)
-  }
-  private val mDropbox: DropboxLogin by lazy {
-    DropboxLogin(requireActivity(), mDropboxCallback)
-  }
-  private val mGoogleLogin: GoogleLogin by lazy {
-    GoogleLogin(requireActivity(), prefs)
   }
 
   private fun showErrorDialog() {

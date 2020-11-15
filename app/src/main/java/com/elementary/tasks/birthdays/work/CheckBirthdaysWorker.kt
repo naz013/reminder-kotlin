@@ -18,7 +18,10 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CheckBirthdaysWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class CheckBirthdaysWorker(
+  context: Context,
+  workerParams: WorkerParameters
+) : Worker(context, workerParams) {
 
   private val birthdayFormats = arrayOf<DateFormat>(
     SimpleDateFormat("yyyy-MM-dd", Locale.US),

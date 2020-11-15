@@ -35,7 +35,7 @@ class SecuritySettingsFragment : BaseSettingsFragment<FragmentSettingsSecurityBi
   }
 
   private fun createBiometricPrompt(): BiometricPrompt {
-    val executor = ContextCompat.getMainExecutor(context!!)
+    val executor = ContextCompat.getMainExecutor(requireContext())
     val callback = object : BiometricPrompt.AuthenticationCallback() {
       override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
         super.onAuthenticationSucceeded(result)

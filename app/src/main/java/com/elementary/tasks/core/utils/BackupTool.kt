@@ -25,9 +25,17 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.ref.WeakReference
 
-class BackupTool(private val appDb: AppDb) {
+class BackupTool(
+  private val appDb: AppDb,
+  private val reminderCompletable: ReminderCompletable
+) {
 
-  fun importAll(context: Context, uri: Uri?, replace: Boolean = false, callback: (Boolean) -> Unit) {
+  fun importAll(
+    context: Context,
+    uri: Uri?,
+    replace: Boolean = false,
+    callback: (Boolean) -> Unit
+  ) {
     if (uri == null) {
       callback.invoke(false)
       return
@@ -64,7 +72,6 @@ class BackupTool(private val appDb: AppDb) {
             Timber.d("importAll: has reminders ${allData.reminders.size}")
             hasAnyData = true
             val allGroups = appDb.reminderGroupDao().all()
-            val completable = ReminderCompletable()
             if (replace) {
               appDb.reminderDao().deleteAll()
             }
@@ -76,7 +83,7 @@ class BackupTool(private val appDb: AppDb) {
                 it.groupTitle = defGroup.groupTitle
               }
               dao.insert(it)
-              completable.action(it)
+              reminderCompletable.action(it)
             }
           }
 

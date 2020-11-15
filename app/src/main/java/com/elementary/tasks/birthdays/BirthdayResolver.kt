@@ -16,8 +16,8 @@ class BirthdayResolver(
 
   fun resolveAction(view: View, birthday: Birthday, listActions: ListActions) {
     when (listActions) {
-        ListActions.OPEN -> openBirthday(view, birthday)
-        ListActions.MORE -> showMore(view, birthday)
+      ListActions.OPEN -> openBirthday(view, birthday)
+      ListActions.MORE -> showMore(view, birthday)
       else -> {
       }
     }
@@ -27,13 +27,13 @@ class BirthdayResolver(
     val context = view.context
     val items = arrayOf(context.getString(R.string.edit), context.getString(R.string.delete))
     Dialogues.showPopup(view, { item ->
-        if (item == 0) {
-            openBirthday(view, birthday)
-        } else if (item == 1) {
-            askConfirmation(view, items[item]) {
-                if (it) deleteAction.invoke(birthday)
-            }
+      if (item == 0) {
+        openBirthday(view, birthday)
+      } else if (item == 1) {
+        askConfirmation(view, items[item]) {
+          if (it) deleteAction.invoke(birthday)
         }
+      }
     }, *items)
   }
 

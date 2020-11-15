@@ -7,19 +7,18 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
+import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.utils.launchIo
 
 class LoadTokensWorker(
+  private val storageManager: StorageManager,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
-    launchIo {
-      CompositeStorage(DataFlow.availableStorageList(applicationContext)).loadIndex()
-    }
+    launchIo { CompositeStorage(storageManager).loadIndex() }
     return Result.success()
   }
 

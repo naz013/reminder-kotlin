@@ -10,26 +10,15 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.DataFlow
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.cloud.completables.ReminderDeleteCompletable
-import com.elementary.tasks.core.cloud.converters.BirthdayConverter
-import com.elementary.tasks.core.cloud.converters.GroupConverter
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
-import com.elementary.tasks.core.cloud.converters.NoteConverter
-import com.elementary.tasks.core.cloud.converters.PlaceConverter
-import com.elementary.tasks.core.cloud.converters.ReminderConverter
-import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.BirthdayRepository
-import com.elementary.tasks.core.cloud.repositories.GroupRepository
-import com.elementary.tasks.core.cloud.repositories.NoteRepository
-import com.elementary.tasks.core.cloud.repositories.PlaceRepository
-import com.elementary.tasks.core.cloud.repositories.ReminderRepository
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.launchIo
 import timber.log.Timber
 import java.io.File
 
 class DeleteFileWorker(
+  private val syncManagers: SyncManagers,
   context: Context,
   val workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
@@ -39,32 +28,56 @@ class DeleteFileWorker(
     if (fileName.isNotEmpty()) {
       val uuId = uuIdFromFileName(fileName) ?: return Result.success()
       Timber.d("doWork: $uuId")
-      val storage = CompositeStorage(DataFlow.availableStorageList(applicationContext))
+      val storage = CompositeStorage(syncManagers.storageManager)
       launchIo {
         when {
           fileName.endsWith(FileConfig.FILE_NAME_REMINDER) -> {
-            DataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderDeleteCompletable())
-              .delete(uuId, IndexTypes.TYPE_REMINDER)
+            DataFlow(
+              syncManagers.repositoryManager.reminderRepository,
+              syncManagers.converterManager.reminderConverter,
+              storage,
+              syncManagers.completableManager.reminderDeleteCompletable
+            ).delete(uuId, IndexTypes.TYPE_REMINDER)
           }
           fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> {
-            DataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
-              .delete(uuId, IndexTypes.TYPE_BIRTHDAY)
+            DataFlow(
+              syncManagers.repositoryManager.birthdayRepository,
+              syncManagers.converterManager.birthdayConverter,
+              storage,
+              completable = null
+            ).delete(uuId, IndexTypes.TYPE_BIRTHDAY)
           }
           fileName.endsWith(FileConfig.FILE_NAME_GROUP) -> {
-            DataFlow(GroupRepository(), GroupConverter(), storage, null)
-              .delete(uuId, IndexTypes.TYPE_GROUP)
+            DataFlow(
+              syncManagers.repositoryManager.groupRepository,
+              syncManagers.converterManager.groupConverter,
+              storage,
+              completable = null
+            ).delete(uuId, IndexTypes.TYPE_GROUP)
           }
           fileName.endsWith(FileConfig.FILE_NAME_NOTE) -> {
-            DataFlow(NoteRepository(), NoteConverter(), storage, null)
-              .delete(uuId, IndexTypes.TYPE_NOTE)
+            DataFlow(
+              syncManagers.repositoryManager.noteRepository,
+              syncManagers.converterManager.noteConverter,
+              storage,
+              completable = null
+            ).delete(uuId, IndexTypes.TYPE_NOTE)
           }
           fileName.endsWith(FileConfig.FILE_NAME_PLACE) -> {
-            DataFlow(PlaceRepository(), PlaceConverter(), storage, null)
-              .delete(uuId, IndexTypes.TYPE_PLACE)
+            DataFlow(
+              syncManagers.repositoryManager.placeRepository,
+              syncManagers.converterManager.placeConverter,
+              storage,
+              completable = null
+            ).delete(uuId, IndexTypes.TYPE_PLACE)
           }
           fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> {
-            DataFlow(TemplateRepository(), TemplateConverter(), storage, null)
-              .delete(uuId, IndexTypes.TYPE_TEMPLATE)
+            DataFlow(
+              syncManagers.repositoryManager.templateRepository,
+              syncManagers.converterManager.templateConverter,
+              storage,
+              completable = null
+            ).delete(uuId, IndexTypes.TYPE_TEMPLATE)
           }
         }
       }

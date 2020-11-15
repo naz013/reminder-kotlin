@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -17,9 +15,11 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>(R.layout.activity_quick_sms) {
 
+  private val viewModel by viewModel<SmsTemplatesViewModel>()
   private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
   private var number: String = ""
 
@@ -42,11 +42,10 @@ class QuickSmsActivity : BindingActivity<ActivityQuickSmsBinding>(R.layout.activ
   }
 
   private fun initViewModel() {
-    val viewModel = ViewModelProvider(this).get(SmsTemplatesViewModel::class.java)
-    viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
-        if (smsTemplates != null) {
-            updateList(smsTemplates)
-        }
+    viewModel.smsTemplates.observe(this, { smsTemplates ->
+      if (smsTemplates != null) {
+        updateList(smsTemplates)
+      }
     })
   }
 

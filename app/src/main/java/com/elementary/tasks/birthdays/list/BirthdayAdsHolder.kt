@@ -5,10 +5,15 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.databinding.ListItemBirthdayAdsBinding
 
-class BirthdayAdsHolder(parent: ViewGroup, adsProvider: AdsProvider, failListener: () -> Unit)
-  : BaseHolder<ListItemBirthdayAdsBinding>(parent, R.layout.list_item_birthday_ads) {
+class BirthdayAdsHolder(
+  parent: ViewGroup,
+  prefs: Prefs,
+  adsProvider: AdsProvider,
+  failListener: () -> Unit
+) : BaseHolder<ListItemBirthdayAdsBinding>(parent, R.layout.list_item_birthday_ads, prefs) {
 
   init {
     adsProvider.showBanner(

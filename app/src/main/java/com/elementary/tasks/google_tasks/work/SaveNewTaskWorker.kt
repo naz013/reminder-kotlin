@@ -12,21 +12,19 @@ import java.io.IOException
 
 class SaveNewTaskWorker(
   context: Context,
-  workerParams: WorkerParameters
+  workerParams: WorkerParameters,
+  private val gTasks: GTasks
 ) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
     val json = inputData.getString(Constants.INTENT_JSON) ?: "{}"
     if (json.isNotEmpty()) {
       val googleTask = Gson().fromJson(json, GoogleTask::class.java)
-      if (googleTask != null) {
-        val google = GTasks.getInstance(applicationContext)
+      if (googleTask != null && gTasks.isLogged) {
         launchIo {
-          if (google != null) {
-            try {
-              google.insertTask(googleTask)
-            } catch (e: IOException) {
-            }
+          try {
+            gTasks.insertTask(googleTask)
+          } catch (e: IOException) {
           }
         }
       }

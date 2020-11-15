@@ -8,16 +8,18 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.BulkDataFlow
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.utils.launchIo
 
 class BackupDataWorker(
+  private val syncManagers: SyncManagers,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
     launchIo {
-      BulkDataFlow.fullBackup(applicationContext)
+      BulkDataFlow.fullBackup(syncManagers)
     }
     return Result.success()
   }

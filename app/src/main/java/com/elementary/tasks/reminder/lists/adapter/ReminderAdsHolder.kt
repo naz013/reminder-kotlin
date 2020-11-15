@@ -5,13 +5,15 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.databinding.ListItemReminderAdsBinding
 
 class ReminderAdsHolder(
   parent: ViewGroup,
   adsProvider: AdsProvider,
+  prefs: Prefs,
   failListener: () -> Unit
-) : BaseHolder<ListItemReminderAdsBinding>(parent, R.layout.list_item_reminder_ads) {
+) : BaseHolder<ListItemReminderAdsBinding>(parent, R.layout.list_item_reminder_ads, prefs) {
 
   init {
     adsProvider.showBanner(

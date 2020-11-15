@@ -27,10 +27,13 @@ import kotlinx.coroutines.Job
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
+import org.koin.android.ext.android.inject
 import java.util.*
 
-class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(), CompoundButton.OnCheckedChangeListener {
+class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBinding>(),
+  CompoundButton.OnCheckedChangeListener {
 
+  private val eventControlFactory by inject<EventControlFactory>()
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
   private var list: List<CalendarUtils.CalendarItem> = listOf()
@@ -278,7 +281,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
     reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
     appDb.reminderDao().insert(reminder)
-    EventControlFactory.getController(reminder).start()
+    eventControlFactory.getController(reminder).start()
     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
   }
 

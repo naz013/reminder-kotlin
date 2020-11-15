@@ -9,52 +9,35 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.BulkDataFlow
-import com.elementary.tasks.core.cloud.DataFlow
-import com.elementary.tasks.core.cloud.completables.ReminderCompletable
-import com.elementary.tasks.core.cloud.converters.BirthdayConverter
-import com.elementary.tasks.core.cloud.converters.GroupConverter
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.converters.IndexTypes
-import com.elementary.tasks.core.cloud.converters.NoteConverter
-import com.elementary.tasks.core.cloud.converters.PlaceConverter
-import com.elementary.tasks.core.cloud.converters.ReminderConverter
-import com.elementary.tasks.core.cloud.converters.SettingsConverter
-import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.BirthdayRepository
-import com.elementary.tasks.core.cloud.repositories.GroupRepository
-import com.elementary.tasks.core.cloud.repositories.NoteRepository
-import com.elementary.tasks.core.cloud.repositories.PlaceRepository
-import com.elementary.tasks.core.cloud.repositories.ReminderRepository
-import com.elementary.tasks.core.cloud.repositories.SettingsRepository
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.GroupsUtil
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-@KoinApiExtension
 class SyncDataWorker(
+  private val syncManagers: SyncManagers,
+  private val prefs: Prefs,
+  private val appDb: AppDb,
   context: Context,
   workerParams: WorkerParameters
-) : Worker(context, workerParams), KoinComponent {
-
-  private val prefs: Prefs by inject()
-  private val appDb: AppDb by inject()
+) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
     if (prefs.autoSyncState == 0) {
       return Result.success()
     }
-    val storage = CompositeStorage(DataFlow.availableStorageList(applicationContext))
+    val storage = CompositeStorage(syncManagers.storageManager)
     val syncFlags = prefs.autoSyncFlags
     launchDefault {
       if (syncFlags.contains(FLAG_REMINDER)) {
-        BulkDataFlow(GroupRepository(), GroupConverter(), storage, null)
-          .restore(IndexTypes.TYPE_GROUP, true)
+        val groupRepository = syncManagers.repositoryManager.groupRepository
+        val groupConverter = syncManagers.converterManager.groupConverter
+        BulkDataFlow(groupRepository, groupConverter, storage, completable = null)
+          .restore(IndexTypes.TYPE_GROUP, deleteFile = true)
         val list = appDb.reminderGroupDao().all()
         if (list.isEmpty()) {
           val defUiID = GroupsUtil.initDefault(applicationContext)
@@ -64,48 +47,57 @@ class SyncDataWorker(
           }
           appDb.reminderDao().insertAll(items)
         }
-        BulkDataFlow(GroupRepository(), GroupConverter(), storage, null)
-          .backup()
+        BulkDataFlow(groupRepository, groupConverter, storage, completable = null).backup()
 
-        BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable())
-          .restore(IndexTypes.TYPE_REMINDER, true)
-        BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, null)
-          .backup()
+        val reminderRepository = syncManagers.repositoryManager.reminderRepository
+        val reminderConverter = syncManagers.converterManager.reminderConverter
+        BulkDataFlow(
+          reminderRepository,
+          reminderConverter,
+          storage,
+          syncManagers.completableManager.reminderCompletable
+        ).restore(IndexTypes.TYPE_REMINDER, deleteFile = true)
+        BulkDataFlow(reminderRepository, reminderConverter, storage, completable = null).backup()
       }
 
       if (syncFlags.contains(FLAG_NOTE)) {
-        BulkDataFlow(NoteRepository(), NoteConverter(), storage, null)
-          .restore(IndexTypes.TYPE_NOTE, true)
-        BulkDataFlow(NoteRepository(), NoteConverter(), storage, null)
-          .backup()
+        val noteRepository = syncManagers.repositoryManager.noteRepository
+        val noteConverter = syncManagers.converterManager.noteConverter
+        BulkDataFlow(noteRepository, noteConverter, storage, completable = null)
+          .restore(IndexTypes.TYPE_NOTE, deleteFile = true)
+        BulkDataFlow(noteRepository, noteConverter, storage, completable = null).backup()
       }
 
       if (syncFlags.contains(FLAG_BIRTHDAY)) {
-        BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
-          .restore(IndexTypes.TYPE_BIRTHDAY, true)
-        BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null)
-          .backup()
+        val birthdayRepository = syncManagers.repositoryManager.birthdayRepository
+        val birthdayConverter = syncManagers.converterManager.birthdayConverter
+        BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null)
+          .restore(IndexTypes.TYPE_BIRTHDAY, deleteFile = true)
+        BulkDataFlow(birthdayRepository, birthdayConverter, storage, completable = null).backup()
       }
 
       if (syncFlags.contains(FLAG_PLACE)) {
-        BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null)
-          .restore(IndexTypes.TYPE_PLACE, true)
-        BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null)
-          .backup()
+        val placeRepository = syncManagers.repositoryManager.placeRepository
+        val placeConverter = syncManagers.converterManager.placeConverter
+        BulkDataFlow(placeRepository, placeConverter, storage, completable = null)
+          .restore(IndexTypes.TYPE_PLACE, deleteFile = true)
+        BulkDataFlow(placeRepository, placeConverter, storage, completable = null).backup()
       }
 
       if (syncFlags.contains(FLAG_TEMPLATE)) {
-        BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null)
-          .restore(IndexTypes.TYPE_TEMPLATE, true)
-        BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null)
-          .backup()
+        val templateRepository = syncManagers.repositoryManager.templateRepository
+        val templateConverter = syncManagers.converterManager.templateConverter
+        BulkDataFlow(templateRepository, templateConverter, storage, completable = null)
+          .restore(IndexTypes.TYPE_TEMPLATE, deleteFile = true)
+        BulkDataFlow(templateRepository, templateConverter, storage, completable = null).backup()
       }
 
       if (syncFlags.contains(FLAG_SETTINGS)) {
-        BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null)
-          .restore(IndexTypes.TYPE_SETTINGS, true)
-        BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null)
-          .backup()
+        val settingsRepository = syncManagers.repositoryManager.settingsRepository
+        val settingsConverter = syncManagers.converterManager.settingsConverter
+        BulkDataFlow(settingsRepository, settingsConverter, storage, completable = null)
+          .restore(IndexTypes.TYPE_SETTINGS, deleteFile = true)
+        BulkDataFlow(settingsRepository, settingsConverter, storage, completable = null).backup()
       }
 
       withUIContext {

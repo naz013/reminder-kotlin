@@ -2,13 +2,13 @@ package com.elementary.tasks.reminder.create.fragments
 
 import android.view.View
 import com.elementary.tasks.core.data.models.ReminderGroup
-import com.elementary.tasks.reminder.create.StateViewModel
+import com.elementary.tasks.reminder.create.ReminderStateViewModel
 
 interface ReminderInterface {
   val defGroup: ReminderGroup?
   var canExportToTasks: Boolean
   var canExportToCalendar: Boolean
-  val state: StateViewModel
+  val reminderState: ReminderStateViewModel
   fun isTablet(): Boolean
   fun selectMelody()
   fun attachFile()

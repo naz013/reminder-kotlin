@@ -14,7 +14,7 @@ import java.util.*
 
 class ImagePreviewActivity : BindingActivity<ActivityImagePreviewBinding>(R.layout.activity_image_preview) {
 
-  private val imagesSingleton: ImagesSingleton by inject()
+  private val imagesSingleton by inject<ImagesSingleton>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

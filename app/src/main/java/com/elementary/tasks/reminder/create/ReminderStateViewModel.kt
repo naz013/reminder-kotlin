@@ -7,7 +7,7 @@ import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import java.util.*
 
-class StateViewModel : ViewModel(), LifecycleObserver {
+class ReminderStateViewModel : ViewModel(), LifecycleObserver {
 
   var shopItems: List<ShopItem> = listOf()
   var weekdays: List<Int> = listOf()

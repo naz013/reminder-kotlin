@@ -51,7 +51,7 @@ class GeolocationService : Service() {
     showDefaultNotification()
     isNotificationEnabled = prefs.isDistanceNotificationEnabled
     stockRadius = prefs.radius
-    mTracker = LocationTracker(applicationContext) { lat, lng ->
+    mTracker = LocationTracker(prefs, applicationContext) { lat, lng ->
       val locationA = Location("point A")
       locationA.latitude = lat
       locationA.longitude = lng

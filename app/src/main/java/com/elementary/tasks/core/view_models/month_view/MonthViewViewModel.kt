@@ -3,10 +3,10 @@ package com.elementary.tasks.core.view_models.month_view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.BaseDbViewModel
@@ -17,11 +17,13 @@ import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*
 
-class MonthViewViewModel private constructor(
+class MonthViewViewModel(
   private val addReminders: Boolean,
   private val calculateFuture: Boolean,
-  private val birthTime: Long = 0
-) : BaseDbViewModel() {
+  private val birthTime: Long = 0,
+  appDb: AppDb,
+  prefs: Prefs
+) : BaseDbViewModel(appDb, prefs) {
 
   private var liveData: MonthViewLiveData = MonthViewLiveData()
   private var _events: MutableLiveData<Pair<MonthPagerItem, List<EventModel>>> = MutableLiveData()
@@ -34,7 +36,7 @@ class MonthViewViewModel private constructor(
     }
   }
 
-  private inner class MonthViewLiveData() : LiveData<Pair<MonthPagerItem, List<EventModel>>>() {
+  private inner class MonthViewLiveData : LiveData<Pair<MonthPagerItem, List<EventModel>>>() {
 
     private val reminderData = ArrayList<EventModel>()
     private val birthdayData = ArrayList<EventModel>()
@@ -137,16 +139,6 @@ class MonthViewViewModel private constructor(
           withUIContext { notifyObserver(monthPagerItem, sorted) }
         }
       }
-    }
-  }
-
-  class Factory(private val addReminders: Boolean,
-                private val calculateFuture: Boolean,
-                private val birthTime: Long = 0) : ViewModelProvider.NewInstanceFactory() {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return MonthViewViewModel(addReminders, calculateFuture, birthTime) as T
     }
   }
 }

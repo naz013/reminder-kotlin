@@ -8,8 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -27,15 +25,15 @@ import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
 import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
 
-  private val adapter = TasksRecyclerAdapter {
+  private val adapter = TasksRecyclerAdapter(prefs) {
     showTasks(viewModel.googleTasks.value ?: listOf())
   }
-  private val viewModel: GoogleTaskListViewModel by lazy {
-    ViewModelProvider(this, GoogleTaskListViewModel.Factory(mId)).get(GoogleTaskListViewModel::class.java)
-  }
+  private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getListId()) }
   private var mId: String = ""
   private var googleTaskList: GoogleTaskList? = null
 
@@ -44,19 +42,20 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
-    val bundle = arguments
-    if (bundle != null) {
-      val args = TaskListFragmentArgs.fromBundle(bundle)
-      mId = args.argId
-      googleTaskList = args.argList
+    arguments?.let {
+      TaskListFragmentArgs.fromBundle(it)
+    }?.also {
+      mId = it.argId
+      googleTaskList = it.argList
     }
   }
 
+  private fun getListId() = arguments?.let { TaskListFragmentArgs.fromBundle(it) }?.argId
+
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    val googleTaskList = googleTaskList
-    if (googleTaskList != null) {
+    googleTaskList?.also {
       menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
-      if (googleTaskList.def != 1) {
+      if (it.def != 1) {
         menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, R.string.delete_list)
       }
       menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
@@ -93,68 +92,47 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   }
 
   private fun editListClick() {
-    val googleTaskList = googleTaskList
-    if (googleTaskList != null) {
+    googleTaskList?.also {
       startActivity(Intent(context, TaskListActivity::class.java)
-        .putExtra(Constants.INTENT_ID, googleTaskList.listId))
+        .putExtra(Constants.INTENT_ID, it.listId))
     }
   }
 
   private fun deleteDialog() {
-    withContext {
-      val builder = dialogues.getMaterialDialog(it)
-      builder.setCancelable(true)
-      builder.setMessage(R.string.delete_this_list)
-      builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-      builder.setPositiveButton(R.string.yes) { dialog, _ ->
-        deleteList()
-        dialog.dismiss()
-      }
-      builder.create().show()
+    val builder = dialogues.getMaterialDialog(requireContext())
+    builder.setCancelable(true)
+    builder.setMessage(R.string.delete_this_list)
+    builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
+    builder.setPositiveButton(R.string.yes) { dialog, _ ->
+      deleteList()
+      dialog.dismiss()
     }
+    builder.create().show()
   }
 
   private fun deleteList() {
-    googleTaskList?.let {
+    googleTaskList?.also {
       viewModel.deleteGoogleTaskList(it)
     }
   }
 
   private fun clearList() {
-    googleTaskList?.let {
+    googleTaskList?.also {
       viewModel.clearList(it)
     }
   }
 
   private fun addNewTask() {
-    withContext {
-      TaskActivity.openLogged(it, Intent(context, TaskActivity::class.java)
-        .putExtra(Constants.INTENT_ID, mId)
-        .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
-    }
+    TaskActivity.openLogged(requireContext(), Intent(context, TaskActivity::class.java)
+      .putExtra(Constants.INTENT_ID, mId)
+      .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE))
   }
 
   private fun initViewModel() {
-    viewModel.isInProgress.observe(viewLifecycleOwner, Observer {
-      if (it != null) {
-        updateProgress(it)
-      }
-    })
-    viewModel.result.observe(viewLifecycleOwner, Observer {
-      if (it != null) {
-        showResult(it)
-      }
-    })
-    viewModel.googleTasks.observe(viewLifecycleOwner, Observer { googleTasks ->
-      if (googleTasks != null) {
-        showTasks(googleTasks)
-      }
-    })
-    viewModel.googleTaskList.observe(viewLifecycleOwner, Observer {
-      if (it != null) {
-        showGoogleTaskList(it)
-      }
-    })
+    viewModel.isInProgress.observe(viewLifecycleOwner, { updateProgress(it) })
+    viewModel.result.observe(viewLifecycleOwner, { showResult(it) })
+    viewModel.googleTasks.observe(viewLifecycleOwner, { showTasks(it) })
+    viewModel.googleTaskList.observe(viewLifecycleOwner, { showGoogleTaskList(it) })
   }
 
   private fun showResult(commands: Commands) {
