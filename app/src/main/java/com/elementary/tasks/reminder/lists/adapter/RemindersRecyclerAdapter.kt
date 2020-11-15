@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
 class RemindersRecyclerAdapter(
+  private val prefs: Prefs,
   private var showHeader: Boolean = true,
   private var isEditable: Boolean = true,
   private val refreshListener: () -> Unit
@@ -98,7 +99,8 @@ class RemindersRecyclerAdapter(
       simpleDate = context.getString(R.string.disabled)
       listHeader.text = simpleDate
       listHeader.visibility = View.VISIBLE
-    } else if (item.isActive && position > 0 && prevItem != null && simpleDate == TimeUtil.getSimpleDate(prevItem.eventTime, lang)) {
+    } else if (item.isActive && position > 0 && prevItem != null &&
+      simpleDate == TimeUtil.getSimpleDate(prevItem.eventTime, lang)) {
       listHeader.visibility = View.GONE
     } else {
       if (due <= 0 || due < System.currentTimeMillis() - AlarmManager.INTERVAL_DAY) {
@@ -117,11 +119,11 @@ class RemindersRecyclerAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      Reminder.REMINDER -> ReminderHolder(parent, true, isEditable, true) { view, i, listActions ->
+      Reminder.REMINDER -> ReminderHolder(parent, prefs, true, isEditable, true) { view, i, listActions ->
         actionsListener?.onAction(view, i, find(i), listActions)
       }
-      AdsProvider.ADS_VIEW_TYPE -> ReminderAdsHolder(parent, adsProvider, refreshListener)
-      else -> ShoppingHolder(parent, isEditable, true) { view, i, listActions ->
+      AdsProvider.ADS_VIEW_TYPE -> ReminderAdsHolder(parent, adsProvider, prefs, refreshListener)
+      else -> ShoppingHolder(parent, prefs, isEditable, true) { view, i, listActions ->
         actionsListener?.onAction(view, i, find(i), listActions)
       }
     }

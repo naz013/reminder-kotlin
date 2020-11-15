@@ -21,8 +21,12 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PhotoSelectionUtil(private val activity: Activity, private val dialogues: Dialogues,
-                         private val urlSupported: Boolean = true, private val mCallback: UriCallback?) {
+class PhotoSelectionUtil(
+  private val activity: Activity,
+  private val dialogues: Dialogues,
+  private val urlSupported: Boolean = true,
+  private val mCallback: UriCallback?
+) {
 
   private var imageUri: Uri? = null
 

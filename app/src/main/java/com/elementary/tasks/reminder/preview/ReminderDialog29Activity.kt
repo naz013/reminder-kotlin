@@ -19,7 +19,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.BuildConfig
@@ -48,15 +47,18 @@ import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import com.squareup.picasso.Picasso
+import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 
 @RequiresApi(29)
 class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(R.layout.activity_reminder_dialog) {
 
-  private lateinit var viewModel: ReminderViewModel
+  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
 
-  private var shoppingAdapter: ShopListRecyclerAdapter = ShopListRecyclerAdapter()
+  private var shoppingAdapter = ShopListRecyclerAdapter()
 
   private var mReminder: Reminder? = null
   private var mControl: EventControl? = null
@@ -103,9 +105,8 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   private val mLocalReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       val action = intent?.action ?: ""
-      val mId = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
-      Timber.d("onReceive: $action, $mId")
-      if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && mReminder?.uuId == mId) {
+      Timber.d("onReceive: $action, ${getId()}")
+      if (mWasStopped && action == ACTION_STOP_BG_ACTIVITY && mReminder?.uuId == getId()) {
         finish()
       }
     }
@@ -113,8 +114,6 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-
     binding.container.visibility = View.GONE
     binding.progressOverlay.visibility = View.GONE
     binding.progressOverlay.setOnTouchListener { v, _ -> v.performClick() }
@@ -142,9 +141,11 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     }
 
     initButtons()
-    initViewModel(id)
+    initViewModel()
     LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ACTION_STOP_BG_ACTIVITY))
   }
+
+  private fun getId() = intent?.getStringExtra(Constants.INTENT_ID) ?: ""
 
   private fun init() {
     setUpScreenOptions()
@@ -229,9 +230,8 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
     }
   }
 
-  private fun initViewModel(id: String) {
-    Timber.d("initViewModel: $id")
-    viewModel = ViewModelProvider(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
+  private fun initViewModel() {
+    Timber.d("initViewModel: ${getId()}")
     viewModel.reminder.observeForever(mReminderObserver)
     viewModel.result.observe(this, { commands ->
       if (commands != null) {
@@ -244,7 +244,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
       }
     })
     lifecycle.addObserver(viewModel)
-    if (id == "" && BuildConfig.DEBUG) {
+    if (getId() == "" && BuildConfig.DEBUG) {
       loadTest()
     }
   }
@@ -260,7 +260,7 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   private fun showInfo(reminder: Reminder) {
     this.mReminder = reminder
     if (!isMockedTest) {
-      this.mControl = EventControlFactory.getController(reminder)
+      this.mControl = get<EventControlFactory>().getController(reminder)
     }
     Timber.d("showInfo: ${TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime), true)}")
     if (reminder.attachmentFile != "") showAttachmentButton()
@@ -563,7 +563,20 @@ class ReminderDialog29Activity : BindingActivity<ActivityReminderDialogBinding>(
   }
 
   private fun showDialog() {
-    val items = arrayOf<CharSequence>(String.format(getString(R.string.x_minutes), 5.toString()), String.format(getString(R.string.x_minutes), 10.toString()), String.format(getString(R.string.x_minutes), 15.toString()), String.format(getString(R.string.x_minutes), 30.toString()), String.format(getString(R.string.x_minutes), 45.toString()), String.format(getString(R.string.x_minutes), 60.toString()), String.format(getString(R.string.x_minutes), 90.toString()), String.format(getString(R.string.x_hours), 2.toString()), String.format(getString(R.string.x_hours), 6.toString()), String.format(getString(R.string.x_hours), 24.toString()), String.format(getString(R.string.x_days), 2.toString()), String.format(getString(R.string.x_days), 7.toString()))
+    val items = arrayOf<CharSequence>(
+      String.format(getString(R.string.x_minutes), 5.toString()),
+      String.format(getString(R.string.x_minutes), 10.toString()),
+      String.format(getString(R.string.x_minutes), 15.toString()),
+      String.format(getString(R.string.x_minutes), 30.toString()),
+      String.format(getString(R.string.x_minutes), 45.toString()),
+      String.format(getString(R.string.x_minutes), 60.toString()),
+      String.format(getString(R.string.x_minutes), 90.toString()),
+      String.format(getString(R.string.x_hours), 2.toString()),
+      String.format(getString(R.string.x_hours), 6.toString()),
+      String.format(getString(R.string.x_hours), 24.toString()),
+      String.format(getString(R.string.x_days), 2.toString()),
+      String.format(getString(R.string.x_days), 7.toString())
+    )
     val builder = dialogues.getMaterialDialog(this)
     builder.setTitle(getString(R.string.choose_time))
     builder.setItems(items) { dialog, item1 ->

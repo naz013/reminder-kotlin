@@ -12,7 +12,6 @@ import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.backdoor.engine.Model
 import com.backdoor.engine.misc.Action
@@ -36,17 +35,16 @@ import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
 class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layout.activity_conversation) {
 
   private var speech: SpeechRecognizer? = null
-
-  private val mAdapter = ConversationAdapter()
-  private val viewModel: ConversationViewModel by lazy {
-    ViewModelProvider(this).get(ConversationViewModel::class.java)
-  }
+  private val mAdapter = ConversationAdapter(language, prefs, get(), get())
+  private val viewModel by viewModel<ConversationViewModel>()
   private var tts: TextToSpeech? = null
   private var isTtsReady = false
   private var isListening = false

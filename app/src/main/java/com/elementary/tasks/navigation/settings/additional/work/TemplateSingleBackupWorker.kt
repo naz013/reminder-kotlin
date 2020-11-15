@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.DataFlow
-import com.elementary.tasks.core.cloud.converters.IndexTypes
-import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
 
-class DeleteBackupWorker(
+class TemplateSingleBackupWorker(
+  private val syncManagers: SyncManagers,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
@@ -20,9 +19,12 @@ class DeleteBackupWorker(
     val uuId = inputData.getString(Constants.INTENT_ID) ?: ""
     if (uuId.isNotEmpty()) {
       launchDefault {
-        DataFlow(TemplateRepository(), TemplateConverter(),
-          CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
-          .delete(uuId, IndexTypes.TYPE_TEMPLATE, true)
+        DataFlow(
+          syncManagers.repositoryManager.templateRepository,
+          syncManagers.converterManager.templateConverter,
+          CompositeStorage(syncManagers.storageManager),
+          completable = null
+        ).backup(uuId)
       }
     }
     return Result.success()

@@ -8,8 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -24,18 +22,17 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.FragmentBirthdaysBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (List<Birthday>) -> Unit {
 
-  private val viewModel: BirthdaysViewModel by lazy {
-    ViewModelProvider(this).get(BirthdaysViewModel::class.java)
-  }
+  private val viewModel by viewModel<BirthdaysViewModel>()
   private val birthdayResolver = BirthdayResolver(
     dialogAction = { dialogues },
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
   )
 
-  private val mAdapter = BirthdaysRecyclerAdapter {
+  private val mAdapter = BirthdaysRecyclerAdapter(prefs) {
     filterController.original = viewModel.birthdays.value ?: listOf()
   }
   private var mSearchView: SearchView? = null
@@ -98,11 +95,7 @@ class BirthdaysFragment : BaseNavigationFragment<FragmentBirthdaysBinding>(), (L
   }
 
   private fun initViewModel() {
-    viewModel.birthdays.observe(viewLifecycleOwner, Observer { list ->
-        if (list != null) {
-            filterController.original = list
-        }
-    })
+    viewModel.birthdays.observe(viewLifecycleOwner, { filterController.original = it })
   }
 
   override fun getTitle(): String = getString(R.string.birthdays)

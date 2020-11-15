@@ -14,7 +14,6 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
@@ -57,7 +56,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -65,8 +67,8 @@ import java.util.*
 class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(R.layout.activity_reminder_preview) {
 
   private var mGoogleMap: AdvancedMapFragment? = null
-  private lateinit var viewModel: ReminderViewModel
-  private val backupTool: BackupTool by inject()
+  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+  private val backupTool by inject<BackupTool>()
 
   private val list = ArrayList<Long>()
   private val mUiHandler = Handler(Looper.getMainLooper())
@@ -81,13 +83,14 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
     binding.dataContainer.removeAllViewsInLayout()
     initActionBar()
     initViews()
-    initViewModel(id)
+    initViewModel()
     loadAds()
   }
+
+  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
   private fun loadAds() {
     if (!Module.isPro) {
@@ -124,12 +127,11 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun sendEmail(reminder: Reminder) {
-    TelephonyUtil.sendMail(this, reminder.target,
-      reminder.subject, reminder.summary, reminder.attachmentFile)
+    TelephonyUtil.sendMail(this, reminder.target, reminder.subject,
+      reminder.summary, reminder.attachmentFile)
   }
 
-  private fun initViewModel(id: String) {
-    viewModel = ViewModelProvider(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
+  private fun initViewModel() {
     viewModel.reminder.observe(this, { reminder ->
       if (reminder != null) {
         showInfo(reminder)
@@ -173,7 +175,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   private fun showCalendarEvents(events: List<CalendarUtils.EventItem>) {
     Timber.d("showCalendarEvents: $events")
     for (e in events) {
-      val binding = GoogleEventHolder(binding.dataContainer) { _, event, listActions ->
+      val binding = GoogleEventHolder(binding.dataContainer, prefs) { _, event, listActions ->
         if (listActions == ListActions.OPEN && event != null) {
           openCalendar(event.id)
         } else if (listActions == ListActions.REMOVE && event != null) {
@@ -212,7 +214,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun showNote(note: NoteWithImages) {
-    val binding = NoteHolder(binding.dataContainer) { _, _, listActions ->
+    val binding = NoteHolder(binding.dataContainer, prefs, get(), get()) { _, _, listActions ->
       if (listActions == ListActions.OPEN) {
         startActivity(Intent(this@ReminderPreviewActivity, NotePreviewActivity::class.java)
           .putExtra(Constants.INTENT_ID, note.getKey()))
@@ -605,15 +607,19 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
   }
 
   private fun initMap() {
-    val googleMap = AdvancedMapFragment.newInstance(isTouch = false, isPlaces = false,
-      isSearch = false, isStyles = false, isBack = false, isZoom = false,
-      isDark = isDarkMode)
+    val googleMap = AdvancedMapFragment.newInstance(
+      isTouch = false,
+      isPlaces = false,
+      isSearch = false,
+      isStyles = false,
+      isBack = false,
+      isZoom = false,
+      isDark = isDarkMode
+    )
     googleMap.setCallback(object : MapCallback {
       override fun onMapReady() {
         googleMap.setSearchEnabled(false)
-        googleMap.setOnMapClickListener(GoogleMap.OnMapClickListener {
-          openFullMap()
-        })
+        googleMap.setOnMapClickListener { openFullMap() }
         googleMap.setOnMarkerClick(mOnMarkerClick)
         reminder?.let { showMapData(it) }
       }

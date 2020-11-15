@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.transition.Explode
 import android.view.MenuItem
 import android.view.Window
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Reminder
@@ -15,17 +14,18 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityFullscreenMapBinding
 import com.google.android.gms.maps.model.LatLng
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>(R.layout.activity_fullscreen_map) {
 
   private var mGoogleMap: AdvancedMapFragment? = null
-  private lateinit var viewModel: ReminderViewModel
+  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
 
   private var reminder: Reminder? = null
   private var placeIndex = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
     with(window) {
       requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
       exitTransition = Explode()
@@ -45,23 +45,26 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>(R.la
       mGoogleMap?.moveCamera(LatLng(lat, lon), 0, 0, 0, 0)
     }
 
-    initViewModel(id)
+    initViewModel()
   }
 
-  private fun initViewModel(id: String) {
-    viewModel = ViewModelProvider(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
-    viewModel.reminder.observe(this, { reminder ->
-      if (reminder != null) {
-        showInfo(reminder)
-      }
-    })
+  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
+  private fun initViewModel() {
+    viewModel.reminder.observe(this, { showInfo(it) })
   }
 
   private fun showMapData(reminder: Reminder) {
     reminder.places.forEach {
       val lat = it.latitude
       val lon = it.longitude
-      mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, clear = false, animate = false, radius = it.radius)
+      mGoogleMap?.addMarker(
+        LatLng(lat, lon),
+        reminder.summary,
+        clear = false,
+        animate = false,
+        radius = it.radius
+      )
     }
     val place = reminder.places[0]
     val lat = place.latitude
@@ -85,8 +88,15 @@ class FullscreenMapActivity : BindingActivity<ActivityFullscreenMapBinding>(R.la
   }
 
   private fun initMap() {
-    val googleMap = AdvancedMapFragment.newInstance(isPlaces = false, isStyles = false, isBack = true,
-      isZoom = false, markerStyle = prefs.markerStyle, isDark = isDarkMode, isRadius = false)
+    val googleMap = AdvancedMapFragment.newInstance(
+      isPlaces = false,
+      isStyles = false,
+      isBack = true,
+      isZoom = false,
+      markerStyle = prefs.markerStyle,
+      isDark = isDarkMode,
+      isRadius = false
+    )
     googleMap.setCallback(object : MapCallback {
       override fun onMapReady() {
         googleMap.setSearchEnabled(false)

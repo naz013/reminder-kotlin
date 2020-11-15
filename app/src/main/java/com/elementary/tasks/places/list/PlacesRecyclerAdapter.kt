@@ -8,21 +8,20 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemPlaceBinding
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-@KoinApiExtension
-class PlacesRecyclerAdapter :
-  ListAdapter<Place, PlacesRecyclerAdapter.ViewHolder>(PlaceDiffCallback()), KoinComponent {
-
-  private val themeUtil: ThemeUtil by inject()
+class PlacesRecyclerAdapter(
+  private val prefs: Prefs,
+  private val themeUtil: ThemeUtil
+) : ListAdapter<Place, PlacesRecyclerAdapter.ViewHolder>(PlaceDiffCallback()) {
 
   var actionsListener: ActionsListener<Place>? = null
 
-  inner class ViewHolder(parent: ViewGroup) : BaseHolder<ListItemPlaceBinding>(parent, R.layout.list_item_place) {
+  inner class ViewHolder(
+    parent: ViewGroup
+  ) : BaseHolder<ListItemPlaceBinding>(parent, R.layout.list_item_place, prefs) {
     fun bind(item: Place) {
       binding.textView.text = item.name
       DrawableHelper.withContext(itemView.context)

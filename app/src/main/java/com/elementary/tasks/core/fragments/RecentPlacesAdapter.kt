@@ -8,17 +8,15 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.databinding.ListItemMapPlaceBinding
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-@KoinApiExtension
-class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>(), KoinComponent {
-
-  private val themeUtil: ThemeUtil by inject()
+class RecentPlacesAdapter(
+  private val themeUtil: ThemeUtil,
+  private val prefs: Prefs
+) : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>() {
 
   private val mData = mutableListOf<Place>()
   var actionsListener: ActionsListener<Place>? = null
@@ -35,7 +33,10 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
     return mData.size
   }
 
-  inner class ViewHolder(parent: ViewGroup) : BaseHolder<ListItemMapPlaceBinding>(parent, R.layout.list_item_map_place) {
+  inner class ViewHolder(
+    parent: ViewGroup,
+    prefs: Prefs
+  ) : BaseHolder<ListItemMapPlaceBinding>(parent, R.layout.list_item_map_place, prefs) {
     fun bind(item: Place) {
       binding.textView.text = item.name
 
@@ -57,11 +58,9 @@ class RecentPlacesAdapter : RecyclerView.Adapter<RecentPlacesAdapter.ViewHolder>
     }
   }
 
-  fun getItem(position: Int): Place {
-    return mData[position]
-  }
+  fun getItem(position: Int) = mData[position]
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent, prefs)
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     holder.bind(getItem(position))

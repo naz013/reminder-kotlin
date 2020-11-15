@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
@@ -15,16 +14,13 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout.activity_create_task_list) {
 
-  private val viewModel: GoogleTaskListViewModel by lazy {
-    ViewModelProvider(this, GoogleTaskListViewModel.Factory(getId()))
-      .get(GoogleTaskListViewModel::class.java)
-  }
-  private val stateViewModel: StateViewModel by lazy {
-    ViewModelProvider(this).get(StateViewModel::class.java)
-  }
+  private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getId()) }
+  private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
 
   private var mItem: GoogleTaskList? = null
   private var mIsLoading = false

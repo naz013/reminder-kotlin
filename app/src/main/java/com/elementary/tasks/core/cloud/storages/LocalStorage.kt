@@ -8,7 +8,11 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.launchIo
 import kotlinx.coroutines.channels.Channel
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class LocalStorage(context: Context) : Storage() {
 
@@ -135,12 +139,12 @@ class LocalStorage(context: Context) : Storage() {
 
   private fun folderFromExt(ext: String): File? {
     return when (ext) {
-        FileConfig.FILE_NAME_NOTE -> MemoryUtil.notesDir
-        FileConfig.FILE_NAME_GROUP -> MemoryUtil.groupsDir
-        FileConfig.FILE_NAME_BIRTHDAY -> MemoryUtil.birthdaysDir
-        FileConfig.FILE_NAME_PLACE -> MemoryUtil.placesDir
-        FileConfig.FILE_NAME_TEMPLATE -> MemoryUtil.templatesDir
-        FileConfig.FILE_NAME_SETTINGS_EXT -> MemoryUtil.prefsDir
+      FileConfig.FILE_NAME_NOTE -> MemoryUtil.notesDir
+      FileConfig.FILE_NAME_GROUP -> MemoryUtil.groupsDir
+      FileConfig.FILE_NAME_BIRTHDAY -> MemoryUtil.birthdaysDir
+      FileConfig.FILE_NAME_PLACE -> MemoryUtil.placesDir
+      FileConfig.FILE_NAME_TEMPLATE -> MemoryUtil.templatesDir
+      FileConfig.FILE_NAME_SETTINGS_EXT -> MemoryUtil.prefsDir
       else -> MemoryUtil.remindersDir
     }
   }

@@ -12,10 +12,12 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.tasks.TasksScopes
 import timber.log.Timber
 
-class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
-
-  private var mGoogleTasks: GTasks? = GTasks.getInstance(activity)
-  private var mGoogleDrive: GDrive? = GDrive.getInstance(activity)
+class GoogleLogin(
+  private val activity: Activity,
+  private val prefs: Prefs,
+  private val gDrive: GDrive,
+  private val gTasks: GTasks
+) {
 
   private var mDriveCallback: DriveCallback? = null
   private var mTasksCallback: TasksCallback? = null
@@ -26,18 +28,17 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
   var isGoogleDriveLogged = false
     private set
     get() {
-      return mGoogleDrive?.isLogged ?: false
+      return gDrive.isLogged
     }
 
   var isGoogleTasksLogged = false
     private set
     get() {
-      return mGoogleTasks?.isLogged ?: false
+      return gDrive.isLogged
     }
 
   fun logOutDrive() {
-    mGoogleDrive?.logOut()
-    mGoogleDrive = null
+    gDrive.logOut()
 
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       .requestScopes(Scope(DriveScopes.DRIVE_APPDATA), Scope(DriveScopes.DRIVE_FILE))
@@ -50,8 +51,7 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
   }
 
   fun logOutTasks() {
-    mGoogleTasks?.logOut()
-    mGoogleTasks = null
+    gTasks.logOut()
 
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
       .requestScopes(Scope(TasksScopes.TASKS))
@@ -123,21 +123,19 @@ class GoogleLogin(private val activity: Activity, private val prefs: Prefs) {
       return
     }
     if (isDriveLogin) {
-      mGoogleDrive?.logOut()
+      gDrive.logOut()
       prefs.driveUser = account
-      mGoogleDrive = GDrive.getInstance(activity)
-      mGoogleDrive?.statusObserver = {
+      gDrive.statusObserver = {
         googleStatus?.invoke(it)
       }
-      mDriveCallback?.onResult(mGoogleDrive, mGoogleDrive?.isLogged == true)
+      mDriveCallback?.onResult(gDrive, gDrive.isLogged)
     } else {
-      mGoogleTasks?.logOut()
+      gTasks.logOut()
       prefs.tasksUser = account
-      mGoogleTasks = GTasks.getInstance(activity)
-      mGoogleTasks?.statusObserver = {
+      gTasks.statusObserver = {
         googleStatus?.invoke(it)
       }
-      mTasksCallback?.onResult(mGoogleTasks, mGoogleTasks?.isLogged == true)
+      mTasksCallback?.onResult(gTasks, gTasks.isLogged)
     }
   }
 

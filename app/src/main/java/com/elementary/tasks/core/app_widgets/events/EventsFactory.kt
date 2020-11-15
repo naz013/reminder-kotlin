@@ -13,22 +13,25 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.*
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.ViewUtils
 import java.util.*
 
-@KoinApiExtension
 class EventsFactory(
-  private val mContext: Context,
-  intent: Intent
-) : RemoteViewsService.RemoteViewsFactory, KoinComponent {
+  private val context: Context,
+  intent: Intent,
+  private val prefs: Prefs,
+  private val appDb: AppDb
+) : RemoteViewsService.RemoteViewsFactory {
 
   private var data = mutableListOf<CalendarItem>()
   private val map = mutableMapOf<String, Reminder>()
-  private val prefs: Prefs by inject()
-  private val appDb: AppDb by inject()
   private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
 
   override fun onCreate() {
@@ -59,7 +62,7 @@ class EventsFactory(
         Reminder.isBase(type, Reminder.BY_WEEK) -> {
           val calendar = Calendar.getInstance()
           calendar.timeInMillis = eventTime
-          date = ReminderUtils.getRepeatString(mContext, prefs, item.weekdays)
+          date = ReminderUtils.getRepeatString(context, prefs, item.weekdays)
           time = TimeUtil.getTime(calendar.time, is24, prefs.appLanguage)
         }
         Reminder.isBase(type, Reminder.BY_MONTH) -> {
@@ -102,7 +105,7 @@ class EventsFactory(
           val name = item.name
           val millis = TimeUtil.getFutureBirthdayDate(birthTime, item.date)?.millis ?: 0L
 
-          data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.key, birthday, "", millis, 1, item))
+          data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, context.getString(R.string.birthday), name, item.key, birthday, "", millis, 1, item))
         }
         calendar.timeInMillis = calendar.timeInMillis + 1000 * 60 * 60 * 24
         n++
@@ -121,14 +124,14 @@ class EventsFactory(
   }
 
   override fun getViewAt(i: Int): RemoteViews? {
-    val sp = mContext.getSharedPreferences(EventsWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
+    val sp = context.getSharedPreferences(EventsWidgetConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE)
     val itemTextSize = sp.getFloat(EventsWidgetConfigActivity.WIDGET_TEXT_SIZE + widgetID, 0f)
     val itemBgColor = sp.getInt(EventsWidgetConfigActivity.WIDGET_ITEM_BG + widgetID, 0)
 
     val textColor = if (WidgetUtils.isDarkBg(itemBgColor)) {
-      ContextCompat.getColor(mContext, R.color.pureWhite)
+      ContextCompat.getColor(context, R.color.pureWhite)
     } else {
-      ContextCompat.getColor(mContext, R.color.pureBlack)
+      ContextCompat.getColor(context, R.color.pureBlack)
     }
 
     var rv: RemoteViews? = null
@@ -137,7 +140,7 @@ class EventsFactory(
     }
     val item = data[i]
     if (item.viewType == 1) {
-      rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_events)
+      rv = RemoteViews(context.packageName, R.layout.list_item_widget_events)
 
       rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
 
@@ -148,15 +151,15 @@ class EventsFactory(
       rv.setTextColor(R.id.leftTime, textColor)
 
       val icon = if (item.type == CalendarItem.Type.REMINDER) {
-        ViewUtils.createIcon(mContext, R.drawable.ic_twotone_alarm_24px, textColor)
+        ViewUtils.createIcon(context, R.drawable.ic_twotone_alarm_24px, textColor)
       } else {
-        ViewUtils.createIcon(mContext, R.drawable.ic_twotone_cake_24px, textColor)
+        ViewUtils.createIcon(context, R.drawable.ic_twotone_cake_24px, textColor)
       }
       rv.setImageViewBitmap(R.id.statusIcon, icon)
 
       var task = item.name
-      if (task == null || task.isBlank() && Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
-        task = Contacts.getNameFromNumber(item.number, mContext)
+      if (task == null || task.isBlank() && Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
+        task = Contacts.getNameFromNumber(item.number, context)
       }
       rv.setTextViewText(R.id.taskText, task)
 
@@ -175,7 +178,7 @@ class EventsFactory(
       }
       rv.setTextViewText(R.id.taskDate, item.dayDate)
       rv.setTextViewText(R.id.taskTime, item.time)
-      rv.setTextViewText(R.id.leftTime, TimeCount.getRemaining(mContext, item.date, prefs.appLanguage))
+      rv.setTextViewText(R.id.leftTime, TimeCount.getRemaining(context, item.date, prefs.appLanguage))
 
       if (item.id != null) {
         val fillInIntent = Intent()
@@ -194,10 +197,10 @@ class EventsFactory(
       }
     }
     if (item.viewType == 2) {
-      rv = RemoteViews(mContext.packageName, R.layout.list_item_widget_shop_list)
+      rv = RemoteViews(context.packageName, R.layout.list_item_widget_shop_list)
       rv.setInt(R.id.listItemCard, "setBackgroundResource", WidgetUtils.newWidgetBg(itemBgColor))
 
-      rv.setImageViewBitmap(R.id.statusIcon, ViewUtils.createIcon(mContext, R.drawable.ic_twotone_shopping_cart_24px, textColor))
+      rv.setImageViewBitmap(R.id.statusIcon, ViewUtils.createIcon(context, R.drawable.ic_twotone_shopping_cart_24px, textColor))
 
       val task = item.name
       rv.setTextViewText(R.id.taskText, task)
@@ -219,11 +222,11 @@ class EventsFactory(
 
       rv.removeAllViews(R.id.todoList)
 
-      val checkedIcon = ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_24px, textColor)
-      val unCheckedIcon = ViewUtils.createIcon(mContext, R.drawable.ic_twotone_check_box_outline_blank_24px, textColor)
+      val checkedIcon = ViewUtils.createIcon(context, R.drawable.ic_twotone_check_box_24px, textColor)
+      val unCheckedIcon = ViewUtils.createIcon(context, R.drawable.ic_twotone_check_box_outline_blank_24px, textColor)
 
       for (list in lists) {
-        val view = RemoteViews(mContext.packageName, R.layout.list_item_widget_shop_item)
+        val view = RemoteViews(context.packageName, R.layout.list_item_widget_shop_item)
         val icon = if (list.isChecked) checkedIcon else unCheckedIcon
         view.setImageViewBitmap(R.id.checkView, icon)
         view.setTextColor(R.id.shopText, textColor)

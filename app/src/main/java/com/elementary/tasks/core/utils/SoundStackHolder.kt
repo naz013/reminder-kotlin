@@ -3,9 +3,14 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
+import android.os.Looper
 import timber.log.Timber
 
-class SoundStackHolder(private val context: Context, private val prefs: Prefs) : Sound.PlaybackCallback {
+class SoundStackHolder(
+  private val context: Context,
+  private val prefs: Prefs
+) : Sound.PlaybackCallback {
+
   var sound: Sound? = null
     private set
 
@@ -22,7 +27,7 @@ class SoundStackHolder(private val context: Context, private val prefs: Prefs) :
 
   private var mAudioManager: AudioManager? = null
   var playbackCallback: Sound.PlaybackCallback? = null
-  private val mHandler = Handler()
+  private val mHandler = Handler(Looper.getMainLooper())
 
   private var mStreamVol: Int = 0
   private var mVolume: Int = 0

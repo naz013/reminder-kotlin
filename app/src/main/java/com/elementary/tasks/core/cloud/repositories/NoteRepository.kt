@@ -1,8 +1,9 @@
 package com.elementary.tasks.core.cloud.repositories
 
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages
 
-class NoteRepository : DatabaseRepository<NoteWithImages>() {
+class NoteRepository(appDb: AppDb) : DatabaseRepository<NoteWithImages>(appDb) {
   override suspend fun get(id: String): NoteWithImages? {
     return appDb.notesDao().getById(id)
   }

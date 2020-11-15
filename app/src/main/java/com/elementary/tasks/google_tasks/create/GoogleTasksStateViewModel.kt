@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
 
-class StateViewModel : ViewModel(), LifecycleObserver {
+class GoogleTasksStateViewModel : ViewModel(), LifecycleObserver {
 
   var date: MutableLiveData<Long> = MutableLiveData()
   var time: MutableLiveData<Long> = MutableLiveData()

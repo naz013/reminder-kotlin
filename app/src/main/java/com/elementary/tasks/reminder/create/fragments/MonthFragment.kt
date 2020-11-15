@@ -18,8 +18,8 @@ import java.util.*
 class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
 
   private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-    iFace.state.hour = hourOfDay
-    iFace.state.minute = minute
+    iFace.reminderState.hour = hourOfDay
+    iFace.reminderState.minute = minute
     val c = Calendar.getInstance()
     c.set(Calendar.HOUR_OF_DAY, hourOfDay)
     c.set(Calendar.MINUTE, minute)
@@ -27,9 +27,9 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     calculateNextDate()
   }
   private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-    iFace.state.day = dayOfMonth
-    iFace.state.month = monthOfYear
-    iFace.state.year = year
+    iFace.reminderState.day = dayOfMonth
+    iFace.reminderState.month = monthOfYear
+    iFace.reminderState.year = year
     showSelectedDay()
     calculateNextDate()
   }
@@ -38,15 +38,15 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     get() {
       val calendar = Calendar.getInstance()
       calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-      calendar.set(Calendar.MINUTE, iFace.state.minute)
+      calendar.set(Calendar.HOUR_OF_DAY, iFace.reminderState.hour)
+      calendar.set(Calendar.MINUTE, iFace.reminderState.minute)
       calendar.set(Calendar.SECOND, 0)
       calendar.set(Calendar.MILLISECOND, 0)
       return calendar.timeInMillis
     }
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     var type = Reminder.BY_MONTH
     val isAction = binding.actionView.hasAction()
     if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -70,7 +70,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     reminder.weekdays = listOf()
     reminder.target = number
     reminder.type = type
-    reminder.dayOfMonth = iFace.state.day
+    reminder.dayOfMonth = iFace.reminderState.day
     reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
@@ -125,26 +125,26 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.monthDayField.setOnClickListener {
-      TimeUtil.showDatePicker(requireContext(), prefs, iFace.state.year, iFace.state.month,
-        iFace.state.day, mDateSelect)
+      TimeUtil.showDatePicker(requireContext(), prefs, iFace.reminderState.year, iFace.reminderState.month,
+        iFace.reminderState.day, mDateSelect)
     }
     binding.timeField.setOnClickListener {
-      TimeUtil.showTimePicker(requireContext(), prefs.is24HourFormat, iFace.state.hour,
-        iFace.state.minute, mTimeSelect)
+      TimeUtil.showTimePicker(requireContext(), prefs.is24HourFormat, iFace.reminderState.hour,
+        iFace.reminderState.minute, mTimeSelect)
     }
     binding.timeField.text = TimeUtil.getTime(time, prefs.is24HourFormat, prefs.appLanguage)
     binding.repeatView.defaultValue = 1
 
     binding.tuneExtraView.hasAutoExtra = false
     binding.lastCheck.setOnCheckedChangeListener { _, b ->
-      iFace.state.isLastDay = b
+      iFace.reminderState.isLastDay = b
       changeUi(b)
     }
 
-    if (!iFace.state.isLastDay) {
+    if (!iFace.reminderState.isLastDay) {
       binding.dayCheck.isChecked = true
     }
-    changeUi(iFace.state.isLastDay)
+    changeUi(iFace.reminderState.isLastDay)
 
     showSelectedDay()
     editReminder()
@@ -154,7 +154,7 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   private fun calculateNextDate() {
     val reminder = Reminder()
     reminder.type = Reminder.BY_MONTH
-    reminder.dayOfMonth = iFace.state.day
+    reminder.dayOfMonth = iFace.reminderState.day
     reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
     if (reminder.repeatInterval <= 0) {
       reminder.repeatInterval = 1
@@ -178,17 +178,17 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   }
 
   private fun showSelectedDay() {
-    if (iFace.state.day <= 0) {
-      iFace.state.day = System.currentTimeMillis().toCalendar().get(Calendar.DAY_OF_MONTH)
+    if (iFace.reminderState.day <= 0) {
+      iFace.reminderState.day = System.currentTimeMillis().toCalendar().get(Calendar.DAY_OF_MONTH)
     }
-    Timber.d("showSelectedDay: ${iFace.state.day}")
-    binding.monthDayField.text = getZeroedInt(iFace.state.day)
+    Timber.d("showSelectedDay: ${iFace.reminderState.day}")
+    binding.monthDayField.text = getZeroedInt(iFace.reminderState.day)
   }
 
   private fun changeUi(b: Boolean) {
     if (b) {
       binding.dayView.visibility = View.GONE
-      iFace.state.day = 0
+      iFace.reminderState.day = 0
     } else {
       binding.dayView.visibility = View.VISIBLE
       showSelectedDay()
@@ -199,19 +199,19 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
   private fun updateTime(millis: Long): Date {
     val cal = Calendar.getInstance()
     cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
-    iFace.state.hour = cal.get(Calendar.HOUR_OF_DAY)
-    iFace.state.minute = cal.get(Calendar.MINUTE)
+    iFace.reminderState.hour = cal.get(Calendar.HOUR_OF_DAY)
+    iFace.reminderState.minute = cal.get(Calendar.MINUTE)
     return cal.time
   }
 
   private fun editReminder() {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     binding.timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
       prefs.is24HourFormat, prefs.appLanguage)
-    if (iFace.state.isLastDay && reminder.dayOfMonth == 0) {
+    if (iFace.reminderState.isLastDay && reminder.dayOfMonth == 0) {
       binding.lastCheck.isChecked = true
     } else {
-      iFace.state.day = reminder.dayOfMonth
+      iFace.reminderState.day = reminder.dayOfMonth
       binding.dayCheck.isChecked = true
       showSelectedDay()
     }

@@ -18,8 +18,8 @@ import java.util.*
 class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
 
   private val mTimeSelect = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-    iFace.state.hour = hourOfDay
-    iFace.state.minute = minute
+    iFace.reminderState.hour = hourOfDay
+    iFace.reminderState.minute = minute
     val c = Calendar.getInstance()
     c.set(Calendar.HOUR_OF_DAY, hourOfDay)
     c.set(Calendar.MINUTE, minute)
@@ -32,8 +32,8 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
     get() {
       val calendar = Calendar.getInstance()
       calendar.timeInMillis = System.currentTimeMillis()
-      calendar.set(Calendar.HOUR_OF_DAY, iFace.state.hour)
-      calendar.set(Calendar.MINUTE, iFace.state.minute)
+      calendar.set(Calendar.HOUR_OF_DAY, iFace.reminderState.hour)
+      calendar.set(Calendar.MINUTE, iFace.reminderState.minute)
       calendar.set(Calendar.SECOND, 0)
       calendar.set(Calendar.MILLISECOND, 0)
       return calendar.timeInMillis
@@ -45,14 +45,15 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
       binding.thursdayCheck.isChecked, binding.fridayCheck.isChecked,
       binding.saturdayCheck.isChecked, binding.sundayCheck.isChecked)
 
-  private val mCheckListener: CompoundButton.OnCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, _ ->
-    iFace.state.weekdays = days
-    iFace.state.isWeekdaysSaved = true
-    calculateNextDate()
-  }
+  private val mCheckListener: CompoundButton.OnCheckedChangeListener =
+    CompoundButton.OnCheckedChangeListener { _, _ ->
+      iFace.reminderState.weekdays = days
+      iFace.reminderState.isWeekdaysSaved = true
+      calculateNextDate()
+    }
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     var type = Reminder.BY_WEEK
     val isAction = binding.actionView.hasAction()
     if (TextUtils.isEmpty(reminder.summary) && !isAction) {
@@ -73,7 +74,7 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
         Reminder.BY_WEEK_SMS
       }
     }
-    val weekdays = iFace.state.weekdays
+    val weekdays = iFace.reminderState.weekdays
     if (!IntervalUtil.isWeekday(weekdays)) {
       iFace.showSnackbar(getString(R.string.you_dont_select_any_day))
       return null
@@ -139,8 +140,8 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
       TimeUtil.showTimePicker(
         requireContext(),
         prefs.is24HourFormat,
-        iFace.state.hour,
-        iFace.state.minute,
+        iFace.reminderState.hour,
+        iFace.reminderState.minute,
         mTimeSelect
       )
     }
@@ -183,8 +184,8 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
   private fun updateTime(millis: Long): Date {
     val cal = Calendar.getInstance()
     cal.timeInMillis = if (millis != 0L) millis else System.currentTimeMillis()
-    iFace.state.hour = cal.get(Calendar.HOUR_OF_DAY)
-    iFace.state.minute = cal.get(Calendar.MINUTE)
+    iFace.reminderState.hour = cal.get(Calendar.HOUR_OF_DAY)
+    iFace.reminderState.minute = cal.get(Calendar.MINUTE)
     return cal.time
   }
 
@@ -199,14 +200,14 @@ class WeekFragment : RepeatableTypeFragment<FragmentReminderWeekdaysBinding>() {
   }
 
   private fun editReminder() {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     binding.timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
       prefs.is24HourFormat, prefs.appLanguage)
     if (reminder.weekdays.isNotEmpty()) {
       setCheckForDays(reminder.weekdays)
     }
-    if (iFace.state.isWeekdaysSaved) {
-      setCheckForDays(iFace.state.weekdays)
+    if (iFace.reminderState.isWeekdaysSaved) {
+      setCheckForDays(iFace.reminderState.weekdays)
     }
     calculateNextDate()
   }

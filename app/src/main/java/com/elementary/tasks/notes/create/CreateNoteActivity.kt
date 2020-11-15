@@ -29,7 +29,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
@@ -69,23 +68,22 @@ import com.elementary.tasks.notes.preview.ImagesSingleton
 import com.elementary.tasks.pin.PinLoginActivity
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.activity_create_note), PhotoSelectionUtil.UriCallback {
+class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.activity_create_note),
+  PhotoSelectionUtil.UriCallback {
 
-  private val themeUtil: ThemeUtil by inject()
-  private val backupTool: BackupTool by inject()
-  private val imagesSingleton: ImagesSingleton by inject()
+  private val themeUtil by inject<ThemeUtil>()
+  private val backupTool by inject<BackupTool>()
+  private val imagesSingleton by inject<ImagesSingleton>()
   private var isBgDark = false
 
-  private val viewModel: NoteViewModel by lazy {
-    ViewModelProvider(this, NoteViewModel.Factory(getId())).get(NoteViewModel::class.java)
-  }
-  private val stateViewModel: CreateNoteViewModel by lazy {
-    ViewModelProvider(this).get(CreateNoteViewModel::class.java)
-  }
+  private val viewModel by viewModel<NoteViewModel> { parametersOf(getId()) }
+  private val stateViewModel by viewModel<CreateNoteViewModel>()
   private val photoSelectionUtil: PhotoSelectionUtil by lazy {
     PhotoSelectionUtil(this, dialogues, true, this)
   }

@@ -22,13 +22,11 @@ import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.evernote.android.job.Job
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.*
 
-@KoinApiExtension
 class EventJobService : Job(), KoinComponent {
 
   private val prefs: Prefs by inject()

@@ -11,20 +11,22 @@ import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.withUIContext
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
-@KoinApiExtension
-class Dropbox : Storage(), KoinComponent {
+class Dropbox(
+  private val prefs: Prefs
+) : Storage() {
 
   private val rootFolder = "/"
   private val reminderFolder = "/Reminders/"
@@ -36,7 +38,6 @@ class Dropbox : Storage(), KoinComponent {
   private val settingsFolder = "/Settings/"
 
   private var mDBApi: DbxClientV2? = null
-  private val prefs: Prefs by inject()
 
   private val tokenDataFile = TokenDataFile()
   private val indexDataFile = IndexDataFile()

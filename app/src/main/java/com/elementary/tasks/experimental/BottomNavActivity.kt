@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -24,18 +23,16 @@ import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav),
   FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
 
-  private val buttonObservable: GlobalButtonObservable by inject()
-  private val viewModel: ConversationViewModel by lazy {
-    ViewModelProvider(this).get(ConversationViewModel::class.java)
-  }
-  private val noteViewModel: NoteViewModel by lazy {
-    ViewModelProvider(this, NoteViewModel.Factory("")).get(NoteViewModel::class.java)
-  }
+  private val buttonObservable by inject<GlobalButtonObservable>()
+  private val viewModel by viewModel<ConversationViewModel>()
+  private val noteViewModel by viewModel<NoteViewModel> { parametersOf("") }
   private val mNoteView: QuickNoteCoordinator by lazy {
     binding.closeButton.setOnClickListener { mNoteView.hideNoteView() }
     val noteView = QuickNoteCoordinator(this, binding.quickNoteContainer, binding.quickNoteView,
@@ -163,7 +160,7 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
   override fun onDestroy() {
     super.onDestroy()
     if (prefs.isBackupEnabled && prefs.isSettingsBackupEnabled) {
-      BackupSettingsWorker.schedule()
+      BackupSettingsWorker.schedule(this)
     }
   }
 

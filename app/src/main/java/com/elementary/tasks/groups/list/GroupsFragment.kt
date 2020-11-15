@@ -3,7 +3,6 @@ package com.elementary.tasks.groups.list
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -18,13 +17,12 @@ import com.elementary.tasks.core.view_models.groups.GroupsViewModel
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.create.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GroupsFragment : BaseNavigationFragment<FragmentGroupsBinding>() {
 
-  private val viewModel: GroupsViewModel by lazy {
-    ViewModelProvider(this).get(GroupsViewModel::class.java)
-  }
-  private var mAdapter: GroupsRecyclerAdapter = GroupsRecyclerAdapter()
+  private val viewModel by viewModel<GroupsViewModel>()
+  private var mAdapter = GroupsRecyclerAdapter()
 
   override fun layoutRes(): Int = R.layout.fragment_groups
 

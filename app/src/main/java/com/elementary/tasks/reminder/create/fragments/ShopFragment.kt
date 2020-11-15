@@ -24,12 +24,12 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
       val item = mAdapter.getItem(position)
       item.isChecked = !item.isChecked
       mAdapter.updateData()
-      iFace.state.shopItems = mAdapter.data
+      iFace.reminderState.shopItems = mAdapter.data
     }
 
     override fun onItemDelete(position: Int) {
       mAdapter.delete(position)
-      iFace.state.shopItems = mAdapter.data
+      iFace.reminderState.shopItems = mAdapter.data
     }
   }
 
@@ -38,7 +38,7 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
       iFace.showSnackbar(getString(R.string.shopping_list_is_empty))
       return null
     }
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     reminder.shoppings = mAdapter.data
     reminder.target = ""
     reminder.type = Reminder.BY_DATE_SHOP
@@ -107,7 +107,7 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     binding.addButton.setOnClickListener { addNewItem() }
 
     binding.attackDelay.setOnCheckedChangeListener { _, isChecked ->
-      iFace.state.isDelayAdded = isChecked
+      iFace.reminderState.isDelayAdded = isChecked
       if (isChecked) {
         binding.delayLayout.visibility = View.VISIBLE
       } else {
@@ -115,7 +115,7 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
       }
     }
     binding.delayLayout.visibility = View.GONE
-    binding.attackDelay.isChecked = iFace.state.isDelayAdded
+    binding.attackDelay.isChecked = iFace.reminderState.isDelayAdded
 
     editReminder()
   }
@@ -129,18 +129,18 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     }
     mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
     binding.shopEdit.setText("")
-    iFace.state.shopItems = mAdapter.data
+    iFace.reminderState.shopItems = mAdapter.data
   }
 
   private fun editReminder() {
-    val reminder = iFace.state.reminder
-    if (!iFace.state.isShopItemsEdited) {
+    val reminder = iFace.reminderState.reminder
+    if (!iFace.reminderState.isShopItemsEdited) {
       mAdapter.data = reminder.shoppings
-      iFace.state.isShopItemsEdited = true
-      iFace.state.shopItems = reminder.shoppings
+      iFace.reminderState.isShopItemsEdited = true
+      iFace.reminderState.shopItems = reminder.shoppings
       binding.attackDelay.isChecked = reminder.hasReminder && !TextUtils.isEmpty(reminder.eventTime)
     } else {
-      mAdapter.data = iFace.state.shopItems
+      mAdapter.data = iFace.reminderState.shopItems
     }
   }
 }

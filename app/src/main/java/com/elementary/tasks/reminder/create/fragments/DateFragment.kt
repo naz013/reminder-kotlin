@@ -14,7 +14,7 @@ import timber.log.Timber
 class DateFragment : RepeatableTypeFragment<FragmentReminderDateBinding>() {
 
   override fun prepare(): Reminder? {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     var type = Reminder.BY_DATE
     val isAction = binding.actionView.hasAction()
     if (TextUtils.isEmpty(reminder.summary) && !isAction) {

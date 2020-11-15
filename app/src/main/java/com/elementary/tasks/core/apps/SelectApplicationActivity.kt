@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -17,12 +16,11 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityApplicationListBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SelectApplicationActivity : BindingActivity<ActivityApplicationListBinding>(R.layout.activity_application_list) {
 
-  private val viewModel: SelectApplicationViewModel by lazy {
-    ViewModelProvider(this).get(SelectApplicationViewModel::class.java)
-  }
+  private val viewModel by viewModel<SelectApplicationViewModel>()
   private var adapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
   private val searchModifier = object : SearchModifier<ApplicationItem>(
     null, {

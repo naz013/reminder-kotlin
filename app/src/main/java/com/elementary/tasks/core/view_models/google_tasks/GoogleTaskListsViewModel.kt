@@ -1,9 +1,12 @@
 package com.elementary.tasks.core.view_models.google_tasks
 
+import android.content.Context
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.GTasks
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
@@ -13,7 +16,12 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-class GoogleTaskListsViewModel : BaseTaskListsViewModel() {
+class GoogleTaskListsViewModel(
+  appDb: AppDb,
+  prefs: Prefs,
+  context: Context,
+  gTasks: GTasks
+) : BaseTaskListsViewModel(appDb, prefs, context, gTasks) {
 
   val googleTaskLists = appDb.googleTaskListsDao().loadAll()
   val allGoogleTasks = appDb.googleTasksDao().loadAll()
@@ -26,51 +34,53 @@ class GoogleTaskListsViewModel : BaseTaskListsViewModel() {
   }
 
   fun loadGoogleTasks() {
+    if (!gTasks.isLogged) {
+      postCommand(Commands.FAILED)
+      return
+    }
     postInProgress(true)
     job = launchDefault {
-      GTasks.getInstance(context)?.let { tasks ->
-        var lists: TaskLists? = null
-        try {
-          lists = tasks.taskLists()
-        } catch (e: IOException) {
-          e.printStackTrace()
-        }
+      var lists: TaskLists? = null
+      try {
+        lists = gTasks.taskLists()
+      } catch (e: IOException) {
+        e.printStackTrace()
+      }
 
-        if (lists != null && lists.size > 0 && lists.items != null) {
-          for (item in lists.items) {
-            val listId = item.id
-            var taskList = appDb.googleTaskListsDao().getById(listId)
-            if (taskList != null) {
-              taskList.update(item)
-            } else {
-              val r = Random()
-              val color = r.nextInt(15)
-              taskList = GoogleTaskList(item, color)
-            }
-            Timber.d("loadGoogleTasks: $taskList")
-            appDb.googleTaskListsDao().insert(taskList)
-            val tasksList = tasks.getTasks(listId)
-            if (tasksList.isNotEmpty()) {
-              for (task in tasksList) {
-                var googleTask = appDb.googleTasksDao().getById(task.id)
-                if (googleTask != null) {
-                  googleTask.update(task)
-                  googleTask.listId = task.id
-                } else {
-                  googleTask = GoogleTask(task, listId)
-                }
-                appDb.googleTasksDao().insert(googleTask)
+      if (lists != null && lists.size > 0 && lists.items != null) {
+        for (item in lists.items) {
+          val listId = item.id
+          var taskList = appDb.googleTaskListsDao().getById(listId)
+          if (taskList != null) {
+            taskList.update(item)
+          } else {
+            val r = Random()
+            val color = r.nextInt(15)
+            taskList = GoogleTaskList(item, color)
+          }
+          Timber.d("loadGoogleTasks: $taskList")
+          appDb.googleTaskListsDao().insert(taskList)
+          val tasksList = gTasks.getTasks(listId)
+          if (tasksList.isNotEmpty()) {
+            for (task in tasksList) {
+              var googleTask = appDb.googleTasksDao().getById(task.id)
+              if (googleTask != null) {
+                googleTask.update(task)
+                googleTask.listId = task.id
+              } else {
+                googleTask = GoogleTask(task, listId)
               }
+              appDb.googleTasksDao().insert(googleTask)
             }
           }
-          val local = appDb.googleTaskListsDao().all()
-          if (local.isNotEmpty()) {
-            val listItem = local[0].apply {
-              this.def = 1
-              this.systemDefault = 1
-            }
-            appDb.googleTaskListsDao().insert(listItem)
+        }
+        val local = appDb.googleTaskListsDao().all()
+        if (local.isNotEmpty()) {
+          val listItem = local[0].apply {
+            this.def = 1
+            this.systemDefault = 1
           }
+          appDb.googleTaskListsDao().insert(listItem)
         }
       }
 
@@ -82,8 +92,7 @@ class GoogleTaskListsViewModel : BaseTaskListsViewModel() {
   }
 
   fun sync() {
-    val google = GTasks.getInstance(context)
-    if (google == null) {
+    if (!gTasks.isLogged) {
       postCommand(Commands.FAILED)
       return
     }
@@ -93,7 +102,7 @@ class GoogleTaskListsViewModel : BaseTaskListsViewModel() {
     launchDefault {
       var lists: TaskLists? = null
       try {
-        lists = google.taskLists()
+        lists = gTasks.taskLists()
       } catch (e: IOException) {
         e.printStackTrace()
       }
@@ -110,7 +119,7 @@ class GoogleTaskListsViewModel : BaseTaskListsViewModel() {
             taskList = GoogleTaskList(item, color)
           }
           appDb.googleTaskListsDao().insert(taskList)
-          val tasks = google.getTasks(listId)
+          val tasks = gTasks.getTasks(listId)
           if (tasks.isEmpty()) {
             withUIContext {
               postInProgress(false)

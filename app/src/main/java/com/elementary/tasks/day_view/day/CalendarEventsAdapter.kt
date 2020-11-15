@@ -6,11 +6,14 @@ import com.elementary.tasks.birthdays.list.BirthdayHolder
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
 import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
 import java.util.*
 
-class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CalendarEventsAdapter(
+  private val prefs: Prefs
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private var data: List<EventModel> = ArrayList()
   private var mEventListener: ActionsListener<EventModel>? = null
@@ -27,13 +30,13 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      0 -> ReminderHolder(parent, false, false, showMore) { view, i, listActions ->
+      0 -> ReminderHolder(parent, prefs, hasHeader = false, editable = false, showMore = showMore) { view, i, listActions ->
         mEventListener?.onAction(view, i, data[i], listActions)
       }
-      1 -> ShoppingHolder(parent, false, showMore) { view, i, listActions ->
+      1 -> ShoppingHolder(parent, prefs, false, showMore) { view, i, listActions ->
         mEventListener?.onAction(view, i, data[i], listActions)
       }
-      else -> BirthdayHolder(parent, showMore) { view, i, listActions ->
+      else -> BirthdayHolder(parent, prefs, showMore) { view, i, listActions ->
         mEventListener?.onAction(view, i, data[i], listActions)
       }
     }
@@ -53,15 +56,9 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
   }
 
-  override fun getItemCount(): Int {
-    return data.size
-  }
+  override fun getItemCount() = data.size
 
-  override fun getItemViewType(position: Int): Int {
-    return data[position].viewType
-  }
+  override fun getItemViewType(position: Int) = data[position].viewType
 
-  fun getItem(position: Int): EventModel {
-    return data[position]
-  }
+  fun getItem(position: Int) = data[position]
 }

@@ -8,7 +8,7 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseSettingsFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
 
-  protected val language: Language by inject()
+  protected val language by inject<Language>()
 
   protected fun priorityList(): Array<String> {
     return arrayOf(

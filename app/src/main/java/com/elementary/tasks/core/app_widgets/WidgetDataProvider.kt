@@ -6,22 +6,19 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-@KoinApiExtension
-class WidgetDataProvider : KoinComponent {
+class WidgetDataProvider(
+  private val appDb: AppDb
+) {
 
   private val data: MutableList<Item> = ArrayList()
   private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
   private var hour: Int = 0
   private var minute: Int = 0
   private var isFeature: Boolean = false
-  private val appDb: AppDb by inject()
 
   enum class WidgetType {
     BIRTHDAY,

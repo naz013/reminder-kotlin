@@ -10,8 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,20 +35,20 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.list.filters.SearchModifier
 import com.elementary.tasks.notes.list.filters.SortModifier
 import com.elementary.tasks.notes.preview.NotePreviewActivity
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 
 class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<NoteWithImages>) -> Unit {
 
-  private val viewModel: NotesViewModel by lazy {
-    ViewModelProvider(this).get(NotesViewModel::class.java)
-  }
-  private val backupTool: BackupTool by inject()
-  private val themeUtil: ThemeUtil by inject()
-  private val buttonObservable: GlobalButtonObservable by inject()
+  private val viewModel by viewModel<NotesViewModel>()
+  private val backupTool by inject<BackupTool>()
+  private val themeUtil by inject<ThemeUtil>()
+  private val buttonObservable by inject<GlobalButtonObservable>()
 
-  private val mAdapter = NotesRecyclerAdapter {
+  private val mAdapter = NotesRecyclerAdapter(prefs, themeUtil, get()) {
     filterController.original = viewModel.notes.value ?: listOf()
   }
   private var enableGrid = false
@@ -181,7 +179,7 @@ class NotesFragment : BaseNavigationFragment<FragmentNotesBinding>(), (List<Note
   }
 
   private fun initViewModel() {
-    viewModel.notes.observe(viewLifecycleOwner, Observer { list ->
+    viewModel.notes.observe(viewLifecycleOwner, { list ->
       if (list != null) {
         Timber.d("initViewModel: $list")
         sortController.original = list

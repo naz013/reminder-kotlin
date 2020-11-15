@@ -1,24 +1,28 @@
 package com.elementary.tasks.core.view_models.birthdays
 
-import com.elementary.tasks.birthdays.work.DeleteBackupWorker
+import android.content.Context
+import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.Commands
-import kotlinx.coroutines.runBlocking
 
-class BirthdaysViewModel : BaseBirthdaysViewModel() {
+class BirthdaysViewModel(
+  appDb: AppDb,
+  prefs: Prefs,
+  context: Context
+) : BaseBirthdaysViewModel(appDb, prefs, context) {
 
   val birthdays = appDb.birthdaysDao().loadAll()
 
   fun deleteAllBirthdays() {
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        val list = appDb.birthdaysDao().all()
-        for (birthday in list) {
-          appDb.birthdaysDao().delete(birthday)
-          startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
-        }
+      val list = appDb.birthdaysDao().all()
+      for (birthday in list) {
+        appDb.birthdaysDao().delete(birthday)
+        startWork(BirthdayDeleteBackupWorker::class.java, Constants.INTENT_ID, birthday.uuId)
       }
       updateBirthdayPermanent()
       postInProgress(false)

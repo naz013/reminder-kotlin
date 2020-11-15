@@ -166,8 +166,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
         .center(pos)
         .radius(markerRadius.toDouble())
         .strokeWidth(strokeWidth)
-        .fillColor(ContextCompat.getColor(context!!, marker.fillColor))
-        .strokeColor(ContextCompat.getColor(context!!, marker.strokeColor)))
+        .fillColor(ContextCompat.getColor(requireContext(), marker.fillColor))
+        .strokeColor(ContextCompat.getColor(requireContext(), marker.strokeColor)))
       if (animate) {
         animate(pos)
       }
@@ -263,21 +263,21 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun showStyleDialog() {
-    dialogues.showColorBottomDialog(activity!!, prefs.markerStyle, ThemeUtil.colorsForSlider(activity!!)) {
+    dialogues.showColorBottomDialog(requireActivity(), prefs.markerStyle, ThemeUtil.colorsForSlider(requireActivity())) {
       prefs.markerStyle = it
       recreateStyle(it)
     }
   }
 
   private fun showRadiusDialog() {
-    dialogues.showRadiusBottomDialog(activity!!, markerRadius) {
+    dialogues.showRadiusBottomDialog(requireActivity(), markerRadius) {
       recreateMarker(it)
       return@showRadiusBottomDialog getString(R.string.radius_x_meters, it.toString())
     }
   }
 
   private fun createStyleDrawable() {
-    mMarkerStyle = DrawableHelper.withContext(context!!)
+    mMarkerStyle = DrawableHelper.withContext(requireContext())
       .withDrawable(R.drawable.ic_twotone_place_24px)
       .withColor(themeUtil.getNoteLightColor(markerStyle))
       .tint()
@@ -349,7 +349,8 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
 
   @SuppressLint("MissingPermission")
   private fun setMyLocation() {
-    if (Permissions.checkPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+    if (Permissions.checkPermission(requireActivity(), 205,
+        Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
       mMap?.isMyLocationEnabled = true
     }
   }
@@ -366,9 +367,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun cancelSearchTask() {
-    if (call != null && !call!!.isExecuted) {
-      call?.cancel()
-    }
+    call?.cancel()?.takeIf { call?.isExecuted == false }
   }
 
   private fun refreshAdapter() {
@@ -407,7 +406,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
     mMap?.clear()
     if (spinnerArray.size > 0) {
       for (model in spinnerArray) {
-        addMarker(model.position, model.name, false, false, markerRadius)
+        addMarker(model.position, model.name, clear = false, animate = false, radius = markerRadius)
       }
     }
   }
@@ -502,7 +501,7 @@ class PlacesMapFragment : BaseMapFragment<FragmentPlacesMapBinding>() {
   }
 
   private fun startTracking() {
-    mLocList = LocationTracker(context) { lat, lng ->
+    mLocList = LocationTracker(prefs, context) { lat, lng ->
       mLat = lat
       mLng = lng
     }

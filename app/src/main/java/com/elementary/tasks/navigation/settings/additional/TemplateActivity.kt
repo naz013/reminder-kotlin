@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
@@ -16,14 +15,13 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.util.*
 
 class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activity_template) {
 
-  private val viewModel: SmsTemplateViewModel by lazy {
-    ViewModelProvider(this, SmsTemplateViewModel.Factory(getId()))
-      .get(SmsTemplateViewModel::class.java)
-  }
+  private val viewModel by viewModel<SmsTemplateViewModel> { parametersOf(getId()) }
   private var mItem: SmsTemplate? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +40,7 @@ class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activ
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
       try {
         val item = intent.getParcelableExtra(Constants.INTENT_ITEM) as SmsTemplate?
-        if (item != null) {
-          showTemplate(item, true)
-        }
+        item?.also { showTemplate(it, true) }
       } catch (e: Exception) {
         e.printStackTrace()
       }

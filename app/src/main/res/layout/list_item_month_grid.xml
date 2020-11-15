@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="35dp"
+    android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:minHeight="35dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/currentMark"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/currentMark"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:layout_weight="1"
-                android:background="@color/secondaryBlue" />
-
-            <TextView
-                android:id="@+id/reminderMark"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:layout_weight="1"
-                android:background="@color/secondaryRed" />
-
-            <TextView
-                android:id="@+id/birthdayMark"
-                android:layout_width="match_parent"
-                android:layout_height="11dp"
-                android:layout_weight="1"
-                android:background="@color/secondaryGreen" />
-
-        </LinearLayout>
+            android:layout_height="12dp"
+            android:layout_weight="1"
+            android:background="@color/secondaryBlue" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/reminderMark"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center|center_vertical"
-            android:minHeight="35dp"
-            android:text="25"
-            android:textColor="@color/pureBlack" />
+            android:layout_height="12dp"
+            android:layout_weight="1"
+            android:background="@color/secondaryRed" />
 
-    </FrameLayout>
-</layout>
+        <TextView
+            android:id="@+id/birthdayMark"
+            android:layout_width="match_parent"
+            android:layout_height="11dp"
+            android:layout_weight="1"
+            android:background="@color/secondaryGreen" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center|center_vertical"
+        android:minHeight="35dp"
+        android:text="25"
+        android:textColor="@color/pureBlack" />
+
+</FrameLayout>

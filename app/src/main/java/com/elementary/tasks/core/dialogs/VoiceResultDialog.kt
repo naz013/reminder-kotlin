@@ -3,8 +3,6 @@ package com.elementary.tasks.core.dialogs
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
@@ -12,21 +10,20 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class VoiceResultDialog : BaseDialog() {
 
+  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-
-    val viewModel = ViewModelProvider(this, ReminderViewModel.Factory(id)).get(ReminderViewModel::class.java)
-    viewModel.reminder.observe(this, Observer { reminder ->
-        if (reminder != null) {
-            showReminder(reminder)
-        }
-    })
+    viewModel.reminder.observe(this) { showReminder(it) }
+    lifecycle.addObserver(viewModel)
   }
+
+  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
   private fun showReminder(reminder: Reminder) {
     val alert = dialogues.getMaterialDialog(this)
@@ -36,7 +33,7 @@ class VoiceResultDialog : BaseDialog() {
     parent.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
     parent.orientation = LinearLayout.VERTICAL
 
-    val holder = ReminderHolder(parent, false, editable = false)
+    val holder = ReminderHolder(parent, prefs, false, editable = false)
     holder.setData(reminder)
 
     parent.addView(holder.itemView)

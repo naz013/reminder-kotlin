@@ -17,8 +17,8 @@ abstract class BaseFragment<B : ViewDataBinding> : BindingFragment<B>() {
   var callback: FragmentCallback? = null
     private set
 
-  protected val prefs: Prefs by inject()
-  protected val dialogues: Dialogues by inject()
+  protected val prefs by inject<Prefs>()
+  protected val dialogues by inject<Dialogues>()
 
   var isDark = false
     private set

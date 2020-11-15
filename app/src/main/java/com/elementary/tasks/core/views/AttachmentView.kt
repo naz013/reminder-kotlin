@@ -14,12 +14,10 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-@KoinApiExtension
 class AttachmentView : LinearLayout, KoinComponent {
 
   private val cacheUtil: CacheUtil by inject()

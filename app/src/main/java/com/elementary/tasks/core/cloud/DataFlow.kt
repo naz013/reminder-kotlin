@@ -1,17 +1,11 @@
 package com.elementary.tasks.core.cloud
 
-import android.content.Context
 import com.elementary.tasks.core.cloud.completables.Completable
 import com.elementary.tasks.core.cloud.converters.Convertible
 import com.elementary.tasks.core.cloud.converters.IndexTypes
 import com.elementary.tasks.core.cloud.repositories.Repository
-import com.elementary.tasks.core.cloud.storages.Dropbox
-import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.cloud.storages.LocalStorage
 import com.elementary.tasks.core.cloud.storages.Storage
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.cloud.storages.StorageManager
 import com.elementary.tasks.core.utils.TimeUtil
 import timber.log.Timber
 
@@ -109,32 +103,25 @@ class DataFlow<T>(
 
   fun getFileExt(type: IndexTypes): String {
     return when (type) {
-        IndexTypes.TYPE_REMINDER -> FileConfig.FILE_NAME_REMINDER
-        IndexTypes.TYPE_NOTE -> FileConfig.FILE_NAME_NOTE
-        IndexTypes.TYPE_BIRTHDAY -> FileConfig.FILE_NAME_BIRTHDAY
-        IndexTypes.TYPE_GROUP -> FileConfig.FILE_NAME_GROUP
-        IndexTypes.TYPE_TEMPLATE -> FileConfig.FILE_NAME_TEMPLATE
-        IndexTypes.TYPE_PLACE -> FileConfig.FILE_NAME_PLACE
-        IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
+      IndexTypes.TYPE_REMINDER -> FileConfig.FILE_NAME_REMINDER
+      IndexTypes.TYPE_NOTE -> FileConfig.FILE_NAME_NOTE
+      IndexTypes.TYPE_BIRTHDAY -> FileConfig.FILE_NAME_BIRTHDAY
+      IndexTypes.TYPE_GROUP -> FileConfig.FILE_NAME_GROUP
+      IndexTypes.TYPE_TEMPLATE -> FileConfig.FILE_NAME_TEMPLATE
+      IndexTypes.TYPE_PLACE -> FileConfig.FILE_NAME_PLACE
+      IndexTypes.TYPE_SETTINGS -> FileConfig.FILE_NAME_SETTINGS_EXT
     }
   }
 
   companion object {
-    fun availableStorageList(context: Context): List<Storage> {
-      val storageList = mutableListOf<Storage>()
-      val googleStorage = GDrive.getInstance(context)
-      if (googleStorage != null && googleStorage.isLogged) {
-        storageList.add(googleStorage)
-      }
-      val dropboxStorage = Dropbox()
-      if (dropboxStorage.isLinked) {
-        storageList.add(dropboxStorage)
-      }
-      if (!Module.isQ && Prefs.getInstance(context).localBackup
-        && Permissions.checkPermission(context, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-        storageList.add(LocalStorage(context))
-      }
-      return storageList
+    fun availableStorageList(
+      storageManager: StorageManager
+    ): List<Storage> {
+      return listOfNotNull(
+        storageManager.gDrive.takeIf { storageManager.googleBackup },
+        storageManager.dropbox.takeIf { storageManager.dropboxBackup },
+        storageManager.localStorage.takeIf { storageManager.localBackup }
+      )
     }
   }
 }

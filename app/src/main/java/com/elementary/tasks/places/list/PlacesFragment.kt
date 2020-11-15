@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
@@ -27,17 +26,17 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 class PlacesFragment : BaseSettingsFragment<FragmentPlacesBinding>() {
 
-  private val backupTool: BackupTool by inject()
-  private val viewModel: PlacesViewModel by lazy {
-    ViewModelProvider(this).get(PlacesViewModel::class.java)
-  }
+  private val backupTool by inject<BackupTool>()
+  private val viewModel by viewModel<PlacesViewModel>()
 
-  private val mAdapter = PlacesRecyclerAdapter()
+  private val mAdapter = PlacesRecyclerAdapter(prefs, get())
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
 

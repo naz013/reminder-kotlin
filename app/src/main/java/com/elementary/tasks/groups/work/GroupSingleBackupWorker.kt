@@ -1,16 +1,16 @@
-package com.elementary.tasks.navigation.settings.additional.work
+package com.elementary.tasks.groups.work
 
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.elementary.tasks.core.cloud.DataFlow
-import com.elementary.tasks.core.cloud.converters.TemplateConverter
-import com.elementary.tasks.core.cloud.repositories.TemplateRepository
+import com.elementary.tasks.core.cloud.SyncManagers
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.launchDefault
 
-class SingleBackupWorker(
+class GroupSingleBackupWorker(
+  private val syncManagers: SyncManagers,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
@@ -19,9 +19,12 @@ class SingleBackupWorker(
     val uuId = inputData.getString(Constants.INTENT_ID) ?: ""
     if (uuId.isNotEmpty()) {
       launchDefault {
-        DataFlow(TemplateRepository(), TemplateConverter(),
-          CompositeStorage(DataFlow.availableStorageList(applicationContext)), null)
-          .backup(uuId)
+        DataFlow(
+          syncManagers.repositoryManager.groupRepository,
+          syncManagers.converterManager.groupConverter,
+          CompositeStorage(syncManagers.storageManager),
+          completable = null
+        ).backup(uuId)
       }
     }
     return Result.success()

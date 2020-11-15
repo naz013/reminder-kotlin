@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
+import com.elementary.tasks.core.cloud.storages.GDrive
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -29,17 +29,19 @@ import com.elementary.tasks.google_tasks.list.GoogleTaskAdsHolder
 import com.elementary.tasks.google_tasks.list.ListsRecyclerAdapter
 import com.elementary.tasks.google_tasks.list.TasksRecyclerAdapter
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>() {
 
-  private val viewModel: GoogleTaskListsViewModel by lazy {
-    ViewModelProvider(this).get(GoogleTaskListsViewModel::class.java)
-  }
+  private val gDrive by inject<GDrive>()
+  private val gTasks by inject<GTasks>()
+  private val viewModel by viewModel<GoogleTaskListsViewModel>()
   private val googleLogin: GoogleLogin by lazy {
-    GoogleLogin(requireActivity(), prefs)
+    GoogleLogin(requireActivity(), prefs, gDrive, gTasks)
   }
-  private val adapter = TasksRecyclerAdapter {
+  private val adapter = TasksRecyclerAdapter(prefs) {
     showTasks(viewModel.allGoogleTasks.value ?: listOf())
   }
   private val listsRecyclerAdapter = ListsRecyclerAdapter()
@@ -62,12 +64,10 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun googleTasksButtonClick() {
-    withActivity {
-      if (Permissions.checkPermission(it, 104,
-          Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-          Permissions.WRITE_EXTERNAL)) {
-        switchGoogleTasksStatus()
-      }
+    if (Permissions.checkPermission(requireActivity(), 104,
+        Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+        Permissions.WRITE_EXTERNAL)) {
+      switchGoogleTasksStatus()
     }
   }
 
@@ -107,8 +107,7 @@ class GoogleTasksFragment : BaseNavigationFragment<FragmentGoogleTasksBinding>()
   }
 
   private fun checkGoogleStatus() {
-    val gTasks = GTasks.getInstance(requireContext())
-    if (gTasks == null || !gTasks.isLogged) {
+    if (!gTasks.isLogged) {
       binding.notLoggedView.show()
       binding.notLoggedView.setOnClickListener { }
       binding.fab.hide()

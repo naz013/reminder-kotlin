@@ -11,7 +11,9 @@ import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-abstract class SharedPrefs(protected val context: Context) {
+abstract class SharedPrefs(
+  protected val context: Context
+) {
   private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
   fun getLongArray(stringToLoad: String): Array<Long> {

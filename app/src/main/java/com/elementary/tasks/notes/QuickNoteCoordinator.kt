@@ -24,7 +24,8 @@ import com.elementary.tasks.databinding.ViewNoteStatusCardBinding
 import java.util.*
 
 class QuickNoteCoordinator(
-  private val context: Context, private val parent: ViewGroup,
+  private val context: Context,
+  private val parent: ViewGroup,
   private val noteList: ViewGroup,
   private var noteViewModel: NoteViewModel,
   private val prefs: Prefs

@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.StringResPatterns
 import com.elementary.tasks.core.utils.TimeCount
@@ -26,11 +27,12 @@ import java.util.*
 
 class ReminderHolder(
   parent: ViewGroup,
+  prefs: Prefs,
   hasHeader: Boolean,
   editable: Boolean,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder) {
+) : BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder, prefs) {
 
   val listHeader: TextView = binding.listHeader
 

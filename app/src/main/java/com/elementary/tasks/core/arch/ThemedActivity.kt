@@ -6,14 +6,18 @@ import android.os.IBinder
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.Language
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import org.koin.android.ext.android.inject
 
 abstract class ThemedActivity : AppCompatActivity() {
 
-  protected val prefs: Prefs by inject()
-  protected val language: Language by inject()
-  protected val dialogues: Dialogues by inject()
+  protected val prefs by inject<Prefs>()
+  protected val language by inject<Language>()
+  protected val dialogues by inject<Dialogues>()
 
   protected var isDarkMode = false
     private set

@@ -23,7 +23,9 @@ class AppsRecyclerAdapter : ListAdapter<ApplicationItem,
     holder.bind(getItem(position))
   }
 
-  inner class ApplicationViewHolder(parent: ViewGroup) : HolderBinding<ListItemApplicationBinding>(parent, R.layout.list_item_application) {
+  inner class ApplicationViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemApplicationBinding>(parent, R.layout.list_item_application) {
     fun bind(item: ApplicationItem) {
       binding.itemName.text = item.name
       loadImage(binding.itemImage, item.drawable)

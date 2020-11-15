@@ -23,11 +23,10 @@ import com.elementary.tasks.databinding.FragmentSettingsBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import timber.log.Timber
 
-class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
+class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
+  RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
-  private val remotePrefs: RemotePrefs by lazy {
-    RemotePrefs(context!!)
-  }
+  private val remotePrefs: RemotePrefs by lazy { RemotePrefs(requireContext()) }
   private val prefsObserver: (String) -> Unit = {
     Handler(Looper.getMainLooper()).post {
       if (it == PrefsConstants.DATA_BACKUP) {
@@ -100,7 +99,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
     } else {
       binding.appNameBannerPro.hide()
     }
-    if (SuperUtil.isGooglePlayServicesAvailable(activity!!)) {
+    if (SuperUtil.isGooglePlayServicesAvailable(requireContext())) {
       binding.playServicesWarning.hide()
     } else {
       binding.playServicesWarning.show()
@@ -141,7 +140,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
       safeNavigation(SettingsFragmentDirections.actionSettingsFragmentToTestsFragment())
     }
     binding.buySettings.setOnClickListener { showProDialog() }
-    if (!Module.isPro && !SuperUtil.isAppInstalled(context!!, "com.cray.software.justreminderpro")) {
+    if (!Module.isPro && !SuperUtil.isAppInstalled(requireContext(), "com.cray.software.justreminderpro")) {
       binding.buySettings.show()
     } else {
       binding.buySettings.hide()
@@ -200,7 +199,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
   override fun onUpdate(version: String) {
     binding.updateBadge.visibility = View.VISIBLE
     binding.updateBadge.text = getString(R.string.update_available) + ": " + version
-    binding.updateBadge.setOnClickListener { SuperUtil.launchMarket(context!!) }
+    binding.updateBadge.setOnClickListener { SuperUtil.launchMarket(requireContext()) }
   }
 
   override fun noUpdate() {
@@ -208,7 +207,7 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(), Remote
   }
 
   private fun showProDialog() {
-    dialogues.getMaterialDialog(context!!)
+    dialogues.getMaterialDialog(requireContext())
       .setTitle(getString(R.string.buy_pro))
       .setMessage(getString(R.string.pro_advantages) + "\n" +
         getString(R.string.different_settings_for_birthdays) + "\n" +

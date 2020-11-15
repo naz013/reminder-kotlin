@@ -9,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
@@ -22,11 +21,12 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.FragmentSettingsTemplatesListBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBinding>() {
 
   private val adapter = TemplatesAdapter()
-  private lateinit var viewModel: SmsTemplatesViewModel
+  private val viewModel by viewModel<SmsTemplatesViewModel>()
 
   private var mSearchView: SearchView? = null
   private var mSearchMenu: MenuItem? = null
@@ -92,7 +92,6 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
   }
 
   private fun initViewModel() {
-    viewModel = ViewModelProvider(this).get(SmsTemplatesViewModel::class.java)
     viewModel.smsTemplates.observe(viewLifecycleOwner, { smsTemplates ->
       if (smsTemplates != null) {
         showTemplates(smsTemplates)

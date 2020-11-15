@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -25,16 +24,15 @@ import com.elementary.tasks.core.view_models.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.elementary.tasks.pin.PinLoginActivity
 import com.google.android.gms.maps.model.LatLng
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.util.*
 
-class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place), MapListener, MapCallback {
+class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place),
+  MapListener, MapCallback {
 
-  private val viewModel: PlaceViewModel by lazy {
-    ViewModelProvider(this, PlaceViewModel.Factory(getId())).get(PlaceViewModel::class.java)
-  }
-  private val stateViewModel: CreatePlaceViewModel by lazy {
-    ViewModelProvider(this).get(CreatePlaceViewModel::class.java)
-  }
+  private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
+  private val stateViewModel by viewModel<CreatePlaceViewModel>()
   private var mGoogleMap: AdvancedMapFragment? = null
   private var mItem: Place? = null
 

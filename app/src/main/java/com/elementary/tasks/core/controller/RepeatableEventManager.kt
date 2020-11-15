@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.controller
 
+import android.content.Context
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -9,15 +10,23 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobScheduler
+import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker
 import com.google.gson.Gson
 
-abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminder) {
+abstract class RepeatableEventManager(
+  reminder: Reminder,
+  appDb: AppDb,
+  prefs: Prefs,
+  calendarUtils: CalendarUtils,
+  context: Context
+) : EventManager(reminder, appDb, prefs, calendarUtils, context) {
 
   protected fun enableReminder() {
     EventJobScheduler.scheduleReminder(reminder)

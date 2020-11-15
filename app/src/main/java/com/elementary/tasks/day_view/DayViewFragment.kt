@@ -7,8 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.InfinitePagerAdapter
@@ -23,17 +21,17 @@ import com.elementary.tasks.day_view.pager.DayPagerAdapter
 import com.elementary.tasks.navigation.fragments.BaseCalendarFragment
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.util.*
 
 class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallback {
 
-  private val buttonObservable: GlobalButtonObservable by inject()
+  private val buttonObservable by inject<GlobalButtonObservable>()
   lateinit var dayPagerAdapter: DayPagerAdapter
   private val datePageChangeListener = DatePageChangeListener()
-  private val mViewModel: DayViewViewModel by lazy {
-    ViewModelProvider(this,
-      DayViewViewModel.Factory(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime)))
-      .get(DayViewViewModel::class.java)
+  private val mViewModel by viewModel<DayViewViewModel> {
+    parametersOf(prefs.isFutureEventEnabled, TimeUtil.getBirthdayTime(prefs.birthdayTime))
   }
   private var eventsPagerItem: EventsPagerItem? = null
   private var listener: ((EventsPagerItem, List<EventModel>) -> Unit)? = null
@@ -59,7 +57,7 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
       R.id.action_voice -> {
-        buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
+        buttonObservable.fireAction(requireView(), GlobalButtonObservable.Action.VOICE)
         return true
       }
     }
@@ -71,15 +69,13 @@ class DayViewFragment : BaseCalendarFragment<FragmentDayViewBinding>(), DayCallb
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.fab.setOnClickListener { showActionDialog(false) }
-
     initPager()
     initViewModel()
-
     loadData()
   }
 
   private fun initViewModel() {
-    mViewModel.events.observe(viewLifecycleOwner, Observer<Pair<EventsPagerItem, List<EventModel>>> {
+    mViewModel.events.observe(viewLifecycleOwner, {
       val item = eventsPagerItem
       if (it != null && item != null) {
         val foundItem = it.first

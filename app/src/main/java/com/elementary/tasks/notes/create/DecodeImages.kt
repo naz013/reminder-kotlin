@@ -40,20 +40,20 @@ object DecodeImages : Parcelable {
   private fun createEmpty(count: Int): MutableList<ImageFile> {
     val mutableList = mutableListOf<ImageFile>()
     for (i in 0 until count) {
-      mutableList.add(ImageFile().apply { this.state = DecodeImages.State.Loading })
+      mutableList.add(ImageFile().apply { this.state = State.Loading })
     }
     return mutableList
   }
 
   private fun addImageFromUri(context: Context, uri: Uri?, image: ImageFile): ImageFile {
     if (uri == null) {
-      image.state = DecodeImages.State.Error
+      image.state = State.Error
       return image
     }
     val type = context.contentResolver.getType(uri) ?: ""
     Timber.d("addImageFromUri: $type")
     if (!type.contains("image")) {
-      image.state = DecodeImages.State.Error
+      image.state = State.Error
       return image
     }
     var bitmapImage: Bitmap? = null
@@ -66,9 +66,9 @@ object DecodeImages : Parcelable {
       val outputStream = ByteArrayOutputStream()
       bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
       image.image = outputStream.toByteArray()
-      image.state = DecodeImages.State.Ready
+      image.state = State.Ready
     } else {
-      image.state = DecodeImages.State.Error
+      image.state = State.Error
     }
     return image
   }

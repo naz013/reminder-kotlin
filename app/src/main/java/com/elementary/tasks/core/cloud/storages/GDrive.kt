@@ -5,7 +5,12 @@ import android.text.TextUtils
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.cloud.converters.Metadata
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchDefault
+import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -17,21 +22,19 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.coroutines.channels.Channel
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.*
 
-@KoinApiExtension
-class GDrive private constructor(context: Context) : Storage(), KoinComponent {
+class GDrive(
+  context: Context,
+  private val prefs: Prefs
+) : Storage() {
 
   private var driveService: Drive? = null
 
-  private val prefs: Prefs by inject()
   private val tokenDataFile = TokenDataFile()
   private val indexDataFile = IndexDataFile()
 
@@ -288,7 +291,6 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
     driveService = null
     isLogged = false
     statusObserver?.invoke(false)
-    instance = null
   }
 
   val data: UserItem?
@@ -406,15 +408,5 @@ class GDrive private constructor(context: Context) : Storage(), KoinComponent {
   companion object {
     const val APPLICATION_NAME = "Reminder/7.0"
     private val PARENTS = Collections.singletonList("appDataFolder")
-
-    private var instance: GDrive? = null
-
-    fun getInstance(context: Context): GDrive? {
-      if (instance == null) {
-        instance = GDrive(context)
-      }
-      launchDefault { instance?.loadTokenFile() }
-      return instance
-    }
   }
 }

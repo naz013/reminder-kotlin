@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
@@ -25,12 +24,14 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityMissedDialogBinding
 import com.squareup.picasso.Picasso
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.sql.Date
 
 class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
 
-  private lateinit var viewModel: MissedCallViewModel
+  private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
 
   private var mMissedCall: MissedCall? = null
   private var isEventShowed = false
@@ -75,10 +76,9 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
     }
   }
 
+  private fun getNumber() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
   private fun initViewModel() {
-    val number = intent.getStringExtra(Constants.INTENT_ID) ?: ""
-    viewModel = ViewModelProvider(this, MissedCallViewModel.Factory(number))
-      .get(MissedCallViewModel::class.java)
     viewModel.missedCall.observeForever(mMissedCallObserver)
     viewModel.result.observe(this, { commands ->
       if (commands != null) {
@@ -90,7 +90,7 @@ class MissedCallDialog29Activity : BindingActivity<ActivityMissedDialogBinding>(
       }
     })
     lifecycle.addObserver(viewModel)
-    if (number == "" && BuildConfig.DEBUG) {
+    if (getNumber() == "" && BuildConfig.DEBUG) {
       loadTest()
     }
   }

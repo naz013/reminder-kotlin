@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.StringResPatterns
 abstract class RepeatableTypeFragment<B : ViewDataBinding> : TypeFragment<B>() {
 
   override fun getSummary(): String {
-    val reminder = iFace.state.reminder
+    val reminder = iFace.reminderState.reminder
     var summary = ""
     val groupName = reminder.groupTitle
     if (groupName != "") {

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -22,13 +21,13 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.groups.GroupViewModel
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding
 import com.elementary.tasks.pin.PinLoginActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.util.*
 
 class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout.activity_create_group) {
 
-  private val viewModel: GroupViewModel by lazy {
-    ViewModelProvider(this, GroupViewModel.Factory(getId())).get(GroupViewModel::class.java)
-  }
+  private val viewModel by viewModel<GroupViewModel> { parametersOf(getId()) }
   private var mItem: ReminderGroup? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,19 +123,19 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
 
   private fun initViewModel() {
     viewModel.reminderGroup.observe(this, { group ->
-        group?.let { showGroup(it) }
+      group?.let { showGroup(it) }
     })
     viewModel.result.observe(this, { commands ->
-        commands?.let {
-            when (it) {
-                Commands.SAVED, Commands.DELETED -> finish()
-                else -> {
-                }
-            }
+      commands?.let {
+        when (it) {
+          Commands.SAVED, Commands.DELETED -> finish()
+          else -> {
+          }
         }
+      }
     })
     viewModel.allGroups.observe(this, { groups ->
-        groups?.let { invalidateOptionsMenu() }
+      groups?.let { invalidateOptionsMenu() }
     })
   }
 
@@ -176,20 +175,20 @@ class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
-        R.id.action_add -> {
-            askCopySaving()
-            true
+      R.id.action_add -> {
+        askCopySaving()
+        true
+      }
+      android.R.id.home -> {
+        finish()
+        true
+      }
+      MENU_ITEM_DELETE -> {
+        dialogues.askConfirmation(this, getString(R.string.delete)) {
+          if (it) deleteItem()
         }
-        android.R.id.home -> {
-            finish()
-            true
-        }
-        MENU_ITEM_DELETE -> {
-            dialogues.askConfirmation(this, getString(R.string.delete)) {
-                if (it) deleteItem()
-            }
-            true
-        }
+        true
+      }
       else -> super.onOptionsItemSelected(item)
     }
   }

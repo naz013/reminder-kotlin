@@ -11,18 +11,14 @@ import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.databinding.ListItemLocationBinding
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
-@KoinApiExtension
-class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>(), KoinComponent {
+class LocationPlacesAdapter(
+  private val themeUtil: ThemeUtil
+) : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>() {
 
   private val mDataList = ArrayList<Reminder>()
   var actionsListener: ActionsListener<Reminder>? = null
-
-  private val themeUtil: ThemeUtil by inject()
 
   fun setData(list: List<Reminder>) {
     this.mDataList.clear()

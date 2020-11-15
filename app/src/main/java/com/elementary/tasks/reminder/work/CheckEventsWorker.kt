@@ -19,34 +19,31 @@ import com.elementary.tasks.core.utils.launchDefault
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
-@KoinApiExtension
 class CheckEventsWorker(
+  private val appDb: AppDb,
+  private val prefs: Prefs,
+  private val calendarUtils: CalendarUtils,
+  private val eventControlFactory: EventControlFactory,
   context: Context,
   workerParams: WorkerParameters
-) : Worker(context, workerParams), KoinComponent {
-
-  private val calendarUtils: CalendarUtils by inject()
-  private val appDb: AppDb by inject()
-  private val prefs: Prefs by inject()
+) : Worker(context, workerParams) {
 
   override fun doWork(): Result {
-    if (Permissions.checkPermission(applicationContext, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-      launchCheckEvents(applicationContext)
+    if (Permissions.checkPermission(applicationContext, Permissions.READ_CALENDAR,
+        Permissions.WRITE_CALENDAR)) {
+      launchCheckEvents()
     }
     return Result.success()
   }
 
-  private fun launchCheckEvents(context: Context) {
+  private fun launchCheckEvents() {
     launchDefault {
       val currTime = System.currentTimeMillis()
       val eventItems = calendarUtils.getEvents(prefs.trackCalendarIds)
       if (eventItems.isNotEmpty()) {
-        val list = AppDb.getAppDatabase(context).calendarEventsDao().eventIds()
+        val list = appDb.calendarEventsDao().eventIds()
         for (item in eventItems) {
           val itemId = item.id
           if (!list.contains(itemId)) {
@@ -72,7 +69,7 @@ class CheckEventsWorker(
 
             }
             val summary = item.title
-            val def = AppDb.getAppDatabase(context).reminderGroupDao().defaultGroup()
+            val def = appDb.reminderGroupDao().defaultGroup()
             var categoryId = ""
             if (def != null) {
               categoryId = def.groupUuId
@@ -108,7 +105,7 @@ class CheckEventsWorker(
     reminder.eventTime = TimeUtil.getGmtFromDateTime(dtStart)
     reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
     appDb.reminderDao().insert(reminder)
-    EventControlFactory.getController(reminder).start()
+    eventControlFactory.getController(reminder).start()
     appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
   }
 

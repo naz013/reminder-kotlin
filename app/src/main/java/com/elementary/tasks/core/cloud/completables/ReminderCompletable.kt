@@ -5,37 +5,35 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.groups.GroupsUtil
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-@KoinApiExtension
-class ReminderCompletable : Completable<Reminder>, KoinComponent {
+@Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+class ReminderCompletable(
+  private val appDb: AppDb,
+  private val eventControlFactory: EventControlFactory
+) : Completable<Reminder> {
 
-  private val appDb: AppDb by inject()
-
-  override suspend fun action(t: Reminder) {
+  override suspend fun action(reminder: Reminder) {
     val groups = GroupsUtil.mapAll(appDb)
     val defGroup = appDb.reminderGroupDao().defaultGroup() ?: groups.values.first()
 
-    if (!groups.containsKey(t.groupUuId)) {
-      t.apply {
+    if (!groups.containsKey(reminder.groupUuId)) {
+      reminder.apply {
         this.groupTitle = defGroup.groupTitle
         this.groupUuId = defGroup.groupUuId
         this.groupColor = defGroup.groupColor
       }
     }
-    if (!t.isActive || t.isRemoved) {
-      t.isActive = false
+    if (!reminder.isActive || reminder.isRemoved) {
+      reminder.isActive = false
     }
-    if (!Reminder.isGpsType(t.type) && !TimeCount.isCurrent(t.eventTime)) {
-      if (!Reminder.isSame(t.type, Reminder.BY_DATE_SHOP) || t.hasReminder) {
-        t.isActive = false
+    if (!Reminder.isGpsType(reminder.type) && !TimeCount.isCurrent(reminder.eventTime)) {
+      if (!Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) || reminder.hasReminder) {
+        reminder.isActive = false
       }
     }
-    appDb.reminderDao().insert(t)
-    if (t.isActive && !t.isRemoved) {
-      val control = EventControlFactory.getController(t)
+    appDb.reminderDao().insert(reminder)
+    if (reminder.isActive && !reminder.isRemoved) {
+      val control = eventControlFactory.getController(reminder)
       if (control.canSkip()) {
         control.next()
       } else {

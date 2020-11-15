@@ -1,37 +1,36 @@
 package com.elementary.tasks.core.view_models.notes
 
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
-import com.elementary.tasks.notes.work.SingleBackupWorker
-import com.elementary.tasks.reminder.work.DeleteBackupWorker
-import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.inject
+import com.elementary.tasks.notes.work.NoteSingleBackupWorker
+import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import timber.log.Timber
 
-@KoinApiExtension
-abstract class BaseNotesViewModel : BaseDbViewModel() {
-
-  protected val calendarUtils: CalendarUtils by inject()
+abstract class BaseNotesViewModel(
+  appDb: AppDb,
+  prefs: Prefs,
+  private val calendarUtils: CalendarUtils,
+  private val eventControlFactory: EventControlFactory
+) : BaseDbViewModel(appDb, prefs) {
 
   fun deleteNote(noteWithImages: NoteWithImages) {
     val note = noteWithImages.note ?: return
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        appDb.notesDao().delete(note)
-        for (image in noteWithImages.images) {
-          appDb.notesDao().delete(image)
-        }
+      appDb.notesDao().delete(note)
+      for (image in noteWithImages.images) {
+        appDb.notesDao().delete(image)
       }
       startWork(DeleteNoteBackupWorker::class.java, Constants.INTENT_ID, note.key)
       postInProgress(false)
@@ -45,10 +44,8 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
     postInProgress(true)
     launchDefault {
       v.updatedAt = TimeUtil.gmtDateTime
-      runBlocking {
-        appDb.notesDao().insert(v)
-      }
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+      appDb.notesDao().insert(v)
+      startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -59,11 +56,9 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
     postInProgress(true)
     launchDefault {
       v.updatedAt = TimeUtil.gmtDateTime
-      runBlocking {
-        saveImages(note.images, v.key)
-        appDb.notesDao().insert(v)
-      }
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+      saveImages(note.images, v.key)
+      appDb.notesDao().insert(v)
+      startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
     }
@@ -93,11 +88,9 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
     launchDefault {
       v.updatedAt = TimeUtil.gmtDateTime
       Timber.d("saveNote: %s", note)
-      runBlocking {
-        saveImages(note.images, v.key)
-        appDb.notesDao().insert(v)
-      }
-      startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
+      saveImages(note.images, v.key)
+      appDb.notesDao().insert(v)
+      startWork(NoteSingleBackupWorker::class.java, Constants.INTENT_ID, v.key)
       postInProgress(false)
       postCommand(Commands.SAVED)
       if (reminder != null) {
@@ -108,18 +101,16 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
 
   private fun saveReminder(reminder: Reminder) {
     launchDefault {
-      runBlocking {
-        val group = appDb.reminderGroupDao().defaultGroup()
-        if (group != null) {
-          reminder.groupColor = group.groupColor
-          reminder.groupTitle = group.groupTitle
-          reminder.groupUuId = group.groupUuId
-          appDb.reminderDao().insert(reminder)
-        }
+      val group = appDb.reminderGroupDao().defaultGroup()
+      if (group != null) {
+        reminder.groupColor = group.groupColor
+        reminder.groupTitle = group.groupTitle
+        reminder.groupUuId = group.groupUuId
+        appDb.reminderDao().insert(reminder)
       }
       if (reminder.groupUuId != "") {
-        EventControlFactory.getController(reminder).start()
-        startWork(com.elementary.tasks.reminder.work.SingleBackupWorker::class.java,
+        eventControlFactory.getController(reminder).start()
+        startWork(com.elementary.tasks.reminder.work.ReminderSingleBackupWorker::class.java,
           Constants.INTENT_ID, reminder.uuId)
       }
     }
@@ -128,12 +119,10 @@ abstract class BaseNotesViewModel : BaseDbViewModel() {
   fun deleteReminder(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      runBlocking {
-        EventControlFactory.getController(reminder).stop()
-        appDb.reminderDao().delete(reminder)
-        calendarUtils.deleteEvents(reminder.uuId)
-      }
-      startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+      eventControlFactory.getController(reminder).stop()
+      appDb.reminderDao().delete(reminder)
+      calendarUtils.deleteEvents(reminder.uuId)
+      startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
       postInProgress(false)
       postCommand(Commands.UPDATED)
     }

@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.FileConfig
@@ -27,25 +26,26 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding
 import com.elementary.tasks.pin.PinLoginActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.text.ParseException
 import java.util.*
 
 class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout.activity_add_birthday) {
 
-  private val viewModel: BirthdayViewModel by lazy {
-    ViewModelProvider(this, BirthdayViewModel.Factory(getId())).get(BirthdayViewModel::class.java)
-  }
+  private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
   private var mBirthday: Birthday? = null
 
-  private var mDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = System.currentTimeMillis()
-    calendar.set(Calendar.YEAR, year)
-    calendar.set(Calendar.MONTH, monthOfYear)
-    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-    viewModel.date.postValue(calendar.timeInMillis)
-  }
+  private var mDateCallBack: DatePickerDialog.OnDateSetListener =
+    DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+      val calendar = Calendar.getInstance()
+      calendar.timeInMillis = System.currentTimeMillis()
+      calendar.set(Calendar.YEAR, year)
+      calendar.set(Calendar.MONTH, monthOfYear)
+      calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+      viewModel.date.postValue(calendar.timeInMillis)
+    }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

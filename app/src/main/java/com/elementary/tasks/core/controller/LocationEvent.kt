@@ -1,15 +1,25 @@
 package com.elementary.tasks.core.controller
 
+import android.content.Context
 import android.text.TextUtils
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobScheduler
 import com.elementary.tasks.core.services.GeolocationService
+import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 
-class LocationEvent(reminder: Reminder) : EventManager(reminder) {
+class LocationEvent(
+  reminder: Reminder,
+  appDb: AppDb,
+  prefs: Prefs,
+  calendarUtils: CalendarUtils,
+  context: Context
+) : EventManager(reminder, appDb, prefs, calendarUtils, context) {
 
   override val isActive: Boolean
     get() = reminder.isActive

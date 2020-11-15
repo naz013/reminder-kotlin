@@ -18,12 +18,15 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.export.backups.InfoAdapter
 import com.elementary.tasks.navigation.settings.export.backups.UserItem
 import kotlinx.coroutines.Job
+import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
 import java.util.*
 
 class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
+  private val gDrive by inject<GDrive>()
+  private val dropbox by inject<Dropbox>()
   private var mAdapter: InfoAdapter? = null
   private var mJob: Job? = null
 
@@ -80,12 +83,10 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
       }
       val list = ArrayList<Info>()
       list.add(Info.Local)
-      val dbx = Dropbox()
-      if (dbx.isLinked) {
+      if (dropbox.isLinked) {
         list.add(Info.Dropbox)
       }
-      val gdx = GDrive.getInstance(it)
-      if (gdx != null) {
+      if (gDrive.isLogged) {
         list.add(Info.Google)
       }
       loadInfo(list)
@@ -135,14 +136,11 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
 
     showProgress()
     launchDefault {
-      if (type == Info.Dropbox) {
-        val dbx = Dropbox()
-        if (dbx.isLinked) {
-          dbx.cleanFolder()
-        }
-      } else if (type == Info.Google) {
+      if (type == Info.Dropbox && dropbox.isLinked) {
+        dropbox.cleanFolder()
+      } else if (type == Info.Google && gDrive.isLogged) {
         try {
-          GDrive.getInstance(context)?.cleanFolder()
+          gDrive.cleanFolder()
         } catch (e: IOException) {
           e.printStackTrace()
         }
@@ -188,12 +186,11 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   }
 
   private fun addDropboxData(list: MutableList<UserItem>) {
-    val dbx = Dropbox()
-    if (dbx.isLinked) {
-      val quota = dbx.userQuota()
-      val quotaUsed = dbx.userQuotaNormal()
-      val name = dbx.userName()
-      val count = dbx.countFiles()
+    if (dropbox.isLinked) {
+      val quota = dropbox.userQuota()
+      val quotaUsed = dropbox.userQuotaNormal()
+      val name = dropbox.userName()
+      val count = dropbox.countFiles()
       val userItem = UserItem(name = name, quota = quota, used = quotaUsed, count = count, photo = "")
       userItem.kind = Info.Dropbox
       list.add(userItem)
@@ -201,14 +198,11 @@ class BackupsFragment : BaseSettingsFragment<FragmentSettingsBackupsBinding>() {
   }
 
   private fun addGoogleData(list: MutableList<UserItem>) {
-    withContext {
-      val gdx = GDrive.getInstance(it)
-      if (gdx != null) {
-        val userItem = gdx.data
-        if (userItem != null) {
-          userItem.kind = Info.Google
-          list.add(userItem)
-        }
+    if (gDrive.isLogged) {
+      val userItem = gDrive.data
+      if (userItem != null) {
+        userItem.kind = Info.Google
+        list.add(userItem)
       }
     }
   }

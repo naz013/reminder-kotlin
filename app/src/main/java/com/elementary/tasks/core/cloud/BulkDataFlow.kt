@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.cloud
 
-import android.content.Context
 import com.elementary.tasks.core.cloud.completables.Completable
-import com.elementary.tasks.core.cloud.completables.ReminderCompletable
-import com.elementary.tasks.core.cloud.converters.*
-import com.elementary.tasks.core.cloud.repositories.*
+import com.elementary.tasks.core.cloud.converters.Convertible
+import com.elementary.tasks.core.cloud.converters.IndexTypes
+import com.elementary.tasks.core.cloud.repositories.Repository
 import com.elementary.tasks.core.cloud.storages.CompositeStorage
 import com.elementary.tasks.core.cloud.storages.Storage
 import kotlinx.coroutines.channels.consumeEach
@@ -20,9 +19,7 @@ class BulkDataFlow<T>(
   private val dataFlow = DataFlow(repository, convertible, storage, completable)
 
   suspend fun backup() {
-    repository.all().forEach {
-      dataFlow.backup(it, false)
-    }
+    repository.all().forEach { dataFlow.backup(it, false) }
     dataFlow.saveIndex()
     System.gc()
   }
@@ -37,15 +34,50 @@ class BulkDataFlow<T>(
   }
 
   companion object {
-    suspend fun fullBackup(context: Context) {
-      val storage = CompositeStorage(DataFlow.availableStorageList(context))
-      BulkDataFlow(GroupRepository(), GroupConverter(), storage, null).backup()
-      BulkDataFlow(ReminderRepository(), ReminderConverter(), storage, ReminderCompletable()).backup()
-      BulkDataFlow(NoteRepository(), NoteConverter(), storage, null).backup()
-      BulkDataFlow(BirthdayRepository(), BirthdayConverter(), storage, null).backup()
-      BulkDataFlow(PlaceRepository(), PlaceConverter(), storage, null).backup()
-      BulkDataFlow(TemplateRepository(), TemplateConverter(), storage, null).backup()
-      BulkDataFlow(SettingsRepository(), SettingsConverter(), storage, null).backup()
+    suspend fun fullBackup(syncManagers: SyncManagers) {
+      val storage = CompositeStorage(syncManagers.storageManager)
+      BulkDataFlow(
+        syncManagers.repositoryManager.groupRepository,
+        syncManagers.converterManager.groupConverter,
+        storage,
+        completable = null
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.reminderRepository,
+        syncManagers.converterManager.reminderConverter,
+        storage,
+        syncManagers.completableManager.reminderCompletable
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.noteRepository,
+        syncManagers.converterManager.noteConverter,
+        storage,
+        completable = null
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.birthdayRepository,
+        syncManagers.converterManager.birthdayConverter,
+        storage,
+        completable = null
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.placeRepository,
+        syncManagers.converterManager.placeConverter,
+        storage,
+        completable = null
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.templateRepository,
+        syncManagers.converterManager.templateConverter,
+        storage,
+        completable = null
+      ).backup()
+      BulkDataFlow(
+        syncManagers.repositoryManager.settingsRepository,
+        syncManagers.converterManager.settingsConverter,
+        storage,
+        completable = null
+      ).backup()
     }
   }
 }

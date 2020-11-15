@@ -5,24 +5,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
+import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.view_models.BaseDbViewModel
 import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.reminder.work.DeleteBackupWorker
-import com.elementary.tasks.reminder.work.SingleBackupWorker
+import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
+import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
 import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.*
 
-@KoinApiExtension
-abstract class BaseRemindersViewModel : BaseDbViewModel() {
+abstract class BaseRemindersViewModel(
+  appDb: AppDb,
+  prefs: Prefs,
+  protected val calendarUtils: CalendarUtils,
+  protected val eventControlFactory: EventControlFactory
+) : BaseDbViewModel(appDb, prefs) {
 
   private var _defaultReminderGroup: MutableLiveData<ReminderGroup> = MutableLiveData()
   var defaultReminderGroup: LiveData<ReminderGroup> = _defaultReminderGroup
@@ -32,8 +36,6 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
 
   val groups = mutableListOf<ReminderGroup>()
   var defaultGroup: ReminderGroup? = null
-
-  val calendarUtils: CalendarUtils by inject()
 
   init {
     launchDefault {
@@ -72,7 +74,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
             }
           }
         }
-        EventControlFactory.getController(reminder).start()
+        eventControlFactory.getController(reminder).start()
         Timber.d("saveAndStartReminder: save DONE")
       }
       backupReminder(reminder.uuId)
@@ -109,7 +111,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
         newItem.eventTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
         newItem.startTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
         appDb.reminderDao().insert(newItem)
-        EventControlFactory.getController(newItem).start()
+        eventControlFactory.getController(newItem).start()
       }
       postCommand(Commands.SAVED)
     }
@@ -118,7 +120,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
   fun stopReminder(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      EventControlFactory.getController(reminder).stop()
+      eventControlFactory.getController(reminder).stop()
       postInProgress(false)
     }
   }
@@ -126,7 +128,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
   fun pauseReminder(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      EventControlFactory.getController(reminder).pause()
+      eventControlFactory.getController(reminder).pause()
       postInProgress(false)
     }
   }
@@ -134,7 +136,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
   fun resumeReminder(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      EventControlFactory.getController(reminder).resume()
+      eventControlFactory.getController(reminder).resume()
       postInProgress(false)
     }
   }
@@ -142,7 +144,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
   fun toggleReminder(reminder: Reminder) {
     postInProgress(true)
     launchDefault {
-      if (!EventControlFactory.getController(reminder).onOff()) {
+      if (!eventControlFactory.getController(reminder).onOff()) {
         postInProgress(false)
         postCommand(Commands.OUTDATED)
       } else {
@@ -156,7 +158,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
   fun moveToTrash(reminder: Reminder) {
     withResult {
       reminder.isRemoved = true
-      EventControlFactory.getController(reminder).stop()
+      eventControlFactory.getController(reminder).stop()
       appDb.reminderDao().insert(reminder)
       backupReminder(reminder.uuId)
       Commands.DELETED
@@ -165,24 +167,24 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
 
   private fun backupReminder(uuId: String) {
     Timber.d("backupReminder: start backup")
-    startWork(SingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
+    startWork(ReminderSingleBackupWorker::class.java, Constants.INTENT_ID, uuId)
   }
 
   fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
     if (showMessage) {
       withResult {
-        EventControlFactory.getController(reminder).stop()
+        eventControlFactory.getController(reminder).stop()
         appDb.reminderDao().delete(reminder)
         calendarUtils.deleteEvents(reminder.uuId)
-        startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
         Commands.DELETED
       }
     } else {
       withProgress {
-        EventControlFactory.getController(reminder).stop()
+        eventControlFactory.getController(reminder).stop()
         appDb.reminderDao().delete(reminder)
         calendarUtils.deleteEvents(reminder.uuId)
-        startWork(DeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
+        startWork(ReminderDeleteBackupWorker::class.java, Constants.INTENT_ID, reminder.uuId)
       }
     }
   }
@@ -204,7 +206,7 @@ abstract class BaseRemindersViewModel : BaseDbViewModel() {
     withResult {
       val fromDb = appDb.reminderDao().getById(reminder.uuId)
       if (fromDb != null) {
-        EventControlFactory.getController(fromDb).skip()
+        eventControlFactory.getController(fromDb).skip()
       }
       backupReminder(reminder.uuId)
       Commands.SAVED

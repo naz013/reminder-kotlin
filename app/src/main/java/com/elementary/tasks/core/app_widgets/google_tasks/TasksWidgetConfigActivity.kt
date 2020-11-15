@@ -13,6 +13,7 @@ import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
+import org.koin.android.ext.android.get
 
 class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfigBinding>(R.layout.activity_widget_google_tasks_config) {
 
@@ -41,7 +42,7 @@ class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfi
 
     showCurrentTheme()
 
-    if (GTasks.getInstance(this)?.isLogged != true) {
+    if (!get<GTasks>().isLogged) {
       Toast.makeText(this, getString(R.string.you_not_logged_to_google_tasks), Toast.LENGTH_SHORT).show()
       finish()
     }

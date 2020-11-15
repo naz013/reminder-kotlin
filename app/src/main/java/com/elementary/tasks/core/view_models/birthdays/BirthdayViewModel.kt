@@ -1,11 +1,17 @@
 package com.elementary.tasks.core.view_models.birthdays
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 
-class BirthdayViewModel private constructor(id: String) : BaseBirthdaysViewModel() {
+class BirthdayViewModel(
+  id: String,
+  appDb: AppDb,
+  prefs: Prefs,
+  context: Context
+) : BaseBirthdaysViewModel(appDb, prefs, context) {
 
   val birthday = appDb.birthdaysDao().loadById(id)
   var date: MutableLiveData<Long> = MutableLiveData()
@@ -20,13 +26,6 @@ class BirthdayViewModel private constructor(id: String) : BaseBirthdaysViewModel
     launchDefault {
       val birthday = appDb.birthdaysDao().getById(id)
       hasSameInDb = birthday != null
-    }
-  }
-
-  class Factory(private val key: String) : ViewModelProvider.NewInstanceFactory() {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return BirthdayViewModel(key) as T
     }
   }
 }

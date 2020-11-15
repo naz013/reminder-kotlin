@@ -11,24 +11,34 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.LED
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import com.squareup.picasso.Picasso
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.util.*
 
 class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBinding>(R.layout.activity_show_birthday) {
 
-  private lateinit var viewModel: BirthdayViewModel
+  private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
 
   private var mBirthday: Birthday? = null
   private var isEventShowed = false
@@ -160,7 +170,6 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
-    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
     binding.buttonOk.setOnClickListener { ok() }
     binding.buttonCall.setOnClickListener { makeCall() }
@@ -173,29 +182,31 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
       isScreenResumed = savedInstanceState.getBoolean(ARG_IS_ROTATED, false)
     }
 
-    initViewModel(id)
-    LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, IntentFilter(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY))
+    initViewModel()
+    LocalBroadcastManager.getInstance(this)
+      .registerReceiver(mLocalReceiver, IntentFilter(ReminderDialogActivity.ACTION_STOP_BG_ACTIVITY))
   }
+
+  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
   override fun onSaveInstanceState(outState: Bundle) {
     outState.putBoolean(ARG_IS_ROTATED, true)
     super.onSaveInstanceState(outState)
   }
 
-  private fun initViewModel(id: String) {
-    viewModel = ViewModelProvider(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
+  private fun initViewModel() {
     viewModel.birthday.observeForever(mBirthdayObserver)
-    viewModel.result.observe(this, Observer<Commands> { commands ->
-        if (commands != null) {
-            when (commands) {
-                Commands.SAVED -> close()
-                else -> {
-                }
-            }
+    viewModel.result.observe(this, { commands ->
+      if (commands != null) {
+        when (commands) {
+          Commands.SAVED -> close()
+          else -> {
+          }
         }
+      }
     })
     lifecycle.addObserver(viewModel)
-    if (id == "" && BuildConfig.DEBUG) {
+    if (getId().isEmpty() && BuildConfig.DEBUG) {
       loadTest()
     }
   }
@@ -402,7 +413,7 @@ class ShowBirthdayActivity : BaseNotificationActivity<ActivityShowBirthdayBindin
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     if (Permissions.checkPermission(grantResults)) {
       when (requestCode) {
-          CALL_PERM -> makeCall()
+        CALL_PERM -> makeCall()
       }
     }
   }

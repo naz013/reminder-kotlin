@@ -8,23 +8,30 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.BuildConfig
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.EventOperationalService
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.TelephonyUtil
+import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
 import com.squareup.picasso.Picasso
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.util.*
 
 class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>(R.layout.activity_show_birthday) {
 
-  private lateinit var viewModel: BirthdayViewModel
+  private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
 
   private var mBirthday: Birthday? = null
   private var isEventShowed = false
@@ -43,7 +50,6 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>(R.la
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
     binding.buttonOk.setOnClickListener { ok() }
     binding.buttonCall.setOnClickListener { makeCall() }
@@ -52,11 +58,12 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>(R.la
     binding.contactPhoto.borderColor = ThemeUtil.getThemeSecondaryColor(this)
     binding.contactPhoto.visibility = View.GONE
 
-    initViewModel(key)
+    initViewModel()
   }
 
-  private fun initViewModel(id: String) {
-    viewModel = ViewModelProvider(this, BirthdayViewModel.Factory(id)).get(BirthdayViewModel::class.java)
+  private fun getId() = intent.getStringExtra(Constants.INTENT_ID) ?: ""
+
+  private fun initViewModel() {
     viewModel.birthday.observeForever(mBirthdayObserver)
     viewModel.result.observe(this, { commands ->
       if (commands != null) {
@@ -68,7 +75,7 @@ class ShowBirthday29Activity : BindingActivity<ActivityShowBirthdayBinding>(R.la
       }
     })
     lifecycle.addObserver(viewModel)
-    if (id == "" && BuildConfig.DEBUG) {
+    if (getId().isEmpty() && BuildConfig.DEBUG) {
       loadTest()
     }
   }

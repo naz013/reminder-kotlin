@@ -13,15 +13,11 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.launchDefault
 import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-@KoinApiExtension
-open class BaseDbViewModel : ViewModel(), LifecycleObserver, KoinComponent {
-
-  protected val appDb: AppDb by inject()
-  protected val prefs: Prefs by inject()
+open class BaseDbViewModel(
+  protected val appDb: AppDb,
+  protected val prefs: Prefs
+) : ViewModel(), LifecycleObserver {
 
   private val _result = MutableLiveData<Commands>()
   val result: LiveData<Commands> = _result

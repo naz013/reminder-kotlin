@@ -18,24 +18,22 @@ import com.elementary.tasks.core.data.models.NoteWithImages
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.MeasureUtils
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
-import org.koin.core.component.KoinApiExtension
-import org.koin.core.component.inject
 import java.lang.ref.WeakReference
 
-@KoinApiExtension
 class NoteHolder(
   parent: ViewGroup,
+  prefs: Prefs,
+  private val themeUtil: ThemeUtil,
+  private val imagesSingleton: ImagesSingleton,
   val listener: ((View, Int, ListActions) -> Unit)?
-) : BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note) {
-
-  private val themeUtil: ThemeUtil by inject()
-  private val imagesSingleton: ImagesSingleton by inject()
+) : BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note, prefs) {
 
   var hasMore = true
     set(value) {
@@ -61,17 +59,17 @@ class NoteHolder(
 
   private fun hoverClick(view: View, click: (View) -> Unit) {
     view.setOnTouchListener { v, event ->
-      when {
-        event.action == MotionEvent.ACTION_DOWN -> {
+      when (event.action) {
+        MotionEvent.ACTION_DOWN -> {
           binding.clickView.isPressed = true
           return@setOnTouchListener true
         }
-        event.action == MotionEvent.ACTION_UP -> {
+        MotionEvent.ACTION_UP -> {
           binding.clickView.isPressed = false
           click.invoke(v)
           return@setOnTouchListener v.performClick()
         }
-        event.action == MotionEvent.ACTION_CANCEL -> {
+        MotionEvent.ACTION_CANCEL -> {
           binding.clickView.isPressed = false
         }
       }
@@ -144,7 +142,7 @@ class NoteHolder(
     val horView = container.findViewById<LinearLayout>(R.id.imagesContainer)
     horView.removeAllViewsInLayout()
 
-    if (!images.isEmpty()) {
+    if (images.isNotEmpty()) {
       imageView.visibility = View.VISIBLE
       horView.visibility = View.VISIBLE
       val image = WeakReference(images[0])
@@ -153,8 +151,8 @@ class NoteHolder(
 
       while (index < images.size) {
         val imV = ImageView(container.context)
-        val params = LinearLayout.LayoutParams(MeasureUtils.dp2px(container.context, 128),
-          MeasureUtils.dp2px(container.context, 128))
+        val params = LinearLayout.LayoutParams(container.dp2px(128),
+          container.dp2px(128))
         imV.layoutParams = params
         setClick(imV, index, item.getKey(), images)
         imV.scaleType = ImageView.ScaleType.CENTER_CROP

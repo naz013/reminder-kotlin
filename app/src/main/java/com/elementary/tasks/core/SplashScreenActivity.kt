@@ -20,14 +20,16 @@ import com.elementary.tasks.experimental.BottomNavActivity
 import com.elementary.tasks.experimental.NavUtil
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.groups.GroupsUtil
-import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
+import com.elementary.tasks.pin.PinLoginActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class SplashScreenActivity : ThemedActivity() {
 
-  private val db: AppDb by inject()
+  private val db by inject<AppDb>()
+  private val gTasks by inject<GTasks>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -42,7 +44,7 @@ class SplashScreenActivity : ThemedActivity() {
       val info = packageManager.getPackageInfo(packageName, 0)
       if (!prefs.getVersion(info.versionName)) {
         prefs.saveVersionBoolean(info.versionName)
-        EnableThread.run(this)
+        get<EnableThread>().run()
       }
     } catch (e: PackageManager.NameNotFoundException) {
       e.printStackTrace()
@@ -109,8 +111,7 @@ class SplashScreenActivity : ThemedActivity() {
             Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java)))
           .build()
 
-        val gTasks = GTasks.getInstance(this)
-        if (gTasks != null && gTasks.isLogged) {
+        if (gTasks.isLogged) {
           val shortcut3 = ShortcutInfo.Builder(this, "id.google.tasks")
             .setShortLabel(getString(R.string.add_google_task))
             .setLongLabel(getString(R.string.add_google_task))
@@ -125,5 +126,4 @@ class SplashScreenActivity : ThemedActivity() {
       }
     }
   }
-
 }

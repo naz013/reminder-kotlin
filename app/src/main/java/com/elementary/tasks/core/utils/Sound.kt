@@ -9,10 +9,15 @@ import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import timber.log.Timber
 import java.io.File
 
-class Sound(private val mContext: Context, private val prefs: Prefs) {
+class Sound(
+  private val mContext: Context,
+  private val prefs: Prefs
+) {
+
   private var mMediaPlayer: MediaPlayer? = null
   var isPaused: Boolean = false
     private set
@@ -24,7 +29,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
   private var mRingtone: Ringtone? = null
   private var isDone: Boolean = false
   private var mCallback: PlaybackCallback? = null
-  private val mRingtoneHandler = Handler()
+  private val mRingtoneHandler = Handler(Looper.getMainLooper())
   private val mRingtoneRunnable = object : Runnable {
     override fun run() {
       mRingtoneHandler.removeCallbacks(this)
@@ -45,7 +50,7 @@ class Sound(private val mContext: Context, private val prefs: Prefs) {
     }
   }
 
-  private val mMelodyHandler = Handler()
+  private val mMelodyHandler = Handler(Looper.getMainLooper())
   private val mMelodyRunnable = object : Runnable {
     override fun run() {
       mMelodyHandler.removeCallbacks(this)

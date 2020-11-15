@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.arch.BindingActivity
@@ -55,35 +54,33 @@ import com.elementary.tasks.reminder.create.fragments.WeekFragment
 import com.elementary.tasks.reminder.create.fragments.YearFragment
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.lang3.StringUtils
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder), ReminderInterface {
+class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder),
+  ReminderInterface {
 
-  private val viewModel: ReminderViewModel by lazy {
-    ViewModelProvider(this, ReminderViewModel.Factory(getId())).get(ReminderViewModel::class.java)
-  }
-  private val conversationViewModel: ConversationViewModel by lazy {
-    ViewModelProvider(this).get(ConversationViewModel::class.java)
-  }
-  private val stateViewModel: StateViewModel by lazy {
-    ViewModelProvider(this).get(StateViewModel::class.java)
-  }
+  private val cacheUtil by inject<CacheUtil>()
+
+  private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
+  private val conversationViewModel by viewModel<ConversationViewModel>()
+  private val stateViewModel by viewModel<ReminderStateViewModel>()
 
   private var fragment: TypeFragment<*>? = null
   private var isEditing: Boolean = false
   private var mIsTablet = false
   private var hasLocation = false
-  override val state: StateViewModel
+  override val reminderState: ReminderStateViewModel
     get() = stateViewModel
   override val defGroup: ReminderGroup?
     get() = stateViewModel.group
   override var canExportToTasks: Boolean = false
   override var canExportToCalendar: Boolean = false
-
-  private val cacheUtil: CacheUtil by inject()
 
   private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -106,7 +103,7 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
     hasLocation = Module.hasLocation(this)
     mIsTablet = resources.getBoolean(R.bool.is_tablet)
     canExportToCalendar = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
-    canExportToTasks = GTasks.getInstance(this)?.isLogged ?: false
+    canExportToTasks = get<GTasks>().isLogged
     initActionBar()
     initNavigation()
 

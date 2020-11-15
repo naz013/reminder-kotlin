@@ -10,7 +10,9 @@ import java.nio.charset.CharsetEncoder
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.MalformedInputException
 
-class StreamWriter(outputStream: OutputStream) : Writer() {
+class StreamWriter(
+  outputStream: OutputStream
+) : Writer() {
 
   private var outputBuffer: CharBuffer? = CharBuffer.allocate(1024)
   private var out: OutputStream? = outputStream
@@ -18,12 +20,12 @@ class StreamWriter(outputStream: OutputStream) : Writer() {
 
   init {
     outputBuffer = null
-    try {
+    encoder = try {
       val encoding = System.getProperty("file.encoding")
       val cs = Charset.forName(encoding)
-      encoder = cs.newEncoder()
+      cs.newEncoder()
     } catch (e: RuntimeException) {
-      encoder = null
+      null
     }
     if (encoder != null) {
       encoder?.onMalformedInput(CodingErrorAction.REPLACE)
