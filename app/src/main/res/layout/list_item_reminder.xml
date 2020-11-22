@@ -124,7 +124,7 @@
                     android:layout_height="32dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
-                    app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+                    app:layout_constraintBottom_toTopOf="@+id/itemCheck"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_twotone_more_vert_24px"
