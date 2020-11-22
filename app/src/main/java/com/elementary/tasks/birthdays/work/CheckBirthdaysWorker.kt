@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CheckBirthdaysWorker(
+  private val appDb: AppDb,
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
@@ -56,7 +57,7 @@ class CheckBirthdaysWorker(
         " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
         "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
       val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-      val dao = AppDb.getAppDatabase(applicationContext).birthdaysDao()
+      val dao = appDb.birthdaysDao()
       val contacts = dao.all()
       val birthdayCur = try {
         cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)

@@ -9,8 +9,8 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseDialog : FragmentActivity() {
 
-  protected val dialogues: Dialogues by inject()
-  protected val prefs: Prefs by inject()
+  protected val dialogues by inject<Dialogues>()
+  protected val prefs by inject<Prefs>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

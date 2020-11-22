@@ -13,7 +13,7 @@ import timber.log.Timber
 
 class CallReceiver : BaseBroadcast() {
 
-  private val appDb: AppDb by inject()
+  private val appDb by inject<AppDb>()
 
   private var mIncomingNumber: String? = null
   private var prevState: Int = 0

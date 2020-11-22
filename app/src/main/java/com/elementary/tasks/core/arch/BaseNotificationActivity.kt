@@ -14,7 +14,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Notifier
+import com.elementary.tasks.core.utils.ReminderUtils
+import com.elementary.tasks.core.utils.Sound
+import com.elementary.tasks.core.utils.SoundStackHolder
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.io.IOException
@@ -25,7 +30,7 @@ abstract class BaseNotificationActivity<B : ViewDataBinding>(@LayoutRes layoutRe
 
   private var tts: TextToSpeech? = null
   private var mWakeLock: PowerManager.WakeLock? = null
-  private val soundStackHolder: SoundStackHolder by inject()
+  private val soundStackHolder by inject<SoundStackHolder>()
 
   private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
     if (status == TextToSpeech.SUCCESS && tts != null) {
@@ -49,43 +54,27 @@ abstract class BaseNotificationActivity<B : ViewDataBinding>(@LayoutRes layoutRe
   }
 
   protected abstract val melody: String
-
   protected abstract val isScreenResumed: Boolean
-
   protected abstract val isVibrate: Boolean
-
   protected abstract val summary: String
-
   protected abstract val uuId: String
-
   protected abstract val id: Int
-
   protected abstract val ledColor: Int
-
   protected abstract val isUnlockDevice: Boolean
-
   protected abstract val isGlobal: Boolean
-
   protected abstract val maxVolume: Int
-
   protected abstract val priority: Int
-
   protected abstract val groupName: String
-
   protected open val sound: Sound?
     get() = soundStackHolder.sound
-
   protected open val isBirthdayInfiniteVibration: Boolean
     get() = true
-
   protected open val isBirthdayInfiniteSound: Boolean
     get() = true
-
   protected open val ttsLocale: Locale?
     get() {
       return language.getLocale(false)
     }
-
   protected open val soundUri: Uri
     get() = ReminderUtils.getSoundUri(this, prefs, melody)
 

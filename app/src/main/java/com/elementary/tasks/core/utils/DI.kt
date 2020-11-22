@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import com.backdoor.engine.Recognizer
 import com.elementary.tasks.birthdays.work.BirthdayDeleteBackupWorker
 import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
+import com.elementary.tasks.birthdays.work.ScanContactsWorker
 import com.elementary.tasks.core.app_widgets.WidgetDataProvider
 import com.elementary.tasks.core.apps.SelectApplicationViewModel
 import com.elementary.tasks.core.cloud.GTasks
@@ -84,6 +85,7 @@ import com.elementary.tasks.reminder.create.ReminderStateViewModel
 import com.elementary.tasks.reminder.work.CheckEventsWorker
 import com.elementary.tasks.reminder.work.ReminderDeleteBackupWorker
 import com.elementary.tasks.reminder.work.ReminderSingleBackupWorker
+import com.elementary.tasks.splash.SplashViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
@@ -91,7 +93,7 @@ import org.koin.dsl.module
 val workerModule = module {
   worker { BirthdayDeleteBackupWorker(get(), get(), get()) }
   worker { BackupDataWorker(get(), get(), get()) }
-  worker { CheckBirthdaysWorker(get(), get()) }
+  worker { CheckBirthdaysWorker(get(), get(), get()) }
   worker { LoadTokensWorker(get(), get(), get()) }
   worker { LoadFileWorker(get(), get(), get()) }
   worker { DeleteFileWorker(get(), get(), get()) }
@@ -147,6 +149,7 @@ val viewModelModule = module {
   viewModel { CreateNoteViewModel() }
   viewModel { CreatePlaceViewModel() }
   viewModel { TimesViewModel() }
+  viewModel { SplashViewModel(get(), get(), get(), get(), get()) }
 }
 
 val converterModule = module {
@@ -205,6 +208,7 @@ val utilModule = module {
   single { SyncWorker(get(), get(), get()) }
   single { BackupWorker(get(), get()) }
   single { ExportAllDataWorker(get(), get()) }
+  single { ScanContactsWorker(get(), get()) }
   factory { EnableThread(get(), get()) }
 }
 

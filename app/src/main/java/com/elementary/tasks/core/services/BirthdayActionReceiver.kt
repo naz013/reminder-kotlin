@@ -17,10 +17,13 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.launchDefault
+import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.*
 
 class BirthdayActionReceiver : BaseBroadcast() {
+
+  private val appDb by inject<AppDb>()
 
   override fun onReceive(context: Context, intent: Intent?) {
     if (intent != null) {
@@ -39,23 +42,23 @@ class BirthdayActionReceiver : BaseBroadcast() {
     }
   }
 
-  private fun updateBirthday(context: Context, item: Birthday) {
+  private fun updateBirthday(item: Birthday) {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = System.currentTimeMillis()
     val year = calendar.get(Calendar.YEAR)
     item.showedYear = year
     item.updatedAt = TimeUtil.gmtDateTime
     launchDefault {
-      AppDb.getAppDatabase(context).birthdaysDao().insert(item)
+      appDb.birthdaysDao().insert(item)
     }
   }
 
   private fun sendSms(context: Context, intent: Intent) {
-    val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
+    val item = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
       ?: "")
     if (item != null) {
       TelephonyUtil.sendSms(item.number, context)
-      updateBirthday(context, item)
+      updateBirthday(item)
       finish(context, item.uniqueId)
     } else {
       hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
@@ -63,11 +66,11 @@ class BirthdayActionReceiver : BaseBroadcast() {
   }
 
   private fun makeCall(context: Context, intent: Intent) {
-    val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
+    val item = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
       ?: "")
     if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
       TelephonyUtil.makeCall(item.number, context)
-      updateBirthday(context, item)
+      updateBirthday(item)
       finish(context, item.uniqueId)
     } else {
       hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
@@ -75,7 +78,7 @@ class BirthdayActionReceiver : BaseBroadcast() {
   }
 
   private fun showReminder(context: Context, intent: Intent) {
-    val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
+    val birthday = appDb.birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID)
       ?: "") ?: return
     sendCloseBroadcast(context, birthday.uuId)
     if (Module.isQ || SuperUtil.isPhoneCallActive(context)) {
@@ -99,9 +102,9 @@ class BirthdayActionReceiver : BaseBroadcast() {
 
   private fun hidePermanent(context: Context, id: String) {
     if (id.isEmpty()) return
-    val item = AppDb.getAppDatabase(context).birthdaysDao().getById(id)
+    val item = appDb.birthdaysDao().getById(id)
     if (item != null) {
-      updateBirthday(context, item)
+      updateBirthday(item)
       finish(context, item.uniqueId)
     }
   }

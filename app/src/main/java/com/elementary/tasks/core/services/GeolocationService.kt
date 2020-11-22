@@ -27,8 +27,8 @@ class GeolocationService : Service() {
   private var mTracker: LocationTracker? = null
   private var isNotificationEnabled: Boolean = false
   private var stockRadius: Int = 0
-  private val prefs: Prefs by inject()
-  private val appDb: AppDb by inject()
+  private val prefs by inject<Prefs>()
+  private val appDb by inject<AppDb>()
 
   override fun onDestroy() {
     super.onDestroy()

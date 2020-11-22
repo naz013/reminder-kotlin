@@ -22,6 +22,7 @@ class CloudViewModel(
 
   var isLoading: MutableLiveData<Boolean> = MutableLiveData()
   var isReady: MutableLiveData<Boolean> = MutableLiveData()
+  val db = appDb
 
   private var job: Job? = null
 

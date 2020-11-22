@@ -41,10 +41,10 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class EventOperationalService : Service(), Sound.PlaybackCallback {
 
-  private val appDb: AppDb by inject()
-  private val prefs: Prefs by inject()
-  private val language: Language by inject()
-  private val soundStackHolder: SoundStackHolder by inject()
+  private val appDb by inject<AppDb>()
+  private val prefs by inject<Prefs>()
+  private val language by inject<Language>()
+  private val soundStackHolder by inject<SoundStackHolder>()
 
   private val ttsLocale: Locale? = language.getLocale(false)
 
@@ -131,7 +131,7 @@ class EventOperationalService : Service(), Sound.PlaybackCallback {
                 increment()
                 showReminderNotification(reminder)
                 if (isRepeatEnabled(reminder)) {
-                  EventJobScheduler.scheduleReminderRepeat(this, id, prefs)
+                  EventJobScheduler.scheduleReminderRepeat(appDb, id, prefs)
                 }
               }
               ACTION_STOP -> {

@@ -61,7 +61,7 @@ abstract class RepeatableEventManager(
   private fun makeGoogleTaskDone() {
     if (reminder.exportToTasks) {
       launchIo {
-        val googleTask = AppDb.getAppDatabase(context).googleTasksDao().getByReminderId(reminder.uuId)
+        val googleTask = db.googleTasksDao().getByReminderId(reminder.uuId)
         if (googleTask != null && googleTask.status == GTasks.TASKS_NEED_ACTION) {
           val work = OneTimeWorkRequest.Builder(UpdateTaskWorker::class.java)
             .setInputData(

@@ -37,7 +37,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener,
 
   private val mDateClick = OnClickListener { selectDate() }
 
-  private val prefs: Prefs by inject()
+  private val prefs by inject<Prefs>()
 
   var dateTime: Long
     get() {

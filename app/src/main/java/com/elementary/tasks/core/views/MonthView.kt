@@ -80,7 +80,7 @@ class MonthView : View, View.OnTouchListener, KoinComponent {
     }
   }
 
-  private val prefs: Prefs by inject()
+  private val prefs by inject<Prefs>()
 
   constructor(context: Context) : super(context) {
     init(context)

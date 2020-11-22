@@ -537,7 +537,7 @@ class ReminderDialogActivity : BaseNotificationActivity<ActivityReminderDialogBi
     } else {
       showNotification()
       if (isRepeatEnabled) {
-        EventJobScheduler.scheduleReminderRepeat(this, uuId, prefs)
+        EventJobScheduler.scheduleReminderRepeat(viewModel.db, uuId, prefs)
       }
       if (isTtsEnabled) {
         startTts()

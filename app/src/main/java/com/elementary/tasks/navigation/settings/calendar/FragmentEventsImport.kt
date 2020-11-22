@@ -34,6 +34,7 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
   CompoundButton.OnCheckedChangeListener {
 
   private val eventControlFactory by inject<EventControlFactory>()
+  private val appDb by inject<AppDb>()
   private val calendarsAdapter = CalendarsAdapter()
   private var mItemSelect: Int = 0
   private var list: List<CalendarUtils.CalendarItem> = listOf()
@@ -202,7 +203,6 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
     mJob = launchDefault {
       val currTime = System.currentTimeMillis()
       var eventsCount = 0
-      val appDb = AppDb.getAppDatabase(ctx)
       val eventItems = calendarUtils.getEvents(ids)
       if (eventItems.isNotEmpty()) {
         val list = appDb.calendarEventsDao().eventIds()

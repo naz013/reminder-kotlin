@@ -18,7 +18,7 @@ import java.util.*
 class LocationSettingsFragment : BaseSettingsFragment<FragmentSettingsLocationBinding>() {
 
   private var mItemSelect: Int = 0
-  private val themeUtil: ThemeUtil by inject()
+  private val themeUtil by inject<ThemeUtil>()
 
   override fun layoutRes(): Int = R.layout.fragment_settings_location
 

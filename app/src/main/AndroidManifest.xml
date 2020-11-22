@@ -95,7 +95,7 @@
             android:required="false" />
 
         <activity
-            android:name=".core.SplashScreenActivity"
+            android:name=".splash.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

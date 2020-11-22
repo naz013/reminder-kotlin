@@ -40,7 +40,7 @@ class SyncDataWorker(
           .restore(IndexTypes.TYPE_GROUP, deleteFile = true)
         val list = appDb.reminderGroupDao().all()
         if (list.isEmpty()) {
-          val defUiID = GroupsUtil.initDefault(applicationContext)
+          val defUiID = GroupsUtil.initDefault(applicationContext, appDb)
           val items = appDb.reminderDao().all()
           for (item in items) {
             item.groupUuId = defUiID
