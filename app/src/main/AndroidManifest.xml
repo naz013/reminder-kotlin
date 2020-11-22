@@ -104,7 +104,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".experimental.BottomNavActivity">
+        <activity android:name=".home.BottomNavActivity">
             <nav-graph android:value="@navigation/home_nav" />
         </activity>
         <activity

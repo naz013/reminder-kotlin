@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.experimental.BottomNavActivity
+import com.elementary.tasks.home.BottomNavActivity
 import hirondelle.date4j.DateTime
 import java.util.*
 

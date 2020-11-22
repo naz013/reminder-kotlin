@@ -1,4 +1,4 @@
-package com.elementary.tasks.experimental
+package com.elementary.tasks.home
 
 import android.content.Context
 import android.content.Intent
@@ -18,7 +18,6 @@ import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
 import com.elementary.tasks.core.view_models.notes.NoteViewModel
 import com.elementary.tasks.core.work.BackupSettingsWorker
 import com.elementary.tasks.databinding.ActivityBottomNavBinding
-import com.elementary.tasks.experimental.home.HomeFragment
 import com.elementary.tasks.navigation.FragmentCallback
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.notes.QuickNoteCoordinator

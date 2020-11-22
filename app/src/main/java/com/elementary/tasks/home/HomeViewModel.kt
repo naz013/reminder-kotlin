@@ -1,4 +1,4 @@
-package com.elementary.tasks.experimental.home
+package com.elementary.tasks.home
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -33,6 +33,7 @@ class HomeViewModel(
   val birthdays = appDb.birthdaysDao().findAll(
     TimeUtil.getBirthdayDayMonthList(duration = prefs.birthdayDurationInDays + 1)
   )
+  var topScrollX = 0
 
   init {
     prefs.addObserver(PrefsConstants.SHOW_PERMANENT_REMINDERS, this)

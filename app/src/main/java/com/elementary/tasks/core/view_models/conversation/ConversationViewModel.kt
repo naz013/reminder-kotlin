@@ -39,7 +39,7 @@ import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel
-import com.elementary.tasks.experimental.BottomNavActivity
+import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.navigation.settings.other.SendFeedbackActivity
 import com.elementary.tasks.reminder.create.CreateReminderActivity
 import com.elementary.tasks.voice.Container
