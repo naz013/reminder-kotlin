@@ -29,8 +29,8 @@ import java.util.*
 
 class EventJobService : Job(), KoinComponent {
 
-  private val prefs: Prefs by inject()
-  private val appDb: AppDb by inject()
+  private val prefs by inject<Prefs>()
+  private val appDb by inject<AppDb>()
 
   override fun onRunJob(params: Params): Result {
     Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
@@ -59,7 +59,7 @@ class EventJobService : Job(), KoinComponent {
     if (item != null) {
       Timber.d("repeatedReminderAction: ${item.uuId}")
       reminderAction(context, item.uuId)
-      EventJobScheduler.scheduleReminderRepeat(context, item.uuId, prefs)
+      EventJobScheduler.scheduleReminderRepeat(appDb, item.uuId, prefs)
     }
   }
 
@@ -111,7 +111,7 @@ class EventJobService : Job(), KoinComponent {
       cal.timeInMillis = System.currentTimeMillis()
       val mYear = cal.get(Calendar.YEAR)
       val mDate = BIRTH_FORMAT.format(cal.time)
-      for (item in AppDb.getAppDatabase(context).birthdaysDao().all()) {
+      for (item in appDb.birthdaysDao().all()) {
         val year = item.showedYear
         val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
         if (!applyDnd && birthValue == mDate && year != mYear) {

@@ -20,6 +20,7 @@ import com.elementary.tasks.core.view_models.Commands
 import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentSettingsBirthdaysSettingsBinding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -27,6 +28,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
   TimePickerDialog.OnTimeSetListener {
 
   private val viewModel by viewModel<BirthdaysViewModel>()
+  private val scanContactsWorker by inject<ScanContactsWorker>()
   private var mItemSelect: Int = 0
 
   private val onProgress: (Boolean) -> Unit = {
@@ -63,8 +65,8 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
   }
 
   override fun onDestroy() {
+    scanContactsWorker.unsubscribe()
     super.onDestroy()
-    ScanContactsWorker.unsubscribe()
   }
 
   private fun initPriority() {
@@ -120,7 +122,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
       binding.scanButton.isEnabled = true
       binding.scanButton.visibility = View.VISIBLE
       binding.scanButton.setOnClickListener { scanForBirthdays() }
-      ScanContactsWorker.onEnd = {
+      scanContactsWorker.onEnd = {
         val message = if (it == 0) {
           getString(R.string.no_new_birthdays)
         } else {
@@ -129,7 +131,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         onProgress.invoke(false)
       }
-      ScanContactsWorker.listener = onProgress
+      scanContactsWorker.listener = onProgress
     } else {
       binding.scanButton.visibility = View.GONE
     }
@@ -141,7 +143,7 @@ class BirthdaySettingsFragment : BaseCalendarFragment<FragmentSettingsBirthdaysS
       return
     }
     onProgress.invoke(true)
-    ScanContactsWorker.scan(requireContext())
+    scanContactsWorker.scan()
   }
 
   private fun initContactsAutoPrefs() {

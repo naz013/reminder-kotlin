@@ -32,6 +32,7 @@ class ReminderViewModel(
   val calendarEvent: LiveData<List<CalendarUtils.EventItem>> = _calendarEvent
   val clearExtraData = MutableLiveData<Boolean>()
 
+  val db = appDb
   var hasSameInDb: Boolean = false
 
   fun findSame(id: String) {

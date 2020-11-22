@@ -20,7 +20,7 @@ import timber.log.Timber
 
 class AttachmentView : LinearLayout, KoinComponent {
 
-  private val cacheUtil: CacheUtil by inject()
+  private val cacheUtil by inject<CacheUtil>()
 
   private lateinit var binding: AttachmentViewBinding
   var onFileUpdateListener: ((path: String) -> Unit)? = null

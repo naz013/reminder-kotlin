@@ -36,8 +36,8 @@ import java.util.*
 class FollowReminderActivity : BindingActivity<ActivityFollowBinding>(R.layout.activity_follow),
   CompoundButton.OnCheckedChangeListener {
 
-  private val gTasks: GTasks by inject()
-  private val viewModel: ReminderViewModel by viewModel { parametersOf("") }
+  private val gTasks by inject<GTasks>()
+  private val viewModel by viewModel<ReminderViewModel> { parametersOf("") }
 
   private var mHour = 0
   private var mCustomHour = 0

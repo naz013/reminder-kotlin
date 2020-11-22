@@ -12,7 +12,7 @@ import org.koin.android.ext.android.inject
 
 class PinFragment : AuthFragment() {
 
-  private val prefs: Prefs by inject()
+  private val prefs by inject<Prefs>()
   private lateinit var binding: FragmentLoginPinBinding
   private var hasFinger = false
 

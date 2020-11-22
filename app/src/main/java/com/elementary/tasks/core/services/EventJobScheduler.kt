@@ -167,8 +167,8 @@ object EventJobScheduler {
     cancelReminder(number)
   }
 
-  fun scheduleReminderRepeat(context: Context, uuId: String, prefs: Prefs): Boolean {
-    val item = AppDb.getAppDatabase(context).reminderDao().getById(uuId) ?: return false
+  fun scheduleReminderRepeat(appDb: AppDb, uuId: String, prefs: Prefs): Boolean {
+    val item = appDb.reminderDao().getById(uuId) ?: return false
     val minutes = prefs.notificationRepeatTime
     val millis = minutes * TimeCount.MINUTE
     if (millis <= 0) {
@@ -210,8 +210,8 @@ object EventJobScheduler {
       .schedule()
   }
 
-  fun scheduleGpsDelay(context: Context, uuId: String): Boolean {
-    val item = AppDb.getAppDatabase(context).reminderDao().getById(uuId) ?: return false
+  fun scheduleGpsDelay(appDb: AppDb, uuId: String): Boolean {
+    val item = appDb.reminderDao().getById(uuId) ?: return false
     val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
     val millis = due - System.currentTimeMillis()
     if (due == 0L || millis <= 0) {

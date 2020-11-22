@@ -4,13 +4,20 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.launchIo
+import com.elementary.tasks.core.utils.withUIContext
 import kotlinx.coroutines.Job
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-object ScanContactsWorker {
+class ScanContactsWorker(
+  private val appDb: AppDb,
+  private val context: Context
+) {
 
   private val birthdayFormats = arrayOf<DateFormat>(
     SimpleDateFormat("yyyy-MM-dd", Locale.US),
@@ -33,12 +40,12 @@ object ScanContactsWorker {
     listener = null
   }
 
-  fun scan(context: Context) {
+  fun scan() {
     mJob?.cancel()
-    launchSync(context)
+    launchSync()
   }
 
-  private fun launchSync(context: Context) {
+  private fun launchSync() {
     if (!Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
       onEnd?.invoke(0)
       return
@@ -60,7 +67,7 @@ object ScanContactsWorker {
           " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
           "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
         val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-        val dao = AppDb.getAppDatabase(context).birthdaysDao()
+        val dao = appDb.birthdaysDao()
         val contacts = dao.all()
         val birthdayCur = cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
         if (birthdayCur != null && birthdayCur.count > 0) {

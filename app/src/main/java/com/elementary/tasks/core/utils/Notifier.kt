@@ -16,7 +16,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
-import com.elementary.tasks.core.SplashScreenActivity
+import com.elementary.tasks.splash.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.NoteWithImages

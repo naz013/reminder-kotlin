@@ -6,5 +6,5 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 abstract class BaseBroadcast : BroadcastReceiver(), KoinComponent {
-  protected val prefs: Prefs by inject()
+  protected val prefs by inject<Prefs>()
 }

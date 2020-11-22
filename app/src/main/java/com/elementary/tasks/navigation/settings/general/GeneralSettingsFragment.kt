@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.R
-import com.elementary.tasks.core.SplashScreenActivity
+import com.elementary.tasks.splash.SplashScreenActivity
 import com.elementary.tasks.core.utils.Module.isQ
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding

@@ -11,7 +11,6 @@ import com.elementary.tasks.core.cloud.GTasks
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.cloud.storages.Dropbox
 import com.elementary.tasks.core.cloud.storages.GDrive
-import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.launchDefault
@@ -207,8 +206,8 @@ class FragmentCloudDrives : BaseSettingsFragment<FragmentSettingsCloudDrivesBind
     mGoogleLogin.logOutTasks()
     updateProgress(true)
     launchDefault {
-      AppDb.getAppDatabase(ctx).googleTasksDao().deleteAll()
-      AppDb.getAppDatabase(ctx).googleTaskListsDao().deleteAll()
+      viewModel.db.googleTasksDao().deleteAll()
+      viewModel.db.googleTaskListsDao().deleteAll()
       withUIContext {
         UpdatesHelper.updateTasksWidget(ctx)
         updateProgress(false)

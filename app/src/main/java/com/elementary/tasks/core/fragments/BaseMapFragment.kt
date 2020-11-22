@@ -12,9 +12,9 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseMapFragment<B : ViewDataBinding> : BindingFragment<B>() {
 
-  protected val themeUtil: ThemeUtil by inject()
-  protected val prefs: Prefs by inject()
-  protected val dialogues: Dialogues by inject()
+  protected val themeUtil by inject<ThemeUtil>()
+  protected val prefs by inject<Prefs>()
+  protected val dialogues by inject<Dialogues>()
 
   private var mMapType = GoogleMap.MAP_TYPE_TERRAIN
 

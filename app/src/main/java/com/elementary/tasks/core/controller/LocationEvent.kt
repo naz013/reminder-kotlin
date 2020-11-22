@@ -29,7 +29,7 @@ class LocationEvent(
       reminder.isActive = true
       reminder.isRemoved = false
       super.save()
-      if (EventJobScheduler.scheduleGpsDelay(context, reminder.uuId)) {
+      if (EventJobScheduler.scheduleGpsDelay(db, reminder.uuId)) {
         true
       } else {
         SuperUtil.startGpsTracking(context)
@@ -101,7 +101,7 @@ class LocationEvent(
 
   override fun resume(): Boolean {
     if (reminder.isActive) {
-      val b = EventJobScheduler.scheduleGpsDelay(context, reminder.uuId)
+      val b = EventJobScheduler.scheduleGpsDelay(db, reminder.uuId)
       if (!b) SuperUtil.startGpsTracking(context)
     }
     return true

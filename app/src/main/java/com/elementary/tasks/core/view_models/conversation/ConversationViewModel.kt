@@ -15,7 +15,7 @@ import com.backdoor.engine.misc.ContactOutput
 import com.backdoor.engine.misc.ContactsInterface
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
-import com.elementary.tasks.core.SplashScreenActivity
+import com.elementary.tasks.splash.SplashScreenActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
