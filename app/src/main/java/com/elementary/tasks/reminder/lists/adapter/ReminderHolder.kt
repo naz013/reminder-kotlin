@@ -1,10 +1,8 @@
 package com.elementary.tasks.reminder.lists.adapter
 
+import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -14,14 +12,18 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ListItemParams
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.StringResPatterns
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.views.TextDrawable
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import java.util.*
 
@@ -77,38 +79,52 @@ class ReminderHolder(
       || Reminder.isBase(reminder.type, Reminder.BY_OUT)
       || Reminder.isBase(reminder.type, Reminder.BY_PLACES))
     if (visible) {
-      binding.reminderRepeatLeft.show()
-      val context = binding.reminderRepeatLeft.context
-      val spannableStringBuilder = SpannableStringBuilder()
+      binding.badgesView.show()
+      binding.repeatBadge.show()
+
+      val context = binding.itemCard.context
       val repeatText = when {
         Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> String.format(context.getString(R.string.xM), reminder.repeatInterval.toString())
         Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> ReminderUtils.getRepeatString(context, prefs, reminder.weekdays)
         Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
         else -> IntervalUtil.getInterval(reminder.repeatInterval) { StringResPatterns.getIntervalPattern(context, it) }
       }
-      var text = "!!!$repeatText"
+
+      binding.repeatBadge.setImageDrawable(
+        createBadge(context, repeatText, context.dp2px(ListItemParams.BADGE_WIDTH_DP))
+      )
       if (reminder.isActive && !reminder.isRemoved) {
         val remainingText = TimeCount.getRemaining(itemView.context, reminder.eventTime,
           reminder.delay, prefs.appLanguage)
-        text += "\n"
-        text += "!!!$remainingText"
-        spannableStringBuilder.append(text)
-        val stIndex = text.lastIndexOf("!!!")
-        if (stIndex != -1) {
-          spannableStringBuilder.setSpan(ImageSpan(context, R.drawable.ic_twotone_done_24px),
-            stIndex, stIndex + 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-        }
+        binding.timeToBadge.setImageDrawable(
+          createBadge(context, remainingText, context.dp2px(ListItemParams.BADGE_WIDTH_INCREASED_DP))
+        )
+        binding.timeToBadge.show()
       } else {
-        spannableStringBuilder.append(text)
+        binding.timeToBadge.hide()
       }
-      spannableStringBuilder.setSpan(ImageSpan(context, R.drawable.ic_twotone_repeat_24px),
-        0, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-      binding.reminderRepeatLeft.text = spannableStringBuilder
     } else {
-      binding.reminderRepeatLeft.hide()
+      binding.badgesView.hide()
     }
+  }
 
-
+  private fun createBadge(
+    context: Context,
+    text: String,
+    width: Int = context.dp2px(ListItemParams.BADGE_WIDTH_DP),
+    backgroundColor: Int = ThemeUtil.getSecondaryColor(context),
+    textColor: Int = ThemeUtil.getOnSecondaryColor(context)
+  ): TextDrawable {
+    return TextDrawable.builder()
+      .beginConfig()
+      .textColor(textColor)
+      .height(context.dp2px(ListItemParams.BADGE_HEIGHT_DP))
+      .width(width)
+      .toUpperCase()
+      .bold()
+      .endConfig()
+      .buildRoundRect(text, backgroundColor, context.dp2px(ListItemParams.BADGE_CORNERS_DP)
+      )
   }
 
   private fun loadDate(model: Reminder) {

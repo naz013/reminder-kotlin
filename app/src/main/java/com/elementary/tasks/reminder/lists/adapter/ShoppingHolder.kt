@@ -1,8 +1,7 @@
 package com.elementary.tasks.reminder.lists.adapter
 
+import android.content.Context
 import android.graphics.Paint
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +10,18 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.CenteredImageSpan
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ListItemParams
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.core.utils.hide
 import com.elementary.tasks.core.utils.show
 import com.elementary.tasks.core.utils.transparent
+import com.elementary.tasks.core.views.TextDrawable
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import com.elementary.tasks.databinding.ListItemShopItemBinding
 
@@ -74,18 +75,41 @@ class ShoppingHolder(
     binding.reminderTypeGroup.text = "$typeLabel (${reminder.groupTitle}, $priority)"
   }
 
-  private fun loadLeft(item: Reminder) {
-    if (item.isActive && !item.isRemoved) {
-      val context = binding.reminderRepeatLeft.context
-      val spannableStringBuilder = SpannableStringBuilder()
-      val remainingText = TimeCount.getRemaining(itemView.context, item.eventTime, item.delay, prefs.appLanguage)
-      spannableStringBuilder.append("!!!$remainingText")
-      spannableStringBuilder.setSpan(CenteredImageSpan(context, R.drawable.ic_twotone_repeat_24px),
-        0, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-      binding.reminderRepeatLeft.text = spannableStringBuilder
+  private fun loadLeft(reminder: Reminder) {
+    binding.badgesView.show()
+    if (reminder.isActive && !reminder.isRemoved) {
+      val context = binding.itemCard.context
+      val remainingText = TimeCount.getRemaining(
+        context,
+        reminder.eventTime,
+        reminder.delay,
+        prefs.appLanguage
+      )
+      binding.timeToBadge.setImageDrawable(
+        createBadge(context, remainingText, context.dp2px(ListItemParams.BADGE_WIDTH_INCREASED_DP))
+      )
+      binding.timeToBadge.show()
     } else {
-      binding.reminderRepeatLeft.text = ""
+      binding.timeToBadge.hide()
     }
+  }
+
+  private fun createBadge(
+    context: Context,
+    text: String,
+    width: Int = context.dp2px(ListItemParams.BADGE_WIDTH_DP),
+    backgroundColor: Int = ThemeUtil.getSecondaryColor(context),
+    textColor: Int = ThemeUtil.getOnSecondaryColor(context)
+  ): TextDrawable {
+    return TextDrawable.builder()
+      .beginConfig()
+      .textColor(textColor)
+      .height(context.dp2px(ListItemParams.BADGE_HEIGHT_DP))
+      .width(width)
+      .toUpperCase()
+      .bold()
+      .endConfig()
+      .buildRoundRect(text, backgroundColor, context.dp2px(ListItemParams.BADGE_CORNERS_DP))
   }
 
   private fun loadItems(shoppings: List<ShopItem>) {
@@ -136,11 +160,11 @@ class ShoppingHolder(
       if (reminder.isActive && !reminder.isRemoved) {
         loadLeft(reminder)
       } else {
-        binding.reminderRepeatLeft.hide()
+        binding.badgesView.hide()
       }
     } else {
       binding.taskDate.hide()
-      binding.reminderRepeatLeft.hide()
+      binding.badgesView.hide()
     }
   }
 }

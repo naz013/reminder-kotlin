@@ -107,15 +107,27 @@
                         android:scrollbars="none"
                         android:visibility="visible" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/reminderRepeatLeft"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:maxLines="2"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:visibility="visible"
-                        tools:text="every day" />
+                    <LinearLayout
+                        android:id="@+id/badgesView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/repeatBadge"
+                            android:layout_width="52dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            android:visibility="gone" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/timeToBadge"
+                            android:layout_width="104dp"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
