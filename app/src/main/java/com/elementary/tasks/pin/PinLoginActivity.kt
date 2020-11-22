@@ -11,7 +11,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BindingActivity
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.databinding.ActivityPinLoginBinding
-import com.elementary.tasks.experimental.NavUtil
+import com.elementary.tasks.home.BottomNavActivity
 
 class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activity_pin_login), AuthFragment.AuthCallback {
 
@@ -91,7 +91,7 @@ class PinLoginActivity : BindingActivity<ActivityPinLoginBinding>(R.layout.activ
   }
 
   private fun openApplication() {
-    startActivity(Intent(this@PinLoginActivity, NavUtil.homeScreen(prefs)))
+    startActivity(Intent(this@PinLoginActivity, BottomNavActivity::class.java))
     finish()
   }
 

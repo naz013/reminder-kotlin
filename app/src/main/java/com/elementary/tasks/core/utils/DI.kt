@@ -63,7 +63,7 @@ import com.elementary.tasks.core.work.LoadFileWorker
 import com.elementary.tasks.core.work.LoadTokensWorker
 import com.elementary.tasks.core.work.SyncDataWorker
 import com.elementary.tasks.core.work.SyncWorker
-import com.elementary.tasks.experimental.home.HomeViewModel
+import com.elementary.tasks.home.HomeViewModel
 import com.elementary.tasks.google_tasks.create.GoogleTasksStateViewModel
 import com.elementary.tasks.google_tasks.work.SaveNewTaskWorker
 import com.elementary.tasks.google_tasks.work.UpdateTaskWorker

@@ -1,4 +1,4 @@
-package com.elementary.tasks.experimental.home
+package com.elementary.tasks.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -74,6 +74,11 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    if (Module.isMarshmallow) {
+      binding.horizontalSelector.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+        viewModel.topScrollX = scrollX
+      }
+    }
 
     binding.addReminderButton.setOnClickListener {
       safeNavigation(HomeFragmentDirections.actionActionHomeToCreateReminderActivity("", true))
@@ -138,6 +143,7 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     super.onResume()
     prefs.addObserver(PrefsConstants.PRIVACY_SHOWED, this)
     prefs.addObserver(PrefsConstants.USER_LOGGED, this)
+    binding.horizontalSelector.scrollTo(viewModel.topScrollX, 0)
   }
 
   override fun onPause() {

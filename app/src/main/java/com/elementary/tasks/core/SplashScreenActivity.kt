@@ -16,8 +16,7 @@ import com.elementary.tasks.core.utils.EnableThread
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
-import com.elementary.tasks.experimental.BottomNavActivity
-import com.elementary.tasks.experimental.NavUtil
+import com.elementary.tasks.home.BottomNavActivity
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.notes.create.CreateNoteActivity
@@ -87,7 +86,7 @@ class SplashScreenActivity : ThemedActivity() {
   }
 
   private fun runApplication() {
-    startActivity(Intent(this, NavUtil.homeScreen(prefs)))
+    startActivity(Intent(this, BottomNavActivity::class.java))
     finish()
   }
 
