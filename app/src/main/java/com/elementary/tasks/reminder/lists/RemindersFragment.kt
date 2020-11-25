@@ -3,10 +3,12 @@ package com.elementary.tasks.reminder.lists
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -100,7 +102,11 @@ class RemindersFragment : BaseNavigationFragment<FragmentRemindersBinding>(), (L
     super.onCreateOptionsMenu(menu, inflater)
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_reminders
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentRemindersBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

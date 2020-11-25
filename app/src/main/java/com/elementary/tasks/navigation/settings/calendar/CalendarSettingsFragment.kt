@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings.calendar
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
@@ -12,7 +14,11 @@ class CalendarSettingsFragment : BaseSettingsFragment<FragmentSettingsCalendarBi
 
   private var mItemSelect: Int = 0
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_calendar
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsCalendarBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

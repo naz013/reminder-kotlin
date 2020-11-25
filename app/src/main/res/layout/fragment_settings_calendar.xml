@@ -1,82 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:scrollbars="none">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:colorBackground"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/eventsImportPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_margin"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:orientation="vertical">
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_import_export_24px"
+            app:prefs_primary_text="@string/import_events"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/eventsImportPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_import_export_24px"
-                app:prefs_primary_text="@string/import_events"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/startDayPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/first_day"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/startDayPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/first_day"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/themeColorPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/today_color"
+            app:prefs_type="view" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/themeColorPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/today_color"
-                app:prefs_type="view" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/selectedColorPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_cake_24px"
+            app:prefs_primary_text="@string/birthdays_color"
+            app:prefs_type="view" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/selectedColorPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_cake_24px"
-                app:prefs_primary_text="@string/birthdays_color"
-                app:prefs_type="view" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/reminderInCalendarPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_notifications_24px"
+            app:prefs_primary_text="@string/show_reminders"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/reminderInCalendarPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_notifications_24px"
-                app:prefs_primary_text="@string/show_reminders"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/reminderColorPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/reminders_color"
+            app:prefs_type="view" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/reminderColorPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/reminders_color"
-                app:prefs_type="view" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/featureRemindersPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/feature_events"
+            app:prefs_secondary_text_off="@string/hide_future_events"
+            app:prefs_secondary_text_on="@string/show_calculated_feature_events"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/featureRemindersPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/feature_events"
-                app:prefs_secondary_text_off="@string/hide_future_events"
-                app:prefs_secondary_text_on="@string/show_calculated_feature_events"
-                app:prefs_type="check_switch" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -25,10 +25,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.*
 
-class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>(R.layout.activity_create_group) {
+class CreateGroupActivity : BindingActivity<ActivityCreateGroupBinding>() {
 
   private val viewModel by viewModel<GroupViewModel> { parametersOf(getId()) }
   private var mItem: ReminderGroup? = null
+
+  override fun inflateBinding() = ActivityCreateGroupBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

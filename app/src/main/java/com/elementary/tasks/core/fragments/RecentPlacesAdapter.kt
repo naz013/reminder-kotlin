@@ -11,6 +11,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemMapPlaceBinding
 
 class RecentPlacesAdapter(
@@ -36,7 +37,10 @@ class RecentPlacesAdapter(
   inner class ViewHolder(
     parent: ViewGroup,
     prefs: Prefs
-  ) : BaseHolder<ListItemMapPlaceBinding>(parent, R.layout.list_item_map_place, prefs) {
+  ) : BaseHolder<ListItemMapPlaceBinding>(
+    ListItemMapPlaceBinding.inflate(parent.inflater(), parent, false),
+    prefs
+  ) {
     fun bind(item: Place) {
       binding.textView.text = item.name
 

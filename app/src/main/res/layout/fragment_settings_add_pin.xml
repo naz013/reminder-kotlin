@@ -1,76 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/material_margin"
+    android:paddingEnd="@dimen/material_margin">
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pinLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:colorBackground"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/material_margin"
-        android:paddingEnd="@dimen/material_margin">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:boxBackgroundColor="?colorSecondary12"
+        app:boxCornerRadiusTopEnd="5dp"
+        app:boxCornerRadiusTopStart="5dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/pinLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        <com.elementary.tasks.core.views.FixedTextInputEditText
+            android:id="@+id/pinField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:boxBackgroundColor="?colorSecondary12"
-            app:boxCornerRadiusTopEnd="5dp"
-            app:boxCornerRadiusTopStart="5dp">
+            android:hint="@string/pin"
+            android:inputType="numberPassword"
+            android:maxLength="6"
+            android:maxLines="1"
+            android:textAppearance="?textAppearanceSubtitle1" />
 
-            <com.elementary.tasks.core.views.FixedTextInputEditText
-                android:id="@+id/pinField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/pin"
-                android:inputType="numberPassword"
-                android:maxLength="6"
-                android:maxLines="1"
-                android:textAppearance="?textAppearanceSubtitle1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pinConfirmLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:boxBackgroundColor="?colorSecondary12"
+        app:boxCornerRadiusTopEnd="5dp"
+        app:boxCornerRadiusTopStart="5dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/pinConfirmLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        <com.elementary.tasks.core.views.FixedTextInputEditText
+            android:id="@+id/pinConfirmField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:boxBackgroundColor="?colorSecondary12"
-            app:boxCornerRadiusTopEnd="5dp"
-            app:boxCornerRadiusTopStart="5dp">
+            android:hint="@string/repeat_pin"
+            android:inputType="numberPassword"
+            android:maxLength="6"
+            android:maxLines="1"
+            android:textAppearance="?textAppearanceSubtitle1" />
 
-            <com.elementary.tasks.core.views.FixedTextInputEditText
-                android:id="@+id/pinConfirmField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/repeat_pin"
-                android:inputType="numberPassword"
-                android:maxLength="6"
-                android:maxLines="1"
-                android:textAppearance="?textAppearanceSubtitle1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:padding="16dp"
-            android:text="@string/save"
-            android:textAppearance="?textAppearanceButton" />
-    </LinearLayout>
-</layout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:text="@string/save"
+        android:textAppearance="?textAppearanceButton" />
+</LinearLayout>

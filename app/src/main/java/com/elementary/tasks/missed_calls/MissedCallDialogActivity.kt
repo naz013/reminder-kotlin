@@ -32,7 +32,7 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 import java.sql.Date
 
-class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>(R.layout.activity_missed_dialog) {
+class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBinding>() {
 
   private val viewModel by viewModel<MissedCallViewModel> { parametersOf(getNumber()) }
 
@@ -79,6 +79,8 @@ class MissedCallDialogActivity : BaseNotificationActivity<ActivityMissedDialogBi
       showInfo(missedCall)
     }
   }
+
+  override fun inflateBinding() = ActivityMissedDialogBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

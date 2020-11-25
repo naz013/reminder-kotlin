@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/replyTextSimple"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp">
+        android:background="@drawable/chat_bubble_response"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="16dp"
+        android:textAppearance="?textAppearanceBody1"
+        android:textColor="?colorOnSecondary"
+        tools:text="Helolo skdf ksd fjksjsdkf jskf jskdksjdf ksdj" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/replyTextSimple"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/chat_bubble_response"
-            android:paddingStart="24dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="24dp"
-            android:paddingBottom="16dp"
-            android:textAppearance="?textAppearanceBody1"
-            android:textColor="?colorOnSecondary"
-            tools:text="Helolo skdf ksd fjksjsdkf jskf jskdksjdf ksdj" />
-
-    </FrameLayout>
-</layout>
+</FrameLayout>

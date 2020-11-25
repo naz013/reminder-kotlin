@@ -2,10 +2,12 @@ package com.elementary.tasks.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
@@ -65,7 +67,11 @@ class HomeFragment : BaseFragment<HomeFragmentBinding>(), (String) -> Unit {
     deleteAction = { birthday -> viewModel.deleteBirthday(birthday) }
   )
 
-  override fun layoutRes(): Int = R.layout.home_fragment
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = HomeFragmentBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

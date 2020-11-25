@@ -14,6 +14,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGoogleTaskBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +22,9 @@ import java.util.*
 class GoogleTaskHolder(
   parent: ViewGroup,
   listener: ((View, Int, ListActions) -> Unit)?
-) : HolderBinding<ListItemGoogleTaskBinding>(parent, R.layout.list_item_google_task) {
+) : HolderBinding<ListItemGoogleTaskBinding>(
+  ListItemGoogleTaskBinding.inflate(parent.inflater(), parent, false)
+) {
 
   init {
     binding.clickView.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.EDIT) }

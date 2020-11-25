@@ -5,7 +5,9 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.apps.SelectApplicationActivity
 import com.elementary.tasks.core.data.models.Reminder
@@ -76,7 +78,11 @@ class ApplicationFragment : RepeatableTypeFragment<FragmentReminderApplicationBi
     return reminder
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_reminder_application
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentReminderApplicationBinding.inflate(inflater, container, false)
 
   override fun provideViews() {
     setViews(

@@ -9,10 +9,9 @@ import android.os.PowerManager
 import android.speech.tts.TextToSpeech
 import android.text.TextUtils
 import android.view.MotionEvent
-import androidx.annotation.LayoutRes
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ReminderUtils
@@ -26,7 +25,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
-abstract class BaseNotificationActivity<B : ViewDataBinding>(@LayoutRes layoutRes: Int) : BindingActivity<B>(layoutRes) {
+abstract class BaseNotificationActivity<B : ViewBinding> : BindingActivity<B>() {
 
   private var tts: TextToSpeech? = null
   private var mWakeLock: PowerManager.WakeLock? = null

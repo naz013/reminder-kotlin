@@ -10,6 +10,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.DrawableHelper
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemLocationBinding
 import java.util.*
 
@@ -17,18 +18,20 @@ class LocationPlacesAdapter(
   private val themeUtil: ThemeUtil
 ) : RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder>() {
 
-  private val mDataList = ArrayList<Reminder>()
+  private val dataList = ArrayList<Reminder>()
   var actionsListener: ActionsListener<Reminder>? = null
 
   fun setData(list: List<Reminder>) {
-    this.mDataList.clear()
-    this.mDataList.addAll(list)
+    this.dataList.clear()
+    this.dataList.addAll(list)
     notifyDataSetChanged()
   }
 
   inner class ViewHolder(
     parent: ViewGroup
-  ) : HolderBinding<ListItemLocationBinding>(parent, R.layout.list_item_location) {
+  ) : HolderBinding<ListItemLocationBinding>(
+    ListItemLocationBinding.inflate(parent.inflater(), parent, false)
+  ) {
     fun bind(item: Reminder) {
       val place = item.places[0]
       var name = place.name
@@ -58,19 +61,13 @@ class LocationPlacesAdapter(
       .applyTo(view)
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return ViewHolder(parent)
-  }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    holder.bind(mDataList[position])
+    holder.bind(dataList[position])
   }
 
-  fun getItem(position: Int): Reminder {
-    return mDataList[position]
-  }
+  fun getItem(position: Int) = dataList[position]
 
-  override fun getItemCount(): Int {
-    return mDataList.size
-  }
+  override fun getItemCount() = dataList.size
 }

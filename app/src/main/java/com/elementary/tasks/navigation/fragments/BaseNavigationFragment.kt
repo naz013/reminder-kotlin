@@ -1,5 +1,5 @@
 package com.elementary.tasks.navigation.fragments
 
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 
-abstract class BaseNavigationFragment<B : ViewDataBinding> : BaseFragment<B>()
+abstract class BaseNavigationFragment<B : ViewBinding> : BaseFragment<B>()

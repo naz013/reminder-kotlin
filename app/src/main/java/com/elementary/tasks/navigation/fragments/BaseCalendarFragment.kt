@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.BirthdayResolver
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
@@ -32,7 +32,7 @@ import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.util.*
 
-abstract class BaseCalendarFragment<B : ViewDataBinding> : BaseNavigationFragment<B>() {
+abstract class BaseCalendarFragment<B : ViewBinding> : BaseNavigationFragment<B>() {
 
   protected var dateMills: Long = 0
   private var mDialog: AlertDialog? = null

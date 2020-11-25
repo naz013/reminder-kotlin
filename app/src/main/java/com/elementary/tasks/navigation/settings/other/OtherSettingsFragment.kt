@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
@@ -28,7 +29,11 @@ class OtherSettingsFragment : BaseSettingsFragment<FragmentSettingsOtherBinding>
       return sb.toString()
     }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_other
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsOtherBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

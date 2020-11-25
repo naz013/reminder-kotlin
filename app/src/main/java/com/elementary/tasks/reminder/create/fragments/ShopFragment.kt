@@ -3,7 +3,9 @@ package com.elementary.tasks.reminder.create.fragments
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,7 +69,11 @@ class ShopFragment : RepeatableTypeFragment<FragmentReminderShopBinding>() {
     return reminder
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_reminder_shop
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentReminderShopBinding.inflate(inflater, container, false)
 
   override fun provideViews() {
     setViews(

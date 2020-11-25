@@ -1,63 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:scrollbars="none">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:colorBackground"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_margin"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/pinSwitchPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_margin"
-            android:layout_marginEnd="@dimen/list_margin"
-            android:orientation="vertical">
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_fiber_pin_24px"
+            app:prefs_primary_text="@string/pin_protection"
+            app:prefs_secondary_text_off="@string/do_not_use_pin_protection"
+            app:prefs_secondary_text_on="@string/protect_application_with_pin"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/pinSwitchPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_fiber_pin_24px"
-                app:prefs_primary_text="@string/pin_protection"
-                app:prefs_secondary_text_off="@string/do_not_use_pin_protection"
-                app:prefs_secondary_text_on="@string/protect_application_with_pin"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/changePinPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_edit_24px"
+            app:prefs_primary_text="@string/change_pin"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/changePinPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_edit_24px"
-                app:prefs_primary_text="@string/change_pin"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/fingerprintSwitchPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_fingerprint_24px"
+            app:prefs_primary_text="@string/fingerprint"
+            app:prefs_secondary_text_off="@string/do_not_use_fingerprint_to_login"
+            app:prefs_secondary_text_on="@string/allow_fingerprint_login"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/fingerprintSwitchPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_fingerprint_24px"
-                app:prefs_primary_text="@string/fingerprint"
-                app:prefs_secondary_text_off="@string/do_not_use_fingerprint_to_login"
-                app:prefs_secondary_text_on="@string/allow_fingerprint_login"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/telephonyPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_icon="@drawable/ic_twotone_call_24px"
+            app:prefs_primary_text="@string/phone_calls_and_sms"
+            app:prefs_secondary_text_off="@string/hide_that_functionality"
+            app:prefs_secondary_text_on="@string/allow_phone_call_and_sms_func"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/telephonyPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_icon="@drawable/ic_twotone_call_24px"
-                app:prefs_primary_text="@string/phone_calls_and_sms"
-                app:prefs_secondary_text_off="@string/hide_that_functionality"
-                app:prefs_secondary_text_on="@string/allow_phone_call_and_sms_func"
-                app:prefs_type="check_switch" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

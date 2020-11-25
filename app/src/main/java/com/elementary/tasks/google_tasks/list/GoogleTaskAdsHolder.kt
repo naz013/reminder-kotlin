@@ -6,6 +6,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGoogleTaskAdsBinding
 
 class GoogleTaskAdsHolder(
@@ -13,7 +14,10 @@ class GoogleTaskAdsHolder(
   adsProvider: AdsProvider,
   prefs: Prefs,
   failListener: () -> Unit
-) : BaseHolder<ListItemGoogleTaskAdsBinding>(parent, R.layout.list_item_google_task_ads, prefs) {
+) : BaseHolder<ListItemGoogleTaskAdsBinding>(
+  ListItemGoogleTaskAdsBinding.inflate(parent.inflater(), parent, false),
+  prefs
+) {
 
   init {
     adsProvider.showBanner(

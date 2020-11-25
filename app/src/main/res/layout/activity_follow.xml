@@ -1,243 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/material_margin"
+            android:layout_marginEnd="@dimen/material_margin"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/contactPhoto"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/acc_contact_photo"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                app:civ_border_width="0dp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/contactInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:textAppearance="?textAppearanceHeadline5"
+                tools:text="1234567890" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/material_margin"
-                android:layout_marginEnd="@dimen/material_margin"
-                android:orientation="vertical">
+                android:layout_marginTop="32dp"
+                app:boxBackgroundColor="?colorSecondary12"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusTopStart="5dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/contactPhoto"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_marginTop="24dp"
-                    android:contentDescription="@string/acc_contact_photo"
-                    android:scaleType="centerCrop"
-                    android:visibility="visible"
-                    app:civ_border_width="0dp" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/contactInfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="24dp"
-                    android:gravity="center"
-                    android:textAppearance="?textAppearanceHeadline5"
-                    tools:text="1234567890" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                <com.elementary.tasks.core.views.FixedTextInputEditText
+                    android:id="@+id/textField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    app:boxBackgroundColor="?colorSecondary12"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp">
+                    android:hint="@string/message"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:textAppearance="?textAppearanceSubtitle2" />
 
-                    <com.elementary.tasks.core.views.FixedTextInputEditText
-                        android:id="@+id/textField"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/message"
-                        android:inputType="textMultiLine"
-                        android:maxLines="3"
-                        android:textAppearance="?textAppearanceSubtitle2" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                </com.google.android.material.textfield.TextInputLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/type"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/type"
-                    android:textAppearance="?textAppearanceCaption"
-                    android:textColor="?colorSecondary" />
+            <com.elementary.tasks.core.views.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp" />
 
-                <com.elementary.tasks.core.views.DividerView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp" />
-
-                <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatRadioButton
-                        android:id="@+id/typeMessage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/message"
-                        android:textAppearance="?textAppearanceBody1" />
-
-                    <androidx.appcompat.widget.AppCompatRadioButton
-                        android:id="@+id/typeCall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="@string/make_call"
-                        android:textAppearance="?textAppearanceBody1" />
-
-                </RadioGroup>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/date_and_time"
-                    android:textAppearance="?textAppearanceCaption"
-                    android:textColor="?colorSecondary" />
-
-                <com.elementary.tasks.core.views.DividerView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp" />
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/timeTomorrow"
+                    android:id="@+id/typeMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/tomorrow"
+                    android:text="@string/message"
                     android:textAppearance="?textAppearanceBody1" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tomorrowTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="5dp"
-                    android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="21 Feb, 15:45" />
 
                 <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/timeNextWorking"
+                    android:id="@+id/typeCall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/next_business_day"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/make_call"
                     android:textAppearance="?textAppearanceBody1" />
 
+            </RadioGroup>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/date_and_time"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorSecondary" />
+
+            <com.elementary.tasks.core.views.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/timeTomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/tomorrow"
+                android:textAppearance="?textAppearanceBody1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tomorrowTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                android:textAppearance="?textAppearanceHeadline6"
+                tools:text="21 Feb, 15:45" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/timeNextWorking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/next_business_day"
+                android:textAppearance="?textAppearanceBody1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/nextWorkingTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                android:textAppearance="?textAppearanceHeadline6"
+                tools:text="21 Feb, 15:45" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/timeAfter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/after"
+                android:textAppearance="?textAppearanceBody1" />
+
+            <Spinner
+                android:id="@+id/afterTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="5dp" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/timeCustom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/time"
+                android:textAppearance="?textAppearanceBody1" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/nextWorkingTime"
+                    android:id="@+id/customDate"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:padding="5dp"
                     android:textAppearance="?textAppearanceHeadline6"
-                    tools:text="21 Feb, 15:45" />
+                    tools:text="21 Feb 2015" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/timeAfter"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/customTime"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/after"
-                    android:textAppearance="?textAppearanceBody1" />
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:padding="5dp"
+                    android:textAppearance="?textAppearanceHeadline6"
+                    tools:text="15:45" />
 
-                <Spinner
-                    android:id="@+id/afterTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="5dp" />
-
-                <androidx.appcompat.widget.AppCompatRadioButton
-                    android:id="@+id/timeCustom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/time"
-                    android:textAppearance="?textAppearanceBody1" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/customDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:textAppearance="?textAppearanceHeadline6"
-                        tools:text="21 Feb 2015" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/customTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="8dp"
-                        android:padding="5dp"
-                        android:textAppearance="?textAppearanceHeadline6"
-                        tools:text="15:45" />
-
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/exportCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/add_to_calendar"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    android:visibility="visible" />
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/taskExport"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/google_tasks"
-                    android:textAppearance="?textAppearanceSubtitle1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="92dp" />
             </LinearLayout>
-        </ScrollView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/fab"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="12dp"
-            android:elevation="4dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="20dp"
-            android:text="@string/create_task"
-            android:textAllCaps="true"
-            android:textAppearance="?textAppearanceButton"
-            android:textColor="?colorOnSecondary"
-            android:textSize="14sp"
-            android:visibility="visible"
-            app:backgroundTint="?colorSecondary"
-            app:cornerRadius="32dp"
-            app:icon="@drawable/ic_twotone_done_24px"
-            app:iconPadding="12dp"
-            app:iconSize="24dp"
-            app:iconTint="?colorOnSecondary"
-            tools:targetApi="lollipop" />
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/exportCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_to_calendar"
+                android:textAppearance="?textAppearanceSubtitle1"
+                android:visibility="visible" />
 
-    </RelativeLayout>
-</layout>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/taskExport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/google_tasks"
+                android:textAppearance="?textAppearanceSubtitle1" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="92dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fab"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="20dp"
+        android:text="@string/create_task"
+        android:textAllCaps="true"
+        android:textAppearance="?textAppearanceButton"
+        android:textColor="?colorOnSecondary"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:backgroundTint="?colorSecondary"
+        app:cornerRadius="32dp"
+        app:icon="@drawable/ic_twotone_done_24px"
+        app:iconPadding="12dp"
+        app:iconSize="24dp"
+        app:iconTint="?colorOnSecondary"
+        tools:targetApi="lollipop" />
+
+</RelativeLayout>

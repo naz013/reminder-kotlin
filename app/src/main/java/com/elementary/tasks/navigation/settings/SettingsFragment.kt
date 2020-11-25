@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Module
@@ -37,7 +39,11 @@ class SettingsFragment : BaseSettingsFragment<FragmentSettingsBinding>(),
     }
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsBinding.inflate(inflater, container, false)
 
   override fun onResume() {
     super.onResume()

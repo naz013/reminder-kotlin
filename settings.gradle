@@ -1,2 +1,3 @@
 include ':app'
 include ':voice-engine-ktx'
+rootProject.name = "Reminder"

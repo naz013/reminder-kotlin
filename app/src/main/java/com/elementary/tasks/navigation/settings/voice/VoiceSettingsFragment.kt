@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings.voice
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding
@@ -10,7 +12,12 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 class VoiceSettingsFragment : BaseSettingsFragment<FragmentSettingsVoiceBinding>() {
 
   private var mItemSelect: Int = 0
-  override fun layoutRes(): Int = R.layout.fragment_settings_voice
+
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsVoiceBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

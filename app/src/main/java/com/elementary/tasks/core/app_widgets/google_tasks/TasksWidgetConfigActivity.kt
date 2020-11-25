@@ -15,10 +15,12 @@ import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.ActivityWidgetGoogleTasksConfigBinding
 import org.koin.android.ext.android.get
 
-class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfigBinding>(R.layout.activity_widget_google_tasks_config) {
+class TasksWidgetConfigActivity : BindingActivity<ActivityWidgetGoogleTasksConfigBinding>() {
 
   private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
   private var resultValue: Intent? = null
+
+  override fun inflateBinding() = ActivityWidgetGoogleTasksConfigBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

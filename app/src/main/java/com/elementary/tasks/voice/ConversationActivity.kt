@@ -40,7 +40,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
-class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layout.activity_conversation) {
+class ConversationActivity : BindingActivity<ActivityConversationBinding>() {
 
   private var speech: SpeechRecognizer? = null
   private val mAdapter = ConversationAdapter(language, prefs, get(), get())
@@ -121,6 +121,8 @@ class ConversationActivity : BindingActivity<ActivityConversationBinding>(R.layo
       Timber.d("onEvent: ")
     }
   }
+
+  override fun inflateBinding() = ActivityConversationBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

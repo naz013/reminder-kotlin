@@ -4,10 +4,12 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
@@ -82,7 +84,11 @@ class TemplatesFragment : BaseSettingsFragment<FragmentSettingsTemplatesListBind
     super.onCreateOptionsMenu(menu, inflater)
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_templates_list
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsTemplatesListBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

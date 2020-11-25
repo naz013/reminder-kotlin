@@ -4,7 +4,6 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.ListActions
@@ -12,6 +11,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemBirthdayBinding
 
 class BirthdayHolder(
@@ -19,7 +19,9 @@ class BirthdayHolder(
   private val prefs: Prefs,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : HolderBinding<ListItemBirthdayBinding>(parent, R.layout.list_item_birthday) {
+) : HolderBinding<ListItemBirthdayBinding>(
+  ListItemBirthdayBinding.inflate(parent.inflater(), parent, false)
+) {
 
   init {
     if (showMore) {

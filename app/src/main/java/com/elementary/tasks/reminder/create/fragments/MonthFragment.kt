@@ -4,7 +4,9 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.TimeCount
@@ -93,7 +95,11 @@ class MonthFragment : RepeatableTypeFragment<FragmentReminderMonthBinding>() {
     return reminder
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_reminder_month
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentReminderMonthBinding.inflate(inflater, container, false)
 
   override fun provideViews() {
     setViews(

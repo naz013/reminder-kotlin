@@ -3,7 +3,9 @@ package com.elementary.tasks.navigation.settings.export
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.storages.Dropbox
@@ -75,7 +77,11 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     }
   }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_export
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsExportBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -621,7 +627,7 @@ class ExportSettingsFragment : BaseCalendarFragment<FragmentSettingsExportBindin
     super.onActivityResult(requestCode, resultCode, data)
     if (requestCode == REQ_PICK_RBAK && resultCode == Activity.RESULT_OK) {
       onProgress.invoke(true)
-      backupTool.importAll(requireContext(), data?.data, keepOldData) {
+      backupTool.importAll(data?.data, keepOldData) {
         onSyncEnd.invoke()
         binding.importButton.post {
           if (it) {

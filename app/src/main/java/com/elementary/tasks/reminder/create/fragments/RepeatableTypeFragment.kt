@@ -1,12 +1,12 @@
 package com.elementary.tasks.reminder.create.fragments
 
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.IntervalUtil
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.StringResPatterns
 
-abstract class RepeatableTypeFragment<B : ViewDataBinding> : TypeFragment<B>() {
+abstract class RepeatableTypeFragment<B : ViewBinding> : TypeFragment<B>() {
 
   override fun getSummary(): String {
     val reminder = iFace.reminderState.reminder

@@ -1,10 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion 30
@@ -16,15 +15,12 @@ android {
         versionCode 285
         versionName '8.2.0'
         multiDexEnabled true
-        vectorDrawables.useSupportLibrary = true
         renderscriptTargetApi 21
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
-        dataBinding {
-            enabled = true
-        }
+        viewBinding true
     }
     signingConfigs {
         freeApp {
@@ -111,7 +107,7 @@ dependencies {
     }
     implementation('com.google.apis:google-api-services-tasks:v1-rev71-1.25.0')
     implementation 'com.google.http-client:google-http-client-gson:1.38.0'
-    implementation('com.google.api-client:google-api-client-android:1.31.0') {
+    implementation('com.google.api-client:google-api-client-android:1.31.1') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation('com.google.apis:google-api-services-drive:v3-rev99-1.23.0') {
@@ -127,14 +123,20 @@ dependencies {
     implementation "org.koin:koin-androidx-workmanager:2.2.0"
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'com.google.android.material:material:1.3.0-alpha04'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation "androidx.biometric:biometric:1.0.1"
+
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
-    implementation "androidx.biometric:biometric:1.0.1"
+    implementation "androidx.activity:activity-ktx:1.1.0"
+    implementation "androidx.collection:collection-ktx:1.1.0"
+    implementation "androidx.palette:palette-ktx:1.0.0"
+    implementation "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03"
+    implementation "com.google.android.play:core-ktx:1.8.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
@@ -155,8 +157,6 @@ dependencies {
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.1"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.1"
-
-    implementation "androidx.palette:palette-ktx:1.0.0"
 
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
@@ -201,7 +201,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'androidx.test:core:1.3.0'
-    testImplementation 'org.mockito:mockito-core:3.6.0'
+    testImplementation 'org.mockito:mockito-core:3.6.28'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
     androidTestImplementation 'androidx.test:runner:1.3.0'
@@ -210,9 +210,4 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
-androidExtensions {
-    experimental = true
-}
-
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'kotlin-android-extensions'

@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.utils.dp2px
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemNoteBinding
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
 import com.elementary.tasks.notes.preview.ImagesSingleton
@@ -33,7 +34,10 @@ class NoteHolder(
   private val themeUtil: ThemeUtil,
   private val imagesSingleton: ImagesSingleton,
   val listener: ((View, Int, ListActions) -> Unit)?
-) : BaseHolder<ListItemNoteBinding>(parent, R.layout.list_item_note, prefs) {
+) : BaseHolder<ListItemNoteBinding>(
+  ListItemNoteBinding.inflate(parent.inflater(), parent, false),
+  prefs
+) {
 
   var hasMore = true
     set(value) {

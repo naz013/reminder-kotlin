@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clickView"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/home_action_button_size"
+    android:layout_marginStart="16dp"
+    android:background="@drawable/gradient_button_google_selector"
+    android:minWidth="@dimen/home_action_button_size">
 
-    <FrameLayout
-        android:id="@+id/clickView"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/home_action_button_size"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/gradient_button_google_selector"
-        android:minWidth="@dimen/home_action_button_size">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:maxLength="50"
-            android:maxLines="1"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textAppearance="?textAppearanceSubtitle1"
-            tools:text="Name" />
-    </FrameLayout>
-</layout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:maxLength="50"
+        android:maxLines="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textAppearance="?textAppearanceSubtitle1"
+        tools:text="Name" />
+</FrameLayout>

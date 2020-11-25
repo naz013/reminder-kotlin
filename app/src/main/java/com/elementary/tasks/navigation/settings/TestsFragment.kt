@@ -2,8 +2,9 @@ package com.elementary.tasks.navigation.settings
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
-import com.elementary.tasks.R
+import android.view.ViewGroup
 import com.elementary.tasks.birthdays.create.AddBirthdayActivity
 import com.elementary.tasks.birthdays.preview.ShowBirthday29Activity
 import com.elementary.tasks.birthdays.preview.ShowBirthdayActivity
@@ -22,7 +23,11 @@ import java.util.*
 
 class TestsFragment : BaseSettingsFragment<FragmentSettingsTestsBinding>() {
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_tests
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsTestsBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

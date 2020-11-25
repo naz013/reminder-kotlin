@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.work
 
-import android.content.Context
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.launchIo
 import com.elementary.tasks.core.utils.withUIContext
@@ -8,10 +7,7 @@ import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.File
 
-class ExportAllDataWorker(
-  private val context: Context,
-  private val backupTool: BackupTool
-) {
+class ExportAllDataWorker(private val backupTool: BackupTool) {
 
   private var mJob: Job? = null
   var onEnd: ((File?) -> Unit)? = null
@@ -34,7 +30,7 @@ class ExportAllDataWorker(
 
   private fun launchSync() {
     mJob = launchIo {
-      val file = backupTool.exportAll(context)
+      val file = backupTool.exportAll()
       withUIContext {
         onEnd?.invoke(file)
       }

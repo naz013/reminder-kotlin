@@ -1,116 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <GridView
+            android:id="@+id/weekdayView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="56dp"
+            android:clickable="false"
+            android:numColumns="7"
+            android:scrollbars="none"
+            android:stretchMode="columnWidth" />
 
-            <GridView
-                android:id="@+id/weekdayView"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:clickable="false"
-                android:numColumns="7"
-                android:scrollbars="none"
-                android:stretchMode="columnWidth" />
+        <com.elementary.tasks.core.calendar.InfiniteViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-            <com.elementary.tasks.core.calendar.InfiniteViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/eventsCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_sheet_bg"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <LinearLayout
-            android:id="@+id/eventsCard"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dateLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bottom_sheet_bg"
-            android:orientation="vertical"
-            app:behavior_hideable="true"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/events"
+            android:textAppearance="?textAppearanceHeadline6" />
+
+        <LinearLayout
+            android:id="@+id/actionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="24dp"
+            android:paddingTop="16dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="16dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/addEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_alarm_24px"
+                app:tint="?android:textColorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/addBirth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_cake_24px"
+                app:tint="?android:textColorPrimary" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.tuyenmonkey.mkloader.MKLoader
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:mk_color="?colorSecondary"
+                app:mk_type="Sharingan" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dateLabel"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="@string/events"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="@string/loading_events"
                 android:textAppearance="?textAppearanceHeadline6" />
 
-            <LinearLayout
-                android:id="@+id/actionContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="24dp"
-                android:paddingTop="16dp"
-                android:paddingRight="24dp"
-                android:paddingBottom="16dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addEvent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="16dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_alarm_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addBirth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="16dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_cake_24px"
-                    app:tint="?android:textColorPrimary" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/loadingView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.tuyenmonkey.mkloader.MKLoader
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:mk_color="?colorSecondary"
-                    app:mk_type="Sharingan" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/loading_events"
-                    android:textAppearance="?textAppearanceHeadline6" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/eventsList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:visibility="gone" />
         </LinearLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eventsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

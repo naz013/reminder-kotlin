@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
-import com.elementary.tasks.R
 import com.elementary.tasks.core.binding.HolderBinding
 import com.elementary.tasks.core.data.models.ImageFile
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemNoteImageBinding
 import com.elementary.tasks.notes.create.DecodeImages
 
@@ -40,7 +40,11 @@ class ImagesGridAdapter : ListAdapter<ImageFile, ImagesGridAdapter.PhotoViewHold
     holder.bind(getItem(position))
   }
 
-  inner class PhotoViewHolder(parent: ViewGroup) : HolderBinding<ListItemNoteImageBinding>(parent, R.layout.list_item_note_image) {
+  inner class PhotoViewHolder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemNoteImageBinding>(
+    ListItemNoteImageBinding.inflate(parent.inflater(), parent, false)
+  ) {
     fun bind(noteImage: ImageFile) {
       if (noteImage.state is DecodeImages.State.Loading) {
         binding.stateReady.visibility = View.GONE

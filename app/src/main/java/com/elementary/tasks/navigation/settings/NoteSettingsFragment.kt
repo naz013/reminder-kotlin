@@ -1,7 +1,9 @@
 package com.elementary.tasks.navigation.settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
@@ -12,7 +14,11 @@ import java.util.*
 
 class NoteSettingsFragment : BaseSettingsFragment<FragmentSettingsNotesBinding>() {
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_notes
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsNotesBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

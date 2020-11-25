@@ -11,6 +11,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.databinding.ListItemGoogleTasksListBinding
 
 class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Holder>(GoogleTasksListDiffCallback()) {
@@ -23,8 +24,11 @@ class ListsRecyclerAdapter : ListAdapter<GoogleTaskList, ListsRecyclerAdapter.Ho
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder = Holder(parent)
 
-  inner class Holder(parent: ViewGroup) : HolderBinding<ListItemGoogleTasksListBinding>(parent,
-    R.layout.list_item_google_tasks_list) {
+  inner class Holder(
+    parent: ViewGroup
+  ) : HolderBinding<ListItemGoogleTasksListBinding>(
+    ListItemGoogleTasksListBinding.inflate(parent.inflater(), parent, false)
+  ) {
 
     init {
       binding.clickView.setOnClickListener {

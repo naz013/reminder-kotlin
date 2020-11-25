@@ -19,10 +19,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.*
 
-class TemplateActivity : BindingActivity<ActivityTemplateBinding>(R.layout.activity_template) {
+class TemplateActivity : BindingActivity<ActivityTemplateBinding>() {
 
   private val viewModel by viewModel<SmsTemplateViewModel> { parametersOf(getId()) }
   private var mItem: SmsTemplate? = null
+
+  override fun inflateBinding() = ActivityTemplateBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

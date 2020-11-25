@@ -1,35 +1,28 @@
 package com.elementary.tasks.navigation.settings.security
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.onTextChanged
 import com.elementary.tasks.databinding.FragmentSettingsDeletePinBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 class DisablePinFragment : BaseSettingsFragment<FragmentSettingsDeletePinBinding>() {
 
-  private val mTextWatcher = object : TextWatcher {
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-      binding.pinLayout.isErrorEnabled = false
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-    }
-
-    override fun afterTextChanged(s: Editable?) {
-
-    }
-  }
-
-  override fun layoutRes(): Int = R.layout.fragment_settings_delete_pin
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsDeletePinBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     binding.saveButton.setOnClickListener { savePin() }
-    binding.pinField.addTextChangedListener(mTextWatcher)
+    binding.pinField.onTextChanged {
+      binding.pinLayout.isErrorEnabled = false
+    }
   }
 
   override fun onDestroy() {

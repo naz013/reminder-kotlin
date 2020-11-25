@@ -28,13 +28,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.*
 
-class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout.activity_create_place),
-  MapListener, MapCallback {
+class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(), MapListener, MapCallback {
 
   private val viewModel by viewModel<PlaceViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<CreatePlaceViewModel>()
-  private var mGoogleMap: AdvancedMapFragment? = null
-  private var mItem: Place? = null
+  private var googleMap: AdvancedMapFragment? = null
+
+  override fun inflateBinding() = ActivityCreatePlaceBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
 
     initActionBar()
 
-    mGoogleMap = AdvancedMapFragment.newInstance(
+    googleMap = AdvancedMapFragment.newInstance(
       isPlaces = false,
       isStyles = true,
       isBack = false,
@@ -51,11 +51,11 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
       isDark = ThemeUtil.isDarkMode(this),
       isRadius = false
     )
-    mGoogleMap?.setListener(this)
-    mGoogleMap?.setCallback(this)
+    googleMap?.setListener(this)
+    googleMap?.setCallback(this)
 
     supportFragmentManager.beginTransaction()
-      .replace(R.id.fragment_container, mGoogleMap!!)
+      .replace(R.id.fragment_container, googleMap!!)
       .addToBackStack(null)
       .commit()
     loadPlace()
@@ -79,18 +79,18 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
   }
 
   private fun initViewModel() {
-    viewModel.place.observe(this, { place ->
+    lifecycle.addObserver(stateViewModel)
+    lifecycle.addObserver(viewModel)
+    viewModel.place.observe(this) { place ->
       place?.let { showPlace(it) }
-    })
-    viewModel.result.observe(this, { commands ->
-      commands?.let {
-        when (it) {
-          Commands.SAVED, Commands.DELETED -> finish()
-          else -> {
-          }
+    }
+    viewModel.result.observe(this) {
+      when (it) {
+        Commands.SAVED, Commands.DELETED -> finish()
+        else -> {
         }
       }
-    })
+    }
   }
 
   private fun getId(): String = intent.getStringExtra(Constants.INTENT_ID) ?: ""
@@ -101,8 +101,8 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
       readUri()
     } else if (intent.hasExtra(Constants.INTENT_ITEM)) {
       try {
-        mItem = intent.getParcelableExtra(Constants.INTENT_ITEM) as Place?
-        showPlace(mItem, true)
+        val place = intent.getParcelableExtra(Constants.INTENT_ITEM) as Place?
+        showPlace(place, true)
       } catch (e: Exception) {
         e.printStackTrace()
       }
@@ -115,13 +115,13 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     }
     intent.data?.let {
       try {
-        mItem = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
+        val place = if (ContentResolver.SCHEME_CONTENT != it.scheme) {
           val any = MemoryUtil.readFromUri(this, it, FileConfig.FILE_NAME_PLACE)
           if (any != null && any is Place) {
             any
           } else null
         } else null
-        showPlace(mItem, true)
+        showPlace(place, true)
       } catch (e: Exception) {
         e.printStackTrace()
       }
@@ -129,8 +129,7 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
   }
 
   private fun showPlace(place: Place?, fromFile: Boolean = false) {
-    this.mItem = place
-    place?.let {
+    place?.also {
       binding.titleView.text = getString(R.string.edit_place)
       if (!stateViewModel.isPlaceEdited) {
         binding.placeName.setText(place.name)
@@ -157,8 +156,8 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
     }
     val latitude = stateViewModel.place.latitude
     val longitude = stateViewModel.place.longitude
-    val marker = mGoogleMap?.markerStyle ?: prefs.markerStyle
-    val item = (mItem ?: Place()).apply {
+    val marker = googleMap?.markerStyle ?: prefs.markerStyle
+    val item = stateViewModel.place.apply {
       this.name = name
       this.latitude = latitude
       this.longitude = longitude
@@ -214,21 +213,22 @@ class CreatePlaceActivity : BindingActivity<ActivityCreatePlaceBinding>(R.layout
   }
 
   private fun deleteItem() {
-    mItem?.let { viewModel.deletePlace(it) }
+    viewModel.deletePlace(stateViewModel.place)
   }
 
   private fun showPlaceOnMap() {
-    val map = mGoogleMap ?: return
-    if (stateViewModel.place.hasLatLng()) {
-      map.setStyle(stateViewModel.place.marker)
-      mGoogleMap?.addMarker(stateViewModel.place.latLng(), stateViewModel.place.name,
+    googleMap?.takeIf {
+      stateViewModel.place.hasLatLng()
+    }?.also {
+      it.setStyle(stateViewModel.place.marker)
+      it.addMarker(stateViewModel.place.latLng(), stateViewModel.place.name,
         clear = true, animate = true, radius = -1)
     }
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     menuInflater.inflate(R.menu.menu_place_edit, menu)
-    if (mItem != null && !stateViewModel.isFromFile) {
+    if (stateViewModel.isPlaceEdited && !stateViewModel.isFromFile) {
       menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
     }
     return true

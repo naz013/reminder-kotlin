@@ -3,10 +3,12 @@ package com.elementary.tasks.google_tasks.list
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -37,7 +39,11 @@ class TaskListFragment : BaseNavigationFragment<FragmentGoogleListBinding>() {
   private var mId: String = ""
   private var googleTaskList: GoogleTaskList? = null
 
-  override fun layoutRes(): Int = R.layout.fragment_google_list
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentGoogleListBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.fragments
 
 import android.os.Bundle
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import com.elementary.tasks.core.arch.BindingFragment
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
@@ -10,7 +10,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.MapStyleOptions
 import org.koin.android.ext.android.inject
 
-abstract class BaseMapFragment<B : ViewDataBinding> : BindingFragment<B>() {
+abstract class BaseMapFragment<B : ViewBinding> : BindingFragment<B>() {
 
   protected val themeUtil by inject<ThemeUtil>()
   protected val prefs by inject<Prefs>()

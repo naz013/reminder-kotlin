@@ -2,20 +2,26 @@ package com.elementary.tasks.navigation.settings.general
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import com.elementary.tasks.R
-import com.elementary.tasks.splash.SplashScreenActivity
 import com.elementary.tasks.core.utils.Module.isQ
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.splash.SplashScreenActivity
 
 class GeneralSettingsFragment : BaseSettingsFragment<FragmentSettingsGeneralBinding>() {
 
   private var mItemSelect: Int = 0
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_general
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsGeneralBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

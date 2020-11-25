@@ -1,16 +1,8 @@
 package com.elementary.tasks.core.binding
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 
-abstract class HolderBinding<B : ViewDataBinding>(
-  parent: ViewGroup,
-  @LayoutRes res: Int
-) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(res, parent, false)) {
-
-  protected var binding: B = DataBindingUtil.bind(itemView)!!
-}
+abstract class HolderBinding<B : ViewBinding>(
+  protected val binding: B
+) : RecyclerView.ViewHolder(binding.root)

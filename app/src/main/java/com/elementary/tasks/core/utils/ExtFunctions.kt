@@ -7,18 +7,17 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.view.Display
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.databinding.ViewDataBinding
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elementary.tasks.core.data.models.Reminder
@@ -49,13 +48,18 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
+fun AppCompatEditText.onTextChanged(f: (String?) -> Unit) {
+  doOnTextChanged { text, _, _, _ -> f.invoke(text?.toString()) }
+}
+
+fun View.inflater() = LayoutInflater.from(context)
+
 fun Context.dp2px(dp: Int): Int {
   val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager?
   var display: Display? = null
   if (wm != null) {
     display = wm.defaultDisplay
   }
-
   val displaymetrics = DisplayMetrics()
   display?.getMetrics(displaymetrics)
   return (dp * displaymetrics.density + 0.5f).toInt()
@@ -82,8 +86,6 @@ fun Fragment.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) 
 }
 
 fun <T> ViewModel.mutableLiveDataOf() = MutableLiveData<T>()
-
-fun <T : ViewDataBinding> FragmentActivity.activityBinding(@LayoutRes resId: Int) = ActivityBindingProperty<T>(resId)
 
 fun File.copyInputStreamToFile(inputStream: InputStream) {
   inputStream.use { input ->
@@ -146,6 +148,16 @@ fun View.hide() {
 
 fun View.show() {
   visibility = View.VISIBLE
+}
+
+fun View.visibleGone(value: Boolean) {
+  if (value) show()
+  else hide()
+}
+
+fun View.visibleInvisible(value: Boolean) {
+  if (value) show()
+  else transparent()
 }
 
 fun <T> lazyUnSynchronized(initializer: () -> T): Lazy<T> =

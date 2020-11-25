@@ -26,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.activity_bottom_nav),
+class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(),
   FragmentCallback, (View, GlobalButtonObservable.Action) -> Unit {
 
   private val buttonObservable by inject<GlobalButtonObservable>()
@@ -40,6 +40,8 @@ class BottomNavActivity : BindingActivity<ActivityBottomNavBinding>(R.layout.act
     noteView
   }
   private var mFragment: BaseFragment<*>? = null
+
+  override fun inflateBinding() = ActivityBottomNavBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -22,7 +22,9 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.dp2px
 import com.elementary.tasks.core.utils.hide
+import com.elementary.tasks.core.utils.inflater
 import com.elementary.tasks.core.utils.show
+import com.elementary.tasks.core.utils.visibleGone
 import com.elementary.tasks.core.views.TextDrawable
 import com.elementary.tasks.databinding.ListItemReminderBinding
 import java.util.*
@@ -34,29 +36,21 @@ class ReminderHolder(
   editable: Boolean,
   showMore: Boolean = true,
   private val listener: ((View, Int, ListActions) -> Unit)? = null
-) : BaseHolder<ListItemReminderBinding>(parent, R.layout.list_item_reminder, prefs) {
+) : BaseHolder<ListItemReminderBinding>(
+  ListItemReminderBinding.inflate(parent.inflater(), parent, false),
+  prefs
+) {
 
   val listHeader: TextView = binding.listHeader
 
   init {
-    if (editable) {
-      binding.itemCheck.show()
-    } else {
-      binding.itemCheck.hide()
-    }
-    if (!hasHeader) {
-      binding.listHeader.hide()
-    }
+    binding.itemCheck.visibleGone(editable)
+    binding.listHeader.visibleGone(hasHeader)
+    binding.buttonMore.visibleGone(showMore)
     binding.todoList.hide()
     binding.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
     binding.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
-
-    if (showMore) {
-      binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-      binding.buttonMore.show()
-    } else {
-      binding.buttonMore.hide()
-    }
+    binding.buttonMore.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
   }
 
   fun setData(reminder: Reminder) {
@@ -93,15 +87,14 @@ class ReminderHolder(
       binding.repeatBadge.setImageDrawable(
         createBadge(context, repeatText, context.dp2px(ListItemParams.BADGE_WIDTH_DP))
       )
-      if (reminder.isActive && !reminder.isRemoved) {
+      (reminder.isActive && !reminder.isRemoved).also {
+        binding.timeToBadge.visibleGone(it)
+      }.takeIf { it }?.also {
         val remainingText = TimeCount.getRemaining(itemView.context, reminder.eventTime,
           reminder.delay, prefs.appLanguage)
         binding.timeToBadge.setImageDrawable(
           createBadge(context, remainingText, context.dp2px(ListItemParams.BADGE_WIDTH_INCREASED_DP))
         )
-        binding.timeToBadge.show()
-      } else {
-        binding.timeToBadge.hide()
       }
     } else {
       binding.badgesView.hide()

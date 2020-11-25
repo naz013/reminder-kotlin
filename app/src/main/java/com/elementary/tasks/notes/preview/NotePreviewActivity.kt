@@ -43,7 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
 
-class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout.activity_note_preview) {
+class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>() {
 
   private var mNote: NoteWithImages? = null
   private var mReminder: Reminder? = null
@@ -58,6 +58,8 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
   private val backupTool by inject<BackupTool>()
   private val imagesSingleton by inject<ImagesSingleton>()
   private val adsProvider = AdsProvider()
+
+  override fun inflateBinding() = ActivityNotePreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -244,7 +246,7 @@ class NotePreviewActivity : BindingActivity<ActivityNotePreviewBinding>(R.layout
     }
     showProgress()
     launchDefault {
-      val file = backupTool.noteToFile(this@NotePreviewActivity, mNote)
+      val file = backupTool.noteToFile(mNote)
       withUIContext {
         hideProgress()
         if (file != null) {

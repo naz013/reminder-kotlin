@@ -17,13 +17,15 @@ import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>(R.layout.activity_create_task_list) {
+class TaskListActivity : BindingActivity<ActivityCreateTaskListBinding>() {
 
   private val viewModel by viewModel<GoogleTaskListViewModel> { parametersOf(getId()) }
   private val stateViewModel by viewModel<GoogleTasksStateViewModel>()
 
   private var mItem: GoogleTaskList? = null
   private var mIsLoading = false
+
+  override fun inflateBinding() = ActivityCreateTaskListBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

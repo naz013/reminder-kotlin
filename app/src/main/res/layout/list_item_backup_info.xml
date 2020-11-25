@@ -1,147 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="8dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:cardCornerRadius="5dp"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="8dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/moreButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_twotone_more_vert_24px"
+                app:tint="?android:textColorPrimary" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sourceName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/moreButton"
+                android:gravity="center_vertical"
+                android:textAppearance="?textAppearanceCaption"
+                tools:text="Name" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/userContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="8dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userPhoto"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/acc_contact_photo"
+                android:scaleType="centerCrop" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/moreButton"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/ic_twotone_more_vert_24px"
-                    app:tint="?android:textColorPrimary" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/sourceName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/moreButton"
-                    android:gravity="center_vertical"
-                    android:textAppearance="?textAppearanceCaption"
-                    tools:text="Name" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/userContainer"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/cloudUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/userPhoto"
+                android:gravity="center_vertical"
+                android:textAppearance="?textAppearanceSubtitle1"
+                tools:text="Name" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/userPhoto"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/acc_contact_photo"
-                    android:scaleType="centerCrop" />
+        </RelativeLayout>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/cloudUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_toEndOf="@+id/userPhoto"
-                    android:gravity="center_vertical"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    tools:text="Name" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <com.elementary.tasks.core.chart.PieGraph
-                    android:id="@+id/usedSizeGraph"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="start|center" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_toEndOf="@+id/usedSizeGraph"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/usedSpace"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?textAppearanceBody1"
-                        tools:text="Name" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/freeSpace"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?textAppearanceBody1"
-                        tools:text="Name" />
-
-                </LinearLayout>
-            </RelativeLayout>
+            <com.elementary.tasks.core.chart.PieGraph
+                android:id="@+id/usedSizeGraph"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="start|center" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/usedSizeGraph"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/cloudText"
+                    android:id="@+id/usedSpace"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:gravity="center_vertical"
-                    android:text="@string/files"
-                    android:textAppearance="?textAppearanceBody2"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceBody1"
                     tools:text="Name" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/cloudCount"
+                    android:id="@+id/freeSpace"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:textAppearance="?textAppearanceHeadline5"
-                    tools:text="5" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="Name" />
 
             </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/cloudText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4"
+                android:gravity="center_vertical"
+                android:text="@string/files"
+                android:textAppearance="?textAppearanceBody2"
+                tools:text="Name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/cloudCount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:textAppearance="?textAppearanceHeadline5"
+                tools:text="5" />
+
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

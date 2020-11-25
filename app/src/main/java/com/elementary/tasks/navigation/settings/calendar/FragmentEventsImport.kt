@@ -2,7 +2,9 @@ package com.elementary.tasks.navigation.settings.calendar
 
 import android.app.AlarmManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,7 +58,11 @@ class FragmentEventsImport : BaseCalendarFragment<FragmentSettingsEventsImportBi
       return position
     }
 
-  override fun layoutRes(): Int = R.layout.fragment_settings_events_import
+  override fun inflate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ) = FragmentSettingsEventsImportBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

@@ -32,7 +32,7 @@ import timber.log.Timber
 import java.text.ParseException
 import java.util.*
 
-class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout.activity_add_birthday) {
+class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>() {
 
   private val viewModel by viewModel<BirthdayViewModel> { parametersOf(getId()) }
   private var mBirthday: Birthday? = null
@@ -46,6 +46,8 @@ class AddBirthdayActivity : BindingActivity<ActivityAddBirthdayBinding>(R.layout
       calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
       viewModel.date.postValue(calendar.timeInMillis)
     }
+
+  override fun inflateBinding() = ActivityAddBirthdayBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

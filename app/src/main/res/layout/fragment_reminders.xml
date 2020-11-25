@@ -1,106 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:colorBackground">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/groupsButton"
-                        android:layout_width="@dimen/home_action_button_size"
-                        android:layout_height="@dimen/home_action_button_size"
-                        android:layout_marginStart="16dp"
-                        android:background="@drawable/gradient_button_groups_selector"
-                        android:contentDescription="@string/groups"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_local_offer_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/archiveButton"
-                        android:layout_width="@dimen/home_action_button_size"
-                        android:layout_height="@dimen/home_action_button_size"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@drawable/gradient_button_birthdays_selector"
-                        android:contentDescription="@string/trash"
-                        android:scaleType="centerInside"
-                        app:srcCompat="@drawable/ic_twotone_dns_24px"
-                        app:tint="?android:textColorPrimary" />
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:scrollbars="none">
 
             <LinearLayout
-                android:id="@+id/emptyItem"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/animationView"
-                    android:layout_width="@dimen/empty_animation_size"
-                    android:layout_height="@dimen/empty_animation_size"
-                    android:layout_gravity="center"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/empty_status" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/groupsButton"
+                    android:layout_width="@dimen/home_action_button_size"
+                    android:layout_height="@dimen/home_action_button_size"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/gradient_button_groups_selector"
+                    android:contentDescription="@string/groups"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_local_offer_24px"
+                    app:tint="?android:textColorPrimary" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/emptyText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginRight="24dp"
-                    android:gravity="center|top"
-                    android:text="@string/no_events"
-                    android:textAppearance="?textAppearanceHeadline6" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/archiveButton"
+                    android:layout_width="@dimen/home_action_button_size"
+                    android:layout_height="@dimen/home_action_button_size"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/gradient_button_birthdays_selector"
+                    android:contentDescription="@string/trash"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_twotone_dns_24px"
+                    app:tint="?android:textColorPrimary" />
 
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/emptyItem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="@dimen/empty_animation_size"
+                android:layout_height="@dimen/empty_animation_size"
+                android:layout_gravity="center"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/empty_status" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/emptyText"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/list_margin"
-                android:layout_marginEnd="@dimen/list_margin"
-                android:visibility="visible"
-                tools:itemCount="5"
-                tools:listitem="@layout/list_item_reminder" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:gravity="center|top"
+                android:text="@string/no_events"
+                android:textAppearance="?textAppearanceHeadline6" />
 
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="16dp"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_twotone_add_24px" />
-    </RelativeLayout>
-</layout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginEnd="@dimen/list_margin"
+            android:visibility="visible"
+            tools:itemCount="5"
+            tools:listitem="@layout/list_item_reminder" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_twotone_add_24px" />
+</RelativeLayout>

@@ -64,7 +64,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(R.layout.activity_reminder_preview) {
+class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>() {
 
   private var mGoogleMap: AdvancedMapFragment? = null
   private val viewModel by viewModel<ReminderViewModel> { parametersOf(getId()) }
@@ -80,6 +80,8 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     openFullMap()
     false
   }
+
+  override fun inflateBinding() = ActivityReminderPreviewBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -487,7 +489,7 @@ class ReminderPreviewActivity : BindingActivity<ActivityReminderPreviewBinding>(
     }
     reminder?.let {
       launchDefault {
-        val file = backupTool.reminderToFile(this@ReminderPreviewActivity, it)
+        val file = backupTool.reminderToFile(it)
         Timber.d("shareReminder: $file")
         if (file != null) {
           withUIContext {

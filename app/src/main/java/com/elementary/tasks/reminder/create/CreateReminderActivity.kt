@@ -62,8 +62,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.layout.activity_create_reminder),
-  ReminderInterface {
+class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(), ReminderInterface {
 
   private val cacheUtil by inject<CacheUtil>()
 
@@ -97,6 +96,8 @@ class CreateReminderActivity : BindingActivity<ActivityCreateReminderBinding>(R.
       editReminder(reminder)
     }
   }
+
+  override fun inflateBinding() = ActivityCreateReminderBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

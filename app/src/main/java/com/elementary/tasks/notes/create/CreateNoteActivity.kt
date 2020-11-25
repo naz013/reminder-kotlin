@@ -74,7 +74,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 
-class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.activity_create_note),
+class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(),
   PhotoSelectionUtil.UriCallback {
 
   private val themeUtil by inject<ThemeUtil>()
@@ -158,6 +158,8 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     stateViewModel.time.postValue(c.timeInMillis)
   }
   private val mNoteObserver: Observer<in NoteWithImages> = Observer { this.showNote(it) }
+
+  override fun inflateBinding() = ActivityCreateNoteBinding.inflate(layoutInflater)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -617,7 +619,7 @@ class CreateNoteActivity : BindingActivity<ActivityCreateNoteBinding>(R.layout.a
     val note = createObject() ?: return
     showProgress()
     launchDefault {
-      val file = backupTool.noteToFile(this@CreateNoteActivity, note)
+      val file = backupTool.noteToFile(note)
       withUIContext {
         hideProgress()
         if (file != null) {
